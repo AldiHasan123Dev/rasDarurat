@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layouts.admin');
+    return redirect('login');
 });
 
 Route::prefix('admin')->middleware('auth')->group( function(){
