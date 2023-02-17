@@ -1,0 +1,14 @@
+.dataTables_length label, .dataTables_filter label, .dataTables_filter input, .dataTables_info, .dataTables_paginate, .card-header button{
+    font-size: .7rem;
+}
+form input.form-control, form select, form label, form textarea{
+    font-size: .8rem;
+}
+.form-control{
+    border-radius: 0% !important;
+}
+button.no-attr{
+    outline: none;
+    background: none;
+    border: none;
+}
