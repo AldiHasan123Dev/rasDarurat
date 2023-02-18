@@ -2,8 +2,23 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2">
+            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer</button>
+                <form action="{{ route('customer.index') }}" method="get">
+                    <span style="font-size: .8rem; margin-right:10px">Filter Tipe Customer:</span>
+                    <label for="all">
+                        <input type="radio" name="tipe" {{ $tipe=='all'?'checked':'' }} id="all" value="all" onchange="this.form.submit()"> Semua
+                    </label>
+                    <label for="pembayar">
+                        <input type="radio" name="tipe" {{ $tipe=='pembayar'?'checked':'' }} id="pembayar" value="pembayar" onchange="this.form.submit()"> Pembayar
+                    </label>
+                    <label for="penerima">
+                        <input type="radio" name="tipe" {{ $tipe=='penerima'?'checked':'' }} id="penerima" value="penerima" onchange="this.form.submit()"> Penerima
+                    </label>
+                    <label for="pengirim">
+                        <input type="radio" name="tipe" {{ $tipe=='pengirim'?'checked':'' }} id="pengirim" value="pengirim" onchange="this.form.submit()"> Pengirim
+                    </label>
+                </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

@@ -10,9 +10,14 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::all();
+        $tipe = request('tipe') ?? 'all';
+        if ($tipe != 'all') {
+            $customers = Customer::all()->where('tipe',$tipe);
+        }else{
+            $customers = Customer::all();
+        }
         $users = User::all();
-        return view('admin.customer.index', compact('customers','users'));
+        return view('admin.customer.index', compact('customers','users','tipe'));
     }
 
     public function store(Request $request)
