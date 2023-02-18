@@ -84,6 +84,36 @@
                 </div>
             </div>
         </div>
+
+        <div class="card mt-5">
+            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                <button class="py-2 px-3 btn btn-sm btn-outline-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Buat Tarif</button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm" id="table" style="font-size:.7rem">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Tanggal</th>
+                                <th>Pelayaran</th>
+                                <th>Dari</th>
+                                <th>Tujuan</th>
+                                <th>Shipment</th>
+                                <th>Kondisi</th>
+                                <th>Tarif</th>
+                                <th>Satuan</th>
+                                <th>Keterangan</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -100,4 +130,8 @@
             </form>
         </div>
     </div>
+@endsection
+
+@section('script')
+    
 @endsection

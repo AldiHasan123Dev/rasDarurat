@@ -149,7 +149,7 @@
             </li>
             <li class="collapsed-nav-item-title d-none">PO</li>
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
+                <a class="nav-link" href="{{ route('cetak.pickOrder') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">PO</span></div>
                 </a>
             </li>
