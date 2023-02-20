@@ -85,7 +85,7 @@
             </div>
         </div>
 
-        <div class="card mt-5">
+        {{-- <div class="card mt-5">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <button class="py-2 px-3 btn btn-sm btn-outline-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Buat Tarif</button>
             </div>
@@ -108,12 +108,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 
@@ -133,5 +133,5 @@
 @endsection
 
 @section('script')
-    
+
 @endsection

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\PelayaranController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::prefix('admin')->middleware('auth')->group( function(){
+    Route::resource('user',UserController::class);
     Route::resource('customer',CustomerController::class);
     Route::resource('pelayaran',PelayaranController::class);
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');

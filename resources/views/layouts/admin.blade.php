@@ -32,6 +32,19 @@
                         </div>
                     </div>
                 @endif
+                <div class="container">
+                    <div class="my-3">
+                        @if ($errors->any())
+                            <div class="alert alert-danger py-1">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            @endif
+                    </div>
+                </div>
                 @yield('content')
             </div>
         </div>

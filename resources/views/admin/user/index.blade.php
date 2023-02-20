@@ -3,7 +3,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPelayaran" aria-controls="offcanvasPelayaran">Tambah Pelayaran</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUser" aria-controls="offcanvasUser">Tambah User</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -11,14 +11,10 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Kode</th>
                                 <th>Nama</th>
-                                <th>PIC</th>
-                                <th>Alamat</th>
-                                <th>Kota</th>
-                                <th>Telp</th>
-                                <th>Fax</th>
                                 <th>Email</th>
+                                <th>Telp</th>
+                                <th>Alamat</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -31,15 +27,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasPelayaran" aria-labelledby="offcanvasPelayaranLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasUser" aria-labelledby="offcanvasUserLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasPelayaranLabel">Form Pelayaran</h5>
+            <h5 class="offcanvas-title" id="offcanvasUserLabel">Form User</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('pelayaran.store') }}" method="post">
+            <form action="{{ route('user.store') }}" method="post">
                 @csrf
-                @include('admin.pelayaran.form')
+                @include('admin.user.form')
             </form>
         </div>
     </div>
@@ -51,22 +47,22 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('pelayaran.data') }}',
+                url: '{{ route('user.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
                 { data: 'id', name: 'id' },
-                { data: 'kode', name: 'kode' },
-                { data: 'nama', name: 'nama' },
-                { data: 'pic', name: 'pic' },
-                { data: 'alamat', name: 'alamat' },
-                { data: 'kota', name: 'kota' },
-                { data: 'telp', name: 'telp' },
-                { data: 'fax', name: 'fax' },
+                { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
+                { data: 'phone', name: 'phone' },
+                { data: 'address', name: 'address' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
+
+        function edit(id){
+            console.log(id);
+        }
     </script>
 @endsection
