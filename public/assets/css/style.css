@@ -12,3 +12,33 @@ button.no-attr{
     background: none;
     border: none;
 }
+.content-main{
+    position: relative;
+    padding: 20px;
+}
+.horizontal-menu{
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+    background-color: #fff;
+}
+.sub-menu .btn-link{
+    outline: none;
+    border: none;
+    background: none;
+    text-decoration: none;
+    font-size: .8rem;
+}
+
+.sub-menu{
+    padding: 10px 0px;
+}
+.sub-menu .btn-link.active{
+    color: rgba(56, 116, 255, 1) !important;
+    border-bottom: 2px solid rgba(56, 116, 255, 1) ;
+}
+.sub-menu .btn-link:hover{
+    background-color: #dee1ea;
+}
+
+.select2-selection__rendered{
+    font-size: .7rem;
+}

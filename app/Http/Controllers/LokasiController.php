@@ -2,64 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pelayaran;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
-class PelayaranController extends Controller
+class LokasiController extends Controller
 {
     public function index()
     {
-        return view('admin.suplier.pelayaran.index');
+        return view('admin.lokasi.index');
     }
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        Pelayaran::create($data);
+              $data = $request->all();
+        Lokasi::create($data);
 
         return back()->with('success','Data berhasil disimpan');
     }
 
-    public function update(Pelayaran $pelayaran, Request $request)
+    public function update(Lokasi $lokasi, Request $request)
     {
         $data = $request->all();
-        $pelayaran->update($data);
+        $lokasi->update($data);
 
         return back()->with('success','Data berhasil diupdate');
     }
 
-    public function destroy(Pelayaran $pelayaran)
+    public function destroy(Lokasi $lokasi)
     {
-        $pelayaran->delete();
+        $lokasi->delete();
 
         return back()->with('success','Data berhasil dihapus');
     }
 
     public function datatable()
     {
-        $data = Pelayaran::all()->sortByDesc('created_at');
+        $data = Lokasi::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
             ->addColumn('action', function ($data) {
-                $view = view('admin.suplier.pelayaran.form',['pelayaran'=>$data])->render();
+                $view = view('admin.lokasi.form',['lokasi'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
-                            <form action="'.route('pelayaran.destroy',$data).'" method="post">
+                            <form action="'.route('lokasi.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPelayaranUpdate'.$data->id.'" aria-controls="offcanvasPelayaranUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLokasiUpdate'.$data->id.'" aria-controls="offcanvasLokasiUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
                         </div>
 
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasPelayaranUpdate'.$data->id.'" aria-labelledby="offcanvasPelayaranUpdate'.$data->id.'Label">
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasLokasiUpdate'.$data->id.'" aria-labelledby="offcanvasLokasiUpdate'.$data->id.'Label">
                             <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasPelayaranUpdate'.$data->id.'Label">Form Pelayaran</h5>
+                                <h5 class="offcanvas-title" id="offcanvasLokasiUpdate'.$data->id.'Label">Form Lokasi</h5>
                                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">
-                                <form action="'.route('pelayaran.update',$data).'" method="post">
+                                <form action="'.route('lokasi.update',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                     <input type="hidden" name="_method" value="PUT" />
                                     '.$view.'

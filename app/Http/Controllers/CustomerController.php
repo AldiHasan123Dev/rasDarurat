@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\JadwalKapal;
+use App\Models\Kondisi;
+use App\Models\Lokasi;
+use App\Models\Satuan;
+use App\Models\Shipment;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -17,7 +22,18 @@ class CustomerController extends Controller
             $customers = Customer::all();
         }
         $users = User::all();
-        return view('admin.customer.index', compact('customers','users','tipe'));
+        $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+        $customer = Customer::where('tipe','pembayar')->pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+
+        $kapal = array();
+        foreach ($jadwal_kapal as $id => $item ) {
+            $kapal[$item->id] = $item->kapal->nama.'('.$item->voyage.') || '.$item->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($item->etd)).' || '.$item->rute;
+        }
+        return view('admin.customer.index', compact('customers','users','tipe','kapal','customer','lokasi','satuan','kondisi','shipment'));
     }
 
     public function store(Request $request)

@@ -1,7 +1,11 @@
+@props(['label','col','name','value','type','attr','options','rows','cols','required','id'])
+@php
+    $required = $required ?? false;
+@endphp
 <div class="col-{{ $col ?? '12'}} mb-3">
     <label>{{ $label ?? '' }}</label>
     @if ($type=='text'|| $type=='password'||$type=='email'||$type=='number' || $type=='file' || $type=='date')
-        <input type="{{ $type }}" name="{{ $name??'' }}" value="{{ $value ?? old($name) }}" id="{{ $id ?? $name }}" class="form-control" {{ !empty($attr)?implode(' ', $attr) : '' }}>
+        <input autocomplete="on" type="{{ $type }}" name="{{ $name??'' }}" value="{{ $value ?? old($name) }}" id="{{ $id ?? $name }}" class="form-control" {{ !empty($attr)?implode(' ', $attr) : '' }} {{ $required?'required':'' }}>
     @elseif($type=='select')
     @php
         $value = $value ?? old($name);

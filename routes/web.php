@@ -1,8 +1,17 @@
 <?php
 
+use App\Http\Controllers\AgenController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\JadwalKapalController;
+use App\Http\Controllers\KapalController;
+use App\Http\Controllers\KondisiController;
+use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PelayaranController;
+use App\Http\Controllers\SatuanController;
+use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\TarifController;
+use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -25,9 +34,19 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::prefix('admin')->middleware('auth')->group( function(){
-    Route::resource('user',UserController::class);
-    Route::resource('customer',CustomerController::class);
-    Route::resource('pelayaran',PelayaranController::class);
+    Route::resource('user',UserController::class)->except(['create','edit']);
+    Route::resource('customer',CustomerController::class)->except(['create','edit']);
+    Route::resource('pelayaran',PelayaranController::class)->except(['create','edit']);
+    Route::resource('agen',AgenController::class)->except(['create','edit']);
+    Route::resource('truk',TrukController::class)->except(['create','edit']);
+    Route::resource('kapal',KapalController::class)->except(['create','edit']);
+    Route::resource('jadwalkapal',JadwalKapalController::class)->except(['create','edit']);
+    Route::resource('shipment',ShipmentController::class)->except(['create','edit']);
+    Route::resource('kondisi',KondisiController::class)->except(['create','edit']);
+    Route::resource('satuan',SatuanController::class)->except(['create','edit']);
+    Route::resource('lokasi',LokasiController::class)->except(['create','edit']);
+    Route::resource('tarif',TarifController::class)->except(['create','edit']);
+
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');
 });

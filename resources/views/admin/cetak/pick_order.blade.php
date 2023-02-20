@@ -2,8 +2,10 @@
 @section('style')
     <style>
         @media print {
+            @import url('https://fonts.cdnfonts.com/css/dot-matrix');
             body * {
                 visibility: hidden;
+                font-family: 'Dot Matrix', sans-serif;
             }
             #print, #print * {
                 visibility: visible;
@@ -207,7 +209,7 @@
             $('#d-etd').html($(this).val());
         });
 
-        $('#pengirim').change(function (e) { 
+        $('#pengirim').change(function (e) {
             var val = $(this).val();
             $.ajax({
                 type: "POST",
@@ -223,7 +225,7 @@
             });
         });
 
-        $('#penerima').change(function (e) { 
+        $('#penerima').change(function (e) {
             var val = $(this).val();
             $.ajax({
                 type: "POST",

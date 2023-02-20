@@ -14,25 +14,21 @@
     </a>
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent show" id="home">
-            <li class="collapsed-nav-item-title d-none">Customer</li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('customer.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Jadwal Kapal</li>
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Jadwal Kapal <i class="fas fa-lock"></i></span></div>
+                <a class="nav-link" href="{{ route('jadwalkapal.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Jadwal Kapal</span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Suplier</li>
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Suplier <i class="fas fa-lock"></i></span></div>
+                <a class="nav-link" href="{{ route('pelayaran.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Suplier</span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">User</li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('user.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">User</span></div>
@@ -50,25 +46,21 @@
     </a>
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="ekspedisi">
-            <li class="collapsed-nav-item-title d-none">Order</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Order <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Invoice</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Invoice <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">BA Kembali</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Kirim Invoice</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Kirim Invoice <i class="fas fa-lock"></i></span></div>
@@ -86,43 +78,36 @@
     </a>
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="keuangan">
-            <li class="collapsed-nav-item-title d-none">Kas / Bank</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Kas / Bank <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Laba / Rugi</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Laba / Rugi <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">COA</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">COA <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Hutang</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Hutang <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Piutang</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Piutang <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Neraca</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Neraca <i class="fas fa-lock"></i></span></div>
                 </a>
             </li>
-            <li class="collapsed-nav-item-title d-none">Jurnal</li>
             <li class="nav-item">
                 <a class="nav-link" href="#" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Jurnal <i class="fas fa-lock"></i></span></div>

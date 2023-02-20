@@ -1,0 +1,102 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\JadwalKapal;
+use App\Models\Kapal;
+use App\Models\Pelayaran;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Yajra\Datatables\Datatables;
+
+class JadwalKapalController extends Controller
+{
+    public function index()
+    {
+        $kapal = Kapal::pluck('nama','id');
+        $pelayaran = Pelayaran::pluck('nama','id');
+        return view('admin.jadwalkapal.index', compact('pelayaran','kapal'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $kapal = Kapal::where('nama',$request->kapal_id)->first();
+        if (!$kapal) {
+            $kapal = Kapal::create(['nama'=>$request->kapal_id]);
+        }
+        $data['kapal_id'] = $kapal->id;
+        JadwalKapal::create($data);
+
+        return back()->with('success','Data berhasil disimpan');
+    }
+
+    public function update(JadwalKapal $jadwalkapal, Request $request)
+    {
+        $data = $request->all();
+        $jadwalkapal->update($data);
+
+        return back()->with('success','Data berhasil diupdate');
+    }
+
+    public function destroy(JadwalKapal $jadwalkapal)
+    {
+        $jadwalkapal->delete();
+
+        return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function datatable()
+    {
+        $data = JadwalKapal::all()->sortByDesc('created_at');
+        return Datatables::of($data)
+        ->addColumn('kapal_id', function($data){
+            return $data->kapal->nama;
+        })
+        ->addColumn('pelayaran_id', function($data){
+            return $data->pelayaran->nama;
+        })
+        ->addColumn('etd', function($data){
+            return is_null($data->etd)?'-':date('d/m/Y',strtotime($data->etd));
+        })
+        ->addColumn('td', function($data){
+            return is_null($data->td)?'-':date('d/m/Y',strtotime($data->td));
+        })
+        ->addColumn('closing', function($data){
+            return is_null($data->closing)?'-':date('d/m/Y',strtotime($data->closing));
+        })
+        ->addColumn('ba_kirim', function($data){
+            return is_null($data->ba_kirim)?'-':date('d/m/Y',strtotime($data->ba_kirim));
+        })
+        ->addColumn('action', function ($data) {
+                $pelayaran = Pelayaran::pluck('nama','id');
+                $kapal = Kapal::pluck('nama','id');
+                $view = view('admin.jadwalkapal.form',['jadwalkapal'=>$data,'pelayaran'=>$pelayaran,'kapal'=>$kapal])->render();
+                $html = '<div class="d-flex gap-1">
+                            <form action="'.route('jadwalkapal.destroy',$data).'" method="post">
+                                <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                <input type="hidden" name="_method" value="delete" />
+                                <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </form>
+                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJadwalKapalUpdate'.$data->id.'" aria-controls="offcanvasJadwalKapalUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                        </div>
+
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJadwalKapalUpdate'.$data->id.'" aria-labelledby="offcanvasJadwalKapalUpdate'.$data->id.'Label">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="offcanvasJadwalKapalUpdate'.$data->id.'Label">Form JadwalKapal</h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <form action="'.route('jadwalkapal.update',$data).'" method="post">
+                                <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                    <input type="hidden" name="_method" value="PUT" />
+                                    '.$view.'
+                                </form>
+                            </div>
+                        </div>';
+                return $html;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+}

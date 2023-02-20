@@ -16,7 +16,7 @@
 <div class="content-main">
     <div class="card">
         <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-            <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPelayaran" aria-controls="offcanvasPelayaran">Tambah Pelayaran</button>
+            <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTruk" aria-controls="offcanvasTruk">Tambah Suplier Truk</button>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -44,15 +44,15 @@
 </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasPelayaran" aria-labelledby="offcanvasPelayaranLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasTruk" aria-labelledby="offcanvasTrukLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasPelayaranLabel">Form Pelayaran</h5>
+            <h5 class="offcanvas-title" id="offcanvasTrukLabel">Form Truk</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('pelayaran.store') }}" method="post">
+            <form action="{{ route('truk.store') }}" method="post">
                 @csrf
-                @include('admin.suplier.pelayaran.form')
+                @include('admin.suplier.truk.form')
             </form>
         </div>
     </div>
@@ -64,7 +64,7 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('pelayaran.data') }}',
+                url: '{{ route('truk.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },

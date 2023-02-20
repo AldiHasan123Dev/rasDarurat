@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 @section('style')
     <style>
+        @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+        body{
+            font-family: 'Dot Matrix', sans-serif;
+        }
         @media print {
             body * {
                 visibility: hidden;
