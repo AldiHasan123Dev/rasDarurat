@@ -59,12 +59,12 @@ class UserController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPelayaranUpdate'.$data->id.'" aria-controls="offcanvasPelayaranUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUserUpdate'.$data->id.'" aria-controls="offcanvasUserUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
                         </div>
 
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasPelayaranUpdate'.$data->id.'" aria-labelledby="offcanvasPelayaranUpdate'.$data->id.'Label">
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUserUpdate'.$data->id.'" aria-labelledby="offcanvasUserUpdate'.$data->id.'Label">
                             <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasPelayaranUpdate'.$data->id.'Label">Form Pelayaran</h5>
+                                <h5 class="offcanvas-title" id="offcanvasUserUpdate'.$data->id.'Label">Form User</h5>
                                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">

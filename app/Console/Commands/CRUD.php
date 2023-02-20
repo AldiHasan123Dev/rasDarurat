@@ -27,10 +27,8 @@ class CRUD extends Command
      * @return void
      */
 
-    private $repository;
-    public function __construct(CreateRepositories $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
         parent::__construct();
     }
 
@@ -78,13 +76,13 @@ class CRUD extends Command
 
                 if (!file_exists(base_path('resources/views/desktop/'.strtolower($model_name)))) {
                     mkdir(base_path('resources/views/desktop/'.strtolower($model_name)), 0777);
-                    $this->viewCreate($model_name);
-                    $this->viewEdit($model_name);
+                    // $this->viewCreate($model_name);
+                    // $this->viewEdit($model_name);
                     $this->viewIndex($data, $model_name);
                     $this->viewForm($data, $model_name);
                 }else{
-                    $this->viewCreate($model_name);
-                    $this->viewEdit($model_name);
+                    // $this->viewCreate($model_name);
+                    // $this->viewEdit($model_name);
                     $this->viewIndex($data, $model_name);
                     $this->viewForm($data, $model_name);
                 }
@@ -108,7 +106,7 @@ class CRUD extends Command
             $str = $str."\r\n        '".$item->attr."',";
         };
         $data = "[".$str."\r\n    ]";
-        $html = "<?php\r\n\r\nnamespace App\\Models;\r\n\r\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\r\nuse Illuminate\\Database\\Eloquent\\Model;\r\n\r\nclass ".$model_name." extends Model\r\n{\r\n    use HasFactory;\r\n\r\n    protected ".'$fillable'." = ".$data.";\r\n}\r\n";
+        $html = "<?php\r\n\r\nnamespace App\\Models;\r\n\r\nuse Illuminate\\Database\\Eloquent\\Factories\\HasFactory;\r\nuse Illuminate\\Database\\Eloquent\\Model;\r\nuse Illuminate\Database\Eloquent\SoftDeletes;\r\n\r\nclass ".$model_name." extends Model\r\n{\r\n    use HasFactory, SoftDeletes;\r\n\r\n    protected ".'$fillable'." = ".$data.";\r\n}\r\n";
         $fp = fopen(base_path('app')."/"."Models/".$model_name.".php","wb");
         fwrite($fp,$html);
         fclose($fp);
@@ -125,7 +123,7 @@ class CRUD extends Command
             }
 
         };
-        $html = "<?php\r\n\r\nuse Illuminate\\Database\\Migrations\\Migration;\r\nuse Illuminate\\Database\\Schema\\Blueprint;\r\nuse Illuminate\\Support\\Facades\\Schema;\r\n\r\nreturn new class extends Migration\r\n{\r\n    public function up()\r\n    {\r\n        Schema::create('".strtolower($model_name)."s', function (Blueprint ".'$table'.") {\r\n            ".'$table->id()'.";".$str."\r\n            ".'$table->timestamps()'.";\r\n        });\r\n    }\r\n\r\n    public function down()\r\n    {\r\n        Schema::dropIfExists('".strtolower($model_name)."s');\r\n    }\r\n}";
+        $html = "<?php\r\n\r\nuse Illuminate\\Database\\Migrations\\Migration;\r\nuse Illuminate\\Database\\Schema\\Blueprint;\r\nuse Illuminate\\Support\\Facades\\Schema;\r\n\r\nreturn new class extends Migration\r\n{\r\n    public function up()\r\n    {\r\n        Schema::create('".strtolower($model_name)."s', function (Blueprint ".'$table'.") {\r\n            ".'$table->id()'.";".$str."\r\n            ".'$table->timestamps()'.";\r\n            ".'$ table->softDeletes();'.";\r\n            ".'$table->timestamps()'.";\r\n        });\r\n    }\r\n\r\n    public function down()\r\n    {\r\n        Schema::dropIfExists('".strtolower($model_name)."s');\r\n    }\r\n}";
         $file_name = date('Y_m_d_His').'_create_'.strtolower($model_name).'s_table';
         $fp = fopen(base_path('database')."/"."migrations/".$file_name.".php","wb");
         fwrite($fp,$html);
@@ -155,11 +153,11 @@ class CRUD extends Command
         $header = '';
         $column = '';
         foreach ($data as $item) {
-            $header = $header."                                <th class=\"min-w-125px\">".ucfirst($item->attr)."</th>\r\n";
+            $header = $header."                                <th>".ucfirst($item->attr)."</th>\r\n";
             $column = $column."\r\n            { data: '".strtolower($item->attr)."', name: '".strtolower($item->attr)."' },";
         };
 
-        $content = "";
+        $content = "@extends('layouts.admin')\r\n@section('content')\r\n    <div class=\"container mt-3\">\r\n        <div class=\"card\">\r\n            <div class=\"card-header p-2 d-flex justify-content-between\" style=\"gap:10px\">\r\n                <button class=\"py-2 px-3 btn btn-success\" data-bs-toggle=\"offcanvas\" data-bs-target=\"#offcanvas".$model_name."\" aria-controls=\"offcanvas".$model_name."\">Tambah ".$model_name."<\/button>\r\n            <\/div>\r\n            <div class=\"card-body\">\r\n                <div class=\"table-responsive\">\r\n                    <table class=\"table table-sm\" style=\"font-size:.7rem\">\r\n                        <thead>\r\n                            <tr>\r\n                                <th>ID.<\/th>\r\n".$header."                            <\/tr>\r\n                        <\/thead>\r\n                        <tbody>\r\n                        <\/tbody>\r\n                    <\/table>\r\n                <\/div>\r\n            <\/div>\r\n        <\/div>\r\n    <\/div>\r\n\r\n\r\n    <div class=\"offcanvas offcanvas-start\" tabindex=\"-2\" id=\"offcanvas".$model_name."\" aria-labelledby=\"offcanvas".$model_name."Label\">\r\n        <div class=\"offcanvas-header\">\r\n            <h5 class=\"offcanvas-title\" id=\"offcanvas".$model_name."Label\">Form ".$model_name."<\/h5>\r\n            <button type=\"button\" class=\"btn-close text-reset\" data-bs-dismiss=\"offcanvas\" aria-label=\"Close\"><\/button>\r\n        <\/div>\r\n        <div class=\"offcanvas-body\">\r\n            <form action=\"{{ route('".strtolower($model_name).".store') }}\" method=\"post\">\r\n                @csrf\r\n                @include('admin.".strtolower($model_name).".form')\r\n            <\/form>\r\n        <\/div>\r\n    <\/div>\r\n@endsection\r\n\r\n@section('script')\r\n    <script>\r\n        let table = $('.table').DataTable({\r\n            processing: true,\r\n            serverSide: true,\r\n            ajax:{\r\n                url: '{{ route('".strtolower($model_name).".data') }}',\r\n                method:'POST',\r\n                headers: {'X-CSRF-TOKEN': $('meta[name=\"csrf-token\"]').attr('content')},\r\n            },\r\n            columns: [\r\n                { data: 'id', name: 'id' },".$column."\r\n                { data: 'action', name: 'action', orderable: false, searchable: false },\r\n            ]\r\n        });\r\n    <\/script>\r\n@endsection";
 
         $index = fopen(base_path('resources/views/desktop/'.strtolower($model_name))."/index.blade.php","wb");
         fwrite($index, $content);
