@@ -17,6 +17,7 @@ class Customer extends Model
         'alamat',
         'kota',
         'telp',
+        'hp',
         'fax',
         'email',
         'tipe',

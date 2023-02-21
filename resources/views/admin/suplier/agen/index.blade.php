@@ -30,6 +30,7 @@
                             <th>Alamat</th>
                             <th>Kota</th>
                             <th>Telp</th>
+                            <th>HP</th>
                             <th>Fax</th>
                             <th>Email</th>
                             <th>Action</th>
@@ -76,6 +77,7 @@
             { data: 'alamat', name: 'alamat' },
             { data: 'kota', name: 'kota' },
             { data: 'telp', name: 'telp' },
+            { data: 'hp', name: 'hp' },
             { data: 'fax', name: 'fax' },
             { data: 'email', name: 'email' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },

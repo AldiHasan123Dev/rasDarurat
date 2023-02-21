@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('telp')->nullable();
             $table->string('fax')->nullable();
             $table->string('email')->nullable();
+            $table->string('hp')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

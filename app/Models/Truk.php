@@ -20,5 +20,6 @@ class Truk extends Model
         'telp',
         'fax',
         'email',
+        'hp',
     ];
 }

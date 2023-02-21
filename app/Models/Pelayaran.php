@@ -20,5 +20,6 @@ class Pelayaran extends Model
         'telp',
         'fax',
         'email',
+        'hp',
     ];
 }

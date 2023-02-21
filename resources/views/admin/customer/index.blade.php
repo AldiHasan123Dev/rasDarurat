@@ -35,6 +35,7 @@
                                 <th>Alamat</th>
                                 <th>Kota</th>
                                 <th>Telp</th>
+                                <th>HP</th>
                                 <th>Fax</th>
                                 <th>Email</th>
                                 <th>Tipe</th>
@@ -52,6 +53,7 @@
                                     <td>{{ $cus->alamat ?? '-' }}</td>
                                     <td>{{ $cus->kota ?? '-' }}</td>
                                     <td>{{ $cus->telp ?? '-' }}</td>
+                                    <td>{{ $cus->hp ?? '-' }}</td>
                                     <td>{{ $cus->fax ?? '-' }}</td>
                                     <td>{{ $cus->email ?? '-' }}</td>
                                     <td>{{ $cus->tipe ?? '-' }}</td>

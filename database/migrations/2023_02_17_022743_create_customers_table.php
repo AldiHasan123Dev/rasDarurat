@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->string('kota')->nullable();
             $table->string('telp')->nullable();
+            $table->string('hp')->nullable();
             $table->string('fax')->nullable();
             $table->string('email')->nullable();
             $table->string('tipe')->nullable();

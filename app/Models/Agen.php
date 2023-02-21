@@ -20,5 +20,6 @@ class Agen extends Model
         'telp',
         'fax',
         'email',
+        'hp',
     ];
 }
