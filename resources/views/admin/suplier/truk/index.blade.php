@@ -52,7 +52,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('truk.store') }}" method="post">
                 @csrf
-                @include('admin.suplier.truk.form')
+                @include('admin.suplier.truk.form',['truk'=>[]])
             </form>
         </div>
     </div>

@@ -43,7 +43,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('jadwalkapal.store') }}" method="post">
                 @csrf
-                @include('admin.jadwalkapal.form',['kapal'=>$kapal])
+                @include('admin.jadwalkapal.form',['kapal'=>$kapal,'jadwalkapal'=>[]])
             </form>
         </div>
     </div>

@@ -35,7 +35,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('user.store') }}" method="post">
                 @csrf
-                @include('admin.user.form')
+                @include('admin.user.form',['usser'=>[]])
             </form>
         </div>
     </div>

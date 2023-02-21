@@ -52,7 +52,7 @@ class UserController extends Controller
 
         return Datatables::of($data)
             ->addColumn('action', function ($data) {
-                $view = view('admin.user.form',['cus'=>$data])->render();
+                $view = view('admin.user.form',['user'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
                             <form action="'.route('user.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />

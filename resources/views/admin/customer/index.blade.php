@@ -3,7 +3,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer</button>
+                <button style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer <i class="fas fa-plus"></i></button>
                 <form action="{{ route('customer.index') }}" method="get">
                     <span style="font-size: .8rem; margin-right:10px">Filter Tipe Customer:</span>
                     <div class="d-flex" style="gap:15px">
@@ -89,7 +89,7 @@
 
         <div class="card mt-3">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarif" aria-controls="offcanvasTarif">Tambah Tarif</button>
+                <button class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarif" aria-controls="offcanvasTarif">Tambah Tarif <i class="fas fa-plus"></i></button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -128,7 +128,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('customer.store') }}" method="post">
                 @csrf
-                @include('admin.customer.form')
+                @include('admin.customer.form',['cus'=>[]])
             </form>
         </div>
     </div>

@@ -32,7 +32,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('kapal.store') }}" method="post">
                 @csrf
-                @include('admin.kapal.form')
+                @include('admin.kapal.form',['kapal'=>[]])
             </form>
         </div>
     </div>

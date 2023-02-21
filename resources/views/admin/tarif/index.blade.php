@@ -41,7 +41,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('tarif.store') }}" method="post">
                 @csrf
-                @include('admin.tarif.form')
+                @include('admin.tarif.form',['tarif'=>[]])
             </form>
         </div>
     </div>
