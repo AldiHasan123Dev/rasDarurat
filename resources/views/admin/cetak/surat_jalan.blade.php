@@ -55,13 +55,14 @@
                                 <input type="text" name="seal" id="seal" class="form-control">
                             </div>
                             <hr>
-                            <div class="col-6 mb-2 px-2">
-                                <label for="customer">Kepada</label>
-                                <input type="text" name="customer" id="customer" class="form-control">
-                            </div>
-                            <div class="col-6 mb-2 px-2">
-                                <label for="kota">Kota</label>
-                                <input type="text" name="kota" id="kota" class="form-control">
+                            <div class="col-12 mb-2 px-2">
+                                <label for="penerima">Kepada</label>
+                                <select id="penerima" class="form-control">
+                                    <option value="">none</option>
+                                    @foreach ($penerima as $user)
+                                        <option value="{{$user->id}}">{{ $user->nama }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <hr>
                         </div>
@@ -122,7 +123,7 @@
                                 <th class="fw-bold">JENIS BARANG</th>
                                 <th class="fw-bold">KETERANGAN</th>
                             </tr>
-                            <tbody id="list">
+                            <tbody id="list" style="height: 50px">
                             </tbody>
                         </thead>
                     </table>
@@ -158,7 +159,7 @@
                             <input type="text" name="keterangan[]" onkeyup="barang()" class="form-control barang">
                         </div>
                     </div>
-                    <button type="button" onclick="addBarang()" class="btn btn-outline-success w-100 mt-2">Tambah Barang</button>
+                    {{-- <button type="button" onclick="addBarang()" class="btn btn-outline-success w-100 mt-2">Tambah Barang</button> --}}
                 </div>
             </div>
         </div>
@@ -167,6 +168,7 @@
 
 @section('script')
     <script>
+        $('#penerima').select2();
         $('#no').keyup(function (e) {
             $('#d-no').html($(this).val());
         });
@@ -212,6 +214,20 @@
             let html = $('#res').html();
             $('#res').append(html);
         }
+
+        $('#penerima').change(function (e) {
+            var val = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.customer.getOne') }}",
+                data: {customer_id:val},
+                success: function (response) {
+                    var data = response;
+                    $('#d-customer').html(data.nama);
+                    $('#d-kota').html(" "+data.kota);
+                }
+            });
+        });
     </script>
 @endsection
 

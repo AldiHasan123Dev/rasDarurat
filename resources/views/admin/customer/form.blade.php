@@ -35,7 +35,7 @@
     </div>
     <div class="col-6 mb-2 px-1">
         <label for="hp">HP</label>
-        <input type="text" value="{{ $cus->hp ?? '' }}" name="hp" id="hp" class="form-control">
+        <input type="text" value="{{ $cus->hp ?? '' }}" name="hp" id="hp" class="form-control" required>
     </div>
     <div class="col-6 mb-2 px-1">
         <label for="fax">Fax</label>

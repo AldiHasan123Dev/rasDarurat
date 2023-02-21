@@ -64,13 +64,14 @@
                             </div>
                             <div class="col-6 mb-2 px-2">
                                 <label for="kapal">Dengan Kapal</label>
-                                <input type="text" name="kapal" id="kapal" class="form-control">
+                                <select name="kapal" id="kapal" class="form-control">
+                                    <option value="">none</option>
+                                    @foreach ($jadwal_kapal as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kapal->nama }} || ETD {{ date('d/m/y',strtotime($item->etd)) }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="col-6 mb-2 px-2">
-                                <label for="etd">ETD Tanggal</label>
-                                <input type="text" name="etd" id="etd" class="form-control">
-                            </div>
-                            <div class="col-6 mb-2 px-2">
+                            <div class="col-12 mb-2 px-2">
                                 <label for="tujuan">Tujuan</label>
                                 <input type="text" name="tujuan" id="tujuan" class="form-control">
                             </div>
@@ -187,6 +188,7 @@
     <script>
         $('#pengirim').select2();
         $('#penerima').select2();
+        $('#kapal').select2();
         $('#cs').keyup(function (e) {
             $('#d-cs').html($(this).val());
         });
@@ -235,6 +237,19 @@
                     var data = response;
                     $('#penerima-nama').html(data.nama);
                     $('#penerima-kota').html(" "+data.kota);
+                }
+            });
+        });
+        $('#kapal').change(function (e) {
+            var val = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.jadwal-kapal.getOne') }}",
+                data: {id:val},
+                success: function (response) {
+                    var data = response;
+                    $('#d-kapal').html(data.kapal);
+                    $('#d-etd').html(data.etd);
                 }
             });
         });
