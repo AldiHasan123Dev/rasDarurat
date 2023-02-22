@@ -120,13 +120,11 @@
                             </table>
                         </div>
                         <div style="width: 30%">
-                            <table class="text-right position-relative" style="width:30%">
+                            <table class="text-right position-relative" style="width:100%">
                                 <tr>
-                                    <td>Penerima</td>
-                                    <td>: <span id="penerima-nama"></span></td>
+                                    <td><span id="penerima-nama"></span>(Penerima)</td>
                                 </tr>
                                 <tr>
-                                    <td></td>
                                     <td id="penerima-kota"></td>
                                 </tr>
                             </table>

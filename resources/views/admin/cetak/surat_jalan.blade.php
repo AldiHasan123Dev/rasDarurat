@@ -109,7 +109,7 @@
                             </table>
                         </div>
                         <div style="width: 30%">
-                            <table class="text-right position-relative" style="width:30%">
+                            <table class="text-right position-relative" style="width:100%">
                                 <tr><td>Kepada Yth:</td></tr>
                                 <tr><td><span class="fw-bold" id="d-customer"></span></td></tr>
                                 <tr><td><u id="d-kota"></u></td></tr>
