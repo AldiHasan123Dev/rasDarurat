@@ -15,15 +15,10 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $tipe = request('tipe') ?? 'all';
-        if ($tipe != 'all') {
-            $customers = Customer::all()->where('tipe',$tipe);
-        }else{
-            $customers = Customer::all();
-        }
+        $customers = Customer::all();
         $users = User::all();
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
-        $customer = Customer::where('tipe','pembayar')->pluck('nama','id');
+        $customer = Customer::pluck('nama','id');
         $lokasi = Lokasi::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
         $kondisi = Kondisi::pluck('nama','id');
@@ -33,7 +28,7 @@ class CustomerController extends Controller
         foreach ($jadwal_kapal as $id => $item ) {
             $kapal[$item->id] = $item->kapal->nama.'('.$item->voyage.') || '.$item->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($item->etd)).' || '.$item->rute;
         }
-        return view('admin.customer.index', compact('customers','users','tipe','kapal','customer','lokasi','satuan','kondisi','shipment'));
+        return view('admin.customer.index', compact('customers','users','kapal','customer','lokasi','satuan','kondisi','shipment'));
     }
 
     public function store(Request $request)

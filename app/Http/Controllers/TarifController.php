@@ -18,7 +18,7 @@ class TarifController extends Controller
     public function index()
     {
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
-        $customer = Customer::where('tipe','pembayar')->pluck('nama','id');
+        $customer = Customer::pluck('nama','id');
         $lokasi = Lokasi::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
         $kondisi = Kondisi::pluck('nama','id');
@@ -111,7 +111,7 @@ class TarifController extends Controller
             ->addColumn('action', function ($data) {
                 $tarif = $data;
                 $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
-                $customer = Customer::where('tipe','pembayar')->pluck('nama','id');
+                $customer = Customer::pluck('nama','id');
                 $lokasi = Lokasi::pluck('nama','id');
                 $satuan = Satuan::pluck('nama','id');
                 $kondisi = Kondisi::pluck('nama','id');

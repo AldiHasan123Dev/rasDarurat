@@ -45,7 +45,7 @@
         <label for="kota">Kota</label>
         <input type="text" value="{{ $cus->kota ?? '' }}" name="kota" id="kota" class="form-control" required>
     </div>
-    <div class="col-12 mb-2 px-1">
+    {{-- <div class="col-12 mb-2 px-1">
         <div class="d-flex gap-2">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="tipe" id="tipe1" value="pembayar" {{ empty($cus)?'checked':($cus->tipe=='pembayar'?'checked':'') }}>
@@ -60,7 +60,7 @@
                 <label class="form-check-label" for="tipe3"> Pengirim</label>
             </div>
         </div>
-    </div>
+    </div> --}}
     <div class="col-12 mb-2 px-1">
         <label for="alamat">Alamat</label>
         <textarea name="alamat" id="alamat" cols="30" rows="3" class="form-control" required>{{ $cus->alamat??'' }}</textarea>

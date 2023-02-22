@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <button style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer <i class="fas fa-plus"></i></button>
-                <form action="{{ route('customer.index') }}" method="get">
+                {{-- <form action="{{ route('customer.index') }}" method="get">
                     <span style="font-size: .8rem; margin-right:10px">Filter Tipe Customer:</span>
                     <div class="d-flex" style="gap:15px">
                         <label for="all">
@@ -20,7 +20,7 @@
                             <input type="radio" name="tipe" {{ $tipe=='pengirim'?'checked':'' }} id="pengirim" value="pengirim" onchange="this.form.submit()"> Pengirim
                         </label>
                     </div>
-                </form>
+                </form> --}}
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -38,7 +38,6 @@
                                 <th>HP</th>
                                 <th>Fax</th>
                                 <th>Email</th>
-                                <th>Tipe</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -56,7 +55,6 @@
                                     <td>{{ $cus->hp ?? '-' }}</td>
                                     <td>{{ $cus->fax ?? '-' }}</td>
                                     <td>{{ $cus->email ?? '-' }}</td>
-                                    <td>{{ $cus->tipe ?? '-' }}</td>
                                     <td>
                                         <div class="d-flex gap-1">
                                             <form action="{{ route('customer.destroy',$cus) }}" method="post">
