@@ -1,4 +1,11 @@
 @extends('layouts.admin')
+@section('style')
+    <style>
+        td:hover{
+            cursor: pointer;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="container mt-3">
         <div class="card">
@@ -93,7 +100,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm" id="tarif" style="font-size:.7rem">
+                    <table class="table table-sm nowrap" id="tarif" style="font-size:.7rem">
                         <thead>
                             <tr>
                                 <th>ID.</th>
@@ -103,10 +110,12 @@
                                 <th>Shipment</th>
                                 <th>Kondisi</th>
                                 <th>Satuan</th>
+                                <th>Tarif</th>
                                 <th>Keterangan</th>
                                 <th>Unit</th>
                                 <th>Min qty</th>
                                 <th>Customer</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -171,10 +180,12 @@
                 { data: 'shipment', name: 'shipment' },
                 { data: 'kondisi', name: 'kondisi' },
                 { data: 'satuan', name: 'satuan' },
+                { data: 'tarif', name: 'tarif' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'unit', name: 'unit' },
                 { data: 'min_qty', name: 'min_qty' },
                 { data: 'customer_id', name: 'customer_id' },
+                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

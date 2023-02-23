@@ -47,8 +47,8 @@
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="ekspedisi">
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Order <i class="fas fa-lock"></i></span></div>
+                <a class="nav-link" href="{{ route('order.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Order</span></div>
                 </a>
             </li>
             <li class="nav-item">

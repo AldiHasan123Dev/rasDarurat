@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
+use App\Http\Controllers\Api\TarifController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
+Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');

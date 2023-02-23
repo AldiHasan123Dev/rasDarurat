@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('shipment')->constrained('shipments');
             $table->foreignId('kondisi')->constrained('kondisi');
             $table->foreignId('satuan')->constrained('satuan');
+            $table->integer('tarif')->default(0);
             $table->text('keterangan')->nullable();
             $table->string('unit')->nullable();
             $table->string('min_qty');

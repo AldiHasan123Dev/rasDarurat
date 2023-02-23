@@ -17,6 +17,7 @@
                                 <th>Shipment</th>
                                 <th>Kondisi</th>
                                 <th>Satuan</th>
+                                <th>Tarif</th>
                                 <th>Keterangan</th>
                                 <th>Unit</th>
                                 <th>Min qty</th>
@@ -66,6 +67,7 @@
                 { data: 'shipment', name: 'shipment' },
                 { data: 'kondisi', name: 'kondisi' },
                 { data: 'satuan', name: 'satuan' },
+                { data: 'tarif', name: 'tarif' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'unit', name: 'unit' },
                 { data: 'min_qty', name: 'min_qty' },

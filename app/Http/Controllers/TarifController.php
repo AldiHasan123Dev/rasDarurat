@@ -82,7 +82,7 @@ class TarifController extends Controller
     public function datatable()
     {
         $data = Tarif::all();
-        if(request('customer_id')||is_null(request('customer_id'))){
+        if(request('customer_id')||!is_null(request('customer_id'))){
             $data = Tarif::all()->where('customer_id',request('customer_id'));
         }
 
@@ -107,6 +107,24 @@ class TarifController extends Controller
             })
             ->addColumn('customer_id', function($data){
                 return  $data->customer->nama ?? '-';
+            })
+            ->addColumn('tarif', function($data){
+                return  'Rp. '.number_format($data->tarif) ?? '-';
+            })
+            ->addColumn('status', function($data){
+                $val = $data->is_active==1?0:1;
+                $checked = $data->is_active==1?'checked':'';
+                $name = $data->is_active==1?'active':'unactive';
+                $html = '<form method="post" action="'.route('tarif.update',$data).'">
+                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="is_active" value="'.$val.'" />
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
+                                <label class="form-check-label" for="flexSwitchCheckDefault">'.$name.'</label>
+                            </div>
+                        </form>';
+                return  $html;
             })
             ->addColumn('action', function ($data) {
                 $tarif = $data;
@@ -145,7 +163,7 @@ class TarifController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','status'])
             ->make(true);
     }
 }

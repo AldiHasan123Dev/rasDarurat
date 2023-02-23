@@ -50,3 +50,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');
 });
+Route::resource('barang',App\Http\Controllers\BarangController::class);Route::resource('order',App\Http\Controllers\OrderController::class);

@@ -42,3 +42,11 @@ button.no-attr{
 .select2-selection__rendered{
     font-size: .7rem;
 }
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable{
+    font-size: .7rem;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field{
+    font-size: .7rem;
+}

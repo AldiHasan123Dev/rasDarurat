@@ -10,7 +10,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm" style="font-size:.7rem">
+                    <table class="table table-sm nowrap" style="font-size:.7rem">
                         <thead>
                             <tr>
                                 <th>ID.</th>
@@ -21,8 +21,9 @@
                                 <th>Closing</th>
                                 <th>Etd</th>
                                 <th>Td</th>
-                                <th>Ba_kirim</th>
+                                <th>BA Kirim</th>
                                 <th>Keterangan</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -71,6 +72,7 @@
                 { data: 'td', name: 'td' },
                 { data: 'ba_kirim', name: 'ba_kirim' },
                 { data: 'keterangan', name: 'keterangan' },
+                { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

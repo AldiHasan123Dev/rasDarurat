@@ -68,6 +68,21 @@ class JadwalKapalController extends Controller
         ->addColumn('ba_kirim', function($data){
             return is_null($data->ba_kirim)?'-':date('d/m/Y',strtotime($data->ba_kirim));
         })
+        ->addColumn('status', function($data){
+            $val = $data->is_active==1?0:1;
+            $checked = $data->is_active==1?'checked':'';
+            $name = $data->is_active==1?'active':'unactive';
+            $html = '<form method="post" action="'.route('jadwalkapal.update',$data).'">
+                        <input type="hidden" name="_token" value="'.csrf_token().'" />
+                        <input type="hidden" name="_method" value="PUT" />
+                        <input type="hidden" name="is_active" value="'.$val.'" />
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">'.$name.'</label>
+                        </div>
+                    </form>';
+            return  $html;
+        })
         ->addColumn('action', function ($data) {
                 $pelayaran = Pelayaran::pluck('nama','id');
                 $kapal = Kapal::pluck('nama','id');
@@ -96,7 +111,7 @@ class JadwalKapalController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','status'])
             ->make(true);
     }
 }

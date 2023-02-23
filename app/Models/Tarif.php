@@ -20,6 +20,7 @@ class Tarif extends Model
         'satuan',
         'keterangan',
         'unit',
+        'tarif',
         'min_qty',
         'customer_id',
         'is_active',
