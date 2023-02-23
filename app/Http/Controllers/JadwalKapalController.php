@@ -13,7 +13,7 @@ class JadwalKapalController extends Controller
 {
     public function index()
     {
-        $kapal = Kapal::pluck('nama','nama');
+        $kapal = Kapal::pluck('nama','id');
         $pelayaran = Pelayaran::pluck('nama','id');
         return view('admin.jadwalkapal.index', compact('pelayaran','kapal'));
     }
@@ -21,7 +21,7 @@ class JadwalKapalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $kapal = Kapal::where('nama',$request->kapal_id)->first();
+        $kapal = Kapal::find($request->kapal_id);
         if (!$kapal) {
             $kapal = Kapal::create(['nama'=>$request->kapal_id]);
         }

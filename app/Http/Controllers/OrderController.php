@@ -16,7 +16,7 @@ class OrderController extends Controller
     {
         $tarifs = Tarif::where('is_active',1)->get();
         $customers = Customer::pluck('nama','id');
-        $barang = Barang::pluck('nama','nama');
+        $barang = Barang::pluck('nama','id');
 
         $tarif = array();
         foreach ($tarifs as $id => $item ) {
@@ -28,7 +28,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $barang = Barang::where('nama',$request->barang_id)->first();
+        $barang = Barang::find($request->barang_id);
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }

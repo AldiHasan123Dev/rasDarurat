@@ -69,12 +69,12 @@
                                                 @method('DELETE')
                                                 <button type="submit" onclick="return confirm('Are you sure?')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                                             </form>
-                                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerUpdate" aria-controls="offcanvasCustomerUpdate"><i class="fas fa-pencil"></i></button>
+                                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerUpdate{{ $cus->id }}" aria-controls="offcanvasCustomerUpdate{{ $cus->id }}"><i class="fas fa-pencil"></i></button>
                                         </div>
 
-                                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCustomerUpdate" aria-labelledby="offcanvasCustomerUpdateLabel">
+                                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasCustomerUpdate{{ $cus->id }}" aria-labelledby="offcanvasCustomerUpdate{{ $cus->id }}Label">
                                             <div class="offcanvas-header">
-                                                <h5 class="offcanvas-title" id="offcanvasCustomerUpdateLabel">Form Customer</h5>
+                                                <h5 class="offcanvas-title" id="offcanvasCustomerUpdate{{ $cus->id }}Label">Form Customer</h5>
                                                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                                             </div>
                                             <div class="offcanvas-body">

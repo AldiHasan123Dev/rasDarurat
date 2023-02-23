@@ -19,10 +19,10 @@ class TarifController extends Controller
     {
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
         $customer = Customer::pluck('nama','id');
-        $lokasi = Lokasi::pluck('nama','nama');
-        $satuan = Satuan::pluck('nama','nama');
-        $kondisi = Kondisi::pluck('nama','nama');
-        $shipment = Shipment::pluck('nama','nama');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
 
         $kapal = array();
         foreach ($jadwal_kapal as $id => $item ) {
@@ -34,11 +34,11 @@ class TarifController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $shipment = Shipment::where('nama',$request->shipment)->first();
-        $dari = Lokasi::where('nama',$request->dari)->first();
-        $tujuan = Lokasi::where('nama',$request->tujuan)->first();
-        $kondisi = Kondisi::where('nama',$request->kondisi)->first();
-        $satuan = Satuan::where('nama',$request->satuan)->first();
+        $shipment = Shipment::find($request->shipment);
+        $dari = Lokasi::find($request->dari);
+        $tujuan = Lokasi::find($request->tujuan);
+        $kondisi = Kondisi::find($request->kondisi);
+        $satuan = Satuan::find($request->satuan);
         if(!$shipment){
             $shipment = Shipment::create(['nama'=>$request->shipment]);
         }
