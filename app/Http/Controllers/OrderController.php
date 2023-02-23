@@ -16,7 +16,7 @@ class OrderController extends Controller
     {
         $tarifs = Tarif::where('is_active',1)->get();
         $customers = Customer::pluck('nama','id');
-        $barang = Barang::pluck('nama','id');
+        $barang = Barang::pluck('nama','nama');
 
         $tarif = array();
         foreach ($tarifs as $id => $item ) {

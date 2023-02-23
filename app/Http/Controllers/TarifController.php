@@ -19,10 +19,10 @@ class TarifController extends Controller
     {
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
         $customer = Customer::pluck('nama','id');
-        $lokasi = Lokasi::pluck('nama','id');
-        $satuan = Satuan::pluck('nama','id');
-        $kondisi = Kondisi::pluck('nama','id');
-        $shipment = Shipment::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','nama');
+        $satuan = Satuan::pluck('nama','nama');
+        $kondisi = Kondisi::pluck('nama','nama');
+        $shipment = Shipment::pluck('nama','nama');
 
         $kapal = array();
         foreach ($jadwal_kapal as $id => $item ) {
