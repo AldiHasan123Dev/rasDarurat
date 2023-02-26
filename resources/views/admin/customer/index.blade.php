@@ -53,8 +53,8 @@
                                 <tr>
                                     <td>{{ $cus->id }}</td>
                                     <td>{{ $cus->nama }}</td>
-                                    <td>{{ $cus->marketing->nama ?? '-' }}</td>
-                                    <td>{{ $cus->cs->nama ?? '-' }}</td>
+                                    <td>{{ $cus->marketing->name ?? '-' }}</td>
+                                    <td>{{ $cus->cs->name ?? '-' }}</td>
                                     <td>{{ $cus->pic ?? '-' }}</td>
                                     <td>{{ $cus->alamat ?? '-' }}</td>
                                     <td>{{ $cus->kota ?? '-' }}</td>

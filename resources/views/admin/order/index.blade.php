@@ -10,6 +10,7 @@
                     <table class="table table-sm nowrap" style="font-size:.7rem">
                         <thead>
                             <tr>
+                                <th>Tools</th>
                                 <th>ID.</th>
                                 <th>Group JOB</th>
                                 <th>ID JOB</th>
@@ -77,6 +78,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
+                { data: 'tools', name: 'tools', orderable: false, searchable: false },
                 { data: 'id', name: 'id' },
                 { data: 'job', name: 'job' },
                 { data: 'no_job', name: 'no_job' },

@@ -13,6 +13,7 @@
                     <table class="table table-sm nowrap" style="font-size:.7rem">
                         <thead>
                             <tr>
+                                <th>Tools</th>
                                 <th>ID.</th>
                                 <th>Kapal</th>
                                 <th>Voyage</th>
@@ -62,6 +63,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
+                { data: 'tools', name: 'tools' },
                 { data: 'id', name: 'id' },
                 { data: 'kapal_id', name: 'kapal_id' },
                 { data: 'voyage', name: 'voyage' },

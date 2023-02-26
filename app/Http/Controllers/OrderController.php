@@ -34,7 +34,7 @@ class OrderController extends Controller
         }
         $data['barang_id'] = $barang->id;
         $data['job'] = date('Ymd').sprintf('%02d',1);
-        $data['no_job'] = sprintf('%02d',1);
+        $data['no_job'] = 1;
         $order = Order::create($data);
         $order->update([
             'job' => date('Ymd').sprintf('%02d',$order->id)
@@ -57,19 +57,44 @@ class OrderController extends Controller
         return back()->with('success','Data berhasil dihapus');
     }
 
+    public function copy(Order $order)
+    {
+        $data = $order->toArray();
+        $data['no_job'] = Order::where('job',$order->job)->max('no_job') + 1;
+        Order::create($data);
+        return back()->with('success','Copy data berhasil');
+    }
+
     public function datatable()
     {
-        $data = Order::all();
+        $data = Order::query();
 
         return Datatables::of($data)
+            ->orderColumn('job', '-job $1')
+            ->addColumn('tools', function($data){
+                $html = '<div class="dropend">
+                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-list"></i></button>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <form method="POST" action="'.route('order.copy',$data).'">
+                                        <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <button onclick="return confirm(\'are you sure\')" type="submit" class="dropdown-item">Copy Order</a>
+                                    </form>
+                                </li>
+                                <li><a class="dropdown-item" href="'.route('bttb.index',['order_id'=>$data->id]).'">BTTB</a></li>
+                                <li><a class="dropdown-item" href="'.route('cetak.packingList',['order_id'=>$data->id]).'">Packing List</a></li>
+                            </ul>
+                        </div>';
+                return $html;
+            })
             ->addColumn('no_job', function($data){
-                return $data->job.'-'.$data->no_job;
+                return $data->job.'-'.sprintf('%02d',$data->no_job);
             })
             ->addColumn('marketing', function($data){
-                return $data->tarif->customer->marketing->nama ?? '-';
+                return $data->tarif->customer->marketing->name ?? '-';
             })
             ->addColumn('cs', function($data){
-                return $data->tarif->customer->cs->nama ?? '-';
+                return $data->tarif->customer->cs->name ?? '-';
             })
             ->addColumn('pembayar', function($data){
                 return $data->tarif->customer->nama ?? '-';
@@ -172,7 +197,7 @@ class OrderController extends Controller
                         </script>';
                 return $html;
             })
-            ->rawColumns(['action'])
-            ->make(true);
+            ->rawColumns(['action','tools'])
+            ->toJson();
     }
 }

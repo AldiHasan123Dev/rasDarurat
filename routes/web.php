@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\AgenController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BTTBController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\KapalController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PelayaranController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
@@ -46,8 +49,14 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('satuan',SatuanController::class)->except(['create','edit']);
     Route::resource('lokasi',LokasiController::class)->except(['create','edit']);
     Route::resource('tarif',TarifController::class)->except(['create','edit']);
+    Route::resource('barang',BarangController::class);
+    Route::resource('order',OrderController::class);
+    Route::resource('bttb',BTTBController::class);
 
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');
+    Route::get('cetak/packing-list',[CetakController::class,'packingList'])->name('cetak.packingList');
+    Route::get('cetak/bttb',[CetakController::class,'bttb'])->name('cetak.bttb');
+    Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
+    Route::post('copy-order/{order}',[OrderController::class,'copy'])->name('order.copy');
 });
-Route::resource('barang',App\Http\Controllers\BarangController::class);Route::resource('order',App\Http\Controllers\OrderController::class);

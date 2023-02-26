@@ -50,6 +50,15 @@ class JadwalKapalController extends Controller
     {
         $data = JadwalKapal::all()->sortByDesc('created_at');
         return Datatables::of($data)
+        ->addColumn('tools', function($data){
+            $html = '<div class="dropend">
+                        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-list"></i></button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="'.route('cetak.shipment',['jadwal_kapal_id'=>$data->id]).'">Lihat SI</a></li>
+                        </ul>
+                    </div>';
+            return $html;
+        })
         ->addColumn('kapal_id', function($data){
             return $data->kapal->nama;
         })
@@ -111,7 +120,7 @@ class JadwalKapalController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action','status'])
+            ->rawColumns(['action','status','tools'])
             ->make(true);
     }
 }
