@@ -22,6 +22,14 @@
         </select>
     </div>
     <div class="col-6 mb-2 px-1">
+        <label for="nik">NIK</label>
+        <input type="text" value="{{ $cus->nik ?? '' }}" name="nik" id="nik" class="form-control">
+    </div>
+    <div class="col-6 mb-2 px-1">
+        <label for="npwp">NPWP</label>
+        <input type="text" value="{{ $cus->npwp ?? '' }}" name="npwp" id="npwp" class="form-control">
+    </div>
+    <div class="col-6 mb-2 px-1">
         <label for="pic">PIC</label>
         <input type="text" value="{{ $cus->pic ?? '' }}" name="pic" id="pic" class="form-control">
     </div>

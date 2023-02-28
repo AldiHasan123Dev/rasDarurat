@@ -7,13 +7,28 @@ use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use PDF;
 
 class CetakController extends Controller
 {
     public function suratJalan()
     {
         $penerima = Customer::get();
-        return view('admin.cetak.surat_jalan', compact('penerima'));
+        $pdf = PDF::loadView('pdf.contoh');
+        return $pdf->stream('document.pdf');
+        // return view('admin.cetak.surat_jalan', compact('penerima'));
+        // $mpdf = new PDF();
+
+        // Write some HTML code:
+        // $mpdf->WriteHTML('Hello World');
+
+        // Output a PDF file directly to the browser
+        // $mpdf->Output();
+        // $pdf = PDF::loadView('admin.tagihan.pdf', compact('bills','today'));
+
+        // $content = $mpdf->download()->getOriginalContent();
+        // Storage::put('public/bills/bubla.pdf',$content);
     }
 
     public function pickOrder()

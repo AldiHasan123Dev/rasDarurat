@@ -31,6 +31,7 @@
                                 <th>TD</th>
                                 <th>BA Kirim</th>
                                 <th>Nopol</th>
+                                <th>Trucking</th>
                                 <th>No Container</th>
                                 <th>No Seal</th>
                                 <th>Stuffing</th>
@@ -99,6 +100,7 @@
                 { data: 'td', name: 'td' },
                 { data: 'ba_kirim', name: 'ba_kirim' },
                 { data: 'nopol', name: 'nopol' },
+                { data: 'trucking', name: 'trucking' },
                 { data: 'container', name: 'container' },
                 { data: 'seal', name: 'seal' },
                 { data: 'stuffing', name: 'stuffing' },

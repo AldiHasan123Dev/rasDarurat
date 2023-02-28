@@ -45,6 +45,8 @@
                                 <th>HP</th>
                                 <th>Fax</th>
                                 <th>Email</th>
+                                <th>NIK</th>
+                                <th>NPWP</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -62,6 +64,8 @@
                                     <td>{{ $cus->hp ?? '-' }}</td>
                                     <td>{{ $cus->fax ?? '-' }}</td>
                                     <td>{{ $cus->email ?? '-' }}</td>
+                                    <td>{{ $cus->nik ?? '-' }}</td>
+                                    <td>{{ $cus->npwp ?? '-' }}</td>
                                     <td>
                                         <div class="d-flex gap-1">
                                             <form action="{{ route('customer.destroy',$cus) }}" method="post">

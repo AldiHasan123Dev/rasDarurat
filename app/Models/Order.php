@@ -24,6 +24,7 @@ class Order extends Model
         'barang_diantar',
         'ba_kembali',
         'resi',
+        'trucking',
         'nopol',
         'container',
         'seal',
