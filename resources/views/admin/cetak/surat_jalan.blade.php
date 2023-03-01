@@ -78,7 +78,7 @@
                             </div>
                             <hr>
                         </div>
-                        <button class="btn btn-sm btn-success mt-3" type="submit"><i class="fas fa-print"></i> Print</button>
+                        {{-- <button class="btn btn-sm btn-success mt-3" type="submit"><i class="fas fa-print"></i> Print</button> --}}
                     </form>
                 </div>
             </div>

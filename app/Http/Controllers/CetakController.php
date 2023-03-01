@@ -8,7 +8,8 @@ use App\Models\JadwalKapal;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use PDF;
+// use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class CetakController extends Controller
 {
@@ -38,7 +39,7 @@ class CetakController extends Controller
         $data['penerima'] = $customer->nama;
         $data['kota'] = $customer->kota;
         // dd($data);
-        $pdf = PDF::loadView('pdf.surat_jalan');
+        $pdf = Pdf::loadView('pdf.surat_jalan', compact('data'));
         return $pdf->stream('document.pdf');
         // return view('pdf.surat_jalan',compact('data'));
     }
