@@ -8,7 +8,7 @@
         @media print {
             @page {
                 size: 8.5in 5.5in;
-                margin: -100px;
+                margin: 0px;
             }
             body * {
                 visibility: hidden;
@@ -20,6 +20,7 @@
                 color: black !important;
             }
             #print {
+                height: 100%;
                 width: 100%;
                 position: absolute;
                 left: 0;
