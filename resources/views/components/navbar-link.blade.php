@@ -47,23 +47,28 @@
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="ekspedisi">
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('cetak.suratJalan') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Surat Jalan </span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('cetak.pickOrder') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">PO</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('order.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Order</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Invoice <i class="fas fa-lock"></i></span></div>
+                <a class="nav-link" href="{{ route('order.index',['filter-order'=>'ba_kembali']) }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali <i class="fas fa-lock"></i></span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Kirim Invoice <i class="fas fa-lock"></i></span></div>
+                <a class="nav-link" href="{{ route('order.index',['filter-order'=>'invoice']) }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Invoice</span></div>
                 </a>
             </li>
         </ul>
@@ -124,7 +129,7 @@
         </div>
     </a>
 </div>
-<div class="nav-item-wrapper">
+{{-- <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#ccetak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="ccetak">
         <div class="d-flex align-items-center">
         <span class="nav-link-icon"><span class="fas fa-print"></span></span><span class="nav-link-text mr-2">Cetak</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
@@ -146,4 +151,4 @@
             </li>
         </ul>
     </div>
-</div>
+</div> --}}

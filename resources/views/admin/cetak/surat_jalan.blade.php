@@ -28,7 +28,7 @@
                 <div class="card p-3">
                     <span>Form Surat Jalan</span>
                     <hr>
-                    <form action="" method="get">
+                    <form action="{{ route('cetak.pdf.suratJalan') }}" target="d_blank" method="get">
                         <div class="row">
                             <div class="col-12 mb-2 px-2">
                                 <label for="cs">Customer Service</label>
@@ -51,13 +51,25 @@
                                 <input type="text" name="kapal" id="kapal" class="form-control">
                             </div>
                             <div class="col-6 mb-2 px-2">
-                                <label for="seal">Conatiner / Seal</label>
+                                <label for="seal">Cont / Seal</label>
                                 <input type="text" name="seal" id="seal" class="form-control">
+                            </div>
+                            <div class="col-6 mb-2 px-2">
+                                <label for="jenis_barang">Jenis Barang</label>
+                                <input type="text" name="jenis_barang" onkeyup="barang()" class="form-control barang">
+                            </div>
+                            <div class="col-6 mb-2 px-2">
+                                <label for="jumlah">Jumlah</label>
+                                <input type="text" name="jumlah" onkeyup="barang()" class="form-control barang">
+                            </div>
+                            <div class="col-6 mb-2 px-2">
+                                <label for="keterangan">Keterangan</label>
+                                <input type="text" name="keterangan" onkeyup="barang()" class="form-control barang">
                             </div>
                             <hr>
                             <div class="col-12 mb-2 px-2">
                                 <label for="penerima">Kepada</label>
-                                <select id="penerima" class="form-control">
+                                <select id="penerima" class="form-control" name="penerima">
                                     <option value="">none</option>
                                     @foreach ($penerima as $user)
                                         <option value="{{$user->id}}">{{ $user->nama }}</option>
@@ -66,6 +78,7 @@
                             </div>
                             <hr>
                         </div>
+                        <button class="btn btn-sm btn-success mt-3" type="submit"><i class="fas fa-print"></i> Print</button>
                     </form>
                 </div>
             </div>
@@ -123,7 +136,7 @@
                                 <th class="fw-bold">JENIS BARANG</th>
                                 <th class="fw-bold">KETERANGAN</th>
                             </tr>
-                            <tbody id="list" style="height: 50px">
+                            <tbody id="list" style="height: 90px">
                             </tbody>
                         </thead>
                     </table>
@@ -140,26 +153,6 @@
                             <p>( <span id="d-cs"></span> )</p>
                         </div>
                     </div>
-                </div>
-                <button class="btn btn-sm btn-success mt-3" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
-            </div>
-            <div class="col-12 mt-3">
-                <div class="card p-3">
-                    <div class="row" id="res">
-                        <div class="col-4 mb-2 px-2">
-                            <label for="jenis_barang">Jenis Barang</label>
-                            <input type="text" name="jenis_barang[]" onkeyup="barang()" class="form-control barang">
-                        </div>
-                        <div class="col-4 mb-2 px-2">
-                            <label for="jumlah">Jumlah</label>
-                            <input type="text" name="jumlah[]" onkeyup="barang()" class="form-control barang">
-                        </div>
-                        <div class="col-4 mb-2 px-2">
-                            <label for="keterangan">Keterangan</label>
-                            <input type="text" name="keterangan[]" onkeyup="barang()" class="form-control barang">
-                        </div>
-                    </div>
-                    {{-- <button type="button" onclick="addBarang()" class="btn btn-outline-success w-100 mt-2">Tambah Barang</button> --}}
                 </div>
             </div>
         </div>
@@ -195,18 +188,27 @@
         });
 
         function barang(){
-            var jenis = $("input[name='jenis_barang[]']").map(function(){return $(this).val();}).get();
-            var jumlah = $("input[name='jumlah[]']").map(function(){return $(this).val();}).get();
-            var keterangan = $("input[name='keterangan[]']").map(function(){return $(this).val();}).get();
-            let html = '';
-            $.each(jenis, function (idx, item) {
-                html = html + `
-                                <tr>
-                                    <td class="fw-bold">${jumlah[idx]}</td>
-                                    <td class="fw-bold">${item}</td>
-                                    <td class="fw-bold">${keterangan[idx]}</td>
-                                </tr>`
-            });
+            var jenis = $("input[name='jenis_barang']").val();
+            var jumlah = $("input[name='jumlah']").val();
+            var keterangan = $("input[name='keterangan']").val();
+            // var jenis = $("input[name='jenis_barang[]']").map(function(){return $(this).val();}).get();
+            // var jumlah = $("input[name='jumlah[]']").map(function(){return $(this).val();}).get();
+            // var keterangan = $("input[name='keterangan[]']").map(function(){return $(this).val();}).get();
+            // let html = '';
+            // $.each(jenis, function (idx, item) {
+            //     html = html + `
+            //                     <tr>
+            //                         <td class="fw-bold">${jumlah[idx]}</td>
+            //                         <td class="fw-bold">${item}</td>
+            //                         <td class="fw-bold">${keterangan[idx]}</td>
+            //                     </tr>`
+            // });
+            let html = `
+                <tr>
+                    <td class="fw-bold">${jumlah}</td>
+                    <td class="fw-bold">${jenis}</td>
+                    <td class="fw-bold">${keterangan}</td>
+                </tr>`
             $('#list').html(html);
         };
 

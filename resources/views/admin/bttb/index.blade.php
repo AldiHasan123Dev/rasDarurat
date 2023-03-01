@@ -41,12 +41,17 @@
                                         <th>Barang</th>
                                         <th>Jumlah</th>
                                         <th>Satuan</th>
+                                        <th>P</th>
+                                        <th>L</th>
+                                        <th>T</th>
+                                        <th>Vol</th>
+                                        <th>Berat</th>
                                         <th>Tgl Masuk</th>
                                         <th>Pengirim</th>
                                         <th>Keterangan</th>
                                         <th>Action</th>
                                     </tr>
-                                </thead>
+                                </thead>Vol
                                 <tbody>
                                 </tbody>
                             </table>
@@ -100,6 +105,11 @@
                 { data: 'barang_id', name: 'barang_id' },
                 { data: 'qty', name: 'qty' },
                 { data: 'satuan_id', name: 'satuan_id' },
+                { data: 'p', name: 'p' },
+                { data: 'l', name: 'l' },
+                { data: 't', name: 't' },
+                { data: 'vol', name: 'vol' },
+                { data: 'berat', name: 'berat' },
                 { data: 'tgl_masuk', name: 'tgl_masuk' },
                 { data: 'pengirim_id', name: 'pengirim_id' },
                 { data: 'keterangan', name: 'keterangan' },

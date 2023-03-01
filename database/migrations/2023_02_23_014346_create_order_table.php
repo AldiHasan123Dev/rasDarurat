@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('order', function (Blueprint $table) {
             $table->id();
+            $table->string('invoice')->nullable();
             $table->string('job');
             $table->string('no_job');
             $table->foreignId('tarif_id')->nullable()->constrained('tarif')->nullOnDelete();

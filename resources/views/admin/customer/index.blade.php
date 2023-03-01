@@ -222,7 +222,6 @@
         $('#customer tbody').on( 'click', 'tr', function () {
             id =  tablecus.row( this ).data()[0];
             tabletar.ajax.reload()
-            console.log(id);
         });
 
 

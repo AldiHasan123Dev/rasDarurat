@@ -64,13 +64,13 @@ class BTTBController extends Controller
 
         return Datatables::of($data)
             ->addColumn('barang_id', function($data){
-                return $data->barang->nama;
+                return $data->barang->nama ?? '-';
             })
             ->addColumn('satuan_id', function($data){
-                return $data->satuan->nama;
+                return $data->satuan->nama ?? '-';
             })
             ->addColumn('pengirim_id', function($data){
-                return $data->pengirim->nama;
+                return $data->pengirim->nama ?? '-';
             })
             ->addColumn('tgl_masuk', function($data){
                 return date('d/m/Y',strtotime($data->tgl_masuk));

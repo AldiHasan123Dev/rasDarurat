@@ -15,6 +15,11 @@ return new class extends Migration
             $table->string('no_gudang');
             $table->double('qty');
             $table->foreignId('satuan_id')->nullable()->constrained('satuan')->nullOnDelete();
+            $table->double('p')->default(0);
+            $table->double('l')->default(0);
+            $table->double('t')->default(0);
+            $table->double('vol')->default(0);
+            $table->double('berat')->default(0);
             $table->date('tgl_masuk');
             $table->foreignId('pengirim_id')->nullable()->constrained('customers')->nullOnDelete();
             $table->text('keterangan')->nullable();

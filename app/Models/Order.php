@@ -13,6 +13,7 @@ class Order extends Model
     protected $table = 'order';
     protected $fillable = [
         'job',
+        'invoice',
         'no_job',
         'tarif_id',
         'pengirim_id',
@@ -50,5 +51,10 @@ class Order extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class,'barang_id');
+    }
+
+    public function bttb()
+    {
+        return $this->hasMany(BTTB::class,'order_id');
     }
 }

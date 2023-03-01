@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Satuan;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,12 +18,13 @@ class OrderController extends Controller
         $tarifs = Tarif::where('is_active',1)->get();
         $customers = Customer::pluck('nama','id');
         $barang = Barang::pluck('nama','id');
-
+        $satuan = Satuan::pluck('nama','id');
+        $pengirim = $customers;
         $tarif = array();
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
         }
-        return view('admin.order.index', compact('tarif','customers','barang'));
+        return view('admin.order.index', compact('tarif','customers','barang','satuan','pengirim'));
     }
 
     public function store(Request $request)
@@ -45,6 +47,9 @@ class OrderController extends Controller
     public function update(Order $order, Request $request)
     {
         $data = $request->all();
+        if ($request->ba_kembali && $request->invoice==1) {
+            $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
+        }
         $order->update($data);
 
         return back()->with('success','Data berhasil diupdate');
@@ -69,11 +74,36 @@ class OrderController extends Controller
     {
         $data = Order::query();
 
+        if(request('filter')&&request('filter')=='ba_kembali'){
+            $data->whereNull('invoice');
+        }
+        if(request('filter')&&request('filter')=='invoice'){
+            $data->whereNotNull('invoice');
+        }
+
         return Datatables::of($data)
-            ->orderColumn('job', '-job $1')
+            ->setRowClass(function ($data) {
+                $class = '';
+                if($data->bttb->count()>0){
+                    $class = 'bg-light-success';
+                }
+                if($data->tarif->jadwal_kapal->is_active != 1){
+                    $class = 'bg-light-danger';
+                }
+                if(!is_null($data->invoice)){
+                    $class = 'bg-light-warning';
+                }
+
+                return $class;
+            })
+            ->orderColumns(['job'], '-:column $1')
             ->addColumn('tools', function($data){
+                $ba_kembali = '';
+                if (is_null($data->invoice)) {
+                    $ba_kembali = '<li> <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#ba-'.$data->id.'">BA Kembali</button></li>';
+                }
                 $html = '<div class="dropend">
-                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-list"></i></button>
+                            <button class="no-attr text-dark text-center dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:.6rem"><i class="fas fa-list"></i></button>
                             <ul class="dropdown-menu">
                                 <li>
                                     <form method="POST" action="'.route('order.copy',$data).'">
@@ -83,7 +113,32 @@ class OrderController extends Controller
                                 </li>
                                 <li><a class="dropdown-item" href="'.route('bttb.index',['order_id'=>$data->id]).'">BTTB</a></li>
                                 <li><a class="dropdown-item" href="'.route('cetak.packingList',['order_id'=>$data->id]).'">Packing List</a></li>
+                                '.$ba_kembali.'
                             </ul>
+                        </div>
+
+                        <div class="modal fade" id="ba-'.$data->id.'" tabindex="-1" aria-labelledby="ba-'.$data->id.'Label" aria-hidden="true">
+                        <form action="'.route('order.update',$data).'" class="modal-dialog" method="post">
+                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                            <input type="hidden" name="_method" value="put" />
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="ba-'.$data->id.'Label">BA Kembali ('.$data->job.'-'.sprintf('%02d',$data->no_job).')</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="date" name="ba_kembali" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" name="invoice" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
+                                </div>
+                            </div>
+                        </form>
                         </div>';
                 return $html;
             })
@@ -160,7 +215,7 @@ class OrderController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrderUpdate'.$data->id.'" aria-controls="offcanvasOrderUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            <button class="no-attr text-warning" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrderUpdate'.$data->id.'" aria-controls="offcanvasOrderUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
                         </div>
 
                         <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasOrderUpdate'.$data->id.'" aria-labelledby="offcanvasOrderUpdate'.$data->id.'Label" style="height:700px">

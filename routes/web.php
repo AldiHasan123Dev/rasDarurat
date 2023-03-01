@@ -54,6 +54,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('bttb',BTTBController::class);
 
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
+    Route::get('pdf/surat-jalan',[CetakController::class,'pdfSuratJalan'])->name('cetak.pdf.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');
     Route::get('cetak/packing-list',[CetakController::class,'packingList'])->name('cetak.packingList');
     Route::get('cetak/bttb',[CetakController::class,'bttb'])->name('cetak.bttb');

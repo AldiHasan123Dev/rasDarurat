@@ -15,9 +15,9 @@ class CetakController extends Controller
     public function suratJalan()
     {
         $penerima = Customer::get();
-        $pdf = PDF::loadView('pdf.contoh');
-        return $pdf->stream('document.pdf');
-        // return view('admin.cetak.surat_jalan', compact('penerima'));
+        // $pdf = PDF::loadView('pdf.contoh');
+        // return $pdf->stream('document.pdf');
+        return view('admin.cetak.surat_jalan', compact('penerima'));
         // $mpdf = new PDF();
 
         // Write some HTML code:
@@ -29,6 +29,18 @@ class CetakController extends Controller
 
         // $content = $mpdf->download()->getOriginalContent();
         // Storage::put('public/bills/bubla.pdf',$content);
+    }
+
+    public function pdfSuratJalan(Request $request)
+    {
+        $customer = Customer::find($request->penerima);
+        $data = $request->all();
+        $data['penerima'] = $customer->nama;
+        $data['kota'] = $customer->kota;
+        // dd($data);
+        $pdf = PDF::loadView('pdf.surat_jalan');
+        return $pdf->stream('document.pdf');
+        // return view('pdf.surat_jalan',compact('data'));
     }
 
     public function pickOrder()
