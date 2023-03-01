@@ -16,7 +16,7 @@
     <x-input :value="$order->ba_kembali??old('ba_kembali')" :col="3" :label="'Ba Kembali'" :type="'date'" :name="'ba_kembali'"></x-input>
     <x-input :value="$order->resi??old('resi')" :col="3" :label="'No. Resi'" :type="'text'" :name="'resi'"></x-input>
     <x-input :value="$order->nopol??old('nopol')" :col="3" :label="'Nopol'" :type="'text'" :name="'nopol'"></x-input>
-    <x-input :value="$order->trucking??old('trucking')" :col="3" :label="'Trucking'" :type="'text'" :name="'trucking'"></x-input>
+    <x-input :value="$order->trucking??old('trucking')" :col="3" :label="'Trucking'" :type="'select'" :options="['XPDC'=>'XPDC','SUPP'=>'SUPP']" :name="'trucking'"></x-input>
     <x-input :value="$order->container??old('container')" :col="3" :label="'No. Container'" :type="'text'" :name="'container'"></x-input>
     <x-input :value="$order->seal??old('seal')" :col="3" :label="'Seal'" :type="'text'" :name="'seal'"></x-input>
     <x-input :value="$order->no_bl??old('no_bl')" :col="3" :label="'No. BL'" :type="'text'" :name="'no_bl'"></x-input>
