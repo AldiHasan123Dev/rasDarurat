@@ -8,7 +8,6 @@ use App\Models\JadwalKapal;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-// use PDF;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class CetakController extends Controller
@@ -41,7 +40,7 @@ class CetakController extends Controller
         // dd($data);
         $pdf = Pdf::loadView('pdf.surat_jalan', compact('data'));
         return $pdf->stream('document.pdf');
-        // return view('pdf.surat_jalan',compact('data'));
+        return view('pdf.surat_jalan',compact('data'));
     }
 
     public function pickOrder()

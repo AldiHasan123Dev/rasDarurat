@@ -1,8 +1,4 @@
-<div>
-    <h1>{{ $data['penerima'] }}</h1>
-
-    <table>
-        <tr><td><p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, facere ab? Odio et aliquam harum. Labore alias laborum itaque incidunt assumenda rem corrupti obcaecati quibusdam, quisquam voluptas, vitae a sed!</p></td></tr>
-    </table>
-
+<div style="display:grid; grid-template-columns: repeat(2, 1fr);">
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, praesentium? Fugit sunt ad unde inventore vitae laudantium corporis pariatur voluptatem perferendis! Architecto odit earum, labore nulla possimus consequatur neque laudantium?</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, praesentium? Fugit sunt ad unde inventore vitae laudantium corporis pariatur voluptatem perferendis! Architecto odit earum, labore nulla possimus consequatur neque laudantium?</p>
 </div>
