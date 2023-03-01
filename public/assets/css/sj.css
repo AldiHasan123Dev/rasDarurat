@@ -15,7 +15,3 @@
 .header img{
     height: 50px; width: 30%;
 }
-@import url('https://fonts.cdnfonts.com/css/dot-matrix');
-*{
-    font-family: 'Dot Matrix', sans-serif;
-}

@@ -1,22 +1,30 @@
 @extends('layouts.admin')
 @section('style')
     <style>
-        @import url('https://fonts.cdnfonts.com/css/dot-matrix');
-        body{
-            font-family: 'Dot Matrix', sans-serif;
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+        #print *{
+            font-family: 'Open Sans', sans-serif;
         }
         @media print {
+            @page {
+                size: 8.5in 5.5in;
+                margin: -100px;
+            }
             body * {
                 visibility: hidden;
             }
             #print, #print * {
                 visibility: visible;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 1rem !important;
+                color: black !important;
             }
             #print {
                 width: 100%;
                 position: absolute;
                 left: 0;
                 top: -80px;
+                font-family: 'Open Sans', sans-serif;
             }
         }
     </style>
@@ -78,7 +86,8 @@
                             </div>
                             <hr>
                         </div>
-                        <button class="btn btn-sm btn-success mt-3" type="submit"><i class="fas fa-print"></i> Print</button>
+                        {{-- <button class="btn btn-sm btn-success mt-3" type="submit"><i class="fas fa-print"></i> Print</button> --}}
+                        <button class="btn btn-sm btn-success mt-3" type="button" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
                     </form>
                 </div>
             </div>

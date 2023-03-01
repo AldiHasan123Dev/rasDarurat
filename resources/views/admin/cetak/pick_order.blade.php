@@ -1,20 +1,30 @@
 @extends('layouts.admin')
 @section('style')
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+        #print *{
+            font-family: 'Open Sans', sans-serif;
+        }
         @media print {
-            @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+            @page {
+                size: 8.5in 5.5in;
+                margin: -100px;
+            }
             body * {
                 visibility: hidden;
-                font-family: 'Dot Matrix', sans-serif;
             }
             #print, #print * {
                 visibility: visible;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 1rem !important;
+                color: black !important;
             }
             #print {
                 width: 100%;
                 position: absolute;
                 left: 0;
                 top: -80px;
+                font-family: 'Open Sans', sans-serif;
             }
         }
     </style>
@@ -98,8 +108,8 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="d-flex justify-content-between mt-3" style="font-size: .7rem">
-                        <div style="width: 70%">
+                    <div class="d-flex mt-3" style="font-size: .7rem">
+                        <div style="width: 50%">
                             <table>
                                 <tr>
                                     <td style="width: 150px!important">Kepada Yth</td>
@@ -119,10 +129,13 @@
                                 </tr>
                             </table>
                         </div>
-                        <div style="width: 30%">
-                            <table class="text-right position-relative" style="width:100%">
+                        <div style="width: 50%;">
+                            <table class="">
                                 <tr>
-                                    <td><span id="penerima-nama"></span>(Penerima)</td>
+                                    <td>(Penerima)</td>
+                                </tr>
+                                <tr>
+                                    <td><span id="penerima-nama"></span></td>
                                 </tr>
                                 <tr>
                                     <td id="penerima-kota"></td>
@@ -131,7 +144,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between mt-3">
-                        <div>
+                        <div style="width: 50%">
                             <p style="font-size: .7rem">Dengan Hormat, <br> Bersama ini mohon dapat diserahkan</p>
                             <table style="font-size: .7rem">
                                 <tr>
@@ -148,11 +161,11 @@
                                 </tr>
                             </table>
                         </div>
-                        <div style="margin-right: 100px">
+                        <div style="width:50%">
                             <p style="font-size: .7rem">Barang ini rencana akan termuat</p>
                             <table style="font-size: .7rem">
                                 <tr>
-                                    <td style="width: 100px">Dengan Kapal</td>
+                                    <td style="width: 150px">Dengan Kapal</td>
                                     <td>: <span id="d-kapal"></span></td>
                                 </tr>
                                 <tr>
