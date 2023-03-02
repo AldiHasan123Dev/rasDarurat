@@ -57,7 +57,9 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('pdf/surat-jalan',[CetakController::class,'pdfSuratJalan'])->name('cetak.pdf.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');
     Route::get('cetak/packing-list',[CetakController::class,'packingList'])->name('cetak.packingList');
+    Route::get('cetak/packing-list-kubikasi',[CetakController::class,'packingListKubikasi'])->name('cetak.packingList.kubikasi');
     Route::get('cetak/bttb',[CetakController::class,'bttb'])->name('cetak.bttb');
+    Route::get('cetak/bttb-kubikasi',[CetakController::class,'bttbKubikasi'])->name('cetak.bttb.kubikasi');
     Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
     Route::post('copy-order/{order}',[OrderController::class,'copy'])->name('order.copy');
 });

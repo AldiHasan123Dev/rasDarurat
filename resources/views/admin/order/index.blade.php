@@ -64,6 +64,7 @@
                     <div class="card-header p-2 d-flex" style="gap:10px" id="bttb-info">
                         <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBTTB" aria-controls="offcanvasBTTB"><i class="fas fa-plus"></i> Tambah BTTB</button>
                         <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</a>
+                        <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</a>
                         <b>N0. JOB : <span id="nojob"></span></b>
                     </div>
                     <div class="card-body">
@@ -142,15 +143,15 @@
             },
             columns: [
                 { data: 'tools', name: 'tools', orderable: false, searchable: false },
-                { data: 'id', name: 'id' },
+                { data: 'id', name: 'id', visible:false },
                 { data: 'invoice', name: 'invoice' },
                 { data: 'job', name: 'job' },
                 { data: 'no_job', name: 'no_job' },
                 { data: 'marketing', name: 'marketing' },
                 { data: 'cs', name: 'cs' },
                 { data: 'pembayar', name: 'pembayar' },
-                { data: 'pengirim', name: 'pengirim' },
-                { data: 'penerima', name: 'penerima' },
+                { data: 'pengirim', name: 'customers.nama' },
+                { data: 'penerima', name: 'cus.nama' },
                 { data: 'dari', name: 'dari' },
                 { data: 'tujuan', name: 'tujuan' },
                 { data: 'shipment', name: 'shipment' },
@@ -215,6 +216,7 @@
             $('#order_id_bttb').val(id);
             $('#nojob').html(no_job);
             $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
+            $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
             tablebttb.ajax.reload();
         })
 

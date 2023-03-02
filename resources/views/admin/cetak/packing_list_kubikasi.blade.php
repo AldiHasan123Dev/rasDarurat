@@ -19,9 +19,6 @@
                 top: -80px;
             }
         }
-        #table td, #table th{
-            border: 1px solid black;
-        }
     </style>
 @endsection
 @section('content')
@@ -74,27 +71,45 @@
                     </table>
                 </div>
                 <div class="col-12 mt-2">
-                    <table class="table table-bordered" id="tables" style="font-size: .7rem">
+                    <table class="table table-bordered" style="font-size: .7rem">
                         <thead>
                             <tr>
-                                <th class="text-center">No.</th>
+                                <th>No.</th>
                                 <th>Cont / Seal</th>
                                 <th>Jenis Barang</th>
                                 <th>Koli</th>
+                                <th>P</th>
+                                <th>L</th>
+                                <th>T</th>
+                                <th>M3</th>
                                 <th>Tgl Masuk</th>
                                 <th>Pengirim</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $i = 1;
+                            @endphp
                             @foreach ($data as $item)
-                                <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td><a href="{{ route('bttb.index',['order_id'=>$item->id]) }}">{{ $item->container }} / {{ $item->seal }}</a></td>
-                                    <td>{{ $item->barang->nama }}</td>
-                                    <td>{{ $item->tarif->satuanInfo->nama }}</td>
-                                    <td>{{ date('d/m/Y') }}</td>
-                                    <td>{{ $item->pengirim->nama }}</td>
-                                </tr>
+                                @foreach ($item->bttb as $b)
+                                    <tr>
+                                        <td class="text-center">{{ $i}}</td>
+                                        @if ($loop->first)
+                                            <td colspan="{{ $item->bttb->count() }}">{{ $item->container }} / {{ $item->seal }}</td>
+                                        @endif
+                                        <td>{{ $b->barang->nama }}</td>
+                                        <td class="text-center">{{ $b->qty }} {{ $b->satuan->nama }}</td>
+                                        <td class="text-center">{{ $b->p }}</td>
+                                        <td class="text-center">{{ $b->l }}</td>
+                                        <td class="text-center">{{ $b->t }}</td>
+                                        <td class="text-center">{{ $b->m3 }}</td>
+                                        <td>{{ date('d/m/Y', strtotime($b->tgl_masuk)) }}</td>
+                                        <td>{{ $b->pengirim->nama }}</td>
+                                    </tr>
+                                @endforeach
+                                @php
+                                    $i++;
+                                @endphp
                             @endforeach
                         </tbody>
                     </table>

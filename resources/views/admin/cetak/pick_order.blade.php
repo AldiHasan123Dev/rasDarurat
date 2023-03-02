@@ -1,33 +1,34 @@
 @extends('layouts.admin')
 @section('style')
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
-        #print *{
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+    #print *{
+        font-family: 'Open Sans', sans-serif;
+    }
+    @media print {
+        @page {
+            size: 8.5in 5.5in;
+            margin: 2cm;
+        }
+        body * {
+            visibility: hidden;
+        }
+        #print, #print * {
+            visibility: visible;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1rem !important;
+            color: black !important;
+        }
+        #print {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: -80px;
             font-family: 'Open Sans', sans-serif;
         }
-        @media print {
-            @page {
-                size: 8.5in 5.5in;
-                margin: 0px;
-            }
-            body * {
-                visibility: hidden;
-            }
-            #print, #print * {
-                visibility: visible;
-                font-family: 'Open Sans', sans-serif;
-                font-size: 1rem !important;
-                color: black !important;
-            }
-            #print {
-                width: 100%;
-                position: absolute;
-                left: 0;
-                top: -80px;
-                font-family: 'Open Sans', sans-serif;
-            }
-        }
-    </style>
+    }
+</style>
 @endsection
 @section('content')
     <div class="container-fluid mt-3">

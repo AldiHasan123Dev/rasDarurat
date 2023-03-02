@@ -101,8 +101,11 @@
                             <tr>
                                 <th class="text-center">No. Gudang</th>
                                 <th>Jenis Barang</th>
-                                <th>Jumlah</th>
-                                <th>Satuan</th>
+                                <th class="text-center">Koli</th>
+                                <th class="text-center">P</th>
+                                <th class="text-center">L</th>
+                                <th class="text-center">T</th>
+                                <th class="text-center">M3</th>
                                 <th>Tgl Masuk</th>
                                 <th>Pengirim</th>
                                 <th>Keterangan</th>
@@ -113,8 +116,11 @@
                                 <tr>
                                     <td class="text-center">{{ $item->no_gudang }}</td>
                                     <td>{{ $item->barang->nama }}</td>
-                                    <td>{{ $item->qty }}</td>
-                                    <td>{{ $item->satuan->nama }}</td>
+                                    <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                    <td class="text-center">{{ $item->p }}</td>
+                                    <td class="text-center">{{ $item->l }}</td>
+                                    <td class="text-center">{{ $item->t }}</td>
+                                    <td class="text-center">{{ $item->m3 }}</td>
                                     <td>{{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
                                     <td>{{ $item->pengirim->nama }}</td>
                                     <td>{{ $item->keterangan }}</td>

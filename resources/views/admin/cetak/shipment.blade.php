@@ -7,7 +7,7 @@
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;
                 color: #000;
-                
+
             }
             #print, #print * {
                 visibility: visible;

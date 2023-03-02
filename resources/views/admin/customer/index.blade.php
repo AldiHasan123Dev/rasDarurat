@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('style')
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
     <style>
         td:hover{
             cursor: pointer;
@@ -162,9 +163,12 @@
 
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
     <script>
         let id = null;
-        var tablecus = $('#customer').DataTable();
+        var tablecus = $('#customer').DataTable({
+            select:true
+        });
         let tabletar = $('#tarif').DataTable({
             processing: true,
             serverSide: true,
@@ -191,7 +195,7 @@
                 { data: 'customer_id', name: 'customer_id' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
-            ]
+            ],
         });
         $("select[name=customer_id]").select2({
             dropdownParent: $('#offcanvasTarif')

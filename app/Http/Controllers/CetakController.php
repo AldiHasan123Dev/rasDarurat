@@ -62,6 +62,17 @@ class CetakController extends Controller
         return view('admin.cetak.packing_list', compact('order','data'));
     }
 
+    public function packingListKubikasi()
+    {
+        $order = Order::find(request('order_id'));
+        if (!$order) {
+            return redirect()->route('order.index');
+        }
+
+        $data = Order::where('job',$order->job)->get();
+        return view('admin.cetak.packing_list_kubikasi', compact('order','data'));
+    }
+
     public function bttb()
     {
         $order = Order::find(request('order_id'));
@@ -71,6 +82,17 @@ class CetakController extends Controller
 
         $data = BTTB::where('order_id',$order->id)->get();
         return view('admin.cetak.bttb', compact('order','data'));
+    }
+
+    public function bttbKubikasi()
+    {
+        $order = Order::find(request('order_id'));
+        if (!$order) {
+            return redirect()->route('order.index');
+        }
+
+        $data = BTTB::where('order_id',$order->id)->get();
+        return view('admin.cetak.bttb_kubikasi', compact('order','data'));
     }
 
     public function shipment()
