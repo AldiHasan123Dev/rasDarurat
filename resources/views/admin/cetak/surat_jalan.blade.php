@@ -8,7 +8,7 @@
         @media print {
             @page {
                 size: 8.5in 5.5in;
-                margin: 2cm;
+                margin: .5cm;
             }
             body * {
                 visibility: hidden;
@@ -146,7 +146,7 @@
                                 <th class="fw-bold">JENIS BARANG</th>
                                 <th class="fw-bold">KETERANGAN</th>
                             </tr>
-                            <tbody id="list" style="height: 90px">
+                            <tbody id="list" style="height: 110px">
                             </tbody>
                         </thead>
                     </table>

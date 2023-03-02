@@ -8,7 +8,7 @@
     @media print {
         @page {
             size: 8.5in 5.5in;
-            margin: 2cm;
+            margin: .5cm;
         }
         body * {
             visibility: hidden;
