@@ -6,10 +6,10 @@
         font-family: 'Open Sans', sans-serif;
     }
     @media print {
-        @page {
+        /* @page {
             size: 8.5in 5.5in;
             margin: 1cm .5cm;
-        }
+        } */
         body * {
             visibility: hidden;
         }
