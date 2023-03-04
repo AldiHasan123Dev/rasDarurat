@@ -62,4 +62,5 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/bttb-kubikasi',[CetakController::class,'bttbKubikasi'])->name('cetak.bttb.kubikasi');
     Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
     Route::post('copy-order/{order}',[OrderController::class,'copy'])->name('order.copy');
+    Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
 });

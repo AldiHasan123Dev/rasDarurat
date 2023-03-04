@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CustomerImport;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Kondisi;
@@ -10,6 +11,7 @@ use App\Models\Satuan;
 use App\Models\Shipment;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CustomerController extends Controller
 {
@@ -49,5 +51,12 @@ class CustomerController extends Controller
     {
         $customer->delete();
         return back()->with('success','Data berhasil dihapus!');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new CustomerImport, $request->file);
+
+        return back()->with('success', 'All good!');
     }
 }

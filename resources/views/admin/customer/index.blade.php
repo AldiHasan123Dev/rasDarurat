@@ -12,23 +12,10 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <button style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer <i class="fas fa-plus"></i></button>
-                {{-- <form action="{{ route('customer.index') }}" method="get">
-                    <span style="font-size: .8rem; margin-right:10px">Filter Tipe Customer:</span>
-                    <div class="d-flex" style="gap:15px">
-                        <label for="all">
-                            <input type="radio" name="tipe" {{ $tipe=='all'?'checked':'' }} id="all" value="all" onchange="this.form.submit()"> Semua
-                        </label>
-                        <label for="pembayar">
-                            <input type="radio" name="tipe" {{ $tipe=='pembayar'?'checked':'' }} id="pembayar" value="pembayar" onchange="this.form.submit()"> Pembayar
-                        </label>
-                        <label for="penerima">
-                            <input type="radio" name="tipe" {{ $tipe=='penerima'?'checked':'' }} id="penerima" value="penerima" onchange="this.form.submit()"> Penerima
-                        </label>
-                        <label for="pengirim">
-                            <input type="radio" name="tipe" {{ $tipe=='pengirim'?'checked':'' }} id="pengirim" value="pengirim" onchange="this.form.submit()"> Pengirim
-                        </label>
-                    </div>
-                </form> --}}
+                <form action="{{ route('customer.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" id="file" onchange="submit()">
+                </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

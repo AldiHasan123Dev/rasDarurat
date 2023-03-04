@@ -11,6 +11,8 @@ class Customer extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = [
         'nik',
+        'nama_npwp',
+        'alamat_npwp',
         'npwp',
         'nama',
         'marketing_id',
