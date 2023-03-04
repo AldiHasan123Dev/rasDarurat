@@ -111,9 +111,9 @@
                     <hr>
                     <div class="d-flex justify-content-between mt-3" style="font-size: .7rem">
                         <div style="width: 70%">
-                            <table style="width: 300px">
+                            <table style="width:100%">
                                 <tr>
-                                    <td style="width: 150px!important">No.</td>
+                                    <td style="width: 200px!important">No.</td>
                                     <td style="">: <span id="d-no"></span></td>
                                 </tr>
                                 <tr>
