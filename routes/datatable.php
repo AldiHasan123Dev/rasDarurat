@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgenController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\KapalController;
 use App\Http\Controllers\KondisiController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('pelayaran',[PelayaranController::class,'datatable'])->name('pelayaran.data');
+Route::post('customer',[CustomerController::class,'datatable'])->name('customer.data');
 Route::post('user',[UserController::class,'datatable'])->name('user.data');
 Route::post('pelayaran',[PelayaranController::class,'datatable'])->name('pelayaran.data');
 Route::post('agen',[AgenController::class,'datatable'])->name('agen.data');

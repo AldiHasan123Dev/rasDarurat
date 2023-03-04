@@ -12,6 +12,7 @@ use App\Models\Shipment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\Datatables\Datatables;
 
 class CustomerController extends Controller
 {
@@ -58,5 +59,46 @@ class CustomerController extends Controller
         Excel::import(new CustomerImport, $request->file);
 
         return back()->with('success', 'All good!');
+    }
+
+    public function datatable()
+    {
+        $data = Customer::all()->sortByDesc('created_at');
+
+        return Datatables::of($data)
+            ->addColumn('marketing_id', function($data){
+                return $data->marketing->name ?? '-';
+            })
+            ->addColumn('cs_id', function($data){
+                return $data->cs->name ?? '-';
+            })
+            ->addColumn('action', function ($data) {
+                $view = view('admin.user.form',['user'=>$data])->render();
+                $html = '<div class="d-flex gap-1">
+                            <form action="'.route('user.destroy',$data).'" method="post">
+                                <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                <input type="hidden" name="_method" value="delete" />
+                                <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </form>
+                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUserUpdate'.$data->id.'" aria-controls="offcanvasUserUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                        </div>
+
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUserUpdate'.$data->id.'" aria-labelledby="offcanvasUserUpdate'.$data->id.'Label">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="offcanvasUserUpdate'.$data->id.'Label">Form User</h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <form action="'.route('user.update',$data).'" method="post">
+                                <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                    <input type="hidden" name="_method" value="PUT" />
+                                    '.$view.'
+                                </form>
+                            </div>
+                        </div>';
+                return $html;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }

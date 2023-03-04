@@ -30,6 +30,14 @@
         <input type="text" value="{{ $cus->npwp ?? '' }}" name="npwp" id="npwp" class="form-control">
     </div>
     <div class="col-6 mb-2 px-1">
+        <label for="nama_npwp">Nama NPWP</label>
+        <input type="text" value="{{ $cus->nama_npwp ?? '' }}" name="nama_npwp" id="nama_npwp" class="form-control">
+    </div>
+    <div class="col-6 mb-2 px-1">
+        <label for="alamat_npwp">Alamat NPWP</label>
+        <input type="text" value="{{ $cus->alamat_npwp ?? '' }}" name="alamat_npwp" id="alamat_npwp" class="form-control">
+    </div>
+    <div class="col-6 mb-2 px-1">
         <label for="pic">PIC</label>
         <input type="text" value="{{ $cus->pic ?? '' }}" name="pic" id="pic" class="form-control">
     </div>

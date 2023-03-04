@@ -35,11 +35,13 @@
                                 <th>Email</th>
                                 <th>NIK</th>
                                 <th>NPWP</th>
+                                <th>Nama NPWP</th>
+                                <th>Alamat NPWP</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($customers as $cus)
+                            {{-- @foreach ($customers as $cus)
                                 <tr>
                                     <td>{{ $cus->id }}</td>
                                     <td>{{ $cus->nama }}</td>
@@ -79,7 +81,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
@@ -153,8 +155,32 @@
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
     <script>
         let id = null;
-        var tablecus = $('#customer').DataTable({
-            select:true
+        let table = $('#customer').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax:{
+                url: '{{ route('customer.data') }}',
+                method:'POST',
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            },
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'nama', name: 'nama' },
+                { data: 'marketing_id', name: 'marketing_id' },
+                { data: 'cs_id', name: 'cs_id' },
+                { data: 'pic', name: 'pic' },
+                { data: 'alamat', name: 'alamat' },
+                { data: 'kota', name: 'kota' },
+                { data: 'telp', name: 'telp' },
+                { data: 'hp', name: 'hp' },
+                { data: 'fax', name: 'fax' },
+                { data: 'email', name: 'email' },
+                { data: 'nik', name: 'nik' },
+                { data: 'npwp', name: 'npwp' },
+                { data: 'nama_npwp', name: 'nama_npwp' },
+                { data: 'alamat_npwp', name: 'alamat_npwp' },
+                { data: 'action', name: 'action', orderable: false, searchable: false },
+            ]
         });
         let tabletar = $('#tarif').DataTable({
             processing: true,
