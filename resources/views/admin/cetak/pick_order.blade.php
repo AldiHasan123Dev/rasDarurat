@@ -8,7 +8,7 @@
     @media print {
         @page {
             size: 8.5in 5.5in;
-            margin: .5cm;
+            margin: 1cm .5cm;
         }
         body * {
             visibility: hidden;
@@ -184,7 +184,8 @@
                     <div class="d-flex mt-3 justify-content-between" style="font-size: .7rem; margin-right: 70px">
                         <div></div>
                         <div class="text-center">
-                            <span>Surabaya, {{ date('d F Y') }}</b>
+                            <b>Surabaya, {{ date('d F Y') }}</b><br>
+                            <b>Hormat Kami</b>
                             <br><br><br><br><br>
                             <p>( <span id="d-cs"></span> )</p>
                         </div>

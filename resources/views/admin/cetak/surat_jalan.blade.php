@@ -8,7 +8,7 @@
         @media print {
             @page {
                 size: 8.5in 5.5in;
-                margin: .5cm;
+                margin: 1cm .5cm;
             }
             body * {
                 visibility: hidden;
@@ -151,14 +151,15 @@
                         </thead>
                     </table>
                     <span style="font-size: .7rem"><b>Barang-barang tersebut diatas harap diterima dengan baik</b></span>
-                    <div class="d-flex mt-3 justify-content-between" style="font-size: .7rem">
+                    <div class="d-flex mt-3 justify-content-between" style="font-size: .7rem; margin-right:50px">
                         <div class="text-center">
                             <b>Penerima</b>
                             <br><br><br><br><br>
                             <p>(..........................................)</p>
                         </div>
                         <div class="text-center">
-                            <b>Surabaya, {{ date('d F Y') }}</b>
+                            <b>Surabaya, {{ date('d F Y') }}</b><br>
+                            <b>Pengirim</b>
                             <br><br><br><br><br>
                             <p>( <span id="d-cs"></span> )</p>
                         </div>
