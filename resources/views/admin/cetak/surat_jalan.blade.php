@@ -6,12 +6,15 @@
             font-family: 'Open Sans', sans-serif;
         }
         @media print {
-            /* @page {
+            @page {
                 size: 8.5in 5.5in;
-                margin: 1cm .5cm;
-            } */
+                margin: .6cm .5cm 0cm .5cm;
+            }
             body * {
                 visibility: hidden;
+            }
+            #print .header{
+                margin-top: 10px;
             }
             #print, #print * {
                 visibility: visible;
@@ -94,7 +97,7 @@
             </div>
             <div class="col-md-8 col-12 mt-3 p-2 bg-white">
                 <div id="print">
-                    <div class="header d-flex" style="gap:5px; width:100%">
+                    <div class="header d-flex" style="gap:5px; width:100%;">
                         <img src="{{ asset('assets/img/ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                         <div style="width: 40%; margin-left:35px">
                             <table style="font-size:.7rem">
