@@ -3,58 +3,63 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
 @endsection
 @section('content')
-<div class="container mt-3">
-    <div class="card">
-        @if (!request('filter-order'))
-        <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-            <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder"
-                aria-controls="offcanvasOrder">Tambah Order</button>
-        </div>
-        @endif
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
-                    <thead>
-                        <tr>
-                            <th>Tools</th>
-                            <th>ID.</th>
-                            <th>Invoice</th>
-                            <th>Group JOB</th>
-                            <th>ID JOB</th>
-                            <th>Marketing</th>
-                            <th>CS</th>
-                            <th>Pembayar</th>
-                            <th>Pengirim</th>
-                            <th>Penerima</th>
-                            <th>Dari</th>
-                            <th>Tujuan</th>
-                            <th>Shipment</th>
-                            <th>Kondisi</th>
-                            <th>Jenis Barang</th>
-                            <th>Pelayaran</th>
-                            <th>Kapal</th>
-                            <th>Voyage</th>
-                            <th>ETD</th>
-                            <th>TD</th>
-                            <th>BA Kirim</th>
-                            <th>Nopol</th>
-                            <th>Trucking</th>
-                            <th>No Container</th>
-                            <th>No Seal</th>
-                            <th>Stuffing</th>
-                            <th>Tgl Full</th>
-                            <th>Barang Diantar</th>
-                            <th>BA Kembali</th>
-                            <th>Satuan</th>
-                            <th>Unit</th>
-                            <th>Tarif</th>
-                            <th>Keterangan</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+
+    <div class="container mt-3">
+        <div class="card">
+            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                @if (!request('filter-order'))
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
+                @endif
+                <form action="{{ route('order.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" id="file" onchange="submit()">
+                </form>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
+                        <thead>
+                            <tr>
+                                <th>Tools</th>
+                                <th>ID.</th>
+                                <th>Invoice</th>
+                                <th>Group JOB</th>
+                                <th>ID JOB</th>
+                                <th>Marketing</th>
+                                <th>CS</th>
+                                <th>Pembayar</th>
+                                <th>Pengirim</th>
+                                <th>Penerima</th>
+                                <th>Dari</th>
+                                <th>Tujuan</th>
+                                <th>Shipment</th>
+                                <th>Kondisi</th>
+                                <th>Jenis Barang</th>
+                                <th>Pelayaran</th>
+                                <th>Kapal</th>
+                                <th>Voyage</th>
+                                <th>ETD</th>
+                                <th>TD</th>
+                                <th>BA Kirim</th>
+                                <th>Nopol</th>
+                                <th>Trucking</th>
+                                <th>No Container</th>
+                                <th>No Seal</th>
+                                <th>Stuffing</th>
+                                <th>Tgl Full</th>
+                                <th>Barang Diantar</th>
+                                <th>BA Kembali</th>
+                                <th>Satuan</th>
+                                <th>Unit</th>
+                                <th>Tarif</th>
+                                <th>Keterangan</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

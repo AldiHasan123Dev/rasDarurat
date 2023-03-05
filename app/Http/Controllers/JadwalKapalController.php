@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Pelayaran;
+use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -25,6 +26,9 @@ class JadwalKapalController extends Controller
         if (!$kapal) {
             $kapal = Kapal::create(['nama'=>$request->kapal_id]);
         }
+        if ($data['td']&!is_null($data['td'])) {
+            $data['is_active'] = 0;
+        }
         $data['kapal_id'] = $kapal->id;
         JadwalKapal::create($data);
 
@@ -34,6 +38,12 @@ class JadwalKapalController extends Controller
     public function update(JadwalKapal $jadwalkapal, Request $request)
     {
         $data = $request->all();
+        if ($data['td']&!is_null($data['td'])) {
+            $data['is_active'] = 0;
+            Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
+                'is_active' => 0
+            ]);
+        }
         $jadwalkapal->update($data);
 
         return back()->with('success','Data berhasil diupdate');
@@ -86,8 +96,8 @@ class JadwalKapalController extends Controller
                         <input type="hidden" name="_method" value="PUT" />
                         <input type="hidden" name="is_active" value="'.$val.'" />
                         <div class="form-check form-switch">
-                            <input class="form-check-input" onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
-                            <label class="form-check-label" for="flexSwitchCheckDefault">'.$name.'</label>
+                            <input class="form-check-input" disabled onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
+                            <label class="form-check-label">'.$name.'</label>
                         </div>
                     </form>';
             return  $html;
