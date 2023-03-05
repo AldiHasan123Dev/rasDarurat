@@ -6,9 +6,9 @@
     <x-input :value="''" :name="'tujuan'" :col="3" :label="'Tujuan'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'shipment'" :col="3" :label="'Shipment'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'kondisi'" :col="3" :label="'Kondisi'" :type="'text'" :disabled="true"></x-input>
-    <x-input :value="$order->pengirim_id??old('pengirim_id')" :col="3" :label="'Pengirim'" :type="'select'" :options="$customers" :name="'pengirim_id'" :required="true"></x-input>
-    <x-input :value="$order->penerima_id??old('penerima_id')" :col="3" :label="'Penerima'" :type="'select'" :options="$customers" :name="'penerima_id'" :required="true"></x-input>
-    <x-input :value="$order->barang_id??old('barang_id')" :col="3" :label="'Barang'" :type="'select'" :options="$barang" :name="'barang_id'" :required="true"></x-input>
+    <x-input :value="$order->pengirim_id??old('pengirim_id')" :col="3" :label="'Pengirim'" :type="'select'" :options="$customers" :name="'pengirim_id'" :required="true" id="selectPengirim"></x-input>
+    <x-input :value="$order->penerima_id??old('penerima_id')" :col="3" :label="'Penerima'" :type="'select'" :options="$customers" :name="'penerima_id'" :required="true" id="selectPenerima"></x-input>
+    <x-input :value="$order->barang_id??old('barang_id')" :col="3" :label="'Barang'" :type="'select'" :options="$barang" :name="'barang_id'" :required="true" id="selectBarang"></x-input>
     <x-input :value="$order->ba_kirim??old('ba_kirim')" :col="3" :label="'BA Kirim'" :type="'date'" :name="'ba_kirim'"></x-input>
     <x-input :value="$order->stuffing??old('stuffing')" :col="3" :label="'Stuffing'" :type="'date'" :name="'stuffing'"></x-input>
     <x-input :value="$order->full??old('full')" :col="3" :label="'Tanggal Full'" :type="'date'" :name="'full'"></x-input>

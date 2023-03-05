@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\TarifController;
@@ -24,3 +25,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
+Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
+Route::get('get-barang', [BarangController::class,'getBarang']);

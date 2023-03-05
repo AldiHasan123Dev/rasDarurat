@@ -3,22 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Customer;
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
-class CustomerController extends Controller
+class BarangController extends Controller
 {
-    public function getOne()
-    {
-        $data = Customer::find(request('customer_id'));
-        return response($data);
-    }
-
-    public function getPengirim(Request $request)
-    {
+    public function getBarang(Request $request){
         try {
             $isPaging = $request->has('page');
-            $query = Customer::query();
+            $query = Barang::query();
             if ($request->has('cari')) {
                 $query->where('nama', 'like', "%$request->cari%");
                 $counts = $query->count();

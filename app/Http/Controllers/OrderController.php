@@ -224,7 +224,7 @@ class OrderController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-warning" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrderUpdate'.$data->id.'" aria-controls="offcanvasOrderUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            <button onclick="renderSelect2('.$data->id.')" class="no-attr text-warning" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrderUpdate'.$data->id.'" aria-controls="offcanvasOrderUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
                         </div>
 
                         <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasOrderUpdate'.$data->id.'" aria-labelledby="offcanvasOrderUpdate'.$data->id.'Label" style="height:700px">
