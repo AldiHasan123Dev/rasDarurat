@@ -80,6 +80,8 @@ class OrderController extends Controller
 
     public function datatable()
     {
+        $limit = request('length');
+        $start = request('start') * request('length');
         $data = Order::query();
         $data->join('customers','customers.id','=','order.pengirim_id')
                 ->join('customers as cus','cus.id','=','order.penerima_id');
@@ -95,7 +97,7 @@ class OrderController extends Controller
             $data->whereNotNull('invoice');
         }
 
-        return Datatables::of($data)
+        return Datatables::of($data->offset($start)->limit($limit))
             ->setRowClass(function ($data) {
                 $class = '';
                 if($data->bttb->count()>0){
@@ -270,6 +272,7 @@ class OrderController extends Controller
                 return $html;
             })
             ->rawColumns(['action','tools'])
+            ->skipTotalRecords()
             ->toJson();
     }
 }
