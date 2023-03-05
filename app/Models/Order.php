@@ -12,15 +12,18 @@ class Order extends Model
 
     protected $table = 'order';
     protected $fillable = [
+        'no',
         'job',
         'invoice',
         'no_job',
         'tarif_id',
         'pengirim_id',
         'penerima_id',
+        'penerima_bl_id',
         'barang_id',
         'ba_kirim',
         'stuffing',
+        'stuffing_type',
         'full',
         'barang_diantar',
         'ba_kembali',
@@ -31,6 +34,9 @@ class Order extends Model
         'seal',
         'keterangan',
         'no_bl',
+        'asuransi',
+        'agen',
+        'created_at',
     ];
 
     public function tarif()

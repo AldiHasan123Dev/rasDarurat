@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\OrderImport;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Satuan;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -68,6 +69,13 @@ class OrderController extends Controller
         $data['no_job'] = Order::where('job',$order->job)->max('no_job') + 1;
         Order::create($data);
         return back()->with('success','Copy data berhasil');
+    }
+    
+    public function import(Request $request)
+    {
+        Excel::import(new OrderImport, $request->file);
+
+        return back()->with('success', 'All good!');
     }
 
     public function datatable()

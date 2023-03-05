@@ -12,17 +12,17 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <button style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer <i class="fas fa-plus"></i></button>
-                <form action="{{ route('customer.import') }}" method="post" enctype="multipart/form-data">
+                {{-- <form action="{{ route('customer.import') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="file" id="file" onchange="submit()">
-                </form>
+                </form> --}}
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm" id="customer" style="font-size:.7rem">
+                    <table class="table table-sm" id="customer" style="font-size:.7rem; white-space: nowrap;">
                         <thead>
                             <tr>
-                                <th>ID.</th>
+                                <th class="text-center">ID.</th>
                                 <th>Nama</th>
                                 <th>Marketing</th>
                                 <th>CS</th>
@@ -90,7 +90,7 @@
 
         <div class="card mt-3">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarif" aria-controls="offcanvasTarif">Tambah Tarif <i class="fas fa-plus"></i></button>
+                <button class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarif" aria-controls="offcanvasTarif" id="add-tarif">Tambah Tarif <i class="fas fa-plus"></i></button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -154,10 +154,12 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
     <script>
+        $('#add-tarif').hide();
         let id = null;
-        let table = $('#customer').DataTable({
+        let tablecus = $('#customer').DataTable({
             processing: true,
             serverSide: true,
+            select:true,
             ajax:{
                 url: '{{ route('customer.data') }}',
                 method:'POST',
@@ -166,8 +168,8 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'nama', name: 'nama' },
-                { data: 'marketing_id', name: 'marketing_id' },
-                { data: 'cs_id', name: 'cs_id' },
+                { data: 'marketing_id', name: 'users.name' },
+                { data: 'cs_id', name: 'cs.name' },
                 { data: 'pic', name: 'pic' },
                 { data: 'alamat', name: 'alamat' },
                 { data: 'kota', name: 'kota' },
@@ -180,6 +182,8 @@
                 { data: 'nama_npwp', name: 'nama_npwp' },
                 { data: 'alamat_npwp', name: 'alamat_npwp' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
+            ],"columnDefs": [
+                { className: "text-center", "targets": [0] }
             ]
         });
         let tabletar = $('#tarif').DataTable({
@@ -229,15 +233,15 @@
             tags:true
         });
         $("select[name=kondisi]").select2({
-            dropdownParent: $('#offcanvasTarif'),
-            tags:true
+            dropdownParent: $('#offcanvasTarif')
         });
         $("select[name=satuan]").select2({
             dropdownParent: $('#offcanvasTarif'),
             tags:true
         });
         $('#customer tbody').on( 'click', 'tr', function () {
-            id =  tablecus.row( this ).data()[0];
+            id =  tablecus.row( this ).data().id;
+            $('#add-tarif').show();
             tabletar.ajax.reload()
         });
 

@@ -5,11 +5,15 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            @if (!request('filter-order'))
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                @if (!request('filter-order'))
                 <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
+                @endif
+                <form action="{{ route('order.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" id="file" onchange="submit()">
+                </form>
             </div>
-            @endif
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
