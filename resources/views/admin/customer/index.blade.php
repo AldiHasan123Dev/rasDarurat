@@ -12,7 +12,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomer" aria-controls="offcanvasCustomer">Tambah Customer <i class="fas fa-plus"></i></button>
+                <a style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" href="{{ route('customer.create') }}">Tambah Customer <i class="fas fa-plus"></i></a>
                 {{-- <form action="{{ route('customer.import') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="file" id="file" onchange="submit()">
@@ -216,7 +216,7 @@
     </div>
 
 {{-- Create --}}
-<div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCustomer" aria-labelledby="offcanvasCustomerLabel">
+{{-- <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCustomer" aria-labelledby="offcanvasCustomerLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasCustomerLabel">Form Customer</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -227,7 +227,7 @@
             @include('admin.customer.form',['cus'=>[]])
         </form>
     </div>
-</div>
+</div> --}}
 
 <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasTarif" aria-labelledby="offcanvasTarifLabel">
     <div class="offcanvas-header">
@@ -262,8 +262,8 @@
             columns: [
                 { data: 'id', name: 'customers.id' },
                 { data: 'nama', name: 'customers.nama' },
-                { data: 'marketing_id', name: 'users.name' },
-                { data: 'cs_id', name: 'cs.name' },
+                { data: 'marketing_id', name: 'marketing_id' },
+                { data: 'cs_id', name: 'cs_id' },
                 { data: 'pic', name: 'pic' },
                 { data: 'alamat', name: 'alamat' },
                 { data: 'kota', name: 'kota' },

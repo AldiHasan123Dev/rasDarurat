@@ -39,7 +39,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('user',UserController::class)->except(['create','edit']);
-    Route::resource('customer',CustomerController::class)->except(['create','edit']);
+    Route::resource('customer',CustomerController::class);
     Route::resource('pelayaran',PelayaranController::class)->except(['create','edit']);
     Route::resource('agen',AgenController::class)->except(['create','edit']);
     Route::resource('truk',TrukController::class)->except(['create','edit']);

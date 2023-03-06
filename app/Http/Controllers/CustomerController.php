@@ -18,7 +18,6 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $users = User::all();
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
         $customer = Customer::pluck('nama','id');
         $lokasi = Lokasi::pluck('nama','id');
@@ -30,21 +29,58 @@ class CustomerController extends Controller
         foreach ($jadwal_kapal as $id => $item ) {
             $kapal[$item->id] = $item->pelayaran->nama;
         }
-        return view('admin.customer.index', compact('users','kapal','customer','lokasi','satuan','kondisi','shipment'));
+        return view('admin.customer.index', compact('kapal','customer','lokasi','satuan','kondisi','shipment'));
+    }
+
+    public function create()
+    {
+        $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+        $customer = Customer::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+        $users = User::get();
+
+        $kapal = array();
+        foreach ($jadwal_kapal as $id => $item ) {
+            $kapal[$item->id] = $item->pelayaran->nama;
+        }
+
+        return view('admin.customer.create', compact('kapal','customer','lokasi','satuan','kondisi','shipment','users'));
+    }
+
+    public function edit(Customer $customer)
+    {
+        $cus = $customer;
+        $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+        $customer = Customer::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+        $users = User::get();
+
+        $kapal = array();
+        foreach ($jadwal_kapal as $id => $item ) {
+            $kapal[$item->id] = $item->pelayaran->nama;
+        }
+
+        return view('admin.customer.edit', compact('kapal','customer','lokasi','satuan','kondisi','shipment','users','cus'));
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
         Customer::create($data);
-        return back()->with('success','Data berhasil disimpan!');
+        return redirect()->route('customer.index')->with('success','Data berhasil disimpan!');
     }
 
     public function update(Customer $customer, Request $request)
     {
         $data = $request->all();
         $customer->update($data);
-        return back()->with('success','Data berhasil dupdate!');
+        return redirect()->route('customer.index')->with('success','Data berhasil dupdate!');
     }
 
     public function destroy(Customer $customer)
@@ -64,13 +100,13 @@ class CustomerController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Customer::join('users','users.id','=','customers.marketing_id')
-                    ->join('users as cs','cs.id','=','customers.cs_id')
-                    ->select('customers.*','users.name','users.id as usr_id')
-                    ->limit($start)->offset($limit);
+        $data = Customer::select('*')->limit($start)->offset($limit);
         $count = Customer::select('id')->count();
 
         return Datatables::of($data)
+            ->order(function ($query) {
+                $query->orderBy('created_at', 'desc');
+            })
             ->addColumn('marketing_id', function($data){
                 return $data->name ?? '-';
             })
@@ -97,21 +133,7 @@ class CustomerController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUserUpdate'.$data->id.'" aria-controls="offcanvasUserUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUserUpdate'.$data->id.'" aria-labelledby="offcanvasUserUpdate'.$data->id.'Label">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasUserUpdate'.$data->id.'Label">Form User</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('user.update',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-
-                                </form>
-                            </div>
+                            <a href="'.route('customer.edit',$data).'" class="no-attr text-primary" title="Edit"><i class="fas fa-pencil"></i></a>
                         </div>';
                 return $html;
             })
