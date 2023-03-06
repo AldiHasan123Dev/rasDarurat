@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Kondisi;
 use App\Models\Lokasi;
+use App\Models\Pelayaran;
 use App\Models\Satuan;
 use App\Models\Shipment;
 use App\Models\User;
@@ -24,12 +25,9 @@ class CustomerController extends Controller
         $satuan = Satuan::pluck('nama','id');
         $kondisi = Kondisi::pluck('nama','id');
         $shipment = Shipment::pluck('nama','id');
+        $pelayaran = Pelayaran::pluck('nama','id');
 
-        $kapal = array();
-        foreach ($jadwal_kapal as $id => $item ) {
-            $kapal[$item->id] = $item->pelayaran->nama;
-        }
-        return view('admin.customer.index', compact('kapal','customer','lokasi','satuan','kondisi','shipment'));
+        return view('admin.customer.index', compact('pelayaran','customer','lokasi','satuan','kondisi','shipment'));
     }
 
     public function create()

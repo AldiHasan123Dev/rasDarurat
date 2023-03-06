@@ -91,8 +91,11 @@ class TarifController extends Controller
         }
 
         return Datatables::of($data)
-            ->addColumn('jadwal_kapal_id', function($data){
-                return  $data->jadwal_kapal->kapal->nama.'('.$data->jadwal_kapal->voyage.') || '.$data->jadwal_kapal->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($data->jadwal_kapal->etd)).' || '.$data->jadwal_kapal->rute ?? '-';
+            // ->addColumn('jadwal_kapal_id', function($data){
+            //     return  $data->jadwal_kapal->kapal->nama.'('.$data->jadwal_kapal->voyage.') || '.$data->jadwal_kapal->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($data->jadwal_kapal->etd)).' || '.$data->jadwal_kapal->rute ?? '-';
+            // })
+            ->addColumn('pelayaran_id', function($data){
+                return  $data->pelayaran->nama ?? '-';
             })
             ->addColumn('dari', function($data){
                 return  $data->dari_lokasi->nama ?? '-';

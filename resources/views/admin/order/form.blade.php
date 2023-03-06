@@ -1,5 +1,6 @@
 <div class="row">
     <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
+    <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
     <x-input :value="''" :name="'tarif'" :col="3" :label="'Tarif'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'satuan'" :col="3" :label="'Satuan'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'dari'" :col="3" :label="'Dari'" :type="'text'" :disabled="true"></x-input>

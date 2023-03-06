@@ -99,7 +99,7 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Jadwal Kapal</th>
+                                <th>Pelayaran</th>
                                 <th>Dari</th>
                                 <th>Tujuan</th>
                                 <th>Shipment</th>
@@ -292,8 +292,8 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id' },
-                { data: 'jadwal_kapal_id', name: 'jadwal_kapal_id' },
+                { data: 'id', name: 'id', visible:false },
+                { data: 'pelayaran_id', name: 'pelayaran_id' },
                 { data: 'dari', name: 'dari' },
                 { data: 'tujuan', name: 'tujuan' },
                 { data: 'shipment', name: 'shipment' },

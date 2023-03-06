@@ -27,3 +27,4 @@ Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
+Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);

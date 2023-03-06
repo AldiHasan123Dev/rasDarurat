@@ -64,7 +64,7 @@ class JadwalKapalController extends Controller
         $count = JadwalKapal::select('id')->count();
         return Datatables::of($data)
         ->order(function ($query) {
-            $query->orderBy('is_active', 'desc');
+            $query->orderBy('is_active', 'desc')->orderBy('closing', 'desc');
         })
         ->addColumn('tools', function($data){
             $html = '<div class="dropend">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\OrderImport;
 use App\Models\Barang;
 use App\Models\Customer;
+use App\Models\JadwalKapal;
 use App\Models\Order;
 use App\Models\Satuan;
 use App\Models\Tarif;
@@ -23,7 +24,7 @@ class OrderController extends Controller
         $pengirim = $customers;
         $tarif = array();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
+            $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
         return view('admin.order.index', compact('tarif','customers','barang','satuan','pengirim'));
     }
@@ -104,7 +105,7 @@ class OrderController extends Controller
                 if($data->bttb->count()>0){
                     $class = 'bg-light-success';
                 }
-                if($data->tarif->jadwal_kapal->is_active != 1){
+                if($data->jadwal_kapal->is_active != 1){
                     $class = 'bg-light-danger';
                 }
                 if(!is_null($data->invoice)){
@@ -196,19 +197,19 @@ class OrderController extends Controller
                 return $data->barang->nama ?? '-';
             })
             ->addColumn('pelayaran', function($data){
-                return $data->tarif->jadwal_kapal->pelayaran->nama ?? '-';
+                return $data->jadwal_kapal->pelayaran->nama ?? '-';
             })
             ->addColumn('kapal', function($data){
-                return $data->tarif->jadwal_kapal->kapal->nama ?? '-';
+                return $data->jadwal_kapal->kapal->nama ?? '-';
             })
             ->addColumn('voyage', function($data){
-                return $data->tarif->jadwal_kapal->voyage ?? '-';
+                return $data->jadwal_kapal->voyage ?? '-';
             })
             ->addColumn('etd', function($data){
-                return $data->tarif->jadwal_kapal->etd ?? '-';
+                return $data->jadwal_kapal->etd ?? '-';
             })
             ->addColumn('td', function($data){
-                return $data->tarif->jadwal_kapal->td ?? '-';
+                return $data->jadwal_kapal->td ?? '-';
             })
             ->addColumn('satuan', function($data){
                 return $data->tarif->satuanInfo->nama ?? '-';

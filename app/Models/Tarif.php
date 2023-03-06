@@ -12,6 +12,7 @@ class Tarif extends Model
 
     protected $table = 'tarif';
     protected $fillable = [
+        'pelayaran_id',
         'jadwal_kapal_id',
         'dari',
         'tujuan',
@@ -59,5 +60,10 @@ class Tarif extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class,'customer_id');
+    }
+
+    public function pelayaran()
+    {
+        return $this->belongsTo(Pelayaran::class,'pelayaran_id');
     }
 }

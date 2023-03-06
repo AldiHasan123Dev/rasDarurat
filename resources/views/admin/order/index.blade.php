@@ -443,5 +443,21 @@
                 }
             });
         });
+
+        $('#tarif_id').change(function (e) {
+            var val = $(this).val();
+            $.ajax({
+                type: "GET",
+                url: "/api/get-jadwal-kapal-pelayaran/"+val,
+                success: function (response) {
+                    var data = response;
+                    var html = '<option>Pilih Kapal</option>';
+                    $.each(data, function (id, name) {
+                        html += '<option value="'+id+'">'+name+'</option>'
+                    });
+                    $('select[name=jadwal_kapal_id]').html(html);
+                }
+            });
+        });
 </script>
 @endsection

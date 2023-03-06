@@ -32,4 +32,20 @@ class SyncController extends Controller
 
         return response('successss');
     }
+
+    public function sync()
+    {
+        $data = Order::all();
+        foreach ($data as $item ) {
+            $item->update([
+                'jadwal_kapal_id' => $item->tarif->jadwal_kapal_id
+            ]);
+
+            $item->tarif->update([
+                'pelayaran_id' => $item->tarif->jadwal_kapal->pelayaran_id
+            ]);
+        }
+
+        return response('success');
+    }
 }
