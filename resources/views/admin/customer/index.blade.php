@@ -260,8 +260,8 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id' },
-                { data: 'nama', name: 'nama' },
+                { data: 'id', name: 'customers.id' },
+                { data: 'nama', name: 'customers.nama' },
                 { data: 'marketing_id', name: 'users.name' },
                 { data: 'cs_id', name: 'cs.name' },
                 { data: 'pic', name: 'pic' },
@@ -308,7 +308,7 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
         });
-        
+
         $(document).ready(function() {
             $("select[name=customer_id]").select2(
                 {

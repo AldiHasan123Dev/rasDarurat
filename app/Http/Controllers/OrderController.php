@@ -35,13 +35,12 @@ class OrderController extends Controller
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
+        $num = Order::max('no');
         $data['barang_id'] = $barang->id;
-        $data['job'] = date('Ymd').sprintf('%02d',1);
+        $data['no'] = $num+1;
+        $data['job'] = date('ym').sprintf('%04d',$num+1);
         $data['no_job'] = 1;
         $order = Order::create($data);
-        $order->update([
-            'job' => date('Ymd').sprintf('%02d',$order->id)
-        ]);
         return back()->with('success','Data berhasil disimpan');
     }
 
@@ -70,7 +69,7 @@ class OrderController extends Controller
         Order::create($data);
         return back()->with('success','Copy data berhasil');
     }
-    
+
     public function import(Request $request)
     {
         Excel::import(new OrderImport, $request->file);
@@ -82,20 +81,22 @@ class OrderController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Order::query();
-        $data->join('customers','customers.id','=','order.pengirim_id')
-                ->join('customers as cus','cus.id','=','order.penerima_id');
-                // ->join('tarif','tarif.id','=','order.tarif_id')
-                // ->join('lokasi','lokasi.id','=','tarif.dari')
-                // ->join('lokasi as lok','lok.id','=','tarif.tujuan')
-                // ->join('jadwal_kapal','jadwal_kapal.id','=','tarif.jadwal_kapal_id')
-                // ->join('kapal','kapal.id','=','jadwal_kapal.kapal_id');
+        $data = Order::join('customers','customers.id','=','order.pengirim_id')
+                ->join('customers as cus','cus.id','=','order.penerima_id')
+                ->join('tarif','tarif.id','=','order.tarif_id')
+                ->join('lokasi','lokasi.id','=','tarif.dari')
+                ->join('lokasi as lok','lok.id','=','tarif.tujuan')
+                ->join('jadwal_kapal','jadwal_kapal.id','=','tarif.jadwal_kapal_id')
+                ->join('kapal','kapal.id','=','jadwal_kapal.kapal_id')
+                ->select('order.*');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('invoice');
         }
         if(request('filter')&&request('filter')=='invoice'){
             $data->whereNotNull('invoice');
         }
+
+        $count = $data->count();
 
         return Datatables::of($data->offset($start)->limit($limit))
             ->setRowClass(function ($data) {
@@ -113,7 +114,7 @@ class OrderController extends Controller
                 return $class;
             })
             ->order(function ($query) {
-                $query->orderBy('job', 'asc');
+                $query->orderBy('no', 'desc');
             })
             ->addColumn('tools', function($data){
                 $ba_kembali = '';
@@ -124,7 +125,7 @@ class OrderController extends Controller
                             <button class="no-attr text-dark text-center dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:.6rem"><i class="fas fa-list"></i></button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <form method="POST" action="'.route('order.copy',$data).'">
+                                    <form method="POST" action="'.route('order.copy',$data->id).'">
                                         <input type="hidden" name="_token" value="'.csrf_token().'" />
                                         <button onclick="return confirm(\'are you sure\')" type="submit" class="dropdown-item">Copy Order</a>
                                     </form>
@@ -219,15 +220,15 @@ class OrderController extends Controller
                 return number_format($data->tarif->tarif) ?? '-';
             })
             ->addColumn('action', function ($data) {
-                $tarifs = Tarif::where('is_active',1)->get();
-                $customers = Customer::pluck('nama','id');
-                $barang = Barang::pluck('nama','id');
-                $order = $data;
-                $tarif = array();
-                foreach ($tarifs as $id => $item ) {
-                    $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
-                }
-                $view = view('admin.order.form',compact('tarif','customers','barang','order'))->render();
+                // $tarifs = Tarif::where('is_active',1)->get();
+                // $customers = Customer::pluck('nama','id');
+                // $barang = Barang::pluck('nama','id');
+                // $order = $data;
+                // $tarif = array();
+                // foreach ($tarifs as $id => $item ) {
+                //     $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
+                // }
+                // $view = view('admin.order.form',compact('tarif','customers','barang','order'))->render();
                 $html = '<div class="d-flex gap-1">
                             <form action="'.route('order.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
@@ -246,7 +247,7 @@ class OrderController extends Controller
                                 <form action="'.route('order.update',$data).'" method="post" id="update">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                     <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
+
                                 </form>
                             </div>
                         </div>
@@ -272,7 +273,7 @@ class OrderController extends Controller
                 return $html;
             })
             ->rawColumns(['action','tools'])
-            ->skipTotalRecords()
+            ->setFilteredRecords($count)
             ->toJson();
     }
 }

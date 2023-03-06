@@ -58,8 +58,14 @@ class JadwalKapalController extends Controller
 
     public function datatable()
     {
-        $data = JadwalKapal::all()->sortByDesc('created_at');
+        $limit = request('length');
+        $start = request('start') * request('length');
+        $data = JadwalKapal::select('jadwal_kapal.*')->offset($start)->limit($limit);
+        $count = JadwalKapal::select('id')->count();
         return Datatables::of($data)
+        ->order(function ($query) {
+            $query->orderBy('is_active', 'desc');
+        })
         ->addColumn('tools', function($data){
             $html = '<div class="dropend">
                         <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-list"></i></button>
@@ -130,6 +136,7 @@ class JadwalKapalController extends Controller
                         </div>';
                 return $html;
             })
+            ->setFilteredRecords($count)
             ->rawColumns(['action','status','tools'])
             ->make(true);
     }

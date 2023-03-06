@@ -13,6 +13,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PelayaranController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
@@ -61,8 +62,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/bttb',[CetakController::class,'bttb'])->name('cetak.bttb');
     Route::get('cetak/bttb-kubikasi',[CetakController::class,'bttbKubikasi'])->name('cetak.bttb.kubikasi');
     Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
-    Route::post('copy-order/{order}',[OrderController::class,'copy'])->name('order.copy');
+    Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
     Route::view('static-invoice', 'admin.print.invoice');
+
+    Route::get('sync-import',[SyncController::class,'import']);
 });

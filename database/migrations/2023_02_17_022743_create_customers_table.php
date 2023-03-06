@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('tipe')->nullable();
             $table->string('no_bl')->nullable();
+            $table->string('top')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

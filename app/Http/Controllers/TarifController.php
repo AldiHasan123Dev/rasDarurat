@@ -81,9 +81,13 @@ class TarifController extends Controller
 
     public function datatable()
     {
-        $data = Tarif::all();
+        $limit = request('length');
+        $start = request('start') * request('length');
+        $data = Tarif::query()->limit($start)->offset($limit);
+        $count =  Tarif::select('id')->count();
         if(request('customer_id')||!is_null(request('customer_id'))){
-            $data = Tarif::all()->where('customer_id',request('customer_id'));
+            $data = Tarif::query()->where('customer_id',request('customer_id'))->limit($start)->offset($limit);
+            $count = Tarif::query()->where('customer_id',request('customer_id'))->select('id')->count();
         }
 
         return Datatables::of($data)
@@ -127,18 +131,18 @@ class TarifController extends Controller
                 return  $html;
             })
             ->addColumn('action', function ($data) {
-                $tarif = $data;
-                $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
-                $customer = Customer::pluck('nama','id');
-                $lokasi = Lokasi::pluck('nama','id');
-                $satuan = Satuan::pluck('nama','id');
-                $kondisi = Kondisi::pluck('nama','id');
-                $shipment = Shipment::pluck('nama','id');
-                $kapal = array();
-                foreach ($jadwal_kapal as $id => $item ) {
-                    $kapal[$item->id] = $item->kapal->nama.'('.$item->voyage.') || '.$item->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($item->etd)).' || '.$item->rute;
-                }
-                $view = view('admin.tarif.form',compact('kapal','customer','lokasi','satuan','kondisi','shipment','tarif'))->render();
+                // $tarif = $data;
+                // $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+                // $customer = Customer::pluck('nama','id');
+                // $lokasi = Lokasi::pluck('nama','id');
+                // $satuan = Satuan::pluck('nama','id');
+                // $kondisi = Kondisi::pluck('nama','id');
+                // $shipment = Shipment::pluck('nama','id');
+                // $kapal = array();
+                // foreach ($jadwal_kapal as $id => $item ) {
+                //     $kapal[$item->id] = $item->kapal->nama.'('.$item->voyage.') || '.$item->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($item->etd)).' || '.$item->rute;
+                // }
+                // $view = view('admin.tarif.form',compact('kapal','customer','lokasi','satuan','kondisi','shipment','tarif'))->render();
                 $html = '<div class="d-flex gap-1">
                             <form action="'.route('tarif.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
@@ -157,13 +161,14 @@ class TarifController extends Controller
                                 <form action="'.route('tarif.update',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                     <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
+
                                 </form>
                             </div>
                         </div>';
                 return $html;
             })
             ->rawColumns(['action','status'])
+            ->setFilteredRecords($count)
             ->make(true);
     }
 }

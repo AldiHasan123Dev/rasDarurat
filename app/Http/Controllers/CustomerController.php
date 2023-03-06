@@ -64,10 +64,13 @@ class CustomerController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Customer::query()->join('users','users.id','=','customers.marketing_id')
-                ->join('users as cs','cs.id','=','customers.cs_id')->select('customers.*','users.name','users.id as usr_id');
+        $data = Customer::join('users','users.id','=','customers.marketing_id')
+                    ->join('users as cs','cs.id','=','customers.cs_id')
+                    ->select('customers.*','users.name','users.id as usr_id')
+                    ->limit($start)->offset($limit);
+        $count = Customer::select('id')->count();
 
-        return Datatables::of($data->offset($start)->limit($limit))
+        return Datatables::of($data)
             ->addColumn('marketing_id', function($data){
                 return $data->name ?? '-';
             })
@@ -75,19 +78,19 @@ class CustomerController extends Controller
                 return $data->cs->name ?? '-';
             })
             ->addColumn('action', function ($data) {
-                $users = User::all();
-                $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
-                $customer = Customer::pluck('nama','id');
-                $lokasi = Lokasi::pluck('nama','id');
-                $satuan = Satuan::pluck('nama','id');
-                $kondisi = Kondisi::pluck('nama','id');
-                $shipment = Shipment::pluck('nama','id');
-                $kapal = array();
-                $cus = $data;
-                foreach ($jadwal_kapal as $id => $item ) {
-                    $kapal[$item->id] = $item->pelayaran->nama;
-                }
-                $view = view('admin.customer.form',compact('users','cus','kapal','customer','lokasi','satuan','kondisi','shipment'))->render();
+                // $users = User::all();
+                // $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+                // $customer = Customer::pluck('nama','id');
+                // $lokasi = Lokasi::pluck('nama','id');
+                // $satuan = Satuan::pluck('nama','id');
+                // $kondisi = Kondisi::pluck('nama','id');
+                // $shipment = Shipment::pluck('nama','id');
+                // $kapal = array();
+                // $cus = $data;
+                // foreach ($jadwal_kapal as $id => $item ) {
+                //     $kapal[$item->id] = $item->pelayaran->nama;
+                // }
+                // $view = view('admin.customer.form',compact('users','cus','kapal','customer','lokasi','satuan','kondisi','shipment'))->render();
                 $html = '<div class="d-flex gap-1">
                             <form action="'.route('user.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
@@ -106,13 +109,14 @@ class CustomerController extends Controller
                                 <form action="'.route('user.update',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                     <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
+
                                 </form>
                             </div>
                         </div>';
                 return $html;
             })
             ->rawColumns(['action'])
+            ->setFilteredRecords($count)
             ->skipTotalRecords()
             ->toJson();
     }

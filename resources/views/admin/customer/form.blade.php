@@ -61,6 +61,10 @@
         <label for="kota">Kota</label>
         <input type="text" value="{{ $cus->kota ?? '' }}" name="kota" id="kota-{{ $cus->id??'' }}" class="form-control" required>
     </div>
+    <div class="col-6 mb-2 px-1">
+        <label for="top">TOP (hari)</label>
+        <input type="number" value="{{ $cus->top ?? '' }}" name="top" id="top-{{ $cus->id??'' }}" class="form-control" required>
+    </div>
     {{-- <div class="col-12 mb-2 px-1">
         <div class="d-flex gap-2">
             <div class="form-check">

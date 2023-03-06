@@ -26,6 +26,7 @@ class Customer extends Model
         'email',
         'tipe',
         'no_bl',
+        'top',
     ];
 
     public function marketing()

@@ -10,10 +10,10 @@
                 @if (!request('filter-order'))
                 <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                 @endif
-                <form action="{{ route('order.import') }}" method="post" enctype="multipart/form-data">
+                {{-- <form action="{{ route('order.import') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="file" id="file" onchange="submit()">
-                </form>
+                </form> --}}
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -25,9 +25,9 @@
                                 <th>Invoice</th>
                                 <th>Group JOB</th>
                                 <th>ID JOB</th>
+                                <th>Pembayar</th>
                                 <th>Marketing</th>
                                 <th>CS</th>
-                                <th>Pembayar</th>
                                 <th>Pengirim</th>
                                 <th>Penerima</th>
                                 <th>Dari</th>
@@ -62,50 +62,51 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-12 mt-3">
-            <div class="card">
-                <div class="card-header p-2 d-flex" style="gap:10px" id="bttb-info">
-                    <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasBTTB" aria-controls="offcanvasBTTB"><i class="fas fa-plus"></i> Tambah
-                        BTTB</button>
-                    <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i
-                            class="fas fa-print"></i> Print BTTB</a>
-                    <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i
-                            class="fas fa-print"></i> Print BTTB Kubikasi</a>
-                    <b>N0. JOB : <span id="nojob"></span></b>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm" id="table-bttb" style="font-size:.7rem">
-                            <thead>
-                                <tr>
-                                    <th>ID.</th>
-                                    <th>No. Gudang</th>
-                                    <th>Barang</th>
-                                    <th>Jumlah</th>
-                                    <th>Satuan</th>
-                                    <th>P</th>
-                                    <th>L</th>
-                                    <th>T</th>
-                                    <th>Vol</th>
-                                    <th>Berat</th>
-                                    <th>Tgl Masuk</th>
-                                    <th>Pengirim</th>
-                                    <th>Keterangan</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+        <div class="row">
+            <div class="col-12 mt-3">
+                <div class="card">
+                    <div class="card-header p-2 d-flex" style="gap:10px" id="bttb-info">
+                        <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasBTTB" aria-controls="offcanvasBTTB"><i class="fas fa-plus"></i> Tambah
+                            BTTB</button>
+                        <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i
+                                class="fas fa-print"></i> Print BTTB</a>
+                        <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i
+                                class="fas fa-print"></i> Print BTTB Kubikasi</a>
+                        <b>N0. JOB : <span id="nojob"></span></b>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm" id="table-bttb" style="font-size:.7rem">
+                                <thead>
+                                    <tr>
+                                        <th>ID.</th>
+                                        <th>No. Gudang</th>
+                                        <th>Barang</th>
+                                        <th>Jumlah</th>
+                                        <th>Satuan</th>
+                                        <th>P</th>
+                                        <th>L</th>
+                                        <th>T</th>
+                                        <th>Vol</th>
+                                        <th>Berat</th>
+                                        <th>Tgl Masuk</th>
+                                        <th>Pengirim</th>
+                                        <th>Keterangan</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 
@@ -325,9 +326,9 @@
                 { data: 'invoice', name: 'invoice' },
                 { data: 'job', name: 'job' },
                 { data: 'no_job', name: 'no_job' },
+                { data: 'pembayar', name: 'pembayar' },
                 { data: 'marketing', name: 'marketing' },
                 { data: 'cs', name: 'cs' },
-                { data: 'pembayar', name: 'pembayar' },
                 { data: 'pengirim', name: 'customers.nama' },
                 { data: 'penerima', name: 'cus.nama' },
                 { data: 'dari', name: 'dari' },
