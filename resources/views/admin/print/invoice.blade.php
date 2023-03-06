@@ -12,8 +12,47 @@
 
     <!-- Invoice styling -->
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
+
+        #print * {
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        @media print {
+            @page {
+                size: 8.5in 5.5in;
+                margin: .6cm .5cm 0cm .5cm;
+            }
+
+            body * {
+                visibility: hidden;
+            }
+
+            #print .header {
+                margin-top: 50px;
+            }
+
+            #print,
+            #print * {
+                visibility: visible;
+                font-family: 'Open Sans', sans-serif;
+                font-size: 1rem !important;
+                color: black !important;
+            }
+
+            #print {
+                height: 100%;
+                width: 100%;
+                position: absolute;
+                left: 0;
+                top: -80px;
+                font-family: 'Open Sans', sans-serif;
+            }
+        }
+
         body {
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            /* font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; */
+            font-family: 'Open Sans', sans-serif;
             text-align: center;
             color: #777;
         }
@@ -45,7 +84,8 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
             font-size: 13px;
             line-height: 24px;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            /* font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; */
+            font-family: 'Open Sans', sans-serif;
             color: #555;
         }
 
@@ -150,14 +190,38 @@
             border: 2px solid #000000;
         }
     </style>
+    <link rel="stylesheet" href="{{ asset('assets/css/theme.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 </head>
 
 <body>
-    <div class="invoice-box">
+    <div style="margin: 20px; justify-content: center;" class="d-flex">
+        <button style="font-size: 20px" onclick="window.print()">PRINT</button>
+    </div>
+
+    <div class="invoice-box" id="print">
         <table>
             <tr class="top">
                 <td colspan="2">
-                    <table>
+                    <div class="header d-flex mb-3" style="gap:5px; width:100%;">
+                        <img src="{{ asset('assets/img/ras.png') }}" alt="logo" style="height: 50px; width: 30%"
+                            class="img-fluid">
+                        <div style="width: 40%; margin-left:35px">
+                            <table style="font-size:.7rem">
+                                <tr>
+                                    <td style="padding: 0" class="fw-bold">PT. RAHMAT ALAM SAMUDRA</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0">Jl. Kalianak 55G, Surabaya</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 0">Telp & Fax 031.7495507 / 081.230.162.999</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <p class="fw-bold mt-3" style="width:30%; font-size:.7rem">SURAT JALAN / PENGANTAR</p>
+                    </div>
+                    {{-- <table>
                         <tr>
                             <td class="title" style="display: flex">
                                 <img src="https://seeklogo.com/images/B/business-company-logo-C561B48365-seeklogo.com.png"
@@ -174,7 +238,7 @@
                                 <div class="t-inv"><u>INVOICE</u></div>
                             </td>
                         </tr>
-                    </table>
+                    </table> --}}
                 </td>
             </tr>
 
@@ -435,6 +499,14 @@
             </tr>
         </table>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.3.js"
+        integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+    <script>
+        function printwes(){
+            $('.invoice-box').printElement();
+        }
+    </script>
 </body>
 
 </html>
