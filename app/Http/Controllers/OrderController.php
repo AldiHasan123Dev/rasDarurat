@@ -82,14 +82,7 @@ class OrderController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Order::join('customers','customers.id','=','order.pengirim_id')
-                ->join('customers as cus','cus.id','=','order.penerima_id')
-                ->join('tarif','tarif.id','=','order.tarif_id')
-                ->join('lokasi','lokasi.id','=','tarif.dari')
-                ->join('lokasi as lok','lok.id','=','tarif.tujuan')
-                ->join('jadwal_kapal','jadwal_kapal.id','=','tarif.jadwal_kapal_id')
-                ->join('kapal','kapal.id','=','jadwal_kapal.kapal_id')
-                ->select('order.*');
+        $data = Order::select('order.*');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('invoice');
         }
