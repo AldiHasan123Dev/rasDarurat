@@ -103,7 +103,7 @@ class CustomerController extends Controller
 
         return Datatables::of($data)
             ->order(function ($query) {
-                $query->orderBy('created_at', 'desc');
+                $query->orderBy('nama', 'asc');
             })
             ->addColumn('marketing_id', function($data){
                 return $data->name ?? '-';
