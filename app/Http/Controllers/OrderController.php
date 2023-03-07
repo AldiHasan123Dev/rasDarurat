@@ -19,16 +19,16 @@ class OrderController extends Controller
     public function index()
     {
         $tarifs = Tarif::where('is_active',1)->get();
-        $customers = Customer::pluck('nama','id');
+        // $customers = Customer::pluck('nama','id');
         $barang = Barang::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
         $agent = Agen::pluck('nama','id');
-        $pengirim = $customers;
+        // $pengirim = $customers;
         $tarif = array();
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
-        return view('admin.order.index', compact('tarif','customers','barang','satuan','pengirim','agent'));
+        return view('admin.order.index', compact('tarif','barang','satuan','agent'));
     }
 
     public function store(Request $request)

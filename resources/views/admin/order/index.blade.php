@@ -134,7 +134,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <form action="{{ route('bttb.store') }}" method="post">
+        <form action="{{ route('bttb.store') }}" method="post" id="form-bttb">
             @csrf
             <input type="hidden" name="order_id" id="order_id_bttb">
             @include('admin.bttb.form', ['bttb'=>[]])
@@ -146,7 +146,59 @@
 @section('script')
 <script>
     $(document).ready(function() {
-        $('select[name=pengirim_id]').select2(
+        $('#create select[name=pengirim_id]').select2(
+            {
+                dropdownParent: $('#offcanvasOrder'),
+                ajax: {
+                    url: '/api/get-pengirim',
+                    data: function (params) {
+                        return {
+                            cari: params.term, // text pencarian
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 20) < data.counts
+                            }
+                        };
+                    },
+                    minimumInputLength: 2,
+                    delay: 400,
+                }
+            }
+        );
+        $('#form-bttb select[name=pengirim_id]').select2(
+            {
+                dropdownParent: $('#offcanvasBTTB'),
+                ajax: {
+                    url: '/api/get-pengirim',
+                    data: function (params) {
+                        return {
+                            cari: params.term, // text pencarian
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 20) < data.counts
+                            }
+                        };
+                    },
+                    minimumInputLength: 2,
+                    delay: 400,
+                }
+            }
+        );
+    });
+    $(document).ready(function() {
+        $("#create select[name=penerima_id]").select2(
             {
                 dropdownParent: $('#offcanvasOrder'),
                 ajax: {
@@ -173,7 +225,7 @@
         );
     });
     $(document).ready(function() {
-        $("select[name=penerima_id]").select2(
+        $("#create select[name=penerima_bl_id]").select2(
             {
                 dropdownParent: $('#offcanvasOrder'),
                 ajax: {
@@ -200,34 +252,7 @@
         );
     });
     $(document).ready(function() {
-        $("select[name=penerima_bl_id]").select2(
-            {
-                dropdownParent: $('#offcanvasOrder'),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
-    $(document).ready(function() {
-        $("select[name=barang_id]").select2(
+        $("#create select[name=barang_id]").select2(
             {
                 dropdownParent: $('#offcanvasOrder'),
                 ajax: {
@@ -253,115 +278,6 @@
             }
         );
     });
-</script>
-
-<script>
-    function renderSelect2(id){
-        return
-        $('#selectPengirim').select2(
-            {
-                dropdownParent: $(`#offcanvasOrderUpdate${id}`),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-
-        $("select[name=penerima_id]").select2(
-            {
-                dropdownParent: $(`#offcanvasOrderUpdate${id}`),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-
-        $("select[name=penerima_bl_id]").select2(
-            {
-                dropdownParent: $(`#offcanvasOrderUpdate${id}`),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-
-        $("select[name=barang_id]").select2(
-            {
-                dropdownParent: $(`#offcanvasOrderUpdate${id}`),
-                ajax: {
-                    url: '/api/get-barang',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    }
 </script>
 
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
@@ -479,9 +395,9 @@
         //     tags:true
         // });
 
-        $("select[name=pengirim_id]").select2({
-            dropdownParent: $('#offcanvasBTTB')
-        });
+        // $("#form-bttb #pengirim_id").select2({
+        //     dropdownParent: $('#offcanvasBTTB')
+        // });
         $("select[name=satuan_id]").select2({
             dropdownParent: $('#offcanvasBTTB'),
             tags:true

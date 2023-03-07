@@ -16,15 +16,15 @@
 <x-input :value="$bttb->l??old('l')" :col="3" :label="'L'" :type="'number'" :name="'l'"></x-input>
 <x-input :value="$bttb->t??old('t')" :col="3" :label="'T'" :type="'number'" :name="'t'"></x-input>
 <x-input :value="$bttb->t??old('vol')" :col="3" :label="'Vol Manual'" :type="'number'" :name="'vol'"></x-input>
-<x-input :value="$bttb->t??old('berat')" :col="3" :label="'Berat'" :type="'number'" :name="'berat'"></x-input>
+<x-input :value="$bttb->t??old('berat')" :col="6" :label="'Berat'" :type="'number'" :name="'berat'"></x-input>
 <x-input :value="$bttb->tgl_masuk??date('Y-m-d')" :col="6" :label="'Tgl Masuk'" :type="'date'" :name="'tgl_masuk'" :required="true"></x-input>
 @if ($bttb)
-    <x-input :value="$bttb->pengirim_id" :col="6" :label="'Pengirim'" :type="'select'" :options="$pengirim" :name="'pengirim_id'" :required="true"></x-input>
+    <x-input :value="$bttb->pengirim_id" :col="6" :label="'Pengirim'" :type="'select'" :options="[]" :name="'pengirim_id'" :required="true"></x-input>
 @else
     @if (empty($order))
-        <x-input :value="''" :col="6" :label="'Pengirim'" :type="'select'" :options="$pengirim" :name="'pengirim_id'" :required="true"></x-input>
+        <x-input :value="''" :col="12" :label="'Pengirim'" :type="'select'" :options="[]" :name="'pengirim_id'" :required="true"></x-input>
     @else
-        <x-input :value="$order->pengirim_id" :col="6" :label="'Pengirim'" :type="'select'" :options="$pengirim" :name="'pengirim_id'" :required="true"></x-input>
+        <x-input :value="$order->pengirim_id" :col="12" :label="'Pengirim'" :type="'select'" :options="[]" :name="'pengirim_id'" :required="true"></x-input>
     @endif
 @endif
 <x-input :value="$bttb->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'" :required="true"></x-input>
