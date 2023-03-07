@@ -367,6 +367,7 @@
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
 <script>
     $('#bttb-info').hide();
+    $('#ag').hide();
         let id = null;
         let tableOrder = $('#table-order').DataTable({
             processing: true,
@@ -412,8 +413,8 @@
                 { data: 'satuan', name: 'satuan' },
                 { data: 'unit', name: 'unit' },
                 { data: 'tarif', name: 'tarif' },
-                { data: 'agen_id', name: 'agen_id' },
-                { data: 'penerima_bl_id', name: 'penerima_bl_id' },
+                { data: 'agen', name: 'agen' },
+                { data: 'penerima_bl', name: 'penerima_bl' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
@@ -467,9 +468,6 @@
         //     dropdownParent: $('#offcanvasOrder'),
         //     tags:true
         // });
-        $("select[name=agen_id]").select2({
-            dropdownParent: $('#offcanvasOrder')
-        });
         // $("select[name=pengirim_id]").select2({
         //     dropdownParent: $('#offcanvasOrder')
         // });
@@ -526,6 +524,20 @@
                     $('select[name=jadwal_kapal_id]').html(html);
                 }
             });
+        });
+
+        $('#agen').change(function (e) {
+            var val = $(this).val();
+            if (val=='AGEN') {
+                $('#ag').show();
+                $('#nag').hide();
+                $("select[name=agen_id]").select2({
+                    dropdownParent: $('#offcanvasOrder')
+                });
+            }else{
+                $('#nag').show();
+                $('#ag').hide();
+            }
         });
 </script>
 @endsection

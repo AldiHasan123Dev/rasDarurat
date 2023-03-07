@@ -106,6 +106,7 @@
                                 <th>Kondisi</th>
                                 <th>Satuan</th>
                                 <th>Tarif</th>
+                                <th>Stuffing</th>
                                 <th>Keterangan</th>
                                 <th>Unit</th>
                                 <th>Min qty</th>
@@ -121,113 +122,6 @@
             </div>
         </div>
     </div>
-
-
-    {{-- Create --}}
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCustomer" aria-labelledby="offcanvasCustomerLabel">
-        <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasCustomerLabel">Form Customer</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <form action="{{ route('customer.store') }}" method="post">
-                @csrf
-                <input type="file" name="file" id="file" onchange="submit()">
-            </form>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-sm" id="customer" style="font-size:.7rem">
-                    <thead>
-                        <tr>
-                            <th>ID.</th>
-                            <th>Nama</th>
-                            <th>Marketing</th>
-                            <th>CS</th>
-                            <th>PIC</th>
-                            <th>Alamat</th>
-                            <th>Kota</th>
-                            <th>Telp</th>
-                            <th>HP</th>
-                            <th>Fax</th>
-                            <th>Email</th>
-                            <th>NIK</th>
-                            <th>NPWP</th>
-                            <th>Nama NPWP</th>
-                            <th>Alamat NPWP</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {{-- @foreach ($customers as $cus)
-                        <tr>
-                            <td>{{ $cus->id }}</td>
-                            <td>{{ $cus->nama }}</td>
-                            <td>{{ $cus->marketing->name ?? '-' }}</td>
-                            <td>{{ $cus->cs->name ?? '-' }}</td>
-                            <td>{{ $cus->pic ?? '-' }}</td>
-                            <td>{{ $cus->alamat ?? '-' }}</td>
-                            <td>{{ $cus->kota ?? '-' }}</td>
-                            <td>{{ $cus->telp ?? '-' }}</td>
-                            <td>{{ $cus->hp ?? '-' }}</td>
-                            <td>{{ $cus->fax ?? '-' }}</td>
-                            <td>{{ $cus->email ?? '-' }}</td>
-                            <td>{{ $cus->nik ?? '-' }}</td>
-                            <td>{{ $cus->npwp ?? '-' }}</td>
-                            <td>
-                                <div class="d-flex gap-1">
-                                    <form action="{{ route('customer.destroy',$cus) }}" method="post">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" onclick="return confirm('Are you sure?')"
-                                            class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                            title="Hapus"><i class="fas fa-trash"></i></button>
-                                    </form>
-                                    <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas"
-                                        data-bs-target="#offcanvasCustomerUpdate{{ $cus->id }}"
-                                        aria-controls="offcanvasCustomerUpdate{{ $cus->id }}"><i
-                                            class="fas fa-pencil"></i></button>
-                                </div>
-
-                                <div class="offcanvas offcanvas-end" tabindex="-1"
-                                    id="offcanvasCustomerUpdate{{ $cus->id }}"
-                                    aria-labelledby="offcanvasCustomerUpdate{{ $cus->id }}Label">
-                                    <div class="offcanvas-header">
-                                        <h5 class="offcanvas-title" id="offcanvasCustomerUpdate{{ $cus->id }}Label">Form
-                                            Customer</h5>
-                                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="offcanvas-body">
-                                        <form action="{{ route('customer.update',$cus) }}" method="post">
-                                            @csrf
-                                            @method('PUT')
-                                            @include('admin.customer.form', ['cus'=>$cus])
-                                        </form>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach --}}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-{{-- Create --}}
-{{-- <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCustomer" aria-labelledby="offcanvasCustomerLabel">
-    <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasCustomerLabel">Form Customer</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-        <form action="{{ route('customer.store') }}" method="post">
-            @csrf
-            @include('admin.customer.form',['cus'=>[]])
-        </form>
-    </div>
-</div> --}}
 
 <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasTarif" aria-labelledby="offcanvasTarifLabel">
     <div class="offcanvas-header">
@@ -300,6 +194,7 @@
                 { data: 'kondisi', name: 'kondisi' },
                 { data: 'satuan', name: 'satuan' },
                 { data: 'tarif', name: 'tarif' },
+                { data: 'stuffing', name: 'stuffing' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'unit', name: 'unit' },
                 { data: 'min_qty', name: 'min_qty' },

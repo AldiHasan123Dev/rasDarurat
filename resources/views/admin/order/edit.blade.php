@@ -303,5 +303,24 @@
                 }
             });
         });
+
+        if (@json($order->agen=='AGEN')) {
+            $('#nag').hide();
+        }else{
+            $('#ag').hide();
+        }
+        $('#agen').change(function (e) {
+            var val = $(this).val();
+            if (val=='AGEN') {
+                $('#ag').show();
+                $('#nag').hide();
+                $("select[name=agen_id]").select2({
+                    dropdownParent: $('#offcanvasOrder')
+                });
+            }else{
+                $('#nag').show();
+                $('#ag').hide();
+            }
+        });
 </script>
 @endsection

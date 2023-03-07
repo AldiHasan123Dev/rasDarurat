@@ -251,7 +251,13 @@ class OrderController extends Controller
             ->addColumn('tarif', function($data){
                 return number_format($data->tarif->tarif) ?? '-';
             })
-            ->addColumn('penerima_bl_id', function($data){
+            ->addColumn('penerima_bl', function($data){
+                if ($data->agen=='AGEN') {
+                    return $data->agent->nama ?? '-';
+                } else {
+                    return $data->penerima_bl->nama ?? '-';
+                }
+
                 return $data->penerima_bl->nama ?? '-';
             })
             ->addColumn('action', function ($data) {

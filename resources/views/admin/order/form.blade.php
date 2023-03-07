@@ -13,9 +13,7 @@
     {{-- <x-input :options="$satuan" :value="$order->satuan??old('satuan')" :col="3" :label="'Satuan'" :type="'select'" :name="'satuan'"></x-input> --}}
     <x-input :value="$order->ba_kirim??old('ba_kirim')" :col="3" :label="'BA Kirim'" :type="'date'" :name="'ba_kirim'"></x-input>
     <x-input :value="$order->stuffing??old('stuffing')" :col="3" :label="'Stuffing'" :type="'date'" :name="'stuffing'"></x-input>
-    <x-input :value="$order->stuffing_type??old('stuffing_type')" :col="3" :label="'Stuffing Tipe'" :type="'select'" :options="['LUAR'=>'LUAR','DALAM'=>'DALAM']" :name="'stuffing_type'"></x-input>
-    {{-- <x-input :value="$order->agen??old('agen')" :col="3" :label="'Tipe Agen'" :type="'select'" :options="['AGEN'=>'AGEN','NON AGEN'=>'NON AGEN']" :name="'agen'"></x-input> --}}
-    <x-input :options="$agent" :value="$order->agen_id??old('agen_id')" :col="3" :label="'Agent'" :type="'select'" :name="'agen_id'"></x-input>
+    <x-input :value="$order->agen??'NON AGEN'" :col="3" :label="'Tipe Agen'" :type="'select'" :options="['AGEN'=>'AGEN','NON AGEN'=>'NON AGEN']" :name="'agen'"></x-input>
     <x-input :value="$order->asuransi??old('asuransi')" :col="3" :label="'Asuransi'" :type="'select'" :options="['ADA INC'=>'ADA INC','ADA EXC'=>'ADA EXC','TIDAK'=>'TIDAK']" :name="'asuransi'"></x-input>
     <x-input :value="$order->full??old('full')" :col="3" :label="'Tanggal Full'" :type="'date'" :name="'full'"></x-input>
     <x-input :value="$order->barang_diantar??old('barang_diantar')" :col="3" :label="'Barang Diantar'" :type="'date'" :name="'barang_diantar'"></x-input>
@@ -26,7 +24,12 @@
     <x-input :value="$order->container??old('container')" :col="3" :label="'No. Container'" :type="'text'" :name="'container'"></x-input>
     <x-input :value="$order->seal??old('seal')" :col="3" :label="'Seal'" :type="'text'" :name="'seal'"></x-input>
     <x-input :value="$order->no_bl??old('no_bl')" :col="3" :label="'No. BL'" :type="'text'" :name="'no_bl'"></x-input>
-    <x-input :value="$order->penerima_bl_id??old('penerima_bl_id')" :col="3" :label="'Penerima BL'" :type="'select'" :options="$customers" :name="'penerima_bl_id'"></x-input>
+    <div class="col-3" id="nag">
+        <x-input :value="$order->penerima_bl_id??old('penerima_bl_id')" :label="'Penerima BL'" :type="'select'" :options="$customers" :name="'penerima_bl_id'"></x-input>
+    </div>
+    <div class="col-3" id="ag">
+        <x-input :options="$agent" :value="$order->agen_id??old('agen_id')" :label="'Penerima BL'" :type="'select'" :name="'agen_id'"></x-input>
+    </div>
     <x-input :value="$order->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'"></x-input>
     <div class="col-12 mb-2 px-1">
         <button type="submit" class="btn btn-success btn-sm">{{ empty($order)?'Tambah':'Update' }} Data</button>

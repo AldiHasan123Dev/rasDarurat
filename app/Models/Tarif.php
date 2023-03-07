@@ -23,6 +23,7 @@ class Tarif extends Model
         'unit',
         'tarif',
         'min_qty',
+        'stuffing',
         'customer_id',
         'is_active',
     ];
