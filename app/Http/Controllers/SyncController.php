@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
+use App\Models\Tarif;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -36,14 +37,37 @@ class SyncController extends Controller
     public function sync()
     {
         $data = Order::all();
+        $tarif = Tarif::all();
         foreach ($data as $item ) {
+            $job = substr($item->job,2,8);
+            $new = '2023'.$job;
+            $asuransi = null;
+            if(!is_null($item->asuransi)){
+                if($item->asuransi==1||$item->asuransi=='1'){
+                    $asuransi = 'ADA';
+                }
+                if($item->asuransi==0||$item->asuransi=='0'){
+                    $asuransi = 'TIDAK';
+                }
+            }
             $item->update([
-                'jadwal_kapal_id' => $item->tarif->jadwal_kapal_id
+                'satuan' => $item->tarif->satuan,
+                'job' => $new,
+                'asuransi' => $asuransi
             ]);
+        }
 
-            $item->tarif->update([
-                'pelayaran_id' => $item->tarif->jadwal_kapal->pelayaran_id
-            ]);
+        foreach ($tarif as $item ) {
+            $tipe = $item->shipmentInfo->nama[0];
+            if($tipe=='F'||$tipe=='f'){
+                $item->update([
+                    'satuan' => 1
+                ]);
+            }else{
+                $item->update([
+                    'satuan' => 2
+                ]);
+            }
         }
 
         return response('success');

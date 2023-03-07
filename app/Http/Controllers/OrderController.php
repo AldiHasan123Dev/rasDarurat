@@ -39,8 +39,13 @@ class OrderController extends Controller
         $num = Order::max('no');
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
-        $data['job'] = date('ym').sprintf('%04d',$num+1);
+        $data['job'] = date('Ym').sprintf('%04d',$num+1);
         $data['no_job'] = 1;
+        $satuan = Satuan::find($request->satuan);
+        if(!$satuan){
+            $satuan = Satuan::create(['nama'=>$request->satuan]);
+        }
+        $data['satuan'] = $satuan->id;
         $order = Order::create($data);
         return back()->with('success','Data berhasil disimpan');
     }
@@ -51,9 +56,33 @@ class OrderController extends Controller
         if ($request->ba_kembali && $request->invoice==1) {
             $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
         }
+        $barang = Barang::find($request->barang_id);
+        if (!$barang) {
+            $barang = Barang::create(['nama'=>$request->barang_id]);
+        }
+        $satuan = Satuan::find($request->satuan);
+        if(!$satuan){
+            $satuan = Satuan::create(['nama'=>$request->satuan]);
+        }
+        $data['satuan'] = $satuan->id;
+        $data['barang_id'] = $barang->id;
         $order->update($data);
 
-        return back()->with('success','Data berhasil diupdate');
+        return redirect()->route('order.index')->with('success','Data berhasil diupdate');
+    }
+
+    public function edit(Order $order)
+    {
+        $tarifs = Tarif::where('is_active',1)->get();
+        $customers = Customer::pluck('nama','id');
+        $barang = Barang::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $pengirim = $customers;
+        $tarif = array();
+        foreach ($tarifs as $id => $item ) {
+            $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
+        }
+        return view('admin.order.edit', compact('order','tarif','customers','barang','satuan','pengirim'));
     }
 
     public function destroy(Order $order)
@@ -205,13 +234,16 @@ class OrderController extends Controller
                 return $data->jadwal_kapal->td ?? '-';
             })
             ->addColumn('satuan', function($data){
-                return $data->tarif->satuanInfo->nama ?? '-';
+                return $data->satuanInfo->nama ?? '-';
             })
             ->addColumn('unit', function($data){
                 return $data->tarif->unitInfo->nama ?? '-';
             })
             ->addColumn('tarif', function($data){
                 return number_format($data->tarif->tarif) ?? '-';
+            })
+            ->addColumn('penerima_bl_id', function($data){
+                return $data->penerima_bl->nama ?? '-';
             })
             ->addColumn('action', function ($data) {
                 // $tarifs = Tarif::where('is_active',1)->get();
@@ -229,41 +261,8 @@ class OrderController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button onclick="renderSelect2('.$data->id.')" class="no-attr text-warning" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrderUpdate'.$data->id.'" aria-controls="offcanvasOrderUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasOrderUpdate'.$data->id.'" aria-labelledby="offcanvasOrderUpdate'.$data->id.'Label" style="height:700px">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasOrderUpdate'.$data->id.'Label">Form Order</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('order.update',$data).'" method="post" id="update">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-
-                                </form>
-                            </div>
-                        </div>
-                        <script>
-                                var val = '.$data->tarif_id.';
-                                console.log(val);
-                                $.ajax({
-                                    type: "POST",
-                                    url: "'.route('api.tarif.getOne').'",
-                                    data: {id:val},
-                                    success: function (response) {
-                                        let data = response;
-                                        let tarif = data.tarif;
-                                        $("form#update #tarif").val("Rp. "+tarif.toLocaleString("en-US"));
-                                        $("form#update #dari").val(data.dari);
-                                        $("form#update #tujuan").val(data.tujuan);
-                                        $("form#update #shipment").val(data.shipment);
-                                        $("form#update #kondisi").val(data.kondisi);
-                                        $("form#update #satuan").val(data.satuan);
-                                    }
-                                });
-                        </script>';
+                            <a class="no-attr text-warning" title="Edit" href="'.route('order.edit',$data).'"><i class="fas fa-pencil"></i></a>
+                        </div>';
                 return $html;
             })
             ->rawColumns(['action','tools'])

@@ -25,6 +25,7 @@
                                 <th>Invoice</th>
                                 <th>Group JOB</th>
                                 <th>ID JOB</th>
+                                <th>Asuransi</th>
                                 <th>Pembayar</th>
                                 <th>Marketing</th>
                                 <th>CS</th>
@@ -46,12 +47,15 @@
                                 <th>No Container</th>
                                 <th>No Seal</th>
                                 <th>Stuffing</th>
+                                <th>Tipe Stuffing</th>
                                 <th>Tgl Full</th>
                                 <th>Barang Diantar</th>
                                 <th>BA Kembali</th>
                                 <th>Satuan</th>
                                 <th>Unit</th>
                                 <th>Tarif</th>
+                                <th>Tipe Agen</th>
+                                <th>Penerima BL</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
                             </tr>
@@ -196,6 +200,33 @@
         );
     });
     $(document).ready(function() {
+        $("select[name=penerima_bl_id]").select2(
+            {
+                dropdownParent: $('#offcanvasOrder'),
+                ajax: {
+                    url: '/api/get-pengirim',
+                    data: function (params) {
+                        return {
+                            cari: params.term, // text pencarian
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 20) < data.counts
+                            }
+                        };
+                    },
+                    minimumInputLength: 2,
+                    delay: 400,
+                }
+            }
+        );
+    });
+    $(document).ready(function() {
         $("select[name=barang_id]").select2(
             {
                 dropdownParent: $('#offcanvasOrder'),
@@ -279,6 +310,32 @@
             }
         );
 
+        $("select[name=penerima_bl_id]").select2(
+            {
+                dropdownParent: $(`#offcanvasOrderUpdate${id}`),
+                ajax: {
+                    url: '/api/get-pengirim',
+                    data: function (params) {
+                        return {
+                            cari: params.term, // text pencarian
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data, params) {
+                        params.page = params.page || 1;
+                        return {
+                            results: data.items,
+                            pagination: {
+                                more: (params.page * 20) < data.counts
+                            }
+                        };
+                    },
+                    minimumInputLength: 2,
+                    delay: 400,
+                }
+            }
+        );
+
         $("select[name=barang_id]").select2(
             {
                 dropdownParent: $(`#offcanvasOrderUpdate${id}`),
@@ -326,6 +383,7 @@
                 { data: 'invoice', name: 'invoice' },
                 { data: 'job', name: 'job' },
                 { data: 'no_job', name: 'no_job' },
+                { data: 'asuransi', name: 'asuransi' },
                 { data: 'pembayar', name: 'pembayar' },
                 { data: 'marketing', name: 'marketing' },
                 { data: 'cs', name: 'cs' },
@@ -347,12 +405,15 @@
                 { data: 'container', name: 'container' },
                 { data: 'seal', name: 'seal' },
                 { data: 'stuffing', name: 'stuffing' },
+                { data: 'stuffing_type', name: 'stuffing_type' },
                 { data: 'full', name: 'full' },
                 { data: 'barang_diantar', name: 'barang_diantar' },
                 { data: 'ba_kembali', name: 'ba_kembali' },
                 { data: 'satuan', name: 'satuan' },
                 { data: 'unit', name: 'unit' },
                 { data: 'tarif', name: 'tarif' },
+                { data: 'agen', name: 'agen' },
+                { data: 'penerima_bl_id', name: 'penerima_bl_id' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
@@ -401,6 +462,10 @@
 
         $("select[name=tarif_id]").select2({
             dropdownParent: $('#offcanvasOrder')
+        });
+        $("select[name=satuan]").select2({
+            dropdownParent: $('#offcanvasOrder'),
+            tags:true
         });
         // $("select[name=pengirim_id]").select2({
         //     dropdownParent: $('#offcanvasOrder')

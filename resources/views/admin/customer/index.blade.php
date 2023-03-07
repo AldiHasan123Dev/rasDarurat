@@ -357,14 +357,23 @@
         $("select[name=kondisi]").select2({
             dropdownParent: $('#offcanvasTarif')
         });
-        $("select[name=satuan]").select2({
-            dropdownParent: $('#offcanvasTarif'),
-            tags:true
-        });
+        // $("select[name=satuan]").select2({
+        //     dropdownParent: $('#offcanvasTarif'),
+        //     tags:true
+        // });
         $('#customer tbody').on( 'click', 'tr', function () {
             id =  tablecus.row( this ).data().id;
             $('#add-tarif').show();
             tabletar.ajax.reload()
+        });
+        $('#shipment').change(function (e) {
+            var text = $(this).find(":selected").text();
+            var val = text.substr(0,3);
+            if (val=='FCL'||val=='fcl') {
+                $('#satuan').val(1);
+            } else {
+                $('#satuan').val(2);
+            }
         });
 
 

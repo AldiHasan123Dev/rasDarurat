@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Kondisi;
 use App\Models\Lokasi;
+use App\Models\Pelayaran;
 use App\Models\Satuan;
 use App\Models\Shipment;
 use App\Models\Tarif;
@@ -51,14 +52,16 @@ class TarifController extends Controller
         if(!$kondisi){
             $kondisi = Kondisi::create(['nama'=>$request->kondisi]);
         }
-        if(!$satuan){
-            $satuan = Satuan::create(['nama'=>$request->satuan]);
+        if($shipment->nama[0]=='F'||$shipment->nama[0]=='f'){
+            $satuan = 1;
+        }else{
+            $satuan = 2;
         }
         $data['shipment'] = $shipment->id;
         $data['dari'] = $dari->id;
         $data['tujuan'] = $tujuan->id;
         $data['kondisi'] = $kondisi->id;
-        $data['satuan'] = $satuan->id;
+        $data['satuan'] = $satuan;
         Tarif::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -67,9 +70,37 @@ class TarifController extends Controller
     public function update(Tarif $tarif, Request $request)
     {
         $data = $request->all();
+        $shipment = Shipment::find($request->shipment);
+        $dari = Lokasi::find($request->dari);
+        $tujuan = Lokasi::find($request->tujuan);
+        $kondisi = Kondisi::find($request->kondisi);
+        $satuan = Satuan::find($request->satuan);
+        if(!$shipment){
+            $shipment = Shipment::create(['nama'=>$request->shipment]);
+        }
+        if(!$dari){
+            $dari = Lokasi::create(['nama'=>$request->dari]);
+        }
+        if(!$tujuan){
+            $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
+        }
+        if(!$kondisi){
+            $kondisi = Kondisi::create(['nama'=>$request->kondisi]);
+        }
+        $data = $request->all();
+        if($shipment->nama[0]=='F'||$shipment->nama[0]=='f'){
+            $satuan = 1;
+        }else{
+            $satuan = 2;
+        }
+        $data['shipment'] = $shipment->id;
+        $data['dari'] = $dari->id;
+        $data['tujuan'] = $tujuan->id;
+        $data['kondisi'] = $kondisi->id;
+        $data['satuan'] = $satuan;
         $tarif->update($data);
 
-        return back()->with('success','Data berhasil diupdate');
+        return redirect()->route('customer.index')->with('success','Data berhasil diupdate');
     }
 
     public function destroy(Tarif $tarif)
@@ -77,6 +108,18 @@ class TarifController extends Controller
         $tarif->delete();
 
         return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function edit(Tarif $tarif)
+    {
+        $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+        $customer = Customer::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+        $pelayaran = Pelayaran::pluck('nama','id');
+        return view('admin.tarif.edit', compact('tarif','pelayaran','customer','lokasi','satuan','kondisi','shipment'));
     }
 
     public function datatable()
@@ -152,21 +195,7 @@ class TarifController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarifUpdate'.$data->id.'" aria-controls="offcanvasTarifUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTarifUpdate'.$data->id.'" aria-labelledby="offcanvasTarifUpdate'.$data->id.'Label">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasTarifUpdate'.$data->id.'Label">Form Tarif</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('tarif.update',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-
-                                </form>
-                            </div>
+                            <a href="'.route('tarif.edit',$data).'" class="no-attr text-primary" title="Edit"><i class="fas fa-pencil"></i></a>
                         </div>';
                 return $html;
             })

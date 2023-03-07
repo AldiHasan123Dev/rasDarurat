@@ -37,6 +37,7 @@ class Order extends Model
         'no_bl',
         'asuransi',
         'agen',
+        'satuan',
         'created_at',
     ];
 
@@ -55,6 +56,11 @@ class Order extends Model
         return $this->belongsTo(Customer::class,'penerima_id');
     }
 
+    public function penerima_bl()
+    {
+        return $this->belongsTo(Customer::class,'penerima_bl_id');
+    }
+
     public function barang()
     {
         return $this->belongsTo(Barang::class,'barang_id');
@@ -68,5 +74,10 @@ class Order extends Model
     public function jadwal_kapal()
     {
         return $this->belongsTo(JadwalKapal::class,'jadwal_kapal_id');
+    }
+
+    public function satuanInfo()
+    {
+        return $this->belongsTo(Satuan::class,'satuan');
     }
 }

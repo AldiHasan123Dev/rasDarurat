@@ -32,7 +32,7 @@
                 <img src="{{ asset('assets/img/ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                 <div style="width: 40%; margin-left:35px">
                     <table style="font-size:.7rem">
-                        <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDRA</td></tr>
+                        <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                         <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
                         <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                     </table>

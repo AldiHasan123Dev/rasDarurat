@@ -106,7 +106,7 @@ class CustomerController extends Controller
                 $query->orderBy('nama', 'asc');
             })
             ->addColumn('marketing_id', function($data){
-                return $data->name ?? '-';
+                return $data->marketing->name ?? '-';
             })
             ->addColumn('cs_id', function($data){
                 return $data->cs->name ?? '-';
@@ -126,7 +126,7 @@ class CustomerController extends Controller
                 // }
                 // $view = view('admin.customer.form',compact('users','cus','kapal','customer','lokasi','satuan','kondisi','shipment'))->render();
                 $html = '<div class="d-flex gap-1">
-                            <form action="'.route('user.destroy',$data).'" method="post">
+                            <form action="'.route('customer.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>

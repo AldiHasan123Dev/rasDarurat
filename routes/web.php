@@ -49,7 +49,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('kondisi',KondisiController::class)->except(['create','edit']);
     Route::resource('satuan',SatuanController::class)->except(['create','edit']);
     Route::resource('lokasi',LokasiController::class)->except(['create','edit']);
-    Route::resource('tarif',TarifController::class)->except(['create','edit']);
+    Route::resource('tarif',TarifController::class)->except(['create']);
     Route::resource('barang',BarangController::class);
     Route::resource('order',OrderController::class);
     Route::resource('bttb',BTTBController::class);

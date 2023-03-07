@@ -63,7 +63,7 @@
     </div>
     <div class="col-6 mb-2 px-1">
         <label for="top">TOP (hari)</label>
-        <input type="number" value="{{ $cus->top ?? '' }}" name="top" id="top-{{ $cus->id??'' }}" class="form-control" required>
+        <input type="number" value="{{ $cus->top ?? '' }}" name="top" id="top-{{ $cus->id??'' }}" class="form-control">
     </div>
     {{-- <div class="col-12 mb-2 px-1">
         <div class="d-flex gap-2">
