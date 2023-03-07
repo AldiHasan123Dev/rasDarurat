@@ -54,7 +54,7 @@
                                 <th>Satuan</th>
                                 <th>Unit</th>
                                 <th>Tarif</th>
-                                <th>Tipe Agen</th>
+                                <th>Agen</th>
                                 <th>Penerima BL</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
@@ -412,7 +412,7 @@
                 { data: 'satuan', name: 'satuan' },
                 { data: 'unit', name: 'unit' },
                 { data: 'tarif', name: 'tarif' },
-                { data: 'agen', name: 'agen' },
+                { data: 'agen_id', name: 'agen_id' },
                 { data: 'penerima_bl_id', name: 'penerima_bl_id' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
@@ -463,9 +463,12 @@
         $("select[name=tarif_id]").select2({
             dropdownParent: $('#offcanvasOrder')
         });
-        $("select[name=satuan]").select2({
-            dropdownParent: $('#offcanvasOrder'),
-            tags:true
+        // $("select[name=satuan]").select2({
+        //     dropdownParent: $('#offcanvasOrder'),
+        //     tags:true
+        // });
+        $("select[name=agen_id]").select2({
+            dropdownParent: $('#offcanvasOrder')
         });
         // $("select[name=pengirim_id]").select2({
         //     dropdownParent: $('#offcanvasOrder')

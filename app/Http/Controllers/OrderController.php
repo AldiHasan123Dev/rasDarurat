@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\OrderImport;
+use App\Models\Agen;
 use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
@@ -21,12 +22,13 @@ class OrderController extends Controller
         $customers = Customer::pluck('nama','id');
         $barang = Barang::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
+        $agent = Agen::pluck('nama','id');
         $pengirim = $customers;
         $tarif = array();
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
-        return view('admin.order.index', compact('tarif','customers','barang','satuan','pengirim'));
+        return view('admin.order.index', compact('tarif','customers','barang','satuan','pengirim','agent'));
     }
 
     public function store(Request $request)
@@ -41,11 +43,11 @@ class OrderController extends Controller
         $data['no'] = $num+1;
         $data['job'] = date('Ym').sprintf('%04d',$num+1);
         $data['no_job'] = 1;
-        $satuan = Satuan::find($request->satuan);
-        if(!$satuan){
-            $satuan = Satuan::create(['nama'=>$request->satuan]);
-        }
-        $data['satuan'] = $satuan->id;
+        // $satuan = Satuan::find($request->satuan);
+        // if(!$satuan){
+        //     $satuan = Satuan::create(['nama'=>$request->satuan]);
+        // }
+        // $data['satuan'] = $satuan->id;
         $order = Order::create($data);
         return back()->with('success','Data berhasil disimpan');
     }
@@ -60,11 +62,14 @@ class OrderController extends Controller
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
-        $satuan = Satuan::find($request->satuan);
-        if(!$satuan){
-            $satuan = Satuan::create(['nama'=>$request->satuan]);
+
+        if ($request->satuan) {
+            $satuan = Satuan::find($request->satuan);
+            if(!$satuan){
+                $satuan = Satuan::create(['nama'=>$request->satuan]);
+            }
+            $data['satuan'] = $satuan->id;
         }
-        $data['satuan'] = $satuan->id;
         $data['barang_id'] = $barang->id;
         $order->update($data);
 
@@ -79,10 +84,11 @@ class OrderController extends Controller
         $satuan = Satuan::pluck('nama','id');
         $pengirim = $customers;
         $tarif = array();
+        $agent = Agen::pluck('nama','id');
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
-        return view('admin.order.edit', compact('order','tarif','customers','barang','satuan','pengirim'));
+        return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim'));
     }
 
     public function destroy(Order $order)
@@ -235,6 +241,9 @@ class OrderController extends Controller
             })
             ->addColumn('satuan', function($data){
                 return $data->satuanInfo->nama ?? '-';
+            })
+            ->addColumn('agen_id', function($data){
+                return $data->agent->nama ?? '-';
             })
             ->addColumn('unit', function($data){
                 return $data->tarif->unitInfo->nama ?? '-';

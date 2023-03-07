@@ -36,6 +36,7 @@ class Order extends Model
         'keterangan',
         'no_bl',
         'asuransi',
+        'agen_id',
         'agen',
         'satuan',
         'created_at',
@@ -79,5 +80,10 @@ class Order extends Model
     public function satuanInfo()
     {
         return $this->belongsTo(Satuan::class,'satuan');
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(Agen::class,'agen_id');
     }
 }

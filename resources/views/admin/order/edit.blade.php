@@ -245,6 +245,7 @@
         $("select[name=satuan]").select2({
             tags:true
         });
+        $("select[name=agen_id]").select2();
         // $("select[name=pengirim_id]").select2({
         //     dropdownParent: $('#offcanvasOrder')
         // });
