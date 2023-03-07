@@ -39,7 +39,7 @@ class SyncController extends Controller
         $data = Order::all();
         $tarif = Tarif::all();
         foreach ($data as $item ) {
-            if (substr($item->job,2,8)==23||substr($item->job,2,8)=='23') {
+            if (substr($item->job,0,2)==23||substr($item->job,0,2)=='23') {
                 $job = substr($item->job,2,8);
                 $new = '2023'.$job;
                 $asuransi = null;
@@ -61,20 +61,21 @@ class SyncController extends Controller
                     'job' => $new,
                     'asuransi' => $asuransi
                 ]);
-            }
 
-            foreach ($tarif as $item ) {
-                $tipe = $item->shipmentInfo->nama[0];
-                if($tipe=='F'||$tipe=='f'){
-                    $item->update([
-                        'satuan' => 1
-                    ]);
-                }else{
-                    $item->update([
-                        'satuan' => 2
-                    ]);
+                foreach ($tarif as $item ) {
+                    $tipe = $item->shipmentInfo->nama[0];
+                    if($tipe=='F'||$tipe=='f'){
+                        $item->update([
+                            'satuan' => 1
+                        ]);
+                    }else{
+                        $item->update([
+                            'satuan' => 2
+                        ]);
+                    }
                 }
             }
+
         }
 
 
