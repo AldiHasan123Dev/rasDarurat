@@ -406,7 +406,7 @@
                 { data: 'container', name: 'container' },
                 { data: 'seal', name: 'seal' },
                 { data: 'stuffing', name: 'stuffing' },
-                { data: 'stuffing_type', name: 'stuffing_type' },
+                { data: 'stuffing_t', name: 'stuffing_t' },
                 { data: 'full', name: 'full' },
                 { data: 'barang_diantar', name: 'barang_diantar' },
                 { data: 'ba_kembali', name: 'ba_kembali' },

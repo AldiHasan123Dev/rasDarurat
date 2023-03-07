@@ -246,10 +246,13 @@ class OrderController extends Controller
                 return $data->agent->nama ?? '-';
             })
             ->addColumn('unit', function($data){
-                return $data->tarif->unitInfo->nama ?? '-';
+                return $data->tarif->satuanInfo->nama ?? '-';
             })
             ->addColumn('tarif', function($data){
                 return number_format($data->tarif->tarif) ?? '-';
+            })
+            ->addColumn('stuffing_t', function($data){
+                return $data->tarif->stuffing ?? '-';
             })
             ->addColumn('penerima_bl', function($data){
                 if ($data->agen=='AGEN') {
