@@ -39,36 +39,44 @@ class SyncController extends Controller
         $data = Order::all();
         $tarif = Tarif::all();
         foreach ($data as $item ) {
-            $job = substr($item->job,2,8);
-            $new = '2023'.$job;
-            $asuransi = null;
-            if(!is_null($item->asuransi)){
-                if($item->asuransi==1||$item->asuransi=='1'){
-                    $asuransi = 'ADA';
+            if (substr($item->job,2,8)==23||substr($item->job,2,8)=='23') {
+                $job = substr($item->job,2,8);
+                $new = '2023'.$job;
+                $asuransi = null;
+                if(!is_null($item->asuransi)){
+                    if($item->asuransi==1||$item->asuransi=='1'){
+                        $asuransi = 'ADA';
+                    }
+                    if($item->asuransi==0||$item->asuransi=='0'){
+                        $asuransi = 'TIDAK';
+                    }
                 }
-                if($item->asuransi==0||$item->asuransi=='0'){
-                    $asuransi = 'TIDAK';
+
+                $sat = null;
+                if ($item->tarif) {
+                    $sat =  $item->tarif->satuan ?? null;
+                }
+                $item->update([
+                    'satuan' => $sat,
+                    'job' => $new,
+                    'asuransi' => $asuransi
+                ]);
+            }
+
+            foreach ($tarif as $item ) {
+                $tipe = $item->shipmentInfo->nama[0];
+                if($tipe=='F'||$tipe=='f'){
+                    $item->update([
+                        'satuan' => 1
+                    ]);
+                }else{
+                    $item->update([
+                        'satuan' => 2
+                    ]);
                 }
             }
-            $item->update([
-                'satuan' => $item->tarif->satuan,
-                'job' => $new,
-                'asuransi' => $asuransi
-            ]);
         }
 
-        foreach ($tarif as $item ) {
-            $tipe = $item->shipmentInfo->nama[0];
-            if($tipe=='F'||$tipe=='f'){
-                $item->update([
-                    'satuan' => 1
-                ]);
-            }else{
-                $item->update([
-                    'satuan' => 2
-                ]);
-            }
-        }
 
         return response('success');
     }
