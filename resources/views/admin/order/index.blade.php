@@ -1,6 +1,11 @@
 @extends('layouts.admin')
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+<style>
+    table.dataTable tbody th, table.dataTable tbody td{
+        padding: 0px 10px !important;
+    }
+</style>
 @endsection
 @section('content')
 
@@ -20,6 +25,7 @@
                     <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
                         <thead>
                             <tr>
+                                <th>Action</th>
                                 <th>Tools</th>
                                 <th>ID.</th>
                                 <th>Invoice</th>
@@ -57,7 +63,6 @@
                                 <th>Agen</th>
                                 <th>Penerima BL</th>
                                 <th>Keterangan</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -295,6 +300,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
+                { data: 'action', name: 'action', orderable: false, searchable: false },
                 { data: 'tools', name: 'tools', orderable: false, searchable: false },
                 { data: 'id', name: 'id', visible:false },
                 { data: 'invoice', name: 'invoice' },
@@ -332,7 +338,6 @@
                 { data: 'agen', name: 'agen' },
                 { data: 'penerima_bl', name: 'penerima_bl' },
                 { data: 'keterangan', name: 'keterangan' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
             select:true
         });
