@@ -234,10 +234,25 @@ class OrderController extends Controller
                 return $data->jadwal_kapal->voyage ?? '-';
             })
             ->addColumn('etd', function($data){
-                return $data->jadwal_kapal->etd ?? '-';
+                return is_null($data->jadwal_kapal->etd) ? '-' : date('d-m-Y',strtotime($data->jadwal_kapal->etd));
             })
             ->addColumn('td', function($data){
-                return $data->jadwal_kapal->td ?? '-';
+                return is_null($data->jadwal_kapal->td) ? '-' : date('d-m-Y',strtotime($data->jadwal_kapal->td));
+            })
+            ->addColumn('ba_kirim', function($data){
+                return is_null($data->ba_kirim) ? '-' : date('d-m-Y',strtotime($data->ba_kirim));
+            })
+            ->addColumn('stuffing', function($data){
+                return is_null($data->stuffing) ? '-' : date('d-m-Y',strtotime($data->stuffing));
+            })
+            ->addColumn('full', function($data){
+                return is_null($data->full) ? '-' : date('d-m-Y',strtotime($data->full));
+            })
+            ->addColumn('barang_diantar', function($data){
+                return is_null($data->barang_diantar) ? '-' : date('d-m-Y',strtotime($data->barang_diantar));
+            })
+            ->addColumn('ba_kembali', function($data){
+                return is_null($data->ba_kembali) ? '-' : date('d-m-Y',strtotime($data->ba_kembali));
             })
             ->addColumn('satuan', function($data){
                 return $data->satuanInfo->nama ?? '-';

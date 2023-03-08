@@ -1,5 +1,24 @@
 @extends('layouts.admin')
 @section('content')
+<div class="horizontal-menu">
+    <div class="d-flex gap-2 flex-nowrap" style="overflow-x:auto">
+        <div class="sub-menu">
+            <a href="{{ route('agen.index') }}" class="btn-link p-3 text-dark">Data Kapal <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('kondisi.index') }}" class="btn-link p-3 text-dark">Data Kondisi <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('satuan.index') }}" class="btn-link p-3 text-dark">Data Satuan <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('barang.index') }}" class="btn-link p-3 text-dark">Data Barang <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('lokasi.index') }}" class="btn-link p-3">Data Lokasi <span class="nav-link-icon"></span></span></a>
+        </div>
+    </div>
+</div>
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">

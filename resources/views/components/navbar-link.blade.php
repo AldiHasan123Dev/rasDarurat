@@ -34,6 +34,11 @@
                 <div class="d-flex align-items-center"><span class="nav-link-text">User</span></div>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('kapal.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Data</span></div>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

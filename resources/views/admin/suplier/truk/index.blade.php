@@ -3,10 +3,10 @@
 <div class="horizontal-menu">
     <div class="d-flex gap-2 flex-nowrap" style="overflow-x:auto">
         <div class="sub-menu">
-            <a href="{{ route('agen.index') }}" class="btn-link p-3">Agen <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('agen.index') }}" class="btn-link p-3 text-dark">Agen <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('pelayaran.index') }}" class="btn-link p-3">Pelayaran <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('pelayaran.index') }}" class="btn-link p-3 text-dark">Pelayaran <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('truk.index') }}" class="btn-link p-3">Truk <span class="nav-link-icon"></span></span></a>

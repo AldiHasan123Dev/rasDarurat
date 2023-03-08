@@ -86,6 +86,10 @@
                                 <label for="tujuan">Tujuan</label>
                                 <input type="text" name="tujuan" id="tujuan" class="form-control">
                             </div>
+                            <div class="col-12 mb-2 px-2">
+                                <label for="date">Tanggal</label>
+                                <input type="date" name="date" id="date" class="form-control">
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -184,7 +188,7 @@
                     <div class="d-flex mt-3 justify-content-between" style="font-size: .7rem; margin-right: 70px">
                         <div></div>
                         <div class="text-center">
-                            <b>Surabaya, {{ date('d F Y') }}</b><br>
+                            <b>Surabaya, <span id="d-date"></span></b><br>
                             <b>Hormat Kami</b>
                             <br><br><br><br><br>
                             <p>( <span id="d-cs"></span> )</p>
@@ -265,6 +269,30 @@
                     $('#d-etd').html(data.etd);
                 }
             });
+        });
+
+        $('#date').change(function (e) {
+            e.preventDefault();
+            var val = $(this).val();
+            var date = new Date(val);
+            var tgl = date.getDate();
+            var bulan = date.getMonth();
+            var thn = date.getFullYear();
+            switch(bulan) {
+                case 0: bulan = "Januari"; break;
+                case 1: bulan = "Februari"; break;
+                case 2: bulan = "Maret"; break;
+                case 3: bulan = "April"; break;
+                case 4: bulan = "Mei"; break;
+                case 5: bulan = "Juni"; break;
+                case 6: bulan = "Juli"; break;
+                case 7: bulan = "Agustus"; break;
+                case 8: bulan = "September"; break;
+                case 9: bulan = "Oktober"; break;
+                case 10: bulan = "November"; break;
+                case 11: bulan = "Desember"; break;
+            }
+            $('#d-date').html(tgl+" "+bulan+" "+thn);
         });
     </script>
 @endsection
