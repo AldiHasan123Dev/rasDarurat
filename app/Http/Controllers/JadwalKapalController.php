@@ -60,7 +60,10 @@ class JadwalKapalController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = JadwalKapal::select('jadwal_kapal.*')->offset($start)->limit($limit);
+        $data = JadwalKapal::join('kapal','kapal.id','jadwal_kapal.kapal_id')
+                ->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id')
+                ->select('jadwal_kapal.*','kapal.nama as nama_kapal','pelayaran.nama as nama_pelayaran')
+                ->offset($start)->limit($limit);
         $count = JadwalKapal::select('id')->count();
         return Datatables::of($data)
         ->order(function ($query) {
@@ -68,18 +71,18 @@ class JadwalKapalController extends Controller
         })
         ->addColumn('tools', function($data){
             $html = '<div class="dropend">
-                        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-list"></i></button>
+                        <button class="no-attr dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-list"></i></button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="'.route('cetak.shipment',['jadwal_kapal_id'=>$data->id]).'">Lihat SI</a></li>
                         </ul>
                     </div>';
             return $html;
         })
-        ->addColumn('kapal_id', function($data){
-            return $data->kapal->nama;
+        ->addColumn('kapal', function($data){
+            return $data->nama_kapal;
         })
-        ->addColumn('pelayaran_id', function($data){
-            return $data->pelayaran->nama;
+        ->addColumn('pelayaran', function($data){
+            return $data->nama_pelayaran;
         })
         ->addColumn('etd', function($data){
             return is_null($data->etd)?'-':date('d/m/Y',strtotime($data->etd));
@@ -95,17 +98,18 @@ class JadwalKapalController extends Controller
         })
         ->addColumn('status', function($data){
             $val = $data->is_active==1?0:1;
-            $checked = $data->is_active==1?'checked':'';
+            $class = $data->is_active==1?'success':'danger';
             $name = $data->is_active==1?'active':'unactive';
-            $html = '<form method="post" action="'.route('jadwalkapal.update',$data).'">
-                        <input type="hidden" name="_token" value="'.csrf_token().'" />
-                        <input type="hidden" name="_method" value="PUT" />
-                        <input type="hidden" name="is_active" value="'.$val.'" />
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" disabled onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
-                            <label class="form-check-label">'.$name.'</label>
-                        </div>
-                    </form>';
+            // $html = '<form method="post" action="'.route('jadwalkapal.update',$data).'">
+            //             <input type="hidden" name="_token" value="'.csrf_token().'" />
+            //             <input type="hidden" name="_method" value="PUT" />
+            //             <input type="hidden" name="is_active" value="'.$val.'" />
+            //             <div class="form-check form-switch">
+            //                 <input class="form-check-input" disabled onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
+            //                 <label class="form-check-label">'.$name.'</label>
+            //             </div>
+            //         </form>';
+            $html = '<span class="text-'.$class.'">'.$name.'</span>';
             return  $html;
         })
         ->addColumn('action', function ($data) {

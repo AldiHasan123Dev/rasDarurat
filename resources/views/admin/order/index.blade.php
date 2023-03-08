@@ -11,21 +11,23 @@
 
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+            <div class="card-header p-2 d-flex" style="gap:10px">
                 @if (!request('filter-order'))
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
+                <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                 @endif
-                {{-- <form action="{{ route('order.import') }}" method="post" enctype="multipart/form-data">
+                <a href="" id="edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</a>
+                <form action="" id="delete-order" method="post" enctype="multipart/form-data">
                     @csrf
-                    <input type="file" name="file" id="file" onchange="submit()">
-                </form> --}}
+                    @method('DELETE')
+                    <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
+                </form>
+                <b>N0. JOB (selected): <span class="nojob"></span></b>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
                         <thead>
                             <tr>
-                                <th>Action</th>
                                 <th>Tools</th>
                                 <th>ID.</th>
                                 <th>Invoice</th>
@@ -83,7 +85,7 @@
                                 class="fas fa-print"></i> Print BTTB</a>
                         <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i
                                 class="fas fa-print"></i> Print BTTB Kubikasi</a>
-                        <b>N0. JOB : <span id="nojob"></span></b>
+                        <b>N0. JOB (selected): <span class="nojob"></span></b>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -150,6 +152,8 @@
 
 @section('script')
 <script>
+    $('#edit-order').hide();
+    $('#delete-order').hide();
     $(document).ready(function() {
         $('#create select[name=pengirim_id]').select2(
             {
@@ -300,7 +304,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                // { data: 'action', name: 'action', orderable: false, searchable: false },
                 { data: 'tools', name: 'tools', orderable: false, searchable: false },
                 { data: 'id', name: 'id', visible:false },
                 { data: 'invoice', name: 'invoice' },
@@ -373,11 +377,15 @@
 
         $('#table-order tbody').on( 'click', 'tr', function () {
             $('#bttb-info').show();
+            $('#edit-order').show();
+            $('#delete-order').show();
             id =  tableOrder.row( this ).data().id;
             var no_job =  tableOrder.row( this ).data().no_job;
             $('#order_id_bttb').val(id);
-            $('#nojob').html(no_job);
+            $('.nojob').html(no_job);
             $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
+            $('#edit-order').attr('href','{{ url('admin/order') }}/'+id+'/edit');
+            $('#delete-order').attr('action','{{ url('admin/order') }}/'+id);
             $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
             tablebttb.ajax.reload();
         })

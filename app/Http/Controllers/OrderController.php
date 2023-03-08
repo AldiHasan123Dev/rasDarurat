@@ -195,13 +195,13 @@ class OrderController extends Controller
                 return $data->job.'-'.sprintf('%02d',$data->no_job);
             })
             ->addColumn('marketing', function($data){
-                return $data->tarif->customer->marketing->name ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->customer->marketing->name;
             })
             ->addColumn('cs', function($data){
-                return $data->tarif->customer->cs->name ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->customer->cs->name;
             })
             ->addColumn('pembayar', function($data){
-                return $data->tarif->customer->nama ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->customer->nama;
             })
             ->addColumn('pengirim', function($data){
                 return $data->pengirim->nama ?? '-';
@@ -210,16 +210,16 @@ class OrderController extends Controller
                 return $data->penerima->nama ?? '-';
             })
             ->addColumn('dari', function($data){
-                return $data->tarif->dari_lokasi->nama ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->dari_lokasi->nama;
             })
             ->addColumn('tujuan', function($data){
-                return $data->tarif->tujuan_lokasi->nama ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->tujuan_lokasi->nama;
             })
             ->addColumn('shipment', function($data){
-                return $data->tarif->shipmentInfo->nama ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->shipmentInfo->nama;
             })
             ->addColumn('kondisi', function($data){
-                return $data->tarif->kondisiInfo->nama ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->kondisiInfo->nama;
             })
             ->addColumn('barang', function($data){
                 return $data->barang->nama ?? '-';
@@ -261,13 +261,13 @@ class OrderController extends Controller
                 return $data->agent->nama ?? '-';
             })
             ->addColumn('unit', function($data){
-                return $data->tarif->satuanInfo->nama ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->satuanInfo->nama;
             })
             ->addColumn('tarif', function($data){
-                return number_format($data->tarif->tarif) ?? '-';
+                return number_format(is_null($data->tarif)?0: $data->tarif->tarif);
             })
             ->addColumn('stuffing_t', function($data){
-                return $data->tarif->stuffing ?? '-';
+                return is_null($data->tarif)?'-': $data->tarif->stuffing ?? '-';
             })
             ->addColumn('penerima_bl', function($data){
                 if ($data->agen=='AGEN') {
@@ -278,27 +278,27 @@ class OrderController extends Controller
 
                 return $data->penerima_bl->nama ?? '-';
             })
-            ->addColumn('action', function ($data) {
-                // $tarifs = Tarif::where('is_active',1)->get();
-                // $customers = Customer::pluck('nama','id');
-                // $barang = Barang::pluck('nama','id');
-                // $order = $data;
-                // $tarif = array();
-                // foreach ($tarifs as $id => $item ) {
-                //     $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
-                // }
-                // $view = view('admin.order.form',compact('tarif','customers','barang','order'))->render();
-                $html = '<div class="d-flex gap-1">
-                            <form action="'.route('order.destroy',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                <input type="hidden" name="_method" value="delete" />
-                                <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
-                            </form>
-                            <a class="no-attr text-warning" title="Edit" href="'.route('order.edit',$data).'"><i class="fas fa-pencil"></i></a>
-                        </div>';
-                return $html;
-            })
-            ->rawColumns(['action','tools'])
+            // ->addColumn('action', function ($data) {
+            //     // $tarifs = Tarif::where('is_active',1)->get();
+            //     // $customers = Customer::pluck('nama','id');
+            //     // $barang = Barang::pluck('nama','id');
+            //     // $order = $data;
+            //     // $tarif = array();
+            //     // foreach ($tarifs as $id => $item ) {
+            //     //     $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
+            //     // }
+            //     // $view = view('admin.order.form',compact('tarif','customers','barang','order'))->render();
+            //     $html = '<div class="d-flex gap-1">
+            //                 <form action="'.route('order.destroy',$data).'" method="post">
+            //                     <input type="hidden" name="_token" value="'.csrf_token().'" />
+            //                     <input type="hidden" name="_method" value="delete" />
+            //                     <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+            //                 </form>
+            //                 <a class="no-attr text-warning" title="Edit" href="'.route('order.edit',$data).'"><i class="fas fa-pencil"></i></a>
+            //             </div>';
+            //     return $html;
+            // })
+            ->rawColumns(['tools'])
             ->setFilteredRecords($count)
             ->toJson();
     }

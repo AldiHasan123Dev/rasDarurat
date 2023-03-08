@@ -1,6 +1,11 @@
 @extends('layouts.admin')
 @section('style')
 {{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+<style>
+    table.dataTable tbody th, table.dataTable tbody td{
+        padding: 0px 10px !important;
+    }
+</style>
 @endsection
 @section('content')
     <div class="container mt-3">
@@ -65,9 +70,9 @@
             columns: [
                 { data: 'tools', name: 'tools' },
                 { data: 'id', name: 'id', visible:false },
-                { data: 'kapal_id', name: 'kapal_id' },
+                { data: 'kapal', name: 'kapal.nama' },
                 { data: 'voyage', name: 'voyage' },
-                { data: 'pelayaran_id', name: 'pelayaran_id' },
+                { data: 'pelayaran', name: 'pelayaran.nama' },
                 { data: 'rute', name: 'rute' },
                 { data: 'closing', name: 'closing' },
                 { data: 'etd', name: 'etd' },
