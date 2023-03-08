@@ -43,6 +43,11 @@ class JadwalKapalController extends Controller
             Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
                 'is_active' => 0
             ]);
+        }else{
+            $data['is_active'] = 1;
+            Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
+                'is_active' => 1
+            ]);
         }
         $jadwalkapal->update($data);
 
