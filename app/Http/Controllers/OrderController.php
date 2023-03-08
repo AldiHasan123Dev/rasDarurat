@@ -33,6 +33,18 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'jadwal_kapal_id' => 'required|numeric',
+            'tarif_id' => 'required|numeric',
+            'barang_id' => 'required|numeric',
+        ],[
+            'jadwal_kapal_id.required' => 'Kapal Harus diisi!',
+            'jadwal_kapal_id.numeric' => 'Kapal Harus diisi!',
+            'tarif_id.required' => 'Pembayar Harus diisi!',
+            'tarif_id.numeric' => 'Pembayar Harus diisi!',
+            'barang_id.required' => 'Barang Harus diisi!',
+            'barang_id.numeric' => 'Barang Harus diisi!',
+        ]);
         $data = $request->all();
         $barang = Barang::find($request->barang_id);
         if (!$barang) {
@@ -117,7 +129,21 @@ class OrderController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Order::join('tarif','tarif.id','=','order.tarif_id')
+        $data = Order::leftJoin('tarif','tarif.id','=','order.tarif_id')
+                ->join('shipments','shipments.id','=','tarif.shipment')
+                ->join('kondisi','kondisi.id','=','tarif.kondisi')
+                ->leftJoin('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
+                ->leftJoin('kapal','kapal.id','=','jadwal_kapal.kapal_id')
+                ->leftJoin('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id')
+                ->leftJoin('customers as pembayar','pembayar.id','=','tarif.customer_id')
+                ->leftJoin('customers as penerima','penerima.id','=','order.penerima_id')
+                ->leftJoin('customers as pengirim','pengirim.id','=','order.pengirim_id')
+                ->leftJoin('customers as penerima_bl','penerima_bl.id','=','order.penerima_bl_id')
+                // ->leftJoin('users','users.id','=','customers.marketing_id')
+                // ->leftJoin('users as cs','cs.id','=','customers.cs_id')
+                ->leftJoin('barang','barang.id','=','order.barang_id')
+                ->leftJoin('satuan','satuan.id','=','order.satuan')
+                ->leftJoin('agen','agen.id','=','order.agen_id')
                 ->select('order.*');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('invoice');
@@ -279,28 +305,9 @@ class OrderController extends Controller
 
                 return $data->penerima_bl->nama ?? '-';
             })
-            // ->addColumn('action', function ($data) {
-            //     // $tarifs = Tarif::where('is_active',1)->get();
-            //     // $customers = Customer::pluck('nama','id');
-            //     // $barang = Barang::pluck('nama','id');
-            //     // $order = $data;
-            //     // $tarif = array();
-            //     // foreach ($tarifs as $id => $item ) {
-            //     //     $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->jadwal_kapal->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif.' || '.$item->jadwal_kapal->kapal->nama;
-            //     // }
-            //     // $view = view('admin.order.form',compact('tarif','customers','barang','order'))->render();
-            //     $html = '<div class="d-flex gap-1">
-            //                 <form action="'.route('order.destroy',$data).'" method="post">
-            //                     <input type="hidden" name="_token" value="'.csrf_token().'" />
-            //                     <input type="hidden" name="_method" value="delete" />
-            //                     <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
-            //                 </form>
-            //                 <a class="no-attr text-warning" title="Edit" href="'.route('order.edit',$data).'"><i class="fas fa-pencil"></i></a>
-            //             </div>';
-            //     return $html;
-            // })
             ->rawColumns(['tools'])
-            ->setFilteredRecords($count)
+            // ->setFilteredRecords($count)
+            ->setTotalRecords($count)
             ->toJson();
     }
 }

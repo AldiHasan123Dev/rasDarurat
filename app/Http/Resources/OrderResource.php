@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class OrderResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'invoice' => $this->invoice ?? '-',
+            'job' => $this->job ?? '-',
+            'no' => $this->job.'-'.sprintf('%02d',$this->no_job) ?? '-',
+            'asuransi' => $this->asuransi,
+            'pembayar' => $this->tarif->customer->nama,
+            'marketing' => $this->tarif->customer->marketing->name ?? '-',
+            'cs' => $this->tarif->customer->cs->name ?? '-',
+            'pengirim' => $this->pengirim->name ?? '-',
+            'penerima' => $this->penerima->name ?? '-',
+            'dari' => $this->tarif->dari_lokasi->nama,
+            'tujuan' => $this->tarif->tujuan_lokasi->nama,
+            'shipment' => $this->tarif->shipmentInfo->nama,
+            'kondisi' => $this->tarif->kondisiInfo->nama,
+            'barang' => $this->barang->nama ?? '-',
+            'pelayaran' => $this->jadwal_kapal->pelayaran->nama,
+            'kapal' => $this->jadwal_kapal->kapal->nama,
+            'voyage' => $this->jadwal_kapal->voyage,
+            'etd' => is_null($this->jadwal_kapal->etd)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->etd)),
+            'td' => is_null($this->jadwal_kapal->td)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->td)),
+            'ba_kirim' => is_null($this->ba_kirim)?'-':date('d-m-Y',strtotime($this->ba_kirim)),
+            'nopol' => $this->nopol,
+            'trucking' => $this->trucking,
+            'container' => $this->container,
+            'seal' => $this->seal,
+            'stuffing' => is_null($this->stuffing)?'-':date('d-m-Y',strtotime($this->stuffing)),
+            'stuffing_type' => $this->tarif->stuffing,
+            'full' => is_null($this->full)?'-':date('d-m-Y',strtotime($this->full)),
+            'barang_diantar' => is_null($this->barang_diantar)?'-':date('d-m-Y',strtotime($this->barang_diantar)),
+            'ba_kembali' => is_null($this->ba_kembali)?'-':date('d-m-Y',strtotime($this->ba_kembali)),
+            'satuan' => $this->satuanInfo->nama ?? '-',
+            'unit' => $this->tarif->satuanInfo->nama,
+            'tarif' => number_format($this->tarif->tarif),
+            'agen' => $this->agen,
+            'penerima_bl' => $this->agen=='AGEN'?($this->agen->nama??'-'):($this->penerima_bl->nama??'-'),
+            'keterangan' => $this->keterangan
+        ];
+    }
+}
