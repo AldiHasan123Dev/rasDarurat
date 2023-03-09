@@ -47,7 +47,7 @@ class CetakController extends Controller
     {
         $pengirim = Customer::get();
         $penerima = Customer::get();
-        $jadwal_kapal = JadwalKapal::all();
+        $jadwal_kapal = JadwalKapal::join('kapal','kapal.id','=','jadwal_kapal.kapal_id')->select('jadwal_kapal.*')->where('jadwal_kapal.is_active',1)->get();
         return view('admin.cetak.pick_order', compact('pengirim','penerima','jadwal_kapal'));
     }
 
