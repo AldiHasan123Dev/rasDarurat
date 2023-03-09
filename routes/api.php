@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BarangController;
+use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\TarifController;
@@ -28,3 +29,5 @@ Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne'
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
+Route::resource('api-bttb',BTTBController::class);
+Route::resource('api-tarif',TarifController::class);

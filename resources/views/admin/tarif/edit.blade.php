@@ -11,6 +11,9 @@
                         @csrf
                         @method('PUT')
                         @include('admin.tarif.form')
+                        <div class="mt-2">
+                            <button type="submit"  class="btn btn-success btn-sm">Update Data</button>
+                        </div>
                     </form>
                 </div>
             </div>

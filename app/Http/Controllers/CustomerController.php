@@ -98,7 +98,9 @@ class CustomerController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Customer::select('*')->limit($start)->offset($limit);
+        $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
+                ->leftJoin('users as cs','cs.id','=','customers.cs_id')
+                ->select('customers.*')->limit($start)->offset($limit);
         $count = Customer::select('id')->count();
 
         return Datatables::of($data)

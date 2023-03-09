@@ -59,6 +59,7 @@
                                 <th>Tgl Full</th>
                                 <th>Barang Diantar</th>
                                 <th>BA Kembali</th>
+                                <th>Koli</th>
                                 <th>Satuan</th>
                                 <th>Unit</th>
                                 <th>Tarif</th>
@@ -89,7 +90,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-sm" id="table-bttb" style="font-size:.7rem">
+                            <table class="table table-sm nowrap" id="table-bttb" style="font-size:.7rem">
                                 <thead>
                                     <tr>
                                         <th>ID.</th>
@@ -143,8 +144,12 @@
     <div class="offcanvas-body">
         <form action="{{ route('bttb.store') }}" method="post" id="form-bttb">
             @csrf
+            <div id="message" class="my-3 text-center text-white alert alert-success py-2 px-5"></div>
             <input type="hidden" name="order_id" id="order_id_bttb">
             @include('admin.bttb.form', ['bttb'=>[]])
+            <div class="col-12 mb-2 px-1">
+                <button type="button" class="btn btn-success btn-sm" id="add-bttb">Tambah Data</button>
+            </div>
         </form>
     </div>
 </div>
@@ -297,6 +302,8 @@
         let tableOrder = $('#table-order').DataTable({
             processing: true,
             serverSide: true,
+            // scrollY: '50vh',
+            // scrollCollapse: true,
             ajax:{
                 url: '{{ route('order.data') }}',
                 method:'POST',
@@ -336,7 +343,8 @@
                 { data: 'full', name: 'order.full' },
                 { data: 'barang_diantar', name: 'order.barang_diantar' },
                 { data: 'ba_kembali', name: 'order.ba_kembali' },
-                { data: 'satuan', name: 'satuan.nama' },
+                { data: 'koli', name: 'koli', searchable:false },
+                { data: 'satuan', name: 'satuan', searchable:false },
                 { data: 'unit', name: 'satuan.nama' },
                 { data: 'tarif', name: 'tarif.tarif' },
                 { data: 'agen', name: 'order.agen' },
@@ -467,6 +475,71 @@
                 $('#nag').show();
                 $('#ag').hide();
             }
+        });
+
+        function hitungVol(){
+            var p = $('#p').val();
+            var l = $('#l').val();
+            var t = $('#t').val();
+            var vol = $('#vol').val();
+            if(p>0&&l>0&&t>0){
+                vol = (p*l*t)/1000000
+            }
+            $('#vol').val(vol);
+        }
+
+        $('#add-bttb').click(function (e) {
+            var data = {
+                order_id : $('#order_id_bttb').val(),
+                no_gudang : $('#no_gudang').val(),
+                barang_id : $('#barang_id').val(),
+                qty : $('#qty').val(),
+                satuan_id : $('#satuan_id').val(),
+                p : $('#p').val(),
+                l : $('#l').val(),
+                t : $('#t').val(),
+                vol : $('#vol').val(),
+                berat : $('#berat').val(),
+                tgl_masuk : $('#tgl_masuk').val(),
+                pengirim_id : $('#pengirim_id').val(),
+                keterangan : $('#keterangan-bttb').val(),
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api-bttb.store') }}",
+                data: data,
+                success: function (response) {
+                    if (response.status=='success') {
+                        $('#no_gudang').val('');
+                        $('#qty').val('');
+                        $('#p').val('');
+                        $('#l').val('');
+                        $('#t').val('');
+                        $('#vol').val('');
+                        $('#berat').val('');
+                        $('#keterangan-bttb').val('');
+                        $('#message').show();
+                        $('#message').html(response.message);
+                        tablebttb.ajax.reload();
+                        // tableOrder.ajax.reload();
+                        setTimeout(() => {
+                            $('#message').hide();
+                        }, 3000);
+                    }
+                }
+            });
+        });
+
+        $('#message').hide();
+        $('#p').keyup(function (e) {
+            hitungVol()
+        });
+        $('#l').keyup(function (e) {
+            hitungVol()
+        });
+        $('#t').keyup(function (e) {
+            hitungVol()
         });
 </script>
 @endsection

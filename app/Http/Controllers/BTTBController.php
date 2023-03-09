@@ -25,6 +25,14 @@ class BTTBController extends Controller
         return view('admin.bttb.index', compact('order','barang','satuan','pengirim'));
     }
 
+    public function edit(BTTB $bttb)
+    {
+        $barang = Barang::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $pengirim = Customer::pluck('nama','id');
+        return view('admin.bttb.edit', compact('bttb','barang','satuan','pengirim'));
+    }
+
     public function store(Request $request)
     {
         $data = $request->all();
@@ -76,33 +84,19 @@ class BTTBController extends Controller
                 return date('d/m/Y',strtotime($data->tgl_masuk));
             })
             ->addColumn('action', function ($data) {
-                $bttb = $data;
-                $barang = Barang::pluck('nama','id');
-                $satuan = Satuan::pluck('nama','id');
-                $pengirim = Customer::pluck('nama','id');
-                $order = Order::find($data->order_id);
-                $view = view('admin.bttb.form', compact('barang','satuan','pengirim','order','bttb'))->render();
+                // $bttb = $data;
+                // $barang = Barang::pluck('nama','id');
+                // $satuan = Satuan::pluck('nama','id');
+                // $pengirim = Customer::pluck('nama','id');
+                // $order = Order::find($data->order_id);
+                // $view = view('admin.bttb.form', compact('barang','satuan','pengirim','order','bttb'))->render();
                 $html = '<div class="d-flex gap-1">
                             <form action="'.route('bttb.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                                <a href="'.route('bttb.edit',$data).'" class="no-attr text-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="fas fa-pencil"></i></a>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBTTBUpdate'.$data->id.'" aria-controls="offcanvasBTTBUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasBTTBUpdate'.$data->id.'" aria-labelledby="offcanvasBTTBUpdate'.$data->id.'Label">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasBTTBUpdate'.$data->id.'Label">Form BTTB</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('bttb.update',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
-                                </form>
-                            </div>
                         </div>';
                 return $html;
             })

@@ -16,7 +16,7 @@
         #print, #print * {
             visibility: visible;
             font-family: 'Open Sans', sans-serif;
-            font-size: 1rem !important;
+            font-size: .8rem;
             color: black !important;
         }
         #print {
@@ -28,6 +28,12 @@
             font-family: 'Open Sans', sans-serif;
         }
     }
+    .table>:not(caption)>*>*{
+        padding: 0px 5px !important;
+    }
+    .table tr td{
+        border: none !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -37,7 +43,7 @@
             <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
         </div>
         <div class="card p-3" id="print">
-            <div class="header d-flex" style="gap:5px; width:100%">
+            <div class="headers d-flex" style="gap:5px; width:100%">
                 <img src="{{ asset('assets/img/ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                 <div style="width: 40%; margin-left:35px">
                     <table style="font-size:.7rem">
@@ -63,7 +69,7 @@
                         </tr>
                         <tr>
                             <td>Nama Kapal</td>
-                            <td>: {{ $order->tarif->jadwal_kapal->kapal->nama }}</td>
+                            <td>: {{ $order->jadwal_kapal->kapal->nama }}</td>
                         </tr>
                         <tr>
                             <td>No. Container</td>
@@ -96,14 +102,13 @@
                     </table>
                 </div>
                 <div class="col-12 mt-2">
-                    <table class="table table-bordered nowrap" style="font-size: .7rem">
+                    <table class="table nowrap border-dark border-y" style="font-size: .7rem !important">
                         <thead>
-                            <tr>
+                            <tr class="border-dark border-bottom">
                                 <th class="text-center">No. Gudang</th>
                                 <th>Jenis Barang</th>
-                                <th>Jumlah</th>
-                                <th>Satuan</th>
-                                <th>Tgl Masuk</th>
+                                <th class="text-center">Koli</th>
+                                <th class="text-center">Tgl Masuk</th>
                                 <th>Pengirim</th>
                                 <th>Keterangan</th>
                             </tr>
@@ -112,11 +117,10 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td class="text-center">{{ $item->no_gudang }}</td>
-                                    <td>{{ $item->barang->nama }}</td>
-                                    <td>{{ $item->qty }}</td>
-                                    <td>{{ $item->satuan->nama }}</td>
-                                    <td>{{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
-                                    <td>{{ $item->pengirim->nama }}</td>
+                                    <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
+                                    <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                    <td class="text-center">{{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
+                                    <td>{{ $item->pengirim->nama ?? '-' }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                 </tr>
                             @endforeach
@@ -131,7 +135,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: {{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
+                            <td>: </td>
                         </tr>
                     </table>
                     <div style="margin-top: 70px; margin-left:70px">

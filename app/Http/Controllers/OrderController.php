@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\OrderImport;
 use App\Models\Agen;
 use App\Models\Barang;
+use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Order;
@@ -282,7 +283,18 @@ class OrderController extends Controller
                 return is_null($data->ba_kembali) ? '-' : date('d-m-Y',strtotime($data->ba_kembali));
             })
             ->addColumn('satuan', function($data){
-                return $data->satuanInfo->nama ?? '-';
+                $satuan = '-';
+                if ($data->bttb->count()>0) {
+                    $satuan = BTTB::where('order_id',$data->id)->orderBy('qty','desc')->first()->satuan->nama;
+                }
+                return $satuan;
+            })
+            ->addColumn('koli', function($data){
+                $koli = '-';
+                if ($data->bttb->count()>0) {
+                    $koli = BTTB::where('order_id',$data->id)->sum('qty');
+                }
+                return $koli;
             })
             ->addColumn('agen_id', function($data){
                 return $data->agent->nama ?? '-';

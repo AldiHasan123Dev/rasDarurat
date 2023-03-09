@@ -16,8 +16,11 @@
         #print, #print * {
             visibility: visible;
             font-family: 'Open Sans', sans-serif;
-            font-size: 1rem !important;
+            font-size: .8rem;
             color: black !important;
+        }
+        .table{
+            font-size: .8rem !important;
         }
         #print {
             height: 100%;
@@ -27,6 +30,12 @@
             top: -80px;
             font-family: 'Open Sans', sans-serif;
         }
+    }
+    .table>:not(caption)>*>*{
+        padding: 0px 5px !important;
+    }
+    .table tr td{
+        border: none !important;
     }
 </style>
 @endsection
@@ -63,7 +72,7 @@
                         </tr>
                         <tr>
                             <td>Nama Kapal</td>
-                            <td>: {{ $order->tarif->jadwal_kapal->kapal->nama }}</td>
+                            <td>: {{ $order->jadwal_kapal->kapal->nama }}</td>
                         </tr>
                         <tr>
                             <td>No. Container</td>
@@ -96,9 +105,9 @@
                     </table>
                 </div>
                 <div class="col-12 mt-2">
-                    <table class="table table-bordered nowrap" style="font-size: .7rem">
+                    <table class="table nowrap border-dark border-y" style="font-size: .7rem !important">
                         <thead>
-                            <tr>
+                            <tr class="border-dark border-bottom">
                                 <th class="text-center">No. Gudang</th>
                                 <th>Jenis Barang</th>
                                 <th class="text-center">Koli</th>
@@ -115,14 +124,14 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td class="text-center">{{ $item->no_gudang }}</td>
-                                    <td>{{ $item->barang->nama }}</td>
+                                    <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                     <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
                                     <td class="text-center">{{ $item->p }}</td>
                                     <td class="text-center">{{ $item->l }}</td>
                                     <td class="text-center">{{ $item->t }}</td>
-                                    <td class="text-center">{{ $item->m3 }}</td>
+                                    <td class="text-center">{{ $item->vol }}</td>
                                     <td>{{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
-                                    <td>{{ $item->pengirim->nama }}</td>
+                                    <td>{{ $item->pengirim->nama ?? '-' }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                 </tr>
                             @endforeach
@@ -137,7 +146,7 @@
                         </tr>
                         <tr>
                             <td>Tanggal</td>
-                            <td>: {{ date('d/m/Y', strtotime($item->tgl_masuk)) }}</td>
+                            <td>:</td>
                         </tr>
                     </table>
                     <div style="margin-top: 70px; margin-left:70px">

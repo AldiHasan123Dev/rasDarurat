@@ -5,6 +5,9 @@
     td:hover {
         cursor: pointer;
     }
+    table.dataTable tbody th, table.dataTable tbody td{
+        padding: 0px 10px !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -90,8 +93,9 @@
         </div>
 
         <div class="card mt-3">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+            <div class="card-header p-2 d-flex" style="gap:10px">
                 <button class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarif" aria-controls="offcanvasTarif" id="add-tarif">Tambah Tarif <i class="fas fa-plus"></i></button>
+                <b class="mt-2" style="font-size: .7rem">Atas Nama: <span class="nama-cus"></span></b>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -130,8 +134,12 @@
     </div>
     <div class="offcanvas-body">
         <form action="{{ route('tarif.store') }}" method="post">
+            <div id="message" class="my-3 text-center text-white alert alert-success py-2 px-5"></div>
             @csrf
             @include('admin.tarif.form')
+            <div class="mt-2">
+                <button type="button" id="add-tarif-form"  class="btn btn-success btn-sm">Tambah Data</button>
+            </div>
         </form>
     </div>
 </div>
@@ -148,6 +156,8 @@
             processing: true,
             serverSide: true,
             select:true,
+            scrollY: '50vh',
+            scrollCollapse: true,
             ajax:{
                 url: '{{ route('customer.data') }}',
                 method:'POST',
@@ -156,8 +166,8 @@
             columns: [
                 { data: 'id', name: 'customers.id' },
                 { data: 'nama', name: 'customers.nama' },
-                { data: 'marketing_id', name: 'marketing_id' },
-                { data: 'cs_id', name: 'cs_id' },
+                { data: 'marketing_id', name: 'marketing.name' },
+                { data: 'cs_id', name: 'cs.name' },
                 { data: 'pic', name: 'pic' },
                 { data: 'alamat', name: 'alamat' },
                 { data: 'kota', name: 'kota' },
@@ -258,6 +268,7 @@
         // });
         $('#customer tbody').on( 'click', 'tr', function () {
             id =  tablecus.row( this ).data().id;
+            $('.nama-cus').html(tablecus.row(this).data().nama);
             $('#add-tarif').show();
             tabletar.ajax.reload()
         });
@@ -271,6 +282,40 @@
             }
         });
 
+        $('#add-tarif-form').click(function (e) {
+            var data = {
+                pelayaran_id : $('#pelayaran_id').val(),
+                customer_id : $('#customer_id').val(),
+                shipment : $('#shipment').val(),
+                dari : $('#dari').val(),
+                tujuan : $('#tujuan').val(),
+                kondisi : $('#kondisi').val(),
+                satuan : $('#satuan').val(),
+                tarif : $('#tarif-price').val(),
+                stuffing : $('#stuffing').val(),
+                keterangan : $('#keterangan').val(),
+            }
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api-tarif.store') }}",
+                data: data,
+                success: function (response) {
+                    if (response.status=='success') {
+                        $('#pelayaran_id').val('');
+                        $('#tarif-price').val('');
+                        $('#stuffing').val('');
+                        $('#keterangan').val('');
+                        $('#message').show();
+                        $('#message').html(response.message);
+                        tabletar.ajax.reload();
+                        setTimeout(() => {
+                            $('#message').hide();
+                        }, 3000);
+                    }
+                }
+            });
+        });
+        $('#message').hide();
 
 </script>
 @endsection

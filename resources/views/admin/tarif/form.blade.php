@@ -6,12 +6,9 @@
     <x-input :options="$lokasi" :value="$tarif->tujuan??old('tujuan')" :col="6" :label="'Tujuan'" :type="'select'" :name="'tujuan'" :required="true"></x-input>
     <x-input :options="$kondisi" :value="$tarif->kondisi??old('kondisi')" :col="6" :label="'Kondisi'" :type="'select'" :name="'kondisi'" :required="true"></x-input>
     <x-input :options="$satuan" :value="$tarif->satuan??old('satuan')" :col="6" :label="'Satuan'" :type="'select'" :name="'satuan'" :disabled="true"></x-input>
-    <x-input :value="$tarif->tarif??old('tarif')" :col="6" :label="'Tarif'" :type="'number'" :name="'tarif'" :required="true"></x-input>
+    <x-input :value="$tarif->tarif??old('tarif')" :id="'tarif-price'" :col="6" :label="'Tarif'" :type="'number'" :name="'tarif'" :required="true"></x-input>
     <x-input :value="$order->stuffing??old('stuffing')" :col="6" :label="'Stuffing Tipe'" :type="'select'" :options="['LUAR'=>'LUAR','DALAM'=>'DALAM']" :name="'stuffing'"></x-input>
     {{-- <x-input :value="$tarif->min_qty??old('min_qty')" :col="6" :label="'Min Qty'" :type="'text'" :name="'min_qty'"></x-input> --}}
     {{-- <x-input :value="$tarif->unit??old('unit')" :col="6" :label="'Unit'" :type="'text'" :name="'unit'"></x-input> --}}
     <x-input :value="$tarif->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'" :required="true"></x-input>
-    <div class="col-12 mb-2 px-1">
-        <button type="submit" class="btn btn-success btn-sm">{{ empty($tarif)?'Tambah':'Update' }} Data</button>
-    </div>
 </div>
