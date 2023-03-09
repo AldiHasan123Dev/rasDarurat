@@ -104,9 +104,7 @@ class CetakController extends Controller
             return redirect()->route('order.index');
         }
 
-        $orders = Order::whereHas('tarif', function($q) use($id){
-            $q->where('jadwal_kapal_id', $id);
-        })->get();
+        $orders = Order::where('jadwal_kapal_id', $id)->get();
 
         return view('admin.cetak.shipment', compact('orders','jadwal_kapal'));
     }
