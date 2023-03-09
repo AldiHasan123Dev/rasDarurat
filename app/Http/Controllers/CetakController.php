@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
+use App\Models\Lokasi;
 use App\Models\Order;
+use App\Models\Pengirim;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -99,13 +101,18 @@ class CetakController extends Controller
     {
         $id = request('jadwal_kapal_id');
         $jadwal_kapal = JadwalKapal::find($id);
-
-        if (!$jadwal_kapal) {
+        $lokasi = request('tujuan');
+        $tujuan = Lokasi::find($lokasi);
+        if (!$jadwal_kapal && !$tujuan) {
             return redirect()->route('order.index');
         }
+        $pengirim = Pengirim::all();
 
+        // $orders = Order::where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
+        //     $q->where('tujuan',$lokasi);
+        // })->get();
         $orders = Order::where('jadwal_kapal_id', $id)->get();
 
-        return view('admin.cetak.shipment', compact('orders','jadwal_kapal'));
+        return view('admin.cetak.shipment', compact('orders','jadwal_kapal','tujuan','pengirim'));
     }
 }

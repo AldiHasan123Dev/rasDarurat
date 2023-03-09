@@ -5,23 +5,31 @@
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
     }
+    .select2.select2-container.select2-container--default{
+        width: 100% !important;
+    }
 </style>
 @endsection
 @section('content')
 
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2 d-flex" style="gap:10px">
-                @if (!request('filter-order'))
-                <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
-                @endif
-                <a href="" id="edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</a>
-                <form action="" id="delete-order" method="post" enctype="multipart/form-data">
-                    @csrf
-                    @method('DELETE')
-                    <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
-                </form>
-                <b>N0. JOB (selected): <span class="nojob"></span></b>
+            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                <div class="d-flex" style="gap:10px">
+                    @if (!request('filter-order'))
+                    <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
+                    @endif
+                    <a href="" id="edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</a>
+                    <form action="" id="delete-order" method="post" enctype="multipart/form-data">
+                        @csrf
+                        @method('DELETE')
+                        <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
+                    </form>
+                    <b>N0. JOB (selected): <span class="nojob"></span></b>
+                </div>
+                <div>
+                    <button  data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-info">Cetak SI</button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -149,6 +157,40 @@
             @include('admin.bttb.form', ['bttb'=>[]])
             <div class="col-12 mb-2 px-1">
                 <button type="button" class="btn btn-success btn-sm" id="add-bttb">Tambah Data</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ route('cetak.shipment') }}" method="GET" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Form Buat SI</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="jadwal_kapal_id-si">Kapal</label><br>
+                    <select name="jadwal_kapal_id" id="jadwal_kapal_id-si" class="form-control w-100">
+                        @foreach ($jadwal_kapal as $kapal)
+                            <option value="{{ $kapal->id }}">{{ $kapal->kapal->nama ?? '-' }} || Voy.{{ $kapal->voyage }} || {{ $kapal->pelayaran->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb">
+                    <label for="tujuan-si">Tujuan</label><br>
+                    <select name="tujuan" id="tujuan-si" class="form-control w-100">
+                        @foreach ($data_lokasi as $lokasi)
+                            <option value="{{ $lokasi->id }}">{{ $lokasi->nama ?? '-' }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Buat SI</button>
             </div>
         </form>
     </div>
@@ -426,6 +468,12 @@
         $("select[name=barang_id]").select2({
             dropdownParent: $('#offcanvasBTTB'),
             tags:true
+        });
+        $("#jadwal_kapal_id-si").select2({
+            dropdownParent: $('#exampleModal'),
+        });
+        $("#tujuan-si").select2({
+            dropdownParent: $('#exampleModal'),
         });
 
         $("select[name=tarif_id]").change(function (e) {

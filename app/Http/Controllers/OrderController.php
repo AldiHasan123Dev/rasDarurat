@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
+use App\Models\Lokasi;
 use App\Models\Order;
 use App\Models\Satuan;
 use App\Models\Tarif;
@@ -19,17 +20,20 @@ class OrderController extends Controller
 {
     public function index()
     {
+        $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
         $tarifs = Tarif::where('is_active',1)->get();
-        // $customers = Customer::pluck('nama','id');
         $barang = Barang::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
         $agent = Agen::pluck('nama','id');
-        // $pengirim = $customers;
         $tarif = array();
+        $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
+        $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
+        $data_tarif_lokasi = array_unique($lokasi);
+        $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
-        return view('admin.order.index', compact('tarif','barang','satuan','agent'));
+        return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
     }
 
     public function store(Request $request)

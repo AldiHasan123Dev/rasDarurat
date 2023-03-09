@@ -26,3 +26,4 @@ Route::post('kondisi',[KondisiController::class,'datatable'])->name('kondisi.dat
 Route::post('satuan',[SatuanController::class,'datatable'])->name('satuan.data');
 Route::post('lokasi',[LokasiController::class,'datatable'])->name('lokasi.data');
 Route::post('tarif',[App\Http\Controllers\TarifController::class,'datatable'])->name('tarif.data');Route::post('barang',[App\Http\Controllers\BarangController::class,'datatable'])->name('barang.data');Route::post('order',[App\Http\Controllers\OrderController::class,'datatable'])->name('order.data');Route::post('bttb',[App\Http\Controllers\BTTBController::class,'datatable'])->name('bttb.data');
+Route::post('pengirim',[App\Http\Controllers\PengirimController::class,'datatable'])->name('pengirim.data');

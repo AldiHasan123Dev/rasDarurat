@@ -11,6 +11,7 @@ use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PelayaranController;
+use App\Http\Controllers\PengirimController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SyncController;
@@ -53,6 +54,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('barang',BarangController::class);
     Route::resource('order',OrderController::class);
     Route::resource('bttb',BTTBController::class);
+    Route::resource('pengirim',PengirimController::class);
 
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('pdf/surat-jalan',[CetakController::class,'pdfSuratJalan'])->name('cetak.pdf.suratJalan');

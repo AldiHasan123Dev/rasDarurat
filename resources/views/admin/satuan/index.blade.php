@@ -17,6 +17,9 @@
         <div class="sub-menu">
             <a href="{{ route('lokasi.index') }}" class="btn-link p-3 text-dark">Data Lokasi <span class="nav-link-icon"></span></span></a>
         </div>
+        <div class="sub-menu">
+            <a href="{{ route('pengirim.index') }}" class="btn-link p-3 text-dark">Pengirim <span class="nav-link-icon"></span></span></a>
+        </div>
     </div>
 </div>
     <div class="container mt-3">

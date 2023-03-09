@@ -6,7 +6,7 @@
             <a href="{{ route('agen.index') }}" class="btn-link p-3 text-dark">Data Kapal <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('kondisi.index') }}" class="btn-link p-3">Data Kondisi <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('kondisi.index') }}" class="btn-link p-3 text-dark">Data Kondisi <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('satuan.index') }}" class="btn-link p-3 text-dark">Data Satuan <span class="nav-link-icon"></span></span></a>
@@ -18,14 +18,14 @@
             <a href="{{ route('lokasi.index') }}" class="btn-link p-3 text-dark">Data Lokasi <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('pengirim.index') }}" class="btn-link p-3 text-dark">Pengirim <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('pengirim.index') }}" class="btn-link p-3">Pengirim <span class="nav-link-icon"></span></span></a>
         </div>
     </div>
 </div>
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKondisi" aria-controls="offcanvasKondisi">Tambah Kondisi</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPengirim" aria-controls="offcanvasPengirim">Tambah Pengirim</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -46,15 +46,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasKondisi" aria-labelledby="offcanvasKondisiLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasPengirim" aria-labelledby="offcanvasPengirimLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasKondisiLabel">Form Kondisi</h5>
+            <h5 class="offcanvas-title" id="offcanvasPengirimLabel">Form Pengirim</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('kondisi.store') }}" method="post">
+            <form action="{{ route('pengirim.store') }}" method="post">
                 @csrf
-                @include('admin.kondisi.form')
+                @include('admin.pengirim.form')
             </form>
         </div>
     </div>
@@ -66,7 +66,7 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('kondisi.data') }}',
+                url: '{{ route('pengirim.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
