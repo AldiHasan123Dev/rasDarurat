@@ -28,7 +28,7 @@
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
                 <div>
-                    <button  data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-info">Cetak SI</button>
+                    {{-- <button  data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-info">Cetak SI</button> --}}
                 </div>
             </div>
             <div class="card-body">

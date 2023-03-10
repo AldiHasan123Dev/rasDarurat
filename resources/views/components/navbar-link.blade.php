@@ -67,7 +67,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.index',['filter-order'=>'ba_kembali']) }}" aria-expanded="false">
+                <a class="nav-link" href="{{ route('order.ba-kembali',['filter-order'=>'ba_kembali']) }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
                 </a>
             </li>

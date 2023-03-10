@@ -36,6 +36,24 @@ class OrderController extends Controller
         return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
     }
 
+    public function baKembali()
+    {
+        $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
+        $tarifs = Tarif::where('is_active',1)->get();
+        $barang = Barang::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $agent = Agen::pluck('nama','id');
+        $tarif = array();
+        $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
+        $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
+        $data_tarif_lokasi = array_unique($lokasi);
+        $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
+        foreach ($tarifs as $id => $item ) {
+            $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
+        }
+        return view('admin.order.ba_kembali', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -74,22 +92,26 @@ class OrderController extends Controller
         $data = $request->all();
         if ($request->ba_kembali && $request->invoice==1) {
             $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
-        }
-        $barang = Barang::find($request->barang_id);
-        if (!$barang) {
-            $barang = Barang::create(['nama'=>$request->barang_id]);
-        }
-
-        if ($request->satuan) {
-            $satuan = Satuan::find($request->satuan);
-            if(!$satuan){
-                $satuan = Satuan::create(['nama'=>$request->satuan]);
+        }else{
+            $barang = Barang::find($request->barang_id);
+            if (!$barang) {
+                $barang = Barang::create(['nama'=>$request->barang_id]);
             }
-            $data['satuan'] = $satuan->id;
+
+            if ($request->satuan) {
+                $satuan = Satuan::find($request->satuan);
+                if(!$satuan){
+                    $satuan = Satuan::create(['nama'=>$request->satuan]);
+                }
+                $data['satuan'] = $satuan->id;
+            }
+            $data['barang_id'] = $barang->id;
         }
-        $data['barang_id'] = $barang->id;
         $order->update($data);
 
+        if ($request->ba_kembali && $request->invoice==1) {
+            return redirect()->route('order.ba-kembali',['filter-order'=>'ba_kembali'])->with('success','Data berhasil diupdate');
+        }
         return redirect()->route('order.index')->with('success','Data berhasil diupdate');
     }
 
