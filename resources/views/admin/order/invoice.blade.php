@@ -16,7 +16,7 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex" style="gap: 12px">
-                    <button data-bs-toggle="modal" data-bs-target="#ba-kembali" class="btn btn-sm btn-success">BA Kembali</button>
+                    <a href="" id="print-invoice" class="btn btn-sm btn-success">Print</a>
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
             </div>
@@ -55,43 +55,9 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 </div>
 
-<div class="modal fade" id="ba-kembali" tabindex="-1" aria-labelledby="ba-kembaliLabel" aria-hidden="true">
-    <form action="" class="modal-dialog" method="post" id="form-ba-kembali">
-        @csrf
-        @method('PUT')
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="ba-'.$data->id.'Label">BA Kembali <span class="nojob"></span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-12 mb-2">
-                        <label for="ba_kembali">BA Kembali</label>
-                        <input type="date" name="ba_kembali" class="form-control">
-                    </div>
-                    <div class="col-12 mb-2">
-                        <label for="ba_kembali">Barang Diantar</label>
-                        <input type="date" name="barang_diantar" class="form-control">
-                    </div>
-                    <div class="col-12 mb-2">
-                        <label for="keterangan">Keterangan</label>
-                        <textarea name="keterangan" id="keterangan" cols="30" rows="5" class="form-control"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" name="invoice" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
-            </div>
-        </div>
-    </form>
-</div>
 @endsection
 
 @section('script')
@@ -109,7 +75,7 @@
             ajax:{
                 url: '{{ route('order.data') }}',
                 method:'POST',
-                data:{filter:@json(request('filter-order'))},
+                data:{filter:'invoice'},
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
@@ -150,9 +116,7 @@
         $('#table-order tbody').on( 'click', 'tr', function () {
             var id =  tableOrder.row( this ).data().id;
             var no_job =  tableOrder.row( this ).data().no_job;
-            $('#order_id_bttb').val(id);
             $('.nojob').html(no_job);
-            $('#form-ba-kembali').attr('action','{{ url('admin/order') }}/'+id);
         })
 
 </script>

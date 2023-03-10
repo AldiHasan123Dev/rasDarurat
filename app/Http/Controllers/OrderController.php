@@ -54,6 +54,11 @@ class OrderController extends Controller
         return view('admin.order.ba_kembali', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
     }
 
+    public function invoice()
+    {
+        return view('admin.order.invoice');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -141,6 +146,9 @@ class OrderController extends Controller
     {
         $data = $order->toArray();
         $data['no_job'] = Order::where('job',$order->job)->max('no_job') + 1;
+        $data['nopol'] = null;
+        $data['container'] = null;
+        $data['seal'] = null;
         Order::create($data);
         return back()->with('success','Copy data berhasil');
     }

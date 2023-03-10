@@ -57,6 +57,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('pengirim',PengirimController::class);
 
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
+    Route::get('invoice',[OrderController::class,'invoice'])->name('order.invoice');
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('pdf/surat-jalan',[CetakController::class,'pdfSuratJalan'])->name('cetak.pdf.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');

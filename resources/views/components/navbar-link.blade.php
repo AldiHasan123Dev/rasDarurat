@@ -67,12 +67,17 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.ba-kembali',['filter-order'=>'ba_kembali']) }}" aria-expanded="false">
+                <a class="nav-link" href="{{ route('cetak.shipment') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Shipping Instruction</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('order.ba-kembali') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.index',['filter-order'=>'invoice']) }}" aria-expanded="false">
+                <a class="nav-link" href="{{ route('order.invoice') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Invoice</span></div>
                 </a>
             </li>

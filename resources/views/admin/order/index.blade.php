@@ -101,7 +101,7 @@
                             <table class="table table-sm nowrap" id="table-bttb" style="font-size:.7rem">
                                 <thead>
                                     <tr>
-                                        <th>ID.</th>
+                                        <th>No.</th>
                                         <th>No. Gudang</th>
                                         <th>Barang</th>
                                         <th>Jumlah</th>
@@ -162,39 +162,6 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form action="{{ route('cetak.shipment') }}" method="GET" class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Form Buat SI</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-2">
-                    <label for="jadwal_kapal_id-si">Kapal</label><br>
-                    <select name="jadwal_kapal_id" id="jadwal_kapal_id-si" class="form-control w-100">
-                        @foreach ($jadwal_kapal as $kapal)
-                            <option value="{{ $kapal->id }}">{{ $kapal->kapal->nama ?? '-' }} || Voy.{{ $kapal->voyage }} || {{ $kapal->pelayaran->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb">
-                    <label for="tujuan-si">Tujuan</label><br>
-                    <select name="tujuan" id="tujuan-si" class="form-control w-100">
-                        @foreach ($data_lokasi as $lokasi)
-                            <option value="{{ $lokasi->id }}">{{ $lokasi->nama ?? '-' }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Buat SI</button>
-            </div>
-        </form>
-    </div>
-</div>
 @endsection
 
 @section('script')
@@ -408,7 +375,8 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id' },
+                // { data: 'id', name: 'id' },
+                { data: 'DT_RowIndex', 'orderable': false, 'searchable': false },
                 { data: 'no_gudang', name: 'no_gudang' },
                 { data: 'barang_id', name: 'barang_id' },
                 { data: 'qty', name: 'qty' },
@@ -474,6 +442,14 @@
         });
         $("#tujuan-si").select2({
             dropdownParent: $('#exampleModal'),
+        });
+
+        $(document).on('keyup', '.select2-search__field', function(e){
+            e.target.value = e.target.value.toUpperCase()
+        });
+
+        $(document).on('keyup', '#no_gudang', function(e){
+            e.target.value = e.target.value.toUpperCase()
         });
 
         $("select[name=tarif_id]").change(function (e) {

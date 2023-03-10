@@ -71,6 +71,7 @@ class BTTBController extends Controller
         $data = BTTB::where('order_id',request('order_id'))->get();
 
         return Datatables::of($data)
+            ->addIndexColumn()
             ->addColumn('barang_id', function($data){
                 return $data->barang->nama ?? '-';
             })
