@@ -109,7 +109,7 @@
             ajax:{
                 url: '{{ route('order.data') }}',
                 method:'POST',
-                data:{filter:@json(request('filter-order'))},
+                data:{filter:'ba_kembali'},
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [

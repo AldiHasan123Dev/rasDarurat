@@ -120,7 +120,7 @@
                                 </table>
                             </div>
                             <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
-                                <table class="table nowrap border-dark border-y" style="font-size: .7rem !important">
+                                <table class="table nowrap border-dark border-top" style="font-size: .7rem !important">
                                     <thead>
                                         <tr class="border-dark border-bottom">
                                             <th class="text-center">No. Gudang</th>

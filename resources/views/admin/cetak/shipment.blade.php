@@ -116,8 +116,8 @@
                                     <th class="text-center" style="vertical-align: middle" rowspan="2">Stuffing</th>
                                 </tr>
                                 <tr>
-                                    <th class="text-center" style="width: 100px">Penerima</th>
-                                    <th class="text-center" style="width: 100px">Pengirim</th>
+                                    <th class="text-center" style="width: 200px">Penerima</th>
+                                    <th class="text-center" style="width: 200px">Pengirim</th>
                                 </tr>
                             </thead>
                             <tbody>

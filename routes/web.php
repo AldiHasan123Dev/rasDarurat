@@ -74,3 +74,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-import',[SyncController::class,'import']);
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
+Route::resource('tarifagen',App\Http\Controllers\TarifAgenController::class);Route::resource('tarifpelayaran',App\Http\Controllers\TarifPelayaranController::class);Route::resource('tariftruk',App\Http\Controllers\TarifTrukController::class);

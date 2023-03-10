@@ -164,7 +164,7 @@ class OrderController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Order::leftJoin('tarif','tarif.id','=','order.tarif_id')
+        $data = Order::query()->leftJoin('tarif','tarif.id','=','order.tarif_id')
                 ->join('shipments','shipments.id','=','tarif.shipment')
                 ->join('kondisi','kondisi.id','=','tarif.kondisi')
                 ->leftJoin('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
@@ -179,9 +179,11 @@ class OrderController extends Controller
                 ->leftJoin('barang','barang.id','=','order.barang_id')
                 ->leftJoin('satuan','satuan.id','=','order.satuan')
                 ->leftJoin('agen','agen.id','=','order.agen_id')
-                ->select('order.*');
+                ->select('order.*')
+                ->orderBy('order.no','desc');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('invoice');
+            $data->whereIn('tarif.kondisi',[5,7]);
         }
         if(request('filter')&&request('filter')=='invoice'){
             $data->whereNotNull('invoice');
