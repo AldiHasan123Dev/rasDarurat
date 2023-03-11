@@ -62,7 +62,7 @@
                 @foreach ($data->chunk(15) as $bttb)
                     <div class="page" style="margin-top: 30px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -70,8 +70,8 @@
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                                 </table>
                             </div>
-                            <div style="width:30%; ">
-                                <table style="font-size: .7rem; font-weight:bold">
+                            <div style="width:22%; text-align:right">
+                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                 </table>
@@ -166,7 +166,7 @@
                                     <tr>
                                         <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                         <td>{{ $order->bttb->sum('qty') }}</td>
-                                        <td class="text-center">{{ $order->tarif->customer->nama }}</td>
+                                        <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                     </tr>
                                 </table>
                             </div>

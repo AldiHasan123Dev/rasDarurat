@@ -62,7 +62,7 @@
                 @foreach ($data->chunk(15) as $bttb)
                     <div class="page" style="margin-top: 30px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>

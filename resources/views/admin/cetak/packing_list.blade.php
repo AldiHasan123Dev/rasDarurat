@@ -50,7 +50,7 @@
         <div class="card p-3">
             <div id="print">
                 <div class="header d-flex" style="gap:5px; width:100%">
-                    <img src="{{ asset('ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
                         <table style="font-size:.7rem">
                             <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
