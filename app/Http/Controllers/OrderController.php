@@ -180,7 +180,7 @@ class OrderController extends Controller
                 ->leftJoin('satuan','satuan.id','=','order.satuan')
                 ->leftJoin('agen','agen.id','=','order.agen_id')
                 ->select('order.*')
-                ->orderBy('order.no','desc');
+                ->orderBy('order.no');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('invoice');
             $data->whereIn('tarif.kondisi',[5,7]);
@@ -207,13 +207,9 @@ class OrderController extends Controller
                 return $class;
             })
             ->order(function ($query) {
-                $query->orderBy('no', 'desc');
+                $query->orderBy('no');
             })
             ->addColumn('tools', function($data){
-                $ba_kembali = '';
-                if (is_null($data->invoice)) {
-                    $ba_kembali = '<li> <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#ba-'.$data->id.'">BA Kembali</button></li>';
-                }
                 $html = '<div class="dropend">
                             <button class="no-attr text-dark text-center dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size:.6rem"><i class="fas fa-list"></i></button>
                             <ul class="dropdown-menu">
@@ -223,10 +219,8 @@ class OrderController extends Controller
                                         <button onclick="return confirm(\'are you sure\')" type="submit" class="dropdown-item">Copy Order</a>
                                     </form>
                                 </li>
-                                <li><a class="dropdown-item" href="'.route('bttb.index',['order_id'=>$data->id]).'">BTTB</a></li>
                                 <li><a class="dropdown-item" href="'.route('cetak.packingList',['order_id'=>$data->id]).'">Packing List</a></li>
                                 <li><a class="dropdown-item" href="'.route('cetak.packingList.kubikasi',['order_id'=>$data->id]).'">Packing List Kubikasi</a></li>
-                                '.$ba_kembali.'
                             </ul>
                         </div>
 
@@ -287,6 +281,19 @@ class OrderController extends Controller
             })
             ->addColumn('barang', function($data){
                 return $data->barang->nama ?? '-';
+            })
+            ->addColumn('vol', function($data){
+                return $data->bttb->sum('vol') ?? '0';
+            })
+            ->addColumn('berat', function($data){
+                return $data->bttb->sum('berat') ?? '0';
+            })
+            ->addColumn('barang_bttb', function($data){
+                $text = '';
+                foreach ($data->bttb as $barang ) {
+                    $text .= $barang->barang->nama.',';
+                }
+                return $text;
             })
             ->addColumn('pelayaran', function($data){
                 return $data->jadwal_kapal->pelayaran->nama ?? '-';
@@ -354,8 +361,8 @@ class OrderController extends Controller
                 return $data->penerima_bl->nama ?? '-';
             })
             ->rawColumns(['tools'])
-            // ->setFilteredRecords($count)
-            ->setTotalRecords($count)
+            ->setFilteredRecords($count)
+            // ->setTotalRecords($count)
             ->toJson();
     }
 }

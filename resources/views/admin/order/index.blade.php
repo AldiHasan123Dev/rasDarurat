@@ -52,6 +52,7 @@
                                 <th>Shipment</th>
                                 <th>Kondisi</th>
                                 <th>Jenis Barang</th>
+                                <th>Barang</th>
                                 <th>Pelayaran</th>
                                 <th>Kapal</th>
                                 <th>Voyage</th>
@@ -68,6 +69,8 @@
                                 <th>Barang Diantar</th>
                                 <th>BA Kembali</th>
                                 <th>Koli</th>
+                                <th>M3</th>
+                                <th>Berat</th>
                                 <th>Satuan</th>
                                 <th>Unit</th>
                                 <th>Tarif</th>
@@ -337,6 +340,7 @@
                 { data: 'shipment', name: 'shipments.nama' },
                 { data: 'kondisi', name: 'kondisi.nama' },
                 { data: 'barang', name: 'barang.nama' },
+                { data: 'barang_bttb', name: 'barang_bttb', searchable:false },
                 { data: 'pelayaran', name: 'pelayaran.nama' },
                 { data: 'kapal', name: 'kapal.nama' },
                 { data: 'voyage', name: 'jadwal_kapal.voyage' },
@@ -353,6 +357,8 @@
                 { data: 'barang_diantar', name: 'order.barang_diantar' },
                 { data: 'ba_kembali', name: 'order.ba_kembali' },
                 { data: 'koli', name: 'koli', searchable:false },
+                { data: 'vol', name: 'vol', searchable:false },
+                { data: 'berat', name: 'berat', searchable:false },
                 { data: 'satuan', name: 'satuan', searchable:false },
                 { data: 'unit', name: 'satuan.nama' },
                 { data: 'tarif', name: 'tarif.tarif' },

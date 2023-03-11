@@ -17,7 +17,7 @@
                 width: 100%;
             }
             #print .header{
-                margin-top: 10px;
+                margin-top: 30px;
             }
             #print, #print * {
                 visibility: visible;
@@ -32,7 +32,7 @@
                 font-family: 'Open Sans', sans-serif;
                 padding: 0;
                 margin: 0;
-                margin-top: -130px;
+                margin-top: -110px;
             }
             .pagebreak {
                 page-break-after: always;
@@ -62,7 +62,7 @@
                 @foreach ($data->chunk(15) as $bttb)
                     <div class="page" style="margin-top: 30px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('assets/img/ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -77,7 +77,6 @@
                                 </table>
                             </div>
                         </div>
-                        <hr>
                         <div class="row">
                             <div class="col-6">
                                 <table style="font-size: .7rem">
@@ -120,9 +119,9 @@
                                 </table>
                             </div>
                             <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
-                                <table class="table nowrap border-dark border-top" style="font-size: .7rem !important">
+                                <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                                     <thead>
-                                        <tr class="border-dark border-bottom">
+                                        <tr style="border-bottom: solid 2px black">
                                             <th class="text-center">No. Gudang</th>
                                             <th>Jenis Barang</th>
                                             <th class="text-center">Koli</th>
@@ -163,7 +162,7 @@
                             </div>
                             @if ($loop->last)
                             <div class="col-12">
-                                <table class="w-100" style="border: 1px black solid; font-size: .7rem !important">
+                                <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
                                     <tr>
                                         <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                         <td>{{ $order->bttb->sum('qty') }}</td>

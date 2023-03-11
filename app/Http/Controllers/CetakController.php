@@ -61,7 +61,7 @@ class CetakController extends Controller
             return redirect()->route('order.index');
         }
 
-        $data = Order::where('job',$order->job)->get();
+        $data = Order::where('job',$order->job)->orderBy('tarif_id')->get();
         return view('admin.cetak.packing_list', compact('order','data'));
     }
 
@@ -72,7 +72,7 @@ class CetakController extends Controller
             return redirect()->route('order.index');
         }
 
-        $data = Order::where('job',$order->job)->get();
+        $data = Order::where('job',$order->job)->orderBy('tarif_id')->get();
         return view('admin.cetak.packing_list_kubikasi', compact('order','data'));
     }
 

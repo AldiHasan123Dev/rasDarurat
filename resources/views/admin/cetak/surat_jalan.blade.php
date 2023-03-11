@@ -102,7 +102,7 @@
             <div class="col-md-8 col-12 mt-3 p-2 bg-white">
                 <div id="print">
                     <div class="header d-flex" style="gap:5px; width:100%;">
-                        <img src="{{ asset('assets/img/ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                        <img src="{{ asset('ras.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                         <div style="width: 40%; margin-left:35px">
                             <table style="font-size:.7rem">
                                 <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
