@@ -173,8 +173,9 @@
                                 <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
                                     <tr>
                                         <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                        <td style="width: 30px"></td>
                                         <td>{{ $order->bttb->sum('qty') }}</td>
-                                        <td class="text-center">{{ $order->tarif->customer->nama }}</td>
+                                        <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                     </tr>
                                 </table>
                             </div>
