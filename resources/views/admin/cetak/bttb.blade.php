@@ -17,7 +17,7 @@
                 width: 100%;
             }
             #print .header{
-                margin-top: 30px;
+                margin-top: 40px;
             }
             #print, #print * {
                 visibility: visible;
@@ -32,7 +32,7 @@
                 font-family: 'Open Sans', sans-serif;
                 padding: 0;
                 margin: 0;
-                margin-top: -110px;
+                margin-top: -100px;
             }
             .pagebreak {
                 page-break-after: always;
