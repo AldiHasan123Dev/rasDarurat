@@ -182,7 +182,8 @@
                                     </tr>
                                 </table>
                                 <div style="margin-top: 70px; margin-left:70px">
-                                    <span class="text-center">(....................................................)</span>
+                                    <span class="text-center">(....................................................)</span><br>
+                                    <span class="text-center">Stampel + TTD + Nama</span>
                                 </div>
                             </div>
                             <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
