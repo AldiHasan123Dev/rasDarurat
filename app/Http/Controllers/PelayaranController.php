@@ -71,4 +71,26 @@ class PelayaranController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
+
+    public function data()
+    {
+        $query = Pelayaran::query();
+        if (request('_search')) {
+            if (request('id')) {
+                $query->where('id',request('id'));
+            }
+            if (request('kode')) {
+                $query->where('kode','LIKE','%'.request('kode').'%');
+            }
+            if (request('nama')) {
+                $query->where('nama','LIKE','%'.request('nama').'%');
+            }
+        }
+
+        $data = $query->get();
+
+        return response([
+            'rows' => $data
+        ]);
+    }
 }

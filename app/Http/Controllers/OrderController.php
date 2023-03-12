@@ -15,6 +15,7 @@ use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -22,18 +23,19 @@ class OrderController extends Controller
     {
         $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
         $tarifs = Tarif::where('is_active',1)->get();
-        $barang = Barang::pluck('nama','id');
-        $satuan = Satuan::pluck('nama','id');
+        $barang = Barang::pluck('nama');
+        $satuan = Satuan::pluck('nama');
         $agent = Agen::pluck('nama','id');
         $tarif = array();
         $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
         $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
         $data_tarif_lokasi = array_unique($lokasi);
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
+        $customers = Customer::pluck('nama');
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
-        return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
+        return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers'));
     }
 
     public function baKembali()
@@ -64,17 +66,18 @@ class OrderController extends Controller
         $request->validate([
             'jadwal_kapal_id' => 'required|numeric',
             'tarif_id' => 'required|numeric',
-            'barang_id' => 'required|numeric',
+            'barang_id' => 'required',
         ],[
             'jadwal_kapal_id.required' => 'Kapal Harus diisi!',
             'jadwal_kapal_id.numeric' => 'Kapal Harus diisi!',
             'tarif_id.required' => 'Pembayar Harus diisi!',
             'tarif_id.numeric' => 'Pembayar Harus diisi!',
             'barang_id.required' => 'Barang Harus diisi!',
-            'barang_id.numeric' => 'Barang Harus diisi!',
         ]);
         $data = $request->all();
         $barang = Barang::find($request->barang_id);
+        $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id;
+        $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id;
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
@@ -149,6 +152,14 @@ class OrderController extends Controller
         $data['nopol'] = null;
         $data['container'] = null;
         $data['seal'] = null;
+        $data['stuffing'] = null;
+        $data['barang_diantar'] = null;
+        $data['ba_kembali'] = null;
+        $data['full'] = null;
+        $data['agen'] = null;
+        $data['agen_id'] = null;
+        $data['penerima_bl_id'] = null;
+        $data['keterangan'] = null;
         Order::create($data);
         return back()->with('success','Copy data berhasil');
     }
@@ -249,6 +260,9 @@ class OrderController extends Controller
                         </div>';
                 return $html;
             })
+            ->addColumn('created_at', function($data){
+                return date('d/m/y',strtotime($data->created_at));
+            })
             ->addColumn('no_job', function($data){
                 return $data->job.'-'.sprintf('%02d',$data->no_job);
             })
@@ -293,7 +307,7 @@ class OrderController extends Controller
                 foreach ($data->bttb as $barang ) {
                     $text .= $barang->barang->nama.',';
                 }
-                return $text;
+                return Str::limit($text, 30, '...');
             })
             ->addColumn('pelayaran', function($data){
                 return $data->jadwal_kapal->pelayaran->nama ?? '-';

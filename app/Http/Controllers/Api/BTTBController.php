@@ -23,11 +23,27 @@ class BTTBController extends Controller
         }
         $data['barang_id'] = $barang->id;
         $data['satuan_id'] = $satuan->id;
-        $bttb = BTTB::create($data);
+        if ($request->id&&$request->id>0) {
+            $bttb = BTTB::find($request->id);
+            $bttb->update($data);
+        }else{
+            $bttb = BTTB::create($data);
+        }
         return response([
             'status' => 'success',
             'data' => $bttb,
             'message' => 'Data berhasil di simpan'
+        ]);
+    }
+
+    public function delete()
+    {
+        $bttb = BTTB::find(request('id'));
+        $bttb->delete();
+        return response([
+            'status' => 'success',
+            'data' => $bttb,
+            'message' => 'Data berhasil di hapus'
         ]);
     }
 }

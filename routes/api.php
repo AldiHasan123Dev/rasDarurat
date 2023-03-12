@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\TarifController;
+use App\Http\Controllers\PelayaranController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,10 +25,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
+Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
 Route::resource('api-bttb',BTTBController::class);
+Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
 Route::resource('api-tarif',TarifController::class);
+Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');

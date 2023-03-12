@@ -72,6 +72,9 @@ class BTTBController extends Controller
 
         return Datatables::of($data)
             ->addIndexColumn()
+            ->addColumn('created_at', function($data){
+                return date('d/m/y',strtotime($data->created_at));
+            })
             ->addColumn('barang_id', function($data){
                 return $data->barang->nama ?? '-';
             })

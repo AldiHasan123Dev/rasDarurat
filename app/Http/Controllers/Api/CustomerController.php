@@ -34,4 +34,22 @@ class CustomerController extends Controller
             'counts' => $counts,
         ], 200);
     }
+
+    public function getCustomer()
+    {
+        $name = request('nama');
+        if(is_array($name)){
+            $name = array_unique($name);
+            $customer = Customer::whereIn('nama',$name)->get();
+            if ($customer->count()!=count($name)) {
+                return response(0);
+            }
+        }else{
+            $customer = Customer::where('nama', $name)->first();
+        }
+        if (!$customer) {
+            return response(0);
+        }
+        return response($customer);
+    }
 }

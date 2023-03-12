@@ -1,13 +1,14 @@
-@props(['label','col','name','value','type','attr','options','rows','cols','required','disabled','id','readonly'])
+@props(['label','col','name','value','type','attr','options','rows','cols','required','disabled','id','readonly','autocomplete'])
 @php
     $required = $required ?? false;
     $disabled = $disabled ?? false;
     $readonly = $readonly ?? false;
+    $autocomplete = $autocomplete ?? false;
 @endphp
-<div class="col-{{ $col ?? '12'}} mb-3">
+<div class="col-{{ $col ?? '12'}} mb-3 autocomplete">
     <label>{{ $label ?? '' }}</label>
     @if ($type=='text'|| $type=='password'||$type=='email'||$type=='number' || $type=='file' || $type=='date')
-        <input autocomplete="on" type="{{ $type }}" name="{{ $name??'' }}" value="{{ $value ?? old($name) }}" id="{{ $id ?? $name }}" class="form-control" step="any" {{ !empty($attr)?implode(' ', $attr) : '' }} {{ $required?'required':'' }} {{ $readonly?'readonly':'' }} {{ $disabled?'disabled':'' }}>
+        <input type="{{ $type }}" name="{{ $name??'' }}" value="{{ $value ?? old($name) }}" id="{{ $id ?? $name }}" class="form-control" step="any" {{ !empty($attr)?implode(' ', $attr) : '' }} {{ $required?'required':'' }} {{ $readonly?'readonly':'' }} {{ $disabled?'disabled':'' }}>
     @elseif($type=='select')
     @php
         $value = $value ?? old($name);

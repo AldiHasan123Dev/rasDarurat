@@ -70,8 +70,9 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
     Route::view('static-invoice', 'admin.print.invoice');
-
+    
     Route::get('sync-import',[SyncController::class,'import']);
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
+Route::view('test','test');
 Route::resource('tarifagen',App\Http\Controllers\TarifAgenController::class);Route::resource('tarifpelayaran',App\Http\Controllers\TarifPelayaranController::class);Route::resource('tariftruk',App\Http\Controllers\TarifTrukController::class);
