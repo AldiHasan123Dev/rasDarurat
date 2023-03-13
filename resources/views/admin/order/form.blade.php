@@ -1,15 +1,25 @@
 <div class="row">
-    <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
-    <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+    @if (!empty($order))
+        @if ($order->tarif->is_active==0)
+            <x-input :value="$pembayar" :col="6" :label="'Pembayar'" :type="'text'" :name="'null'" :disabled="true"></x-input>
+            <x-input :value="$order->jadwal_kapal->kapal.' || '.$order->jadwal_kapal->pelayaran->nama.' || VOY. '.$order->jadwal_kapal->voyage" :col="6" :label="'Kapal'" :type="'text'" :name="'null'" :disabled="true" ></x-input>
+        @else
+            <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
+            <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+        @endif
+    @else
+        <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
+        <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+    @endif
     <x-input :value="''" :name="'tarif'" :col="3" :label="'Tarif'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'satuan'" :col="3" :label="'Unit'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'dari'" :col="3" :label="'Dari'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'tujuan'" :col="3" :label="'Tujuan'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'shipment'" :col="3" :label="'Shipment'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'kondisi'" :col="3" :label="'Kondisi'" :type="'text'" :disabled="true"></x-input>
-    <x-input :value="$order->pengirim_id??old('pengirim_id')" :col="3" :label="'Pengirim'" :type="'text'" :name="'pengirim_id'" :required="true"></x-input>
-    <x-input :value="$order->penerima_id??old('penerima_id')" :col="3" :label="'Penerima'" :type="'text'" :name="'penerima_id'" :required="true"></x-input>
-    <x-input :value="$order->barang_id??old('barang_id')" :col="3" :label="'Barang'" :type="'text'" :name="'barang_id'" :required="true" id="selectBarang"></x-input>
+    <x-input :value="$order->pengirim->nama??old('pengirim_id')" :col="3" :label="'Pengirim'" :type="'text'" :name="'pengirim_id'" :required="true"></x-input>
+    <x-input :value="$order->penerima->nama??old('penerima_id')" :col="3" :label="'Penerima'" :type="'text'" :name="'penerima_id'" :required="true"></x-input>
+    <x-input :value="$order->barang->nama??old('barang_id')" :col="3" :label="'Barang'" :type="'text'" :name="'barang_id'" :required="true" id="selectBarang"></x-input>
     <x-input :value="$order->nopol??old('nopol')" :col="3" :label="'Nopol'" :type="'text'" :name="'nopol'"></x-input>
     <x-input :value="$order->trucking??old('trucking')" :col="3" :label="'Trucking'" :type="'select'" :options="['XPDC'=>'XPDC','SUPP'=>'SUPP','CUST'=>'CUST']" :name="'trucking'"></x-input>
     <x-input :value="$order->container??old('container')" :col="3" :label="'No. Container'" :type="'text'" :name="'container'"></x-input>
