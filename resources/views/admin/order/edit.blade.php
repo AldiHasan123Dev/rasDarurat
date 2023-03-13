@@ -11,6 +11,9 @@
                         @csrf
                         @method('PUT')
                         @include('admin.order.form')
+                        <div class="my-3">
+                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('are you sure?')">Simpan Data</button>
+                        </div>
                     </form>
                 </div>
             </div>
