@@ -51,7 +51,7 @@ class OrderController extends Controller
         $data_tarif_lokasi = array_unique($lokasi);
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
+            $tarif[$item->id] = $item->customer->nama ?? '-'.' || '.$item->dari_lokasi->nama ?? '-'.' || '.$item->tujuan_lokasi->nama ?? '-'.' || '.$item->kondisiInfo->nama ?? '-'.' || '.$item->pelayaran->nama ?? '-'.' || '.$item->shipmentInfo->nama ?? '-'.' || '.$item->tarif ?? '-';
         }
         return view('admin.order.ba_kembali', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
     }
@@ -99,7 +99,7 @@ class OrderController extends Controller
     {
         $data = $request->all();
         if ($request->ba_kembali && $request->invoice==1) {
-            $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
+            // $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
         }else{
             $barang = Barang::find($request->barang_id);
             if (!$barang) {
@@ -193,7 +193,7 @@ class OrderController extends Controller
                 ->select('order.*')
                 ->orderBy('order.no');
         if(request('filter')&&request('filter')=='ba_kembali'){
-            $data->whereNull('invoice');
+            $data->whereNull('ba_kembali');
             $data->whereIn('tarif.kondisi',[5,7]);
         }
         if(request('filter')&&request('filter')=='invoice'){
