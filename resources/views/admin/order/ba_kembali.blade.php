@@ -45,6 +45,7 @@
                                 <th>No Seal</th>
                                 <th>ETD</th>
                                 <th>TD</th>
+                                <th>Barang Diantar</th>
                                 <th>BA Kembali</th>
                                 <th>Keterangan</th>
                             </tr>
@@ -134,6 +135,7 @@
                 { data: 'seal', name: 'order.seal' },
                 { data: 'etd', name: 'jadwal_kapal.etd' },
                 { data: 'td', name: 'jadwal_kapal.td' },
+                { data: 'barang_diantar', name: 'order.barang_diantar' },
                 { data: 'ba_kembali', name: 'order.ba_kembali' },
                 { data: 'keterangan', name: 'order.keterangan' },
             ],
