@@ -16,7 +16,7 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex" style="gap: 12px">
-                    <a href="" id="print-invoice" class="btn btn-sm btn-success">Print</a>
+                    {{-- <a href="" id="print-invoice" class="btn btn-sm btn-success">Print</a> --}}
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
             </div>

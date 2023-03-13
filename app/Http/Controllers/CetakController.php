@@ -114,4 +114,39 @@ class CetakController extends Controller
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         return view('admin.cetak.shipment', compact('orders','jadwal_kapal','tujuan','pengirim','jadwal_kapals','data_lokasi'));
     }
+
+    public function invoice()
+    {
+        $order = Order::find(request('order_id'));
+        $orders = Order::where('job',$order->job)->get();
+        if (!$order) {
+            return back()->with('danger','Anda harus memilih job terlebih dahulu!');
+        }
+
+        $type = strtoupper(strtolower($order->tarif->shipmentInfo->nama[0]));
+        if ($type=='F') {
+            $nama = 'Cont';
+            $kategori = $orders->count().' Cont';
+            $jumlah = $orders->count();
+            $tarif = $order->tarif->tarif;
+            $price = $jumlah * $tarif;
+        }else{
+            $kategori = 0;
+            $jumlah = 0;
+            foreach ($orders as $or ) {
+                if (is_null($or->berat)||$or->berat<=0) {
+                    $kategori+=$or->bttb->sum('m3');
+                }else{
+                    $kategori+=$or->bttb->sum('berat');
+                }
+                $jumlah += $or->bttb->sum('qty');
+            }
+            $nama = 'M3';
+            $tarif = $order->tarif->tarif;
+            $price = $tarif * $kategori * $jumlah;
+        }
+        $doc = 0;
+
+        return view('admin.cetak.invoice',compact('order','orders','nama','kategori','jumlah','doc','tarif','price'));
+    }
 }

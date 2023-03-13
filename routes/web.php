@@ -7,6 +7,7 @@ use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\KapalController;
+use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\OrderController;
@@ -56,6 +57,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('bttb',BTTBController::class);
     Route::resource('pengirim',PengirimController::class);
 
+    Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
     Route::get('invoice',[OrderController::class,'invoice'])->name('order.invoice');
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
@@ -66,13 +68,15 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/bttb',[CetakController::class,'bttb'])->name('cetak.bttb');
     Route::get('cetak/bttb-kubikasi',[CetakController::class,'bttbKubikasi'])->name('cetak.bttb.kubikasi');
     Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
+    Route::get('cetak/invoice',[CetakController::class,'invoice'])->name('cetak.invoice');
     Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
     Route::view('static-invoice', 'admin.print.invoice');
-    
+
     Route::get('sync-import',[SyncController::class,'import']);
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
 Route::view('test','test');
 Route::resource('tarifagen',App\Http\Controllers\TarifAgenController::class);Route::resource('tarifpelayaran',App\Http\Controllers\TarifPelayaranController::class);Route::resource('tariftruk',App\Http\Controllers\TarifTrukController::class);
+Route::resource('nsfp',App\Http\Controllers\NSFPController::class);
