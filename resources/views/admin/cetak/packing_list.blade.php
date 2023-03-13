@@ -106,12 +106,13 @@
                                 @php
                                     $jumlah = 0;
                                     $jumlah_vol = 0;
+                                    $no = 1;
                                 @endphp
                                 @foreach ($data as $bttb)
                                     @foreach ($bttb->bttb as $item)
                                     <tr>
                                         @if ($loop->first)
-                                        <td style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() }}" class="text-center border-x border-dark">{{ $loop->iteration }}</td>
+                                        <td style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() }}" class="text-center border-x border-dark">{{ $no }}</td>
                                         <td class="border-x border-dark text-center" style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() }}">{{ $item->order->container }} / {{ $item->order->seal }}</td>
                                         @endif
                                         <td class="border-x border-dark"> {{ $item->barang->nama }}</td>
@@ -124,6 +125,7 @@
                                     @php
                                         $jumlah += $bttb->bttb->sum('qty');
                                         $jumlah_vol += $bttb->bttb->sum('vol');
+                                        $no++;
                                     @endphp
                                 @endforeach
                             </tbody>
