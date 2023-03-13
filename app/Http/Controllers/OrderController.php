@@ -29,7 +29,9 @@ class OrderController extends Controller
                     ->join('shipments','shipments.id','=','tarif.shipment')
                     ->join('kondisi','kondisi.id','=','tarif.kondisi')
                     ->join('satuan','satuan.id','=','tarif.satuan')
-                    ->where('is_active',1)->get();
+                    ->select('tarif.*')
+                    ->where('tarif.is_active',1)
+                    ->get();
         $barang = Barang::pluck('nama');
         $satuan = Satuan::pluck('nama');
         $agent = Agen::pluck('nama','id');
