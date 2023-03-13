@@ -1,6 +1,16 @@
 <div class="row">
-    <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
-    <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+    @if (!empty($order))
+        @if ($order->tarif->is_active==0)
+            <x-input :value="$pembayar" :col="6" :label="'Pembayar'" :type="'text'" :name="'null'" :disabled="true"></x-input>
+            <x-input :value="$order->jadwal_kapal->kapal.' || '.$order->jadwal_kapal->pelayaran->nama.' || VOY. '.$order->jadwal_kapal->voyage" :col="6" :label="'Kapal'" :type="'text'" :name="'null'" :disabled="true" ></x-input>
+        @else
+            <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
+            <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+        @endif
+    @else
+        <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
+        <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+    @endif
     <x-input :value="''" :name="'tarif'" :col="3" :label="'Tarif'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'satuan'" :col="3" :label="'Unit'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'dari'" :col="3" :label="'Dari'" :type="'text'" :disabled="true"></x-input>

@@ -32,6 +32,16 @@
                         </div>
                     </div>
                 @endif
+                @if (session('danger'))
+                    <div class="container">
+                        <div class="my-3">
+                            <div class="alert alert-danger alert-dismissible fade show text-white py-2" role="alert">
+                                <strong>Warning!</strong> {{ session('danger') }}
+                                <button type="button" class="btn-close pt-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="container">
                     <div class="my-3">
                         @if ($errors->any())

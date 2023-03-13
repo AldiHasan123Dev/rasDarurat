@@ -134,7 +134,19 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
-        $tarifs = Tarif::where('is_active',1)->get();
+        if (!is_null($order->jadwal_kapal->td)) {
+            return back()->with('danger','Order tidak bisa di edit');
+        }
+        $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
+                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
+                    ->join('lokasi as dari','dari.id','=','tarif.dari')
+                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
+                    ->join('satuan','satuan.id','=','tarif.satuan')
+                    ->select('tarif.*')
+                    ->where('tarif.is_active',1)
+                    ->get();
         $customers = Customer::pluck('nama','id');
         $barang = Barang::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
@@ -144,7 +156,8 @@ class OrderController extends Controller
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
         }
-        return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim'));
+        $pembayar = ($order->customer->nama??'-').' || '.($order->dari_lokasi->nama??'-').' || '.($order->tujuan_lokasi->nama??'-').' || '.($order->kondisiInfo->nama??'-').' || '.($order->pelayaran->nama??'-').' || '.($order->shipmentInfo->nama??'-').' || '.($order->tarif??'-');
+        return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim','pembayar'));
     }
 
     public function destroy(Order $order)
