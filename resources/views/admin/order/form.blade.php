@@ -17,9 +17,9 @@
     <x-input :value="''" :name="'tujuan'" :col="3" :label="'Tujuan'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'shipment'" :col="3" :label="'Shipment'" :type="'text'" :disabled="true"></x-input>
     <x-input :value="''" :name="'kondisi'" :col="3" :label="'Kondisi'" :type="'text'" :disabled="true"></x-input>
-    <x-input :value="$order->pengirim_id??old('pengirim_id')" :col="3" :label="'Pengirim'" :type="'text'" :name="'pengirim_id'" :required="true"></x-input>
-    <x-input :value="$order->penerima_id??old('penerima_id')" :col="3" :label="'Penerima'" :type="'text'" :name="'penerima_id'" :required="true"></x-input>
-    <x-input :value="$order->barang_id??old('barang_id')" :col="3" :label="'Barang'" :type="'text'" :name="'barang_id'" :required="true" id="selectBarang"></x-input>
+    <x-input :value="$order->pengirim->nama??old('pengirim_id')" :col="3" :label="'Pengirim'" :type="'text'" :name="'pengirim_id'" :required="true"></x-input>
+    <x-input :value="$order->penerima->nama??old('penerima_id')" :col="3" :label="'Penerima'" :type="'text'" :name="'penerima_id'" :required="true"></x-input>
+    <x-input :value="$order->barang->nama??old('barang_id')" :col="3" :label="'Barang'" :type="'text'" :name="'barang_id'" :required="true" id="selectBarang"></x-input>
     <x-input :value="$order->nopol??old('nopol')" :col="3" :label="'Nopol'" :type="'text'" :name="'nopol'"></x-input>
     <x-input :value="$order->trucking??old('trucking')" :col="3" :label="'Trucking'" :type="'select'" :options="['XPDC'=>'XPDC','SUPP'=>'SUPP','CUST'=>'CUST']" :name="'trucking'"></x-input>
     <x-input :value="$order->container??old('container')" :col="3" :label="'No. Container'" :type="'text'" :name="'container'"></x-input>

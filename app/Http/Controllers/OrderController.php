@@ -124,6 +124,8 @@ class OrderController extends Controller
                 $barang = Barang::create(['nama'=>$request->barang_id]);
             }
 
+            $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id;
+            $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id;
             if ($request->satuan) {
                 $satuan = Satuan::find($request->satuan);
                 if(!$satuan){
@@ -156,9 +158,9 @@ class OrderController extends Controller
                     ->select('tarif.*')
                     ->where('tarif.is_active',1)
                     ->get();
-        $customers = Customer::pluck('nama','id');
-        $barang = Barang::pluck('nama','id');
-        $satuan = Satuan::pluck('nama','id');
+        $customers = Customer::pluck('nama');
+        $barang = Barang::pluck('nama');
+        $satuan = Satuan::pluck('nama');
         $pengirim = $customers;
         $tarif = array();
         $agent = Agen::pluck('nama','id');

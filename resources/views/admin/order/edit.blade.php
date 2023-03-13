@@ -1,18 +1,49 @@
 @extends('layouts.admin')
 @section('style')
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+    <style>
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+            /*when hovering an item:*/
+            background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+            /*when navigating through the items using the arrow keys:*/
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-12">
                 <div class="card p-4 shadow">
-                    <form action="{{ route('order.update',$order) }}" method="post">
+                    <form action="{{ route('order.update',$order) }}" method="post" id="edit-form">
                         @csrf
                         @method('PUT')
                         @include('admin.order.form')
                         <div class="my-3">
-                            <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('are you sure?')">Simpan Data</button>
+                            <button type="button" class="btn btn-sm btn-success" id="submit-edit" onclick="return confirm('are you sure?')">Simpan Data</button>
                         </div>
                     </form>
                 </div>
@@ -22,60 +53,15 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('assets/js/autocomplete.js') }}"></script>
 <script>
     $(document).ready(function() {
-        $('select[name=pengirim_id]').select2(
-            {
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
-    $(document).ready(function() {
-        $("select[name=penerima_id]").select2(
-            {
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
-    $(document).ready(function() {
+        var barang = @json($barang);
+        var customers = @json($customers);
+        autocomplete(document.getElementById("selectBarang"), barang);
+        autocomplete(document.getElementById("pengirim_id"), customers);
+        autocomplete(document.getElementById("penerima_id"), customers);
+
         $("select[name=penerima_bl_id]").select2(
             {
                 ajax: {
@@ -101,115 +87,8 @@
             }
         );
     });
-    $(document).ready(function() {
-        $("select[name=barang_id]").select2(
-            {
-                ajax: {
-                    url: '/api/get-barang',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                },
-                tags:true
-            }
-        );
-    });
 </script>
 
-<script>
-    function renderSelect2(id){
-        return
-        $('#selectPengirim').select2(
-            {
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-
-        $("select[name=penerima_id]").select2(
-            {
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-
-        $("select[name=barang_id]").select2(
-            {
-                ajax: {
-                    url: '/api/get-barang',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                },
-                tags:true
-            }
-        );
-    }
-</script>
 <script>
     var tarif_id = @json($order->tarif_id);
     var jadwal_kapal_id = @json($order->jadwal_kapal_id);
@@ -245,32 +124,7 @@
         }
     });
         $("select[name=tarif_id]").select2();
-        $("select[name=satuan]").select2({
-            tags:true
-        });
         $("select[name=agen_id]").select2();
-        // $("select[name=pengirim_id]").select2({
-        //     dropdownParent: $('#offcanvasOrder')
-        // });
-        // $("select[name=penerima_id]").select2({
-        //     dropdownParent: $('#offcanvasOrder')
-        // });
-        // $("select[name=barang_id]").select2({
-        //     dropdownParent: $('#offcanvasOrder'),
-        //     tags:true
-        // });
-
-        $("select[name=pengirim_id]").select2({
-            dropdownParent: $('#offcanvasBTTB')
-        });
-        $("select[name=satuan_id]").select2({
-            dropdownParent: $('#offcanvasBTTB'),
-            tags:true
-        });
-        $("select[name=barang_id]").select2({
-            dropdownParent: $('#offcanvasBTTB'),
-            tags:true
-        });
 
         $("select[name=tarif_id]").change(function (e) {
             var val = $(this).val();
@@ -324,6 +178,22 @@
                 $('#nag').show();
                 $('#ag').hide();
             }
+        });
+
+        $('#submit-edit').click(function (e) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.customer.getCustomer') }}",
+                data: {nama:[$('#pengirim_id').val(),$('#penerima_id').val()]},
+                success: function (response) {
+                    if (response==0) {
+                        alert('Pengirim atau Penerima tidak ditemukan di data Customer! silahkan cek data lagi')
+                    }else{
+                        console.log('resr');
+                        $('#edit-form').submit();
+                    }
+                }
+            });
         });
 </script>
 @endsection
