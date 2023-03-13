@@ -22,7 +22,14 @@ class OrderController extends Controller
     public function index()
     {
         $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
-        $tarifs = Tarif::where('is_active',1)->get();
+        $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
+                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
+                    ->join('lokasi as dari','dari.id','=','tarif.dari')
+                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
+                    ->join('satuan','satuan.id','=','tarif.satuan')
+                    ->where('is_active',1)->get();
         $barang = Barang::pluck('nama');
         $satuan = Satuan::pluck('nama');
         $agent = Agen::pluck('nama','id');
@@ -33,7 +40,7 @@ class OrderController extends Controller
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         $customers = Customer::pluck('nama');
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = $item->customer->nama ?? '-'.' || '.$item->dari_lokasi->nama ?? '-'.' || '.$item->tujuan_lokasi->nama ?? '-'.' || '.$item->kondisiInfo->nama ?? '-'.' || '.$item->pelayaran->nama ?? '-'.' || '.$item->shipmentInfo->nama ?? '-'.' || '.$item->tarif ?? '-';
+            $tarif[$item->id] = $item->customer->nama .' || '.$item->dari_lokasi->nama .' || '.$item->tujuan_lokasi->nama .' || '.$item->kondisiInfo->nama .' || '.$item->pelayaran->nama .' || '.$item->shipmentInfo->nama .' || '.$item->tarif ;
         }
         return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers'));
     }

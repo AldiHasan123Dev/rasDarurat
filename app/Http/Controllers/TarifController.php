@@ -70,34 +70,36 @@ class TarifController extends Controller
     public function update(Tarif $tarif, Request $request)
     {
         $data = $request->all();
-        $shipment = Shipment::find($request->shipment);
-        $dari = Lokasi::find($request->dari);
-        $tujuan = Lokasi::find($request->tujuan);
-        $kondisi = Kondisi::find($request->kondisi);
-        $satuan = Satuan::find($request->satuan);
-        if(!$shipment){
-            $shipment = Shipment::create(['nama'=>$request->shipment]);
+        if(!request('change_active')){
+            $shipment = Shipment::find($request->shipment);
+            $dari = Lokasi::find($request->dari);
+            $tujuan = Lokasi::find($request->tujuan);
+            $kondisi = Kondisi::find($request->kondisi);
+            $satuan = Satuan::find($request->satuan);
+            if(!$shipment){
+                $shipment = Shipment::create(['nama'=>$request->shipment]);
+            }
+            if(!$dari){
+                $dari = Lokasi::create(['nama'=>$request->dari]);
+            }
+            if(!$tujuan){
+                $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
+            }
+            if(!$kondisi){
+                $kondisi = Kondisi::create(['nama'=>$request->kondisi]);
+            }
+            $data = $request->all();
+            if($shipment->nama[0]=='F'||$shipment->nama[0]=='f'){
+                $satuan = 1;
+            }else{
+                $satuan = 2;
+            }
+            $data['shipment'] = $shipment->id;
+            $data['dari'] = $dari->id;
+            $data['tujuan'] = $tujuan->id;
+            $data['kondisi'] = $kondisi->id;
+            $data['satuan'] = $satuan;
         }
-        if(!$dari){
-            $dari = Lokasi::create(['nama'=>$request->dari]);
-        }
-        if(!$tujuan){
-            $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
-        }
-        if(!$kondisi){
-            $kondisi = Kondisi::create(['nama'=>$request->kondisi]);
-        }
-        $data = $request->all();
-        if($shipment->nama[0]=='F'||$shipment->nama[0]=='f'){
-            $satuan = 1;
-        }else{
-            $satuan = 2;
-        }
-        $data['shipment'] = $shipment->id;
-        $data['dari'] = $dari->id;
-        $data['tujuan'] = $tujuan->id;
-        $data['kondisi'] = $kondisi->id;
-        $data['satuan'] = $satuan;
         $tarif->update($data);
 
         return redirect()->route('customer.index')->with('success','Data berhasil diupdate');
@@ -169,6 +171,7 @@ class TarifController extends Controller
                             <input type="hidden" name="_token" value="'.csrf_token().'" />
                             <input type="hidden" name="_method" value="PUT" />
                             <input type="hidden" name="is_active" value="'.$val.'" />
+                            <input type="hidden" name="change_active" value="true" />
                             <div class="form-check form-switch">
                                 <input class="form-check-input" onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">'.$name.'</label>
