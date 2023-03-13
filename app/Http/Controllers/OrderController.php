@@ -50,7 +50,16 @@ class OrderController extends Controller
     public function baKembali()
     {
         $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
-        $tarifs = Tarif::where('is_active',1)->get();
+        $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
+                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
+                    ->join('lokasi as dari','dari.id','=','tarif.dari')
+                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
+                    ->join('satuan','satuan.id','=','tarif.satuan')
+                    ->select('tarif.*')
+                    ->where('tarif.is_active',1)
+                    ->get();
         $barang = Barang::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
         $agent = Agen::pluck('nama','id');
@@ -60,7 +69,7 @@ class OrderController extends Controller
         $data_tarif_lokasi = array_unique($lokasi);
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = $item->customer->nama ?? '-'.' || '.$item->dari_lokasi->nama ?? '-'.' || '.$item->tujuan_lokasi->nama ?? '-'.' || '.$item->kondisiInfo->nama ?? '-'.' || '.$item->pelayaran->nama ?? '-'.' || '.$item->shipmentInfo->nama ?? '-'.' || '.$item->tarif ?? '-';
+            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
         return view('admin.order.ba_kembali', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
     }
@@ -154,7 +163,7 @@ class OrderController extends Controller
         $tarif = array();
         $agent = Agen::pluck('nama','id');
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = $item->customer->nama.' || '.$item->dari_lokasi->nama.' || '.$item->tujuan_lokasi->nama.' || '.$item->kondisiInfo->nama.' || '.$item->pelayaran->nama.' || '.$item->shipmentInfo->nama.' || '.$item->tarif;
+            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
         $pembayar = ($order->customer->nama??'-').' || '.($order->dari_lokasi->nama??'-').' || '.($order->tujuan_lokasi->nama??'-').' || '.($order->kondisiInfo->nama??'-').' || '.($order->pelayaran->nama??'-').' || '.($order->shipmentInfo->nama??'-').' || '.($order->tarif??'-');
         return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim','pembayar'));
