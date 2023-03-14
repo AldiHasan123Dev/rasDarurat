@@ -577,7 +577,7 @@
                 { data: 'tgl_masuk', name: 'tgl_masuk' },
                 { data: 'pengirim_id', name: 'pengirim_id' },
                 { data: 'keterangan', name: 'keterangan' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                { data: 'action', name: 'action', orderable: false, searchable: false, visible:false },
             ],
             select:true
         });
