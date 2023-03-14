@@ -16,6 +16,8 @@ class Order extends Model
         'no',
         'job',
         'invoice',
+        'invoice_date',
+        'nsfp',
         'no_job',
         'tarif_id',
         'pengirim_id',
@@ -92,5 +94,10 @@ class Order extends Model
     public function asuransiInfo()
     {
         return $this->belongsTo(Asuransi::class,'asuransi_id');
+    }
+
+    public function tagihan()
+    {
+        return $this->hasMany(Tagihan::class,'order_id');
     }
 }

@@ -70,6 +70,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('tagihan',TagihanController::class);
 
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
+    Route::post('generate-invoice/{order}',[KeuanganController::class,'generateInvoice'])->name('keuangan.generateInvoice');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
     Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');
     Route::get('invoice',[OrderController::class,'invoice'])->name('order.invoice');

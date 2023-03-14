@@ -10,13 +10,13 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-size: .6rem !important;
+                font-size: .8rem !important;
             }
             #print {
                 width: 100%;
                 position: absolute;
                 left: 0;
-                top: -65px;
+                top: -85px;
             }
             #table td, #table th{
                 border: 1px solid black;
@@ -98,11 +98,31 @@
 
 @endphp
     <div class="container">
-        <div class="d-flex" style="gap:5px">
-            <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
-            <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+        <div class="card p-3 shadow">
+            @if (count($validate)>0)
+                <ul class="alert alert-danger text-white py-1">
+                    @foreach ($validate as $text)
+                        <li><strong>{{ $text }}</strong></li>
+                    @endforeach
+                </ul>
+            @else
+                @if (is_null($order->invoice))
+                <div class="d-flex" style="gap:5px">
+                    <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                    <form action="{{ route('keuangan.generateInvoice',$order) }}" method="post">
+                        @csrf
+                        <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
+                    </form>
+                </div>
+                @else
+                    <script>
+                        window.print();
+                    </script>
+                    <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+                @endif
+            @endif
         </div>
-        <div class="card p-3">
+        <div class="card p-3 mt-3">
             <div id="print">
                 <div class="invoice-box" id="print">
                     <div class="header d-flex" style="gap:5px; width:100%">
@@ -125,7 +145,7 @@
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 120px">No. Invoice</td>
-                                    <td>: -</td>
+                                    <td>: {{ $order->invoice ?? '-' }}</td>
                                 </tr>
                                 <tr>
                                     <td>Kapal</td>
@@ -216,7 +236,7 @@
                         @php
                             $sub_total = $doc + $price;
                             $ppn = $sub_total * 0.011;
-                            $total = $sub_total + $ppn;
+                            $total = $sub_total + $ppn +$asuransi+$cas->sum('jumlah');
                             if ($doc==0) {
                                 $pph = $sub_total * 0.02;
                             }else{
@@ -238,7 +258,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="4" style="border-bottom: 1px solid black"></td>
+                            <td colspan="4"></td>
                             <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
                             <td style="border: 1px solid black">
                                 <div class="price d-flex justify-content-between px-2">
@@ -247,9 +267,33 @@
                                 </div>
                             </td>
                         </tr>
+                        @if ($asuransi>0)
                         <tr>
-                            <td colspan="7" style="border: 1px solid black; text-align:right">TOTAL</td>
+                            <td colspan="4"></td>
+                            <td colspan="3" style="border: 1px solid black">Asuransi {{ $asuransi_name }}</td>
                             <td style="border: 1px solid black">
+                                <div class="price d-flex justify-content-between px-2">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($asuransi) }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                        @endif
+                        @foreach ($cas as $tagihan)
+                        <tr>
+                            <td colspan="4"></td>
+                            <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                            <td style="border: 1px solid black">
+                                <div class="price d-flex justify-content-between px-2">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($tagihan->jumlah) }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforeach
+                        <tr>
+                            <td class="fw-bold" colspan="7" style="border: 1px solid black; text-align:right">TOTAL</td>
+                            <td class="fw-bold" style="border: 1px solid black">
                                 <div class="price d-flex justify-content-between px-2">
                                     <span>Rp</span>
                                     <span>{{ number_format($total) }}</span>
@@ -311,7 +355,7 @@
                         </div>
                         <div class="col-5">
                             <div class="text-center" style="font-size: .7rem">
-                                <p>Surabaya, {{ date('d F Y') }}</p>
+                                <p>Surabaya, {{ is_null($order->invoice_date)?'-':date('d F Y',strtotime($order->invoice_date)) }}</p>
                                 <br><br>
                                 (LATIFAH)
                             </div>

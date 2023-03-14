@@ -45,6 +45,7 @@ class NSFPController extends Controller
             ->addIndexColumn()
             ->order(function ($data) {
                 $data->orderBy('available','desc');
+                $data->orderBy('nomor','asc');
             })
             ->addColumn('available',function($data){
                 return $data->available==1?'IYA':'TIDAK';

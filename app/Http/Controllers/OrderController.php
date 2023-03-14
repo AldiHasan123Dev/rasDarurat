@@ -239,6 +239,7 @@ class OrderController extends Controller
                 ->orderBy('order.no');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('ba_kembali');
+            $data->whereNull('invoice');
             $data->whereIn('tarif.kondisi',[5,7]);
         }
         if(request('filter')&&request('filter')=='invoice'){

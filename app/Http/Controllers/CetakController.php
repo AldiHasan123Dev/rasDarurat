@@ -6,8 +6,10 @@ use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Lokasi;
+use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Pengirim;
+use App\Models\Tagihan;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -130,9 +132,32 @@ class CetakController extends Controller
             $jumlah = $orders->count();
             $tarif = $order->tarif->tarif;
             $price = $jumlah * $tarif;
+            $asuransi = 0;
+            $asuransi_name = '';
+            $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+            $validate = array();
+            foreach ($orders as $or ) {
+                if (!is_null($or->asuransi_id)) {
+                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                    $asuransi_name = $or->asuransiInfo->nama;
+                }
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                }
+            }
+            $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
+            if(is_null($nsfp)){
+                array_push($validate,'NSFP belum ada!');
+            }
         }else{
             $kategori = 0;
             $jumlah = 0;
+            $asuransi = 0;
+            $asuransi_name = '';
+            $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+            $validate = array();
             foreach ($orders as $or ) {
                 if (is_null($or->berat)||$or->berat<=0) {
                     $kategori+=$or->bttb->sum('vol');
@@ -140,6 +165,19 @@ class CetakController extends Controller
                     $kategori+=$or->bttb->sum('berat');
                 }
                 $jumlah += $or->bttb->sum('qty');
+                if (!is_null($or->asuransi_id)) {
+                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                    $asuransi_name = $or->asuransiInfo->nama;
+                }
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                }
+            }
+            $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
+            if(is_null($nsfp)){
+                array_push($validate,'NSFP belum ada!');
             }
             $nama = 'vol';
             $tarif = $order->tarif->tarif;
@@ -147,6 +185,6 @@ class CetakController extends Controller
         }
         $doc = 0;
 
-        return view('admin.cetak.invoice',compact('order','orders','nama','kategori','jumlah','doc','tarif','price'));
+        return view('admin.cetak.invoice',compact('order','orders','nama','kategori','jumlah','doc','tarif','price','asuransi','asuransi_name','cas','validate'));
     }
 }
