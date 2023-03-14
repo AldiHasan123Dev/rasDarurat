@@ -54,6 +54,16 @@ class BTTBController extends Controller
     public function update(BTTB $bttb, Request $request)
     {
         $data = $request->all();
+        $barang = Barang::find($request->barang_id);
+        $satuan = Satuan::find($request->satuan_id);
+        if (!$satuan) {
+            $satuan = Satuan::create(['nama'=>$request->satuan_id]);
+        }
+        if (!$barang) {
+            $barang = Barang::create(['nama'=>$request->barang_id]);
+        }
+        $data['barang_id'] = $barang->id;
+        $data['satuan_id'] = $satuan->id;
         $bttb->update($data);
 
         return back()->with('success','Data berhasil diupdate');

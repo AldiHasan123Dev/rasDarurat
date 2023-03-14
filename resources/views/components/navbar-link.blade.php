@@ -76,6 +76,11 @@
                 <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('order.asuransi') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Asuransi</span></div>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

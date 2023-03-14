@@ -22,6 +22,9 @@
         <div class="sub-menu">
             <a href="{{ route('truk.index') }}" class="btn-link p-3">Truk <span class="nav-link-icon"></span></span></a>
         </div>
+        <div class="sub-menu">
+            <a href="{{ route('asuransi.index') }}" class="btn-link p-3 text-dark">Asuransi <span class="nav-link-icon"></span></span></a>
+        </div>
     </div>
 </div>
 <div class="content-main">

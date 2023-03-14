@@ -16,7 +16,7 @@ class AsuransiController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         Asuransi::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -39,9 +39,25 @@ class AsuransiController extends Controller
 
     public function datatable()
     {
-        $data = Asuransi::all()->sortByDesc('created_at');
+        $data = Asuransi::join('pelayaran','pelayaran.id','=','asuransi.pelayaran_id')
+                ->select('asuransi.*');
 
         return Datatables::of($data)
+            ->addColumn('pelayaran', function($data){
+                return $data->pelayaran->nama;
+            })
+            ->addColumn('min', function($data){
+                return number_format($data->min);
+            })
+            ->addColumn('max', function($data){
+                return number_format($data->max);
+            })
+            ->addColumn('admin', function($data){
+                return number_format($data->admin);
+            })
+            ->addColumn('rate', function($data){
+                return $data->rate.'%';
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.asuransi.form',['asuransi'=>$data])->render();
                 $html = '<div class="d-flex gap-1">

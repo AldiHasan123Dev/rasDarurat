@@ -70,6 +70,7 @@
                         @method('DELETE')
                         <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
                     </form>
+                    <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
                 <div>
@@ -218,12 +219,63 @@
     </div>
 </div>
 
+<div class="modal fade" id="tagihan" tabindex="-1" aria-labelledby="tagihanLabel" aria-hidden="true">
+    <form action="" class="modal-dialog modal-lg" method="post" id="form-tagihan">
+        @csrf
+        @method('PUT')
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tagihan <span class="nojob"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-sm nowrap w-100" id="table-tagihan" style="font-size:.7rem">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Tagihan</th>
+                                    <th>Jumlah</th>
+                                    <th>Catatan</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <label for="nama">Nama Tagihan</label>
+                        <input type="text" id="tagihan-nama" name="nama" class="form-control" required>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <label for="jumlah">Jumlah Tagihan</label>
+                        <input type="number" name="jumlah" id="tagihan-jumlah" class="form-control" required>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <label for="catatan">Catatan</label>
+                        <input type="text" name="catatan" id="tagihan-catatan" class="form-control">
+                    </div>
+                    <div class="col-12">
+
+                        <button type="button" class="btn btn-primary btn-sm" id="add-tagihan">Simpan</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('script')
 <script src="{{asset('assets/js/autocomplete.js')}}"></script>
 <script>
     $('#edit-order').hide();
+    $('#btn-tagihan').hide();
     $('#delete-order').hide();
     $(document).ready(function() {
         $('#create select[name=pengirim_id]').select2(
@@ -448,7 +500,7 @@
             ],
             initComplete: function () {
                 var api = this.api();
-    
+
                 // For each column
                 api
                     .columns()
@@ -460,7 +512,7 @@
                         );
                         var title = $(cell).text();
                         $(cell).html('<input type="text" placeholder="' + title + '" />');
-    
+
                         // On every keypress in this input
                         $(
                             'input',
@@ -471,7 +523,7 @@
                                 // Get the search value
                                 $(this).attr('title', $(this).val());
                                 var regexr = '({search})'; //$(this).parents('th').find('select').val();
-    
+
                                 var cursorPosition = this.selectionStart;
                                 // Search the column for that value
                                 api
@@ -487,7 +539,7 @@
                             })
                             .on('keyup', function (e) {
                                 e.stopPropagation();
-    
+
                                 $(this).trigger('change');
                                 $(this)
                                     .focus()[0]
@@ -530,7 +582,28 @@
             select:true
         });
 
+        let tableTagihan = $('#table-tagihan').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax:{
+                url: '{{ route('tagihan.data') }}',
+                method:'POST',
+                data:function( d) {
+                    d.order_id = id;
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            },
+            columns: [
+                { data: 'DT_RowIndex', 'orderable': false, 'searchable': false },
+                { data: 'nama', name: 'nama' },
+                { data: 'jumlah', name: 'jumlah' },
+                { data: 'catatan', name: 'catatan' },
+                { data: 'action', name: 'action', orderable: false, searchable: false },
+            ]
+        });
+
         $('#table-order tbody').on( 'click', 'tr', function () {
+            $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#edit-order').show();
             $('#delete-order').show();
@@ -549,6 +622,7 @@
             $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
             $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
             tablebttb.ajax.reload();
+            tableTagihan.ajax.reload();
         })
 
         $("select[name=tarif_id]").select2({
@@ -699,7 +773,7 @@
             });
         });
 
-        $('#edit-bttb').click(function (e) { 
+        $('#edit-bttb').click(function (e) {
             var data = tablebttb.row({selected:true}).data();
             $('#bttb_id').val(data.id);
             $('#no_gudang').val(data.no_gudang);
@@ -714,15 +788,14 @@
             $('#keterangan-bttb').val(data.keterangan);
             $('#pengirim_bttb').val(data.pengirim_id);
             var tgl = data.tgl_masuk;
-            var date = tgl.split("/").reverse().join("-")
-            console.log(date);
+            var date = tgl.split("/").reverse().join("-");
             $('#tgl_masuk').val(date);
             var myOffcanvas = document.getElementById('offcanvasBTTB');
             var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
             offCanvas.show();
         });
 
-        $('#delete-bttb').click(function (e) { 
+        $('#delete-bttb').click(function (e) {
             if(confirm('Apa anda yakin?')){
                 var data = tablebttb.row({selected:true}).data();
                 $.ajax({
@@ -772,6 +845,54 @@
                 }
             });
         });
+
+        $('#add-tagihan').click(function (e) {
+            let nama = $('#tagihan-nama').val();
+            let jumlah = $('#tagihan-jumlah').val();
+            let catatan = $('#tagihan-catatan').val();
+            if(nama==''||jumlah==''||jumlah=='0'){
+                alert('Nama dan jumlah tidak boleh kosong!');
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('api.tagihan.store') }}",
+                    data: {
+                        order_id:id,
+                        nama:nama,
+                        jumlah:jumlah,
+                        catatan:catatan,
+                    },
+                    success: function (response) {
+                        $('#tagihan-nama').val('');
+                        $('#tagihan-jumlah').val('');
+                        $('#tagihan-catatan').val('');
+                        tableTagihan.ajax.reload();
+                    }
+                });
+            }
+        });
+
+        function editTagihan(id){
+            $.ajax({
+                type: "GET",
+                url: "{{ url('api/tagihan') }}/"+id,
+                success: function (response) {
+                    $('#tagihan-nama').val(response.nama);
+                    $('#tagihan-jumlah').val(response.jumlah);
+                    $('#tagihan-catatan').val(response.catatan);
+                }
+            });
+        }
+
+        function deleteTagihan(id){
+            $.ajax({
+                type: "DELETE",
+                url: "{{ url('api/tagihan') }}/"+id,
+                success: function (response) {
+                    tableTagihan.ajax.reload();
+                }
+            });
+        }
 
         $('#message').hide();
         $('#p').keyup(function (e) {

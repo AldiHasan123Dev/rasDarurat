@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AgenController;
+use App\Http\Controllers\AsuransiController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BTTBController;
 use App\Http\Controllers\CetakController;
@@ -10,13 +11,17 @@ use App\Http\Controllers\KapalController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\NSFPController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PelayaranController;
 use App\Http\Controllers\PengirimController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SyncController;
+use App\Http\Controllers\TarifAgenController;
 use App\Http\Controllers\TarifController;
+use App\Http\Controllers\TarifPelayaranController;
+use App\Http\Controllers\TarifTrukController;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -56,9 +61,15 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('order',OrderController::class);
     Route::resource('bttb',BTTBController::class);
     Route::resource('pengirim',PengirimController::class);
+    Route::resource('tarifagen',TarifAgenController::class);
+    Route::resource('tarifpelayaran',TarifPelayaranController::class);
+    Route::resource('tariftruk',TarifTrukController::class);
+    Route::resource('nsfp',NSFPController::class);
+    Route::resource('asuransi',AsuransiController::class);
 
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
+    Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');
     Route::get('invoice',[OrderController::class,'invoice'])->name('order.invoice');
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('pdf/surat-jalan',[CetakController::class,'pdfSuratJalan'])->name('cetak.pdf.suratJalan');
@@ -78,6 +89,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
 Route::view('test','test');
-Route::resource('tarifagen',App\Http\Controllers\TarifAgenController::class);Route::resource('tarifpelayaran',App\Http\Controllers\TarifPelayaranController::class);Route::resource('tariftruk',App\Http\Controllers\TarifTrukController::class);
-Route::resource('nsfp',App\Http\Controllers\NSFPController::class);
-Route::resource('asuransi',App\Http\Controllers\AsuransiController::class);
+Route::resource('tagihan',App\Http\Controllers\tagihanController::class);

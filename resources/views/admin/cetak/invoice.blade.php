@@ -99,7 +99,7 @@
 @endphp
     <div class="container">
         <div class="d-flex" style="gap:5px">
-            <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+            <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
             <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
         </div>
         <div class="card p-3">
@@ -125,7 +125,7 @@
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 120px">No. Invoice</td>
-                                    <td>: {{ $order->tarif->customer->nama }}</td>
+                                    <td>: -</td>
                                 </tr>
                                 <tr>
                                     <td>Kapal</td>

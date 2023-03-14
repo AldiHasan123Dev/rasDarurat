@@ -16,6 +16,7 @@ return new class extends Migration
             $table->double('admin')->default(0);
             $table->double('min')->default(0);
             $table->double('max')->default(0);
+            $table->text('keterangan')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AsuransiController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
+use App\Http\Controllers\Api\TagihanController;
 use App\Http\Controllers\Api\TarifController;
 use App\Http\Controllers\PelayaranController;
 use Illuminate\Http\Request;
@@ -28,6 +30,10 @@ Route::post('customer', [CustomerController::class,'getOne'])->name('api.custome
 Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
+Route::post('tagihan', [TagihanController::class,'store'])->name('api.tagihan.store');
+Route::delete('tagihan/{tagihan}', [TagihanController::class,'destroy'])->name('api.tagihan.destroy');
+Route::get('tagihan/{id}', [TagihanController::class,'getOne'])->name('api.tagihan.getOne');
+Route::get('get-asuransi-pelayaran/{pelayaran_id}', [AsuransiController::class,'getAsuransiByPelayaran'])->name('api.asuransi.getByPelayaran');
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);

@@ -6,23 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Asuransi extends Model
+class Tagihan extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'asuransi';
+    protected $table = 'tagihan';
     protected $fillable = [
-        'pelayaran_id',
+        'order_id',
         'nama',
-        'rate',
-        'admin',
-        'min',
-        'max',
-        'keterangan',
+        'jumlah',
+        'catatan',
+        'status',
     ];
 
-    public function pelayaran()
+    public function order()
     {
-        return $this->belongsTo(Pelayaran::class);
+        return $this->belongsTo(Order::class,'order_id');
     }
 }

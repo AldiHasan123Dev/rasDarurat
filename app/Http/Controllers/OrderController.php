@@ -74,6 +74,12 @@ class OrderController extends Controller
         return view('admin.order.ba_kembali', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
     }
 
+    public function asuransi()
+    {
+        $orders = Order::where('asuransi','ADA EXC')->whereNull('asuransi_id')->get();
+        return view('admin.order.asuransi',compact('orders'));
+    }
+
     public function invoice()
     {
         return view('admin.order.invoice');
@@ -118,6 +124,8 @@ class OrderController extends Controller
         $data = $request->all();
         if ($request->ba_kembali && $request->invoice==1) {
             // $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
+        }else if($request->asuransi_update){
+            $data['pertanggungan'] = str_replace(['.',','],'',$request->pertanggungan);
         }else{
             $barang = Barang::find($request->barang_id);
             if (!$barang) {
@@ -137,6 +145,9 @@ class OrderController extends Controller
         }
         $order->update($data);
 
+        if($request->asuransi_update){
+            return back()->with('success','Data berhasil disimpan');
+        }
         if ($request->ba_kembali && $request->invoice==1) {
             return redirect()->route('order.ba-kembali',['filter-order'=>'ba_kembali'])->with('success','Data berhasil diupdate');
         }
@@ -223,6 +234,7 @@ class OrderController extends Controller
                 ->leftJoin('barang','barang.id','=','order.barang_id')
                 ->leftJoin('satuan','satuan.id','=','order.satuan')
                 ->leftJoin('agen','agen.id','=','order.agen_id')
+                ->leftJoin('asuransi','asuransi.id','=','order.asuransi_id')
                 ->select('order.*')
                 ->orderBy('order.no');
         if(request('filter')&&request('filter')=='ba_kembali'){
@@ -231,6 +243,9 @@ class OrderController extends Controller
         }
         if(request('filter')&&request('filter')=='invoice'){
             $data->whereNotNull('invoice');
+        }
+        if(request('filter')&&request('filter')=='asuransi'){
+            $data->where('asuransi','LIKE','%ADA%');
         }
 
         $count = $data->count();
@@ -252,6 +267,12 @@ class OrderController extends Controller
             })
             ->order(function ($query) {
                 $query->orderBy('no');
+            })
+            ->addColumn('asuransi_id',function ($data) {
+                return $data->asuransiInfo->nama ?? '-';
+            })
+            ->addColumn('pertanggungan',function ($data) {
+                return number_format($data->pertanggungan) ?? '-';
             })
             ->addColumn('tools', function($data){
                 $html = '<div class="dropend">
