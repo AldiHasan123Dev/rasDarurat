@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Asuransi extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'asuransi';
+    protected $fillable = [
+        'pelayaran_id',
+        'nama',
+        'rate',
+        'admin',
+        'min',
+        'max',
+    ];
+}

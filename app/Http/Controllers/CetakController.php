@@ -135,13 +135,13 @@ class CetakController extends Controller
             $jumlah = 0;
             foreach ($orders as $or ) {
                 if (is_null($or->berat)||$or->berat<=0) {
-                    $kategori+=$or->bttb->sum('m3');
+                    $kategori+=$or->bttb->sum('vol');
                 }else{
                     $kategori+=$or->bttb->sum('berat');
                 }
                 $jumlah += $or->bttb->sum('qty');
             }
-            $nama = 'M3';
+            $nama = 'vol';
             $tarif = $order->tarif->tarif;
             $price = $tarif * $kategori * $jumlah;
         }

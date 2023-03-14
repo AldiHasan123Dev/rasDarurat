@@ -155,7 +155,7 @@
                         </div>
                     </div>
 
-                    <table class="mt-2 w-100 table" style="font-size: .7rem">
+                    <table class="mt-2 w-100 tables" style="font-size: .7rem">
                         <thead>
                             <tr class="heading">
                                 <td>No</td>
@@ -194,7 +194,7 @@
                         @endphp
                         <tr>
                             <td class="text-center">2.</td>
-                            <td>Jasa Ekspedisi</td>
+                            <td>JASA EKSPEDISI</td>
                             <td class="text-center">{{ $orders->count() }} Doc</td>
                             <td class="text-center">{{ $orders->count() }} </td>
                             <td class="text-center">Doc</td>
@@ -270,7 +270,7 @@
                     </table>
 
                     <div class="row mt-3">
-                        <div class="col-7">
+                        <div class="col-12">
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 150px">Terbilang</td>

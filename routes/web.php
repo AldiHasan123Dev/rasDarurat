@@ -80,3 +80,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
 Route::view('test','test');
 Route::resource('tarifagen',App\Http\Controllers\TarifAgenController::class);Route::resource('tarifpelayaran',App\Http\Controllers\TarifPelayaranController::class);Route::resource('tariftruk',App\Http\Controllers\TarifTrukController::class);
 Route::resource('nsfp',App\Http\Controllers\NSFPController::class);
+Route::resource('asuransi',App\Http\Controllers\AsuransiController::class);
