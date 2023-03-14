@@ -18,6 +18,7 @@ use App\Http\Controllers\PengirimController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SyncController;
+use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TarifAgenController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TarifPelayaranController;
@@ -66,6 +67,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('tariftruk',TarifTrukController::class);
     Route::resource('nsfp',NSFPController::class);
     Route::resource('asuransi',AsuransiController::class);
+    Route::resource('tagihan',TagihanController::class);
 
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
@@ -89,4 +91,3 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
 Route::view('test','test');
-Route::resource('tagihan',App\Http\Controllers\tagihanController::class);

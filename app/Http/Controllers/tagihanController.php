@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\tagihan;
+use App\Models\Tagihan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
-class tagihanController extends Controller
+class TagihanController extends Controller
 {
     public function index()
     {
@@ -17,12 +17,12 @@ class tagihanController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        tagihan::create($data);
+        Tagihan::create($data);
 
         return back()->with('success','Data berhasil disimpan');
     }
 
-    public function update(tagihan $tagihan, Request $request)
+    public function update(Tagihan $tagihan, Request $request)
     {
         $data = $request->all();
         $tagihan->update($data);
@@ -30,7 +30,7 @@ class tagihanController extends Controller
         return back()->with('success','Data berhasil diupdate');
     }
 
-    public function destroy(tagihan $tagihan)
+    public function destroy(Tagihan $tagihan)
     {
         $tagihan->delete();
 
@@ -39,7 +39,7 @@ class tagihanController extends Controller
 
     public function datatable()
     {
-        $data = tagihan::query()->where('order_id',request('order_id'))->get();
+        $data = Tagihan::query()->where('order_id',request('order_id'))->get();
         return Datatables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
