@@ -118,6 +118,9 @@
             ajax:{
                 url: '{{ route('customer.data') }}',
                 method:'POST',
+                data:{
+                    filter:@json(request('filter'))
+                },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [

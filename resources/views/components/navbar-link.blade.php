@@ -131,7 +131,7 @@
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="pajak">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.customer') }}" aria-expanded="false">
+                <a class="nav-link" href="{{ route('keuangan.customer',['filter'=>'keuangan']) }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Master NPWP</span></div>
                 </a>
             </li>

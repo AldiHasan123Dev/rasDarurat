@@ -87,6 +87,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/invoice',[CetakController::class,'invoice'])->name('cetak.invoice');
     Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
+    Route::post('customer-import-update',[CustomerController::class,'importUpdate'])->name('customer.import.update');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
     Route::view('static-invoice', 'admin.print.invoice');
 

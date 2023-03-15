@@ -16,13 +16,13 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <a style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" href="{{ route('customer.create') }}">Tambah Customer <i class="fas fa-plus"></i></a>
-                {{-- <form action="{{ route('customer.import') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('customer.import.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="file" id="file" onchange="submit()">
-                </form> --}}
+                </form>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsives">
                     <table class="table table-sm" id="customer" style="font-size:.7rem; white-space: nowrap;">
                         <thead>
                             <tr>
@@ -157,6 +157,7 @@
             serverSide: true,
             select:true,
             scrollY: '50vh',
+            scrollX: true,
             scrollCollapse: true,
             ajax:{
                 url: '{{ route('customer.data') }}',

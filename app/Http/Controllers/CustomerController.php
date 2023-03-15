@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\CustomerImport;
+use App\Imports\CustomerUpdateImport;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Kondisi;
@@ -95,6 +96,12 @@ class CustomerController extends Controller
         return back()->with('success', 'All good!');
     }
 
+    public function importUpdate(Request $request)
+    {
+        Excel::import(new CustomerUpdateImport, $request->file);
+        return back()->with('success', 'All good!');
+    }
+
     public function datatable()
     {
         $limit = request('length');
@@ -104,13 +111,16 @@ class CustomerController extends Controller
                 ->select('customers.*')->limit($start)->offset($limit);
         $count = Customer::select('id')->count();
 
+        $req = request('filter');
         return Datatables::of($data)
             ->addIndexColumn()
-            ->order(function ($query) {
-                $query->orderBy('nama', 'asc');
-            })
-            ->addColumn('nama', function($data){
-                return Str::limit($data->nama, 30, '...');
+            ->order(function ($query) use($req) {
+                if ($req=='keuangan') {
+                    // $query->orderBy('customers.nama', 'asc');
+                    $query->orderBy('customers.npwp','desc');
+                }else{
+                    $query->orderBy('customers.nama', 'asc');
+                }
             })
             ->addColumn('alamat', function($data){
                 return Str::limit($data->nama, 30, '...');
