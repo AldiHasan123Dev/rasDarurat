@@ -57,9 +57,14 @@ class UserController extends Controller
 
     public function datatable()
     {
-        $data = User::all()->sortByDesc('created_at');
+        $data = User::leftJoin('roles','roles.id','=','users.role_id')
+                ->select('users.*')
+                ->get();
 
         return Datatables::of($data)
+            ->addColumn('role', function($data){
+                return $data->role->name ?? '-';
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.user.form',['user'=>$data])->render();
                 $html = '<div class="d-flex gap-1">

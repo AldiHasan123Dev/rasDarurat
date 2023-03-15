@@ -1,4 +1,24 @@
+@php
+    $roles = \App\Models\Role::all();
+@endphp
 <div class="row px-3">
+    @if (Auth::user()->role_id==1)
+    <div class="col-12 mb-2 px-1">
+        <label for="role_id">Role</label>
+        <select name="role_id" id="role_id" class="form-control" required>
+                <option value=""></option>
+            @if (empty($user))
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                @endforeach
+            @else
+                @foreach ($roles as $role)
+                    <option value="{{ $role->id }}" {{ $user->role_id==$role->id?'selected':'' }}>{{ $role->name }}</option>
+                @endforeach
+            @endif
+        </select>
+    </div>
+    @endif
     <div class="col-6 mb-2 px-1">
         <label for="name">Nama User</label>
         <input type="text" value="{{ $user->name ?? '' }}" name="name" id="name" class="form-control" required>

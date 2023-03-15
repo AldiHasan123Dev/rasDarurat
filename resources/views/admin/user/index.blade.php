@@ -11,6 +11,7 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
+                                <th>Role</th>
                                 <th>Nama</th>
                                 <th>Email</th>
                                 <th>Telp</th>
@@ -35,7 +36,7 @@
         <div class="offcanvas-body">
             <form action="{{ route('user.store') }}" method="post">
                 @csrf
-                @include('admin.user.form',['usser'=>[]])
+                @include('admin.user.form',['user'=>[]])
             </form>
         </div>
     </div>
@@ -53,6 +54,7 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
+                { data: 'role', name: 'roles.name' },
                 { data: 'name', name: 'name' },
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
