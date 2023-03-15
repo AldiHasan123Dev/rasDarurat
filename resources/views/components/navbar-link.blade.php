@@ -104,7 +104,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" aria-expanded="false">
+                <a class="nav-link" href="{{ route('keuangan.order',['filter-order'=>'ba_kembali_keuangan']) }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">BA Balik</span></div>
                 </a>
             </li>
@@ -130,6 +130,11 @@
     </a>
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="pajak">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('keuangan.customer') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Master NPWP</span></div>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('keuangan.laporan.ppn') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Laporan PPN</span></div>

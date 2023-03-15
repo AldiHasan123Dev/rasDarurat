@@ -76,7 +76,7 @@ class OrderController extends Controller
 
     public function asuransi()
     {
-        $orders = Order::where('asuransi','ADA EXC')->whereNull('asuransi_id')->get();
+        $orders = Order::whereIn('asuransi',['ADA','ADA INC','ADA EXC'])->whereNull('asuransi_id')->get();
         return view('admin.order.asuransi',compact('orders'));
     }
 
@@ -230,8 +230,8 @@ class OrderController extends Controller
                 ->leftJoin('customers as penerima','penerima.id','=','order.penerima_id')
                 ->leftJoin('customers as pengirim','pengirim.id','=','order.pengirim_id')
                 ->leftJoin('customers as penerima_bl','penerima_bl.id','=','order.penerima_bl_id')
-                // ->leftJoin('users','users.id','=','customers.marketing_id')
-                // ->leftJoin('users as cs','cs.id','=','customers.cs_id')
+                ->leftJoin('users as marketing','marketing.id','=','pembayar.marketing_id')
+                ->leftJoin('users as cs','cs.id','=','pembayar.cs_id')
                 ->leftJoin('barang','barang.id','=','order.barang_id')
                 ->leftJoin('satuan','satuan.id','=','order.satuan')
                 ->leftJoin('agen','agen.id','=','order.agen_id')
@@ -239,22 +239,30 @@ class OrderController extends Controller
                 ->select('order.*')
                 ->orderBy('order.no');
         if(request('filter')&&request('filter')=='ba_kembali'){
-            $data->whereNull('ba_kembali');
-            $data->whereNull('invoice');
+            $data->whereNull('order.ba_kembali');
+            $data->whereNull('order.invoice');
             $data->whereIn('tarif.kondisi',[5,7]);
+        }
+        if(request('filter')&&request('filter')=='ba_kembali_keuangan'){
+            $data->whereNull('order.ba_kembali');
+            $data->whereNull('order.invoice');
+            $data->whereIn('tarif.kondisi',[5,7]);
+            $data->Where('pembayar.ba_kembali',1);
         }
         if(request('filter')&&request('filter')=='pre_invoice'){
             $data->where(function($q){
-                $q->whereNotNull('ba_kembali');
+                $q->whereNotNull('order.ba_kembali');
                 $q->orWhereIn('tarif.kondisi',[1,6]);
             });
             $data->whereNull('invoice');
+            $data->orWhere('pembayar.ba_kembali',0);
         }
         if(request('filter')&&request('filter')=='invoice'){
-            $data->whereNotNull('invoice');
+            $data->whereNotNull('order.invoice');
         }
         if(request('filter')&&request('filter')=='asuransi'){
-            $data->where('asuransi','LIKE','%ADA%');
+            $data->where('order.asuransi','LIKE','%ADA%');
+            $data->whereNotNull('asuransi_id');
         }
 
         $count = $data->count();

@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
+Route::post('customer-update', [CustomerController::class,'update'])->name('api.customer.update');
 Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');

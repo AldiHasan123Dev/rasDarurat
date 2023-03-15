@@ -14,6 +14,11 @@ class KeuanganController extends Controller
         return view('admin.keuangan.order');
     }
 
+    public function customer()
+    {
+        return view('admin.keuangan.customer');
+    }
+
     public function generateInvoice(Request $request, Order $order)
     {
         $data = $request->all();

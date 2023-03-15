@@ -52,4 +52,12 @@ class CustomerController extends Controller
         }
         return response($customer);
     }
+
+    public function update(Request $request)
+    {
+        $user = Customer::find($request->id);
+        $user->update($request->all());
+
+        return response('success');
+    }
 }

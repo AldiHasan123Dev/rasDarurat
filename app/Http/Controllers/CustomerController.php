@@ -14,6 +14,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
@@ -104,11 +105,24 @@ class CustomerController extends Controller
         $count = Customer::select('id')->count();
 
         return Datatables::of($data)
+            ->addIndexColumn()
             ->order(function ($query) {
                 $query->orderBy('nama', 'asc');
             })
+            ->addColumn('nama', function($data){
+                return Str::limit($data->nama, 30, '...');
+            })
+            ->addColumn('alamat', function($data){
+                return Str::limit($data->nama, 30, '...');
+            })
             ->addColumn('marketing_id', function($data){
                 return $data->marketing->name ?? '-';
+            })
+            ->addColumn('ppn', function($data){
+                return $data->ppn==1 ? 'IYA' : 'TIDAK';
+            })
+            ->addColumn('ba_kembali', function($data){
+                return $data->ba_kembali==1 ? 'IYA' : 'TIDAK';
             })
             ->addColumn('cs_id', function($data){
                 return $data->cs->name ?? '-';

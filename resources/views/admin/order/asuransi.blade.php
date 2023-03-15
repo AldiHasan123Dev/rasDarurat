@@ -66,9 +66,9 @@
                                             <td>{{ $order->tarif->tujuan_lokasi->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
-                                            <td>{{ $order->barang->nama }}</td>
+                                            <td>{{ $order->barang->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->pelayaran->nama }}</td>
-                                            <td>{{ $order->jadwal_kapal->kapal->nama }}</td>
+                                            <td>{{ $order->jadwal_kapal->kapal->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->voyage }}</td>
                                             <td>{{ $order->container }}</td>
                                             <td>{{ $order->seal }}</td>

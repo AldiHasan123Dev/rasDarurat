@@ -27,6 +27,8 @@ class Customer extends Model
         'tipe',
         'no_bl',
         'top',
+        'ppn',
+        'ba_kembali',
     ];
 
     public function marketing()

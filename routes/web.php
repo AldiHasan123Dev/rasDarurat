@@ -69,6 +69,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('asuransi',AsuransiController::class);
     Route::resource('tagihan',TagihanController::class);
 
+    Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/laporan-ppn',[KeuanganController::class,'laporanPpn'])->name('keuangan.laporan.ppn');
     Route::post('generate-invoice/{order}',[KeuanganController::class,'generateInvoice'])->name('keuangan.generateInvoice');
