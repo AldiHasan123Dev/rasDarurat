@@ -204,6 +204,7 @@ class OrderController extends Controller
         $data['agen_id'] = null;
         $data['penerima_bl_id'] = null;
         $data['keterangan'] = null;
+        $data['created_at'] = date('Y-m-d');
         Order::create($data);
         return back()->with('success','Copy data berhasil');
     }
