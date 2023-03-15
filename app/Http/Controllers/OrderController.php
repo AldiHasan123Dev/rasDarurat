@@ -275,6 +275,7 @@ class OrderController extends Controller
             })
             ->order(function ($query) {
                 $query->orderBy('no');
+                $query->orderBy('no_job');
             })
             ->addColumn('asuransi_id',function ($data) {
                 return $data->asuransiInfo->nama ?? '-';
