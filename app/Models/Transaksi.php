@@ -25,6 +25,7 @@ class Transaksi extends Model
         'total',
         'pph',
         'job',
+        'order',
     ];
 
     public function pembayar()

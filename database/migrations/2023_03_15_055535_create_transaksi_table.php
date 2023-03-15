@@ -23,6 +23,7 @@ return new class extends Migration
             $table->double('admin')->default(0);
             $table->double('total')->default(0);
             $table->double('pph')->default(0);
+            $table->integer('order');
             $table->softDeletes();
             $table->timestamps();
         });

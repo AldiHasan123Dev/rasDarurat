@@ -21,13 +21,14 @@ class KeuanganController extends Controller
         if (!$nsfp) {
             return back();
         }
-        $no = 1;
+        $no = Transaksi::max('order') + 1;
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
         $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
-        $invoice = $no.'/RAS/'.$month_roman.'/'.date('y');
+        $invoice = sprintf('%04d',$no).'/RAS/'.$month_roman.'/'.date('y');
         $data['invoice'] = $invoice;
         $data['nsfp'] = $nsfp->nomor;
+        $data['order'] = $no;
         Transaksi::create($data);
         Order::where('job',$order->job)->update([
             'invoice' => $invoice,
