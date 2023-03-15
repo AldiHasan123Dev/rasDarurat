@@ -2,82 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
-class UserController extends Controller
+class RoleController extends Controller
 {
     public function index()
     {
-        return view('admin.user.index');
+        return view('admin.role.index');
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'password' => 'required|min:8',
-            'email' => 'required|email|unique:users'
-        ]);
-        $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-        User::create($data);
+              $data = $request->all();
+        Role::create($data);
 
         return back()->with('success','Data berhasil disimpan');
     }
 
-    public function edit(User $user)
+    public function update(Role $role, Request $request)
     {
-        return view('admin.user.edit',compact('user'));
-    }
-
-    public function update(User $user, Request $request)
-    {
-        $request->validate([
-            'email' => 'email|unique:users,email,'.$user->id
-        ]);
         $data = $request->all();
-        if (!is_null($request->password)) {
-            $data['password'] = Hash::make($request->password);
-        }else{
-            unset($data['password']);
-        }
-        $user->update($data);
+        $role->update($data);
 
         return back()->with('success','Data berhasil diupdate');
     }
 
-    public function destroy(User $user)
+    public function destroy(Role $role)
     {
-        $user->delete();
+        $role->delete();
 
         return back()->with('success','Data berhasil dihapus');
     }
 
     public function datatable()
     {
-        $data = User::all()->sortByDesc('created_at');
+        $data = Role::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
             ->addColumn('action', function ($data) {
-                $view = view('admin.user.form',['user'=>$data])->render();
+                $view = view('admin.role.form',['role'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
-                            <form action="'.route('user.destroy',$data).'" method="post">
+                            <form action="'.route('role.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasUserUpdate'.$data->id.'" aria-controls="offcanvasUserUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRoleUpdate'.$data->id.'" aria-controls="offcanvasRoleUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
                         </div>
 
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasUserUpdate'.$data->id.'" aria-labelledby="offcanvasUserUpdate'.$data->id.'Label">
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRoleUpdate'.$data->id.'" aria-labelledby="offcanvasRoleUpdate'.$data->id.'Label">
                             <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasUserUpdate'.$data->id.'Label">Form User</h5>
+                                <h5 class="offcanvas-title" id="offcanvasRoleUpdate'.$data->id.'Label">Form Role</h5>
                                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">
-                                <form action="'.route('user.update',$data).'" method="post">
+                                <form action="'.route('role.update',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                     <input type="hidden" name="_method" value="PUT" />
                                     '.$view.'

@@ -29,11 +29,13 @@
                 <div class="d-flex align-items-center"><span class="nav-link-text">Suplier</span></div>
                 </a>
             </li>
+            @if (Auth::user()->role_id==1)
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('user.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">User</span></div>
                 </a>
             </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('kapal.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Data</span></div>
@@ -43,6 +45,7 @@
     </div>
 </div>
 
+@if (Auth::user()->role_id==2||Auth::user()->role_id==1)
 <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#ekspedisi" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="ekspedisi">
         <div class="d-flex align-items-center">
@@ -84,7 +87,9 @@
         </ul>
     </div>
 </div>
+@endif
 
+@if (Auth::user()->role_id==3||Auth::user()->role_id==1)
 <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#keuangan" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="keuangan">
         <div class="d-flex align-items-center">
@@ -138,6 +143,8 @@
         </ul>
     </div>
 </div>
+@endif
+
 <div class="nav-item-wrapper my-2">
     <a use:link class="nav-link label-1" href="#" role="button" aria-expanded="false">
         <div class="d-flex align-items-center">

@@ -13,11 +13,11 @@
     </div>
     <div class="col-6 mb-2 px-1">
         <label for="nama">Telp.</label>
-        <input type="text" value="{{ $user->phone ?? '' }}" name="phone" id="phone" class="form-control" required>
+        <input type="text" value="{{ $user->phone ?? '' }}" name="phone" id="phone" class="form-control">
     </div>
     <div class="col-12 mb-2 px-1">
         <label for="nama">Alamat.</label>
-        <textarea name="address" id="address" cols="30" rows="3" class="form-control" required>{{ $user->address ?? '' }}</textarea>
+        <textarea name="address" id="address" cols="30" rows="3" class="form-control">{{ $user->address ?? '' }}</textarea>
     </div>
     <div class="col-12 mb-2 px-1">
         <button type="submit" class="btn btn-success btn-sm">{{ empty($user)?'Tambah':'Update' }} Data</button>
