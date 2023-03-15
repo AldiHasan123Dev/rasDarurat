@@ -91,7 +91,7 @@
                         </table>
                     </div>
                     <div class="col-12 mt-2">
-                        <table class="table" style="font-size: .7rem">
+                        <table class="table border-dark border-y" style="font-size: .7rem">
                             <thead>
                                 <tr class="border border-dark">
                                     <th class="text-center border-x border-dark">No.</th>
@@ -116,8 +116,8 @@
                                     @foreach ($bttb->bttb as $item)
                                     <tr>
                                         @if ($loop->first)
-                                        <td style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() }}" class="text-center border-x border-dark">{{ $no }}</td>
-                                        <td class="border-x border-dark text-center" style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() }}">{{ $item->order->container }} / {{ $item->order->seal }}</td>
+                                        <td style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() + 1 }}" class="text-center border border-dark">{{ $no }}</td>
+                                        <td class="border border-dark text-center" style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() + 1 }}">{{ $item->order->container }} / {{ $item->order->seal }}</td>
                                         @endif
                                         <td class="border-x border-dark"> {{ $item->barang->nama }}</td>
                                         <td class="text-center border-x border-dark">{{ $item->qty }}</td>
@@ -130,6 +130,11 @@
                                         <td class="border-x border-dark text-center">{{ $item->pengirim->nama }}</td>
                                     </tr>
                                     @endforeach
+                                    <tr>
+                                        <td class="text-center border border-dark">jumlah</td>
+                                        <td class="text-center border border-dark" colspan="2">{{ $bttb->bttb->sum('qty') }}</td>
+                                        <td class="text-center border border-dark" colspan="6"></td>
+                                    </tr>
                                     @php
                                         $jumlah += $bttb->bttb->sum('qty');
                                         $jumlah_vol += $bttb->bttb->sum('vol');
@@ -137,7 +142,7 @@
                                     @endphp
                                 @endforeach
                             </tbody>
-                            <tfoot class="border border-dark">
+                            {{-- <tfoot class="border border-dark">
                                 <tr>
                                     <td class="border border-dark"></td>
                                     <td class="border border-dark"></td>
@@ -150,7 +155,7 @@
                                     <td class="border border-dark"></td>
                                     <td class="border border-dark"></td>
                                 </tr>
-                            </tfoot>
+                            </tfoot> --}}
                         </table>
                         <div class="mt-5">
                             <b>Keterangan:</b>
