@@ -73,12 +73,12 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12 mb-2">
-                        <label for="ba_kembali">BA Kembali</label>
-                        <input type="date" name="ba_kembali" class="form-control">
-                    </div>
-                    <div class="col-12 mb-2">
                         <label for="ba_kembali">Barang Diantar</label>
                         <input type="date" name="barang_diantar" class="form-control">
+                    </div>
+                    <div class="col-12 mb-2">
+                        <label for="ba_kembali">BA Kembali</label>
+                        <input type="date" name="ba_kembali" class="form-control">
                     </div>
                     <div class="col-12 mb-2">
                         <label for="keterangan">Keterangan</label>
