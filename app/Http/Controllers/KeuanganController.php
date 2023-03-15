@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\NSFP;
 use App\Models\Order;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class KeuanganController extends Controller
@@ -15,14 +16,19 @@ class KeuanganController extends Controller
 
     public function generateInvoice(Request $request, Order $order)
     {
+        $data = $request->all();
         $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
         if (!$nsfp) {
             return back();
         }
         $no = 1;
-        $month = date('n'); // Nomor bulan dalam format angka
-        $roman_numeral = str_repeat('X', intval(($month-1)/10)) . str_repeat('V', intval(($month-1)/5)%2) . str_repeat('I', ($month-1)%5); // Konversi nomor bulan menjadi angka Romawi
-        $invoice = $no.'/RAS/'.$roman_numeral.'/'.date('y');
+        $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
+        $month_number = date("n"); // mengambil nomor bulan dari tanggal
+        $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
+        $invoice = $no.'/RAS/'.$month_roman.'/'.date('y');
+        $data['invoice'] = $invoice;
+        $data['nsfp'] = $nsfp->nomor;
+        Transaksi::create($data);
         Order::where('job',$order->job)->update([
             'invoice' => $invoice,
             'nsfp' => $nsfp->nomor,
@@ -33,5 +39,11 @@ class KeuanganController extends Controller
         ]);
 
         return back()->with('success','Invoice berhasil dibuat');
+    }
+
+    public function laporanPPn()
+    {
+        $transaksi = Transaksi::all()->sortBy('created_at');
+        return view('admin.keuangan.laporan_ppn', compact('transaksi'));
     }
 }

@@ -27,6 +27,7 @@
                             <tr>
                                 <th>Tools</th>
                                 <th>ID.</th>
+                                <th>INVOICE</th>
                                 <th>Group JOB</th>
                                 <th>ID JOB</th>
                                 <th>Pembayar</th>
@@ -82,6 +83,7 @@
                 // { data: 'action', name: 'action', orderable: false, searchable: false },
                 { data: 'tools', name: 'tools',visible:false, orderable: false, searchable: false },
                 { data: 'id', name: 'id', visible:false },
+                { data: 'invoice', name: 'order.invoice' },
                 { data: 'job', name: 'order.job' },
                 { data: 'no_job', name: 'no_job', searchable:false },
                 { data: 'pembayar', name: 'pembayar.nama' },

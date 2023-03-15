@@ -10,13 +10,13 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-size: .8rem !important;
+                font-size: .65rem !important;
             }
             #print {
                 width: 100%;
                 position: absolute;
                 left: 0;
-                top: -85px;
+                top: -80px;
             }
             #table td, #table th{
                 border: 1px solid black;
@@ -96,30 +96,49 @@
             }
         }
 
+    $sub_total = $doc + $price;
+    $ppn = $sub_total * 0.011;
+    $total = $sub_total + $ppn +$asuransi+$cas->sum('jumlah') + $admin;
+    if ($doc==0) {
+        $pph = $sub_total * 0.02;
+    }else{
+        $pph = $doc * 0.02;
+    }
 @endphp
     <div class="container">
         <div class="card p-3 shadow">
-            @if (count($validate)>0)
-                <ul class="alert alert-danger text-white py-1">
-                    @foreach ($validate as $text)
-                        <li><strong>{{ $text }}</strong></li>
-                    @endforeach
-                </ul>
-            @else
-                @if (is_null($order->invoice))
+            @if (is_null($order->invoice))
+                @if (count($validate)>0)
+                    <ul class="alert alert-danger text-white py-1">
+                        @foreach ($validate as $text)
+                            <li><strong>{{ $text }}</strong></li>
+                        @endforeach
+                    </ul>
+                @else
                 <div class="d-flex" style="gap:5px">
                     <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
                     <form action="{{ route('keuangan.generateInvoice',$order) }}" method="post">
                         @csrf
+                        <input type="hidden" name="pembayar_id" value="{{ $order->tarif->customer_id }}">
+                        <input type="hidden" name="job" value="{{ $order->job }}">
+                        <input type="hidden" name="keterangan" value="{{ $order->tarif->kondisiInfo->nama }}, {{ $order->tarif->dari_lokasi->nama }} - {{ $order->tarif->tujuan_lokasi->nama }}">
+                        <input type="hidden" name="tujuan" value="{{ $order->tarif->tujuan_lokasi->nama }}">
+                        <input type="hidden" name="sub_total" value="{{ $sub_total }}">
+                        <input type="hidden" name="tagihan" value="{{ $cas->sum('jumlah') }}">
+                        <input type="hidden" name="ppn" value="{{ $ppn }}">
+                        <input type="hidden" name="asuransi" value="{{ $asuransi }}">
+                        <input type="hidden" name="admin" value="{{ $admin }}">
+                        <input type="hidden" name="total" value="{{ $total }}">
+                        <input type="hidden" name="pph" value="{{ $pph }}">
                         <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
                     </form>
                 </div>
-                @else
-                    <script>
-                        window.print();
-                    </script>
-                    <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
                 @endif
+            @else
+            <script>
+                window.print();
+            </script>
+            <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
             @endif
         </div>
         <div class="card p-3 mt-3">
@@ -209,9 +228,6 @@
                             </td>
                         </tr>
                         @if ($order->tarif->kondisi==1||$order->tarif->kondisi==6)
-                        @php
-                            $doc = $orders->count() * 500000;
-                        @endphp
                         <tr>
                             <td class="text-center">2.</td>
                             <td>JASA EKSPEDISI</td>
@@ -233,16 +249,6 @@
                             </td>
                         </tr>
                         @endif
-                        @php
-                            $sub_total = $doc + $price;
-                            $ppn = $sub_total * 0.011;
-                            $total = $sub_total + $ppn +$asuransi+$cas->sum('jumlah');
-                            if ($doc==0) {
-                                $pph = $sub_total * 0.02;
-                            }else{
-                                $pph = $doc * 0.02;
-                            }
-                        @endphp
                         <tr style="height: 20px !important">
                             <td colspan="4"></td>
                             <td colspan="4" style="border-bottom: 1px solid black"></td>
@@ -278,6 +284,18 @@
                                 </div>
                             </td>
                         </tr>
+                            @if ($admin>0)
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Biaya Admin</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($admin) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endif
                         @endif
                         @foreach ($cas as $tagihan)
                         <tr>

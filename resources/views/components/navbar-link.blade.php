@@ -104,6 +104,11 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('keuangan.order',['filter-order'=>'pre_invoice']) }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Pre Invoice</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('order.invoice') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Invoice</span></div>
                 </a>
@@ -121,7 +126,7 @@
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent" id="pajak">
             <li class="nav-item">
-                <a class="nav-link" href="#" aria-expanded="false">
+                <a class="nav-link" href="{{ route('keuangan.laporan.ppn') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Laporan PPN</span></div>
                 </a>
             </li>

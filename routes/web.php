@@ -70,6 +70,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('tagihan',TagihanController::class);
 
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
+    Route::get('keuangan/laporan-ppn',[KeuanganController::class,'laporanPpn'])->name('keuangan.laporan.ppn');
     Route::post('generate-invoice/{order}',[KeuanganController::class,'generateInvoice'])->name('keuangan.generateInvoice');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
     Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');
@@ -92,3 +93,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
 Route::view('test','test');
+Route::resource('transaksi',App\Http\Controllers\TransaksiController::class);
