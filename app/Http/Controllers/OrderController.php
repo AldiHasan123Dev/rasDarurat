@@ -250,7 +250,7 @@ class OrderController extends Controller
                 $q->orWhereIn('tarif.kondisi',[1,6]);
                 $q->whereNotNull('jadwal_kapal.td');
             });
-            $data->whereNull('invoice');
+            $data->whereNull('order.invoice');
             $data->orWhere('pembayar.ba_kembali',0);
         }
         if(request('filter')&&request('filter')=='invoice'){
