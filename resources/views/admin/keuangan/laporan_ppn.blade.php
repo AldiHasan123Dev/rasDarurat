@@ -38,7 +38,7 @@
                                     <td>{{ $item->pembayar->alamat_npwp }}</td>
                                     <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                                     <td>{{ $item->tujuan }}</td>
-                                    <td>{{ $item->uraian }}</td>
+                                    <td>{{ $item->keterangan }}</td>
                                     <td>{{ $item->nsfp }}</td>
                                     <td>{{ number_format($item->sub_total) }}</td>
                                     <td>{{ number_format($item->ppn) }}</td>

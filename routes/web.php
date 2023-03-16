@@ -42,6 +42,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('login');
 });
+Route::get('test', function () {
+    $no = '	050.007.23.22513697';
+    $res = explode('.',$no);
+    $depan = $res[0].'.'.$res[1].'.'.$res[2];
+    $res = (int)end($res);
+    $data = array();
+    for ($i=0; $i < 10; $i++) {
+        array_push($data,$depan.$res+$i);
+    }
+    dd($data);
+});
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
@@ -97,6 +108,6 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-import',[SyncController::class,'import']);
     Route::get('sync-sync',[SyncController::class,'sync']);
 });
-Route::view('test','test');
+// Route::view('test','test');
 Route::resource('transaksi',App\Http\Controllers\TransaksiController::class);
 Route::resource('role',App\Http\Controllers\RoleController::class);

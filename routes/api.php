@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
+use App\Http\Controllers\Api\NSFPController;
 use App\Http\Controllers\Api\TagihanController;
 use App\Http\Controllers\Api\TarifController;
 use App\Http\Controllers\Api\TransaksiController;
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('generate-nsfp', [NSFPController::class,'generate'])->name('api.nsfp.generate');
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
 Route::post('customer-update', [CustomerController::class,'update'])->name('api.customer.update');
 Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');

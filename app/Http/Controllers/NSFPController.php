@@ -40,6 +40,12 @@ class NSFPController extends Controller
     public function datatable()
     {
         $data = NSFP::query();
+        if(request('filter')=='available'){
+            $data->whereNull('invoice');
+        }
+        if(request('filter')=='invoice'){
+            $data->whereNotNull('invoice');
+        }
 
         return Datatables::of($data)
             ->addIndexColumn()

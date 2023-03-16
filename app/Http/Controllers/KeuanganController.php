@@ -57,7 +57,8 @@ class KeuanganController extends Controller
             'invoice_date' => date('Y-m-d')
         ]);
         $nsfp->update([
-            'available' => 0
+            'available' => 0,
+            'invoice' => $invoice
         ]);
 
         return back()->with('success','Invoice berhasil dibuat');
