@@ -24,7 +24,7 @@
                         <p>List Order Asuransi Belum Diinput</p>
                     </div>
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <div class="table-responsives">
                             <table class="table table-sm nowrap" id="table-asuransi" style="font-size:.7rem; white-space:nowrap">
                                 <thead>
                                     <tr>
@@ -43,6 +43,7 @@
                                         <th>Kondisi</th>
                                         <th>Jenis Barang</th>
                                         <th>Pelayaran</th>
+                                        <th>TD</th>
                                         <th>Kapal</th>
                                         <th>Voyage</th>
                                         <th>No Container</th>
@@ -68,6 +69,7 @@
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->barang->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->pelayaran->nama }}</td>
+                                            <td>{{ is_null($order->jadwal_kapal->td)?'-':date('d-m-y',strtotime($order->jadwal_kapal->td)) }}</td>
                                             <td>{{ $order->jadwal_kapal->kapal->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->voyage }}</td>
                                             <td>{{ $order->container }}</td>
@@ -84,7 +86,12 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                        <div></div>
+                        <div>
+                            <form action="{{ route('asuransi.export') }}" method="post">
+                                @csrf
+                                <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
+                            </form>
+                        </div>
                         <p>List Order Dengan Asuransi</p>
                     </div>
                     <div class="card-body">
@@ -109,6 +116,7 @@
                                         <th>Kondisi</th>
                                         <th>Jenis Barang</th>
                                         <th>Pelayaran</th>
+                                        <th>TD</th>
                                         <th>Kapal</th>
                                         <th>Voyage</th>
                                         <th>No Container</th>
@@ -144,6 +152,13 @@
                         <input type="text" id="pelayaran" class="form-control" disabled>
                     </div>
                     <div class="col-12 mb-2">
+                        <label for="tipe_asuransi">Tipe Asuransi</label>
+                        <select name="tipe_asuransi" id="tipe_asuransi" class="form-control" required>
+                            <option value="cont" selected>Per CONT (CONT)</option>
+                            <option value="job">Group JOB (GLOBAL)</option>
+                        </select>
+                    </div>
+                    <div class="col-12 mb-2">
                         <label for="ba_kembali">Asuransi</label>
                         <select name="asuransi_id" id="asuransi_id" class="form-control" required>
 
@@ -176,6 +191,7 @@
     $('#ag').hide();
     let tableAsuransi = $('#table-asuransi').DataTable({
         select:true,
+        scrollX:true,
         columnDefs: [
             { "visible": false, "targets": 0 },
             { "visible": false, "targets": 1 },
@@ -212,6 +228,7 @@
                 { data: 'kondisi', name: 'kondisi.nama' },
                 { data: 'barang', name: 'barang.nama' },
                 { data: 'pelayaran', name: 'pelayaran.nama' },
+                { data: 'td', name: 'kapal.td', searchable:false },
                 { data: 'kapal', name: 'kapal.nama' },
                 { data: 'voyage', name: 'jadwal_kapal.voyage' },
                 { data: 'container', name: 'order.container' },

@@ -37,6 +37,7 @@ class Order extends Model
         'seal',
         'keterangan',
         'no_bl',
+        'tipe_asuransi',
         'asuransi',
         'asuransi_id',
         'pertanggungan',

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AsuransiExport;
 use App\Models\Asuransi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AsuransiController extends Controller
 {
@@ -28,6 +30,11 @@ class AsuransiController extends Controller
         $asuransi->update($data);
 
         return back()->with('success','Data berhasil diupdate');
+    }
+
+    public function export()
+    {
+        return Excel::download(new AsuransiExport, 'asuransi.xlsx');
     }
 
     public function destroy(Asuransi $asuransi)

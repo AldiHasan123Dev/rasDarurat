@@ -121,6 +121,13 @@ class OrderController extends Controller
             // $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
         }else if($request->asuransi_update){
             $data['pertanggungan'] = str_replace(['.',','],'',$request->pertanggungan);
+            if($request->tipe_asuransi=='job'){
+                Order::where('job',$order->job)->update([
+                    'pertanggungan' => $data['pertanggungan'],
+                    'tipe_asuransi' => 'job',
+                    'asuransi_id' => $request->asuransi_id,
+                ]);
+            }
         }else{
             $barang = Barang::find($request->barang_id);
             if (!$barang) {
@@ -291,7 +298,11 @@ class OrderController extends Controller
                 return $data->asuransiInfo->nama ?? '-';
             })
             ->addColumn('pertanggungan',function ($data) {
-                return number_format($data->pertanggungan) ?? '-';
+                $tipe = '';
+                if($data->tipe_asuransi){
+                    $tipe = '(G)';
+                }
+                return number_format($data->pertanggungan). $tipe ?? '-';
             })
             ->addColumn('tools', function($data){
                 $html = '<div class="dropend">
