@@ -299,7 +299,7 @@ class OrderController extends Controller
             })
             ->addColumn('pertanggungan',function ($data) {
                 $tipe = '';
-                if($data->tipe_asuransi){
+                if($data->tipe_asuransi=='job'){
                     $tipe = '(G)';
                 }
                 return number_format($data->pertanggungan). $tipe ?? '-';
