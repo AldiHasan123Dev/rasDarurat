@@ -123,7 +123,7 @@ class CustomerController extends Controller
                 }
             })
             ->addColumn('alamat', function($data){
-                return Str::limit($data->nama, 30, '...');
+                return Str::limit($data->alamat, 30, '...');
             })
             ->addColumn('marketing_id', function($data){
                 return $data->marketing->name ?? '-';

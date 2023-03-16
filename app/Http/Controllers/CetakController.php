@@ -163,6 +163,7 @@ class CetakController extends Controller
             if ($order->tarif->kondisi==1||$order->tarif->kondisi==6) {
                 $doc = $orders->count() * 500000;
             }
+            $asuransi += $admin;
         }else{
             $kategori = 0;
             $jumlah = 0;
@@ -206,6 +207,7 @@ class CetakController extends Controller
             $nama = 'vol';
             $tarif = $order->tarif->tarif;
             $price = $tarif * $kategori * $jumlah;
+            $asuransi += $admin;
         }
 
         $validate = array_unique($validate);

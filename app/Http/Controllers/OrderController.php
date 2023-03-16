@@ -251,10 +251,12 @@ class OrderController extends Controller
                 $q->orWhereIn('tarif.kondisi',[1,6]);
                 $q->whereNotNull('jadwal_kapal.td');
             });
-            // $data->where(function($q){
-            //     $q->orWhere('pembayar.ba_kembali',0);
-            //     $q->whereNull('order.invoice');
-            // });
+        }
+        if(request('filter')&&request('filter')=='pre_invoice2'){
+            $data->whereNull('order.invoice');
+            $data->whereIn('tarif.kondisi',[5,7]);
+            $data->whereNotNull('jadwal_kapal.td');
+            $data->where('pembayar.ba_kembali',0);
         }
         if(request('filter')&&request('filter')=='invoice'){
             $data->whereNotNull('order.invoice');

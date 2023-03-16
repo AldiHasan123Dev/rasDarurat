@@ -108,7 +108,7 @@
 
     $sub_total = $doc + $price;
     $ppn = $sub_total * 0.011;
-    $total = $sub_total + $ppn +$asuransi+$cas->sum('jumlah') + $admin;
+    $total = $sub_total + $ppn +$asuransi+$cas->sum('jumlah');
     if ($doc==0) {
         $pph = $sub_total * 0.02;
     }else{
@@ -250,7 +250,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($jumlah * $order->tarif->tarif) }}</span>
+                                        <span>{{ number_format(round($jumlah * $order->tarif->tarif)) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -262,7 +262,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 150px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang($jumlah * $order->tarif->tarif)) }} RUPIAH</td>
+                                        <td>: {{ strtoupper(terbilang(round($jumlah * $order->tarif->tarif))) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>
@@ -634,18 +634,6 @@
                                     </div>
                                 </td>
                             </tr>
-                                @if ($admin>0)
-                                    <tr>
-                                        <td colspan="4"></td>
-                                        <td colspan="3" style="border: 1px solid black">Biaya Admin</td>
-                                        <td style="border: 1px solid black">
-                                            <div class="price d-flex justify-content-between px-2">
-                                                <span>Rp</span>
-                                                <span>{{ number_format($admin) }}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endif
                             @endif
                             @foreach ($cas as $tagihan)
                             <tr>

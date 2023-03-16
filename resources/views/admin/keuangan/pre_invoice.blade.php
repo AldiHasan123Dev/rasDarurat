@@ -113,6 +113,67 @@
                 </div>
             </div>
         </div>
+        <div class="card mt-3">
+            <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
+                <div class="card-titles">List Pre Invoice Tidak Perlu BA Kembali(Read Only)</div>
+                <a href="" class="btn btn-sm btn-success" id="cetak-invoice2"><i class="fas fa-print"></i> Cetak Invoice</a>
+                <p>No JOB: <span class="nojob2"></span></p>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm nowrap" id="table-order2" style="font-size:.7rem">
+                        <thead>
+                            <tr>
+                                <th>Tools</th>
+                                <th>ID.</th>
+                                <th>Tanggal</th>
+                                <th>Invoice</th>
+                                <th>Group JOB</th>
+                                <th>ID JOB</th>
+                                <th>Asuransi</th>
+                                <th>Pembayar</th>
+                                <th>Marketing</th>
+                                <th>CS</th>
+                                <th>Pengirim</th>
+                                <th>Penerima</th>
+                                <th>Dari</th>
+                                <th>Tujuan</th>
+                                <th>Shipment</th>
+                                <th>Kondisi</th>
+                                <th>Jenis Barang</th>
+                                <th>Barang</th>
+                                <th>Pelayaran</th>
+                                <th>Kapal</th>
+                                <th>Voyage</th>
+                                <th>ETD</th>
+                                <th>TD</th>
+                                <th>BA Kirim</th>
+                                <th>Nopol</th>
+                                <th>Trucking</th>
+                                <th>No Container</th>
+                                <th>No Seal</th>
+                                <th>Stuffing</th>
+                                <th>Tipe Stuffing</th>
+                                <th>Tgl Full</th>
+                                <th>Barang Diantar</th>
+                                <th>BA Kembali</th>
+                                <th>Koli</th>
+                                <th>M3</th>
+                                <th>Berat</th>
+                                <th>Satuan</th>
+                                <th>Unit</th>
+                                <th>Tarif</th>
+                                <th>Agen</th>
+                                <th>Penerima BL</th>
+                                <th>Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -121,10 +182,14 @@
 @section('script')
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
 <script>
-        $('#table-order thead tr')
-            .clone(true)
-            .addClass('filters')
-            .appendTo('#table-order thead');
+        // $('#table-order thead tr')
+        //     .clone(true)
+        //     .addClass('filters')
+        //     .appendTo('#table-order thead');
+        // $('#table-order2 thead tr')
+        //     .clone(true)
+        //     .addClass('filters')
+        //     .appendTo('#table-order2 thead');
 
         let tableOrder = $('#table-order').DataTable({
             processing: true,
@@ -187,55 +252,167 @@
                 { data: 'penerima_bl', name: 'penerima_bl.nama' },
                 { data: 'keterangan', name: 'order.keterangan' },
             ],
-            initComplete: function () {
-                var api = this.api();
+            // initComplete: function () {
+            //     var api = this.api();
 
-                // For each column
-                api
-                    .columns()
-                    .eq(0)
-                    .each(function (colIdx) {
-                        // Set the header cell to contain the input element
-                        var cell = $('.filters th').eq(
-                            $(api.column(colIdx).header()).index()
-                        );
-                        var title = $(cell).text();
-                        $(cell).html('<input type="text" placeholder="' + title + '" />');
+            //     // For each column
+            //     api
+            //         .columns()
+            //         .eq(0)
+            //         .each(function (colIdx) {
+            //             // Set the header cell to contain the input element
+            //             var cell = $('.filters th').eq(
+            //                 $(api.column(colIdx).header()).index()
+            //             );
+            //             var title = $(cell).text();
+            //             $(cell).html('<input type="text" placeholder="' + title + '" />');
 
-                        // On every keypress in this input
-                        $(
-                            'input',
-                            $('.filters th').eq($(api.column(colIdx).header()).index())
-                        )
-                            .off('keyup change')
-                            .on('change', function (e) {
-                                // Get the search value
-                                $(this).attr('title', $(this).val());
-                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
+            //             // On every keypress in this input
+            //             $(
+            //                 'input',
+            //                 $('.filters th').eq($(api.column(colIdx).header()).index())
+            //             )
+            //                 .off('keyup change')
+            //                 .on('change', function (e) {
+            //                     // Get the search value
+            //                     $(this).attr('title', $(this).val());
+            //                     var regexr = '({search})'; //$(this).parents('th').find('select').val();
 
-                                var cursorPosition = this.selectionStart;
-                                // Search the column for that value
-                                api
-                                    .column(colIdx)
-                                    .search(
-                                        this.value != ''
-                                            ? regexr.replace('{search}', '(((' + this.value + ')))')
-                                            : '',
-                                        this.value != '',
-                                        this.value == ''
-                                    )
-                                    .draw();
-                            })
-                            .on('keyup', function (e) {
-                                e.stopPropagation();
+            //                     var cursorPosition = this.selectionStart;
+            //                     // Search the column for that value
+            //                     api
+            //                         .column(colIdx)
+            //                         .search(
+            //                             this.value != ''
+            //                                 ? regexr.replace('{search}', '(((' + this.value + ')))')
+            //                                 : '',
+            //                             this.value != '',
+            //                             this.value == ''
+            //                         )
+            //                         .draw();
+            //                 })
+            //                 .on('keyup', function (e) {
+            //                     e.stopPropagation();
 
-                                $(this).trigger('change');
-                                $(this)
-                                    .focus()[0]
-                                    // .setSelectionRange(cursorPosition, cursorPosition);
-                            });
-                    });
+            //                     $(this).trigger('change');
+            //                     $(this)
+            //                         .focus()[0]
+            //                         // .setSelectionRange(cursorPosition, cursorPosition);
+            //                 });
+            //         });
+            // },
+
+        });
+        let tableOrder2 = $('#table-order2').DataTable({
+            processing: true,
+            serverSide: true,
+            scrollY:        200,
+            deferRender:    true,
+            scroller:       true,
+            select:true,
+            scrollX:true,
+            ordering:false,
+            ajax:{
+                url: '{{ route('order.data') }}',
+                method:'POST',
+                data:{filter:'pre_invoice2'},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
+            columns: [
+                // {data: '#', name:'search', orderable: false, searchable: false },
+                // { data: 'action', name: 'action', orderable: false, searchable: false },
+                { data: 'tools', name: 'tools', orderable: false, searchable: false, visible:false },
+                { data: 'id', name: 'id', visible:false },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'invoice', name: 'order.invoice' },
+                { data: 'job', name: 'order.job' },
+                { data: 'no_job', name: 'no_job', searchable:false },
+                { data: 'asuransi', name: 'order.asuransi' },
+                { data: 'pembayar', name: 'pembayar.nama' },
+                { data: 'marketing', name: 'name', searchable:false },
+                { data: 'cs', name: 'name', searchable:false },
+                { data: 'pengirim', name: 'pengirim.nama' },
+                { data: 'penerima', name: 'penerima.nama' },
+                { data: 'dari', name: 'tarif.dari' },
+                { data: 'tujuan', name: 'tarif.tujuan' },
+                { data: 'shipment', name: 'shipments.nama' },
+                { data: 'kondisi', name: 'kondisi.nama' },
+                { data: 'barang', name: 'barang.nama' },
+                { data: 'barang_bttb', name: 'barang_bttb', searchable:false },
+                { data: 'pelayaran', name: 'pelayaran.nama' },
+                { data: 'kapal', name: 'kapal.nama' },
+                { data: 'voyage', name: 'jadwal_kapal.voyage' },
+                { data: 'etd', name: 'jadwal_kapal.etd' },
+                { data: 'td', name: 'jadwal_kapal.td' },
+                { data: 'ba_kirim', name: 'order.ba_kirim' },
+                { data: 'nopol', name: 'order.nopol' },
+                { data: 'trucking', name: 'order.trucking' },
+                { data: 'container', name: 'order.container' },
+                { data: 'seal', name: 'order.seal' },
+                { data: 'stuffing', name: 'order.stuffing' },
+                { data: 'stuffing_t', name: 'tarif.stuffing' },
+                { data: 'full', name: 'order.full' },
+                { data: 'barang_diantar', name: 'order.barang_diantar' },
+                { data: 'ba_kembali', name: 'order.ba_kembali' },
+                { data: 'koli', name: 'koli', searchable:false },
+                { data: 'vol', name: 'vol', searchable:false },
+                { data: 'berat', name: 'berat', searchable:false },
+                { data: 'satuan', name: 'satuan', searchable:false },
+                { data: 'unit', name: 'satuan.nama' },
+                { data: 'tarif', name: 'tarif.tarif' },
+                { data: 'agen', name: 'order.agen' },
+                { data: 'penerima_bl', name: 'penerima_bl.nama' },
+                { data: 'keterangan', name: 'order.keterangan' },
+            ],
+            // initComplete: function () {
+            //     var api = this.api();
+
+            //     // For each column
+            //     api
+            //         .columns()
+            //         .eq(0)
+            //         .each(function (colIdx) {
+            //             // Set the header cell to contain the input element
+            //             var cell = $('.filters th').eq(
+            //                 $(api.column(colIdx).header()).index()
+            //             );
+            //             var title = $(cell).text();
+            //             $(cell).html('<input type="text" placeholder="' + title + '" />');
+
+            //             // On every keypress in this input
+            //             $(
+            //                 'input',
+            //                 $('.filters th').eq($(api.column(colIdx).header()).index())
+            //             )
+            //                 .off('keyup change')
+            //                 .on('change', function (e) {
+            //                     // Get the search value
+            //                     $(this).attr('title', $(this).val());
+            //                     var regexr = '({search})'; //$(this).parents('th').find('select').val();
+
+            //                     var cursorPosition = this.selectionStart;
+            //                     // Search the column for that value
+            //                     api
+            //                         .column(colIdx)
+            //                         .search(
+            //                             this.value != ''
+            //                                 ? regexr.replace('{search}', '(((' + this.value + ')))')
+            //                                 : '',
+            //                             this.value != '',
+            //                             this.value == ''
+            //                         )
+            //                         .draw();
+            //                 })
+            //                 .on('keyup', function (e) {
+            //                     e.stopPropagation();
+
+            //                     $(this).trigger('change');
+            //                     $(this)
+            //                         .focus()[0]
+            //                         // .setSelectionRange(cursorPosition, cursorPosition);
+            //                 });
+            //         });
+            // },
 
         });
 
@@ -244,6 +421,13 @@
             var no_job =  tableOrder.row( this ).data().no_job;
             $('.nojob').html(no_job);
             $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
+        })
+
+        $('#table-order2 tbody').on( 'click', 'tr', function () {
+            id =  tableOrder2.row( this ).data().id;
+            var no_job =  tableOrder2.row( this ).data().no_job;
+            $('.nojob2').html(no_job);
+            $('#cetak-invoice2').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
         })
 </script>
 @endsection
