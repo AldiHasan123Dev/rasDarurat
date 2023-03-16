@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\TagihanController;
 use App\Http\Controllers\Api\TarifController;
+use App\Http\Controllers\Api\TransaksiController;
 use App\Http\Controllers\PelayaranController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
 Route::post('tagihan', [TagihanController::class,'store'])->name('api.tagihan.store');
+Route::post('transaksi-update', [TransaksiController::class,'update'])->name('api.transaksi.update');
 Route::delete('tagihan/{tagihan}', [TagihanController::class,'destroy'])->name('api.tagihan.destroy');
 Route::get('tagihan/{id}', [TagihanController::class,'getOne'])->name('api.tagihan.getOne');
 Route::get('get-asuransi-pelayaran/{pelayaran_id}', [AsuransiController::class,'getAsuransiByPelayaran'])->name('api.asuransi.getByPelayaran');

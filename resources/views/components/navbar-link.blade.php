@@ -7,7 +7,7 @@
     </a>
 </div>
 <div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#home" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="home">
+    <a class="nav-link dropdown-indicator label-1 collapsed" href="#home" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="home">
         <div class="d-flex align-items-center">
         <span class="nav-link-icon"><span class="fas fa-database"></span></span><span class="nav-link-text mr-2">Master</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
         </div>
@@ -15,29 +15,29 @@
     <div class="parent-wrapper label-1">
         <ul class="nav collapse parent show" id="home">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('customer.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('customer.index') ? 'active' : '' }}" href="{{ route('customer.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('jadwalkapal.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('jadwalkapal.index') ? 'active' : '' }}" href="{{ route('jadwalkapal.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Jadwal Kapal</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('pelayaran.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('pelayaran.index') ? 'active' : '' }}" href="{{ route('pelayaran.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Suplier</span></div>
                 </a>
             </li>
             @if (Auth::user()->role_id==1)
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('user.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}" href="{{ route('user.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">User</span></div>
                 </a>
             </li>
             @endif
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('kapal.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('kapal.index') ? 'active' : '' }}" href="{{ route('kapal.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Data</span></div>
                 </a>
             </li>
@@ -53,34 +53,34 @@
         </div>
     </a>
     <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent" id="ekspedisi">
+        <ul class="nav collapse parent show" id="ekspedisi">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('cetak.suratJalan') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('cetak.suratJalan')?'active':'' }}" href="{{ route('cetak.suratJalan') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Surat Jalan </span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('cetak.pickOrder') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('cetak.pickOrder')?'active':'' }}" href="{{ route('cetak.pickOrder') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">PO</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('order.index')?'active':'' }}" href="{{ route('order.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Order</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('cetak.shipment') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('cetak.shipment')?'active':'' }}" href="{{ route('cetak.shipment') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Shipping Instruction</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.ba-kembali') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('order.ba-kembali')?'active':'' }}" href="{{ route('order.ba-kembali') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.asuransi') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('order.asuransi')?'active':'' }}" href="{{ route('order.asuransi') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Asuransi</span></div>
                 </a>
             </li>
@@ -97,24 +97,24 @@
         </div>
     </a>
     <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent" id="keuangan">
+        <ul class="nav collapse parent show" id="keuangan">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.order') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->is('admin/keuangan/order')?'active':'' }}" href="{{ route('keuangan.order') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Order </span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.order',['filter-order'=>'ba_kembali_keuangan']) }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">BA Balik</span></div>
+                <a class="nav-link {{ request()->routeIs('keuangan.ba_kembali')?'active':'' }}" href="{{ route('keuangan.ba_kembali') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.order',['filter-order'=>'pre_invoice']) }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('keuangan.pre_invoice')?'active':'' }}" href="{{ route('keuangan.pre_invoice') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Pre Invoice</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('order.invoice') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('order.invoice')?'active':'' }}" href="{{ route('order.invoice') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Invoice</span></div>
                 </a>
             </li>
@@ -129,19 +129,19 @@
         </div>
     </a>
     <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent" id="pajak">
+        <ul class="nav collapse parent show" id="pajak">
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.customer',['filter'=>'keuangan']) }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('keuangan.customer',['filter'=>'keuangan'])?'active':'' }}" href="{{ route('keuangan.customer',['filter'=>'keuangan']) }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Master NPWP</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('keuangan.laporan.ppn') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('keuangan.laporan.ppn')?'active':'' }}" href="{{ route('keuangan.laporan.ppn') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Laporan PPN</span></div>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('nsfp.index') }}" aria-expanded="false">
+                <a class="nav-link {{ request()->routeIs('nsfp.index')?'active':'' }}" href="{{ route('nsfp.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Nomor Seri (NSFP)</span></div>
                 </a>
             </li>

@@ -4,6 +4,7 @@ use App\Http\Controllers\AgenController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\KapalController;
+use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PelayaranController;
@@ -25,5 +26,6 @@ Route::post('shipment',[ShipmentController::class,'datatable'])->name('shipment.
 Route::post('kondisi',[KondisiController::class,'datatable'])->name('kondisi.data');
 Route::post('satuan',[SatuanController::class,'datatable'])->name('satuan.data');
 Route::post('lokasi',[LokasiController::class,'datatable'])->name('lokasi.data');
+Route::get('invoice',[KeuanganController::class,'invoiceTable'])->name('invoice.data');
 Route::post('tarif',[App\Http\Controllers\TarifController::class,'datatable'])->name('tarif.data');Route::post('barang',[App\Http\Controllers\BarangController::class,'datatable'])->name('barang.data');Route::post('order',[App\Http\Controllers\OrderController::class,'datatable'])->name('order.data');Route::post('bttb',[App\Http\Controllers\BTTBController::class,'datatable'])->name('bttb.data');
 Route::post('pengirim',[App\Http\Controllers\PengirimController::class,'datatable'])->name('pengirim.data');Route::post('tarifagen',[App\Http\Controllers\TarifAgenController::class,'datatable'])->name('tarifagen.data');Route::post('tarifpelayaran',[App\Http\Controllers\TarifPelayaranController::class,'datatable'])->name('tarifpelayaran.data');Route::post('tariftruk',[App\Http\Controllers\TarifTrukController::class,'datatable'])->name('tariftruk.data');Route::post('nsfp',[App\Http\Controllers\NSFPController::class,'datatable'])->name('nsfp.data');Route::post('asuransi',[App\Http\Controllers\AsuransiController::class,'datatable'])->name('asuransi.data');Route::post('tagihan',[App\Http\Controllers\tagihanController::class,'datatable'])->name('tagihan.data');Route::post('transaksi',[App\Http\Controllers\TransaksiController::class,'datatable'])->name('transaksi.data');Route::post('role',[App\Http\Controllers\RoleController::class,'datatable'])->name('role.data');

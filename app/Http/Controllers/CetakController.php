@@ -152,6 +152,9 @@ class CetakController extends Controller
                 if(is_null($or->tarif->customer->nik)){
                     array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
                 }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+                }
             }
             $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
             if(is_null($nsfp)){
@@ -186,9 +189,12 @@ class CetakController extends Controller
                         array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
                     }
                 }
-                // if(is_null($or->tarif->customer->nik)){
-                //     array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
-                // }
+                if(is_null($or->tarif->customer->nik)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+                }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+                }
             }
             $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
             if(is_null($nsfp)){
@@ -202,6 +208,10 @@ class CetakController extends Controller
             $price = $tarif * $kategori * $jumlah;
         }
 
-        return view('admin.cetak.invoice',compact('order','orders','nama','kategori','jumlah','doc','tarif','price','asuransi','asuransi_name','cas','validate','admin'));
+        $validate = array_unique($validate);
+        $br = Order::with('barang')->where('job',$order->job)->get()->pluck('barang.nama')->toArray();
+        $br = array_unique($br);
+        $nama_barang = implode(',',$br);
+        return view('admin.cetak.invoice',compact('order','orders','nama','kategori','jumlah','doc','tarif','price','asuransi','asuransi_name','cas','validate','admin','nama_barang'));
     }
 }

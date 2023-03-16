@@ -6,6 +6,7 @@ use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 
 class KeuanganController extends Controller
 {
@@ -14,9 +15,24 @@ class KeuanganController extends Controller
         return view('admin.keuangan.order');
     }
 
+    public function ba_kembali()
+    {
+        return view('admin.keuangan.ba_kembali');
+    }
+
     public function customer()
     {
         return view('admin.keuangan.customer');
+    }
+
+    public function pre_invoice()
+    {
+        return view('admin.keuangan.pre_invoice');
+    }
+
+    public function invoice()
+    {
+        return view('admin.keuangan.invoice');
     }
 
     public function generateInvoice(Request $request, Order $order)
@@ -51,5 +67,43 @@ class KeuanganController extends Controller
     {
         $transaksi = Transaksi::all()->sortBy('created_at');
         return view('admin.keuangan.laporan_ppn', compact('transaksi'));
+    }
+
+    public function invoiceTable()
+    {
+        $limit = request('length');
+        $start = request('start') * request('length');
+        $data = Transaksi::query()
+                ->join('customers','customers.id','=','transaksi.pembayar_id')
+                ->select('transaksi.*');
+        $count = $data->count();
+        return Datatables::of($data->offset($start)->limit($limit))
+            ->order(function ($query) {
+                $query->orderBy('invoice');
+            })
+            ->addColumn('invoice', function($data){
+                return $data->invoice;
+            })
+            ->addColumn('created_at', function($data){
+                return date('d/m/Y', strtotime($data->created_at)) ?? '-';
+            })
+            ->addColumn('job', function($data){
+                return $data->job;
+            })
+            ->addColumn('no_job', function($data){
+                return $data->job.'-01/'.sprintf('%02d',$data->jobs->count());
+            })
+            ->addColumn('pembayar', function($data){
+                return $data->pembayar->nama ?? '-';
+            })
+            ->addColumn('tanggal_kirim', function($data){
+                return date('d/m/Y', strtotime($data->tanggal_kirim)) ?? '-';
+            })
+            ->addColumn('total', function($data){
+                return number_format($data->total) ?? '-';
+            })
+            ->setTotalRecords($count)
+            ->toJson();
+
     }
 }

@@ -27,7 +27,7 @@ class Customer extends Model
         'tipe',
         'no_bl',
         'top',
-        'ppn',
+        'all_in',
         'ba_kembali',
     ];
 

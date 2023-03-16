@@ -128,8 +128,8 @@ class CustomerController extends Controller
             ->addColumn('marketing_id', function($data){
                 return $data->marketing->name ?? '-';
             })
-            ->addColumn('ppn', function($data){
-                return $data->ppn==1 ? 'IYA' : 'TIDAK';
+            ->addColumn('all_in', function($data){
+                return $data->all_in==1 ? 'IYA' : 'TIDAK';
             })
             ->addColumn('ba_kembali', function($data){
                 return $data->ba_kembali==1 ? 'IYA' : 'TIDAK';

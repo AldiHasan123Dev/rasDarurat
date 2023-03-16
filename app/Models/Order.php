@@ -100,4 +100,9 @@ class Order extends Model
     {
         return $this->hasMany(Tagihan::class,'order_id');
     }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaksi::class,'job','job');
+    }
 }

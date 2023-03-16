@@ -3,10 +3,16 @@
     <style>
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+
             body * {
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;
                 color: #000;
+            }
+
+            .first-page{
+                position: absolute;
+                top: -180px;
             }
             #print, #print * {
                 visibility: visible;
@@ -14,9 +20,9 @@
             }
             #print {
                 width: 100%;
-                position: absolute;
+                position: relative;
                 left: 0;
-                top: -80px;
+                /* top: -20px; */
             }
             #table td, #table th{
                 border: 1px solid black;
@@ -34,6 +40,10 @@
             .table>tbody>tr>td:first-child{
                 padding: 0px 2px !important;
             } */
+            .page-break {
+                page-break-after: always;
+                overflow:hidden;
+            }
         }
         tr.heading td{
             border: 1px solid black;
@@ -143,243 +153,584 @@
         </div>
         <div class="card p-3 mt-3">
             <div id="print">
-                <div class="invoice-box" id="print">
-                    <div class="header d-flex" style="gap:5px; width:100%">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                        <div style="width: 40%; margin-left:35px">
-                            <table style="font-size:.7rem">
-                                <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                            </table>
+                @if ($order->tarif->customer->all_in==1)
+                <div class="first-page">
+                    <div class="invoice-box">
+                        <div class="header d-flex" style="gap:5px; width:100%">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <div style="width: 40%; margin-left:35px">
+                                <table style="font-size:.7rem">
+                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                </table>
+                            </div>
+                            <div style="width:30%; ">
+                                <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                    <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
+                                </table>
+                            </div>
                         </div>
-                        <div style="width:30%; ">
-                            <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
-                                <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
-                            </table>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 120px">No. Invoice</td>
+                                        <td>: {{ $order->invoice ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kapal</td>
+                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY. {{ $order->jadwal_kapal->voyage }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pelabuhan Tujuan</td>
+                                        <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Buat Pembayaran (Jenis)</td>
+                                        <td>:
+                                            {{ $nama_barang }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 60px">Customer</td>
+                                        <td>: {{ $order->tarif->customer->nama }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Alamat</td>
+                                        <td>: {{ $order->tarif->customer->alamat }}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-6">
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 120px">No. Invoice</td>
-                                    <td>: {{ $order->invoice ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Kapal</td>
-                                    <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY. {{ $order->jadwal_kapal->voyage }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Pelabuhan Tujuan</td>
-                                    <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Buat Pembayaran (Jenis)</td>
-                                    <td>: {{ $order->barang->nama }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-6">
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 60px">Customer</td>
-                                    <td>: {{ $order->tarif->customer->nama }} </td>
-                                </tr>
-                                <tr>
-                                    <td>Alamat</td>
-                                    <td>: {{ $order->tarif->customer->alamat }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
 
-                    <table class="mt-2 w-100 tables" style="font-size: .7rem">
-                        <thead>
-                            <tr class="heading">
-                                <td>No</td>
-                                <td>Uraian</td>
-                                <td>{{ $nama }}</td>
-                                <td>Jumlah</td>
-                                <td>Tipe Tarif</td>
-                                <td>X</td>
-                                <td>Tarif</td>
-                                <td>Sub Total</td>
+                        <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                            <thead>
+                                <tr class="heading">
+                                    <td>No</td>
+                                    <td>Uraian</td>
+                                    <td>{{ $nama }}</td>
+                                    <td>Jumlah</td>
+                                    <td>Tipe Tarif</td>
+                                    <td>X</td>
+                                    <td>Tarif</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td class="text-center">1.</td>
+                                <td>{{ $order->tarif->kondisiInfo->nama }}, {{ $order->tarif->dari_lokasi->nama }} - {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                <td class="text-center">{{ $kategori }}</td>
+                                <td class="text-center">{{ $jumlah }} </td>
+                                <td class="text-center">{{ $order->tarif->shipmentInfo->nama }}</td>
+                                <td class="text-center">X</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($order->tarif->tarif) }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($jumlah * $order->tarif->tarif) }}</span>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tr>
-                            <td class="text-center">1.</td>
-                            <td>{{ $order->tarif->kondisiInfo->nama }}, {{ $order->tarif->dari_lokasi->nama }} - {{ $order->tarif->tujuan_lokasi->nama }}</td>
-                            <td class="text-center">{{ $kategori }}</td>
-                            <td class="text-center">{{ $jumlah }} </td>
-                            <td class="text-center">{{ $order->tarif->shipmentInfo->nama }}</td>
-                            <td class="text-center">X</td>
-                            <td>
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($tarif) }}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($price) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        @if ($order->tarif->kondisi==1||$order->tarif->kondisi==6)
-                        <tr>
-                            <td class="text-center">2.</td>
-                            <td>JASA EKSPEDISI</td>
-                            <td class="text-center">{{ $orders->count() }} Doc</td>
-                            <td class="text-center">{{ $orders->count() }} </td>
-                            <td class="text-center">Doc</td>
-                            <td class="text-center">X</td>
-                            <td>
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>500.000</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($doc) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        @endif
-                        <tr style="height: 20px !important">
-                            <td colspan="4"></td>
-                            <td colspan="4" style="border-bottom: 1px solid black"></td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">Sub Total</td>
-                            <td style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($sub_total) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
-                            <td style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($ppn) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        @if ($asuransi>0)
-                        <tr>
-                            <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">Asuransi {{ $asuransi_name }}</td>
-                            <td style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($asuransi) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                            @if ($admin>0)
-                                <tr>
-                                    <td colspan="4"></td>
-                                    <td colspan="3" style="border: 1px solid black">Biaya Admin</td>
-                                    <td style="border: 1px solid black">
-                                        <div class="price d-flex justify-content-between px-2">
-                                            <span>Rp</span>
-                                            <span>{{ number_format($admin) }}</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endif
-                        @foreach ($cas as $tagihan)
-                        <tr>
-                            <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
-                            <td style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($tagihan->jumlah) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                        <tr>
-                            <td class="fw-bold" colspan="7" style="border: 1px solid black; text-align:right">TOTAL</td>
-                            <td class="fw-bold" style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($total) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
-                            <td style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($pph) }}</span>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr style="height: 20px !important">
+                                <td colspan="4"></td>
+                                <td colspan="4" style="border-bottom: 1px solid black"></td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold" colspan="7" style="border: 1px solid black; text-align:right">TOTAL</td>
+                                <td class="fw-bold" style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($jumlah * $order->tarif->tarif) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
 
-                    </table>
+                        </table>
 
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 150px">Terbilang</td>
-                                    <td>: {{ strtoupper(terbilang($total)) }} RUPIAH</td>
-                                </tr>
-                                <tr>
-                                    <td>Container</td>
-                                    <td>: {{ implode(', ',$orders->pluck('container')->toArray()) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>No. Group Job</td>
-                                    <td>:
-                                        @foreach ($orders as $item)
-                                            {{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}@if (!$loop->last), @endif
-                                        @endforeach
-                                    </td>
-                                </tr>
-                            </table>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Terbilang</td>
+                                        <td>: {{ strtoupper(terbilang($jumlah * $order->tarif->tarif)) }} RUPIAH</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Container</td>
+                                        <td>: {{ implode(', ',$orders->pluck('container')->toArray()) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. Group Job</td>
+                                        <td>:
+                                            @foreach ($orders as $item)
+                                                {{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}@if (!$loop->last), @endif
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-7">
+                                <span>Pembayaran dapat dilakukan melalui:</span>
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Rekening No.</td>
+                                        <td>: 1400 046 005 006</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Atas Nama</td>
+                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank</td>
+                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-5">
+                                <div class="text-center" style="font-size: .7rem">
+                                    <p>Surabaya, {{ is_null($order->invoice_date)?'-':date('d F Y',strtotime($order->invoice_date)) }}</p>
+                                    <br><br>
+                                    (LATIFAH)
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row mt-3">
-                        <div class="col-7">
-                            <span>Pembayaran dapat dilakukan melalui:</span>
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 150px">Rekening No.</td>
-                                    <td>: 1400 046 005 006</td>
-                                </tr>
-                                <tr>
-                                    <td>Atas Nama</td>
-                                    <td>: PT. RAHMAT ALAM ALAM SAMUDERA</td>
-                                </tr>
-                                <tr>
-                                    <td>Bank</td>
-                                    <td>: Mandiri Cabang Indrapura Surabaya</td>
-                                </tr>
-                            </table>
+                    {{-- <p class="page-break"></p> --}}
+
+                    <div class="invoice-box" style="margin-top: 70px">
+                        <div class="header d-flex" style="gap:5px; width:100%">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <div style="width: 40%; margin-left:35px">
+                                <table style="font-size:.7rem">
+                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                </table>
+                            </div>
+                            <div style="width:30%; ">
+                                <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                    <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
+                                </table>
+                            </div>
                         </div>
-                        <div class="col-5">
-                            <div class="text-center" style="font-size: .7rem">
-                                <p>Surabaya, {{ is_null($order->invoice_date)?'-':date('d F Y',strtotime($order->invoice_date)) }}</p>
-                                <br><br>
-                                (LATIFAH)
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 120px">No. Invoice</td>
+                                        <td>: {{ $order->invoice ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kapal</td>
+                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY. {{ $order->jadwal_kapal->voyage }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pelabuhan Tujuan</td>
+                                        <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Buat Pembayaran (Jenis)</td>
+                                        <td>:
+                                            {{ $nama_barang }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 60px">Customer</td>
+                                        <td>: {{ $order->tarif->customer->nama }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Alamat</td>
+                                        <td>: {{ $order->tarif->customer->alamat }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                            <thead>
+                                <tr class="heading">
+                                    <td>No</td>
+                                    <td>Uraian</td>
+                                    <td>{{ $nama }}</td>
+                                    <td>Jumlah</td>
+                                    <td>Tipe Tarif</td>
+                                    <td>X</td>
+                                    <td>Tarif</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td class="text-center">1.</td>
+                                <td>{{ $order->tarif->kondisiInfo->nama }}, {{ $order->tarif->dari_lokasi->nama }} - {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                <td class="text-center">{{ $kategori }}</td>
+                                <td class="text-center">{{ $jumlah }} </td>
+                                <td class="text-center">{{ $order->tarif->shipmentInfo->nama }}</td>
+                                <td class="text-center">X</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($tarif) }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($jumlah * $order->tarif->tarif) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="height: 20px !important">
+                                <td colspan="4"></td>
+                                <td colspan="4" style="border-bottom: 1px solid black"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($jumlah * $order->tarif->tarif) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format(($jumlah * $order->tarif->tarif)*0.011) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold" colspan="7" style="border: 1px solid black; text-align:right">TOTAL</td>
+                                <td class="fw-bold" style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format((($jumlah * $order->tarif->tarif)*0.011) + ($jumlah * $order->tarif->tarif) ) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Terbilang</td>
+                                        <td>: {{ strtoupper(terbilang((($jumlah * $order->tarif->tarif)*0.011) + ($jumlah * $order->tarif->tarif))) }} RUPIAH</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Container</td>
+                                        <td>: {{ implode(', ',$orders->pluck('container')->toArray()) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. Group Job</td>
+                                        <td>:
+                                            @foreach ($orders as $item)
+                                                {{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}@if (!$loop->last), @endif
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-7">
+                                <span>Pembayaran dapat dilakukan melalui:</span>
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Rekening No.</td>
+                                        <td>: 1400 046 005 006</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Atas Nama</td>
+                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank</td>
+                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-5">
+                                <div class="text-center" style="font-size: .7rem">
+                                    <p>Surabaya, {{ is_null($order->invoice_date)?'-':date('d F Y',strtotime($order->invoice_date)) }}</p>
+                                    <br><br>
+                                    (LATIFAH)
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                @else
+                    <div class="invoice-box first-page">
+                        <div class="header d-flex" style="gap:5px; width:100%">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <div style="width: 40%; margin-left:35px">
+                                <table style="font-size:.7rem">
+                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                </table>
+                            </div>
+                            <div style="width:30%; ">
+                                <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                    <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 120px">No. Invoice</td>
+                                        <td>: {{ $order->invoice ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kapal</td>
+                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY. {{ $order->jadwal_kapal->voyage }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pelabuhan Tujuan</td>
+                                        <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Buat Pembayaran (Jenis)</td>
+                                        <td>:
+                                            {{ $nama_barang }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 60px">Customer</td>
+                                        <td>: {{ $order->tarif->customer->nama }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Alamat</td>
+                                        <td>: {{ $order->tarif->customer->alamat }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                            <thead>
+                                <tr class="heading">
+                                    <td>No</td>
+                                    <td>Uraian</td>
+                                    <td>{{ $nama }}</td>
+                                    <td>Jumlah</td>
+                                    <td>Tipe Tarif</td>
+                                    <td>X</td>
+                                    <td>Tarif</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td class="text-center">1.</td>
+                                <td>{{ $order->tarif->kondisiInfo->nama }}, {{ $order->tarif->dari_lokasi->nama }} - {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                <td class="text-center">{{ $kategori }}</td>
+                                <td class="text-center">{{ $jumlah }} </td>
+                                <td class="text-center">{{ $order->tarif->shipmentInfo->nama }}</td>
+                                <td class="text-center">X</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($tarif) }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($price) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @if ($order->tarif->kondisi==1||$order->tarif->kondisi==6)
+                            <tr>
+                                <td class="text-center">2.</td>
+                                <td>JASA EKSPEDISI</td>
+                                <td class="text-center">{{ $orders->count() }} Doc</td>
+                                <td class="text-center">{{ $orders->count() }} </td>
+                                <td class="text-center">Doc</td>
+                                <td class="text-center">X</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>500.000</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($doc) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
+                            <tr style="height: 20px !important">
+                                <td colspan="4"></td>
+                                <td colspan="4" style="border-bottom: 1px solid black"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($sub_total) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($ppn) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @if ($asuransi>0)
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Asuransi {{ $asuransi_name }}</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($asuransi) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                                @if ($admin>0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Biaya Admin</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($admin) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endif
+                            @foreach ($cas as $tagihan)
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($tagihan->jumlah) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                            <tr>
+                                <td class="fw-bold" colspan="7" style="border: 1px solid black; text-align:right">TOTAL</td>
+                                <td class="fw-bold" style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($total) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Terbilang</td>
+                                        <td>: {{ strtoupper(terbilang($total)) }} RUPIAH</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Container</td>
+                                        <td>: {{ implode(', ',$orders->pluck('container')->toArray()) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. Group Job</td>
+                                        <td>:
+                                            @foreach ($orders as $item)
+                                                {{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}@if (!$loop->last), @endif
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-7">
+                                <span>Pembayaran dapat dilakukan melalui:</span>
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Rekening No.</td>
+                                        <td>: 1400 046 005 006</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Atas Nama</td>
+                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank</td>
+                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-5">
+                                <div class="text-center" style="font-size: .7rem">
+                                    <p>Surabaya, {{ is_null($order->invoice_date)?'-':date('d F Y',strtotime($order->invoice_date)) }}</p>
+                                    <br><br>
+                                    (LATIFAH)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>

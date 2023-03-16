@@ -54,7 +54,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
-                <div class="card-titles">List {{ request('filter-order')=='ba_kembali_keuangan'?'BA Kembali':(request('filter-order')=='pre_invoice'?'Pre Invoice':'Semua Order') }} (Read Only)</div>
+                <div class="card-titles">List BA Kembali (Read Only)</div>
                 @if (request('filter-order')=='pre_invoice')
 
                 <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice</a>
@@ -141,7 +141,7 @@
             ajax:{
                 url: '{{ route('order.data') }}',
                 method:'POST',
-                data:{filter:@json(request('filter-order'))},
+                data:{filter:'ba_kembali_keuangan'},
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [

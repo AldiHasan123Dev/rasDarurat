@@ -71,11 +71,13 @@ Route::prefix('admin')->middleware('auth')->group( function(){
 
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
+    Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');
+    Route::get('keuangan/pre-invoice',[KeuanganController::class,'pre_invoice'])->name('keuangan.pre_invoice');
     Route::get('keuangan/laporan-ppn',[KeuanganController::class,'laporanPpn'])->name('keuangan.laporan.ppn');
     Route::post('generate-invoice/{order}',[KeuanganController::class,'generateInvoice'])->name('keuangan.generateInvoice');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
     Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');
-    Route::get('invoice',[OrderController::class,'invoice'])->name('order.invoice');
+    Route::get('invoice',[KeuanganController::class,'invoice'])->name('order.invoice');
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');
     Route::get('pdf/surat-jalan',[CetakController::class,'pdfSuratJalan'])->name('cetak.pdf.suratJalan');
     Route::get('cetak/pick-order',[CetakController::class,'pickOrder'])->name('cetak.pickOrder');

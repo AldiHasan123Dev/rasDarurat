@@ -80,11 +80,6 @@ class OrderController extends Controller
         return view('admin.order.asuransi',compact('orders'));
     }
 
-    public function invoice()
-    {
-        return view('admin.order.invoice');
-    }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -253,6 +248,7 @@ class OrderController extends Controller
             $data->where(function($q){
                 $q->whereNotNull('order.ba_kembali');
                 $q->orWhereIn('tarif.kondisi',[1,6]);
+                $q->whereNotNull('jadwal_kapal.td');
             });
             $data->whereNull('invoice');
             $data->orWhere('pembayar.ba_kembali',0);

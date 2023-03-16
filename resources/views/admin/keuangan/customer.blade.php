@@ -30,7 +30,7 @@
                                         <th>NPWP</th>
                                         <th>Nama NPWP</th>
                                         <th>Alamat NPWP</th>
-                                        <th>INC PPN</th>
+                                        <th>Invoice All In</th>
                                         <th>Perlu BA Kembali</th>
                                         <th>Marketing</th>
                                         <th>CS</th>
@@ -89,8 +89,8 @@
                             </select>
                         </div>
                         <div class="col-6 mb-2">
-                            <label for="ppn">INC PPN</label>
-                            <select name="ppn" id="ppn" class="form-control">
+                            <label for="all_in">Invoice All In</label>
+                            <select name="all_in" id="all_in" class="form-control">
                                 <option value="1">IYA</option>
                                 <option value="0">TIDAK</option>
                             </select>
@@ -130,7 +130,7 @@
                 { data: 'npwp', name: 'npwp' },
                 { data: 'nama_npwp', name: 'nama_npwp' },
                 { data: 'alamat_npwp', name: 'alamat_npwp' },
-                { data: 'ppn', name: 'ppn' },
+                { data: 'all_in', name: 'all_in' },
                 { data: 'ba_kembali', name: 'ba_kembali' },
                 { data: 'marketing_id', name: 'marketing.name' },
                 { data: 'cs_id', name: 'cs.name' },
@@ -147,7 +147,7 @@
 
         $('#customer tbody').on( 'click', 'tr', function () {
             var cus =  tablecus.row( this ).data();
-            let ppn = cus.ppn == 'IYA' ? 1 : 0;
+            let all_in = cus.all_in == 'IYA' ? 1 : 0;
             let ba_kembali = cus.ba_kembali == 'IYA' ? 1 : 0;
             $('#nama_customer').html(cus.nama);
             $('#user_id').val(cus.id);
@@ -155,7 +155,7 @@
             $('#npwp').val(cus.npwp);
             $('#nama_npwp').val(cus.nama_npwp);
             $('#alamat_npwp').val(cus.alamat_npwp);
-            $("#ppn").val(ppn).change();
+            $("#all_in").val(all_in).change();
             $("#ba_kembali").val(ba_kembali).change();
         })
 
@@ -169,7 +169,7 @@
                     npwp: $('#npwp').val(),
                     nama_npwp: $('#nama_npwp').val(),
                     alamat_npwp: $('#alamat_npwp').val(),
-                    ppn: $('#ppn').val(),
+                    all_in: $('#all_in').val(),
                     ba_kembali: $('#ba_kembali').val(),
                 },
                 success: function (response) {

@@ -26,6 +26,8 @@ class Transaksi extends Model
         'pph',
         'job',
         'order',
+        'tanggal_kirim',
+        'created_at',
     ];
 
     public function pembayar()
@@ -41,5 +43,10 @@ class Transaksi extends Model
             $job .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
         }
         return $job;
+    }
+
+    public function jobs()
+    {
+        return $this->hasMany(Order::class,'job','job');
     }
 }
