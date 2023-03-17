@@ -55,7 +55,10 @@
         <div class="card">
             <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
                 <div class="card-titles">List Pre Invoice (Read Only)</div>
-                <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice</a>
+                <div class="d-flex gap-2">
+                    <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Global</a>
+                    <a href="" class="btn btn-sm btn-success" id="cetak-cont-invoice"><i class="fas fa-print"></i> Cetak Invoice Per Cont</a>
+                </div>
                 <p>No JOB: <span class="nojob"></span></p>
             </div>
             <div class="card-body">
@@ -116,7 +119,10 @@
         <div class="card mt-3">
             <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
                 <div class="card-titles">List Pre Invoice Tidak Perlu BA Kembali(Read Only)</div>
-                <a href="" class="btn btn-sm btn-success" id="cetak-invoice2"><i class="fas fa-print"></i> Cetak Invoice</a>
+                <div class="d-flex gap-2">
+                    <a href="" class="btn btn-sm btn-success" id="cetak-invoice2"><i class="fas fa-print"></i> Cetak Invoice Global</a>
+                    <a href="" class="btn btn-sm btn-success" id="cetak-cont-invoice2"><i class="fas fa-print"></i> Cetak Invoice Per Cont</a>
+                </div>
                 <p>No JOB: <span class="nojob2"></span></p>
             </div>
             <div class="card-body">
@@ -421,6 +427,7 @@
             var no_job =  tableOrder.row( this ).data().no_job;
             $('.nojob').html(no_job);
             $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
+            $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+id);
         })
 
         $('#table-order2 tbody').on( 'click', 'tr', function () {
@@ -428,6 +435,7 @@
             var no_job =  tableOrder2.row( this ).data().no_job;
             $('.nojob2').html(no_job);
             $('#cetak-invoice2').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
+            $('#cetak-cont-invoice2').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+id);
         })
 </script>
 @endsection

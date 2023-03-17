@@ -10,7 +10,9 @@ return new class extends Migration
     {
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('order_id')->constrained('order');
             $table->foreignId('pembayar_id')->constrained('customers');
+            $table->string('tipe_invoice');
             $table->string('job');
             $table->string('invoice');
             $table->string('nsfp');

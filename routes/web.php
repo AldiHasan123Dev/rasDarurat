@@ -99,6 +99,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/bttb-kubikasi',[CetakController::class,'bttbKubikasi'])->name('cetak.bttb.kubikasi');
     Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
     Route::get('cetak/invoice',[CetakController::class,'invoice'])->name('cetak.invoice');
+    Route::get('cetak/invoice-cont',[CetakController::class,'invoiceCont'])->name('cetak.invoice.cont');
     Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('customer-import-update',[CustomerController::class,'importUpdate'])->name('customer.import.update');

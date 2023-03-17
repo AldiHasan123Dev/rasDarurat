@@ -40,11 +40,15 @@
                                     <td>{{ $item->tujuan }}</td>
                                     <td>{{ $item->keterangan }}</td>
                                     <td>{{ $item->nsfp }}</td>
-                                    <td>{{ number_format($item->sub_total) }}</td>
+                                    <td>{{ number_format(ceil($item->sub_total)) }}</td>
                                     <td>{{ number_format($item->ppn) }}</td>
-                                    <td>{{ number_format($item->ppn + $item->sub_total) }}</td>
+                                    <td>{{ number_format(ceil($item->ppn + $item->sub_total)) }}</td>
                                     <td>{{ number_format($item->pph) }}</td>
-                                    <td>{{ $item->no_job() }}</td>
+                                    @if ($item->tipe_invoice=='cont')
+                                        <td>{{ $item->job }}</td>
+                                    @else
+                                        <td>{{ $item->no_job() }}</td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

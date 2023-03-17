@@ -21,6 +21,7 @@
                     <p>List Semua Invoice</p>
                     <b>INVOICE (selected): <span class="invoice"></span></b>
                 </div>
+                {{-- <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Ulang</a> --}}
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -117,10 +118,12 @@
             var invoice =  tableInvoice.row( this ).data().invoice;
             var created_at =  tableInvoice.row( this ).data().created_at;
             var tanggal_kirim =  tableInvoice.row( this ).data().tanggal_kirim;
+            var job =  tableInvoice.row( this ).data().job;
             $('.invoice').html(invoice);
             $('#invoice_id').val(id);
             $('#created_at').val(convertDate(created_at));
             $('#tanggal_kirim').val(convertDate(tanggal_kirim));
+            $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?job='+job);
         })
 
         function convertDate(dateString) {

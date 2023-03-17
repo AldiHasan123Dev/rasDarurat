@@ -119,7 +119,12 @@ class CetakController extends Controller
 
     public function invoice()
     {
-        $order = Order::find(request('order_id'));
+        if(request('order_id')){
+            $order = Order::find(request('order_id'));
+        }
+        if (request('job')) {
+            $order = Order::where('job',request('job'))->first();
+        }
         $orders = Order::where('job',$order->job)->get();
         if (!$order) {
             return back()->with('danger','Anda harus memilih job terlebih dahulu!');
@@ -215,5 +220,41 @@ class CetakController extends Controller
         $br = array_unique($br);
         $nama_barang = implode(',',$br);
         return view('admin.cetak.invoice',compact('order','orders','nama','kategori','jumlah','doc','tarif','price','asuransi','asuransi_name','cas','validate','admin','nama_barang'));
+    }
+
+    public function invoiceCont()
+    {
+        if(request('order_id')){
+            $order = Order::find(request('order_id'));
+        }
+        if (request('job')) {
+            $order = Order::where('job',request('job'))->first();
+        }
+        $orders = Order::where('job',$order->job)->get();
+        if (!$order) {
+            return back()->with('danger','Anda harus memilih job terlebih dahulu!');
+        }
+
+        $validate = array();
+        foreach ($orders as $or ) {
+            if($or->asuransi=='ADA EXC'){
+                if(is_null($or->asuransi_id)){
+                    array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                }
+            }
+            if(is_null($or->tarif->customer->nik)){
+                array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+            }
+            if(is_null($or->tarif->customer->npwp)){
+                array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+            }
+        }
+
+        $nsfp = NSFP::where('available',1)->count();
+            if($nsfp<$orders->count()){
+                array_push($validate,'NSFP Tidak Cukup! Harap tambahkan NSFP terlebih dahulu');
+            }
+
+        return view('admin.cetak.invoice_cont',compact('order','orders','validate'));
     }
 }
