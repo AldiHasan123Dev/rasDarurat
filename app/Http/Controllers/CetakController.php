@@ -235,26 +235,95 @@ class CetakController extends Controller
             return back()->with('danger','Anda harus memilih job terlebih dahulu!');
         }
 
-        $validate = array();
-        foreach ($orders as $or ) {
-            if($or->asuransi=='ADA EXC'){
-                if(is_null($or->asuransi_id)){
-                    array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+        $type = strtoupper(strtolower($order->tarif->shipmentInfo->nama[0]));
+        if ($type=='F') {
+            $nama = 'Cont';
+            $kategori = $orders->count().' Cont';
+            $jumlah = $orders->count();
+            $tarif = $order->tarif->tarif;
+            $price = $jumlah * $tarif;
+            $asuransi = 0;
+            $admin = 0;
+            $doc = 0;
+            $asuransi_name = '';
+            $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+            $validate = array();
+            foreach ($orders as $or ) {
+                if (!is_null($or->asuransi_id)) {
+                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                    $asuransi_name = $or->asuransiInfo->nama;
+                    $admin += $or->asuransiInfo->admin;
+                }
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                }
+                if(is_null($or->tarif->customer->nik)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+                }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
                 }
             }
-            if(is_null($or->tarif->customer->nik)){
-                array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+            $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
+            if(is_null($nsfp)){
+                array_push($validate,'NSFP belum ada!');
             }
-            if(is_null($or->tarif->customer->npwp)){
-                array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+            if ($order->tarif->kondisi==1||$order->tarif->kondisi==6) {
+                $doc = $orders->count() * 500000;
             }
+            $asuransi += $admin;
+        }else{
+            $kategori = 0;
+            $jumlah = 0;
+            $asuransi = 0;
+            $admin = 0;
+            $doc = 0;
+            $asuransi_name = '';
+            $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+            $validate = array();
+            foreach ($orders as $or ) {
+                if (is_null($or->berat)||$or->berat<=0) {
+                    $kategori+=$or->bttb->sum('vol');
+                }else{
+                    $kategori+=$or->bttb->sum('berat');
+                }
+                $jumlah += $or->bttb->sum('qty');
+                if (!is_null($or->asuransi_id)) {
+                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                    $asuransi_name = $or->asuransiInfo->nama;
+                    $admin += $or->asuransiInfo->admin;
+                }
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                }
+                if(is_null($or->tarif->customer->nik)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+                }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+                }
+            }
+            $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
+            if(is_null($nsfp)){
+                array_push($validate,'NSFP belum ada!');
+            }
+            if ($order->tarif->kondisi==1||$order->tarif->kondisi==6) {
+                $doc = $orders->count() * 500000;
+            }
+            $nama = 'vol';
+            $tarif = $order->tarif->tarif;
+            $price = $tarif * $kategori * $jumlah;
+            $asuransi += $admin;
         }
 
-        $nsfp = NSFP::where('available',1)->count();
-            if($nsfp<$orders->count()){
-                array_push($validate,'NSFP Tidak Cukup! Harap tambahkan NSFP terlebih dahulu');
-            }
-
-        return view('admin.cetak.invoice_cont',compact('order','orders','validate'));
+        $validate = array_unique($validate);
+        $br = Order::with('barang')->where('job',$order->job)->get()->pluck('barang.nama')->toArray();
+        $br = array_unique($br);
+        $nama_barang = implode(',',$br);
+        return view('admin.cetak.invoice_cont',compact('order','orders','nama','kategori','jumlah','doc','tarif','price','asuransi','asuransi_name','cas','validate','admin','nama_barang'));
     }
 }
