@@ -709,8 +709,9 @@
             var l = $('#l').val();
             var t = $('#t').val();
             var vol = $('#vol').val();
+            var qty = $('#qty').val();
             if(p>0&&l>0&&t>0){
-                vol = (p*l*t)/1000000;
+                vol = ((p*l*t)/1000000) * qty;
                 vol = vol.toFixed(2);
             }
             $('#vol').val(vol);
