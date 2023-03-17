@@ -222,7 +222,7 @@ class OrderController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Order::query()->leftJoin('tarif','tarif.id','=','order.tarif_id')
+        $data = Order::query()->join('tarif','tarif.id','=','order.tarif_id')
                 ->join('shipments','shipments.id','=','tarif.shipment')
                 ->join('kondisi','kondisi.id','=','tarif.kondisi')
                 ->leftJoin('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
@@ -351,13 +351,28 @@ class OrderController extends Controller
                 return $data->job.'-'.sprintf('%02d',$data->no_job);
             })
             ->addColumn('marketing', function($data){
-                return is_null($data->tarif_id)?'-': ($data->tarif->customer->marketing->name ?? '-');
+                if(!is_null($data->tarif)){
+                    if(!is_null($data->tarif->customer)){
+                        return $data->tarif->customer->marketing->name ?? '-';
+                    }
+                }
+                return '-';
             })
             ->addColumn('cs', function($data){
-                return is_null($data->tarif_id)?'-': ($data->tarif->customer->cs->name ?? '-');
+                if(!is_null($data->tarif)){
+                    if(!is_null($data->tarif->customer)){
+                        return $data->tarif->customer->cs->name ?? '-';
+                    }
+                }
+                return '-';
             })
             ->addColumn('pembayar', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->customer->nama;
+                if(!is_null($data->tarif)){
+                    if(!is_null($data->tarif->customer)){
+                        return $data->tarif->customer->nama ?? '-';
+                    }
+                }
+                return '-';
             })
             ->addColumn('pengirim', function($data){
                 return $data->pengirim->nama ?? '-';
@@ -366,16 +381,16 @@ class OrderController extends Controller
                 return $data->penerima->nama ?? '-';
             })
             ->addColumn('dari', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->dari_lokasi->nama;
+                return is_null($data->tarif_id)?'-': ($data->tarif->dari_lokasi->nama??'-');
             })
             ->addColumn('tujuan', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->tujuan_lokasi->nama;
+                return is_null($data->tarif_id)?'-': ($data->tarif->tujuan_lokasi->nama??'-');
             })
             ->addColumn('shipment', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->shipmentInfo->nama;
+                return is_null($data->tarif_id)?'-': ($data->tarif->shipmentInfo->nama??'-');
             })
             ->addColumn('kondisi', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->kondisiInfo->nama;
+                return is_null($data->tarif_id)?'-': ($data->tarif->kondisiInfo->nama??'-');
             })
             ->addColumn('barang', function($data){
                 return $data->barang->nama ?? '-';
@@ -441,13 +456,13 @@ class OrderController extends Controller
                 return $data->agent->nama ?? '-';
             })
             ->addColumn('unit', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->satuanInfo->nama;
+                return is_null($data->tarif_id)?'-': ($data->tarif->satuanInfo->nama??'-');
             })
             ->addColumn('tarif', function($data){
-                return number_format(is_null($data->tarif)?0: $data->tarif->tarif);
+                return number_format(is_null($data->tarif)?0: ($data->tarif->tarif??'-'));
             })
             ->addColumn('stuffing_t', function($data){
-                return is_null($data->tarif_id)?'-': $data->tarif->stuffing ?? '-';
+                return is_null($data->tarif_id)?'-': ($data->tarif->stuffing ?? '-');
             })
             ->addColumn('penerima_bl', function($data){
                 if ($data->agen=='AGEN') {
