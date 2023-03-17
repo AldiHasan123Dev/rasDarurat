@@ -58,311 +58,641 @@
             <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
         </div>
         <div class="card p-3">
+            @php
+                $page = 1;
+                $count = $data->count();
+                if ($count<=10) {
+                    $pages = 1;
+                }elseif($count>10&&$count<=25){
+                    $pages = 2;
+                }elseif($count>25&&$count<=35){
+                    $pages = 3;
+                }elseif($count>35&&$count<=45){
+                    $pages = 4;
+                }
+            @endphp
             <div id="print">
                 @if ($data->count()>=15)
                     @foreach ($data->chunk(15) as $bttb)
-                    <div class="page" style="margin-top: 50px">
-                        <div class="headers d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                            <div style="width: 40%; margin-left:35px">
-                                <table style="font-size:.7rem">
-                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                </table>
-                            </div>
-                            <div style="width:22%; text-align:right">
-                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
-                                    <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
-                                    <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6">
-                                <table style="font-size: .7rem">
-                                    <tr>
-                                        <td style="width: 200px">No. BTTB</td>
-                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nama Kapal</td>
-                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>No. Container</td>
-                                        <td>: {{ $order->container }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>No. Seal</td>
-                                        <td>: {{ $order->seal }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-6">
-                                <table style="font-size: .7rem">
-                                    <tr>
-                                        <td style="width: 200px">Penerima</td>
-                                        <td>: {{ $order->penerima->nama }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Alamat</td>
-                                        <td>: {{ $order->penerima->alamat }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Kota</td>
-                                        <td>: {{ $order->penerima->kota }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>HP</td>
-                                        <td>: {{ $order->penerima->hp }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
-                                <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
-                                    <thead>
-                                        <tr style="border-bottom: solid 2px black">
-                                            <th class="text-center">No. Gudang</th>
-                                            <th>Jenis Barang</th>
-                                            <th class="text-center">Koli</th>
-                                            <th class="text-center">Tgl Masuk</th>
-                                            <th>Pengirim</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                        @if ($loop->last)
+                            @if ($bttb->count()>=10)
+                                @foreach ($bttb->chunk(10) as $bttb)
+                                    <div class="page" style="margin-top: 50px">
+                                        <div class="headers d-flex" style="gap:5px; width:100%">
+                                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                                            <div style="width: 40%; margin-left:35px">
+                                                <table style="font-size:.7rem">
+                                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                                </table>
+                                            </div>
+                                            <div style="width:22%; text-align:right">
+                                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                                                    <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
+                                                    <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <table style="font-size: .7rem">
+                                                    <tr>
+                                                        <td style="width: 200px">No. BTTB</td>
+                                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nama Kapal</td>
+                                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Container</td>
+                                                        <td>: {{ $order->container }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Seal</td>
+                                                        <td>: {{ $order->seal }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-6">
+                                                <table style="font-size: .7rem">
+                                                    <tr>
+                                                        <td style="width: 200px">Penerima</td>
+                                                        <td>: {{ $order->penerima->nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Alamat</td>
+                                                        <td>: {{ $order->penerima->alamat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Kota</td>
+                                                        <td>: {{ $order->penerima->kota }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>HP</td>
+                                                        <td>: {{ $order->penerima->hp }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                                                <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
+                                                    <thead>
+                                                        <tr style="border-bottom: solid 2px black">
+                                                            <th class="text-center">No. Gudang</th>
+                                                            <th>Jenis Barang</th>
+                                                            <th class="text-center">Koli</th>
+                                                            <th class="text-center">Tgl Masuk</th>
+                                                            <th>Pengirim</th>
+                                                            <th>Keterangan</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $tgl_masuk = null;
+                                                        @endphp
+                                                        @foreach ($bttb->groupBy('pengirim_id') as $b)
+                                                            @foreach ($b as $item)
+                                                            <tr>
+                                                                <td class="text-center">{{ $item->no_gudang }}</td>
+                                                                <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
+                                                                <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                                @if ($tgl_masuk==$item->tgl_masuk)
+                                                                <td class="text-center">-</td>
+                                                                @else
+                                                                <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_masuk)) }}</td>
+                                                                @endif
+                                                                @if ($loop->first)
+                                                                <td>{{ ucfirst(strtolower($item->pengirim->nama)) ?? '-' }}</td>
+                                                                @else
+                                                                <td>-</td>
+                                                                @endif
+                                                                <td>{{ $item->keterangan }}</td>
+                                                            </tr>
+                                                            @php
+                                                                $tgl_masuk = $item->tgl_masuk;
+                                                            @endphp
+                                                            @endforeach
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            @if ($loop->last)
+                                                <div class="col-12">
+                                                    <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
+                                                        <tr>
+                                                            <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                            <td style="width: 100px"></td>
+                                                            <td>{{ $order->bttb->sum('qty') }}</td>
+                                                            <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-4 px-1 mt-2">
+                                                    <table style="font-size: .7rem;  margin-left:20px">
+                                                        <tr>
+                                                            <td style="width: 100px">Penerima</td>
+                                                            <td>: </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tanggal</td>
+                                                            <td>: </td>
+                                                        </tr>
+                                                    </table>
+                                                    <div style="margin-top: 70px; margin-left:70px">
+                                                        <span class="text-center">(....................................................)</span><br>
+                                                        <span class="text-center">Stampel + TTD + Nama</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                                    <p>Pengantar</p>
+                                                    <div style="margin-top: 95px">
+                                                        <span class="text-center">(....................................................)</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                                    <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
+                                                    <div style="margin-top: 90px">
+                                                        <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <hr class="mt-4">
+                                        </div>
+                                        @if (ceil($data->count()/10)!=1)
+                                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
+                                        @endif
+                                    </div>
+                                    @if (ceil($data->count()/10)!=1)
+                                        <p class="pagebreak"></p>
                                         @php
-                                            $tgl_masuk = null;
+                                            $page++;
                                         @endphp
-                                        @foreach ($bttb->groupBy('pengirim_id') as $b)
-                                            @foreach ($b as $item)
-                                            <tr>
-                                                <td class="text-center">{{ $item->no_gudang }}</td>
-                                                <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
-                                                <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                                @if ($tgl_masuk==$item->tgl_masuk)
-                                                <td class="text-center">-</td>
-                                                @else
-                                                <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_masuk)) }}</td>
-                                                @endif
-                                                @if ($loop->first)
-                                                <td>{{ ucfirst(strtolower($item->pengirim->nama)) ?? '-' }}</td>
-                                                @else
-                                                <td>-</td>
-                                                @endif
-                                                <td>{{ $item->keterangan }}</td>
-                                            </tr>
-                                            @php
-                                                $tgl_masuk = $item->tgl_masuk;
-                                            @endphp
-                                            @endforeach
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                            @if ($loop->last)
-                                <div class="col-12">
-                                    <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
-                                        <tr>
-                                            <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
-                                            <td style="width: 100px"></td>
-                                            <td>{{ $order->bttb->sum('qty') }}</td>
-                                            <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-4 px-1 mt-2">
-                                    <table style="font-size: .7rem;  margin-left:20px">
-                                        <tr>
-                                            <td style="width: 100px">Penerima</td>
-                                            <td>: </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Tanggal</td>
-                                            <td>: </td>
-                                        </tr>
-                                    </table>
-                                    <div style="margin-top: 70px; margin-left:70px">
-                                        <span class="text-center">(....................................................)</span><br>
-                                        <span class="text-center">Stampel + TTD + Nama</span>
+                                    @endif
+                                @endforeach
+                            @else
+                                @foreach ($bttb->chunk(15) as $bttb)
+                                    <div class="page" style="margin-top: 50px">
+                                        <div class="headers d-flex" style="gap:5px; width:100%">
+                                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                                            <div style="width: 40%; margin-left:35px">
+                                                <table style="font-size:.7rem">
+                                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                                </table>
+                                            </div>
+                                            <div style="width:22%; text-align:right">
+                                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                                                    <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
+                                                    <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <table style="font-size: .7rem">
+                                                    <tr>
+                                                        <td style="width: 200px">No. BTTB</td>
+                                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nama Kapal</td>
+                                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Container</td>
+                                                        <td>: {{ $order->container }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Seal</td>
+                                                        <td>: {{ $order->seal }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-6">
+                                                <table style="font-size: .7rem">
+                                                    <tr>
+                                                        <td style="width: 200px">Penerima</td>
+                                                        <td>: {{ $order->penerima->nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Alamat</td>
+                                                        <td>: {{ $order->penerima->alamat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Kota</td>
+                                                        <td>: {{ $order->penerima->kota }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>HP</td>
+                                                        <td>: {{ $order->penerima->hp }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                                                <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
+                                                    <thead>
+                                                        <tr style="border-bottom: solid 2px black">
+                                                            <th class="text-center">No. Gudang</th>
+                                                            <th>Jenis Barang</th>
+                                                            <th class="text-center">Koli</th>
+                                                            <th class="text-center">Tgl Masuk</th>
+                                                            <th>Pengirim</th>
+                                                            <th>Keterangan</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @php
+                                                            $tgl_masuk = null;
+                                                        @endphp
+                                                        @foreach ($bttb->groupBy('pengirim_id') as $b)
+                                                            @foreach ($b as $item)
+                                                            <tr>
+                                                                <td class="text-center">{{ $item->no_gudang }}</td>
+                                                                <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
+                                                                <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                                @if ($tgl_masuk==$item->tgl_masuk)
+                                                                <td class="text-center">-</td>
+                                                                @else
+                                                                <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_masuk)) }}</td>
+                                                                @endif
+                                                                @if ($loop->first)
+                                                                <td>{{ ucfirst(strtolower($item->pengirim->nama)) ?? '-' }}</td>
+                                                                @else
+                                                                <td>-</td>
+                                                                @endif
+                                                                <td>{{ $item->keterangan }}</td>
+                                                            </tr>
+                                                            @php
+                                                                $tgl_masuk = $item->tgl_masuk;
+                                                            @endphp
+                                                            @endforeach
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            @if ($loop->last)
+                                                <div class="col-12">
+                                                    <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
+                                                        <tr>
+                                                            <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                            <td style="width: 100px"></td>
+                                                            <td>{{ $order->bttb->sum('qty') }}</td>
+                                                            <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div class="col-4 px-1 mt-2">
+                                                    <table style="font-size: .7rem;  margin-left:20px">
+                                                        <tr>
+                                                            <td style="width: 100px">Penerima</td>
+                                                            <td>: </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Tanggal</td>
+                                                            <td>: </td>
+                                                        </tr>
+                                                    </table>
+                                                    <div style="margin-top: 70px; margin-left:70px">
+                                                        <span class="text-center">(....................................................)</span><br>
+                                                        <span class="text-center">Stampel + TTD + Nama</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                                    <p>Pengantar</p>
+                                                    <div style="margin-top: 95px">
+                                                        <span class="text-center">(....................................................)</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                                    <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
+                                                    <div style="margin-top: 90px">
+                                                        <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <hr class="mt-4">
+                                        </div>
+                                        @if (ceil($data->count()/15)!=1)
+                                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
+                                        @endif
                                     </div>
-                                </div>
-                                <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                                    <p>Pengantar</p>
-                                    <div style="margin-top: 95px">
-                                        <span class="text-center">(....................................................)</span>
-                                    </div>
-                                </div>
-                                <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                                    <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
-                                    <div style="margin-top: 90px">
-                                        <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
-                                    </div>
-                                </div>
+                                    @if (ceil($data->count()/15)!=1)
+                                        <p class="pagebreak"></p>
+                                    @endif
+                                @endforeach
                             @endif
-                            <hr class="mt-4">
-                        </div>
-                        @if (ceil($data->count()/15)!=1)
-                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of {{ ceil($data->count()/15) }}</i></div>
+                        @else
+                            <div class="page" style="margin-top: 50px">
+                                <div class="headers d-flex" style="gap:5px; width:100%">
+                                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                                    <div style="width: 40%; margin-left:35px">
+                                        <table style="font-size:.7rem">
+                                            <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                            <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                            <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                        </table>
+                                    </div>
+                                    <div style="width:22%; text-align:right">
+                                        <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                                            <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
+                                            <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 200px">No. BTTB</td>
+                                                <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nama Kapal</td>
+                                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>No. Container</td>
+                                                <td>: {{ $order->container }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>No. Seal</td>
+                                                <td>: {{ $order->seal }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6">
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 200px">Penerima</td>
+                                                <td>: {{ $order->penerima->nama }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Alamat</td>
+                                                <td>: {{ $order->penerima->alamat }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kota</td>
+                                                <td>: {{ $order->penerima->kota }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>HP</td>
+                                                <td>: {{ $order->penerima->hp }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                                        <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
+                                            <thead>
+                                                <tr style="border-bottom: solid 2px black">
+                                                    <th class="text-center">No. Gudang</th>
+                                                    <th>Jenis Barang</th>
+                                                    <th class="text-center">Koli</th>
+                                                    <th class="text-center">Tgl Masuk</th>
+                                                    <th>Pengirim</th>
+                                                    <th>Keterangan</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @php
+                                                    $tgl_masuk = null;
+                                                @endphp
+                                                @foreach ($bttb->groupBy('pengirim_id') as $b)
+                                                    @foreach ($b as $item)
+                                                    <tr>
+                                                        <td class="text-center">{{ $item->no_gudang }}</td>
+                                                        <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
+                                                        <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                        @if ($tgl_masuk==$item->tgl_masuk)
+                                                        <td class="text-center">-</td>
+                                                        @else
+                                                        <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_masuk)) }}</td>
+                                                        @endif
+                                                        @if ($loop->first)
+                                                        <td>{{ ucfirst(strtolower($item->pengirim->nama)) ?? '-' }}</td>
+                                                        @else
+                                                        <td>-</td>
+                                                        @endif
+                                                        <td>{{ $item->keterangan }}</td>
+                                                    </tr>
+                                                    @php
+                                                        $tgl_masuk = $item->tgl_masuk;
+                                                    @endphp
+                                                    @endforeach
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @if ($loop->last)
+                                        <div class="col-12">
+                                            <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
+                                                <tr>
+                                                    <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                    <td style="width: 100px"></td>
+                                                    <td>{{ $order->bttb->sum('qty') }}</td>
+                                                    <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-4 px-1 mt-2">
+                                            <table style="font-size: .7rem;  margin-left:20px">
+                                                <tr>
+                                                    <td style="width: 100px">Penerima</td>
+                                                    <td>: </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tanggal</td>
+                                                    <td>: </td>
+                                                </tr>
+                                            </table>
+                                            <div style="margin-top: 70px; margin-left:70px">
+                                                <span class="text-center">(....................................................)</span><br>
+                                                <span class="text-center">Stampel + TTD + Nama</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                            <p>Pengantar</p>
+                                            <div style="margin-top: 95px">
+                                                <span class="text-center">(....................................................)</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                            <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
+                                            <div style="margin-top: 90px">
+                                                <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <hr class="mt-4">
+                                </div>
+                                @if (ceil($data->count()/15)!=1)
+                                    <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
+                                @endif
+                            </div>
                         @endif
-                    </div>
-                    @if (ceil($data->count()/15)!=1)
-                        <p class="pagebreak"></p>
-                    @endif
+                        @if (ceil($data->count()/15)!=1)
+                            <p class="pagebreak"></p>
+                            @php
+                                $page++;
+                            @endphp
+                        @endif
                     @endforeach
                 @else
                     @if ($data->count()>=10)
                         @foreach ($data->chunk(10) as $bttb)
-                        <div class="page" style="margin-top: 50px">
-                            <div class="headers d-flex" style="gap:5px; width:100%">
-                                <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                                <div style="width: 40%; margin-left:35px">
-                                    <table style="font-size:.7rem">
-                                        <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                        <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                        <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                    </table>
+                            <div class="page" style="margin-top: 50px">
+                                <div class="headers d-flex" style="gap:5px; width:100%">
+                                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                                    <div style="width: 40%; margin-left:35px">
+                                        <table style="font-size:.7rem">
+                                            <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                            <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                            <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                        </table>
+                                    </div>
+                                    <div style="width:22%; text-align:right">
+                                        <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                                            <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
+                                            <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
+                                        </table>
+                                    </div>
                                 </div>
-                                <div style="width:22%; text-align:right">
-                                    <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
-                                        <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
-                                        <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <table style="font-size: .7rem">
-                                        <tr>
-                                            <td style="width: 200px">No. BTTB</td>
-                                            <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Nama Kapal</td>
-                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>No. Container</td>
-                                            <td>: {{ $order->container }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>No. Seal</td>
-                                            <td>: {{ $order->seal }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-6">
-                                    <table style="font-size: .7rem">
-                                        <tr>
-                                            <td style="width: 200px">Penerima</td>
-                                            <td>: {{ $order->penerima->nama }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Alamat</td>
-                                            <td>: {{ $order->penerima->alamat }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kota</td>
-                                            <td>: {{ $order->penerima->kota }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>HP</td>
-                                            <td>: {{ $order->penerima->hp }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
-                                    <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
-                                        <thead>
-                                            <tr style="border-bottom: solid 2px black">
-                                                <th class="text-center">No. Gudang</th>
-                                                <th>Jenis Barang</th>
-                                                <th class="text-center">Koli</th>
-                                                <th class="text-center">Tgl Masuk</th>
-                                                <th>Pengirim</th>
-                                                <th>Keterangan</th>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 200px">No. BTTB</td>
+                                                <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
                                             </tr>
-                                        </thead>
-                                        <tbody>
-                                            @php
-                                                $tgl_masuk = null;
-                                            @endphp
-                                            @foreach ($bttb->groupBy('pengirim_id') as $b)
-                                                @foreach ($b as $item)
-                                                <tr>
-                                                    <td class="text-center">{{ $item->no_gudang }}</td>
-                                                    <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
-                                                    <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                                    @if ($tgl_masuk==$item->tgl_masuk)
-                                                    <td class="text-center">-</td>
-                                                    @else
-                                                    <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_masuk)) }}</td>
-                                                    @endif
-                                                    @if ($loop->first)
-                                                    <td>{{ ucfirst(strtolower($item->pengirim->nama)) ?? '-' }}</td>
-                                                    @else
-                                                    <td>-</td>
-                                                    @endif
-                                                    <td>{{ $item->keterangan }}</td>
+                                            <tr>
+                                                <td>Nama Kapal</td>
+                                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>No. Container</td>
+                                                <td>: {{ $order->container }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>No. Seal</td>
+                                                <td>: {{ $order->seal }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6">
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 200px">Penerima</td>
+                                                <td>: {{ $order->penerima->nama }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Alamat</td>
+                                                <td>: {{ $order->penerima->alamat }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kota</td>
+                                                <td>: {{ $order->penerima->kota }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>HP</td>
+                                                <td>: {{ $order->penerima->hp }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                                        <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
+                                            <thead>
+                                                <tr style="border-bottom: solid 2px black">
+                                                    <th class="text-center">No. Gudang</th>
+                                                    <th>Jenis Barang</th>
+                                                    <th class="text-center">Koli</th>
+                                                    <th class="text-center">Tgl Masuk</th>
+                                                    <th>Pengirim</th>
+                                                    <th>Keterangan</th>
                                                 </tr>
+                                            </thead>
+                                            <tbody>
                                                 @php
-                                                    $tgl_masuk = $item->tgl_masuk;
+                                                    $tgl_masuk = null;
                                                 @endphp
+                                                @foreach ($bttb->groupBy('pengirim_id') as $b)
+                                                    @foreach ($b as $item)
+                                                    <tr>
+                                                        <td class="text-center">{{ $item->no_gudang }}</td>
+                                                        <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
+                                                        <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                        @if ($tgl_masuk==$item->tgl_masuk)
+                                                        <td class="text-center">-</td>
+                                                        @else
+                                                        <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_masuk)) }}</td>
+                                                        @endif
+                                                        @if ($loop->first)
+                                                        <td>{{ ucfirst(strtolower($item->pengirim->nama)) ?? '-' }}</td>
+                                                        @else
+                                                        <td>-</td>
+                                                        @endif
+                                                        <td>{{ $item->keterangan }}</td>
+                                                    </tr>
+                                                    @php
+                                                        $tgl_masuk = $item->tgl_masuk;
+                                                    @endphp
+                                                    @endforeach
                                                 @endforeach
-                                            @endforeach
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @if ($loop->last)
+                                        <div class="col-12">
+                                            <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
+                                                <tr>
+                                                    <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                    <td style="width: 100px"></td>
+                                                    <td>{{ $order->bttb->sum('qty') }}</td>
+                                                    <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="col-4 px-1 mt-2">
+                                            <table style="font-size: .7rem;  margin-left:20px">
+                                                <tr>
+                                                    <td style="width: 100px">Penerima</td>
+                                                    <td>: </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Tanggal</td>
+                                                    <td>: </td>
+                                                </tr>
+                                            </table>
+                                            <div style="margin-top: 70px; margin-left:70px">
+                                                <span class="text-center">(....................................................)</span><br>
+                                                <span class="text-center">Stampel + TTD + Nama</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                            <p>Pengantar</p>
+                                            <div style="margin-top: 95px">
+                                                <span class="text-center">(....................................................)</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                                            <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
+                                            <div style="margin-top: 90px">
+                                                <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <hr class="mt-4">
                                 </div>
-                                @if ($loop->last)
-                                    <div class="col-12">
-                                        <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
-                                            <tr>
-                                                <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
-                                                <td style="width: 100px"></td>
-                                                <td>{{ $order->bttb->sum('qty') }}</td>
-                                                <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-4 px-1 mt-2">
-                                        <table style="font-size: .7rem;  margin-left:20px">
-                                            <tr>
-                                                <td style="width: 100px">Penerima</td>
-                                                <td>: </td>
-                                            </tr>
-                                            <tr>
-                                                <td>Tanggal</td>
-                                                <td>: </td>
-                                            </tr>
-                                        </table>
-                                        <div style="margin-top: 70px; margin-left:70px">
-                                            <span class="text-center">(....................................................)</span><br>
-                                            <span class="text-center">Stampel + TTD + Nama</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                                        <p>Pengantar</p>
-                                        <div style="margin-top: 95px">
-                                            <span class="text-center">(....................................................)</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                                        <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
-                                        <div style="margin-top: 90px">
-                                            <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
-                                        </div>
-                                    </div>
+                                @if (ceil($data->count()/10)!=1)
+                                    <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
                                 @endif
-                                <hr class="mt-4">
                             </div>
                             @if (ceil($data->count()/10)!=1)
-                                <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of {{ ceil($data->count()/10) }}</i></div>
+                                <p class="pagebreak"></p>
+                                @php
+                                    $page++;
+                                @endphp
                             @endif
-                        </div>
-                        @if (ceil($data->count()/10)!=1)
-                            <p class="pagebreak"></p>
-                        @endif
                         @endforeach
                     @else
                         @foreach ($data->chunk(15) as $bttb)
@@ -509,11 +839,14 @@
                                 <hr class="mt-4">
                             </div>
                             @if (ceil($data->count()/15)!=1)
-                                <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of {{ ceil($data->count()/15) }}</i></div>
+                                <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
                             @endif
                         </div>
                         @if (ceil($data->count()/15)!=1)
                             <p class="pagebreak"></p>
+                            @php
+                                $page++;
+                            @endphp
                         @endif
                         @endforeach
                     @endif
