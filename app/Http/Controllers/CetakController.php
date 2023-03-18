@@ -369,11 +369,11 @@ class CetakController extends Controller
         $asuransi = 0;
         $admin = 0;
         $doc = 0;
-        $koli = 0;
         $sub_total = 0;
         $items = array();
         $asuransi_name = '';
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
+            $koli = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
                 $doc = $tar->count() * 500000;
             }
@@ -416,12 +416,12 @@ class CetakController extends Controller
         $doc = 0;
         $doc_count = 0;
         $doc_total = 0;
-        $koli = 0;
         $sub_total = 0;
         $validate = array();
         $items = array();
         $asuransi_name = '';
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
+            $koli = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
                 $doc = $tar->count() * 500000;
                 $doc_total += $tar->count() * 500000;
