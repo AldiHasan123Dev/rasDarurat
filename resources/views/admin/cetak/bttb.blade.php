@@ -69,6 +69,12 @@
                     $pages = 3;
                 }elseif($count>35&&$count<=45){
                     $pages = 4;
+                }elseif($count>45&&$count<=55){
+                    $pages = 5;
+                }elseif($count>55&&$count<=65){
+                    $pages = 6;
+                }elseif($count>65&&$count<=75){
+                    $pages = 7;
                 }
             @endphp
             <div id="print">
