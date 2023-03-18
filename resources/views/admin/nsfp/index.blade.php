@@ -39,7 +39,7 @@
                                         <th>ID.</th>
                                         <th>No.</th>
                                         <th>NSFP</th>
-                                        <th>Invoice</th>
+                                        <th>Keterangan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
