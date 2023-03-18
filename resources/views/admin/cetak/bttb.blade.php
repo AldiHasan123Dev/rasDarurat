@@ -67,13 +67,13 @@
                     $pages = 2;
                 }elseif($count>25&&$count<=35){
                     $pages = 3;
-                }elseif($count>35&&$count<=45){
+                }elseif($count>35&&$count<=55){
                     $pages = 4;
-                }elseif($count>45&&$count<=55){
-                    $pages = 5;
                 }elseif($count>55&&$count<=65){
-                    $pages = 6;
+                    $pages = 5;
                 }elseif($count>65&&$count<=75){
+                    $pages = 6;
+                }elseif($count>75&&$count<=85){
                     $pages = 7;
                 }
             @endphp
