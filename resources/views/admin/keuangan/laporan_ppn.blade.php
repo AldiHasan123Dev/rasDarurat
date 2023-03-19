@@ -1,11 +1,24 @@
 @extends('layouts.admin')
+@section('style')
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<style>
+    td, th {
+        border: 1px solid #ccc;
+    }
+</style>
+@endsection
 @section('content')
 <div class="container">
     <div class="row">
         <div class="col">
             <div class="card p-3">
-                <div class="table-responsive">
-                    <table class="table nowrap table-sm w-100" id="table" style="font-size: .7rem">
+                <form action="{{ route('keuangan.ppn.export') }}" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
+                </form>
+                <div class="table-responsive mt-3">
+                    <table class="table table-sm w-100 nowrap" id="table-ppn" style="font-size: .7rem">
                         <thead>
                             <tr>
                                 <th class="text-center">No.</th>
@@ -54,4 +67,24 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('script')
+<script type="text/javascript" src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <script>
+        let table = $('#table-ppn').dataTable({
+            ordering:false,
+            // scrollX:true,
+            dom: 'Blfrtip',
+            autoWidth: false,
+        });
+
+        $('table th').resizable({
+            handles: 'e',
+            minWidth: 18,
+            stop: function(e, ui) {
+                $(this).width(ui.size.width);
+            }
+        });
+    </script>
 @endsection

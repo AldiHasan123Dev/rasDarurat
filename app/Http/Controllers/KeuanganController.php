@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanPPNExport;
 use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KeuanganController extends Controller
 {
@@ -69,6 +71,11 @@ class KeuanganController extends Controller
     {
         $transaksi = Transaksi::all()->sortBy('created_at');
         return view('admin.keuangan.laporan_ppn', compact('transaksi'));
+    }
+
+    public function PPNExport()
+    {
+        return Excel::download(new LaporanPPNExport, 'laporan.xlsx');
     }
 
     public function invoiceTable()

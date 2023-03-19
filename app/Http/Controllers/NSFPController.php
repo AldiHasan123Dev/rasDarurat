@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\NSFP;
+use App\Models\Order;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -53,6 +55,12 @@ class NSFPController extends Controller
         NSFP::create([
             'nomor' => $nsfp->nomor,
             'available' => 1
+        ]);
+        Transaksi::where('nsfp',$request->nomor)->update([
+            'nsfp' => $new
+        ]);
+        Order::where('nsfp',$request->nomor)->update([
+            'nsfp' => $new
         ]);
         $nsfp->update([
             'nomor' => $new,
