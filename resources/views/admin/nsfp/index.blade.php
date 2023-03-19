@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+@section('style')
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+@endsection
 @section('content')
     <div class="container mt-3">
         <div class="row">
@@ -40,6 +43,7 @@
                                         <th>No.</th>
                                         <th>NSFP</th>
                                         <th>Keterangan</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -54,6 +58,22 @@
                     <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
                         {{-- <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNSFP" aria-controls="offcanvasNSFP">Tambah NSFP</button> --}}
                         <b>Faktur Pajak Invoice</b>
+                        <div class="d-flex gap-5">
+                            <span class="mt-2">NSFP: <span class="nsfp"></span></span>
+                            <span class="mt-2">INVOICE: <span class="invoice"></span></span>
+                            <div class="d-flex gap-2" id="action">
+                                <form action="{{ route('nsfp.revisi') }}" method="post" id="revisi">
+                                    @csrf
+                                    <input type="hidden" name="id" class="id-nsfp">
+                                    <button type="submit" onclick="return confirm('are you sure?')" class="btn btn-sm btn-warning"> Revisi Faktur</button>
+                                </form>
+                                <form action="{{route('nsfp.tarik')}}" method="post" id="tarik">
+                                    @csrf
+                                    <input type="hidden" name="id" class="id-nsfp">
+                                    <button type="submit" onclick="return confirm('are you sure?')" class="btn btn-sm btn-danger"> Tarik Faktur</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -61,11 +81,11 @@
                                 <thead>
                                     <tr>
                                         <th>ID.</th>
-                                        <th>No.</th>
+                                        <th class="text-center">No.</th>
                                         <th>NSFP</th>
                                         <th>Invoice</th>
                                         <th>Keterangan</th>
-                                        <th>Action</th>
+                                        {{-- <th>Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -94,7 +114,11 @@
 @endsection
 
 @section('script')
+    <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
     <script>
+        $('#revisi').hide();
+        $('#tarik').hide();
+        let id;
         let table = $('#table-available').DataTable({
             processing: true,
             serverSide: true,
@@ -110,13 +134,17 @@
                 { data: 'id', name: 'id', visible:false },
                 { data: 'DT_RowIndex', 'orderable': false, 'searchable': false },
                 { data: 'nomor', name: 'nomor' },
-                { data: 'invoice', name: 'invoice' },
+                { data: 'keterangan', name: 'keterangan' },
+                { data: 'action', name: 'action', orderable: false, searchable: false  },
+            ],"columnDefs": [
+                { className: "text-center", "targets": [1] }
             ]
         });
 
         let tableInvoice = $('#table-invoice').DataTable({
             processing: true,
             serverSide: true,
+            select: true,
             ajax:{
                 url: '{{ route('nsfp.data') }}',
                 method:'POST',
@@ -131,8 +159,19 @@
                 { data: 'nomor', name: 'nomor' },
                 { data: 'invoice', name: 'invoice' },
                 { data: 'keterangan', name: 'keterangan' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                // { data: 'action', name: 'action', orderable: false, searchable: false },
+            ],"columnDefs": [
+                { className: "text-center", "targets": [1] }
             ]
+        });
+
+        $('#table-invoice tbody').on( 'click', 'tr', function () {
+            $('#revisi').show();
+            $('#tarik').show();
+            id =  tableInvoice.row( this ).data().id;
+            $('.id-nsfp').val(id);
+            $('.nsfp').html(tableInvoice.row(this).data().nomor);
+            $('.invoice').html(tableInvoice.row(this).data().invoice);
         });
 
         $('#generate').click(function (e) {

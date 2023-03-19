@@ -13,6 +13,7 @@ class NSFP extends Model
     protected $table = 'nsfp';
     protected $fillable = [
         'nomor',
+        'status',
         'invoice',
         'keterangan',
         'available',

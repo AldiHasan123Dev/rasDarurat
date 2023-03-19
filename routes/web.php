@@ -80,6 +80,9 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('asuransi',AsuransiController::class);
     Route::resource('tagihan',TagihanController::class);
 
+    Route::get('nsfp-cancel', [NSFPController::class,'cancel'])->name('nsfp.cancel');
+    Route::post('revisi-nsfp', [NSFPController::class,'revisi'])->name('nsfp.revisi');
+    Route::post('tarik-nsfp', [NSFPController::class,'tarik'])->name('nsfp.tarik');
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');

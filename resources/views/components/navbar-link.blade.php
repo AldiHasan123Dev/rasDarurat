@@ -145,6 +145,11 @@
                 <div class="d-flex align-items-center"><span class="nav-link-text">Nomor Seri (NSFP)</span></div>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('nsfp.cancel')?'active':'' }}" href="{{ route('nsfp.cancel') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text"> NSFP Ditarik</span></div>
+                </a>
+            </li>
         </ul>
     </div>
 </div>

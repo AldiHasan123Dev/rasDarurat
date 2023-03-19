@@ -71,6 +71,7 @@
     <script src="{{ asset('assets/js/phoenix.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('assets/js/topbar.js') }}"></script>
     @yield('script')
     @stack('scripts')
     <script>
@@ -106,7 +107,36 @@
             return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
         }
 
-
+        function resetToDefaults() {
+            topbar.config({
+              autoRun      : true,
+              barThickness : 7,
+              barColors    : {
+                '0'      : 'rgba(26,  188, 156, .9)',
+                '.25'    : 'rgba(52,  152, 219, .9)',
+                '.50'    : 'rgba(241, 196, 15,  .9)',
+                '.75'    : 'rgba(230, 126, 34,  .9)',
+                '1.0'    : 'rgba(211, 84,  0,   .9)'
+              },
+              shadowBlur   : 10,
+              shadowColor  : 'rgba(0,   0,   0,   .6)'
+            })
+        }
+        
+        resetToDefaults()
+        topbar.hide();
+        $(document).ajaxStart(function() {
+            window.ajax_loading = true;
+            topbar.show();
+        });
+        $(document).ajaxStop(function() {
+            window.ajax_loading = false;
+            topbar.hide();
+        });
+        $('form').submit(function (e) {
+            window.ajax_loading = true;
+            topbar.show();
+        });
     </script>
 </body>
 </html>

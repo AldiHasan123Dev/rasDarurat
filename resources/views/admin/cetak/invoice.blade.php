@@ -710,13 +710,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item['tarif']) }}</span>
+                                            <span>{{ number_format($item['tarif'] - 500000) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item['sub_total']) }}</span>
+                                            <span>{{ number_format($item['sub_total'] - (500000 * $item['jumlah_cont'])) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -743,6 +743,12 @@
                                 </td>
                             </tr>
                             @endif
+                            @php
+                                $sub_total = $invoice['sub_total'] - $invoice['doc_total'];
+                                $ppn = $sub_total * 0.011;
+                                $asuransi = $invoice['asuransi_total'];
+                                $total = $sub_total + $ppn + $asuransi + $cas->sum('jumlah');
+                            @endphp
                             <tr style="height: 20px !important">
                                 <td colspan="4"></td>
                                 <td colspan="4" style="border-bottom: 1px solid black"></td>
@@ -753,7 +759,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($invoice['sub_total']) }}</span>
+                                        <span>{{ number_format($sub_total) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -763,7 +769,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($invoice['ppn']) }}</span>
+                                        <span>{{ number_format($ppn) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -796,7 +802,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($invoice['total'])) }}</span>
+                                        <span>{{ number_format(ceil($total)) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -818,7 +824,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang(ceil($invoice['total']))) }} RUPIAH</td>
+                                        <td>: {{ strtoupper(terbilang(ceil($total))) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>

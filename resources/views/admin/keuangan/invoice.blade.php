@@ -29,6 +29,8 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
+                                <th>Invoice Tipe</th>
+                                <th>Order ID</th>
                                 <th>Invoice</th>
                                 <th>Tanggal Invoice</th>
                                 <th>Group Job</th>
@@ -95,6 +97,8 @@
             columns: [
                 // { data: 'action', name: 'action', orderable: false, searchable: false },
                 { data: 'id', name: 'id', visible:false },
+                { data: 'tipe_invoice', name: 'tipe_invoice', visible:false },
+                { data: 'order_id', name: 'order_id', visible:false },
                 { data: 'invoice', name: 'invoice' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'job', name: 'job' },
@@ -118,12 +122,17 @@
             var invoice =  tableInvoice.row( this ).data().invoice;
             var created_at =  tableInvoice.row( this ).data().created_at;
             var tanggal_kirim =  tableInvoice.row( this ).data().tanggal_kirim;
-            var job =  tableInvoice.row( this ).data().job;
+            var order_id =  tableInvoice.row( this ).data().order_id;
+            var tipe_invoice =  tableInvoice.row( this ).data().tipe_invoice;
             $('.invoice').html(invoice);
             $('#invoice_id').val(id);
             $('#created_at').val(convertDate(created_at));
             $('#tanggal_kirim').val(convertDate(tanggal_kirim));
-            $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?job='+job);
+            if (tipe_invoice=='global') {
+                $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+order_id);
+            } else {
+                $('#cetak-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+order_id);
+            }
         })
 
         function convertDate(dateString) {

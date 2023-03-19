@@ -14,6 +14,11 @@ class NSFPController extends Controller
         return view('admin.nsfp.index');
     }
 
+    public function cancel()
+    {
+        return view('admin.nsfp.tarik');
+    }
+
     public function store(Request $request)
     {
         $data = $request->all();
@@ -37,13 +42,48 @@ class NSFPController extends Controller
         return back()->with('success','Data berhasil dihapus');
     }
 
+    public function revisi(Request $request)
+    {
+        $nsfp = NSFP::find($request->id);
+        if ($nsfp->status=='revisi') {
+            return back()->with('danger','Faktur sudah pernah direvisi!');
+        }
+        $no = substr($nsfp->nomor,3,20);
+        $new = '051'.$no;
+        NSFP::create([
+            'nomor' => $nsfp->nomor,
+            'available' => 1
+        ]);
+        $nsfp->update([
+            'nomor' => $new,
+            'status' => 'revisi'
+        ]);
+
+        return back()->with('success','Revisi Faktur Berhasil di buat!');
+    }
+
+    public function tarik(Request $request)
+    {
+        $nsfp = NSFP::find($request->id);
+        $nsfp->update([
+            'status' => 'tarik'
+        ]);
+
+        return back()->with('success','Faktur Berhasil di tarik!');
+    }
+
     public function datatable()
     {
         $data = NSFP::query();
         if(request('filter')=='available'){
             $data->whereNull('invoice');
         }
+        if(request('filter')=='tarik'){
+            $data->where('status','tarik');
+        }
         if(request('filter')=='invoice'){
+            $data->where('status','!=','tarik');
+            $data->orWhereNull('status');
             $data->whereNotNull('invoice');
         }
 
