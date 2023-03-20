@@ -231,8 +231,8 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = ((($tar->first()->tarif->tarif * $tar->count())) * 0.011)+ ($tar->first()->tarif->tarif*$tar->count());
-            $items[$idx]['sub_total'] = $items[$idx]['tarif'];
+            $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * $tar->count())) * 0.011)+ ($tar->first()->tarif->tarif*$tar->count());
+            $items[$idx]['tarif'] = $items[$idx]['sub_total'] / $tar->count();
             $sub_total += $items[$idx]['tarif'];
         }
         $asuransi += $admin;
@@ -313,8 +313,8 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = round($jumlah,2);
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = ((($tar->first()->tarif->tarif * round($jumlah,2))) * 0.011) + ($tar->first()->tarif->tarif * round($jumlah,2));
-            $items[$idx]['sub_total'] = $items[$idx]['tarif'];
+            $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * round($jumlah,2))) * 0.011) + ($tar->first()->tarif->tarif * round($jumlah,2));
+            $items[$idx]['tarif'] = $items[$idx]['sub_total'] / round($jumlah,2);
             $sub_total += $items[$idx]['tarif'];
         }
         $asuransi += $admin;
