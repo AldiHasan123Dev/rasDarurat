@@ -171,16 +171,22 @@
                     <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
                     <form action="{{ route('keuangan.generateInvoice',$order) }}" method="post">
                         @csrf
+                        @php
+                            $sub_total = $invoice['sub_total'] - $invoice['doc_total'];
+                            $ppn = $sub_total * 0.011;
+                            $asuransi = $invoice['asuransi_total'];
+                            $total = $sub_total + $ppn + $asuransi + $cas->sum('jumlah');
+                        @endphp
+                        <input type="hidden" name="sub_total" value="{{ $sub_total }}">
+                        <input type="hidden" name="ppn" value="{{ $ppn }}">
+                        <input type="hidden" name="asuransi" value="{{ $asuransi }}">
+                        <input type="hidden" name="total" value="{{ $total }}">
                         <input type="hidden" name="pembayar_id" value="{{ $order->tarif->customer_id }}">
                         <input type="hidden" name="job" value="{{ $order->job }}">
                         <input type="hidden" name="keterangan" value="{{ $order->tarif->kondisiInfo->nama }}">
                         <input type="hidden" name="tujuan" value="{{ $order->tarif->tujuan_lokasi->nama }}">
-                        <input type="hidden" name="sub_total" value="{{ $invoice['sub_total'] }}">
                         <input type="hidden" name="tagihan" value="{{ $cas->sum('jumlah') }}">
-                        <input type="hidden" name="ppn" value="{{ $invoice['ppn'] }}">
-                        <input type="hidden" name="asuransi" value="{{ $invoice['asuransi_total'] }}">
                         <input type="hidden" name="admin" value="{{ $invoice['admin'] }}">
-                        <input type="hidden" name="total" value="{{ $invoice['total'] }}">
                         <input type="hidden" name="pph" value="{{ $invoice['pph'] }}">
                         <button type="submit" name="tipe_invoice" value="cont" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
                     </form>

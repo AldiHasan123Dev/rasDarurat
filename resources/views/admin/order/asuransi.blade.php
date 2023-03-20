@@ -89,6 +89,7 @@
                         <div>
                             <form action="{{ route('asuransi.export') }}" method="post">
                                 @csrf
+                                <input type="hidden" name="orders_id" id="orders_id">
                                 <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
                             </form>
                         </div>
@@ -235,7 +236,9 @@
                 { data: 'seal', name: 'order.seal' },
                 { data: 'keterangan', name: 'order.keterangan' },
             ],
-            select:true
+            select:{
+                style: 'multi'
+            }
         });
         $("#jadwal_kapal_id-si").select2({
             dropdownParent: $('#exampleModal'),
@@ -244,6 +247,17 @@
             dropdownParent: $('#exampleModal'),
         });
 
+
+        $('#table-order tbody').on( 'click', 'tr', function () {
+            let id = [];
+            setTimeout(() => {
+                var data =  tableOrder.rows( { selected: true } ).data();
+                $.each(data, function (idx, item) {
+                    id.push(item.id)
+                });
+                $('#orders_id').val(id);
+            }, 1000);
+        })
 
         $('#table-asuransi tbody').on( 'click', 'tr', function () {
             var id =  tableAsuransi.row( this ).data()[0];

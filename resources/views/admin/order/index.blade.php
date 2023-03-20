@@ -137,6 +137,10 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header" style="gap:10px" id="bttb-info">
+                        <div class="d-flex justify-content-between">
+                            <b>N0. JOB (selected): <b class="nojob"></b></b>
+                            <b><b class="koli"></b> Koli</b>
+                        </div>
                         <div class="p-2 d-flex" style="gap:10px" id="bttb-info">
                             <button class="py-2 px-3 btn btn-sm btn-success" id="tambah-bttb"><i class="fas fa-plus"></i> Tambah
                                 BTTB</button>
@@ -144,7 +148,6 @@
                             <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</a>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
                             <button class="py-2 px-3 btn btn-sm btn-danger" style="font-size: .7rem" id="delete-bttb"><i class="fas fa-trash"></i> Hapus</button>
-                            <b>N0. JOB (selected): <span class="nojob"></span></b>
                         </div>
                     </div>
                     <div class="card-body">
@@ -426,6 +429,7 @@
 </script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
 <script>
+    $('#koli-info').hide();
     $('#bttb-info').hide();
     $('#ag').hide();
     $('#copy-order').hide();
@@ -605,6 +609,7 @@
         $('#table-order tbody').on( 'click', 'tr', function () {
             $('#btn-tagihan').show();
             $('#bttb-info').show();
+            $('#koli-info').show();
             $('#edit-order').show();
             $('#delete-order').show();
             $('#copy-order').show();
@@ -612,8 +617,10 @@
             $('#packing-list-kubikasi').show();
             id =  tableOrder.row( this ).data().id;
             var no_job =  tableOrder.row( this ).data().no_job;
+            var koli =  tableOrder.row( this ).data().koli;
             $('#order_id_bttb').val(id);
             $('.nojob').html(no_job);
+            $('.koli').html(koli);
             $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
             $('#edit-order').attr('href','{{ url('admin/order') }}/'+id+'/edit');
             $('#packing-list').attr('href','{{ url('admin/cetak/packing-list') }}/?order_id='+id);

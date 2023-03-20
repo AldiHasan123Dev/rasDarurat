@@ -34,7 +34,10 @@ class AsuransiController extends Controller
 
     public function export()
     {
-        return Excel::download(new AsuransiExport, 'asuransi.xlsx');
+        $id = request('orders_id');
+        $ids = explode(',',$id);
+        $ids = json_encode($ids);
+        return Excel::download(new AsuransiExport($ids), 'asuransi.xlsx');
     }
 
     public function destroy(Asuransi $asuransi)
