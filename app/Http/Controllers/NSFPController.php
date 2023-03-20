@@ -51,7 +51,7 @@ class NSFPController extends Controller
         $no = substr($nsfp->nomor,3,20);
         $new = '051'.$no;
 
-        $order = Order::where('nsfp',$request->nomor)->first();
+        $order = Order::where('nsfp',$nsfp->nomor)->first();
         $type = strtoupper(strtolower($order->tarif->shipmentInfo->nama[0]));
         if ($type=='F') {
             $invoice = $this->FCL($order);
@@ -64,7 +64,7 @@ class NSFPController extends Controller
             $ppn = $sub_total * 0.011;
             $asuransi = $invoice['asuransi_total'];
             $total = $sub_total + $ppn + $asuransi;
-            Transaksi::where('nsfp',$request->nomor)->update([
+            Transaksi::where('nsfp',$nsfp->nomor)->update([
                 'nsfp' => $new,
                 'sub_total' => $sub_total,
                 'ppn' => $ppn,
@@ -72,7 +72,7 @@ class NSFPController extends Controller
                 'total' => $total
             ]);
         }else{
-            Transaksi::where('nsfp',$request->nomor)->update([
+            Transaksi::where('nsfp',$nsfp->nomor)->update([
                 'nsfp' => $new,
                 'sub_total' => $invoice['sub_total'],
                 'ppn' => $invoice['ppn'],
@@ -81,7 +81,7 @@ class NSFPController extends Controller
             ]);
         }
 
-        Order::where('nsfp',$request->nomor)->update([
+        Order::where('nsfp',$nsfp->nomor)->update([
             'nsfp' => $new
         ]);
         $nsfp->update([
