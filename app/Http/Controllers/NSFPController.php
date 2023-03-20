@@ -48,9 +48,6 @@ class NSFPController extends Controller
     public function revisi(Request $request)
     {
         $nsfp = NSFP::find($request->id);
-        if ($nsfp->status=='revisi') {
-            return back()->with('danger','Faktur sudah pernah direvisi!');
-        }
         $no = substr($nsfp->nomor,3,20);
         $new = '051'.$no;
 
@@ -92,6 +89,9 @@ class NSFPController extends Controller
             'status' => 'revisi'
         ]);
 
+        if ($nsfp->status=='revisi') {
+            return back()->with('success','Faktur berhasil direvisi!');
+        }
         return back()->with('success','Revisi Faktur Berhasil di buat!');
     }
 

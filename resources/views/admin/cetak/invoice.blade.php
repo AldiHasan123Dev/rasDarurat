@@ -215,6 +215,7 @@
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                                     <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email info@ptras.id</td></tr>
                                 </table>
                             </div>
                             <div style="width:30%; ">
@@ -423,6 +424,7 @@
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                                     <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email info@ptras.id</td></tr>
                                 </table>
                             </div>
                             <div style="width:30%; ">
@@ -647,6 +649,7 @@
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                                     <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email info@ptras.id</td></tr>
                                 </table>
                             </div>
                             <div style="width:30%; ">
@@ -890,6 +893,7 @@
                                 <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                                 <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
                                 <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                <tr><td>Email info@ptras.id</td></tr>
                             </table>
                         </div>
                         <div style="width:30%; ">
@@ -1129,6 +1133,7 @@
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                                     <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email info@ptras.id</td></tr>
                                 </table>
                             </div>
                             <div style="width:30%; ">
