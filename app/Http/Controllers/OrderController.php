@@ -273,6 +273,8 @@ class OrderController extends Controller
             $data->whereNotNull('asuransi_id');
         }
 
+        $filter = request('filter') ?? null;
+
         $count = $data->count();
 
         return Datatables::of($data->offset($start)->limit($limit))
@@ -290,9 +292,13 @@ class OrderController extends Controller
 
                 return $class;
             })
-            ->order(function ($query) {
-                $query->orderBy('no');
-                $query->orderBy('no_job');
+            ->order(function ($query) use($filter){
+                if($filter=='asuransi'){
+                    $query->orderBy('updated_at','desc');
+                }else{
+                    $query->orderBy('no');
+                    $query->orderBy('no_job');
+                }
             })
             ->addColumn('asuransi_id',function ($data) {
                 return $data->asuransiInfo->nama ?? '-';

@@ -12,11 +12,12 @@ class NSFPController extends Controller
     {
         $no = str_replace(' ','',$request->nomor);
         $res = explode('.',$no);
-        $depan = $res[0].'.'.$res[1].'.'.$res[2];
+        $depan = $res[0].'.'.$res[1].'.';
         $res = (int)end($res);
         for ($i=0; $i < $request->jumlah; $i++) {
+            $num = $res + $i;
             NSFP::create([
-                'nomor' => $depan.$res+$i,
+                'nomor' => $depan.''.$num,
                 'available' => 1
             ]);
         }
