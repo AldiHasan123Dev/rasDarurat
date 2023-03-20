@@ -6,6 +6,7 @@
         <th>NAMA ASURANSI</th>
         <th>NAMA CUSTOMER</th>
         <th>NAMA KAPAL</th>
+        <th>VOYAGE</th>
         <th>TD STUFFING</th>
         <th>ETD KAPAL</th>
         <th>TIPE PENGEMASAN</th>
@@ -31,6 +32,7 @@
             <td>{{ $order->asuransiInfo->nama }}</td>
             <td>{{ $order->tarif->customer->nama }}</td>
             <td>{{ $order->jadwal_kapal->kapal->nama }}</td>
+            <td>{{ $order->jadwal_kapal->voyage }}</td>
             <td>{{ $order->stuffing }}</td>
             <td>{{ $order->jadwal_kapal->etd }}</td>
             <td>CONT</td>
@@ -56,6 +58,7 @@
                 <td>{{ $order->asuransiInfo->nama }}</td>
                 <td>{{ $order->tarif->customer->nama }}</td>
                 <td>{{ $order->jadwal_kapal->kapal->nama }}</td>
+                <td>{{ $order->jadwal_kapal->voyage }}</td>
                 <td>{{ $order->stuffing }}</td>
                 <td>{{ $order->jadwal_kapal->etd }}</td>
                 <td>CONT</td>
