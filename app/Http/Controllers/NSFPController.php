@@ -76,7 +76,7 @@ class NSFPController extends Controller
                 'nsfp' => $new,
                 'sub_total' => $invoice['sub_total'],
                 'ppn' => $invoice['ppn'],
-                'asuransi' => $invoice['asuransi'],
+                'asuransi' => $invoice['asuransi_total'],
                 'total' => $invoice['total']
             ]);
         }
