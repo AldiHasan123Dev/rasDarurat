@@ -74,16 +74,23 @@
                             </tr>
                             <tr>
                                 <td>Nama Kapal</td>
-                                <td>: {{ $order->jadwal_kapal->kapal->nama }}</td>
+                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy. {{ $order->jadwal_kapal->voyage }}</td>
                             </tr>
                         </table>
                     </div>
                     <div class="col-5">
                         <table style="font-size: .7rem">
+                            @if (is_null($order->jadwal_kapal->td))
                             <tr>
-                                <td style="width: 150px">TD</td>
-                                <td>: {{ date('d/m/Y',strtotime($order->jadwal_kapal->td))}}</td>
+                                <td style="width: 150px">ETD</td>
+                                <td>: {{ is_null($order->jadwal_kapal->etd) ? '-' : date('d/m/Y',strtotime($order->jadwal_kapal->etd))}}</td>
                             </tr>
+                            @else
+                                <tr>
+                                    <td style="width: 150px">TD</td>
+                                    <td>: {{ date('d/m/Y',strtotime($order->jadwal_kapal->td))}}</td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td>Tujuan</td>
                                 <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
@@ -120,8 +127,8 @@
                                         <td class="border border-dark text-center" style="vertical-align: text-top" rowspan="{{ $bttb->bttb->count() + 1 }}">{{ $item->order->container }} / {{ $item->order->seal }}</td>
                                         @endif
                                         <td class="border-x border-dark"> {{ $item->barang->nama }}</td>
-                                        <td class="text-center border-x border-dark">{{ $item->qty }}</td>
-                                        <td class="text-center border-x border-dark">{{ $item->satuan->nama ?? '-' }}</td>
+                                        <td class="text-center border-x border-dark" style="width: 40px">{{ $item->qty }}</td>
+                                        <td class="text-center border-x border-dark" style="width: 40px">{{ $item->satuan->nama ?? '-' }}</td>
                                         <td class="text-center border-x border-dark">{{ $item->p }}</td>
                                         <td class="text-center border-x border-dark">{{ $item->l }}</td>
                                         <td class="text-center border-x border-dark">{{ $item->t }}</td>

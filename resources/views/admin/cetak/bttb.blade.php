@@ -219,7 +219,7 @@
                                                 <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                                     <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
                                                     <div style="margin-top: 90px">
-                                                        <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                                        <span class="text-left">({{ Auth::user()->name }})</span>
                                                     </div>
                                                 </div>
                                             @endif
@@ -374,7 +374,7 @@
                                                 <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                                     <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
                                                     <div style="margin-top: 90px">
-                                                        <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                                        <span class="text-left">({{ Auth::user()->name }})</span>
                                                     </div>
                                                 </div>
                                             @endif
@@ -526,7 +526,7 @@
                                         <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                             <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
                                             <div style="margin-top: 90px">
-                                                <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                                <span class="text-left">({{ Auth::user()->name }})</span>
                                             </div>
                                         </div>
                                     @endif
@@ -683,7 +683,7 @@
                                         <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                             <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
                                             <div style="margin-top: 90px">
-                                                <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                                <span class="text-left">({{ Auth::user()->name }})</span>
                                             </div>
                                         </div>
                                     @endif
@@ -838,7 +838,7 @@
                                     <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                         <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
                                         <div style="margin-top: 90px">
-                                            <span class="text-left">({{ $order->tarif->customer->marketing->name }})</span>
+                                            <span class="text-left">({{ Auth::user()->name }})</span>
                                         </div>
                                     </div>
                                 @endif
