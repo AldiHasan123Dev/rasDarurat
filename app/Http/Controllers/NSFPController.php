@@ -64,7 +64,7 @@ class NSFPController extends Controller
             $ppn = $sub_total * 0.011;
             $asuransi = $invoice['asuransi_total'];
             $total = $sub_total + $ppn + $asuransi;
-            Transaksi::where('nsfp',$nsfp->nomor)->update([
+            Transaksi::where('invoice',$nsfp->invoice)->update([
                 'nsfp' => $new,
                 'sub_total' => $sub_total,
                 'ppn' => $ppn,
@@ -72,7 +72,7 @@ class NSFPController extends Controller
                 'total' => $total
             ]);
         }else{
-            Transaksi::where('nsfp',$nsfp->invoice)->update([
+            Transaksi::where('invoice',$nsfp->invoice)->update([
                 'nsfp' => $new,
                 'sub_total' => $invoice['sub_total'],
                 'ppn' => $invoice['ppn'],
