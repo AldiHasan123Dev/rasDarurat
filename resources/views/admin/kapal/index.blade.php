@@ -3,7 +3,10 @@
 <div class="horizontal-menu">
     <div class="d-flex gap-2 flex-nowrap" style="overflow-x:auto">
         <div class="sub-menu">
-            <a href="{{ route('agen.index') }}" class="btn-link p-3 active">Data Kapal <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('shipment.index') }}" class="btn-link p-3 text-dark">Data Shipment <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('kapal.index') }}" class="btn-link p-3 active">Data Kapal <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('kondisi.index') }}" class="btn-link p-3 text-dark">Data Kondisi <span class="nav-link-icon"></span></span></a>

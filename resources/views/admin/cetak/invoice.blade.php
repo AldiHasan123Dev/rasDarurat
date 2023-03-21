@@ -169,23 +169,10 @@
                     <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
                     <form action="{{ route('keuangan.generateInvoice',$order) }}" method="post">
                         @csrf
-                        @if ($order->tarif->customer->all_in==1)
-                            @php
-                                $sub_total = $invoice['sub_total'] - $invoice['doc_total'];
-                                $ppn = $sub_total * 0.011;
-                                $asuransi = $invoice['asuransi_total'];
-                                $total = $sub_total + $ppn + $asuransi + $cas->sum('jumlah');
-                            @endphp
-                            <input type="hidden" name="sub_total" value="{{ $sub_total }}">
-                            <input type="hidden" name="ppn" value="{{ $ppn }}">
-                            <input type="hidden" name="asuransi" value="{{ $asuransi }}">
-                            <input type="hidden" name="total" value="{{ $total }}">
-                        @else
-                            <input type="hidden" name="sub_total" value="{{ $invoice['sub_total'] }}">
-                            <input type="hidden" name="ppn" value="{{ $invoice['ppn'] }}">
-                            <input type="hidden" name="asuransi" value="{{ $invoice['asuransi_total'] }}">
-                            <input type="hidden" name="total" value="{{ $invoice['total'] }}">
-                        @endif
+                        <input type="hidden" name="sub_total" value="{{ $invoice['sub_total'] }}">
+                        <input type="hidden" name="ppn" value="{{ $invoice['ppn'] }}">
+                        <input type="hidden" name="asuransi" value="{{ $invoice['asuransi_total'] }}">
+                        <input type="hidden" name="total" value="{{ $invoice['total'] }}">
                         <input type="hidden" name="pembayar_id" value="{{ $order->tarif->customer_id }}">
                         <input type="hidden" name="job" value="{{ $order->job }}">
                         <input type="hidden" name="keterangan" value="{{ $order->tarif->kondisiInfo->nama }}">
@@ -726,13 +713,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item['tarif'] - 500000) }}</span>
+                                            <span>{{ number_format($item['tarif']) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item['sub_total'] - (500000 * $item['jumlah_cont'])) }}</span>
+                                            <span>{{ number_format($item['sub_total']) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -759,12 +746,6 @@
                                 </td>
                             </tr>
                             @endif
-                            @php
-                                $sub_total = $invoice['sub_total'] - $invoice['doc_total'];
-                                $ppn = $sub_total * 0.011;
-                                $asuransi = $invoice['asuransi_total'];
-                                $total = $sub_total + $ppn + $asuransi + $cas->sum('jumlah');
-                            @endphp
                             <tr style="height: 20px !important">
                                 <td colspan="4"></td>
                                 <td colspan="4" style="border-bottom: 1px solid black"></td>
@@ -775,7 +756,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($sub_total) }}</span>
+                                        <span>{{ number_format($invoice['sub_total']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -785,7 +766,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($ppn) }}</span>
+                                        <span>{{ number_format($invoice['ppn']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -818,7 +799,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($total)) }}</span>
+                                        <span>{{ number_format(ceil($invoice['total'])) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -840,7 +821,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang(ceil($total))) }} RUPIAH</td>
+                                        <td>: {{ strtoupper(terbilang(ceil($invoice['total']))) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>

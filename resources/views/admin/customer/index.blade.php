@@ -135,6 +135,7 @@
     <div class="offcanvas-body">
         <form action="{{ route('tarif.store') }}" method="post">
             <div id="message" class="my-3 text-center text-white alert alert-success py-2 px-5"></div>
+            <div id="message-error" class="my-3 text-center text-white alert alert-danger py-2 px-5">Harap Lengkapi Form</div>
             @csrf
             @include('admin.tarif.form')
             <div class="mt-2">
@@ -151,6 +152,7 @@
 
     <script>
         $('#add-tarif').hide();
+        $('#message-error').hide();
         let id = null;
         let tablecus = $('#customer').DataTable({
             processing: true,
@@ -307,13 +309,23 @@
                         $('#stuffing').val('');
                         $('#keterangan').val('');
                         $('#message').show();
+                        $('#message-error').hide();
                         $('#message').html(response.message);
                         tabletar.ajax.reload();
                         setTimeout(() => {
                             $('#message').hide();
                         }, 3000);
                     }
-                }
+                },
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                if(jqXHR.status==422){
+                    $('#message-error').show();
+                    setTimeout(() => {
+                        $('#message-error').hide();
+                    }, 5000);
+                };
+                // Request failed. Show error message to user.
+                // errorThrown has error message.
             });
         });
         $('#message').hide();

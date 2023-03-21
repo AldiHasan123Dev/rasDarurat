@@ -233,7 +233,7 @@ class CetakController extends Controller
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
             $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * $tar->count())) * 0.011)+ ($tar->first()->tarif->tarif*$tar->count());
             $items[$idx]['tarif'] = $items[$idx]['sub_total'] / $tar->count();
-            $sub_total += $items[$idx]['tarif'];
+            $sub_total += $items[$idx]['sub_total'];
         }
         $asuransi += $admin;
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
@@ -315,7 +315,7 @@ class CetakController extends Controller
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
             $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * round($jumlah,2))) * 0.011) + ($tar->first()->tarif->tarif * round($jumlah,2));
             $items[$idx]['tarif'] = $items[$idx]['sub_total'] / round($jumlah,2);
-            $sub_total += $items[$idx]['tarif'];
+            $sub_total += $items[$idx]['sub_total'];
         }
         $asuransi += $admin;
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
@@ -346,6 +346,7 @@ class CetakController extends Controller
         $asuransi_name = '';
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
             $koli = 0;
+            $doc = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
                 $doc = $tar->count() * 500000;
                 $doc_total += $tar->count() * 500000;
@@ -375,9 +376,9 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = $tar->first()->tarif->tarif;
-            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * $tar->count();
-            $sub_total += $tar->first()->tarif->tarif * $tar->count();
+            $items[$idx]['tarif'] = $tar->first()->tarif->tarif - 500000;
+            $items[$idx]['sub_total'] = ($tar->first()->tarif->tarif - 500000) * $tar->count();
+            $sub_total += ($tar->first()->tarif->tarif - 500000) * $tar->count();
         }
         $sub_total += $doc_total;
         $asuransi += $admin;

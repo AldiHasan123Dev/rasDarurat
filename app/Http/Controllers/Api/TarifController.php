@@ -22,6 +22,17 @@ class TarifController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'pelayaran_id' => 'required',
+            'customer_id' => 'required',
+            'stuffing' => 'required',
+            'shipment' => 'required',
+            'dari' => 'required',
+            'tujuan' => 'required',
+            'kondisi' => 'required',
+            'satuan' => 'required',
+            'tarif' => 'required',
+        ]);
         $data = $request->all();
         $shipment = Shipment::find($request->shipment);
         $dari = Lokasi::find($request->dari);
