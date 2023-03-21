@@ -177,7 +177,7 @@ class NSFPController extends Controller
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
             $koli = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
-                $doc = $tar->count() * 500000;
+                $doc = 500000;
                 $doc_total += $tar->count() * 500000;
                 $doc_count += $tar->count();
             }
@@ -205,9 +205,9 @@ class NSFPController extends Controller
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = $tar->first()->tarif->tarif;
-            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * $tar->count();
-            $sub_total += $tar->first()->tarif->tarif * $tar->count();
+            $items[$idx]['tarif'] = $tar->first()->tarif->tarif - $doc;
+            $items[$idx]['sub_total'] = ($tar->first()->tarif->tarif - $doc) * $tar->count();
+            $sub_total += ($tar->first()->tarif->tarif - $doc) * $tar->count();
         }
         $sub_total += $doc_total;
         $asuransi += $admin;

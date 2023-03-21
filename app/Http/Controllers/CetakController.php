@@ -348,7 +348,7 @@ class CetakController extends Controller
             $koli = 0;
             $doc = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
-                $doc = $tar->count() * 500000;
+                $doc = 500000;
                 $doc_total += $tar->count() * 500000;
                 $doc_count += $tar->count();
             }
@@ -376,9 +376,9 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = $tar->first()->tarif->tarif - 500000;
-            $items[$idx]['sub_total'] = ($tar->first()->tarif->tarif - 500000) * $tar->count();
-            $sub_total += ($tar->first()->tarif->tarif - 500000) * $tar->count();
+            $items[$idx]['tarif'] = $tar->first()->tarif->tarif - $doc;
+            $items[$idx]['sub_total'] = ($tar->first()->tarif->tarif - $doc) * $tar->count();
+            $sub_total += ($tar->first()->tarif->tarif - $doc) * $tar->count();
         }
         $sub_total += $doc_total;
         $asuransi += $admin;
@@ -421,10 +421,11 @@ class CetakController extends Controller
         $items = array();
         $asuransi_name = '';
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
+            $doc = 0;
             $koli = 0;
             $jumlah = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
-                $doc = $tar->count() * 500000;
+                $doc = 500000;
                 $doc_total += $tar->count() * 500000;
                 $doc_count += $tar->count();
             }
