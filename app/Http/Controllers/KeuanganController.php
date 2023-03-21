@@ -45,6 +45,9 @@ class KeuanganController extends Controller
             return back();
         }
         $no = Transaksi::max('order') + 1;
+        if ($no==1) {
+            $no = 376;
+        }
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
         $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai

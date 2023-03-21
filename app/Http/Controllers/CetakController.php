@@ -344,6 +344,7 @@ class CetakController extends Controller
         $validate = array();
         $items = array();
         $asuransi_name = '';
+        $keterangan = '';
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
             $koli = 0;
             $doc = 0;
@@ -371,6 +372,7 @@ class CetakController extends Controller
                     array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
                 }
             }
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.'; ';
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
             $items[$idx]['koli'] = $koli;
             $items[$idx]['jumlah'] = $tar->count();
@@ -392,6 +394,7 @@ class CetakController extends Controller
         }
         $ppn = $sub_total * 0.011;
         $total = $sub_total + $asuransi + $ppn + $cas->sum('jumlah');
+
         return [
             'items' => $items,
             'sub_total' => $sub_total,
@@ -404,6 +407,7 @@ class CetakController extends Controller
             'asuransi' => $asuransi_name,
             'asuransi_total' => $asuransi,
             'validate' => $validate,
+            'keterangan' => $keterangan.' '.$order->tarif->dari_lokasi->nama.' - '.$order->tarif->tujuan_lokasi->nama,
         ];
     }
 
@@ -420,6 +424,7 @@ class CetakController extends Controller
         $validate = array();
         $items = array();
         $asuransi_name = '';
+        $keterangan = '';
         foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
             $doc = 0;
             $koli = 0;
@@ -449,6 +454,7 @@ class CetakController extends Controller
                     array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
                 }
             }
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.'; ';
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
             $items[$idx]['koli'] = $koli;
             $items[$idx]['jumlah'] = round($jumlah,2);
@@ -482,6 +488,7 @@ class CetakController extends Controller
             'asuransi' => $asuransi_name,
             'asuransi_total' => $asuransi,
             'validate' => $validate,
+            'keterangan' => $keterangan.' '.$order->tarif->dari_lokasi->nama.' - '.$order->tarif->tujuan_lokasi->nama,
         ];
     }
 }
