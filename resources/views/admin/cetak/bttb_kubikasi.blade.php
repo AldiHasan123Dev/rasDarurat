@@ -166,11 +166,18 @@
                                             @endphp
                                             @endforeach
                                         @endforeach
+                                        @if ($loop->last)
+                                            <tr style="border: 2px solid black">
+                                                <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                                <td colspan="7" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                            </tr>
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
                             @if ($loop->last)
-                                <div class="col-12">
+                                {{-- <div class="col-12">
                                     <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
                                         <tr>
                                             <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
@@ -179,7 +186,7 @@
                                             <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                         </tr>
                                     </table>
-                                </div>
+                                </div> --}}
                                 <div class="col-4 px-1 mt-2">
                                     <table style="font-size: .7rem;  margin-left:20px">
                                         <tr>
@@ -326,11 +333,18 @@
                                                 @endphp
                                                 @endforeach
                                             @endforeach
+                                            @if ($loop->last)
+                                                <tr style="border: 2px solid black">
+                                                    <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                    <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                                    <td colspan="7" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
                                 @if ($loop->last)
-                                    <div class="col-12">
+                                    {{-- <div class="col-12">
                                         <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
                                             <tr>
                                                 <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
@@ -339,7 +353,7 @@
                                                 <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                             </tr>
                                         </table>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-4 px-1 mt-2">
                                         <table style="font-size: .7rem;  margin-left:20px">
                                             <tr>
@@ -485,11 +499,18 @@
                                                 @endphp
                                                 @endforeach
                                             @endforeach
+                                            @if ($loop->last)
+                                                <tr style="border: 2px solid black">
+                                                    <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
+                                                    <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                                    <td colspan="7" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
+                                                </tr>
+                                            @endif
                                         </tbody>
                                     </table>
                                 </div>
                                 @if ($loop->last)
-                                    <div class="col-12">
+                                    {{-- <div class="col-12">
                                         <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
                                             <tr>
                                                 <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
@@ -498,7 +519,7 @@
                                                 <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                             </tr>
                                         </table>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-4 px-1 mt-2">
                                         <table style="font-size: .7rem;  margin-left:20px">
                                             <tr>
