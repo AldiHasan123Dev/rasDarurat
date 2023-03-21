@@ -26,8 +26,10 @@ class JadwalKapalController extends Controller
         if (!$kapal) {
             $kapal = Kapal::create(['nama'=>$request->kapal_id]);
         }
-        if ($data['td']&!is_null($data['td'])) {
+        if ($data['td']&&!is_null($data['td'])) {
             $data['is_active'] = 0;
+        }else{
+            $data['is_active'] = 1;
         }
         $data['kapal_id'] = $kapal->id;
         JadwalKapal::create($data);
