@@ -149,7 +149,14 @@
 @section('script')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
-
+<script>
+    $(document).ready(function() {
+        document.oncontextmenu = new Function("return false");
+        $('body').bind('cut copy paste', function(event) {
+            event.preventDefault();
+        });
+    });
+</script>
     <script>
         $('#add-tarif').hide();
         $('#message-error').hide();
