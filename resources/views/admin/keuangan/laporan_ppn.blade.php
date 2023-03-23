@@ -17,7 +17,7 @@
                     @csrf
                     <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
                 </form>
-                <div class="table-responsive mt-3">
+                <div class="table-responsives mt-3">
                     <table class="table table-sm w-100 nowrap" id="table-ppn" style="font-size: .7rem">
                         <thead>
                             <tr>
@@ -48,7 +48,7 @@
                                     <td>{{ $item->pembayar->nik }}</td>
                                     <td>{{ $item->pembayar->nama }}</td>
                                     <td>{{ $item->pembayar->nama_npwp }}</td>
-                                    <td>{{ $item->pembayar->alamat_npwp }}</td>
+                                    <td>{{ Str::limit($item->pembayar->alamat_npwp, 30, '...') }}</td>
                                     <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                                     <td>{{ $item->tujuan }}</td>
                                     <td>{{ $item->keterangan }}</td>
@@ -74,7 +74,7 @@
     <script>
         let table = $('#table-ppn').dataTable({
             ordering:false,
-            // scrollX:true,
+            scrollX:true,
             dom: 'Blfrtip',
             autoWidth: false,
         });

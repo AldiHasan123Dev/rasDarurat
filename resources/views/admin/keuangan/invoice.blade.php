@@ -21,6 +21,10 @@
                     <p>List Semua Invoice</p>
                     <b>INVOICE (selected): <span class="invoice"></span></b>
                 </div>
+                <form action="{{ route('invoice.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" id="file" onchange="submit()">
+                </form>
                 <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Ulang</a>
             </div>
             <div class="card-body">

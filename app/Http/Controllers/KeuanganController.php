@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\LaporanPPNExport;
+use App\Imports\InvoiceImport;
 use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Transaksi;
@@ -45,9 +46,6 @@ class KeuanganController extends Controller
             return back();
         }
         $no = Transaksi::max('order') + 1;
-        if ($no==1) {
-            $no = 376;
-        }
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
         $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
@@ -91,7 +89,7 @@ class KeuanganController extends Controller
         $count = $data->count();
         return Datatables::of($data->offset($start)->limit($limit))
             ->order(function ($query) {
-                $query->orderBy('invoice');
+                $query->orderBy('order');
             })
             ->addColumn('invoice', function($data){
                 return $data->invoice;
@@ -114,8 +112,15 @@ class KeuanganController extends Controller
             ->addColumn('total', function($data){
                 return number_format($data->total) ?? '-';
             })
-            ->setTotalRecords($count)
+            ->setFilteredRecords($count)
             ->toJson();
 
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new InvoiceImport, $request->file);
+
+        return back()->with('success', 'All good!');
     }
 }
