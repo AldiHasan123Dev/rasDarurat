@@ -8,10 +8,16 @@ use Illuminate\Contracts\View\View;
 
 class LaporanPPNExport implements FromView
 {
-
+    private $start;
+    private $end;
+    public function __construct($start, $end)
+    {
+        $this->start = $start;
+        $this->end = $end;
+    }
     public function view(): View
     {
-        $transaksi = Transaksi::all()->sortBy('created_at');
+        $transaksi = Transaksi::all()->whereBetween('created_at',[$this->start,$this->end])->sortBy('created_at');
         return view('exports.laporan_ppn', compact('transaksi'));
     }
 }

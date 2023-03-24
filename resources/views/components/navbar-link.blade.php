@@ -155,14 +155,44 @@
 </div>
 @endif
 
-<div class="nav-item-wrapper my-2">
-    <a use:link class="nav-link label-1" href="#" role="button" aria-expanded="false">
+@if (Auth::user()->role_id==1)
+<div class="nav-item-wrapper">
+    <a class="nav-link dropdown-indicator label-1" href="#laporan-menu" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="laporan-menu">
         <div class="d-flex align-items-center">
-            <span class="nav-link-icon"><span class="fas fa-list"></span></span>
-            <span class="nav-link-text-wrapper"><span class="nav-link-text">Laporan</span></span>
+        <span class="nav-link-icon"><span class="fas fa-list"></span></span><span class="nav-link-text mr-2">Laporan</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
         </div>
     </a>
+    <div class="parent-wrapper label-1">
+        <ul class="nav collapse parent show" id="laporan-menu">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('laporan.pelayaran')?'active':'' }}" href="{{ route('laporan.pelayaran') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Pelayaran</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('laporan.tujuan')?'active':'' }}" href="{{ route('laporan.tujuan') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Tujuan</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('laporan.customer')?'active':'' }}" href="{{ route('laporan.customer') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('laporan.marketing')?'active':'' }}" href="{{ route('laporan.marketing') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Marketing</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('laporan.cs')?'active':'' }}" href="{{ route('laporan.cs') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">CS</span></div>
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
+@endif
 {{-- <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#ccetak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="ccetak">
         <div class="d-flex align-items-center">

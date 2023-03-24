@@ -122,7 +122,7 @@
               shadowColor  : 'rgba(0,   0,   0,   .6)'
             })
         }
-        
+
         resetToDefaults()
         topbar.hide();
         $(document).ajaxStart(function() {

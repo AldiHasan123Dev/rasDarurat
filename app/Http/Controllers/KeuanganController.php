@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Exports\LaporanPPNExport;
+use App\Http\Resources\LaporanPPNResource;
 use App\Imports\InvoiceImport;
 use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Yajra\Datatables\Datatables;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -70,13 +72,16 @@ class KeuanganController extends Controller
 
     public function laporanPPn()
     {
-        $transaksi = Transaksi::all()->sortBy('created_at');
-        return view('admin.keuangan.laporan_ppn', compact('transaksi'));
+        $start = request('start') ?? Carbon::now()->startOfMonth()->format('Y-m-d');
+        $end = request('end') ?? Carbon::now()->endOfMonth()->format('Y-m-d');
+        $transaksi = Transaksi::all()->whereBetween('created_at',[$start,$end])->sortBy('created_at');
+        $data = LaporanPPNResource::collection($transaksi);
+        return view('admin.keuangan.laporan_ppn', compact('transaksi','data','start','end'));
     }
 
     public function PPNExport()
     {
-        return Excel::download(new LaporanPPNExport, 'laporan.xlsx');
+        return Excel::download(new LaporanPPNExport(request('start'),request('end')), 'laporan.xlsx');
     }
 
     public function invoiceTable()

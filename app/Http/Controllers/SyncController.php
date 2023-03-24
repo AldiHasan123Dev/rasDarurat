@@ -6,6 +6,7 @@ use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
 use App\Models\Tarif;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -80,5 +81,23 @@ class SyncController extends Controller
 
 
         return response('success');
+    }
+
+    public function invoice()
+    {
+        $transaksi = Transaksi::pluck('job')->toArray();
+        Order::whereNotIn('job',$transaksi)->update([
+            'invoice' => null
+        ]);
+
+        $order = Order::whereDate('created_at','2023-03-05')->get();
+        foreach ($order as $item) {
+            $bln = substr($item->job,4,2);
+            $item->update([
+                'created_at' => '2023-'.$bln.'-01'
+            ]);
+        }
+
+        return response('Data berhasil di update');
     }
 }

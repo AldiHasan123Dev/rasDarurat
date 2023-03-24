@@ -2,9 +2,19 @@
 @section('style')
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 <style>
     td, th {
         border: 1px solid #ccc;
+    }
+    .ui-jqgrid .ui-jqgrid-htable .ui-th-div, .ui-jqgrid .ui-jqgrid-btable tbody tr.jqgrow td, .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr, .ui-jqgrid .ui-jqgrid-pager .ui-paging-info, .ui-jqgrid .ui-jqgrid-toppager .ui-paging-info, .ui-jqgrid .ui-pager-control .ui-pager-table td{
+        font-size: .7rem;
+    }
+    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+        background: transparent !important;
+    }
+    .ui-jqgrid tr.ui-search-toolbar th{
+        padding: 2px !important;
     }
 </style>
 @endsection
@@ -13,12 +23,26 @@
     <div class="row">
         <div class="col">
             <div class="card p-3">
-                <form action="{{ route('keuangan.ppn.export') }}" method="post">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
-                </form>
+                <div class="card-header">
+                    <div class="d-flex gap-5">
+                        <form action="{{ route('keuangan.ppn.export') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="start" value="{{ $start }}">
+                            <input type="hidden" name="end" value="{{ $end }}">
+                            <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
+                        </form>
+                        <form method="get" action="{{ url()->current() }}" class="d-flex gap-3">
+                            <div class="btn-group">
+                                <input type="date" name="start" id="start" value="{{ $start }}" class="form-control">
+                                <button disabled style="width: 70px" style="border:none; outline:none;"><i class="fas fa-arrow-right"></i></button>
+                                <input type="date" name="end" id="end" value="{{ $end }}" class="form-control">
+                                <button class="btn btn-sm btn-primary">Filter</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
                 <div class="table-responsives mt-3">
-                    <table class="table table-sm w-100 nowrap" id="table-ppn" style="font-size: .7rem">
+                    {{-- <table class="w-100" id="table-ppn" style="font-size: .7rem">
                         <thead>
                             <tr>
                                 <th class="text-center">No.</th>
@@ -27,7 +51,7 @@
                                 <th>NIK</th>
                                 <th>Nama</th>
                                 <th>Nama NPWP</th>
-                                <th>Alamat NPWP</th>
+                                <th style="width:10px">Alamat NPWP</th>
                                 <th>Tanggal Faktur</th>
                                 <th>Tujuan</th>
                                 <th>Uraian</th>
@@ -61,7 +85,9 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table> --}}
+                    <table id="jqGrid"></table>
+                    <div id="jqGridPager"></div>
                 </div>
             </div>
         </div>
@@ -70,21 +96,53 @@
 @endsection
 
 @section('script')
-<script type="text/javascript" src="https://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
     <script>
-        let table = $('#table-ppn').dataTable({
-            ordering:false,
-            scrollX:true,
-            dom: 'Blfrtip',
-            autoWidth: false,
+         var dataArray = [
+            {clid: 1, name: 'Bob', phone: '232-532-6268', birthday: "01/01/1971"},
+            {clid: 2, name: 'Jeff', phone: '365-267-8325', birthday: "02/02/1972"}
+        ];
+
+        var data = @json($data);
+
+        $("#jqGrid").jqGrid({
+            datatype: 'local',
+            data: data,
+            colModel: [
+                {search:true, name: 'invoice', label : 'Invoice'},
+                {search:true, name: 'npwp', label : 'NPWP'},
+                {search:true, name: 'nik', label : 'NIK', sorttype: "int"},
+                {search:true, name: 'nama', label : 'Nama'},
+                {search:true, name: 'nama_npwp', label : 'Nama NPWP'},
+                {search:true, name: 'alamat_npwp', label : 'Alamat NPWP'},
+                {search:true, name: 'tanggal_faktur', label : 'Tanggal Faktur', sorttype: 'date', datefmt:'d/m/Y'},
+                {search:true, name: 'tujuan', label : 'Tujuan'},
+                {search:true, name: 'uraian', label : 'Uraian'},
+                {search:true, name: 'daftar_faktur_pajak', label : 'Faktur'},
+                {search:true, name: 'sub_total', label : 'Sub Total'},
+                {search:true, name: 'ppn', label : 'PPN'},
+                {search:true, name: 'total', label : 'Total'},
+                {search:true, name: 'pph', label : 'PPH'},
+                {search:true, name: 'job', label : 'JOB'},
+            ],
+            autowidth: true,
+            shrinkToFit: true,
+            height: 250,
+            oadonce: true,
+            rowNum: 20,
+			viewrecords: true,
+            pager: "#jqGridPager",
+            caption: "Laporan PPN"
         });
 
-        $('table th').resizable({
-            handles: 'e',
-            minWidth: 18,
-            stop: function(e, ui) {
-                $(this).width(ui.size.width);
-            }
-        });
+        $('#jqGrid').jqGrid('filterToolbar');
+			$('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
+                search: false, // show search button on the toolbar
+                add: false,
+                edit: false,
+                del: false,
+                refresh: true
+            });
     </script>
 @endsection
