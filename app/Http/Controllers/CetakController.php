@@ -227,7 +227,7 @@ class CetakController extends Controller
                 }
             }
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
-            $items[$idx]['koli'] = $koli;
+            $items[$idx]['koli'] = $tar->count();
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
@@ -374,7 +374,7 @@ class CetakController extends Controller
             }
             $keterangan .= $tar->first()->tarif->kondisiInfo->nama.'; ';
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
-            $items[$idx]['koli'] = $koli;
+            $items[$idx]['koli'] = $tar->count();
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;

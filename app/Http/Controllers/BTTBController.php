@@ -78,10 +78,13 @@ class BTTBController extends Controller
 
     public function datatable()
     {
-        $data = BTTB::where('order_id',request('order_id'))->get();
+        $data = BTTB::query()->where('order_id',request('order_id'));
 
         return Datatables::of($data)
             ->addIndexColumn()
+            ->order(function ($data){
+                $data->orderBy('updated_at','desc');
+            })
             ->addColumn('created_at', function($data){
                 return date('d/m/y',strtotime($data->created_at));
             })
