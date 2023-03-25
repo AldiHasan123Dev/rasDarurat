@@ -117,3 +117,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
 // Route::view('test','test');
 Route::resource('transaksi',App\Http\Controllers\TransaksiController::class);
 Route::resource('role',App\Http\Controllers\RoleController::class);
+Route::resource('customertrucking',App\Http\Controllers\CustomerTruckingController::class);Route::resource('kendaraan',App\Http\Controllers\KendaraanController::class);Route::resource('sopir',App\Http\Controllers\SopirController::class);Route::resource('sangusopir',App\Http\Controllers\SanguSopirController::class);

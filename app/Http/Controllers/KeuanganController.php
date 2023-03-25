@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Exports\LaporanPPNExport;
 use App\Http\Resources\LaporanPPNResource;
 use App\Imports\InvoiceImport;
+use App\Models\Customer;
+use App\Models\Lokasi;
 use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Transaksi;
@@ -76,7 +78,14 @@ class KeuanganController extends Controller
         $end = request('end') ?? Carbon::now()->endOfMonth()->format('Y-m-d');
         $transaksi = Transaksi::all()->whereBetween('created_at',[$start,$end])->sortBy('created_at');
         $data = LaporanPPNResource::collection($transaksi);
-        return view('admin.keuangan.laporan_ppn', compact('transaksi','data','start','end'));
+        $faktur = NSFP::where('available',1)->first();
+        $no = '-';
+        if($faktur){
+            $no = '010'.substr($faktur->nomor,3,50);
+        }
+        $customers = Customer::pluck('nama');
+        $lokasi = Lokasi::pluck('nama');
+        return view('admin.keuangan.laporan_ppn', compact('transaksi','data','start','end','no','customers','lokasi'));
     }
 
     public function PPNExport()

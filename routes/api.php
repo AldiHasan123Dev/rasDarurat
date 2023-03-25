@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('generate-nsfp', [NSFPController::class,'generate'])->name('api.nsfp.generate');
+Route::post('nsfp', [NSFPController::class,'store'])->name('api.nsfp.store');
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
 Route::post('customer-update', [CustomerController::class,'update'])->name('api.customer.update');
 Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');

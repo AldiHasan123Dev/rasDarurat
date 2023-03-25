@@ -115,8 +115,8 @@ class NSFPController extends Controller
             $data->where('status','tarik');
         }
         if(request('filter')=='invoice'){
-            $data->where('status','!=','tarik');
-            $data->orWhereNull('status');
+            // $data->where('status','!=','tarik');
+            // $data->orWhereNull('status');
             $data->whereNotNull('invoice');
         }
 

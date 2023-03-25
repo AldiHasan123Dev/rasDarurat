@@ -16,6 +16,36 @@
     .ui-jqgrid tr.ui-search-toolbar th{
         padding: 2px !important;
     }
+    .autocomplete {
+        position: relative;
+        display: inline-block;
+    }
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+    .autocomplete-items div:hover {
+        /*when hovering an item:*/
+        background-color: #e9e9e9;
+    }
+    .autocomplete-active {
+        /*when navigating through the items using the arrow keys:*/
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
 </style>
 @endsection
 @section('content')
@@ -25,6 +55,7 @@
             <div class="card p-3">
                 <div class="card-header">
                     <div class="d-flex gap-5">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#faktur">Tambah Faktur</button>
                         <form action="{{ route('keuangan.ppn.export') }}" method="post">
                             @csrf
                             <input type="hidden" name="start" value="{{ $start }}">
@@ -93,13 +124,76 @@
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="faktur" tabindex="-1" aria-labelledby="fakturLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fakturLabel">Tambah Faktur Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="mb-2 col-6">
+                    <label for="nsfp">Nomor Faktur</label>
+                    <input type="text" name="nsfp" id="nsfp" class="form-control" value="{{ $no }}" required readonly>
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="invoice">Invoice</label>
+                    <input type="text" name="invoice" id="invoice" class="form-control" required>
+                </div>
+                <div class="mb-2 col-6 autocomplete">
+                    <label for="pembayar_id">Pembayar</label>
+                    <input type="text" name="pembayar_id" id="pembayar_id" class="form-control" required>
+                </div>
+                <div class="mb-2 col-6 autocomplete">
+                    <label for="tujuan">Tujuan</label>
+                    <input type="text" name="tujuan" id="tujuan" class="form-control" required>
+                </div>
+                <div class="mb-2 col-12">
+                    <label for="keterangan">Uraian</label>
+                    <input type="text" name="keterangan" id="keterangan" class="form-control" required>
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="sub_total">Sub Total</label>
+                    <input type="text" name="sub_total" id="sub_total" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="ppn">PPN</label>
+                    <input type="text" name="ppn" id="ppn" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="total">Total</label>
+                    <input type="text" name="total" id="total" class="form-control" required readonly>
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="pph">PPH</label>
+                    <input type="text" name="pph" id="pph" class="form-control rupiah" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="create-nsfp" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
 <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
 <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
+<script src="{{asset('assets/js/autocomplete.js')}}"></script>
+<script>
+    $(function() {
+        var customers = @json($customers);
+        var lokasi = @json($lokasi);
+        autocomplete(document.getElementById("pembayar_id"), customers);
+        autocomplete(document.getElementById("tujuan"), lokasi);
+    });
+</script>
     <script>
-         var dataArray = [
+        var dataArray = [
             {clid: 1, name: 'Bob', phone: '232-532-6268', birthday: "01/01/1971"},
             {clid: 2, name: 'Jeff', phone: '365-267-8325', birthday: "02/02/1972"}
         ];
@@ -144,5 +238,45 @@
                 del: false,
                 refresh: true
             });
+
+        $('#sub_total').keyup(function (e) {
+            hitung();
+        });
+
+        $('#ppn').keyup(function (e) {
+            hitung();
+        });
+
+        function hitung (){
+            var sub_total = $('#sub_total').val().replace(/\./g, "");
+            var ppn = $('#ppn').val().replace(/\./g, "");
+            var total = parseInt(sub_total) + parseInt(ppn);
+            $('#total').val(total.toLocaleString('en-US'));
+        }
+
+        $('#create-nsfp').click(function (e) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.nsfp.store') }}",
+                data: {
+                    nsfp:$('#nsfp').val(),
+                    invoice:$('#invoice').val(),
+                    pembayar_id:$('#pembayar_id').val(),
+                    tujuan:$('#tujuan').val(),
+                    keterangan:$('#keterangan').val(),
+                    sub_total:$('#sub_total').val(),
+                    ppn:$('#ppn').val(),
+                    total:$('#total').val(),
+                    pph:$('#pph').val(),
+                },
+                success: function (response) {
+                    if(!response){
+                        alert('Pembayar Tidak Ditemukan')
+                    }else{
+                        location.reload();
+                    };
+                }
+            });
+        });
     </script>
 @endsection
