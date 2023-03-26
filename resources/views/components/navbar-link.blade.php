@@ -158,6 +158,70 @@
 </div>
 @endif
 
+<div class="nav-item-wrapper">
+    <a class="nav-link dropdown-indicator label-1" href="#keuangan" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="keuangan">
+        <div class="d-flex align-items-center">
+        <span class="nav-link-icon"><span class="fas fa-dollar"></span></span><span class="nav-link-text mr-2">Keuangan</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
+        </div>
+    </a>
+    <div class="parent-wrapper label-1">
+        <ul class="nav collapse parent show" id="keuangan">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('admin/keuangan/order')?'active':'' }}" href="{{ route('keuangan.order') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Order </span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('keuangan.ba_kembali')?'active':'' }}" href="{{ route('keuangan.ba_kembali') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('keuangan.pre_invoice')?'active':'' }}" href="{{ route('keuangan.pre_invoice') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Pre Invoice</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('order.invoice')?'active':'' }}" href="{{ route('order.invoice') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Invoice</span></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="nav-item-wrapper">
+    <a class="nav-link dropdown-indicator label-1" href="#pajak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pajak">
+        <div class="d-flex align-items-center">
+        <span class="nav-link-icon"><span class="fas fa-truck"></span></span><span class="nav-link-text mr-2">Trucking</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
+        </div>
+    </a>
+    <div class="parent-wrapper label-1">
+        <ul class="nav collapse parent show" id="pajak">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customertrucking.index')?'active':'' }}" href="{{ route('customertrucking.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('kendaraan.index')?'active':'' }}" href="{{ route('kendaraan.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Nopol</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('sangusopir.index')?'active':'' }}" href="{{ route('sangusopir.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Sangu Sopir</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('nsfp.cancel')?'active':'' }}" href="{{ route('nsfp.cancel') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text"> Order</span></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 @if (Auth::user()->role_id==1)
 <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#laporan-menu" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="laporan-menu">

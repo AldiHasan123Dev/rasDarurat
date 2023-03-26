@@ -10,6 +10,7 @@ class SanguSopir extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'sangu_sopir';
     protected $fillable = [
         'tujuan',
         'ukuran',

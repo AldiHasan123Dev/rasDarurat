@@ -3,7 +3,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerTrucking" aria-controls="offcanvasCustomerTrucking">Tambah CustomerTrucking</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerTrucking" aria-controls="offcanvasCustomerTrucking">Tambah Customer Trucking</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -13,11 +13,11 @@
                                 <th>ID.</th>
                                 <th>Nama</th>
                                 <th>Alamat</th>
-                                <th>Hp</th>
-                                <th>Nik</th>
-                                <th>Npwp</th>
-                                <th>Nama_npwp</th>
-                                <th>Alamat_npwp</th>
+                                <th>HP</th>
+                                <th>NIK</th>
+                                <th>NPWP</th>
+                                <th>Nama NPWP</th>
+                                <th>Alamat NPWP</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -32,13 +32,13 @@
 
     <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCustomerTrucking" aria-labelledby="offcanvasCustomerTruckingLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasCustomerTruckingLabel">Form CustomerTrucking</h5>
+            <h5 class="offcanvas-title" id="offcanvasCustomerTruckingLabel">Form Customer Trucking</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <form action="{{ route('customertrucking.store') }}" method="post">
                 @csrf
-                @include('admin.customertrucking.form')
+                @include('admin.customertrucking.form', ['customertrucking'=> []])
             </form>
         </div>
     </div>
