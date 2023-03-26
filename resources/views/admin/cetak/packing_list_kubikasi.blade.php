@@ -140,7 +140,9 @@
                                     <tr>
                                         <td class="text-center border border-dark">jumlah</td>
                                         <td class="text-center border border-dark" colspan="2">{{ $bttb->bttb->sum('qty') }}</td>
-                                        <td class="text-center border border-dark" colspan="6"></td>
+                                        <td class="text-center border border-dark" colspan="3"></td>
+                                        <td class="text-center border border-dark">{{ $bttb->bttb->sum('vol') }}</td>
+                                        <td class="text-center border border-dark" colspan="2"></td>
                                     </tr>
                                     @php
                                         $jumlah += $bttb->bttb->sum('qty');

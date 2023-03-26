@@ -121,6 +121,17 @@ class NSFPController extends Controller
         }
 
         return Datatables::of($data)
+            ->setRowClass(function ($data) {
+                $class = '';
+                if($data->status=='tarik'){
+                    $class = 'bg-light-danger';
+                }
+                if($data->status=='revisi'){
+                    $class = 'bg-light-primary';
+                }
+
+                return $class;
+            })
             ->addIndexColumn()
             ->order(function ($data) {
                 $data->orderBy('available','desc');

@@ -61,6 +61,14 @@
 @endsection
 
 @section('script')
+<script>
+    $(document).ready(function() {
+        document.oncontextmenu = new Function("return false");
+        $('body').bind('cut copy paste', function(event) {
+            event.preventDefault();
+        });
+    });
+</script>
     <script>
         let table = $('.table').DataTable({
             processing: true,

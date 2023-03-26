@@ -5,7 +5,9 @@
     <x-input :value="$jadwalkapal->rute??old('rute')" :col="6" :label="'Rute'" :type="'text'" :name="'rute'" :required="true"></x-input>
     <x-input :value="$jadwalkapal->closing??old('closing')" :col="6" :label="'Closing'" :type="'date'" :name="'closing'"></x-input>
     <x-input :value="$jadwalkapal->etd??old('etd')" :col="6" :label="'ETD'" :type="'date'" :name="'etd'"></x-input>
+    @if (Auth::user()->role_id==1)
     <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>
+    @endif
     <x-input :value="$jadwalkapal->ba_kirim??old('ba_kirim')" :col="6" :label="'Ba Kirim'" :type="'date'" :name="'ba_kirim'"></x-input>
     <x-input :value="$jadwalkapal->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'" :required="true"></x-input>
     <div class="col-12 mb-2 px-1">

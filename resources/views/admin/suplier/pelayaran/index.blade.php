@@ -120,6 +120,14 @@
 
 @section('script')
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
+<script>
+    $(document).ready(function() {
+        document.oncontextmenu = new Function("return false");
+        $('body').bind('cut copy paste', function(event) {
+            event.preventDefault();
+        });
+    });
+</script>
     <script>
         let pelayaran_id = 1;
         let tb_pelayaran = $('#tb-pelayaran').DataTable({

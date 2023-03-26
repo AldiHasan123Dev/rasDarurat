@@ -6,6 +6,8 @@
         </div>
     </a>
 </div>
+
+@if (Auth::user()->role_id!=3)
 <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1 collapsed" href="#home" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="home">
         <div class="d-flex align-items-center">
@@ -44,6 +46,7 @@
         </ul>
     </div>
 </div>
+@endif
 
 @if (Auth::user()->role_id==2||Auth::user()->role_id==1)
 <div class="nav-item-wrapper">
