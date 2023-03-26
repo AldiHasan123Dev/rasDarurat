@@ -213,11 +213,11 @@
                 <div class="d-flex align-items-center"><span class="nav-link-text">Sangu Sopir</span></div>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('nsfp.cancel')?'active':'' }}" href="{{ route('nsfp.cancel') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text"> Order</span></div>
                 </a>
-            </li>
+            </li> --}}
         </ul>
     </div>
 </div>

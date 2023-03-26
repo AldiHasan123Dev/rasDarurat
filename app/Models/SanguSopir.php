@@ -16,4 +16,9 @@ class SanguSopir extends Model
         'ukuran',
         'sangu',
     ];
+
+    public function tujuanInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'tujuan');
+    }
 }

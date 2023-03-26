@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Lokasi;
 use App\Models\SanguSopir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,12 +12,19 @@ class SanguSopirController extends Controller
 {
     public function index()
     {
-        return view('admin.sangusopir.index');
+        $lokasi = Lokasi::pluck('nama');
+        return view('admin.sangusopir.index', compact('lokasi'));
     }
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
+        $tujuan = Lokasi::find($request->tujuan);
+        if(!$tujuan){
+            $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
+        }
+        $data['tujuan'] = $tujuan->id;
+        $data['sangu'] = str_replace(['.',','],'',$request->sangu);
         SanguSopir::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -42,6 +50,12 @@ class SanguSopirController extends Controller
         $data = SanguSopir::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('tujuan', function($data){
+                return $data->tujuanInfo->nama;
+            })
+            ->addColumn('sangu', function($data){
+                return number_format($data->sangu);
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.sangusopir.form',['sangusopir'=>$data])->render();
                 $html = '<div class="d-flex gap-1">

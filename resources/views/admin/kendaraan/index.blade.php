@@ -14,7 +14,7 @@
                                 <th>Tipe</th>
                                 <th>Nopol</th>
                                 <th>Milik</th>
-                                <th>Is_active</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

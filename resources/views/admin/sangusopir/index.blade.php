@@ -1,4 +1,42 @@
 @extends('layouts.admin')
+@section('style')
+    <style>
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        .autocomplete-items div:hover {
+            /*when hovering an item:*/
+            background-color: #e9e9e9;
+        }
+        .autocomplete-active {
+            /*when navigating through the items using the arrow keys:*/
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+        .dataTables_scrollBody > table > thead > tr {
+            visibility: collapse;
+            height: 0px !important;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="container mt-3">
         <div class="card">
@@ -28,19 +66,26 @@
 
     <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasSanguSopir" aria-labelledby="offcanvasSanguSopirLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasSanguSopirLabel">Form SanguSopir</h5>
+            <h5 class="offcanvas-title" id="offcanvasSanguSopirLabel">Form Sangu Sopir</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
             <form action="{{ route('sangusopir.store') }}" method="post">
                 @csrf
-                @include('admin.sangusopir.form')
+                @include('admin.sangusopir.form',['sangusopir'=>[]])
             </form>
         </div>
     </div>
 @endsection
 
 @section('script')
+<script src="{{asset('assets/js/autocomplete.js')}}"></script>
+<script>
+    $(function() {
+        var lokasi = @json($lokasi);
+        autocomplete(document.getElementById("tujuan"), lokasi);
+    });
+</script>
     <script>
         let table = $('.table').DataTable({
             processing: true,
@@ -52,9 +97,9 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'tujuan', name: 'tujuan' },
-            { data: 'ukuran', name: 'ukuran' },
-            { data: 'sangu', name: 'sangu' },
+                { data: 'tujuan', name: 'tujuan' },
+                { data: 'ukuran', name: 'ukuran' },
+                { data: 'sangu', name: 'sangu' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

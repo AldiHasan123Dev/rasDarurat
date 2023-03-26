@@ -7,7 +7,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm" style="font-size:.7rem">
+                    <table class="table table-sm nowrap" style="font-size:.7rem">
                         <thead>
                             <tr>
                                 <th>ID.</th>

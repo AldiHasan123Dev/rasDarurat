@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
@@ -99,5 +100,32 @@ class SyncController extends Controller
         }
 
         return response('Data berhasil di update');
+    }
+
+    public function customerTrucking()
+    {
+        $order = Order::where('trucking','XPDC')->get();
+        $i = 0;
+        foreach ($order as $item ) {
+            $customer = $item->pengirim;
+            if ($customer) {
+                $nama = $customer->nama;
+                $user = CustomerTrucking::where('nama',$nama)->first();
+                if (!$user) {
+                    CustomerTrucking::create([
+                        'nama' => $nama,
+                        'alamat' => $customer->alamat,
+                        'hp' => $customer->hp,
+                        'nik' => $customer->nik,
+                        'npwp' => $customer->npwp,
+                        'nama_npwp' => $customer->nama_npwp,
+                        'alamat_npwp' => $customer->alamat_npwp,
+                    ]);
+                    $i++;
+                }
+            }
+        }
+
+        return response('Berhasil mengupdate '.$i.' Data');
     }
 }
