@@ -44,6 +44,7 @@ class Order extends Model
         'agen_id',
         'agen',
         'satuan',
+        'asuransi_date',
         'created_at',
     ];
 

@@ -102,6 +102,7 @@
                                     <tr>
                                         <th>Tools</th>
                                         <th>ID.</th>
+                                        <th>Waktu Terakhir</th>
                                         <th>Group JOB</th>
                                         <th>ID JOB</th>
                                         <th>Asuransi Tipe</th>
@@ -214,6 +215,7 @@
                 // { data: 'action', name: 'action', orderable: false, searchable: false },
                 { data: 'tools', name: 'tools',visible:false, orderable: false, searchable: false },
                 { data: 'id', name: 'id', visible:false },
+                { data: 'asuransi_date', name: 'order.asuransi_date'},
                 { data: 'job', name: 'order.job' },
                 { data: 'no_job', name: 'no_job', searchable:false },
                 { data: 'asuransi', name: 'order.asuransi' },

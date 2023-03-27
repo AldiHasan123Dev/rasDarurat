@@ -128,4 +128,19 @@ class SyncController extends Controller
 
         return response('Berhasil mengupdate '.$i.' Data');
     }
+
+    public function asuransi()
+    {
+        Order::whereNull('asuransi_id')->update([
+            'asuransi_date' => null,
+        ]);
+        $order = Order::whereNotNull('asuransi_id')->get();
+        foreach ($order as $item ) {
+            $item->update([
+                'asuransi_date' => date('Y-m-d H:i:s', strtotime($item->updated_at))
+            ]);
+        }
+
+        return response('Berhasil');
+    }
 }

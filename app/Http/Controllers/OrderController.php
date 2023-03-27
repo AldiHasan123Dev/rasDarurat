@@ -121,11 +121,13 @@ class OrderController extends Controller
             // $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
         }else if($request->asuransi_update){
             $data['pertanggungan'] = str_replace(['.',','],'',$request->pertanggungan);
+            $data['asuransi_date'] = date('Y-m-d H:i:s');
             if($request->tipe_asuransi=='job'){
                 Order::where('job',$order->job)->update([
                     'pertanggungan' => $data['pertanggungan'],
                     'tipe_asuransi' => 'job',
                     'asuransi_id' => $request->asuransi_id,
+                    'asuransi_date' => date('Y-m-d H:i:s')
                 ]);
             }
         }else{
@@ -237,8 +239,7 @@ class OrderController extends Controller
                 ->leftJoin('satuan','satuan.id','=','order.satuan')
                 ->leftJoin('agen','agen.id','=','order.agen_id')
                 ->leftJoin('asuransi','asuransi.id','=','order.asuransi_id')
-                ->select('order.*')
-                ->orderBy('order.no');
+                ->select('order.*');
         if(request('filter')&&request('filter')=='ba_kembali'){
             $data->whereNull('order.ba_kembali');
             $data->whereNull('order.invoice');
@@ -291,13 +292,19 @@ class OrderController extends Controller
 
                 return $class;
             })
-            ->order(function ($query) use($filter){
-                if($filter=='asuransi'){
-                    $query->orderBy('updated_at','desc');
+            ->order(function ($data) use($filter){
+                if(request('filter')=='asuransi'){
+                    $data->orderBy('asuransi_date','desc');
                 }else{
-                    $query->orderBy('no');
-                    $query->orderBy('no_job');
+                    $data->orderBy('no');
+                    $data->orderBy('no_job');
                 }
+            })
+            ->addColumn('updated_at',function ($data) {
+                return date('d/m/y H:i', strtotime($data->updated_at)) ?? '-';
+            })
+            ->addColumn('asuransi_date',function ($data) {
+                return $data->asuransi_date ? date('d/m/y H:i', strtotime($data->asuransi_date)) : '-';
             })
             ->addColumn('asuransi_id',function ($data) {
                 return $data->asuransiInfo->nama ?? '-';
