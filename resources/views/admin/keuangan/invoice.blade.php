@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('style')
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+{{-- <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css"> --}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 <style>
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
@@ -28,8 +30,8 @@
                 <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Ulang</a>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
+                <div class="table-responsives">
+                    {{-- <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -46,7 +48,9 @@
                         </thead>
                         <tbody>
                         </tbody>
-                    </table>
+                    </table> --}}
+                    <table id="jqGrid"></table>
+                    <div id="jqGridPager"></div>
                 </div>
             </div>
         </div>
@@ -85,34 +89,60 @@
 
 @section('script')
 
-<script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
+{{-- <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script> --}}
+<script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
 <script>
-        let id = null;
-        let tableInvoice = $('#table-order').DataTable({
-            processing: true,
-            serverSide: true,
-            // scrollY: '50vh',
-            // scrollCollapse: true,
-            ajax:{
-                url: '{{ route('invoice.data') }}',
-                method:'GET',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-            columns: [
-                // { data: 'action', name: 'action', orderable: false, searchable: false },
-                { data: 'id', name: 'id', visible:false },
-                { data: 'tipe_invoice', name: 'tipe_invoice', visible:false },
-                { data: 'order_id', name: 'order_id', visible:false },
-                { data: 'invoice', name: 'invoice' },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'job', name: 'job' },
-                { data: 'no_job', name: 'job' },
-                { data: 'pembayar', name: 'customers.nama' },
-                { data: 'tanggal_kirim', name: 'tanggal_kirim' },
-                { data: 'total', name: 'invoice' },
+    let data = [];
+        $("#jqGrid").jqGrid({
+            datatype: 'local',
+            data: data,
+            colModel: [
+                {search:true, name: 'id', label : 'id', hidden:true},
+                {search:true, name: 'invoice', label : 'Invoice'},
+                {search:true, name: 'tanggal', label : 'Tanggal',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'job', label : 'Group Job'},
+                {search:true, name: 'no_job', label : 'ID Job'},
+                {search:true, name: 'pembayar', label : 'Pembayar'},
+                {search:true, name: 'tanggal_kirim', label : 'Tanggal Kirim',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'total', label : 'Total'},
             ],
-            select:true
+            autowidth: true,
+            shrinkToFit: true,
+            height: 250,
+            oadonce: true,
+            rowNum: 25,
+            rowList:[10,25,50,100,250,500,1000],
+            viewrecords: true,
+            pager: "#jqGridPager",
+            caption: "Order Job Pre Invoice",
+            onCellSelect: function (rowId, iRow, iCol, e) {
+                var id = $(this).jqGrid('getCell', rowId, 'id');
+                $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
+                $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+id);
+                // var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
+                // var sangu = $(this).jqGrid('getCell', rowId, 'sangu');
+                // var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
+                // var nopol = $(this).jqGrid('getCell', rowId, 'nopol');
+                // $('#edit-form').attr('action','{{ url('admin/ordertrucking') }}/'+id);
+                // getOrder(nopol,order_id);
+                // $('#sangu').val(sangu);
+                // $('#simpanan').val(simpanan);
+                // $('#btn-edit').show();
+            },
+            rowattr: function (item) {
+                return { "class": item.class };
+            }
         });
+        $('#jqGrid').jqGrid('filterToolbar');
+        $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
+            search: false, // show search button on the toolbar
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+
         $("#jadwal_kapal_id-si").select2({
             dropdownParent: $('#exampleModal'),
         });
@@ -163,6 +193,33 @@
                 }
             });
         });
+
+        function loadTable() {
+            $('#jqGrid').jqGrid('clearGridData');
+            $('#jqGrid').jqGrid('setGridParam', {data: data});
+            $('#jqGrid').trigger('reloadGrid');
+        }
+
+        function getData(start) {
+            $.ajax({
+                type: "GET",
+                url: "{{ url('api/get-transaksi') }}",
+                data:{start:start,limit:250},
+                success: function (response) {
+                    $.each(response.data, function (idx, item) {
+                        data.push(item)
+                    });
+                    loadTable();
+                    if(response.start<response.count){
+                        getData(response.start)
+                    }else{
+                        $('#loading').remove();
+                    }
+                }
+            });
+        }
+
+        getData(0)
 
 </script>
 @endsection

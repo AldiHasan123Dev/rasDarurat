@@ -15,10 +15,10 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                {{-- <div class="d-flex gap-2">
-                    <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
-                    <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
-                </div> --}}
+                <div class="d-flex gap-2">
+                    <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Global</a>
+                    <a href="" class="btn btn-sm btn-success" id="cetak-cont-invoice"><i class="fas fa-print"></i> Cetak Invoice Per Cont</a>
+                </div>
             </div>
             <div class="card-body">
                 {{-- <div class="d-flex justify-content-center">
@@ -91,9 +91,11 @@
         rowList:[10,25,50,100,250,500,1000],
         viewrecords: true,
         pager: "#jqGridPager",
-        caption: "Order Job BA Kembali(read only)",
+        caption: "Order Job Pre Invoice",
         onCellSelect: function (rowId, iRow, iCol, e) {
-            // var id = $(this).jqGrid('getCell', rowId, 'id');
+            var id = $(this).jqGrid('getCell', rowId, 'id');
+            $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
+            $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+id);
             // var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
             // var sangu = $(this).jqGrid('getCell', rowId, 'sangu');
             // var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
@@ -129,16 +131,12 @@
     function getData(start) {
         $.ajax({
             type: "GET",
-            url: "{{ url('api/get-order-ba-kembali') }}",
-            data:{start:start,limit:200},
+            url: "{{ url('api/get-order-pre-invoice') }}",
             success: function (response) {
                 $.each(response.data, function (idx, item) {
                     data.push(item)
                 });
                 loadTable();
-                if(response.start<response.count){
-                    getData(response.start)
-                }
             }
         });
     }

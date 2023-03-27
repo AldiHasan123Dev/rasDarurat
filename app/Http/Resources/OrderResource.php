@@ -15,6 +15,7 @@ class OrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         $class = '';
+        $barang = '';
         if($this->bttb->count()>0){
             $class = 'bg-light-success';
         }
@@ -23,6 +24,9 @@ class OrderResource extends JsonResource
         }
         if(!is_null($this->invoice)){
             $class = 'bg-light-warning';
+        }
+        foreach ($this->bttb as $brg ) {
+            $barang .= $brg->barang->nama.'; ';
         }
         return [
             'id' => $this->id,
@@ -61,7 +65,12 @@ class OrderResource extends JsonResource
             'agen' => $this->agen,
             'penerima_bl' => $this->agen=='AGEN'?($this->agen->nama??'-'):($this->penerima_bl->nama??'-'),
             'keterangan' => $this->keterangan,
-            'class' => $class
+            'class' => $class,
+            'tanggal' => date('d/m/y', strtotime($this->created_at)),
+            'barang_detail' => $barang,
+            'koli' => $this->bttb->sum('qty'),
+            'm3' => $this->bttb->sum('vol'),
+            'berat' => $this->bttb->sum('berat'),
         ];
     }
 }

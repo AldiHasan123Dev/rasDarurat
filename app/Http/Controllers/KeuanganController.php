@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\LaporanPPNExport;
 use App\Http\Resources\LaporanPPNResource;
+use App\Http\Resources\TransaksiResource;
 use App\Imports\InvoiceImport;
 use App\Models\Customer;
 use App\Models\Lokasi;
@@ -34,7 +35,7 @@ class KeuanganController extends Controller
 
     public function pre_invoice()
     {
-        return view('admin.keuangan.pre_invoice');
+        return view('admin.keuangan.pre_invoice1');
     }
 
     public function invoice()
@@ -77,7 +78,7 @@ class KeuanganController extends Controller
         $start = request('start') ?? Carbon::now()->startOfMonth()->format('Y-m-d');
         $end = request('end') ?? Carbon::now()->endOfMonth()->format('Y-m-d');
         $transaksi = Transaksi::all()->whereBetween('created_at',[$start,$end])->sortBy('created_at');
-        $data = LaporanPPNResource::collection($transaksi);
+        $data = TransaksiResource::collection($transaksi);
         $faktur = NSFP::where('available',1)->first();
         $no = '-';
         if($faktur){
@@ -85,7 +86,11 @@ class KeuanganController extends Controller
         }
         $customers = Customer::pluck('nama');
         $lokasi = Lokasi::pluck('nama');
-        return view('admin.keuangan.laporan_ppn', compact('transaksi','data','start','end','no','customers','lokasi'));
+        $ppn = $transaksi->sum('ppn');
+        $pph = $transaksi->sum('pph');
+        $total = $transaksi->sum('total');
+        $sub_total = $transaksi->sum('sub_total');
+        return view('admin.keuangan.laporan_ppn', compact('transaksi','data','start','end','no','customers','lokasi','ppn','pph','total','sub_total'));
     }
 
     public function PPNExport()

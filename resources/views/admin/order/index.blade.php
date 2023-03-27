@@ -2,7 +2,8 @@
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 <style>
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
@@ -78,8 +79,8 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
+                <div class="table-responsives">
+                    {{-- <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
                         <thead>
                             <tr>
                                 <th>Tools</th>
@@ -128,7 +129,9 @@
                         </thead>
                         <tbody>
                         </tbody>
-                    </table>
+                    </table> --}}
+                    <table id="jqGrid"></table>
+                    <div id="jqGridPager"></div>
                 </div>
             </div>
         </div>
@@ -275,9 +278,12 @@
 @endsection
 
 @section('script')
+<script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
 <script src="{{asset('assets/js/autocomplete.js')}}"></script>
 <script>
     $(document).ready(function() {
+        topbar.show();
         document.oncontextmenu = new Function("return false");
         $('body').bind('cut copy paste', function(event) {
             event.preventDefault();
@@ -443,124 +449,133 @@
     $('#copy-order').hide();
     $('#packing-list').hide();
     $('#packing-list-kubikasi').hide();
-        let id = null;
-        $('#table-order thead tr')
-            .clone(true)
-            .addClass('filters')
-            .appendTo('#table-order thead');
 
-        let tableOrder = $('#table-order').DataTable({
-            processing: true,
-            serverSide: true,
-            scrollY:        200,
-            deferRender:    true,
-            scroller:       true,
-            select:true,
-            scrollX:true,
-            ordering:false,
-            ajax:{
-                url: '{{ route('order.data') }}',
-                method:'POST',
-                data:{filter:@json(request('filter-order'))},
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-            columns: [
-                // {data: '#', name:'search', orderable: false, searchable: false },
-                // { data: 'action', name: 'action', orderable: false, searchable: false },
-                { data: 'tools', name: 'tools', orderable: false, searchable: false, visible:false },
-                { data: 'id', name: 'id', visible:false },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'invoice', name: 'order.invoice' },
-                { data: 'job', name: 'order.job' },
-                { data: 'no_job', name: 'no_job', searchable:false },
-                { data: 'asuransi', name: 'order.asuransi' },
-                { data: 'pembayar', name: 'pembayar.nama' },
-                { data: 'marketing', name: 'marketing.name' },
-                { data: 'cs', name: 'cs.name' },
-                { data: 'pengirim', name: 'pengirim.nama' },
-                { data: 'penerima', name: 'penerima.nama' },
-                { data: 'dari', name: 'tarif.dari' },
-                { data: 'tujuan', name: 'tarif.tujuan' },
-                { data: 'shipment', name: 'shipments.nama' },
-                { data: 'kondisi', name: 'kondisi.nama' },
-                { data: 'barang', name: 'barang.nama' },
-                { data: 'barang_bttb', name: 'barang_bttb', searchable:false },
-                { data: 'pelayaran', name: 'pelayaran.nama' },
-                { data: 'kapal', name: 'kapal.nama' },
-                { data: 'voyage', name: 'jadwal_kapal.voyage' },
-                { data: 'etd', name: 'jadwal_kapal.etd' },
-                { data: 'td', name: 'jadwal_kapal.td' },
-                { data: 'ba_kirim', name: 'order.ba_kirim' },
-                { data: 'nopol', name: 'order.nopol' },
-                { data: 'trucking', name: 'order.trucking' },
-                { data: 'container', name: 'order.container' },
-                { data: 'seal', name: 'order.seal' },
-                { data: 'stuffing', name: 'order.stuffing' },
-                { data: 'stuffing_t', name: 'tarif.stuffing' },
-                { data: 'full', name: 'order.full' },
-                { data: 'barang_diantar', name: 'order.barang_diantar' },
-                { data: 'ba_kembali', name: 'order.ba_kembali' },
-                { data: 'koli', name: 'koli', searchable:false },
-                { data: 'vol', name: 'vol', searchable:false },
-                { data: 'berat', name: 'berat', searchable:false },
-                { data: 'satuan', name: 'satuan', searchable:false },
-                { data: 'unit', name: 'satuan.nama' },
-                { data: 'tarif', name: 'tarif.tarif' },
-                { data: 'agen', name: 'order.agen' },
-                { data: 'penerima_bl', name: 'penerima_bl.nama' },
-                { data: 'keterangan', name: 'order.keterangan' },
-            ],
-            initComplete: function () {
-                var api = this.api();
+    let data = [];
+    let id;
+    $("#jqGrid").jqGrid({
+        datatype: 'local',
+        data: data,
+        colModel: [
+            {search:true, width:100, name: 'job', label : 'job', frozen:true},
+            {search:true, width:100, name: 'no', label : 'no', frozen:true},
+            {search:true, width:100, name: 'tanggal', label : 'tanggal'},
+            {search:true, width:100, name: 'invoice', label : 'invoice'},
+            {search:true, width:100, name: 'asuransi', label : 'asuransi'},
+            {search:true, width:100, name: 'pembayar', label : 'pembayar'},
+            {search:true, width:100, name: 'id', label : 'id', hidden:true},
+            {search:true, width:100, name: 'class', label : 'class', hidden:true},
+            {search:true, width:100, name: 'marketing', label : 'marketing'},
+            {search:true, width:100, name: 'cs', label : 'cs'},
+            {search:true, width:100, name: 'pengirim', label : 'pengirim'},
+            {search:true, width:100, name: 'penerima', label : 'penerima'},
+            {search:true, width:100, name: 'dari', label : 'dari'},
+            {search:true, width:100, name: 'tujuan', label : 'tujuan'},
+            {search:true, width:100, name: 'shipment', label : 'shipment'},
+            {search:true, width:100, name: 'kondisi', label : 'kondisi'},
+            {search:true, width:100, name: 'barang', label : 'Jenis barang'},
+            {search:true, width:100, name: 'barang_detail', label : 'Barang'},
+            {search:true, width:100, name: 'pelayaran', label : 'pelayaran'},
+            {search:true, width:100, name: 'kapal', label : 'kapal'},
+            {search:true, width:100, name: 'voyage', label : 'voyage'},
+            {search:true, width:100, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, width:100, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, width:100, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, width:100, name: 'nopol', label : 'nopol'},
+            {search:true, width:100, name: 'trucking', label : 'trucking'},
+            {search:true, width:100, name: 'container', label : 'container'},
+            {search:true, width:100, name: 'seal', label : 'seal'},
+            {search:true, width:100, name: 'stuffing', label : 'stuffing'},
+            {search:true, width:100, name: 'stuffing_type', label : 'stuffing_type'},
+            {search:true, width:100, name: 'full', label : 'full'},
+            {search:true, width:100, name: 'barang_diantar', label : 'barang_diantar'},
+            {search:true, width:100, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, width:100, name: 'koli', label : 'koli'},
+            {search:true, width:100, name: 'm3', label : 'm3'},
+            {search:true, width:100, name: 'berat', label : 'berat'},
+            {search:true, width:100, name: 'satuan', label : 'satuan'},
+            {search:true, width:100, name: 'unit', label : 'unit'},
+            {search:true, width:100, name: 'tarif', label : 'tarif'},
+            {search:true, width:100, name: 'agen', label : 'agen'},
+            {search:true, width:100, name: 'penerima_bl', label : 'penerima_bl'},
+            {search:true, width:100, name: 'keterangan', label : 'keterangan'},
+        ],
+        autowidth: true,
+        shrinkToFit: false,
+        height: 250,
+        oadonce: true,
+        rowNum: 25,
+        rowList:[10,25,50,100,250,500,1000],
+        viewrecords: true,
+        pager: "#jqGridPager",
+        caption: "Order Job (read only)",
+        onCellSelect: function (rowId, iRow, iCol, e) {
+            id = $(this).jqGrid('getCell', rowId, 'id');
+            var no_job = $(this).jqGrid('getCell', rowId, 'no');
+            var koli = $(this).jqGrid('getCell', rowId, 'koli');
+            $('#btn-tagihan').show();
+            $('#bttb-info').show();
+            $('#koli-info').show();
+            $('#edit-order').show();
+            $('#delete-order').show();
+            $('#copy-order').show();
+            $('#packing-list').show();
+            $('#packing-list-kubikasi').show();
+            $('#order_id_bttb').val(id);
+            $('.nojob').html(no_job);
+            $('.koli').html(koli);
+            $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
+            $('#edit-order').attr('href','{{ url('admin/order') }}/'+id+'/edit');
+            $('#packing-list').attr('href','{{ url('admin/cetak/packing-list') }}/?order_id='+id);
+            $('#packing-list-kubikasi').attr('href','{{ url('admin/cetak/packing-list-kubikasi') }}/?order_id='+id);
+            $('#delete-order').attr('action','{{ url('admin/order') }}/'+id);
+            $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
+            $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
+            tablebttb.ajax.reload();
+            tableTagihan.ajax.reload();
+        },
+        rowattr: function (item) {
+            return { "class": item.class };
+        }
+    });
 
-                // For each column
-                api
-                    .columns()
-                    .eq(0)
-                    .each(function (colIdx) {
-                        // Set the header cell to contain the input element
-                        var cell = $('.filters th').eq(
-                            $(api.column(colIdx).header()).index()
-                        );
-                        var title = $(cell).text();
-                        $(cell).html('<input type="text" placeholder="' + title + '" />');
+    $('#jqGrid').jqGrid('filterToolbar');
+    $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
+        search: false, // show search button on the toolbar
+        add: false,
+        edit: false,
+        del: false,
+        refresh: true
+    });
+    $("#jqGrid").jqGrid('setFrozenColumns');
 
-                        // On every keypress in this input
-                        $(
-                            'input',
-                            $('.filters th').eq($(api.column(colIdx).header()).index())
-                        )
-                            .off('keyup change')
-                            .on('change', function (e) {
-                                // Get the search value
-                                $(this).attr('title', $(this).val());
-                                var regexr = '({search})'; //$(this).parents('th').find('select').val();
 
-                                var cursorPosition = this.selectionStart;
-                                // Search the column for that value
-                                api
-                                    .column(colIdx)
-                                    .search(
-                                        this.value != ''
-                                            ? regexr.replace('{search}', '(((' + this.value + ')))')
-                                            : '',
-                                        this.value != '',
-                                        this.value == ''
-                                    )
-                                    .draw();
-                            })
-                            .on('keyup', function (e) {
-                                e.stopPropagation();
+    function loadTable() {
+        $('#jqGrid').jqGrid('clearGridData');
+        $('#jqGrid').jqGrid('setGridParam', {data: data});
+        $('#jqGrid').trigger('reloadGrid');
+    }
 
-                                $(this).trigger('change');
-                                $(this)
-                                    .focus()[0]
-                                    // .setSelectionRange(cursorPosition, cursorPosition);
-                            });
-                    });
-            },
-
+    function getData(start) {
+        $.ajax({
+            type: "GET",
+            url: "{{ url('api/get-order') }}",
+            data:{start:start,limit:250},
+            success: function (response) {
+                $.each(response.data, function (idx, item) {
+                    data.push(item)
+                });
+                loadTable();
+                if(response.start<response.count){
+                    getData(response.start)
+                }else{
+                    $('#loading').remove();
+                    topbar.hide();
+                }
+            }
         });
+    }
+
+    getData(0)
 
         let tablebttb = $('#table-bttb').DataTable({
             processing: true,

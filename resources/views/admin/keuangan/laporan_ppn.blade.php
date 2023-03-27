@@ -32,6 +32,25 @@
                             </div>
                         </form>
                     </div>
+                    <div class="d-flex gap-3 mt-2">
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item">Total Sub Total</li>
+                            <li class="list-group-item">Rp. {{ number_format($sub_total,2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item">Total PPN</li>
+                            <li class="list-group-item">Rp. {{ number_format($ppn,2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item">Total</li>
+                            <li class="list-group-item">Rp. {{ number_format($sub_total+$ppn,2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item">Total PPH</li>
+                            <li class="list-group-item">Rp. {{ number_format($pph,2,',','.') }}</li>
+                        </ul>
+
+                    </div>
                 </div>
                 <div class="table-responsives mt-3">
                     {{-- <table class="w-100" id="table-ppn" style="font-size: .7rem">
@@ -166,7 +185,7 @@
                 {search:true, name: 'nama', label : 'Nama'},
                 {search:true, name: 'nama_npwp', label : 'Nama NPWP'},
                 {search:true, name: 'alamat_npwp', label : 'Alamat NPWP'},
-                {search:true, name: 'tanggal_faktur', label : 'Tanggal Faktur', sorttype: 'date', datefmt:'d/m/Y'},
+                {search:true, name: 'tanggal', label : 'Tanggal Faktur', sorttype: 'date', datefmt:'d/m/Y'},
                 {search:true, name: 'tujuan', label : 'Tujuan'},
                 {search:true, name: 'uraian', label : 'Uraian'},
                 {search:true, name: 'daftar_faktur_pajak', label : 'Faktur'},
@@ -174,7 +193,7 @@
                 {search:true, name: 'ppn', label : 'PPN'},
                 {search:true, name: 'total', label : 'Total'},
                 {search:true, name: 'pph', label : 'PPH'},
-                {search:true, name: 'job', label : 'JOB', width:500},
+                {search:true, name: 'no_job', label : 'JOB', width:500},
             ],
             autowidth: true,
             shrinkToFit: true,

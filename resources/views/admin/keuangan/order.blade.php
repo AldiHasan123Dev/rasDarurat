@@ -21,10 +21,7 @@
                 </div> --}}
             </div>
             <div class="card-body">
-                {{-- <div class="d-flex justify-content-center">
-                    <img src="{{ asset('assets/img/loading.gif') }}" alt="Loading" class="img-fluid" id="loading" style="height:300px">
-                </div> --}}
-                <div class="table-responsives">
+                <div class="table-responsives" id="jtable">
                     <table id="jqGrid"></table>
                     <div id="jqGridPager"></div>
                 </div>
@@ -38,20 +35,23 @@
 <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
 <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
 <script>
-
+    $(function(){
+        topbar.show();
+    });
+</script>
+<script>
     let data = [];
-
     $("#jqGrid").jqGrid({
         datatype: 'local',
         data: data,
         colModel: [
+            {search:true, name: 'invoice', label : 'invoice', frozen:true, width:70},
+            {search:true, name: 'job', label : 'job', frozen:true, width:70},
+            {search:true, name: 'no', label : 'no', frozen:true, width:70},
+            {search:true, name: 'asuransi', label : 'asuransi', frozen:true, width:70},
+            {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:70},
             {search:true, name: 'id', label : 'id', hidden:true},
             {search:true, name: 'class', label : 'class', hidden:true},
-            {search:true, name: 'invoice', label : 'invoice'},
-            {search:true, name: 'job', label : 'job'},
-            {search:true, name: 'no', label : 'no'},
-            {search:true, name: 'asuransi', label : 'asuransi'},
-            {search:true, name: 'pembayar', label : 'pembayar'},
             {search:true, name: 'marketing', label : 'marketing'},
             {search:true, name: 'cs', label : 'cs'},
             {search:true, name: 'pengirim', label : 'pengirim'},
@@ -117,6 +117,8 @@
         del: false,
         refresh: true
     });
+    $("#jqGrid").jqGrid('setFrozenColumns');
+
 
     function loadTable() {
         $('#jqGrid').jqGrid('clearGridData');
@@ -128,7 +130,7 @@
         $.ajax({
             type: "GET",
             url: "{{ url('api/get-order') }}",
-            data:{start:start,limit:100},
+            data:{start:start,limit:300},
             success: function (response) {
                 $.each(response.data, function (idx, item) {
                     data.push(item)
@@ -136,6 +138,8 @@
                 loadTable();
                 if(response.start<response.count){
                     getData(response.start)
+                }else{
+                    topbar.hide();
                 }
             }
         });

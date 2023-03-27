@@ -166,7 +166,7 @@
                     </ul>
                 @else
                 <div class="d-flex" style="gap:5px">
-                    <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                    <a href="{{ route('keuangan.pre_invoice') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
                     <form action="{{ route('keuangan.generateInvoice',$order) }}" method="post">
                         @csrf
                         <input type="hidden" name="sub_total" value="{{ $invoice['sub_total'] }}">
@@ -488,13 +488,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item['tarif']) }}</span>
+                                            <span>{{ number_format(ceil($item['tarif'])) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item['sub_total']) }}</span>
+                                            <span>{{ number_format(ceil($item['sub_total'])) }}</span>
                                         </div>
                                     </td>
                                 </tr>

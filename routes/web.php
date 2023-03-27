@@ -130,6 +130,6 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-sync',[SyncController::class,'sync']);
     Route::get('sync-invoice',[SyncController::class,'invoice']);
     Route::get('sync-customer',[SyncController::class,'customerTrucking']);
-    Route::get('sync-asuransi',[SyncController::class,'asuransi']);
+    Route::get('sync-data',[SyncController::class,'data']);
 });
 // Route::view('test','test');

@@ -78,6 +78,17 @@ button.no-attr{
     background: #00a0ff !important;
     color: #fff !important;
 }
+.ui-jqgrid .ui-jqgrid-htable tr.ui-jqgrid-labels, .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr{
+    background-color: lightgray !important;
+}
+
+.ui-jqgrid tr.ui-search-toolbar td input{
+    padding: 3px !important;
+    width: 70px !important;
+}
+.ui-jqgrid td.ui-search-input, .ui-jqgrid td.ui-search-clear, .ui-jqgrid .ui-search-table .ui-search-oper{
+    width: 70px !important;
+}
 .autocomplete {
     position: relative;
     display: inline-block;

@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BTTB;
 use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
+use App\Models\Satuan;
+use App\Models\Shipment;
 use App\Models\Tarif;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -129,18 +132,25 @@ class SyncController extends Controller
         return response('Berhasil mengupdate '.$i.' Data');
     }
 
-    public function asuransi()
+    public function data()
     {
-        Order::whereNull('asuransi_id')->update([
-            'asuransi_date' => null,
+        Tarif::whereIn('shipment',[7,9])->update([
+            'shipment' => 1
         ]);
-        $order = Order::whereNotNull('asuransi_id')->get();
-        foreach ($order as $item ) {
-            $item->update([
-                'asuransi_date' => date('Y-m-d H:i:s', strtotime($item->updated_at))
-            ]);
-        }
-
+        Tarif::whereIn('shipment',[8])->update([
+            'shipment' => 10
+        ]);
+        Tarif::whereIn('satuan',[82,119,263,264,265,316,317,686,771,816,878,879,881,882,977,978,979,1173,1165,1365])->update([
+            'satuan' => 1
+        ]);
+        Order::whereIn('satuan',[82,119,263,264,265,316,317,686,771,816,878,879,881,882,977,978,979,1173,1165,1365])->update([
+            'satuan' => 1
+        ]);
+        BTTB::whereIn('satuan_id',[82,119,263,264,265,316,317,686,771,816,878,879,881,882,977,978,979,1173,1165,1365])->update([
+            'satuan_id' => 1
+        ]);
+        Satuan::whereIn('id',[82,119,263,264,265,316,317,686,771,816,878,879,881,882,977,978,979,1173,1165,1365])->delete();
+        Shipment::whereIn('id',[7,8,9])->delete();
         return response('Berhasil');
     }
 }

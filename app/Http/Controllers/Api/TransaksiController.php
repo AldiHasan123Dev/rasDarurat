@@ -3,11 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TransaksiResource;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
+    public function index()
+    {
+        $start = request('start');
+        $limit = request('limit');
+        $data = Transaksi::all()->sortBy('invoice')->sortBy('no')->skip($start)->take($limit);
+        $count = Transaksi::select('id')->count();
+        $data = TransaksiResource::collection($data);
+        return response([
+            'start' => $start + $limit,
+            'count' => $count,
+            'data' => $data
+        ]);
+    }
+
     public function update(Request $request)
     {
         $transaksi = Transaksi::find($request->id);

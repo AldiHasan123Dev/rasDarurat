@@ -168,7 +168,7 @@
                     </ul>
                 @else
                 <div class="d-flex" style="gap:5px">
-                    <a href="{{ route('keuangan.order',['filter-order'=>'ba_kembali']) }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                    <a href="{{ route('keuangan.pre_invoice') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
                     <form action="{{ route('keuangan.generateInvoice',$order) }}" method="post">
                         @csrf
                         <input type="hidden" name="sub_total" value="{{ $invoice['sub_total'] }}">
