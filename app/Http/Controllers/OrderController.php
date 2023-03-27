@@ -196,6 +196,7 @@ class OrderController extends Controller
         $data = $order->toArray();
         $data['no_job'] = Order::where('job',$order->job)->max('no_job') + 1;
         $data['nopol'] = null;
+        $data['trucking'] = null;
         $data['container'] = null;
         $data['seal'] = null;
         $data['stuffing'] = null;

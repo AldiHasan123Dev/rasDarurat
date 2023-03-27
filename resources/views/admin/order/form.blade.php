@@ -26,7 +26,7 @@
     <x-input :value="$order->penerima->nama??old('penerima_id')" :col="3" :label="'Penerima'" :type="'text'" :name="'penerima_id'" :required="true"></x-input>
     <x-input :value="$order->barang->nama??old('barang_id')" :col="3" :label="'Barang'" :type="'text'" :name="'barang_id'" :required="true" id="selectBarang"></x-input>
     <x-input :value="$order->nopol??old('nopol')" :col="3" :label="'Nopol'" :type="'text'" :name="'nopol'"></x-input>
-    <x-input :value="$order->trucking??old('trucking')" :col="3" :label="'Trucking'" :type="'select'" :options="['XPDC'=>'XPDC','SUPP'=>'SUPP','CUST'=>'CUST']" :name="'trucking'"></x-input>
+    <x-input :value="$order->trucking??old('trucking')" :col="3" :label="'Trucking'" :type="'select'" :options="[''=>'','XPDC'=>'XPDC','SUPP'=>'SUPP','CUST'=>'CUST']" :name="'trucking'"></x-input>
     <x-input :value="$order->container??old('container')" :col="3" :label="'No. Container'" :type="'text'" :name="'container'"></x-input>
     <x-input :value="$order->seal??old('seal')" :col="3" :label="'Seal'" :type="'text'" :name="'seal'"></x-input>
     {{-- <x-input :options="$satuan" :value="$order->satuan??old('satuan')" :col="3" :label="'Satuan'" :type="'select'" :name="'satuan'"></x-input> --}}
