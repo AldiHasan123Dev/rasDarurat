@@ -372,7 +372,7 @@ class CetakController extends Controller
                     array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
                 }
             }
-            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.'; ';
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama.'; ';
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
             $items[$idx]['koli'] = $tar->count();
             $items[$idx]['jumlah'] = $tar->count();
@@ -407,7 +407,7 @@ class CetakController extends Controller
             'asuransi' => $asuransi_name,
             'asuransi_total' => $asuransi,
             'validate' => $validate,
-            'keterangan' => $keterangan.' '.$order->tarif->dari_lokasi->nama.' - '.$order->tarif->tujuan_lokasi->nama,
+            'keterangan' => $keterangan,
         ];
     }
 
@@ -454,7 +454,7 @@ class CetakController extends Controller
                     array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
                 }
             }
-            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.'; ';
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama.'; ';
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
             $items[$idx]['koli'] = $koli;
             $items[$idx]['jumlah'] = round($jumlah,2);
@@ -488,7 +488,7 @@ class CetakController extends Controller
             'asuransi' => $asuransi_name,
             'asuransi_total' => $asuransi,
             'validate' => $validate,
-            'keterangan' => $keterangan.' '.$order->tarif->dari_lokasi->nama.' - '.$order->tarif->tujuan_lokasi->nama,
+            'keterangan' => $keterangan,
         ];
     }
 }
