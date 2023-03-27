@@ -15,6 +15,7 @@ class JadwalKapalResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'voyage' => $this->voyage,
             'kapal' => $this->kapal->nama,
             'etd' => date('d/m/y', strtotime($this->etd)),
         ];

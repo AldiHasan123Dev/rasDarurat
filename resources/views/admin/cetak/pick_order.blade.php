@@ -265,7 +265,7 @@
                 data: {id:val},
                 success: function (response) {
                     var data = response;
-                    $('#d-kapal').html(data.kapal);
+                    $('#d-kapal').html(data.kapal+' Voy. '+data.voyage);
                     $('#d-etd').html(data.etd);
                 }
             });

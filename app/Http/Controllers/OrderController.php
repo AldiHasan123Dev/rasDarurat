@@ -202,9 +202,6 @@ class OrderController extends Controller
         $data['barang_diantar'] = null;
         $data['ba_kembali'] = null;
         $data['full'] = null;
-        $data['agen'] = null;
-        $data['agen_id'] = null;
-        $data['penerima_bl_id'] = null;
         $data['keterangan'] = null;
         $data['created_at'] = date('Y-m-d');
         Order::create($data);
