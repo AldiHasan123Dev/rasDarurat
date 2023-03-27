@@ -117,9 +117,7 @@ class OrderController extends Controller
     public function update(Order $order, Request $request)
     {
         $data = $request->all();
-        if ($request->ba_kembali && $request->invoice==1) {
-            // $data ['invoice'] = 'RAS/'.date('Ymd').'/'.sprintf('%03d',$order->id);
-        }else if($request->asuransi_update){
+        if($request->asuransi_update){
             $data['pertanggungan'] = str_replace(['.',','],'',$request->pertanggungan);
             $data['asuransi_date'] = date('Y-m-d H:i:s');
             if($request->tipe_asuransi=='job'){
@@ -349,7 +347,7 @@ class OrderController extends Controller
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" name="invoice" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
+                                    <button type="submit" name="ba" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
                                 </div>
                             </div>
                         </form>
