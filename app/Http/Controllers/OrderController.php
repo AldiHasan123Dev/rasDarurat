@@ -117,7 +117,9 @@ class OrderController extends Controller
     public function update(Order $order, Request $request)
     {
         $data = $request->all();
-        if($request->asuransi_update){
+        if($request->ba){
+
+        }elseif($request->asuransi_update){
             $data['pertanggungan'] = str_replace(['.',','],'',$request->pertanggungan);
             $data['asuransi_date'] = date('Y-m-d H:i:s');
             if($request->tipe_asuransi=='job'){
