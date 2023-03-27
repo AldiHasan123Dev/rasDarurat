@@ -65,8 +65,18 @@ button.no-attr{
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
     background: transparent !important;
 }
+.ui-widget-content{
+    border: 1px solid #000 !important;
+    background: #fff;
+    color: #333;
+}
 .ui-jqgrid tr.ui-search-toolbar th{
     padding: 5px !important;
+}
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    border: 1px solid #000000 !important;
+    background: #00a0ff !important;
+    color: #fff !important;
 }
 .autocomplete {
     position: relative;

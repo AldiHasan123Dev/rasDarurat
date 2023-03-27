@@ -44,6 +44,7 @@ Route::get('get-asuransi-pelayaran/{pelayaran_id}', [AsuransiController::class,'
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
+Route::get('get-order', [OrderController::class,'index']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
 Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);

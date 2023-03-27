@@ -1,5 +1,6 @@
 <div class="row">
 <x-input :value="$customertrucking->nama??old('nama')" :col="6" :label="'Nama'" :type="'text'" :name="'nama'" :required="true"></x-input>
+<x-input :value="$customertrucking->pic??old('pic')" :col="6" :label="'PIC'" :type="'text'" :name="'pic'" :required="true"></x-input>
 <x-input :value="$customertrucking->alamat??old('alamat')" :col="6" :label="'Alamat'" :type="'text'" :name="'alamat'" :required="true"></x-input>
 <x-input :value="$customertrucking->hp??old('hp')" :col="6" :label="'HP'" :type="'text'" :name="'hp'" :required="true"></x-input>
 <x-input :value="$customertrucking->nik??old('nik')" :col="6" :label="'NIK'" :type="'text'" :name="'nik'" :required="true"></x-input>

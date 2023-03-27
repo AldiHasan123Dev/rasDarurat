@@ -51,7 +51,8 @@
                                 <th>ID.</th>
                                 <th>Tujuan</th>
                                 <th>Sangu 20'</th>
-                                <th>Sangu 40'/Combo</th>
+                                <th>Sangu 40'</th>
+                                <th>Sangu Combo 2x20</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -100,6 +101,7 @@
                 { data: 'tujuan', name: 'tujuan' },
                 { data: 'ukuran_20', name: 'ukuran_20' },
                 { data: 'ukuran_40', name: 'ukuran_40' },
+                { data: 'ukuran_combo', name: 'ukuran_combo' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

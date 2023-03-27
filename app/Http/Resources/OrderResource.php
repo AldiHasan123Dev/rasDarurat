@@ -14,25 +14,35 @@ class OrderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $class = '';
+        if($this->bttb->count()>0){
+            $class = 'bg-light-success';
+        }
+        if($this->jadwal_kapal->is_active != 1){
+            $class = 'bg-light-danger';
+        }
+        if(!is_null($this->invoice)){
+            $class = 'bg-light-warning';
+        }
         return [
             'id' => $this->id,
             'invoice' => $this->invoice ?? '-',
             'job' => $this->job ?? '-',
             'no' => $this->job.'-'.sprintf('%02d',$this->no_job) ?? '-',
             'asuransi' => $this->asuransi,
-            'pembayar' => $this->tarif->customer->nama,
+            'pembayar' => $this->tarif->customer->nama ?? '-',
             'marketing' => $this->tarif->customer->marketing->name ?? '-',
             'cs' => $this->tarif->customer->cs->name ?? '-',
             'pengirim' => $this->pengirim->name ?? '-',
             'penerima' => $this->penerima->name ?? '-',
-            'dari' => $this->tarif->dari_lokasi->nama,
-            'tujuan' => $this->tarif->tujuan_lokasi->nama,
-            'shipment' => $this->tarif->shipmentInfo->nama,
-            'kondisi' => $this->tarif->kondisiInfo->nama,
+            'dari' => $this->tarif->dari_lokasi->nama ?? '-',
+            'tujuan' => $this->tarif->tujuan_lokasi->nama ?? '-',
+            'shipment' => $this->tarif->shipmentInfo->nama ?? '-',
+            'kondisi' => $this->tarif->kondisiInfo->nama ?? '-',
             'barang' => $this->barang->nama ?? '-',
-            'pelayaran' => $this->jadwal_kapal->pelayaran->nama,
-            'kapal' => $this->jadwal_kapal->kapal->nama,
-            'voyage' => $this->jadwal_kapal->voyage,
+            'pelayaran' => $this->jadwal_kapal->pelayaran->nama ?? '-',
+            'kapal' => $this->jadwal_kapal->kapal->nama ?? '-',
+            'voyage' => $this->jadwal_kapal->voyage ?? '-',
             'etd' => is_null($this->jadwal_kapal->etd)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->etd)),
             'td' => is_null($this->jadwal_kapal->td)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->td)),
             'ba_kirim' => is_null($this->ba_kirim)?'-':date('d-m-Y',strtotime($this->ba_kirim)),
@@ -41,16 +51,17 @@ class OrderResource extends JsonResource
             'container' => $this->container,
             'seal' => $this->seal,
             'stuffing' => is_null($this->stuffing)?'-':date('d-m-Y',strtotime($this->stuffing)),
-            'stuffing_type' => $this->tarif->stuffing,
+            'stuffing_type' => $this->tarif->stuffing ?? '-',
             'full' => is_null($this->full)?'-':date('d-m-Y',strtotime($this->full)),
             'barang_diantar' => is_null($this->barang_diantar)?'-':date('d-m-Y',strtotime($this->barang_diantar)),
             'ba_kembali' => is_null($this->ba_kembali)?'-':date('d-m-Y',strtotime($this->ba_kembali)),
             'satuan' => $this->satuanInfo->nama ?? '-',
-            'unit' => $this->tarif->satuanInfo->nama,
-            'tarif' => number_format($this->tarif->tarif),
+            'unit' => $this->tarif->satuanInfo->nama ?? '-',
+            'tarif' => is_null($this->tarif) ? '-' :  number_format($this->tarif->tarif),
             'agen' => $this->agen,
             'penerima_bl' => $this->agen=='AGEN'?($this->agen->nama??'-'):($this->penerima_bl->nama??'-'),
-            'keterangan' => $this->keterangan
+            'keterangan' => $this->keterangan,
+            'class' => $class
         ];
     }
 }

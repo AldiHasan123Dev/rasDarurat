@@ -158,14 +158,20 @@
 </div>
 @endif
 
+@if (Auth::user()->role_id==4||Auth::user()->role_id==1)
 <div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#pajak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pajak">
+    <a class="nav-link dropdown-indicator label-1" href="#trucking" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="trucking">
         <div class="d-flex align-items-center">
         <span class="nav-link-icon"><span class="fas fa-truck"></span></span><span class="nav-link-text mr-2">Trucking</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
         </div>
     </a>
     <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="pajak">
+        <ul class="nav collapse parent show" id="trucking">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('trucking.order')?'active':'' }}" href="{{ route('trucking.order') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Order Job</span></div>
+                </a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('customertrucking.index')?'active':'' }}" href="{{ route('customertrucking.index') }}" aria-expanded="false">
                 <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
@@ -188,12 +194,13 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->routeIs('ordertrucking.index')?'active':'' }}" href="{{ route('ordertrucking.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text"> Order</span></div>
+                <div class="d-flex align-items-center"><span class="nav-link-text"> Order Trucking</span></div>
                 </a>
             </li>
         </ul>
     </div>
 </div>
+@endif
 
 @if (Auth::user()->role_id==1)
 <div class="nav-item-wrapper">

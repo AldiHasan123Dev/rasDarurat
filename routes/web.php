@@ -31,6 +31,7 @@ use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TarifPelayaranController;
 use App\Http\Controllers\TarifTrukController;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\TruckingController;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -96,6 +97,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('nsfp-cancel', [NSFPController::class,'cancel'])->name('nsfp.cancel');
     Route::post('revisi-nsfp', [NSFPController::class,'revisi'])->name('nsfp.revisi');
     Route::post('tarik-nsfp', [NSFPController::class,'tarik'])->name('nsfp.tarik');
+    Route::get('trucking/order',[TruckingController::class,'order'])->name('trucking.order');
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');

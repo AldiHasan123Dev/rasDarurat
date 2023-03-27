@@ -15,6 +15,7 @@ class SanguSopir extends Model
         'tujuan',
         'ukuran_20',
         'ukuran_40',
+        'ukuran_combo',
     ];
 
     public function tujuanInfo()

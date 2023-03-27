@@ -12,6 +12,7 @@
                             <tr>
                                 <th>ID.</th>
                                 <th>Nama</th>
+                                <th>PIC</th>
                                 <th>Alamat</th>
                                 <th>HP</th>
                                 <th>NIK</th>
@@ -56,13 +57,14 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'nama', name: 'nama' },
-            { data: 'alamat', name: 'alamat' },
-            { data: 'hp', name: 'hp' },
-            { data: 'nik', name: 'nik' },
-            { data: 'npwp', name: 'npwp' },
-            { data: 'nama_npwp', name: 'nama_npwp' },
-            { data: 'alamat_npwp', name: 'alamat_npwp' },
+                { data: 'nama', name: 'nama' },
+                { data: 'pic', name: 'pic' },
+                { data: 'alamat', name: 'alamat' },
+                { data: 'hp', name: 'hp' },
+                { data: 'nik', name: 'nik' },
+                { data: 'npwp', name: 'npwp' },
+                { data: 'nama_npwp', name: 'nama_npwp' },
+                { data: 'alamat_npwp', name: 'alamat_npwp' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

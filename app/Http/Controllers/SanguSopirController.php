@@ -26,6 +26,7 @@ class SanguSopirController extends Controller
         $data['tujuan'] = $tujuan->id;
         $data['ukuran_20'] = str_replace(['.',','],'',$request->ukuran_20);
         $data['ukuran_40'] = str_replace(['.',','],'',$request->ukuran_40);
+        $data['ukuran_combo'] = str_replace(['.',','],'',$request->ukuran_combo);
         SanguSopir::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -39,7 +40,9 @@ class SanguSopirController extends Controller
             $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
         }
         $data['tujuan'] = $tujuan->id;
-        $data['sangu'] = str_replace(['.',','],'',$request->sangu);
+        $data['ukuran_20'] = str_replace(['.',','],'',$request->ukuran_20);
+        $data['ukuran_40'] = str_replace(['.',','],'',$request->ukuran_40);
+        $data['ukuran_combo'] = str_replace(['.',','],'',$request->ukuran_combo);
         $sangusopir->update($data);
 
         return back()->with('success','Data berhasil diupdate');
@@ -65,6 +68,9 @@ class SanguSopirController extends Controller
             })
             ->addColumn('ukuran_40', function($data){
                 return number_format($data->ukuran_40);
+            })
+            ->addColumn('ukuran_combo', function($data){
+                return number_format($data->ukuran_combo);
             })
             ->addColumn('action', function ($data) {
                 $view = view('admin.sangusopir.form',['sangusopir'=>$data])->render();
