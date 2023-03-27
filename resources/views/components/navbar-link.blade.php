@@ -158,6 +158,43 @@
 </div>
 @endif
 
+<div class="nav-item-wrapper">
+    <a class="nav-link dropdown-indicator label-1" href="#pajak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pajak">
+        <div class="d-flex align-items-center">
+        <span class="nav-link-icon"><span class="fas fa-truck"></span></span><span class="nav-link-text mr-2">Trucking</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
+        </div>
+    </a>
+    <div class="parent-wrapper label-1">
+        <ul class="nav collapse parent show" id="pajak">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('customertrucking.index')?'active':'' }}" href="{{ route('customertrucking.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('kendaraan.index')?'active':'' }}" href="{{ route('kendaraan.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Nopol</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('sopir.index')?'active':'' }}" href="{{ route('sopir.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Sopir</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('sangusopir.index')?'active':'' }}" href="{{ route('sangusopir.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text">Sangu Sopir</span></div>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('ordertrucking.index')?'active':'' }}" href="{{ route('ordertrucking.index') }}" aria-expanded="false">
+                <div class="d-flex align-items-center"><span class="nav-link-text"> Order</span></div>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
 @if (Auth::user()->role_id==1)
 <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#laporan-menu" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="laporan-menu">

@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('sangu_sopir', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tujuan')->constrained('lokasi');
-            $table->string('ukuran');
-            $table->double('sangu');
+            $table->string('ukuran_20');
+            $table->string('ukuran_40');
             $table->softDeletes();
             $table->timestamps();
         });

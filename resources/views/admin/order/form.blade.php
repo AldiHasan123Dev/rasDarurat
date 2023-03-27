@@ -36,7 +36,7 @@
     {{-- <x-input :value="$order->ba_kirim??old('ba_kirim')" :col="3" :label="'BA Kirim'" :type="'date'" :name="'ba_kirim'"></x-input> --}}
     <x-input :value="$order->agen??'NON AGEN'" :col="3" :label="'Tipe Agen'" :type="'select'" :options="['AGEN'=>'AGEN','NON AGEN'=>'NON AGEN']" :name="'agen'"></x-input>
     <div class="col-3" id="nag">
-        <x-input :value="$order->penerima_bl_id??old('penerima_bl_id')" :label="'Penerima BL'" :type="'select'" :options="[]" :name="'penerima_bl_id'"></x-input>
+        <x-input :value="$order->penerima_bl_id??old('penerima_bl_id')" :label="'Penerima BL'" :type="'select'" :options="$penerima_bl ?? []" :name="'penerima_bl_id'"></x-input>
     </div>
     <div class="col-3" id="ag">
         <x-input :options="$agent" :value="$order->agen_id??old('agen_id')" :label="'Penerima BL'" :type="'select'" :name="'agen_id'"></x-input>

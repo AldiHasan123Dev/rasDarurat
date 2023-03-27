@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class OrderTrucking extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $table = 'order_trucking';
+    protected $fillable = [
+        'order_id',
+        'customer_id',
+        'sopir_id',
+        'kendaraan_id',
+        'dari',
+        'tujuan',
+        'tipe',
+        'sangu',
+        'simpanan',
+        'tagihan',
+        'kuli',
+        'keterangan',
+    ];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class,'order_id');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(CustomerTrucking::class,'customer_id');
+    }
+
+    public function sopir()
+    {
+        return $this->belongsTo(Sopir::class,'sopir_id');
+    }
+
+    public function kendaraan()
+    {
+        return $this->belongsTo(Kendaraan::class,'kendaraan_id');
+    }
+}

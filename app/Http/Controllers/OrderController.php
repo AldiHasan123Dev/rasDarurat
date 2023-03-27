@@ -175,13 +175,14 @@ class OrderController extends Controller
         $barang = Barang::pluck('nama');
         $satuan = Satuan::pluck('nama');
         $pengirim = $customers;
+        $penerima_bl = Customer::pluck('nama','id');
         $tarif = array();
         $agent = Agen::pluck('nama','id');
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
         $pembayar = ($order->customer->nama??'-').' || '.($order->dari_lokasi->nama??'-').' || '.($order->tujuan_lokasi->nama??'-').' || '.($order->kondisiInfo->nama??'-').' || '.($order->pelayaran->nama??'-').' || '.($order->shipmentInfo->nama??'-').' || '.($order->tarif??'-');
-        return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim','pembayar'));
+        return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim','pembayar','penerima_bl'));
     }
 
     public function destroy(Order $order)

@@ -50,8 +50,8 @@
                             <tr>
                                 <th>ID.</th>
                                 <th>Tujuan</th>
-                                <th>Ukuran</th>
-                                <th>Sangu</th>
+                                <th>Sangu 20'</th>
+                                <th>Sangu 40'/Combo</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -83,7 +83,7 @@
 <script>
     $(function() {
         var lokasi = @json($lokasi);
-        autocomplete(document.getElementById("tujuan"), lokasi);
+        autocomplete(document.querySelector("[name='tujuan']"), lokasi);
     });
 </script>
     <script>
@@ -98,8 +98,8 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'tujuan', name: 'tujuan' },
-                { data: 'ukuran', name: 'ukuran' },
-                { data: 'sangu', name: 'sangu' },
+                { data: 'ukuran_20', name: 'ukuran_20' },
+                { data: 'ukuran_40', name: 'ukuran_40' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

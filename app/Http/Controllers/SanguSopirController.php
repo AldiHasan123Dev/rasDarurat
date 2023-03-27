@@ -24,7 +24,8 @@ class SanguSopirController extends Controller
             $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
         }
         $data['tujuan'] = $tujuan->id;
-        $data['sangu'] = str_replace(['.',','],'',$request->sangu);
+        $data['ukuran_20'] = str_replace(['.',','],'',$request->ukuran_20);
+        $data['ukuran_40'] = str_replace(['.',','],'',$request->ukuran_40);
         SanguSopir::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -33,6 +34,12 @@ class SanguSopirController extends Controller
     public function update(SanguSopir $sangusopir, Request $request)
     {
         $data = $request->all();
+        $tujuan = Lokasi::find($request->tujuan);
+        if(!$tujuan){
+            $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
+        }
+        $data['tujuan'] = $tujuan->id;
+        $data['sangu'] = str_replace(['.',','],'',$request->sangu);
         $sangusopir->update($data);
 
         return back()->with('success','Data berhasil diupdate');
@@ -53,8 +60,11 @@ class SanguSopirController extends Controller
             ->addColumn('tujuan', function($data){
                 return $data->tujuanInfo->nama;
             })
-            ->addColumn('sangu', function($data){
-                return number_format($data->sangu);
+            ->addColumn('ukuran_20', function($data){
+                return number_format($data->ukuran_20);
+            })
+            ->addColumn('ukuran_40', function($data){
+                return number_format($data->ukuran_40);
             })
             ->addColumn('action', function ($data) {
                 $view = view('admin.sangusopir.form',['sangusopir'=>$data])->render();
@@ -69,7 +79,7 @@ class SanguSopirController extends Controller
 
                         <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasSanguSopirUpdate'.$data->id.'" aria-labelledby="offcanvasSanguSopirUpdate'.$data->id.'Label">
                             <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasSanguSopirUpdate'.$data->id.'Label">Form SanguSopir</h5>
+                                <h5 class="offcanvas-title" id="offcanvasSanguSopirUpdate'.$data->id.'Label">Form Sangu Sopir</h5>
                                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                             </div>
                             <div class="offcanvas-body">

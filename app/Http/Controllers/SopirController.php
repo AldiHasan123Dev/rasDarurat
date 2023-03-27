@@ -16,7 +16,7 @@ class SopirController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         Sopir::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -42,6 +42,9 @@ class SopirController extends Controller
         $data = Sopir::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('is_active', function($data){
+                return $data->is_active ? 'Aktif' : 'Non Aktif';
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.sopir.form',['sopir'=>$data])->render();
                 $html = '<div class="d-flex gap-1">

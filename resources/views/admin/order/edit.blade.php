@@ -62,30 +62,34 @@
         autocomplete(document.getElementById("pengirim_id"), customers);
         autocomplete(document.getElementById("penerima_id"), customers);
 
-        $("select[name=penerima_bl_id]").select2(
-            {
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
+        // $("select[name=penerima_bl_id]").select2(
+        //     {
+        //         ajax: {
+        //             url: '/api/get-pengirim',
+        //             data: function (params) {
+        //                 return {
+        //                     cari: params.term, // text pencarian
+        //                     page: params.page
+        //                 };
+        //             },
+        //             processResults: function (data, params) {
+        //                 params.page = params.page || 1;
+        //                 return {
+        //                     results: data.items,
+        //                     pagination: {
+        //                         more: (params.page * 20) < data.counts
+        //                     }
+        //                 };
+        //             },
+        //             minimumInputLength: 2,
+        //             delay: 400,
+        //         }
+        //     }
+        // );
+
+        $('select[name=penerima_bl_id]').select2();
+        var penerima_bl_id = @json($order->penerima_bl_id);
+        $('select[name=penerima_bl_id]').val(penerima_bl_id);
     });
 </script>
 

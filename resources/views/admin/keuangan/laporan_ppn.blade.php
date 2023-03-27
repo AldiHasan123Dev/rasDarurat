@@ -7,45 +7,6 @@
     td, th {
         border: 1px solid #ccc;
     }
-    .ui-jqgrid .ui-jqgrid-htable .ui-th-div, .ui-jqgrid .ui-jqgrid-btable tbody tr.jqgrow td, .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr, .ui-jqgrid .ui-jqgrid-pager .ui-paging-info, .ui-jqgrid .ui-jqgrid-toppager .ui-paging-info, .ui-jqgrid .ui-pager-control .ui-pager-table td{
-        font-size: .7rem;
-    }
-    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
-        background: transparent !important;
-    }
-    .ui-jqgrid tr.ui-search-toolbar th{
-        padding: 2px !important;
-    }
-    .autocomplete {
-        position: relative;
-        display: inline-block;
-    }
-    .autocomplete-items {
-        position: absolute;
-        border: 1px solid #d4d4d4;
-        border-bottom: none;
-        border-top: none;
-        z-index: 99;
-        /*position the autocomplete items to be the same width as the container:*/
-        top: 100%;
-        left: 0;
-        right: 0;
-    }
-    .autocomplete-items div {
-        padding: 10px;
-        cursor: pointer;
-        background-color: #fff;
-        border-bottom: 1px solid #d4d4d4;
-    }
-    .autocomplete-items div:hover {
-        /*when hovering an item:*/
-        background-color: #e9e9e9;
-    }
-    .autocomplete-active {
-        /*when navigating through the items using the arrow keys:*/
-        background-color: DodgerBlue !important;
-        color: #ffffff;
-    }
 </style>
 @endsection
 @section('content')
@@ -193,11 +154,6 @@
     });
 </script>
     <script>
-        var dataArray = [
-            {clid: 1, name: 'Bob', phone: '232-532-6268', birthday: "01/01/1971"},
-            {clid: 2, name: 'Jeff', phone: '365-267-8325', birthday: "02/02/1972"}
-        ];
-
         var data = @json($data);
 
         $("#jqGrid").jqGrid({
@@ -218,13 +174,14 @@
                 {search:true, name: 'ppn', label : 'PPN'},
                 {search:true, name: 'total', label : 'Total'},
                 {search:true, name: 'pph', label : 'PPH'},
-                {search:true, name: 'job', label : 'JOB'},
+                {search:true, name: 'job', label : 'JOB', width:500},
             ],
             autowidth: true,
             shrinkToFit: true,
             height: 250,
             oadonce: true,
-            rowNum: 20,
+            rowNum: 25,
+            rowList:[10,25,50,100],
 			viewrecords: true,
             pager: "#jqGridPager",
             caption: "Laporan PPN"

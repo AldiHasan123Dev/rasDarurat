@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('order_trucking', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->nullable()->constrained('order')->nullOnDelete();
+            $table->foreignId('customer_id')->nullable()->constrained('customer_trucking')->nullOnDelete();
+            $table->foreignId('sopir_id')->nullable()->constrained('sopir')->nullOnDelete();
+            $table->foreignId('kendaraan_id')->nullable()->constrained('kendaraan')->nullOnDelete();
+            $table->string('dari')->nullable();
+            $table->string('tujuan')->nullable();
+            $table->string('tipe')->nullable();
+            $table->double('sangu')->default(0);
+            $table->double('simpanan')->default(0);
+            $table->double('tagihan')->default(0);
+            $table->double('kuli')->default(0);
+            $table->text('keterangan')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('order_trucking');
+    }
+};

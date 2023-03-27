@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\NSFPController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\TagihanController;
 use App\Http\Controllers\Api\TarifController;
 use App\Http\Controllers\Api\TransaksiController;
@@ -42,6 +43,7 @@ Route::get('tagihan/{id}', [TagihanController::class,'getOne'])->name('api.tagih
 Route::get('get-asuransi-pelayaran/{pelayaran_id}', [AsuransiController::class,'getAsuransiByPelayaran'])->name('api.asuransi.getByPelayaran');
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
+Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
 Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);

@@ -1,0 +1,101 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\OrderTruckingResource;
+use App\Models\CustomerTrucking;
+use App\Models\Kendaraan;
+use App\Models\OrderTrucking;
+use App\Models\SanguSopir;
+use App\Models\Sopir;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Yajra\Datatables\Datatables;
+
+class OrderTruckingController extends Controller
+{
+    public function index()
+    {
+        $data = OrderTrucking::all();
+        $data = OrderTruckingResource::collection($data);
+        $kendaraan = Kendaraan::all()->where('is_active',1)->sortBy('nopol');
+        $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
+        $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->orderBy('lokasi.nama','asc')->get();
+        $customers = CustomerTrucking::all()->sortBy('nama');
+        return view('admin.ordertrucking.index', compact('data','kendaraan','sopir','tujuan','customers'));
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $kendaraan = Kendaraan::find($data['kendaraan_id']);
+        $data['tipe'] = $kendaraan->tipe;
+        $sangu = SanguSopir::find($data['tujuan']);
+        if($data['tipe']=='20'){
+            $data['sangu'] = $sangu->ukuran_20;
+        }
+        if($data['tipe']=='40'){
+            $data['sangu'] = $sangu->ukuran_40;
+        }
+        $data['tujuan'] = $sangu->tujuanInfo->nama;
+        OrderTrucking::create($data);
+
+        return back()->with('success','Data berhasil disimpan');
+    }
+
+    public function update(OrderTrucking $ordertrucking, Request $request)
+    {
+        $data = $request->all();
+        if($request->sangu){
+            $data['sangu'] = str_replace(['.',','],'',$request->sangu);
+        }
+        if($request->simpanan){
+            $data['simpanan'] = str_replace(['.',','],'',$request->simpanan);
+        }
+        $ordertrucking->update($data);
+
+        return back()->with('success','Data berhasil diupdate');
+    }
+
+    public function destroy(OrderTrucking $ordertrucking)
+    {
+        $ordertrucking->delete();
+
+        return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function datatable()
+    {
+        $data = OrderTrucking::all()->sortByDesc('created_at');
+
+        return Datatables::of($data)
+            ->addColumn('action', function ($data) {
+                $view = view('admin.ordertrucking.form',['ordertrucking'=>$data])->render();
+                $html = '<div class="d-flex gap-1">
+                            <form action="'.route('ordertrucking.destroy',$data).'" method="post">
+                                <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                <input type="hidden" name="_method" value="delete" />
+                                <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                            </form>
+                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrderTruckingUpdate'.$data->id.'" aria-controls="offcanvasOrderTruckingUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                        </div>
+
+                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasOrderTruckingUpdate'.$data->id.'" aria-labelledby="offcanvasOrderTruckingUpdate'.$data->id.'Label">
+                            <div class="offcanvas-header">
+                                <h5 class="offcanvas-title" id="offcanvasOrderTruckingUpdate'.$data->id.'Label">Form OrderTrucking</h5>
+                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                            </div>
+                            <div class="offcanvas-body">
+                                <form action="'.route('ordertrucking.update',$data).'" method="post">
+                                <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                    <input type="hidden" name="_method" value="PUT" />
+                                    '.$view.'
+                                </form>
+                            </div>
+                        </div>';
+                return $html;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+}

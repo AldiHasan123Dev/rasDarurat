@@ -51,6 +51,50 @@ button.no-attr{
     font-size: .7rem;
 }
 
+.select2-results__option--selectable{
+    font-size: .7rem;
+}
+
 .card .item, .card span{
     font-size: .7rem;
+}
+
+.ui-jqgrid .ui-jqgrid-htable .ui-th-div, .ui-jqgrid .ui-jqgrid-btable tbody tr.jqgrow td, .ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr, .ui-jqgrid .ui-jqgrid-pager .ui-paging-info, .ui-jqgrid .ui-jqgrid-toppager .ui-paging-info, .ui-jqgrid .ui-pager-control .ui-pager-table td{
+    font-size: .7rem;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+    background: transparent !important;
+}
+.ui-jqgrid tr.ui-search-toolbar th{
+    padding: 5px !important;
+}
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid #d4d4d4;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    /*position the autocomplete items to be the same width as the container:*/
+    top: 100%;
+    left: 0;
+    right: 0;
+}
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+    /*when hovering an item:*/
+    background-color: #e9e9e9;
+}
+.autocomplete-active {
+    /*when navigating through the items using the arrow keys:*/
+    background-color: DodgerBlue !important;
+    color: #ffffff;
 }

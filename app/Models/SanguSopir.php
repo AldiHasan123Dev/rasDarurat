@@ -13,8 +13,8 @@ class SanguSopir extends Model
     protected $table = 'sangu_sopir';
     protected $fillable = [
         'tujuan',
-        'ukuran',
-        'sangu',
+        'ukuran_20',
+        'ukuran_40',
     ];
 
     public function tujuanInfo()
