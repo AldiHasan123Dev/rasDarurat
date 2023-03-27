@@ -88,7 +88,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" name="invoice" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
+                <button type="submit" name="ba" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
             </div>
         </div>
     </form>

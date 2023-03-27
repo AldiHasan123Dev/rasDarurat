@@ -118,7 +118,6 @@ class OrderController extends Controller
     {
         $data = $request->all();
         if($request->ba){
-
         }elseif($request->asuransi_update){
             $data['pertanggungan'] = str_replace(['.',','],'',$request->pertanggungan);
             $data['asuransi_date'] = date('Y-m-d H:i:s');
