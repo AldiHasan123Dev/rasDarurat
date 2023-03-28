@@ -35,6 +35,11 @@ class KeuanganController extends Controller
 
     public function pre_invoice()
     {
+        return view('admin.keuangan.pre_invoice');
+    }
+
+    public function pre_invoice1()
+    {
         return view('admin.keuangan.pre_invoice1');
     }
 

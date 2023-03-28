@@ -16,7 +16,7 @@ class InvoiceImport implements ToModel, WithStartRow
     public function model(array $row)
     {
         $invoice = str_replace(["'","`"," "],'',$row[1]);
-        $order = Order::where('job',substr($row[14],0,10))->first();
+        $order = Order::where('job',substr($row[14],0,10))->whereNull('invoice')->first();
         $tgl = str_replace("'",'',$row[7]);
         $date = substr($tgl,6,4).'-'.substr($tgl,3,2).'-'.substr($tgl,0,2);
         $faktur = str_replace(["'"," ","`"],'',$row[10]);

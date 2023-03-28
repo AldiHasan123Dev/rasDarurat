@@ -52,7 +52,8 @@
 @section('content')
 
     <div class="container mt-3">
-        <div class="card">
+        <a href="{{ route('keuangan.pre_invoice1') }}">Lihat Pre Invoice Versi 1 tabel</a>
+        <div class="card mt-3">
             <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
                 <div class="card-titles">List Pre Invoice (Read Only)</div>
                 <div class="d-flex gap-2">

@@ -32,25 +32,6 @@
                             </div>
                         </form>
                     </div>
-                    <div class="d-flex gap-3 mt-2">
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item">Total Sub Total</li>
-                            <li class="list-group-item">Rp. {{ number_format($sub_total,2,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item">Total PPN</li>
-                            <li class="list-group-item">Rp. {{ number_format($ppn,2,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item">Total</li>
-                            <li class="list-group-item">Rp. {{ number_format($sub_total+$ppn,2,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item">Total PPH</li>
-                            <li class="list-group-item">Rp. {{ number_format($pph,2,',','.') }}</li>
-                        </ul>
-
-                    </div>
                 </div>
                 <div class="table-responsives mt-3">
                     {{-- <table class="w-100" id="table-ppn" style="font-size: .7rem">
@@ -99,6 +80,27 @@
                     </table> --}}
                     <table id="jqGrid"></table>
                     <div id="jqGridPager"></div>
+                </div>
+                <div class="card-footer py-2">
+                    <div class="d-flex gap-3 mt-2 justify-content-center">
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total Sub Total</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format($sub_total,2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total PPN</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format($ppn,2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format($sub_total+$ppn,2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total PPH</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format($pph,2,',','.') }}</li>
+                        </ul>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -193,10 +195,10 @@
                 {search:true, name: 'ppn', label : 'PPN'},
                 {search:true, name: 'ppn_subtotal', label : 'Total'},
                 {search:true, name: 'pph', label : 'PPH'},
-                {search:true, name: 'no_job', label : 'JOB', width:500},
+                {search:true, name: 'no_job', label : 'JOB'},
             ],
             autowidth: true,
-            shrinkToFit: true,
+            shrinkToFit: false,
             height: 250,
             oadonce: true,
             rowNum: 25,

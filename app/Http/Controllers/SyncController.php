@@ -169,4 +169,31 @@ class SyncController extends Controller
 
         return response('berhasil mengupdate '.$i.' data');
     }
+
+    public function pph()
+    {
+        $i = 0;
+        $transaksi = Transaksi::where('pph',0)->get();
+        foreach ($transaksi as $item ) {
+            $orders = $item->jobs;
+            $doc = 0;
+            foreach ($orders as $order ) {
+                if($order->tarif){
+                    if ($order->tarif->kondisi==1||$order->tarif->kondisi==6) {
+                        $doc++;
+                    }
+                }
+            }
+            if($doc>0){
+                $pph = (500000 * $doc) * 0.02;
+            }else{
+                $pph = $item->sub_total * 0.02;
+            }
+            $item->update([
+                'pph' => $pph
+            ]);
+            $i++;
+        }
+        return response('berhasil mengupdate '.$i.' data');
+    }
 }

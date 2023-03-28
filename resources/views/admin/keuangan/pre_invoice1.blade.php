@@ -13,7 +13,8 @@
 @endsection
 @section('content')
     <div class="container mt-3">
-        <div class="card">
+        <a href="{{ route('keuangan.pre_invoice') }}">Lihat Pre Invoice Versi 2 tabel</a>
+        <div class="card mt-3">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex gap-2">
                     <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Global</a>
