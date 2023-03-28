@@ -98,6 +98,7 @@
             datatype: 'local',
             data: data,
             colModel: [
+                {search:true, name: 'order_id', label : 'order_id', hidden:true},
                 {search:true, name: 'id', label : 'id', hidden:true},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'tanggal', label : 'Tanggal',sorttype: 'date', datefmt:'d/m/y'},
@@ -117,7 +118,7 @@
             pager: "#jqGridPager",
             caption: "Order Job Pre Invoice",
             onCellSelect: function (rowId, iRow, iCol, e) {
-                var id = $(this).jqGrid('getCell', rowId, 'id');
+                var id = $(this).jqGrid('getCell', rowId, 'order_id');
                 $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
                 $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+id);
                 // var order_id = $(this).jqGrid('getCell', rowId, 'order_id');

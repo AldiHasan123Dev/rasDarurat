@@ -16,6 +16,7 @@ class TransaksiResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'order_id' => $this->order_id,
             'invoice' => $this->invoice,
             'npwp' => $this->pembayar->npwp ,
             'nik' => $this->pembayar->nik ,
