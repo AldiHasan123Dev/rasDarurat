@@ -153,4 +153,20 @@ class SyncController extends Controller
         Shipment::whereIn('id',[7,8,9])->delete();
         return response('Berhasil');
     }
+
+    public function agen()
+    {
+        $orders = Order::whereIn('penerima_bl_id',[1929,1930])->whereNull('agen')->get();
+        $i = 0;
+        foreach ($orders as $item ) {
+            $agen = $item->penerima_bl->nama;
+            $item->update([
+                'agen' => $agen,
+                'penerima_bl_id' => null
+            ]);
+            $i++;
+        }
+
+        return response('berhasil mengupdate '.$i.' data');
+    }
 }

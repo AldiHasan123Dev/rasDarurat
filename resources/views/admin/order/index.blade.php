@@ -507,7 +507,7 @@
         rowList:[10,25,50,100,250,500,1000],
         viewrecords: true,
         pager: "#jqGridPager",
-        caption: "Order Job (read only)",
+        caption: "Order Job",
         onCellSelect: function (rowId, iRow, iCol, e) {
             id = $(this).jqGrid('getCell', rowId, 'id');
             var no_job = $(this).jqGrid('getCell', rowId, 'no');
