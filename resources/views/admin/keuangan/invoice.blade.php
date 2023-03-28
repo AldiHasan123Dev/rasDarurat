@@ -100,6 +100,8 @@
             colModel: [
                 {search:true, name: 'order_id', label : 'order_id', hidden:true},
                 {search:true, name: 'id', label : 'id', hidden:true},
+                {search:true, name: 'tanggal_format', label : 'Tanggal', hidden:true},
+                {search:true, name: 'tanggal_kirim_format', label : 'Tanggal', hidden:true},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'tanggal', label : 'Tanggal',sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'job', label : 'Group Job'},
@@ -118,18 +120,16 @@
             pager: "#jqGridPager",
             caption: "Order Job Pre Invoice",
             onCellSelect: function (rowId, iRow, iCol, e) {
-                var id = $(this).jqGrid('getCell', rowId, 'order_id');
-                $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+id);
-                $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+id);
-                // var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
-                // var sangu = $(this).jqGrid('getCell', rowId, 'sangu');
-                // var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
-                // var nopol = $(this).jqGrid('getCell', rowId, 'nopol');
-                // $('#edit-form').attr('action','{{ url('admin/ordertrucking') }}/'+id);
-                // getOrder(nopol,order_id);
-                // $('#sangu').val(sangu);
-                // $('#simpanan').val(simpanan);
-                // $('#btn-edit').show();
+                var id = $(this).jqGrid('getCell', rowId, 'id');
+                var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
+                var tanggal = $(this).jqGrid('getCell', rowId, 'tanggal_format');
+                var tanggal_kirim = $(this).jqGrid('getCell', rowId, 'tanggal_kirim_format');
+                $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+order_id);
+                $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+order_id);
+                $('#created_at').val(tanggal);
+                $('#tanggal_kirim').val(tanggal_kirim);
+                $('#invoice_id').val(id);
+
             },
             rowattr: function (item) {
                 return { "class": item.class };
@@ -190,7 +190,7 @@
                 },
                 success: function (response) {
                     alert('Data berhasil di update!');
-                    tableInvoice.ajax.reload();
+                    location.reload()
                 }
             });
         });

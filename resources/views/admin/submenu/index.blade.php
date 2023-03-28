@@ -3,7 +3,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <a href="{{ route('role.create') }}" class="py-2 px-3 btn btn-success" >Tambah Role</a>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSubMenu" aria-controls="offcanvasSubMenu">Tambah SubMenu</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -11,8 +11,11 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
+                                <th>Menu_id</th>
+                                <th>Title</th>
+                                <th>Icon</th>
                                 <th>Name</th>
-                                <th>Access</th>
+                                <th>Url</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -25,15 +28,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasRole" aria-labelledby="offcanvasRoleLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasSubMenu" aria-labelledby="offcanvasSubMenuLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasRoleLabel">Form Role</h5>
+            <h5 class="offcanvas-title" id="offcanvasSubMenuLabel">Form SubMenu</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('role.store') }}" method="post">
+            <form action="{{ route('submenu.store') }}" method="post">
                 @csrf
-                @include('admin.role.form')
+                @include('admin.submenu.form')
             </form>
         </div>
     </div>
@@ -45,14 +48,17 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('role.data') }}',
+                url: '{{ route('submenu.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
                 { data: 'id', name: 'id' },
-                { data: 'name', name: 'name' },
-                { data: 'menu', name: 'menu' },
+            { data: 'menu_id', name: 'menu_id' },
+            { data: 'title', name: 'title' },
+            { data: 'icon', name: 'icon' },
+            { data: 'name', name: 'name' },
+            { data: 'url', name: 'url' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

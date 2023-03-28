@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'admin@gmail.com',
         // ]);
         $this->call([
-            RoleSeeder::class
+            // RoleSeeder::class
+            MenuSeeder::class
         ]);
     }
 }

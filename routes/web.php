@@ -19,6 +19,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTruckingController;
 use App\Http\Controllers\PelayaranController;
 use App\Http\Controllers\PengirimController;
+use App\Http\Controllers\RoleAccessController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SanguSopirController;
 use App\Http\Controllers\SatuanController;
@@ -52,7 +53,14 @@ Route::get('/', function () {
     return redirect('login');
 });
 Route::get('test', function () {
-    return view('test');
+    $role = Auth::user()->role_id;
+    $access = App\Models\RoleAccess::join('sub_menu','sub_menu.id','=','role_access.sub_menu_id')
+    ->join('menu','menu.id','=','sub_menu.menu_id')
+    ->where('role_access.role_id',$role)
+    ->select('menu.title as label','menu.id','sub_menu.url','sub_menu.title','role_access.role_id','role_access.sub_menu_id')
+    ->get()
+    ->groupBy('id');
+    dd($access);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -85,6 +93,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('customertrucking',CustomerTruckingController::class);
     Route::resource('kendaraan',KendaraanController::class);
     Route::resource('sopir',SopirController::class);
+    Route::resource('role-access',RoleAccessController::class);
     Route::resource('sangusopir',SanguSopirController::class);
     Route::resource('ordertrucking',OrderTruckingController::class);
 
@@ -136,3 +145,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-pph',[SyncController::class,'pph']);
 });
 // Route::view('test','test');
+Route::resource('menu',App\Http\Controllers\MenuController::class);Route::resource('submenu',App\Http\Controllers\SubMenuController::class);

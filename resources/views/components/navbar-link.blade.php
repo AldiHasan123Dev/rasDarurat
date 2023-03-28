@@ -1,5 +1,16 @@
+@php
+    $role = Auth::user()->role_id;
+    $access = App\Models\RoleAccess::join('sub_menu','sub_menu.id','=','role_access.sub_menu_id')
+                ->join('menu','menu.id','=','sub_menu.menu_id')
+                ->where('role_access.role_id',$role)
+                ->select('menu.title as label','menu.name','menu.icon','menu.id','sub_menu.url','sub_menu.title','role_access.role_id','role_access.sub_menu_id')
+                ->get()
+                ->groupBy('id');
+    // dd($access);
+@endphp
+
 <div class="nav-item-wrapper my-2">
-    <a use:link class="nav-link label-1" href="#" role="button" aria-expanded="false">
+    <a class="nav-link label-1" href="#" role="button" aria-expanded="false">
         <div class="d-flex align-items-center">
             <span class="nav-link-icon"><span class="fas fa-home"></span></span>
             <span class="nav-link-text-wrapper"><span class="nav-link-text">Dashboard</span></span>
@@ -7,239 +18,26 @@
     </a>
 </div>
 
-@if (Auth::user()->role_id!=3)
+@foreach ($access as $item)
 <div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1 collapsed" href="#home" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="home">
+    <a class="nav-link dropdown-indicator label-1 collapsed" href="#{{ $item->first()->name }}" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="home">
         <div class="d-flex align-items-center">
-        <span class="nav-link-icon"><span class="fas fa-database"></span></span><span class="nav-link-text mr-2">Master</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
+        <span class="nav-link-icon"><span class="{{ $item->first()->icon }}"></span></span><span class="nav-link-text mr-2">{{ $item->first()->label }}</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
         </div>
     </a>
     <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="home">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('customer.index') ? 'active' : '' }}" href="{{ route('customer.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('jadwalkapal.index') ? 'active' : '' }}" href="{{ route('jadwalkapal.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Jadwal Kapal</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('pelayaran.index') ? 'active' : '' }}" href="{{ route('pelayaran.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Suplier</span></div>
-                </a>
-            </li>
-            @if (Auth::user()->role_id==1)
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('user.index') ? 'active' : '' }}" href="{{ route('user.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">User</span></div>
-                </a>
-            </li>
-            @endif
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('kapal.index') ? 'active' : '' }}" href="{{ route('kapal.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Data</span></div>
-                </a>
-            </li>
+        <ul class="nav collapse parent show" id="{{ $item->first()->name }}">
+            @foreach ($item as $menu)
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->url()==$menu->url ? 'active' : '' }}" href="{{ $menu->url }}" aria-expanded="false">
+                    <div class="d-flex align-items-center"><span class="nav-link-text">{{ $menu->title }}</span></div>
+                    </a>
+                </li>
+            @endforeach
         </ul>
     </div>
 </div>
-@endif
-
-@if (Auth::user()->role_id==2||Auth::user()->role_id==1)
-<div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#ekspedisi" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="ekspedisi">
-        <div class="d-flex align-items-center">
-        <span class="nav-link-icon"><span class="fas fa-train"></span></span><span class="nav-link-text mr-2">Ekspedisi</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
-        </div>
-    </a>
-    <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="ekspedisi">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('cetak.suratJalan')?'active':'' }}" href="{{ route('cetak.suratJalan') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Surat Jalan </span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('cetak.pickOrder')?'active':'' }}" href="{{ route('cetak.pickOrder') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">PO</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('order.index')?'active':'' }}" href="{{ route('order.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Order</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('cetak.shipment')?'active':'' }}" href="{{ route('cetak.shipment') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Shipping Instruction</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('order.ba-kembali')?'active':'' }}" href="{{ route('order.ba-kembali') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('order.asuransi')?'active':'' }}" href="{{ route('order.asuransi') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Asuransi</span></div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-@endif
-
-@if (Auth::user()->role_id==3||Auth::user()->role_id==1)
-<div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#keuangan" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="keuangan">
-        <div class="d-flex align-items-center">
-        <span class="nav-link-icon"><span class="fas fa-dollar"></span></span><span class="nav-link-text mr-2">Keuangan</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
-        </div>
-    </a>
-    <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="keuangan">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('admin/keuangan/order')?'active':'' }}" href="{{ route('keuangan.order') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Order </span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('keuangan.ba_kembali')?'active':'' }}" href="{{ route('keuangan.ba_kembali') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">BA Kembali</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('keuangan.pre_invoice')?'active':'' }}" href="{{ route('keuangan.pre_invoice') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Pre Invoice</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('order.invoice')?'active':'' }}" href="{{ route('order.invoice') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Invoice</span></div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-
-<div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#pajak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="pajak">
-        <div class="d-flex align-items-center">
-        <span class="nav-link-icon"><span class="fas fa-dollar"></span></span><span class="nav-link-text mr-2">Pajak</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
-        </div>
-    </a>
-    <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="pajak">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('keuangan.customer',['filter'=>'keuangan'])?'active':'' }}" href="{{ route('keuangan.customer',['filter'=>'keuangan']) }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Master NPWP</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('keuangan.laporan.ppn')?'active':'' }}" href="{{ route('keuangan.laporan.ppn') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Laporan PPN</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('nsfp.index')?'active':'' }}" href="{{ route('nsfp.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Nomor Seri (NSFP)</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('nsfp.cancel')?'active':'' }}" href="{{ route('nsfp.cancel') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text"> NSFP Ditarik</span></div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-@endif
-
-@if (Auth::user()->role_id==4||Auth::user()->role_id==1)
-<div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#trucking" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="trucking">
-        <div class="d-flex align-items-center">
-        <span class="nav-link-icon"><span class="fas fa-truck"></span></span><span class="nav-link-text mr-2">Trucking</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
-        </div>
-    </a>
-    <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="trucking">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('trucking.order')?'active':'' }}" href="{{ route('trucking.order') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Order Job</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('customertrucking.index')?'active':'' }}" href="{{ route('customertrucking.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('kendaraan.index')?'active':'' }}" href="{{ route('kendaraan.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Nopol</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('sopir.index')?'active':'' }}" href="{{ route('sopir.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Sopir</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('sangusopir.index')?'active':'' }}" href="{{ route('sangusopir.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Sangu Sopir</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('ordertrucking.index')?'active':'' }}" href="{{ route('ordertrucking.index') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text"> Order Trucking</span></div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-@endif
-
-@if (Auth::user()->role_id==1)
-<div class="nav-item-wrapper">
-    <a class="nav-link dropdown-indicator label-1" href="#laporan-menu" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="laporan-menu">
-        <div class="d-flex align-items-center">
-        <span class="nav-link-icon"><span class="fas fa-list"></span></span><span class="nav-link-text mr-2">Laporan</span><div class="dropdown-indicator-icon"><span class="fas fa-caret-right"></span></div>
-        </div>
-    </a>
-    <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="laporan-menu">
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('laporan.pelayaran')?'active':'' }}" href="{{ route('laporan.pelayaran') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Pelayaran</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('laporan.tujuan')?'active':'' }}" href="{{ route('laporan.tujuan') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Tujuan</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('laporan.customer')?'active':'' }}" href="{{ route('laporan.customer') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Customer</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('laporan.marketing')?'active':'' }}" href="{{ route('laporan.marketing') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">Marketing</span></div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->routeIs('laporan.cs')?'active':'' }}" href="{{ route('laporan.cs') }}" aria-expanded="false">
-                <div class="d-flex align-items-center"><span class="nav-link-text">CS</span></div>
-                </a>
-            </li>
-        </ul>
-    </div>
-</div>
-@endif
+@endforeach
 {{-- <div class="nav-item-wrapper">
     <a class="nav-link dropdown-indicator label-1" href="#ccetak" role="button" data-bs-toggle="collapse" aria-expanded="true" aria-controls="ccetak">
         <div class="d-flex align-items-center">

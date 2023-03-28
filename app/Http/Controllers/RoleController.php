@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use App\Models\Role;
+use App\Models\RoleAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -14,9 +16,21 @@ class RoleController extends Controller
         return view('admin.role.index');
     }
 
+    public function create()
+    {
+        $menus = Menu::all();
+        return view('admin.role.create', compact('menus'));
+    }
+
+    public function edit(Role $role)
+    {
+        $menus = Menu::all();
+        return view('admin.role.edit', compact('menus','role'));
+    }
+
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         Role::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -25,7 +39,19 @@ class RoleController extends Controller
     public function update(Role $role, Request $request)
     {
         $data = $request->all();
-        $role->update($data);
+        $role->update([
+            'name' => $data['name']
+        ]);
+
+        RoleAccess::where('role_id',$role->id)->delete();
+        foreach ($data['sub_menu_id'] as $item ) {
+            RoleAccess::create([
+                'role_id' => $role->id,
+                'sub_menu_id' => $item
+            ]);
+        }
+
+        return redirect()->route('role.index')->with('success','Data berhasil disimpan');
 
         return back()->with('success','Data berhasil diupdate');
     }
@@ -42,6 +68,13 @@ class RoleController extends Controller
         $data = Role::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('menu',function($data){
+                $menu = '';
+                foreach ($data->access as $item ) {
+                    $menu .= $item->sub_menu->title.'; ';
+                }
+                return $menu;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.role.form',['role'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
@@ -50,21 +83,7 @@ class RoleController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRoleUpdate'.$data->id.'" aria-controls="offcanvasRoleUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRoleUpdate'.$data->id.'" aria-labelledby="offcanvasRoleUpdate'.$data->id.'Label">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasRoleUpdate'.$data->id.'Label">Form Role</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('role.update',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
-                                </form>
-                            </div>
+                            <a href="'.route('role.edit',$data).'" class="no-attr text-primary"><i class="fas fa-pencil"></i></a>
                         </div>';
                 return $html;
             })

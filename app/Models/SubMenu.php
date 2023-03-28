@@ -6,16 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Role extends Model
+class SubMenu extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'sub_menu';
     protected $fillable = [
+        'menu_id',
+        'title',
+        'icon',
         'name',
+        'url',
     ];
 
-    public function access()
+    public function menu()
     {
-        return $this->hasMany(RoleAccess::class,'role_id');
+        return $this->belongsTo(Menu::class,'menu_id');
     }
 }
