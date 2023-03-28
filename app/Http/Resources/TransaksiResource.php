@@ -34,6 +34,7 @@ class TransaksiResource extends JsonResource
             'sub_total' => number_format(ceil($this->sub_total)),
             'ppn' => number_format($this->ppn),
             'pph' =>  number_format($this->pph),
+            'ppn_subtotal' =>  number_format(ceil($this->ppn) + ceil($this->sub_total)),
         ];
     }
 }

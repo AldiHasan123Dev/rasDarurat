@@ -111,7 +111,7 @@
         }
     });
 
-    $('#jqGrid').jqGrid('filterToolbar');
+    $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
     $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
         search: false, // show search button on the toolbar
         add: false,

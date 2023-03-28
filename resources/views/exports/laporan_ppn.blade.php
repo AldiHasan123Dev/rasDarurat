@@ -34,11 +34,18 @@
                 <td>{{ $item->keterangan }}</td>
                 <td>{{ $item->nsfp }}</td>
                 <td>{{ number_format(ceil($item->sub_total)) }}</td>
-                <td>{{ number_format($item->ppn) }}</td>
-                <td>{{ number_format(ceil($item->ppn + $item->sub_total)) }}</td>
+                <td>{{ number_format(ceil($item->ppn)) }}</td>
+                <td>{{ number_format(ceil($item->ppn)+ceil($item->sub_total)) }}</td>
                 <td>{{ number_format($item->pph) }}</td>
                 <td>{{ $item->no_job() }}</td>
             </tr>
         @endforeach
+        <tr>
+            <td colspan="11">JUMLAH</td>
+            <td>{{ number_format(ceil($transaksi->sum('sub_total'))) }}</td>
+            <td>{{ number_format(ceil($transaksi->sum('ppn'))) }}</td>
+            <td>{{ number_format(ceil($transaksi->sum('ppn')) + ceil($transaksi->sum('sub_total'))) }}</td>
+            <td>{{ number_format(ceil($transaksi->sum('pph'))) }}</td>
+        </tr>
     </tbody>
 </table>

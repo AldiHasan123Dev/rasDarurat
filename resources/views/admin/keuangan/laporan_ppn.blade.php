@@ -191,7 +191,7 @@
                 {search:true, name: 'daftar_faktur_pajak', label : 'Faktur'},
                 {search:true, name: 'sub_total', label : 'Sub Total'},
                 {search:true, name: 'ppn', label : 'PPN'},
-                {search:true, name: 'total', label : 'Total'},
+                {search:true, name: 'ppn_subtotal', label : 'Total'},
                 {search:true, name: 'pph', label : 'PPH'},
                 {search:true, name: 'no_job', label : 'JOB', width:500},
             ],
@@ -206,7 +206,7 @@
             caption: "Laporan PPN"
         });
 
-        $('#jqGrid').jqGrid('filterToolbar');
+        $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
 			$('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
                 search: false, // show search button on the toolbar
                 add: false,
