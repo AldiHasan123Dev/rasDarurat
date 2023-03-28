@@ -63,7 +63,7 @@ class OrderResource extends JsonResource
             'unit' => $this->tarif->satuanInfo->nama ?? '-',
             'tarif' => is_null($this->tarif) ? '-' :  number_format($this->tarif->tarif),
             'agen' => $this->agen,
-            'penerima_bl' => $this->agen=='AGEN'?($this->agen->nama??'-'):($this->penerima_bl->nama??'-'),
+            'penerima_bl' => $this->agen=='AGEN'?($this->agent->nama??'-'):($this->penerima_bl->nama??'-'),
             'keterangan' => $this->keterangan,
             'class' => $class,
             'tanggal' => date('d/m/y', strtotime($this->created_at)),
