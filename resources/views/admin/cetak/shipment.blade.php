@@ -57,11 +57,22 @@
         <div class="card p-3">
             <div class="d-flex justify-content-between" style="gap:5px">
                 <div class="d-flex" style="gap: 10px">
-                    <div class="d-flex">
+                    <div class="d-flex gap-3">
                         <div class="mr-3">
                             <input type="text" id="attn" class="form-control" style="font-size:.7rem" placeholder="Attention">
                         </div>
                         <button onclick="window.print()" class="btn btn-sm btn-success ml-2 mb-3">Print</button>
+                        @if (request('jadwal_kapal_id'))
+                            <form action="{{ route('order.export.si') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="tujuan" value="{{ request('tujuan') }}">
+                                <input type="hidden" name="jadwal_kapal_id" value="{{ request('jadwal_kapal_id') }}">
+                                <input type="hidden" name="to" value="{{ $jadwal_kapal->pelayaran->nama }}">
+                                <input type="hidden" name="attn" id="attn-input">
+                                <input type="hidden" name="title" value="SI {{ strtoupper($jadwal_kapal->kapal->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }} {{ strtoupper($tujuan->nama) }} TD {{ date('d F Y', strtotime($jadwal_kapal->td)) }}">
+                                <button type="submit" class="btn btn-sm btn-primary">Export Excel</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
                 <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-info">Cari SI</button>
@@ -212,6 +223,7 @@
         $('#attn').keyup(function (e) {
             var val = $(this).val();
             $('#d-attn').html(val);
+            $('#attn-input').val(val);
         });
         $("#jadwal_kapal_id-si").select2({
             dropdownParent: $('#exampleModal'),

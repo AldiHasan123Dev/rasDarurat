@@ -115,7 +115,9 @@ class CetakController extends Controller
         $lokasi = request('tujuan');
         $tujuan = Lokasi::find($lokasi);
         $pengirim = Pengirim::all();
-        $orders = Order::where('jadwal_kapal_id', $id)->get();
+        $orders = Order::where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
+            $q->where('tujuan',$lokasi);
+        })->get();
 
         $jadwal_kapals = JadwalKapal::all()->where('is_active',0);
         $pelayaran = $jadwal_kapals->pluck('pelayaran_id')->toArray();

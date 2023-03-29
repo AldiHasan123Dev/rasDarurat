@@ -9,6 +9,7 @@ use App\Models\Kapal;
 use App\Models\Order;
 use App\Models\Satuan;
 use App\Models\Shipment;
+use App\Models\SubMenu;
 use App\Models\Tarif;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
@@ -195,5 +196,18 @@ class SyncController extends Controller
             $i++;
         }
         return response('berhasil mengupdate '.$i.' data');
+    }
+
+    public function menu_link()
+    {
+        $menu = SubMenu::all();
+        foreach ($menu as $item ) {
+            $url = str_replace('https://ptras.id/','http://127.0.0.1:8000/',$item->url);
+            $item->update([
+                'url' => $url
+            ]);
+        }
+
+        return response('success');
     }
 }

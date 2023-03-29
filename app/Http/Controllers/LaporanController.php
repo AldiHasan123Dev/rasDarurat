@@ -32,12 +32,12 @@ class LaporanController extends Controller
     }
     public function marketing()
     {
-        $data = User::where('role_id',2)->get();
+        $data = User::where('role_id',2)->whereHas('marketing')->get();
         return view('admin.laporan.marketing', compact('data'));
     }
     public function cs()
     {
-        $data = User::where('role_id',2)->get();
+        $data = User::where('role_id',2)->whereHas('cs')->get();
         return view('admin.laporan.cs', compact('data'));
     }
 }

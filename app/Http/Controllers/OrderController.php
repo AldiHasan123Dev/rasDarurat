@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SIExport;
 use App\Imports\OrderImport;
 use App\Models\Agen;
 use App\Models\Barang;
@@ -155,6 +156,11 @@ class OrderController extends Controller
             return redirect()->route('order.ba-kembali',['filter-order'=>'ba_kembali'])->with('success','Data berhasil diupdate');
         }
         return redirect()->route('order.index')->with('success','Data berhasil diupdate');
+    }
+
+    public function SIExport()
+    {
+        return Excel::download(new SIExport(request('attn'),request('to'),request('jadwal_kapal_id'),request('tujuan')), request('title').'.xlsx');
     }
 
     public function edit(Order $order)

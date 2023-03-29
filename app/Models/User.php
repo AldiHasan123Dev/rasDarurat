@@ -50,6 +50,16 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
+    public function cs()
+    {
+        return $this->hasMany(Customer::class,'cs_id');
+    }
+
+    public function marketing()
+    {
+        return $this->hasMany(Customer::class,'marketing_id');
+    }
+
     public function laporanCs20Fit($bulan, $thn = 2023)
     {
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
@@ -57,7 +67,8 @@ class User extends Authenticatable
                     ->join('customers','customers.id','=','tarif.customer_id')
                     ->leftJoin('users','users.id','=','customers.marketing_id')
                     ->leftJoin('users as cs','cs.id','=','customers.cs_id')
-                    ->where('tarif.shipment',[1,7,9,11])
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%2%')
                     // ->orWhere('customers.marketing_id',$this->id)
                     ->where('customers.cs_id',$this->id)
                     ->whereMonth('order.created_at',sprintf('%02d',$bulan))
@@ -73,7 +84,8 @@ class User extends Authenticatable
                     ->join('customers','customers.id','=','tarif.customer_id')
                     ->leftJoin('users','users.id','=','customers.marketing_id')
                     ->leftJoin('users as cs','cs.id','=','customers.cs_id')
-                    ->where('tarif.shipment',[8,10,12])
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%4%')
                     // ->orWhere('customers.marketing_id',$this->id)
                     ->where('customers.cs_id',$this->id)
                     ->whereMonth('order.created_at',sprintf('%02d',$bulan))
@@ -89,7 +101,8 @@ class User extends Authenticatable
                     ->join('customers','customers.id','=','tarif.customer_id')
                     ->leftJoin('users','users.id','=','customers.marketing_id')
                     ->leftJoin('users as cs','cs.id','=','customers.cs_id')
-                    ->where('tarif.shipment',[1,7,9,11])
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%2%')
                     ->where('customers.marketing_id',$this->id)
                     // ->where('customers.cs_id',$this->id)
                     ->whereMonth('order.created_at',sprintf('%02d',$bulan))
@@ -105,7 +118,8 @@ class User extends Authenticatable
                     ->join('customers','customers.id','=','tarif.customer_id')
                     ->leftJoin('users','users.id','=','customers.marketing_id')
                     ->leftJoin('users as cs','cs.id','=','customers.cs_id')
-                    ->where('tarif.shipment',[8,10,12])
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%4%')
                     ->where('customers.marketing_id',$this->id)
                     // ->where('customers.cs_id',$this->id)
                     ->whereMonth('order.created_at',sprintf('%02d',$bulan))

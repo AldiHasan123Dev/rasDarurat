@@ -103,6 +103,7 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
+                                <th>Tanggal</th>
                                 <th>Pelayaran</th>
                                 <th>Dari</th>
                                 <th>Tujuan</th>
@@ -207,6 +208,7 @@
             },
             columns: [
                 { data: 'id', name: 'id', visible:false },
+                { data: 'updated_at', name: 'updated_at' },
                 { data: 'pelayaran_id', name: 'pelayaran_id' },
                 { data: 'dari', name: 'dari' },
                 { data: 'tujuan', name: 'tujuan' },

@@ -19,7 +19,8 @@ class Lokasi extends Model
     {
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
-                    ->where('tarif.shipment',[1,7,9,11])
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%2%')
                     ->where('tarif.tujuan',$this->id)
                     ->whereMonth('order.created_at',sprintf('%02d',$bulan))
                     ->whereYear('order.created_at',$thn)
@@ -31,7 +32,8 @@ class Lokasi extends Model
     {
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
-                    ->where('tarif.shipment',[8,10,12])
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%4%')
                     ->where('tarif.tujuan',$this->id)
                     ->whereMonth('order.created_at',sprintf('%02d',$bulan))
                     ->whereYear('order.created_at',$thn)

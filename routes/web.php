@@ -131,6 +131,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('cetak/invoice',[CetakController::class,'invoice'])->name('cetak.invoice');
     Route::get('cetak/invoice-cont',[CetakController::class,'invoiceCont'])->name('cetak.invoice.cont');
     Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
+    Route::post('si-export',[OrderController::class,'SIExport'])->name('order.export.si');
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('customer-import-update',[CustomerController::class,'importUpdate'])->name('customer.import.update');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
@@ -143,6 +144,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-data',[SyncController::class,'data']);
     Route::get('sync-agen',[SyncController::class,'agen']);
     Route::get('sync-pph',[SyncController::class,'pph']);
+    Route::get('sync-menu',[SyncController::class,'menu_link']);
 });
 // Route::view('test','test');
 Route::resource('menu',App\Http\Controllers\MenuController::class);Route::resource('submenu',App\Http\Controllers\SubMenuController::class);
