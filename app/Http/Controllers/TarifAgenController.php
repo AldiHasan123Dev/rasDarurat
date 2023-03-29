@@ -52,6 +52,12 @@ class TarifAgenController extends Controller
             ->addColumn('agen_id', function($data){
                 return $data->agen->nama;
             })
+            ->addColumn('dari', function($data){
+                return $data->dariInfo->nama;
+            })
+            ->addColumn('tujuan', function($data){
+                return $data->tujuanInfo->nama;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.tarifagen.form',['tarifagen'=>$data])->render();
                 $html = '<div class="d-flex gap-1">

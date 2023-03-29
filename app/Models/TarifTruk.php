@@ -27,4 +27,14 @@ class TarifTruk extends Model
     {
         return $this->belongsTo(Truk::class,'truk_id');
     }
+
+    public function dariInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'dari');
+    }
+
+    public function tujuanInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'tujuan');
+    }
 }

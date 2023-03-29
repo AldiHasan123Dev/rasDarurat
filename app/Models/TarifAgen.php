@@ -27,4 +27,14 @@ class TarifAgen extends Model
     {
         return $this->belongsTo(Agen::class,'agen_id');
     }
+
+    public function dariInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'dari');
+    }
+
+    public function tujuanInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'tujuan');
+    }
 }

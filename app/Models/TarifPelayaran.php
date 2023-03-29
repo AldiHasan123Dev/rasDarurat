@@ -27,4 +27,14 @@ class TarifPelayaran extends Model
     {
         return $this->belongsTo(Pelayaran::class,'pelayaran_id');
     }
+
+    public function dariInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'dari');
+    }
+
+    public function tujuanInfo()
+    {
+        return $this->belongsTo(Lokasi::class,'tujuan');
+    }
 }

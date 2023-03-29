@@ -52,6 +52,12 @@ class TarifTrukController extends Controller
             ->addColumn('truk_id', function($data){
                 return $data->truk->nama;
             })
+            ->addColumn('dari', function($data){
+                return $data->dariInfo->nama;
+            })
+            ->addColumn('tujuan', function($data){
+                return $data->tujuanInfo->nama;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.tariftruk.form',['tariftruk'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
