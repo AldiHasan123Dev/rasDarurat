@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\Satuan;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Str;
@@ -165,8 +166,10 @@ class OrderController extends Controller
 
     public function edit(Order $order)
     {
-        if (!is_null($order->jadwal_kapal->td)) {
-            return back()->with('danger','Order tidak bisa di edit');
+        if(Auth::user()->role_id!=1){
+            if (!is_null($order->jadwal_kapal->td)) {
+                return back()->with('danger','Order tidak bisa di edit');
+            }
         }
         $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
                     ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
