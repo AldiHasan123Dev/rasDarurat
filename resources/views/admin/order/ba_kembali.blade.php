@@ -65,6 +65,7 @@
     <form action="" class="modal-dialog" method="post" id="form-ba-kembali">
         @csrf
         @method('PUT')
+        <input type="hidden" name="order_id" id="order_id">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="ba-'.$data->id.'Label">BA Kembali <span class="nojob"></span></h5>
@@ -74,11 +75,11 @@
                 <div class="row">
                     <div class="col-12 mb-2">
                         <label for="ba_kembali">Barang Diantar</label>
-                        <input type="date" name="barang_diantar" class="form-control">
+                        <input type="date" name="barang_diantar" class="form-control" id="barang_diantar">
                     </div>
                     <div class="col-12 mb-2">
                         <label for="ba_kembali">BA Kembali</label>
-                        <input type="date" name="ba_kembali" class="form-control">
+                        <input type="date" name="ba_kembali" class="form-control" id="ba_kembali">
                     </div>
                     <div class="col-12 mb-2">
                         <label for="keterangan">Keterangan</label>
@@ -88,7 +89,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" name="ba" value="1" class="btn btn-primary" onclick="return confirm(\'are you sure?\')">Simpan</button>
+                <button type="button" name="ba" value="1" class="btn btn-primary" id="simpan">Simpan</button>
             </div>
         </div>
     </form>
@@ -101,6 +102,7 @@
 <script>
     $('#bttb-info').hide();
     $('#ag').hide();
+    var modal = new bootstrap.Modal(document.getElementById('ba-kembali'))
         let id = null;
         let tableOrder = $('#table-order').DataTable({
             processing: true,
@@ -153,9 +155,30 @@
             var id =  tableOrder.row( this ).data().id;
             var no_job =  tableOrder.row( this ).data().no_job;
             $('#order_id_bttb').val(id);
+            $('#order_id').val(id);
             $('.nojob').html(no_job);
             $('#form-ba-kembali').attr('action','{{ url('admin/order') }}/'+id);
         })
 
+        $('#simpan').click(function (e) {
+            if (confirm('are you sure?')) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('api/update-order') }}",
+                    data: {
+                        ba:1,
+                        order_id:$('#order_id').val(),
+                        barang_diantar:$('#barang_diantar').val(),
+                        ba_kembali:$('#ba_kembali').val(),
+                        keterangan:$('#keterangan').val(),
+                    },
+                    success: function (response) {
+                        alert('Data berhasil disimpan');
+                        modal.hide();
+                        tableOrder.ajax.reload();
+                    }
+                });
+            }
+        });
 </script>
 @endsection

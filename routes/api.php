@@ -44,6 +44,7 @@ Route::get('get-asuransi-pelayaran/{pelayaran_id}', [AsuransiController::class,'
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
+Route::post('update-order', [OrderController::class,'update']);
 Route::get('get-order', [OrderController::class,'index']);
 Route::get('get-transaksi', [TransaksiController::class,'index']);
 Route::get('get-order-ba-kembali', [OrderController::class,'ba_kembali']);
