@@ -559,7 +559,7 @@
         $.ajax({
             type: "GET",
             url: "{{ url('api/get-order') }}",
-            data:{start:start,limit:250},
+            data:{start:start,limit:50},
             success: function (response) {
                 $.each(response.data, function (idx, item) {
                     data.push(item)
