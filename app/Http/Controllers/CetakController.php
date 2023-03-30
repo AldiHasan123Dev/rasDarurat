@@ -81,6 +81,7 @@ class CetakController extends Controller
     public function bttb()
     {
         $order = Order::find(request('order_id'));
+        $orders = Order::where('job',$order->job)->get();
         if (!$order) {
             return redirect()->route('order.index');
         }
@@ -90,7 +91,7 @@ class CetakController extends Controller
         }
 
         $data = BTTB::where('order_id',$order->id)->get();
-        return view('admin.cetak.bttb', compact('order','data'));
+        return view('admin.cetak.bttb', compact('order','orders','data'));
     }
 
     public function bttbKubikasi()

@@ -53,7 +53,31 @@
 @endsection
 @section('content')
     <div class="container">
-        <div class="d-flex" style="gap:5px">
+        <div class="card p-3 shadow-lg">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>JOB</th>
+                        <th>ID JOB</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($orders as $ord)
+                    <tr>
+                        <td>{{ $loop->iteartion }}</td>
+                        <td>{{ $ord->job }}</td>
+                        <td>{{ $ord->job }}-{{ sprintf('%02d',$ord->no_job) }}</td>
+                        <td>
+                            <a href="{{ route('cetak.bttb',['order_id',$ord->id]) }}">Cetak BTTB</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex mt-3" style="gap:5px">
             <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
             <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
         </div>
@@ -879,9 +903,7 @@
                                 @endif
                                 <hr class="mt-4">
                             </div>
-                            @if (ceil($data->count()/15)!=1)
-                                <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
-                            @endif
+                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of {{ $pages }}</i></div>
                         </div>
                         @if (ceil($data->count()/15)!=1)
                             <p class="pagebreak"></p>
