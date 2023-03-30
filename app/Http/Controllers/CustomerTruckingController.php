@@ -45,7 +45,7 @@ class CustomerTruckingController extends Controller
 
     public function datatable()
     {
-        $data = CustomerTrucking::all()->sortByDesc('created_at');
+        $data = CustomerTrucking::all()->sortBy('nama');
 
         return Datatables::of($data)
             ->addColumn('action', function ($data) {

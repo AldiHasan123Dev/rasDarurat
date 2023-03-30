@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->nullable()->constrained('order')->nullOnDelete();
             $table->foreignId('customer_id')->nullable()->constrained('customer_trucking')->nullOnDelete();
+            $table->foreignId('tarif_id')->nullable()->constrained('tarif_trucking')->nullOnDelete();
             $table->foreignId('sopir_id')->nullable()->constrained('sopir')->nullOnDelete();
             $table->foreignId('kendaraan_id')->nullable()->constrained('kendaraan')->nullOnDelete();
             $table->string('container')->nullable();
@@ -25,6 +26,9 @@ return new class extends Migration
             $table->date('sj_kembali')->nullable();
             $table->date('sj_kembali_fa')->nullable();
             $table->text('keterangan')->nullable();
+            $table->boolean('ambil_empty_tambak_langon')->default(0);
+            $table->boolean('ambil_empty_teluk_langon')->default(0);
+            $table->boolean('bongkar_full_teluk_langon')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

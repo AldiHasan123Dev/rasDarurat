@@ -8,6 +8,7 @@ use App\Models\Kendaraan;
 use App\Models\OrderTrucking;
 use App\Models\SanguSopir;
 use App\Models\Sopir;
+use App\Models\TarifTrucking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -29,6 +30,10 @@ class OrderTruckingController extends Controller
     {
         $data = $request->all();
         $sangu = SanguSopir::find($data['tujuan']);
+        $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
+        if(!$tarif){
+            return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
+        }
         if($data['tipe']=='20'){
             $data['sangu'] = $sangu->sangu_20;
             $data['simpanan'] = $sangu->ukuran_20 - $sangu->sangu_20;
@@ -42,6 +47,7 @@ class OrderTruckingController extends Controller
             $data['simpanan'] = $sangu->ukuran_combo - $sangu->sangu_combo;
         }
         $data['tujuan'] = $sangu->tujuanInfo->nama;
+        $data['tarif_id'] = $tarif->id;
         OrderTrucking::create($data);
 
         return back()->with('success','Data berhasil disimpan');

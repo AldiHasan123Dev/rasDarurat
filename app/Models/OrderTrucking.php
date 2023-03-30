@@ -15,6 +15,7 @@ class OrderTrucking extends Model
         'order_id',
         'customer_id',
         'sopir_id',
+        'tarif_id',
         'kendaraan_id',
         'dari',
         'tujuan',
@@ -28,6 +29,9 @@ class OrderTrucking extends Model
         'sj_kembali',
         'sj_kembali_fa',
         'keterangan',
+        'ambil_empty_tambak_langon',
+        'ambil_empty_teluk_langon',
+        'bongkar_full_teluk_langon',
     ];
 
     public function order()
@@ -48,5 +52,10 @@ class OrderTrucking extends Model
     public function kendaraan()
     {
         return $this->belongsTo(Kendaraan::class,'kendaraan_id');
+    }
+
+    public function tarif()
+    {
+        return $this->belongsTo(TarifTrucking::class,'tarif_id');
     }
 }

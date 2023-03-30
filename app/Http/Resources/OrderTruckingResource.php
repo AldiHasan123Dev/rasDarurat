@@ -14,6 +14,16 @@ class OrderTruckingResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $keterangan = '';
+        if($this->ambil_empty_tambak_langon==1){
+            $keterangan .= 'Ambil Empty Tambak Langon; ';
+        }
+        if($this->ambil_empty_teluk_langon==1){
+            $keterangan .= 'Ambil Empty Teluk Lamong; ';
+        }
+        if($this->bongkar_full_teluk_langon==1){
+            $keterangan .= 'Bongkar Full Teluk Lamong; ';
+        }
         return [
             'id' => $this->id,
             'order_id' => $this->order_id,
@@ -32,10 +42,11 @@ class OrderTruckingResource extends JsonResource
             'dari' => 'PERAK',
             'tujuan' => $this->tujuan,
             'tipe' => $this->tipe,
-            'tagihan' => number_format($this->tagihan,0,',','.'),
+            'tarif' => $this->tarif ? number_format($this->tarif->tarif,0,',','.') : '-',
             'sangu' => number_format($this->sangu,0,',','.'),
             'simpanan' => number_format($this->simpanan,0,',','.'),
             'kuli' => number_format($this->kuli,0,',','.'),
+            'keterangan' => $keterangan
         ];
     }
 }

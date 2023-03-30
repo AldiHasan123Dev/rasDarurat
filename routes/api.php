@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\NSFPController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\SanguSopirController;
 use App\Http\Controllers\Api\TagihanController;
 use App\Http\Controllers\Api\TarifController;
 use App\Http\Controllers\Api\TarifTruckingController;
@@ -37,6 +38,7 @@ Route::post('customer-update', [CustomerController::class,'update'])->name('api.
 Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
+Route::post('sangu-sopir', [SanguSopirController::class,'getSangu'])->name('api.sangusopir.getSangu');
 Route::post('tarif-trucking', [TarifTruckingController::class,'createOrUpdate'])->name('api.tariftrucking.createorupdate');
 Route::post('tagihan', [TagihanController::class,'store'])->name('api.tagihan.store');
 Route::post('transaksi-update', [TransaksiController::class,'update'])->name('api.transaksi.update');

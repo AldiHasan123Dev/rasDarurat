@@ -45,19 +45,19 @@
 
 <!-- Modal -->
 <div class="modal fade" id="order" tabindex="-1" aria-labelledby="orderLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <form action="{{ route('ordertrucking.store') }}" method="post" class="modal-content">
             @csrf
             <div class="modal-header">
                 <h5 class="modal-title" id="orderLabel">Tambah Order Trucking</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-2">
+            <div class="modal-body row">
+                <div class="mb-2 col-4">
                     <label for="created_at">Tanggal</label>
                     <input type="date" name="created_at" id="created_at" class="form-control" value="{{ date('Y-m-d') }}">
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="customer">Customer</label>
                     <select name="customer_id" id="customer" class="form-control" required>
                         @foreach ($customers as $cus)
@@ -65,7 +65,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="kendaraan">Kendaraan</label>
                     <select name="kendaraan_id" id="kendaraan" class="form-control" required>
                         @foreach ($kendaraan as $kend)
@@ -73,7 +73,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="sopir">Sopir</label>
                     <select name="sopir_id" id="sopir" class="form-control" required>
                         @foreach ($sopir as $sup)
@@ -81,29 +81,57 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="container">No. Cont</label>
                     <input type="text" name="container" id="container" class="form-control" required>
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="seal">Seal</label>
                     <input type="text" name="seal" id="seal" class="form-control" required>
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="tipe">Tipe Cont</label>
                     <select name="tipe" id="tipe" class="form-control" required>
-                        <option value="20">20 Fit</option>
-                        <option value="40">40 Fit</option>
+                        <option value="20">20'</option>
+                        <option value="40">40'</option>
                         <option value="COMBO">COMBO</option>
                     </select>
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-4">
                     <label for="tujuan">Tujuan</label>
                     <select name="tujuan" id="tujuan" class="form-control" required>
                         @foreach ($tujuan as $loc)
                             <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
                         @endforeach
                     </select>
+                </div>
+                <div class="mb-2 col-4">
+                    <label for="sangu">Sangu</label>
+                    <input type="text" name="sangu" id="sangu" class="form-control" disabled>
+                </div>
+                <div class="my-2 col-12">
+                    Keterangan
+                    <hr>
+                    <div class="d-flex gap-3">
+                        <div>
+                            <label>
+                                <input type="checkbox" name="ambil_empty_tambak_langon" value="1">
+                                Ambil Empty Tambak Langon
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="ambil_empty_teluk_langon" value="1">
+                                Ambil Empty Teluk Lamong
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="bongkar_full_teluk_langon" value="1">
+                                Bongkar Full Teluk Lamong
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -139,11 +167,11 @@
                 </div>
                 <div class="mb-2">
                     <label for="sj_kembali">SJ Kembali</label>
-                    <input type="date" name="sj_kembali" id="sj_kembali" class="form-control rupiah">
+                    <input type="date" name="sj_kembali" id="sj_kembali" class="form-control">
                 </div>
                 <div class="mb-2">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
-                    <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control rupiah">
+                    <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">
@@ -194,6 +222,7 @@
         $("#tujuan").select2({
             dropdownParent: $('#order'),
         });
+        $("#tujuan").val('').trigger('change');
         $("#sopir").select2({
             dropdownParent: $('#order'),
         });
@@ -221,10 +250,11 @@
                 {search:true, name: 'tipe', label : 'Tipe'},
                 {search:true, name: 'sj_kembali', label : 'SJ Kembali'},
                 {search:true, name: 'sj_kembali_fa', label : 'SJ Diterima FA'},
-                {search:true, name: 'tagihan', label : 'Tagihan'},
+                {search:true, name: 'tarif', label : 'Tarif'},
                 {search:true, name: 'sangu', label : 'Sangu Sopir', editable:true},
                 {search:true, name: 'simpanan', label : 'Simpanan Sopir'},
                 {search:true, name: 'kuli', label : 'Kuli'},
+                {search:true, name: 'keterangan', label : 'Keterangan', width:450},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -287,6 +317,42 @@
             z = z || '0';
             n = n + '';
             return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-            }
+        }
+
+        $('#tujuan').change(function (e) {
+            e.preventDefault();
+            getSangu();
+        });
+
+        $('#tipe').change(function (e) {
+            e.preventDefault();
+            getSangu();
+        });
+
+        function getSangu(){
+            let tujuan = $('#tujuan').val();
+            let tipe = $('#tipe').val();
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.sangusopir.getSangu') }}",
+                data: {
+                    tujuan:tujuan
+                },
+                success: function (response) {
+                    if(tipe==20){
+                        $('#sangu').val(rp(response.ukuran_20));
+                    }
+                    if(tipe==40){
+                        $('#sangu').val(rp(response.ukuran_40));
+                    }
+                    if(tipe=='combo'){
+                        $('#sangu').val(rp(response.ukuran_combo));
+                    }
+                }
+            });
+        }
+
+        const rp = (num) => num.toLocaleString('en-US');
     </script>
 @endsection
