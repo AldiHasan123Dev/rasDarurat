@@ -1,0 +1,65 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\TarifTrucking;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Yajra\Datatables\Datatables;
+
+class TarifTruckingController extends Controller
+{
+    public function index()
+    {
+        return view('admin.tariftrucking.index');
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        TarifTrucking::create($data);
+
+        return back()->with('success','Data berhasil disimpan');
+    }
+
+    public function update(TarifTrucking $tariftrucking, Request $request)
+    {
+        $data = $request->all();
+        $tariftrucking->update($data);
+
+        return back()->with('success','Data berhasil diupdate');
+    }
+
+    public function destroy(TarifTrucking $tariftrucking)
+    {
+        $tariftrucking->delete();
+
+        return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function datatable()
+    {
+        $data = TarifTrucking::all()->sortByDesc('created_at');
+        if(request('customer_id')||!is_null(request('customer_id'))){
+            $data = TarifTrucking::query()->where('customer_id',request('customer_id'));
+        }
+        return Datatables::of($data)
+            ->addColumn('created_at', function($data){
+                return date('d/m/y', strtotime($data->created_at));
+            })
+            ->addColumn('customer', function($data){
+                return $data->customer->nama;
+            })
+            ->addColumn('tujuan', function($data){
+                return $data->tujuan->tujuanInfo->nama;
+            })
+            ->addColumn('tarif', function($data){
+                return number_format($data->tarif,0,',','.');
+            })
+            ->addColumn('is_active', function($data){
+                return $data->is_active==1?'Aktif':'Non Aktif';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+}

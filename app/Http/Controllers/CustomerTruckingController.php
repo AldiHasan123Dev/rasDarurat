@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CustomerTrucking;
+use App\Models\SanguSopir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -11,12 +12,17 @@ class CustomerTruckingController extends Controller
 {
     public function index()
     {
-        return view('admin.customertrucking.index');
+        $customers = CustomerTrucking::orderBy('nama')->pluck('nama','id');
+        $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')
+                    ->select('sangu_sopir.id','lokasi.nama')
+                    ->orderBy('lokasi.nama')
+                    ->pluck('lokasi.nama','sangu_sopir.id');
+        return view('admin.customertrucking.index',compact('customers','tujuan'));
     }
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         CustomerTrucking::create($data);
 
         return back()->with('success','Data berhasil disimpan');

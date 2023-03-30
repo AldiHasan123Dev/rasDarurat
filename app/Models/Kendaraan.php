@@ -16,5 +16,6 @@ class Kendaraan extends Model
         'nopol',
         'milik',
         'is_active',
+        'keterangan',
     ];
 }

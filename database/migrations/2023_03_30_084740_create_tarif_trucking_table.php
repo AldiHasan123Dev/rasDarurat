@@ -8,13 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('kendaraan', function (Blueprint $table) {
+        Schema::create('tarif_trucking', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id')->constrained('customer_trucking');
+            $table->foreignId('tujuan_id')->constrained('sangu_sopir');
             $table->string('tipe');
-            $table->string('nopol');
-            $table->string('milik');
-            $table->boolean('is_active')->default(true);
-            $table->text('keterangan')->nullable();
+            $table->double('tarif');
+            $table->boolean('is_active')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -22,6 +22,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('kendaraan');
+        Schema::dropIfExists('tarif_trucking');
     }
 };

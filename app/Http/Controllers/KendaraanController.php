@@ -42,6 +42,9 @@ class KendaraanController extends Controller
         $data = Kendaraan::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('created_at', function($data){
+                return date('d/m/y', strtotime($data->created_at));
+            })
             ->addColumn('is_active', function($data){
                 return $data->is_active ? 'Aktif' : 'Non Aktif';
             })

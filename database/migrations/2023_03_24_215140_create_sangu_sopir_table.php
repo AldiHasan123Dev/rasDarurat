@@ -12,7 +12,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tujuan')->constrained('lokasi');
             $table->string('ukuran_20');
+            $table->string('sangu_20');
             $table->string('ukuran_40');
+            $table->string('sangu_40');
+            $table->string('ukuran_combo');
+            $table->string('sangu_combo');
+            $table->boolean('is_active')->default(true);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -3,7 +3,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKendaraan" aria-controls="offcanvasKendaraan">Tambah Kendaraan</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarifTrucking" aria-controls="offcanvasTarifTrucking">Tambah TarifTrucking</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -11,12 +11,11 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Tanggal</th>
+                                <th>Customer_id</th>
+                                <th>Tujuan_id</th>
                                 <th>Tipe</th>
-                                <th>Nopol</th>
-                                <th>Milik</th>
-                                <th>Status</th>
-                                <th>Keterangan</th>
+                                <th>Tarif</th>
+                                <th>Is_active</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -29,15 +28,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasKendaraan" aria-labelledby="offcanvasKendaraanLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasTarifTrucking" aria-labelledby="offcanvasTarifTruckingLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasKendaraanLabel">Form Kendaraan</h5>
+            <h5 class="offcanvas-title" id="offcanvasTarifTruckingLabel">Form TarifTrucking</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('kendaraan.store') }}" method="post">
+            <form action="{{ route('tariftrucking.store') }}" method="post">
                 @csrf
-                @include('admin.kendaraan.form')
+                @include('admin.tariftrucking.form')
             </form>
         </div>
     </div>
@@ -49,18 +48,17 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('kendaraan.data') }}',
+                url: '{{ route('tariftrucking.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id', visible:false },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'tipe', name: 'tipe' },
-                { data: 'nopol', name: 'nopol' },
-                { data: 'milik', name: 'milik' },
-                { data: 'is_active', name: 'is_active' },
-                { data: 'keterangan', name: 'keterangan' },
+                { data: 'id', name: 'id' },
+            { data: 'customer_id', name: 'customer_id' },
+            { data: 'tujuan_id', name: 'tujuan_id' },
+            { data: 'tipe', name: 'tipe' },
+            { data: 'tarif', name: 'tarif' },
+            { data: 'is_active', name: 'is_active' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

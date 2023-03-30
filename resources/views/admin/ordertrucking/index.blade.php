@@ -59,7 +59,7 @@
                 </div>
                 <div class="mb-2">
                     <label for="customer">Customer</label>
-                    <select name="customer_id" id="customer" class="form-control">
+                    <select name="customer_id" id="customer" class="form-control" required>
                         @foreach ($customers as $cus)
                             <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
                         @endforeach
@@ -67,23 +67,39 @@
                 </div>
                 <div class="mb-2">
                     <label for="kendaraan">Kendaraan</label>
-                    <select name="kendaraan_id" id="kendaraan" class="form-control">
+                    <select name="kendaraan_id" id="kendaraan" class="form-control" required>
                         @foreach ($kendaraan as $kend)
-                            <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->tipe }} || {{ $kend->milik }}</option>
+                            <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->milik }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="mb-2">
                     <label for="sopir">Sopir</label>
-                    <select name="sopir_id" id="sopir" class="form-control">
+                    <select name="sopir_id" id="sopir" class="form-control" required>
                         @foreach ($sopir as $sup)
                             <option {{ $loop->first?'selected':'' }} value="{{ $sup->id }}">{{ $sup->nama }} </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="mb-2">
+                    <label for="container">No. Cont</label>
+                    <input type="text" name="container" id="container" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label for="seal">Seal</label>
+                    <input type="text" name="seal" id="seal" class="form-control" required>
+                </div>
+                <div class="mb-2">
+                    <label for="tipe">Tipe Cont</label>
+                    <select name="tipe" id="tipe" class="form-control" required>
+                        <option value="20">20 Fit</option>
+                        <option value="40">40 Fit</option>
+                        <option value="COMBO">COMBO</option>
+                    </select>
+                </div>
+                <div class="mb-2">
                     <label for="tujuan">Tujuan</label>
-                    <select name="tujuan" id="tujuan" class="form-control">
+                    <select name="tujuan" id="tujuan" class="form-control" required>
                         @foreach ($tujuan as $loc)
                             <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
                         @endforeach
@@ -109,7 +125,7 @@
             </div>
             <div class="modal-body">
                 <div class="mb-2">
-                    <label for="container">No. Cont</label>
+                    <label for="container">Job</label>
                     <select name="order_id" id="container" class="form-control">
                     </select>
                 </div>
@@ -120,6 +136,14 @@
                 <div class="mb-2">
                     <label for="simpanan">Sangu Simpanan</label>
                     <input type="text" name="simpanan" id="simpanan" class="form-control rupiah">
+                </div>
+                <div class="mb-2">
+                    <label for="sj_kembali">SJ Kembali</label>
+                    <input type="date" name="sj_kembali" id="sj_kembali" class="form-control rupiah">
+                </div>
+                <div class="mb-2">
+                    <label for="sj_kembali_fa">SJ Diterima FA</label>
+                    <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control rupiah">
                 </div>
             </div>
             <div class="modal-footer">
@@ -182,6 +206,8 @@
             colModel: [
                 {search:true, name: 'id', label : 'id', hidden:true},
                 {search:true, name: 'order_id', label : 'order_id', hidden:true},
+                {search:true, name: 'date_sj_kembali', label : 'SJ Kembali D', hidden:true},
+                {search:true, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
                 {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer'},
@@ -189,9 +215,12 @@
                 {search:true, name: 'sopir', label : 'Sopir'},
                 {search:true, name: 'nopol', label : 'Nopol'},
                 {search:true, name: 'container', label : 'Container'},
+                {search:true, name: 'seal', label : 'Seal'},
                 {search:true, name: 'dari', label : 'Dari'},
                 {search:true, name: 'tujuan', label : 'Tujuan'},
                 {search:true, name: 'tipe', label : 'Tipe'},
+                {search:true, name: 'sj_kembali', label : 'SJ Kembali'},
+                {search:true, name: 'sj_kembali_fa', label : 'SJ Diterima FA'},
                 {search:true, name: 'tagihan', label : 'Tagihan'},
                 {search:true, name: 'sangu', label : 'Sangu Sopir', editable:true},
                 {search:true, name: 'simpanan', label : 'Simpanan Sopir'},
@@ -212,10 +241,14 @@
                 var sangu = $(this).jqGrid('getCell', rowId, 'sangu');
                 var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
                 var nopol = $(this).jqGrid('getCell', rowId, 'nopol');
+                var date_sj_kembali = $(this).jqGrid('getCell', rowId, 'date_sj_kembali');
+                var date_sj_kembali_fa = $(this).jqGrid('getCell', rowId, 'date_sj_kembali_fa');
                 $('#edit-form').attr('action','{{ url('admin/ordertrucking') }}/'+id);
                 getOrder(nopol,order_id);
                 $('#sangu').val(sangu);
                 $('#simpanan').val(simpanan);
+                $('#sj_kembali').val(date_sj_kembali);
+                $('#sj_kembali_fa').val(date_sj_kembali_fa);
                 $('#btn-edit').show();
             }
         });
@@ -238,9 +271,9 @@
                     options_cont += `<option value="">-</option>`;
                     $.each(response, function (idx, item) {
                         if (id==item.id) {
-                            options_cont += `<option selected value="${item.id}">${item.container} || ${item.job}-${pad(item.no_job, 2)}</option>`
+                            options_cont += `<option selected value="${item.id}">${item.job}-${pad(item.no_job, 2)} || ${item.container}</option>`
                         }else{
-                            options_cont += `<option value="${item.id}">${item.container} || ${item.job}-${pad(item.no_job, 2)}</option>`
+                            options_cont += `<option value="${item.id}">${item.job}-${pad(item.no_job, 2)} || ${item.container}</option>`
                         }
                     });
 

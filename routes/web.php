@@ -148,3 +148,4 @@ Route::prefix('admin')->middleware('auth')->group( function(){
 });
 // Route::view('test','test');
 Route::resource('menu',App\Http\Controllers\MenuController::class);Route::resource('submenu',App\Http\Controllers\SubMenuController::class);
+Route::resource('tariftrucking',App\Http\Controllers\TarifTruckingController::class);

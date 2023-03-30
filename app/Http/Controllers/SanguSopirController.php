@@ -60,6 +60,9 @@ class SanguSopirController extends Controller
         $data = SanguSopir::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('created_at', function($data){
+                return date('d/m/y', strtotime($data->created_at));
+            })
             ->addColumn('tujuan', function($data){
                 return $data->tujuanInfo->nama;
             })
@@ -71,6 +74,18 @@ class SanguSopirController extends Controller
             })
             ->addColumn('ukuran_combo', function($data){
                 return number_format($data->ukuran_combo);
+            })
+            ->addColumn('sangu_20', function($data){
+                return number_format($data->sangu_20);
+            })
+            ->addColumn('sangu_40', function($data){
+                return number_format($data->sangu_40);
+            })
+            ->addColumn('sangu_combo', function($data){
+                return number_format($data->sangu_combo);
+            })
+            ->addColumn('is_active', function($data){
+                return $data->is_active ? 'Aktif' : 'Non Aktif';
             })
             ->addColumn('action', function ($data) {
                 $view = view('admin.sangusopir.form',['sangusopir'=>$data])->render();

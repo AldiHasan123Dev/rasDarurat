@@ -28,14 +28,18 @@ class OrderTruckingController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $kendaraan = Kendaraan::find($data['kendaraan_id']);
-        $data['tipe'] = $kendaraan->tipe;
         $sangu = SanguSopir::find($data['tujuan']);
         if($data['tipe']=='20'){
-            $data['sangu'] = $sangu->ukuran_20;
+            $data['sangu'] = $sangu->sangu_20;
+            $data['simpanan'] = $sangu->ukuran_20 - $sangu->sangu_20;
         }
         if($data['tipe']=='40'){
-            $data['sangu'] = $sangu->ukuran_40;
+            $data['sangu'] = $sangu->sangu_40;
+            $data['simpanan'] = $sangu->ukuran_40 - $sangu->sangu_40;
+        }
+        if($data['tipe']=='COMBO'){
+            $data['sangu'] = $sangu->sangu_combo;
+            $data['simpanan'] = $sangu->ukuran_combo - $sangu->sangu_combo;
         }
         $data['tujuan'] = $sangu->tujuanInfo->nama;
         OrderTrucking::create($data);

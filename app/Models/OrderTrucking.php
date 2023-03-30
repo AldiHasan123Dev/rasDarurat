@@ -18,11 +18,15 @@ class OrderTrucking extends Model
         'kendaraan_id',
         'dari',
         'tujuan',
+        'container',
+        'seal',
         'tipe',
         'sangu',
         'simpanan',
         'tagihan',
         'kuli',
+        'sj_kembali',
+        'sj_kembali_fa',
         'keterangan',
     ];
 

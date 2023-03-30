@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\NSFPController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\TagihanController;
 use App\Http\Controllers\Api\TarifController;
+use App\Http\Controllers\Api\TarifTruckingController;
 use App\Http\Controllers\Api\TransaksiController;
 use App\Http\Controllers\PelayaranController;
 use Illuminate\Http\Request;
@@ -36,6 +37,7 @@ Route::post('customer-update', [CustomerController::class,'update'])->name('api.
 Route::post('check-customer', [CustomerController::class,'getCustomer'])->name('api.customer.getCustomer');
 Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.jadwal-kapal.getOne');
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
+Route::post('tarif-trucking', [TarifTruckingController::class,'createOrUpdate'])->name('api.tariftrucking.createorupdate');
 Route::post('tagihan', [TagihanController::class,'store'])->name('api.tagihan.store');
 Route::post('transaksi-update', [TransaksiController::class,'update'])->name('api.transaksi.update');
 Route::delete('tagihan/{tagihan}', [TagihanController::class,'destroy'])->name('api.tagihan.destroy');

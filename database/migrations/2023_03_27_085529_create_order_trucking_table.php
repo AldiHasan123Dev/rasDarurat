@@ -14,13 +14,16 @@ return new class extends Migration
             $table->foreignId('customer_id')->nullable()->constrained('customer_trucking')->nullOnDelete();
             $table->foreignId('sopir_id')->nullable()->constrained('sopir')->nullOnDelete();
             $table->foreignId('kendaraan_id')->nullable()->constrained('kendaraan')->nullOnDelete();
-            $table->string('dari')->nullable();
+            $table->string('container')->nullable();
+            $table->string('seal')->nullable();
             $table->string('tujuan')->nullable();
             $table->string('tipe')->nullable();
             $table->double('sangu')->default(0);
             $table->double('simpanan')->default(0);
             $table->double('tagihan')->default(0);
             $table->double('kuli')->default(0);
+            $table->date('sj_kembali')->nullable();
+            $table->date('sj_kembali_fa')->nullable();
             $table->text('keterangan')->nullable();
             $table->softDeletes();
             $table->timestamps();

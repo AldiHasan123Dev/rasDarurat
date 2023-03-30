@@ -49,10 +49,15 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
+                                <th>Tanggal</th>
                                 <th>Tujuan</th>
+                                <th>Sangu Total 20'</th>
                                 <th>Sangu 20'</th>
+                                <th>Sangu Total 40'</th>
                                 <th>Sangu 40'</th>
+                                <th>Sangu Total Combo 2x20</th>
                                 <th>Sangu Combo 2x20</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -97,11 +102,16 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id' },
+                { data: 'id', name: 'id', visible:false },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'tujuan', name: 'tujuan' },
                 { data: 'ukuran_20', name: 'ukuran_20' },
+                { data: 'sangu_20', name: 'sangu_20' },
                 { data: 'ukuran_40', name: 'ukuran_40' },
+                { data: 'sangu_40', name: 'sangu_40' },
                 { data: 'ukuran_combo', name: 'ukuran_combo' },
+                { data: 'sangu_combo', name: 'sangu_combo' },
+                { data: 'is_active', name: 'is_active' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
