@@ -53,33 +53,10 @@
 @endsection
 @section('content')
     <div class="container">
-        <div class="card p-3 shadow-lg">
-            <table>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>JOB</th>
-                        <th>ID JOB</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($orders as $ord)
-                    <tr>
-                        <td>{{ $loop->iteartion }}</td>
-                        <td>{{ $ord->job }}</td>
-                        <td>{{ $ord->job }}-{{ sprintf('%02d',$ord->no_job) }}</td>
-                        <td>
-                            <a href="{{ route('cetak.bttb',['order_id',$ord->id]) }}">Cetak BTTB</a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
         <div class="d-flex mt-3" style="gap:5px">
             <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
             <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+            <button type="button" class="btn btn-sm mb-3 btn-primary" data-bs-toggle="modal" data-bs-target="#idjob">Lihat ID JOB</button>
         </div>
         <div class="card p-3">
             @php
@@ -812,7 +789,7 @@
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                                <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:245px':'' }}">
                                     <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                                         <thead>
                                             <tr style="border-bottom: solid 2px black">
@@ -914,6 +891,50 @@
                         @endforeach
                     @endif
                 @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="idjob" tabindex="-1" aria-labelledby="idjobLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="idjobLabel">Group JOB {{ $order->job }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card p-3 shadow-lg">
+                        <table class="table table-sm" style="font-size: .7rem">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>JOB</th>
+                                    <th>ID JOB</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($orders as $ord)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $ord->job }}</td>
+                                    <td>{{ $ord->job }}-{{ sprintf('%02d',$ord->no_job) }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a class="btn btn-sm btn-success mt-1 py-1" style="font-size: .7rem !important" href="{{ route('cetak.bttb',['order_id'=>$ord->id]) }}">Cetak BTTB</a>
+                                            <a class="btn btn-sm btn-info mt-1 py-1" style="font-size: .7rem !important" href="{{ route('cetak.bttb.kubikasi',['order_id'=>$ord->id]) }}">Cetak Kubikasi</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

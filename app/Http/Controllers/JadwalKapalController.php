@@ -14,7 +14,7 @@ class JadwalKapalController extends Controller
 {
     public function index()
     {
-        $kapal = Kapal::pluck('nama','id');
+        $kapal = Kapal::orderBy('nama')->pluck('nama','id');
         $pelayaran = Pelayaran::pluck('nama','id');
         return view('admin.jadwalkapal.index', compact('pelayaran','kapal'));
     }
