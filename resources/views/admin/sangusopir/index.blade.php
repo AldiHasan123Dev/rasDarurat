@@ -51,11 +51,11 @@
                                 <th>ID.</th>
                                 <th>Tanggal</th>
                                 <th>Tujuan</th>
-                                <th>Sangu Total 20'</th>
+                                <th>Borongan Total 20'</th>
                                 <th>Sangu 20'</th>
-                                <th>Sangu Total 40'</th>
+                                <th>Borongan Total 40'</th>
                                 <th>Sangu 40'</th>
-                                <th>Sangu Total Combo 2x20</th>
+                                <th>Borongan Total Combo 2x20</th>
                                 <th>Sangu Combo 2x20</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -72,7 +72,7 @@
 
     <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasSanguSopir" aria-labelledby="offcanvasSanguSopirLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasSanguSopirLabel">Form Sangu Sopir</h5>
+            <h5 class="offcanvas-title" id="offcanvasSanguSopirLabel">Form Borongan Sopir</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
