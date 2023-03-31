@@ -157,23 +157,23 @@
                     <label for="container">Job ID</label>
                     <input type="text" name="job" id="job" class="form-control" readonly>
                 </div>
-                <div class="mb-2 col-3">
+                {{-- <div class="mb-2 col-3">
                     <label for="sj_kembali">SJ Kembali</label>
                     <input type="date" name="sj_kembali" id="sj_kembali" class="form-control">
-                </div>
+                </div> --}}
                 <div class="mb-2 col-3">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
                     <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control">
                 </div>
-                <div class="mb-2 col-3">
+                {{-- <div class="mb-2 col-3">
                     <label for="customer">Customer</label>
                     <select name="customer_id" id="customer_id" class="form-control" required>
                         @foreach ($customers as $cus)
                             <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
                         @endforeach
                     </select>
-                </div>
-                <div class="mb-2 col-3">
+                </div> --}}
+                {{-- <div class="mb-2 col-3">
                     <label for="kendaraan">Kendaraan</label>
                     <select name="kendaraan_id" id="kendaraan_id" class="form-control" required>
                         @foreach ($kendaraan as $kend)
@@ -196,8 +196,8 @@
                 <div class="mb-2 col-3">
                     <label for="seal">Seal</label>
                     <input type="text" name="seal" id="seal-edit" class="form-control" required>
-                </div>
-                <div class="mb-2 col-3">
+                </div> --}}
+                {{-- <div class="mb-2 col-3">
                     <label for="tipe">Tipe Cont</label>
                     <select name="tipe" id="tipe-edit" class="form-control" required>
                         <option value="20">20'</option>
@@ -212,7 +212,7 @@
                             <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 {{-- <div class="mb-2 col-3">
                     <label for="sangu">Sangu</label>
                     <input type="text" name="sangu" id="sangu-edit" class="form-control" disabled>

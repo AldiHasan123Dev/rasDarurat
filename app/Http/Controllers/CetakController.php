@@ -224,11 +224,14 @@ class CetakController extends Controller
             }
             foreach ($tar as $or ) {
                 $koli += $or->bttb->sum('qty');
-                if (!is_null($or->asuransi_id)) {
-                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
-                    $asuransi_name = $or->asuransiInfo->nama;
-                    $admin += $or->asuransiInfo->admin;
+                if($or->asuransi=='ADA EXC'){
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
+                    }
                 }
+
             }
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
             $items[$idx]['koli'] = $tar->count();
@@ -263,11 +266,14 @@ class CetakController extends Controller
         foreach ($orders as $idx => $tar ) {
             $koli = 0;
             $koli += $tar->bttb->sum('qty');
-            if (!is_null($tar->asuransi_id)) {
-                $asuransi = ($tar->asuransiInfo->rate/100) * $tar->pertanggungan;
-                $asuransi_name = $tar->asuransiInfo->nama;
-                $admin = $tar->asuransiInfo->admin;
+            if($tar->asuransi=='ADA EXC'){
+                if (!is_null($tar->asuransi_id)) {
+                    $asuransi = ($tar->asuransiInfo->rate/100) * $tar->pertanggungan;
+                    $asuransi_name = $tar->asuransiInfo->nama;
+                    $admin = $tar->asuransiInfo->admin;
+                }
             }
+
             $items[$idx]['keterangan'] = $tar->tarif->kondisiInfo->nama.', '.$tar->tarif->dari_lokasi->nama.' - '.$tar->tarif->tujuan_lokasi->nama;
             $items[$idx]['invoice'] = $tar->invoice ?? '-';
             $items[$idx]['kapal'] = $tar->jadwal_kapal->kapal->nama.' Voy '.$tar->jadwal_kapal->voyage;
@@ -306,10 +312,12 @@ class CetakController extends Controller
             foreach ($tar as $or ) {
                 $koli += $or->bttb->sum('qty');
                 $jumlah += $or->bttb->sum('vol');
-                if (!is_null($or->asuransi_id)) {
-                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
-                    $asuransi_name = $or->asuransiInfo->nama;
-                    $admin += $or->asuransiInfo->admin;
+                if($or->asuransi=='ADA EXC'){
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
+                    }
                 }
             }
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
@@ -359,14 +367,14 @@ class CetakController extends Controller
             }
             foreach ($tar as $or ) {
                 $koli += $or->bttb->sum('qty');
-                if (!is_null($or->asuransi_id)) {
-                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
-                    $asuransi_name = $or->asuransiInfo->nama;
-                    $admin += $or->asuransiInfo->admin;
-                }
                 if($or->asuransi=='ADA EXC'){
                     if(is_null($or->asuransi_id)){
                         array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
                     }
                 }
                 if(is_null($or->tarif->customer->nik)){
@@ -441,14 +449,14 @@ class CetakController extends Controller
             foreach ($tar as $or ) {
                 $koli += $or->bttb->sum('qty');
                 $jumlah += $or->bttb->sum('vol');
-                if (!is_null($or->asuransi_id)) {
-                    $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
-                    $asuransi_name = $or->asuransiInfo->nama;
-                    $admin += $or->asuransiInfo->admin;
-                }
                 if($or->asuransi=='ADA EXC'){
                     if(is_null($or->asuransi_id)){
                         array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
                     }
                 }
                 if(is_null($or->tarif->customer->nik)){

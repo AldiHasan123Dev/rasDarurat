@@ -54,10 +54,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body row">
-                <div class="mb-2 col-12">
+                {{-- <div class="mb-2 col-12">
                     <label for="container">Job ID</label>
                     <input type="text" name="job" id="job" class="form-control" readonly>
-                </div>
+                </div> --}}
                 <div class="mb-2 col-12">
                     <label for="sj_kembali">SJ Kembali</label>
                     <input type="date" name="sj_kembali" id="sj_kembali" class="form-control">
@@ -109,20 +109,6 @@
                 {search:true, name: 'tujuan', label : 'Tujuan'},
                 {search:true, name: 'tipe', label : 'Tipe'},
                 {search:true, name: 'sj_kembali', label : 'SJ Kembali'},
-                {search:true, name: 'sj_kembali_fa', label : 'SJ Diterima FA'},
-                {search:true, name: 'tarif', label : 'Tarif'},
-                {search:true, name: 'borongan', label : 'Borongan'},
-                {search:true, name: 'sangu', label : 'Sangu Sopir'},
-                {search:true, name: 'simpanan', label : 'Simpanan Sopir'},
-                {search:true, name: 'kuli', label : 'Kuli'},
-                {search:true, name: 'tambah_isi', label : 'Tambah Isi'},
-                {search:true, name: 'tambah_solar', label : 'Tambah Solar'},
-                {search:true, name: 'tb_tl', label : 'TB/TL'},
-                {search:true, name: 'tally', label : 'Tally'},
-                {search:true, name: 'uang_makan', label : 'Uang Makan'},
-                {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
-                {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
-                {search:true, name: 'keterangan', label : 'Keterangan', width:450},
             ],
             autowidth: true,
             shrinkToFit: false,

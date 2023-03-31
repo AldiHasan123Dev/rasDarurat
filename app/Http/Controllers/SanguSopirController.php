@@ -75,15 +75,6 @@ class SanguSopirController extends Controller
             ->addColumn('ukuran_combo', function($data){
                 return number_format($data->ukuran_combo);
             })
-            ->addColumn('sangu_20', function($data){
-                return number_format($data->sangu_20);
-            })
-            ->addColumn('sangu_40', function($data){
-                return number_format($data->sangu_40);
-            })
-            ->addColumn('sangu_combo', function($data){
-                return number_format($data->sangu_combo);
-            })
             ->addColumn('is_active', function($data){
                 return $data->is_active ? 'Aktif' : 'Non Aktif';
             })
