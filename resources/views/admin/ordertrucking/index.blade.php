@@ -18,6 +18,7 @@
                 <div class="d-flex gap-2">
                     <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
                     <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
+                    <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
                 </div>
             </div>
             <div class="card-body">
@@ -143,7 +144,7 @@
 </div>
 
 <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
         <form action="" id="edit-form" method="post" class="modal-content">
             @csrf
             @method('PUT')
@@ -151,27 +152,134 @@
                 <h5 class="modal-title" id="orderLabel">Update Order Trucking</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-2">
-                    <label for="container">Job</label>
-                    <select name="order_id" id="container" class="form-control">
-                    </select>
+            <div class="modal-body row">
+                <div class="mb-2 col-3">
+                    <label for="container">Job ID</label>
+                    <input type="text" name="job" id="job" class="form-control" readonly>
                 </div>
-                <div class="mb-2">
-                    <label for="sangu">Sangu</label>
-                    <input type="text" name="sangu" id="sangu" class="form-control rupiah">
-                </div>
-                <div class="mb-2">
-                    <label for="simpanan">Sangu Simpanan</label>
-                    <input type="text" name="simpanan" id="simpanan" class="form-control rupiah">
-                </div>
-                <div class="mb-2">
+                <div class="mb-2 col-3">
                     <label for="sj_kembali">SJ Kembali</label>
                     <input type="date" name="sj_kembali" id="sj_kembali" class="form-control">
                 </div>
-                <div class="mb-2">
+                <div class="mb-2 col-3">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
                     <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="customer">Customer</label>
+                    <select name="customer_id" id="customer_id" class="form-control" required>
+                        @foreach ($customers as $cus)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="kendaraan">Kendaraan</label>
+                    <select name="kendaraan_id" id="kendaraan_id" class="form-control" required>
+                        @foreach ($kendaraan as $kend)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->milik }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="sopir">Sopir</label>
+                    <select name="sopir_id" id="sopir_id" class="form-control" required>
+                        @foreach ($sopir as $sup)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $sup->id }}">{{ $sup->nama }} </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="container">No. Cont</label>
+                    <input type="text" name="container" id="container-edit" class="form-control" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="seal">Seal</label>
+                    <input type="text" name="seal" id="seal-edit" class="form-control" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tipe">Tipe Cont</label>
+                    <select name="tipe" id="tipe-edit" class="form-control" required>
+                        <option value="20">20'</option>
+                        <option value="40">40'</option>
+                        <option value="COMBO">COMBO</option>
+                    </select>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tujuan">Tujuan</label>
+                    <select name="tujuan" id="tujuan-edit" class="form-control" required>
+                        @foreach ($tujuan as $loc)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- <div class="mb-2 col-3">
+                    <label for="sangu">Sangu</label>
+                    <input type="text" name="sangu" id="sangu-edit" class="form-control" disabled>
+                </div> --}}
+                <div class="col-12 my-2">
+                    Biaya Lain-lain
+                    <hr>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="sangu">Sangu</label>
+                    <input type="text" name="sangu" id="sangu-edit" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="simpanan">Sangu Simpanan</label>
+                    <input type="text" name="simpanan" id="simpanan" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="borongan">Borongan</label>
+                    <input type="text" name="borongan" id="borongan" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tambah_isi">Tambah Isi</label>
+                    <input type="text" name="tambah_isi" id="tambah_isi" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tambah_solar">Tambah Solar</label>
+                    <input type="text" name="tambah_solar" id="tambah_solar" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tb_tl">TB/TL</label>
+                    <input type="text" name="tb_tl" id="tb_tl" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tally">Tally</label>
+                    <input type="text" name="tally" id="tally" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="uang_makan">Uang Makan</label>
+                    <input type="text" name="uang_makan" id="uang_makan" class="form-control rupiah">
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="kuli">Kuli</label>
+                    <input type="text" name="kuli" id="kuli" class="form-control rupiah">
+                </div>
+                <div class="my-2 col-12">
+                    Keterangan
+                    <hr>
+                    <div class="d-flex gap-3">
+                        <div>
+                            <label>
+                                <input type="checkbox" name="ambil_empty_tambak_langon" id="ambil_empty_tambak_langon" value="1">
+                                Ambil Empty Tambak Langon
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="ambil_empty_teluk_langon" id="ambil_empty_teluk_langon" value="1">
+                                Ambil Empty Teluk Lamong
+                            </label>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="bongkar_full_teluk_langon" id="bongkar_full_teluk_langon" value="1">
+                                Bongkar Full Teluk Lamong
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -213,11 +321,21 @@
         // });
 
         $('#btn-edit').hide();
+        $('#delete').hide();
         $("#customer").select2({
             dropdownParent: $('#order'),
         });
         $("#kendaraan").select2({
             dropdownParent: $('#order'),
+        });
+        $("#customer_id").select2({
+            dropdownParent: $('#edit'),
+        });
+        $("#kendaraan_id").select2({
+            dropdownParent: $('#edit'),
+        });
+        $("#sopir_id").select2({
+            dropdownParent: $('#edit'),
         });
         $("#tujuan").select2({
             dropdownParent: $('#order'),
@@ -233,13 +351,21 @@
             datatype: 'local',
             data: data,
             colModel: [
-                {search:true, name: 'id', label : 'id', hidden:true},
-                {search:true, name: 'order_id', label : 'order_id', hidden:true},
-                {search:true, name: 'date_sj_kembali', label : 'SJ Kembali D', hidden:true},
-                {search:true, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
+                {search:false, name: 'id', label : 'id', hidden:true},
+                {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
+                {search:false, name:'ambil_empty_teluk_langon', label:'#', hidden:true},
+                {search:false, name:'bongkar_full_teluk_langon', label:'#', hidden:true},
+                {search:false, name: 'order_id', label : 'order_id', hidden:true},
+                {search:false, name: 'customer_id', label : 'customer_id', hidden:true},
+                {search:false, name: 'kendaraan_id', label : 'kendaraan_id', hidden:true},
+                {search:false, name: 'sopir_id', label : 'sopir_id', hidden:true},
+                {search:false, name: 'sangu_id', label : 'sangu_id', hidden:true},
+                {search:false, name: 'date_sj_kembali', label : 'SJ Kembali D', hidden:true},
+                {search:false, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
                 {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer'},
+                {search:true, name: 'pembayar', label : 'Pembayar'},
                 {search:true, name: 'job', label : 'Job'},
                 {search:true, name: 'sopir', label : 'Sopir'},
                 {search:true, name: 'nopol', label : 'Nopol'},
@@ -251,9 +377,17 @@
                 {search:true, name: 'sj_kembali', label : 'SJ Kembali'},
                 {search:true, name: 'sj_kembali_fa', label : 'SJ Diterima FA'},
                 {search:true, name: 'tarif', label : 'Tarif'},
-                {search:true, name: 'sangu', label : 'Sangu Sopir', editable:true},
+                {search:true, name: 'borongan', label : 'Borongan'},
+                {search:true, name: 'sangu', label : 'Sangu Sopir'},
                 {search:true, name: 'simpanan', label : 'Simpanan Sopir'},
                 {search:true, name: 'kuli', label : 'Kuli'},
+                {search:true, name: 'tambah_isi', label : 'Tambah Isi'},
+                {search:true, name: 'tambah_solar', label : 'Tambah Solar'},
+                {search:true, name: 'tb_tl', label : 'TB/TL'},
+                {search:true, name: 'tally', label : 'Tally'},
+                {search:true, name: 'uang_makan', label : 'Uang Makan'},
+                {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
+                {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
                 {search:true, name: 'keterangan', label : 'Keterangan', width:450},
             ],
             autowidth: true,
@@ -268,18 +402,61 @@
             onCellSelect: function (rowId, iRow, iCol, e) {
                 var id = $(this).jqGrid('getCell', rowId, 'id');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
+                var job = $(this).jqGrid('getCell', rowId, 'job');
+                var customer_id = $(this).jqGrid('getCell', rowId, 'customer_id');
+                var kendaraan_id = $(this).jqGrid('getCell', rowId, 'kendaraan_id');
+                var sopir_id = $(this).jqGrid('getCell', rowId, 'sopir_id');
+                var tipe = $(this).jqGrid('getCell', rowId, 'tipe');
+                var sangu_id = $(this).jqGrid('getCell', rowId, 'sangu_id');
                 var sangu = $(this).jqGrid('getCell', rowId, 'sangu');
+                var borongan = $(this).jqGrid('getCell', rowId, 'borongan');
+                var tambah_isi = $(this).jqGrid('getCell', rowId, 'tambah_isi');
+                var tambah_solar = $(this).jqGrid('getCell', rowId, 'tambah_solar');
+                var tb_tl = $(this).jqGrid('getCell', rowId, 'tb_tl');
+                var tally = $(this).jqGrid('getCell', rowId, 'tally');
+                var uang_makan = $(this).jqGrid('getCell', rowId, 'uang_makan');
+                var kuli = $(this).jqGrid('getCell', rowId, 'kuli');
+                var container = $(this).jqGrid('getCell', rowId, 'container');
+                var seal = $(this).jqGrid('getCell', rowId, 'seal');
                 var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
                 var nopol = $(this).jqGrid('getCell', rowId, 'nopol');
                 var date_sj_kembali = $(this).jqGrid('getCell', rowId, 'date_sj_kembali');
                 var date_sj_kembali_fa = $(this).jqGrid('getCell', rowId, 'date_sj_kembali_fa');
+                var ambil_empty_tambak_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_tambak_langon');
+                var ambil_empty_teluk_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_teluk_langon');
+                var bongkar_full_teluk_langon = $(this).jqGrid('getCell', rowId, 'bongkar_full_teluk_langon');
                 $('#edit-form').attr('action','{{ url('admin/ordertrucking') }}/'+id);
-                getOrder(nopol,order_id);
-                $('#sangu').val(sangu);
+                $('#delete').val(id);
+                $('#job').val(job);
+                $('#borongan').val(borongan);
+                $('#tambah_isi').val(tambah_isi);
+                $('#tambah_solar').val(tambah_solar);
+                $('#tb_tl').val(tb_tl);
+                $('#tally').val(tally);
+                $('#uang_makan').val(uang_makan);
+                $('#kuli').val(kuli);
+                $('#sangu-edit').val(sangu);
+                $('#tipe-edit').val(tipe);
                 $('#simpanan').val(simpanan);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
+                $("#customer_id").val(customer_id).trigger('change');
+                $("#kendaraan_id").val(kendaraan_id).trigger('change');
+                $("#sopir_id").val(sopir_id).trigger('change');
+                $("#tujuan-edit").val(sangu_id);
+                $("#container-edit").val(container);
+                $("#seal-edit").val(seal);
                 $('#btn-edit').show();
+                $('#delete').show();
+                if(ambil_empty_tambak_langon==1){
+                    $('#ambil_empty_tambak_langon').attr('checked',true);
+                }
+                if(ambil_empty_teluk_langon==1){
+                    $('#ambil_empty_teluk_langon').attr('checked',true);
+                }
+                if(bongkar_full_teluk_langon==1){
+                    $('#bongkar_full_teluk_langon').attr('checked',true);
+                }
             }
         });
 
@@ -292,10 +469,10 @@
             refresh: true
         });
 
-        function getOrder(nopol,id) {
+        function getOrder(container,id) {
             $.ajax({
                 type: "GET",
-                url: "{{ url('api/get-order-nopol') }}"+'/'+nopol,
+                url: "{{ url('api/get-order-container') }}"+'/'+container,
                 success: function (response) {
                     var options_cont = '';
                     options_cont += `<option value="">-</option>`;
@@ -354,5 +531,22 @@
         }
 
         const rp = (num) => num.toLocaleString('en-US');
+
+        $('#delete').click(function (e) {
+            e.preventDefault();
+            if(confirm('are you sure?')){
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ route('order-trucking.delete') }}",
+                    data: {
+                        id:$('#delete').val()
+                    },
+                    success: function (response) {
+                        alert('Hapus Data Berhasil!');
+                        location.reload();
+                    }
+                });
+            }
+        });
     </script>
 @endsection

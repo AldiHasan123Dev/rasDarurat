@@ -118,6 +118,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('export-laporan-ppn',[KeuanganController::class,'PPNExport'])->name('keuangan.ppn.export');
     Route::post('export-asuransi',[AsuransiController::class,'export'])->name('asuransi.export');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
+    Route::get('sj-kembali',[OrderController::class,'sj_kembali'])->name('order.sj-kembali');
     Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');
     Route::get('invoice',[KeuanganController::class,'invoice'])->name('order.invoice');
     Route::get('cetak/surat-jalan',[CetakController::class,'suratJalan'])->name('cetak.suratJalan');

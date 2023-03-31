@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrderTruckingResource;
 use App\Models\CustomerTrucking;
 use App\Models\Kendaraan;
+use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\SanguSopir;
 use App\Models\Sopir;
@@ -23,6 +24,13 @@ class OrderTruckingController extends Controller
         $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
         $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->orderBy('lokasi.nama','asc')->get();
         $customers = CustomerTrucking::all()->sortBy('nama');
+        $update = OrderTrucking::whereNull('order_id')->get();
+        foreach ($update as $item ) {
+            $order = Order::where('container',$item->container)->first();
+            if($order){
+                $item->update(['order_id'=>$order->id]);
+            }
+        }
         return view('admin.ordertrucking.index', compact('data','kendaraan','sopir','tujuan','customers'));
     }
 
@@ -56,11 +64,50 @@ class OrderTruckingController extends Controller
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
         $data = $request->all();
+        if(!empty($data['tujuan'])){
+            $sangu = SanguSopir::find($data['tujuan']);
+            $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
+            if(!$tarif){
+                return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
+            }
+            $data['tujuan'] = $sangu->tujuanInfo->nama;
+            $data['tarif_id'] = $tarif->id;
+        }
         if($request->sangu){
             $data['sangu'] = str_replace(['.',','],'',$request->sangu);
         }
         if($request->simpanan){
             $data['simpanan'] = str_replace(['.',','],'',$request->simpanan);
+        }
+        if($request->borongan){
+            $data['borongan'] = str_replace(['.',','],'',$request->borongan);
+        }
+        if($request->tambah_isi){
+            $data['tambah_isi'] = str_replace(['.',','],'',$request->tambah_isi);
+        }
+        if($request->tambah_solar){
+            $data['tambah_solar'] = str_replace(['.',','],'',$request->tambah_solar);
+        }
+        if($request->tb_tl){
+            $data['tb_tl'] = str_replace(['.',','],'',$request->tb_tl);
+        }
+        if($request->tally){
+            $data['tally'] = str_replace(['.',','],'',$request->tally);
+        }
+        if($request->uang_makan){
+            $data['uang_makan'] = str_replace(['.',','],'',$request->uang_makan);
+        }
+        if($request->kuli){
+            $data['kuli'] = str_replace(['.',','],'',$request->kuli);
+        }
+        if(empty($data['ambil_empty_tambak_langon'])){
+            $data['ambil_empty_tambak_langon'] = 0;
+        }
+        if(empty($data['ambil_empty_teluk_langon'])){
+            $data['ambil_empty_teluk_langon'] = 0;
+        }
+        if(empty($data['bongkar_full_teluk_langon'])){
+            $data['bongkar_full_teluk_langon'] = 0;
         }
         $ordertrucking->update($data);
 

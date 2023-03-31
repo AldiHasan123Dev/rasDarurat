@@ -22,6 +22,14 @@ return new class extends Migration
             $table->double('sangu')->default(0);
             $table->double('simpanan')->default(0);
             $table->double('tagihan')->default(0);
+            $table->double('borongan',)->default(0);
+            $table->double('tambah_isi',)->default(0);
+            $table->double('tambah_solar',)->default(0);
+            $table->double('tb_tl',)->default(0);
+            $table->double('tally',)->default(0);
+            $table->double('uang_makan',)->default(0);
+            $table->double('total_sopir',)->default(0);
+            $table->date('tgl_total',)->nullable();
             $table->double('kuli')->default(0);
             $table->date('sj_kembali')->nullable();
             $table->date('sj_kembali_fa')->nullable();

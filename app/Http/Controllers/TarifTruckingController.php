@@ -48,10 +48,10 @@ class TarifTruckingController extends Controller
                 return date('d/m/y', strtotime($data->created_at));
             })
             ->addColumn('customer', function($data){
-                return $data->customer->nama;
+                return $data->customer ? $data->customer->nama : '-';
             })
             ->addColumn('tujuan', function($data){
-                return $data->tujuan->tujuanInfo->nama;
+                return $data->tujuan ? $data->tujuan->tujuanInfo->nama : '-';
             })
             ->addColumn('tarif', function($data){
                 return number_format($data->tarif,0,',','.');

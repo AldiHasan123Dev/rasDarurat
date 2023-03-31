@@ -25,4 +25,10 @@ class TarifTruckingController extends Controller
         }
 
     }
+
+    public function delete()
+    {
+        TarifTrucking::find(request('id'))->delete();
+        return response('Delete Berhasil');
+    }
 }

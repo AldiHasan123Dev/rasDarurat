@@ -64,6 +64,7 @@
                 <div>
                     <button class="py-2 px-3 btn btn-success" id="add-tarif">Tambah Tarif Trucking</button>
                     <button class="py-2 px-3 btn btn-primary" id="edit-tarif" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarifTrucking" aria-controls="offcanvasTarifTrucking">Edit Tarif</button>
+                    <button class="py-2 px-3 btn btn-danger" id="delete-tarif">Hapus Tarif</button>
                 </div>
                 <div>
                     <p>Nama Customer: <span class="nama-cus">-</span></p>
@@ -120,9 +121,11 @@
     <script>
         $('#add-tarif').hide();
         $('#edit-tarif').hide();
+        $('#delete-tarif').hide();
         $('#message').hide();
         $('#message-error').hide();
         let id;
+        let tarif_id;
         let table = $('#customer').DataTable({
             processing: true,
             serverSide: true,
@@ -179,7 +182,7 @@
         });
 
         $('#tarif-table tbody').on( 'click', 'tr', function () {
-            id =  table_tarif.row( this ).data().id;
+            tarif_id =  table_tarif.row( this ).data().id;
             let customer_id =  table_tarif.row( this ).data().customer_id;
             let tujuan_id =  table_tarif.row( this ).data().tujuan_id;
             let tipe =  table_tarif.row( this ).data().tipe;
@@ -197,6 +200,7 @@
             $('#is_active').val(is_active);
             $('#tarif').val(tarif);
             $('#edit-tarif').show();
+            $('#delete-tarif').show();
         });
 
         $("select[name=customer_id]").select2({
@@ -247,6 +251,22 @@
             $('#tarif').val('');
             $('#tarif_id').val(null);
             bsOffcanvas.show();
+        });
+
+        $('#delete-tarif').click(function (e) {
+            if(confirm('Are you sure?')){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('api.tariftrucking.delete') }}",
+                    data: {
+                        id:tarif_id
+                    },
+                    success: function (response) {
+                        alert('Data berhasil dihapus');
+                        table_tarif.ajax.reload()
+                    }
+                });
+            }
         });
     </script>
 @endsection

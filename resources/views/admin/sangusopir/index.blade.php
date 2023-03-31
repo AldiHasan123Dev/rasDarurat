@@ -41,7 +41,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSanguSopir" aria-controls="offcanvasSanguSopir">Tambah SanguSopir</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSanguSopir" aria-controls="offcanvasSanguSopir">Tambah Sangu Sopir</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -96,6 +96,7 @@
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
+            scrollY: '50vh',
             ajax:{
                 url: '{{ route('sangusopir.data') }}',
                 method:'POST',

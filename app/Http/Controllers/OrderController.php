@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\SIExport;
+use App\Http\Resources\OrderTruckingResource;
 use App\Imports\OrderImport;
 use App\Models\Agen;
 use App\Models\Barang;
@@ -11,6 +12,7 @@ use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Lokasi;
 use App\Models\Order;
+use App\Models\OrderTrucking;
 use App\Models\Satuan;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
@@ -47,6 +49,13 @@ class OrderController extends Controller
             $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
         return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers'));
+    }
+
+    public function sj_kembali()
+    {
+        $data = OrderTrucking::all()->whereNull('sj_kembali');
+        $data = OrderTruckingResource::collection($data);
+        return view('admin.order.sj_kembali', compact('data'));
     }
 
     public function baKembali()
