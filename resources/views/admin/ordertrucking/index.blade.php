@@ -340,6 +340,9 @@
         $("#tujuan").select2({
             dropdownParent: $('#order'),
         });
+        $("#tujuan-edit").select2({
+            dropdownParent: $('#edit'),
+        });
         $("#tujuan").val('').trigger('change');
         $("#sopir").select2({
             dropdownParent: $('#order'),
@@ -443,7 +446,7 @@
                 $("#customer_id").val(customer_id).trigger('change');
                 $("#kendaraan_id").val(kendaraan_id).trigger('change');
                 $("#sopir_id").val(sopir_id).trigger('change');
-                $("#tujuan-edit").val(sangu_id);
+                $("#tujuan-edit").val(sangu_id).trigger('change');
                 $("#container-edit").val(container);
                 $("#seal-edit").val(seal);
                 $('#btn-edit').show();
@@ -460,7 +463,7 @@
             }
         });
 
-        $('#jqGrid').jqGrid('filterToolbar');
+        $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
 		$('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,

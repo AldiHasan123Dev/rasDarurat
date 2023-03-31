@@ -46,6 +46,7 @@
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
+            scrollY: '50vh',
             ajax:{
                 url: '{{ route('sopir.data') }}',
                 method:'POST',

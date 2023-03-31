@@ -48,6 +48,7 @@
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
+            scrollY: '50vh',
             ajax:{
                 url: '{{ route('kendaraan.data') }}',
                 method:'POST',

@@ -26,7 +26,7 @@
         </div>
     </a>
     <div class="parent-wrapper label-1">
-        <ul class="nav collapse parent show" id="{{ $item->first()->name }}">
+        <ul class="nav collapse parent {{ $item->where('url',request()->url())->first() ? 'show' : '' }}" id="{{ $item->first()->name }}">
             @foreach ($item as $menu)
                 <li class="nav-item">
                     <a class="nav-link {{ request()->url()==$menu->url ? 'active' : '' }}" href="{{ $menu->url }}" aria-expanded="false">

@@ -63,7 +63,7 @@
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div>
                     <button class="py-2 px-3 btn btn-success" id="add-tarif">Tambah Tarif Trucking</button>
-                    <button class="py-2 px-3 btn btn-primary" id="edit-tarif" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarifTrucking" aria-controls="offcanvasTarifTrucking">Edit Tarif</button>
+                    <button class="py-2 px-3 btn btn-primary" id="edit-tarif">Edit Tarif</button>
                     <button class="py-2 px-3 btn btn-danger" id="delete-tarif">Hapus Tarif</button>
                 </div>
                 <div>
@@ -130,6 +130,7 @@
             processing: true,
             serverSide: true,
             select:true,
+            scrollY: '50vh',
             ajax:{
                 url: '{{ route('customertrucking.data') }}',
                 method:'POST',
@@ -153,6 +154,7 @@
             processing: true,
             serverSide: true,
             select: true,
+            scrollY: '50vh',
             ajax:{
                 url: '{{ route('tariftrucking.data') }}',
                 method:'POST',
@@ -182,8 +184,9 @@
         });
 
         $('#tarif-table tbody').on( 'click', 'tr', function () {
-            tarif_id =  table_tarif.row( this ).data().id;
             let customer_id =  table_tarif.row( this ).data().customer_id;
+            tarif_id =  table_tarif.row( this ).data().id;
+            id = customer_id;
             let tujuan_id =  table_tarif.row( this ).data().tujuan_id;
             let tipe =  table_tarif.row( this ).data().tipe;
             let is_active =  table_tarif.row( this ).data().is_active;
@@ -219,23 +222,23 @@
                     type: "POST",
                     url: "{{ route('api.tariftrucking.createorupdate') }}",
                     data: {
-                        customer_id:$('#customer_id').val(),
+                        customer_id:id,
                         tujuan_id:$('#tujuan_id').val(),
                         tipe:$('#tipe').val(),
                         is_active:$('#is_active').val(),
                         tarif:$('#tarif').val(),
-                        tarif_id:$('#tarif_id').val(),
+                        tarif_id:tarif_id,
                     },
                     success: function (response) {
                         table_tarif.ajax.reload()
                         $('#message').html('Data berhasil disimpan');
-                        // $('#message').show();
+                        $('#message').show();
                         $('#tarif').val('');
-                        alert('Data Berhasil disimpan!');
-                        bsOffcanvas.hide();
-                        // setTimeout(() => {
-                        //     $('#message').hide();
-                        // }, 10000);
+                        // alert('Data Berhasil disimpan!');
+                        // bsOffcanvas.hide();
+                        setTimeout(() => {
+                            $('#message').hide();
+                        }, 5000);
                     }
                 });
             }
@@ -250,6 +253,27 @@
             $('#is_active').val('');
             $('#tarif').val('');
             $('#tarif_id').val(null);
+            bsOffcanvas.show();
+        });
+        $('#edit-tarif').click(function (e) {
+            let customer_id =  table_tarif.row('.selected').data().customer_id;
+            tarif_id =  table_tarif.row('.selected').data().id;
+            id = customer_id;
+            let tujuan_id =  table_tarif.row('.selected').data().tujuan_id;
+            let tipe =  table_tarif.row('.selected').data().tipe;
+            let is_active =  table_tarif.row('.selected').data().is_active;
+            let tarif =  table_tarif.row('.selected').data().tarif;
+            if(is_active=='Aktif'){
+                is_active = 1;
+            }else{
+                is_active = 0;
+            }
+            $('#tarif_id').val(id);
+            $('#customer_id').val(customer_id).trigger('change');
+            $('#tujuan_id').val(tujuan_id).trigger('change');
+            $('#tipe').val(tipe);
+            $('#is_active').val(is_active);
+            $('#tarif').val(tarif);
             bsOffcanvas.show();
         });
 
