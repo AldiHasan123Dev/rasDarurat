@@ -40,6 +40,8 @@ class OrderTrucking extends Model
         'ambil_empty_tambak_langon',
         'ambil_empty_teluk_langon',
         'bongkar_full_teluk_langon',
+        'created_at',
+        'tgl_muat',
     ];
 
     public function order()

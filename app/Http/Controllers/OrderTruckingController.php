@@ -71,7 +71,7 @@ class OrderTruckingController extends Controller
         }
 
         if($data['bongkar_full_teluk_langon'] == 0 && $data['ambil_empty_tambak_langon'] == 0 && $data['ambil_empty_teluk_langon'] == 0){
-            $data['tb_bl'] = 0;
+            $data['tb_tl'] = 0;
         }
         OrderTrucking::create($data);
 
@@ -134,7 +134,7 @@ class OrderTruckingController extends Controller
         }
 
         if($data['bongkar_full_teluk_langon'] == 0 && $data['ambil_empty_tambak_langon'] == 0 && $data['ambil_empty_teluk_langon'] == 0){
-            $data['tb_bl'] = 0;
+            $data['tb_tl'] = 0;
         }
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);

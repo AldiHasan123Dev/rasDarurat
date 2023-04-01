@@ -33,6 +33,7 @@ return new class extends Migration
             $table->double('kuli')->default(0);
             $table->date('sj_kembali')->nullable();
             $table->date('sj_kembali_fa')->nullable();
+            $table->date('tgl_muat')->nullable();
             $table->text('keterangan')->nullable();
             $table->boolean('ambil_empty_tambak_langon')->default(0);
             $table->boolean('ambil_empty_teluk_langon')->default(0);
