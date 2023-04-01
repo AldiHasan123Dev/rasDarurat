@@ -25,6 +25,11 @@ return new class extends Migration
             $table->double('borongan',)->default(0);
             $table->double('tambah_isi',)->default(0);
             $table->double('tambah_solar',)->default(0);
+            $table->double('op',)->default(0);
+            $table->double('cleaning',)->default(0);
+            $table->double('stappel',)->default(0);
+            $table->double('pph_21',)->default(0);
+            $table->double('pph_23',)->default(0);
             $table->double('tb_tl',)->default(0);
             $table->double('tally',)->default(0);
             $table->double('uang_makan',)->default(0);

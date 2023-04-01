@@ -53,26 +53,39 @@ class OrderTruckingController extends Controller
         }
         $data['tujuan'] = $sangu->tujuanInfo->nama;
         $data['tarif_id'] = $tarif->id;
-
-        if($data['tipe']=='20'){
-            $data['tb_tl'] = 50000;
-        }
-        if($data['tipe']=='40'||$data['tipe']=='COMBO'){
-            $data['tb_tl'] = 75000;
-        }
+        
+        $data['tb_tl'] = 0;
         if(empty($data['ambil_empty_tambak_langon'])){
             $data['ambil_empty_tambak_langon'] = 0;
+        }else{
+            if($data['tipe']=='20'){
+                $data['tb_tl'] += 50000;
+            }
+            if($data['tipe']=='40'||$data['tipe']=='COMBO'){
+                $data['tb_tl'] += 75000;
+            }
         }
         if(empty($data['ambil_empty_teluk_langon'])){
             $data['ambil_empty_teluk_langon'] = 0;
+        }else{
+            if($data['tipe']=='20'){
+                $data['tb_tl'] += 50000;
+            }
+            if($data['tipe']=='40'||$data['tipe']=='COMBO'){
+                $data['tb_tl'] += 75000;
+            }
         }
         if(empty($data['bongkar_full_teluk_langon'])){
             $data['bongkar_full_teluk_langon'] = 0;
+        }else{
+            if($data['tipe']=='20'){
+                $data['tb_tl'] += 50000;
+            }
+            if($data['tipe']=='40'||$data['tipe']=='COMBO'){
+                $data['tb_tl'] += 75000;
+            }
         }
 
-        if($data['bongkar_full_teluk_langon'] == 0 && $data['ambil_empty_tambak_langon'] == 0 && $data['ambil_empty_teluk_langon'] == 0){
-            $data['tb_tl'] = 0;
-        }
         OrderTrucking::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -92,10 +105,11 @@ class OrderTruckingController extends Controller
         }
         if($request->sangu){
             $data['sangu'] = str_replace(['.',','],'',$request->sangu);
+            $data['simpanan'] = $ordertrucking->borongan - $data['sangu'];
         }
-        if($request->simpanan){
-            $data['simpanan'] = str_replace(['.',','],'',$request->simpanan);
-        }
+        // if($request->simpanan){
+        //     $data['simpanan'] = str_replace(['.',','],'',$request->simpanan);
+        // }
         if($request->borongan){
             $data['borongan'] = str_replace(['.',','],'',$request->borongan);
         }
@@ -117,25 +131,48 @@ class OrderTruckingController extends Controller
         if($request->kuli){
             $data['kuli'] = str_replace(['.',','],'',$request->kuli);
         }
-        if($ordertrucking->tipe==20){
-            $data['tb_tl'] = 50000;
+        if($request->op){
+            $data['op'] = str_replace(['.',','],'',$request->op);
         }
-        if($ordertrucking->tipe==40||$ordertrucking->tipe=='COMBO'){
-            $data['tb_tl'] = 75000;
+        if($request->cleaning){
+            $data['cleaning'] = str_replace(['.',','],'',$request->cleaning);
         }
+        if($request->stappel){
+            $data['stappel'] = str_replace(['.',','],'',$request->stappel);
+        }
+        
+        $data['tb_tl'] = 0;
         if(empty($data['ambil_empty_tambak_langon'])){
             $data['ambil_empty_tambak_langon'] = 0;
+        }else{
+            if($ordertrucking->tipe=='20'){
+                $data['tb_tl'] += 50000;
+            }
+            if($ordertrucking->tipe=='40'||$ordertrucking->tipe=='COMBO'){
+                $data['tb_tl'] += 75000;
+            }
         }
         if(empty($data['ambil_empty_teluk_langon'])){
             $data['ambil_empty_teluk_langon'] = 0;
+        }else{
+            if($ordertrucking->tipe=='20'){
+                $data['tb_tl'] += 50000;
+            }
+            if($ordertrucking->tipe=='40'||$ordertrucking->tipe=='COMBO'){
+                $data['tb_tl'] += 75000;
+            }
         }
         if(empty($data['bongkar_full_teluk_langon'])){
             $data['bongkar_full_teluk_langon'] = 0;
+        }else{
+            if($ordertrucking->tipe=='20'){
+                $data['tb_tl'] += 50000;
+            }
+            if($ordertrucking->tipe=='40'||$ordertrucking->tipe=='COMBO'){
+                $data['tb_tl'] += 75000;
+            }
         }
 
-        if($data['bongkar_full_teluk_langon'] == 0 && $data['ambil_empty_tambak_langon'] == 0 && $data['ambil_empty_teluk_langon'] == 0){
-            $data['tb_tl'] = 0;
-        }
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->kuli + $order->tambah_isi + $order->tally + $order->tb_tl;

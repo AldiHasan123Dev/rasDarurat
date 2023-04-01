@@ -55,8 +55,8 @@
             </div>
             <div class="modal-body row">
                 <div class="mb-2 col-4">
-                    <label for="created_at">Tanggal</label>
-                    <input type="date" name="created_at" id="created_at" class="form-control" value="{{ date('Y-m-d') }}">
+                    <label for="tgl_muat">Tanggal Muat</label>
+                    <input type="date" name="tgl_muat" id="tgl_muat" class="form-control" value="{{ date('Y-m-d') }}">
                 </div>
                 <div class="mb-2 col-4">
                     <label for="customer">Customer</label>
@@ -157,10 +157,10 @@
                     <label for="container">Job ID</label>
                     <input type="text" name="job" id="job" class="form-control" readonly>
                 </div>
-                <div class="mb-2 col-3">
+                {{-- <div class="mb-2 col-3">
                     <label for="tgl_muat">Tanggal Muat</label>
                     <input type="date" name="tgl_muat" id="tgl_muat" class="form-control">
-                </div>
+                </div> --}}
                 <div class="mb-2 col-3">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
                     <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control">
@@ -222,17 +222,17 @@
                     <hr>
                 </div>
                 <div class="mb-2 col-3">
-                    <label for="sangu">Sangu</label>
-                    <input type="text" name="sangu" id="sangu-edit" class="form-control rupiah" required>
-                </div>
-                <div class="mb-2 col-3">
-                    <label for="simpanan">Sangu Simpanan</label>
-                    <input type="text" name="simpanan" id="simpanan" class="form-control rupiah" required>
-                </div>
-                <div class="mb-2 col-3">
                     <label for="borongan">Borongan</label>
                     <input type="text" name="borongan" id="borongan" class="form-control rupiah" required>
                 </div>
+                <div class="mb-2 col-3">
+                    <label for="sangu">Sangu</label>
+                    <input type="text" name="sangu" id="sangu-edit" class="form-control rupiah" required>
+                </div>
+                {{-- <div class="mb-2 col-3">
+                    <label for="simpanan">Sangu Simpanan</label>
+                    <input type="text" name="simpanan" id="simpanan" class="form-control rupiah" required>
+                </div> --}}
                 <div class="mb-2 col-3">
                     <label for="tambah_isi">Tambah Isi</label>
                     <input type="text" name="tambah_isi" id="tambah_isi" class="form-control rupiah" required>
@@ -256,6 +256,18 @@
                 <div class="mb-2 col-3">
                     <label for="kuli">Kuli</label>
                     <input type="text" name="kuli" id="kuli" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="op">OP/naikkan Mty</label>
+                    <input type="text" name="op" id="op" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="cleaning">Cleaning</label>
+                    <input type="text" name="cleaning" id="cleaning" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="stappel">Stappel/Inap</label>
+                    <input type="text" name="stappel" id="stappel" class="form-control rupiah" required>
                 </div>
                 <div class="my-2 col-12">
                     Keterangan
@@ -365,7 +377,7 @@
                 {search:false, name: 'sangu_id', label : 'sangu_id', hidden:true},
                 {search:false, name: 'date_sj_kembali', label : 'SJ Kembali D', hidden:true},
                 {search:false, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
-                {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
+                // {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer'},
@@ -389,9 +401,14 @@
                 {search:true, name: 'tb_tl', label : 'TB/TL'},
                 {search:true, name: 'tally', label : 'Tally'},
                 {search:true, name: 'uang_makan', label : 'Uang Makan'},
+                {search:true, name: 'op', label : 'OP/naikkan Mty'},
+                {search:true, name: 'cleaning', label : 'Cleaning'},
+                {search:true, name: 'stappel', label : 'Stappel/Inap'},
                 {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
                 {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
                 {search:true, name: 'tarif', label : 'Tarif'},
+                {search:true, name: 'pph_21', label : 'PPh 21-3%'},
+                {search:true, name: 'pph_23', label : 'PPh 23-2%'},
                 {search:true, name: 'keterangan', label : 'Keterangan', width:450},
             ],
             autowidth: true,
