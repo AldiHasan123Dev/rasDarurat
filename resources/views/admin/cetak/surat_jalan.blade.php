@@ -59,8 +59,13 @@
                                 <input type="text" name="from" id="from" class="form-control">
                             </div>
                             <div class="col-6 mb-2 px-2">
-                                <label for="kapal">Kapal</label>
-                                <input type="text" name="kapal" id="kapal" class="form-control">
+                                <label for="kapal">Dengan Kapal</label>
+                                <select name="kapal" id="kapal" class="form-control">
+                                    <option value="">none</option>
+                                    @foreach ($jadwal_kapal as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kapal->nama }} || ETD {{ date('d/m/y',strtotime($item->etd)) }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-6 mb-2 px-2">
                                 <label for="seal">Cont / Seal</label>
@@ -180,6 +185,7 @@
 @section('script')
     <script>
         $('#penerima').select2();
+        $('#kapal').select2();
         $('#no').keyup(function (e) {
             $('#d-no').html($(this).val());
         });
@@ -245,6 +251,20 @@
                     var data = response;
                     $('#d-customer').html(data.nama);
                     $('#d-kota').html(" "+data.kota);
+                }
+            });
+        });
+
+        $('#kapal').change(function (e) {
+            var val = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.jadwal-kapal.getOne') }}",
+                data: {id:val},
+                success: function (response) {
+                    var data = response;
+                    $('#d-etd').html(data.etd);
+                    $('#d-kapal').html(data.kapal+' Voy. '+data.voyage);
                 }
             });
         });

@@ -27,6 +27,9 @@ class SanguSopirController extends Controller
         $data['ukuran_20'] = str_replace(['.',','],'',$request->ukuran_20);
         $data['ukuran_40'] = str_replace(['.',','],'',$request->ukuran_40);
         $data['ukuran_combo'] = str_replace(['.',','],'',$request->ukuran_combo);
+        $data['borongan_kuli_20'] = str_replace(['.',','],'',$request->borongan_kuli_20);
+        $data['borongan_kuli_40'] = str_replace(['.',','],'',$request->borongan_kuli_40);
+        $data['borongan_kuli_combo'] = str_replace(['.',','],'',$request->borongan_kuli_combo);
         SanguSopir::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -43,6 +46,9 @@ class SanguSopirController extends Controller
         $data['ukuran_20'] = str_replace(['.',','],'',$request->ukuran_20);
         $data['ukuran_40'] = str_replace(['.',','],'',$request->ukuran_40);
         $data['ukuran_combo'] = str_replace(['.',','],'',$request->ukuran_combo);
+        $data['borongan_kuli_20'] = str_replace(['.',','],'',$request->borongan_kuli_20);
+        $data['borongan_kuli_40'] = str_replace(['.',','],'',$request->borongan_kuli_40);
+        $data['borongan_kuli_combo'] = str_replace(['.',','],'',$request->borongan_kuli_combo);
         $sangusopir->update($data);
 
         return back()->with('success','Data berhasil diupdate');
