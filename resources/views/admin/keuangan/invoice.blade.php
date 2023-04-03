@@ -118,7 +118,7 @@
             rowList:[10,25,50,100,250,500,1000],
             viewrecords: true,
             pager: "#jqGridPager",
-            caption: "Order Job Pre Invoice",
+            caption: "Order Job Invoice",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 var id = $(this).jqGrid('getCell', rowId, 'id');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');

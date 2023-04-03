@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransaksiResource;
+use App\Models\Order;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 
@@ -32,6 +33,9 @@ class TransaksiController extends Controller
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d',$no).'/RAS/'.$month_roman.'/'.date('y', strtotime($request->created_at));
 
+        Order::where('job',$transaksi->job)->update([
+            'invoice' => $invoice,
+        ]);
         $transaksi->update([
             'invoice' => $invoice,
             'tanggal_kirim' => $request->tanggal_kirim,
