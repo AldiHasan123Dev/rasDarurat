@@ -226,7 +226,8 @@ class OrderController extends Controller
         $data['keterangan'] = null;
         $data['created_at'] = date('Y-m-d');
         Order::create($data);
-        return back()->with('success','Copy data berhasil');
+        return response('copy data berhasil!');
+        // return back()->with('success','Copy data berhasil');
     }
 
     public function import(Request $request)

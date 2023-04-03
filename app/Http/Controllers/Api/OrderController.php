@@ -137,5 +137,184 @@ class OrderController extends Controller
         ]);
     }
 
+    public function jqgrid()
+    {
+        $page = request('page'); // get the requested page
+        $limit = request('rows'); // get how many rows we want to have into the grid
+        $sidx = request('sidx'); // get index row - i.e. user click to sort
+        $sord = request('sord'); // get the direction
+        $search = request('_search'); // get the search
+        $is_search = false;
+        if($search=='true'){
+            $is_search = true;
+        }
+        $query = Order::query();
+
+        $start = $limit * $page - $limit;
+        if ($start < 0){
+            $start = 0;
+        }
+
+        if(request('job')){
+            $query->where('job','LIKE','%'.request('job').'%');
+        }
+        if(request('invoice')){
+            $query->where('invoice','LIKE','%'.request('invoice').'%');
+        }
+        if(request('asuransi')){
+            $query->where('asuransi','LIKE','%'.request('asuransi').'%');
+        }
+        if(request('nopol')){
+            $query->where('nopol','LIKE','%'.request('nopol').'%');
+        }
+        if(request('trucking')){
+            $query->where('trucking','LIKE','%'.request('trucking').'%');
+        }
+        if(request('container')){
+            $query->where('container','LIKE','%'.request('container').'%');
+        }
+        if(request('seal')){
+            $query->where('seal','LIKE','%'.request('seal').'%');
+        }
+        if(request('agen')){
+            $query->where('agen','LIKE','%'.request('agen').'%');
+        }
+        if(request('keterangan')){
+            $query->where('keterangan','LIKE','%'.request('keterangan').'%');
+        }
+        if(request('pembayar')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('customer', function($a){
+                    $a->where('nama','LIKE','%'.request('pembayar').'%');
+                });
+            });
+        }
+        if(request('penerima_bl')){
+            $query->whereHas('agent',function($q){
+                $q->where('nama','LIKE','%'.request('penerima_bl').'%');
+            })->orWhereHas('penerima_bl', function($a){
+                $a->where('nama','LIKE','%'.request('penerima_bl').'%');
+            });
+        }
+        if(request('barang')){
+            $query->whereHas('barang',function($q){
+                $q->where('nama','LIKE','%'.request('barang').'%');
+            });
+        }
+        if(request('barang_detail')){
+            $query->whereHas('bttb',function($q){
+                $q->whereHas('barang', function($a){
+                    $a->where('nama','LIKE','%'.request('barang_detail').'%');
+                });
+            });
+        }
+
+        if(request('pelayaran')){
+            $query->whereHas('jadwal_kapal',function($q){
+                $q->whereHas('pelayaran', function($a){
+                    $a->where('nama','LIKE','%'.request('pelayaran').'%');
+                });
+            });
+        }
+        if(request('kapal')){
+            $query->whereHas('jadwal_kapal',function($q){
+                $q->whereHas('kapal', function($a){
+                    $a->where('nama','LIKE','%'.request('kapal').'%');
+                });
+            });
+        }
+        if(request('voyage')){
+            $query->whereHas('jadwal_kapal',function($q){
+                $q->where('nama','LIKE','%'.request('voyage').'%');
+            });
+        }
+        if(request('dari')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('dari_lokasi', function($a){
+                    $a->where('nama','LIKE','%'.request('dari').'%');
+                });
+            });
+        }
+        if(request('tujuan')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('tujuan_lokasi', function($a){
+                    $a->where('nama','LIKE','%'.request('tujuan').'%');
+                });
+            });
+        }
+        if(request('shipment')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('shipmentInfo', function($a){
+                    $a->where('nama','LIKE','%'.request('shipment').'%');
+                });
+            });
+        }
+        if(request('kondisi')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('kondisiInfo', function($a){
+                    $a->where('nama','LIKE','%'.request('kondisi').'%');
+                });
+            });
+        }
+        if(request('pengirim')){
+            $query->whereHas('pengirim',function($q){
+                $q->where('nama','LIKE','%'.request('pengirim').'%');
+            });
+        }
+        if(request('penerima')){
+            $query->whereHas('penerima',function($q){
+                $q->where('nama','LIKE','%'.request('penerima').'%');
+            });
+        }
+        if(request('marketing')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('customer', function($a){
+                    $a->whereHas('marketing', function($b){
+                        $b->where('name','LIKE','%'.request('marketing').'%');
+                    });
+                });
+            });
+        }
+        if(request('cs')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('customer', function($a){
+                    $a->whereHas('cs', function($b){
+                        $b->where('name','LIKE','%'.request('cs').'%');
+                    });
+                });
+            });
+        }
+
+        if($sidx){
+            $data = $query->orderBy($sidx,$sord)->skip($start)->take($limit)->get();
+        }else{
+            $data = $query->orderBy('job')->skip($start)->take($limit)->get();
+        }
+
+        // if($is_search){
+        //     $count = $query->count();
+        // }else{
+        // }
+        $count = Order::get('id')->count();
+
+        if ($count > 0 && $limit > 0) {
+            $total_pages = ceil($count / $limit);
+        } else {
+            $total_pages = 0;
+        }
+
+        if ($page > $total_pages){
+            $page = $total_pages;
+        }
+
+        $response = OrderResource::collection($data);
+        return response([
+            'page' => $page,
+            'total' => $total_pages,
+            'records' => $count,
+            'rows' => $response
+        ]);
+    }
+
 
 }

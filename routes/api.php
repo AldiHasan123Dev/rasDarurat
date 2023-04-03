@@ -61,3 +61,5 @@ Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
 Route::resource('api-tarif',TarifController::class);
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
+
+Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');

@@ -42,8 +42,9 @@
     let data = [];
 
     $("#jqGrid").jqGrid({
-        datatype: 'local',
-        data: data,
+        url: '{{ route('jqgrid.order') }}',
+        mtype: 'GET',
+        datatype: 'json',
         colModel: [
             {search:true, name: 'id', label : 'id', hidden:true},
             {search:true, name: 'class', label : 'class', hidden:true},
@@ -109,7 +110,7 @@
         }
     });
 
-    $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
+    $('#jqGrid').jqGrid('filterToolbar');
     $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
         search: false, // show search button on the toolbar
         add: false,
@@ -141,7 +142,7 @@
         });
     }
 
-    getData(0)
+    // getData(0)
 
     </script>
 @endsection

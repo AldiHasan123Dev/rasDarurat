@@ -42,8 +42,9 @@
 <script>
     let data = [];
     $("#jqGrid").jqGrid({
-        datatype: 'local',
-        data: data,
+        url: '{{ route('jqgrid.order') }}',
+        mtype: 'GET',
+        datatype: 'json',
         colModel: [
             {search:true, name: 'invoice', label : 'invoice', frozen:true, width:70},
             {search:true, name: 'job', label : 'job', frozen:true, width:70},
@@ -109,7 +110,7 @@
         }
     });
 
-    $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
+    $('#jqGrid').jqGrid('filterToolbar');
     $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
         search: false, // show search button on the toolbar
         add: false,
@@ -145,7 +146,7 @@
         });
     }
 
-    getData(0)
+    // getData(0)
 
     </script>
 @endsection

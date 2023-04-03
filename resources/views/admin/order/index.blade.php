@@ -64,7 +64,7 @@
                     <a href="" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</a>
                     <form action="" id="copy-order" method="post" enctype="multipart/form-data">
                         @csrf
-                        <button class="py-2 px-3 btn btn-sm btn-secondary" type="submit" onclick="return confirm('Are you sure?')">Copy Order</button>
+                        <button class="py-2 px-3 btn btn-sm btn-secondary" type="button" id="copy-order-btn" onclick="return confirm('Are you sure?')">Copy Order</button>
                     </form>
                     <form action="" id="delete-order" method="post" enctype="multipart/form-data">
                         @csrf
@@ -453,50 +453,51 @@
     let data = [];
     let id;
     $("#jqGrid").jqGrid({
-        datatype: 'local',
-        data: data,
+        url: '{{ route('jqgrid.order') }}',
+        mtype: 'GET',
+        datatype: 'json',
         colModel: [
             {search:true, width:100, name: 'job', label : 'job', frozen:true},
-            {search:true, width:100, name: 'no', label : 'no', frozen:true},
-            {search:true, width:100, name: 'tanggal', label : 'tanggal'},
+            {search:true, width:100, name: 'no', label : 'no', frozen:true, sortable: false},
+            {search:true, width:100, name: 'created_at', label : 'tanggal'},
             {search:true, width:100, name: 'invoice', label : 'invoice'},
             {search:true, width:100, name: 'asuransi', label : 'asuransi'},
-            {search:true, width:100, name: 'pembayar', label : 'pembayar'},
+            {search:true, width:100, name: 'pembayar', label : 'pembayar',sortable: false},
             {search:true, width:100, name: 'id', label : 'id', hidden:true},
             {search:true, width:100, name: 'class', label : 'class', hidden:true},
-            {search:true, width:100, name: 'marketing', label : 'marketing'},
-            {search:true, width:100, name: 'cs', label : 'cs'},
-            {search:true, width:100, name: 'pengirim', label : 'pengirim'},
-            {search:true, width:100, name: 'penerima', label : 'penerima'},
-            {search:true, width:100, name: 'dari', label : 'dari'},
-            {search:true, width:100, name: 'tujuan', label : 'tujuan'},
-            {search:true, width:100, name: 'shipment', label : 'shipment'},
-            {search:true, width:100, name: 'kondisi', label : 'kondisi'},
-            {search:true, width:100, name: 'barang', label : 'Jenis barang'},
-            {search:true, width:100, name: 'barang_detail', label : 'Barang'},
-            {search:true, width:100, name: 'pelayaran', label : 'pelayaran'},
-            {search:true, width:100, name: 'kapal', label : 'kapal'},
-            {search:true, width:100, name: 'voyage', label : 'voyage'},
-            {search:true, width:100, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
-            {search:true, width:100, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
-            {search:true, width:100, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, width:100, name: 'marketing', label : 'marketing',sortable: false},
+            {search:true, width:100, name: 'cs', label : 'cs',sortable: false},
+            {search:true, width:100, name: 'pengirim', label : 'pengirim',sortable: false},
+            {search:true, width:100, name: 'penerima', label : 'penerima',sortable: false},
+            {search:true, width:100, name: 'dari', label : 'dari',sortable: false},
+            {search:true, width:100, name: 'tujuan', label : 'tujuan',sortable: false},
+            {search:true, width:100, name: 'shipment', label : 'shipment',sortable: false},
+            {search:true, width:100, name: 'kondisi', label : 'kondisi',sortable: false},
+            {search:true, width:100, name: 'barang', label : 'Jenis barang',sortable: false},
+            {search:true, width:100, name: 'barang_detail', label : 'Barang',sortable: false},
+            {search:true, width:100, name: 'pelayaran', label : 'pelayaran',sortable: false},
+            {search:true, width:100, name: 'kapal', label : 'kapal',sortable: false},
+            {search:true, width:100, name: 'voyage', label : 'voyage',sortable: false},
+            {search:true, width:100, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y',sortable: false},
+            {search:true, width:100, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y',sortable: false},
+            {search:true, width:100, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y',sortable: false},
             {search:true, width:100, name: 'nopol', label : 'nopol'},
             {search:true, width:100, name: 'trucking', label : 'trucking'},
             {search:true, width:100, name: 'container', label : 'container'},
             {search:true, width:100, name: 'seal', label : 'seal'},
             {search:true, width:100, name: 'stuffing', label : 'stuffing'},
-            {search:true, width:100, name: 'stuffing_type', label : 'stuffing_type'},
+            {search:true, width:100, name: 'stuffing_type', label : 'stuffing_type',sortable: false},
             {search:true, width:100, name: 'full', label : 'full'},
             {search:true, width:100, name: 'barang_diantar', label : 'barang_diantar'},
             {search:true, width:100, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
-            {search:true, width:100, name: 'koli', label : 'koli'},
-            {search:true, width:100, name: 'm3', label : 'm3'},
-            {search:true, width:100, name: 'berat', label : 'berat'},
-            {search:true, width:100, name: 'satuan', label : 'satuan'},
-            {search:true, width:100, name: 'unit', label : 'unit'},
-            {search:true, width:100, name: 'tarif', label : 'tarif'},
+            {search:true, width:100, name: 'koli', label : 'koli',sortable: false},
+            {search:true, width:100, name: 'm3', label : 'm3',sortable: false},
+            {search:true, width:100, name: 'berat', label : 'berat',sortable: false},
+            {search:true, width:100, name: 'satuan', label : 'satuan',sortable: false},
+            {search:true, width:100, name: 'unit', label : 'unit',sortable: false},
+            {search:true, width:100, name: 'tarif', label : 'tarif',sortable: false},
             {search:true, width:100, name: 'agen', label : 'agen'},
-            {search:true, width:100, name: 'penerima_bl', label : 'penerima_bl'},
+            {search:true, width:100, name: 'penerima_bl', label : 'penerima_bl',sortable: false},
             {search:true, width:100, name: 'keterangan', label : 'keterangan'},
         ],
         autowidth: true,
@@ -538,7 +539,7 @@
         }
     });
 
-    $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
+    $('#jqGrid').jqGrid('filterToolbar');
     $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
         search: false, // show search button on the toolbar
         add: false,
@@ -575,7 +576,7 @@
         });
     }
 
-    getData(0)
+    // getData(0)
 
         let tablebttb = $('#table-bttb').DataTable({
             processing: true,
@@ -914,6 +915,21 @@
                 }
             });
         }
+
+        $('#copy-order-btn').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: $('#copy-order').attr('action'),
+                data:{
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function (response) {
+                    alert(response);
+                    $('#jqGrid').trigger( 'reloadGrid' );
+                }
+            });
+        });
 
         function deleteTagihan(id){
             $.ajax({
