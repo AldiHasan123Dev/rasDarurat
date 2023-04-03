@@ -286,9 +286,9 @@ class OrderController extends Controller
         }
 
         if($sidx){
-            $data = $query->orderBy($sidx,$sord)->skip($start)->take($limit)->get();
+            $data = $query->orderBy($sidx,$sord)->orderBy('no_job')->skip($start)->take($limit)->get();
         }else{
-            $data = $query->orderBy('job')->skip($start)->take($limit)->get();
+            $data = $query->orderBy('job')->orderBy('no_job')->skip($start)->take($limit)->get();
         }
 
         // if($is_search){
