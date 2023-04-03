@@ -103,6 +103,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('laporan/marketing', [LaporanController::class,'marketing'])->name('laporan.marketing');
     Route::get('laporan/cs', [LaporanController::class,'cs'])->name('laporan.cs');
 
+    Route::get('customer-tarif', [CustomerController::class,'tarif'])->name('customer.tarif');
     Route::get('nsfp-cancel', [NSFPController::class,'cancel'])->name('nsfp.cancel');
     Route::post('revisi-nsfp', [NSFPController::class,'revisi'])->name('nsfp.revisi');
     Route::post('tarik-nsfp', [NSFPController::class,'tarik'])->name('nsfp.tarik');

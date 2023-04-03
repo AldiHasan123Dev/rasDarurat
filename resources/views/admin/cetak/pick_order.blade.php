@@ -39,10 +39,10 @@
                     <hr>
                     <form action="" method="get">
                         <div class="row">
-                            <div class="col-12 mb-2 px-2">
+                            {{-- <div class="col-12 mb-2 px-2">
                                 <label for="cs">Nama CS</label>
                                 <input type="text" name="cs" id="cs" class="form-control">
-                            </div>
+                            </div> --}}
                             <div class="col-6 mb-2 px-2">
                                 <label for="pengirim">Pengirim</label>
                                 <select id="pengirim" class="form-control">
@@ -191,7 +191,7 @@
                             <b>Surabaya, <span id="d-date"></span></b><br>
                             <b>Hormat Kami</b>
                             <br><br><br><br><br>
-                            <p>( <span id="d-cs"></span> )</p>
+                            <p>( <span id="d-cs">{{ Auth::user()->name }}</span> )</p>
                         </div>
                     </div>
                 </div>

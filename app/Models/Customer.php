@@ -67,4 +67,9 @@ class Customer extends Model
                     ->count();
         return $order;
     }
+
+    public function tarif()
+    {
+        return $this->hasMany(Tarif::class,'customer_id');
+    }
 }

@@ -92,6 +92,40 @@
             </div>
         </div>
 
+        <div class="card mt-3">
+            <div class="card-header p-2 d-flex" style="gap:10px">
+                <button class="btn-sm btn border-bottom border-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarif" aria-controls="offcanvasTarif" id="add-tarif">Tambah Tarif <i class="fas fa-plus"></i></button>
+                <b class="mt-2" style="font-size: .7rem">Atas Nama: <span class="nama-cus"></span></b>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm nowrap" id="tarif" style="font-size:.7rem">
+                        <thead>
+                            <tr>
+                                <th>ID.</th>
+                                <th>Tanggal</th>
+                                <th>Pelayaran</th>
+                                <th>Dari</th>
+                                <th>Tujuan</th>
+                                <th>Shipment</th>
+                                <th>Kondisi</th>
+                                <th>Satuan</th>
+                                <th>Tarif</th>
+                                <th>Stuffing</th>
+                                <th>Keterangan</th>
+                                <th>Unit</th>
+                                <th>Min qty</th>
+                                <th>Customer</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
 <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasTarif" aria-labelledby="offcanvasTarifLabel">
@@ -138,6 +172,9 @@
             ajax:{
                 url: '{{ route('customer.data') }}',
                 method:'POST',
+                data:{
+                    type:'tarif'
+                },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [

@@ -42,10 +42,10 @@
                     <hr>
                     <form action="{{ route('cetak.pdf.suratJalan') }}" target="d_blank" method="get">
                         <div class="row">
-                            <div class="col-12 mb-2 px-2">
+                            {{-- <div class="col-12 mb-2 px-2">
                                 <label for="cs">Customer Service</label>
                                 <input type="text" name="cs" id="cs" class="form-control">
-                            </div>
+                            </div> --}}
                             <div class="col-6 mb-2 px-2">
                                 <label for="no">No. Surat</label>
                                 <input type="text" name="no" id="no" class="form-control">
@@ -168,7 +168,7 @@
                             <b>Surabaya, <span id="d-date"></span></b><br>
                             <b>Pengirim</b>
                             <br><br><br><br><br>
-                            <p>( <span id="d-cs"></span> )</p>
+                            <p>( <span id="d-cs">{{ Auth::user()->name }}</span> )</p>
                         </div>
                     </div>
                 </div>

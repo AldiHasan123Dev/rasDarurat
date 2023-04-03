@@ -32,6 +32,19 @@ class CustomerController extends Controller
         return view('admin.customer.index', compact('pelayaran','customer','lokasi','satuan','kondisi','shipment'));
     }
 
+    public function tarif()
+    {
+        $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+        $customer = Customer::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+        $pelayaran = Pelayaran::pluck('nama','id');
+
+        return view('admin.customer.tarif', compact('pelayaran','customer','lokasi','satuan','kondisi','shipment'));
+    }
+
     public function create()
     {
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
@@ -106,10 +119,18 @@ class CustomerController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
+        if(request('type')=='tarif'){
+            $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
+                ->leftJoin('users as cs','cs.id','=','customers.cs_id')
+                ->whereHas('tarif')
+                ->select('customers.*')->limit($start)->offset($limit);
+            $count = Customer::whereHas('tarif')->select('id')->count();
+        }else{
+            $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
                 ->leftJoin('users as cs','cs.id','=','customers.cs_id')
                 ->select('customers.*')->limit($start)->offset($limit);
-        $count = Customer::select('id')->count();
+                $count = Customer::select('id')->count();
+        }
 
         $req = request('filter');
         return Datatables::of($data)
@@ -163,7 +184,6 @@ class CustomerController extends Controller
             })
             ->rawColumns(['action'])
             ->setFilteredRecords($count)
-            ->skipTotalRecords()
             ->toJson();
     }
 }
