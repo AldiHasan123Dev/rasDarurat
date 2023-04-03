@@ -7,6 +7,7 @@ use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
+use App\Models\SanguSopir;
 use App\Models\Satuan;
 use App\Models\Shipment;
 use App\Models\SubMenu;
@@ -131,6 +132,20 @@ class SyncController extends Controller
         }
 
         return response('Berhasil mengupdate '.$i.' Data');
+    }
+
+    public function kuli()
+    {
+        $data = SanguSopir::all();
+        foreach ($data as $item ) {
+            $item->update([
+                'borongan_kuli_20' => 15000,
+                'borongan_kuli_combo' => 15000,
+                'borongan_kuli_40' => 25000,
+            ]);
+        }
+
+        return 'success';
     }
 
     public function data()

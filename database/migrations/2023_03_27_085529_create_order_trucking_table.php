@@ -33,9 +33,13 @@ return new class extends Migration
             $table->double('tb_tl',)->default(0);
             $table->double('tally',)->default(0);
             $table->double('uang_makan',)->default(0);
+            $table->double('kuli')->default(0);
+            $table->double('simpanan_kuli')->default(0);
+            $table->double('borongan_kuli')->default(0);
+            $table->double('margin')->default(0);
+            $table->double('total_invoice',)->default(0);
             $table->double('total_sopir',)->default(0);
             $table->date('tgl_total',)->nullable();
-            $table->double('kuli')->default(0);
             $table->date('sj_kembali')->nullable();
             $table->date('sj_kembali_fa')->nullable();
             $table->date('tgl_muat')->nullable();

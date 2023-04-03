@@ -139,6 +139,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
     Route::view('static-invoice', 'admin.print.invoice');
 
+    Route::get('sync-kuli',[SyncController::class,'kuli']);
     Route::get('sync-import',[SyncController::class,'import']);
     Route::get('sync-sync',[SyncController::class,'sync']);
     Route::get('sync-invoice',[SyncController::class,'invoice']);
