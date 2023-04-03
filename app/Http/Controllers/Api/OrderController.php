@@ -225,7 +225,7 @@ class OrderController extends Controller
         }
         if(request('voyage')){
             $query->whereHas('jadwal_kapal',function($q){
-                $q->where('nama','LIKE','%'.request('voyage').'%');
+                $q->where('voyage','LIKE','%'.request('voyage').'%');
             });
         }
         if(request('dari')){
