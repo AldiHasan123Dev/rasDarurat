@@ -82,7 +82,8 @@ class KeuanganController extends Controller
     {
         $start = request('start') ?? Carbon::now()->startOfMonth()->format('Y-m-d');
         $end = request('end') ?? Carbon::now()->endOfMonth()->format('Y-m-d');
-        $transaksi = Transaksi::all()->whereBetween('created_at',[$start,$end])->sortBy('created_at');
+        $transaksi = Transaksi::whereBetween('created_at',[$start,$end])->orderBy('created_at')->get();
+        // dd($transaksi);
         $data = TransaksiResource::collection($transaksi);
         $faktur = NSFP::where('available',1)->first();
         $no = '-';
