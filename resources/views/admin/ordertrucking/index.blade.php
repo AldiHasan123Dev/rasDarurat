@@ -157,22 +157,22 @@
                     <label for="container">Job ID</label>
                     <input type="text" name="job" id="job" class="form-control" readonly>
                 </div>
-                {{-- <div class="mb-2 col-3">
+                <div class="mb-2 col-3">
                     <label for="tgl_muat">Tanggal Muat</label>
                     <input type="date" name="tgl_muat" id="tgl_muat" class="form-control">
-                </div> --}}
+                </div>
                 <div class="mb-2 col-3">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
                     <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control">
                 </div>
-                {{-- <div class="mb-2 col-3">
+                <div class="mb-2 col-3">
                     <label for="customer">Customer</label>
                     <select name="customer_id" id="customer_id" class="form-control" required>
                         @foreach ($customers as $cus)
                             <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
                         @endforeach
                     </select>
-                </div> --}}
+                </div>
                 {{-- <div class="mb-2 col-3">
                     <label for="kendaraan">Kendaraan</label>
                     <select name="kendaraan_id" id="kendaraan_id" class="form-control" required>
@@ -188,7 +188,7 @@
                             <option {{ $loop->first?'selected':'' }} value="{{ $sup->id }}">{{ $sup->nama }} </option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="mb-2 col-3">
                     <label for="container">No. Cont</label>
                     <input type="text" name="container" id="container-edit" class="form-control" required>
@@ -196,7 +196,7 @@
                 <div class="mb-2 col-3">
                     <label for="seal">Seal</label>
                     <input type="text" name="seal" id="seal-edit" class="form-control" required>
-                </div> --}}
+                </div>
                 {{-- <div class="mb-2 col-3">
                     <label for="tipe">Tipe Cont</label>
                     <select name="tipe" id="tipe-edit" class="form-control" required>
@@ -226,8 +226,16 @@
                     <input type="text" name="borongan" id="borongan" class="form-control rupiah" required>
                 </div>
                 <div class="mb-2 col-3">
-                    <label for="sangu">Sangu</label>
+                    <label for="sangu">Sangu Sopir</label>
                     <input type="text" name="sangu" id="sangu-edit" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="borongan_kuli">Borongan Kuli</label>
+                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="kuli">Sangu Kuli</label>
+                    <input type="text" name="kuli" id="kuli" class="form-control rupiah" required>
                 </div>
                 {{-- <div class="mb-2 col-3">
                     <label for="simpanan">Sangu Simpanan</label>
@@ -252,10 +260,6 @@
                 <div class="mb-2 col-3">
                     <label for="uang_makan">Uang Makan</label>
                     <input type="text" name="uang_makan" id="uang_makan" class="form-control rupiah" required>
-                </div>
-                <div class="mb-2 col-3">
-                    <label for="kuli">Kuli</label>
-                    <input type="text" name="kuli" id="kuli" class="form-control rupiah" required>
                 </div>
                 <div class="mb-2 col-3">
                     <label for="op">OP/naikkan Mty</label>
@@ -395,7 +399,9 @@
                 {search:true, name: 'borongan', label : 'Borongan'},
                 {search:true, name: 'sangu', label : 'Sangu Sopir'},
                 {search:true, name: 'simpanan', label : 'Simpanan Sopir'},
-                {search:true, name: 'kuli', label : 'Kuli'},
+                {search:true, name: 'borongan_kuli', label : 'Borongan Kuli'},
+                {search:true, name: 'kuli', label : 'Sangu Kuli'},
+                {search:true, name: 'simpanan_kuli', label : 'Simpanan Kuli'},
                 {search:true, name: 'tambah_isi', label : 'Tambah Isi'},
                 {search:true, name: 'tambah_solar', label : 'Tambah Solar'},
                 {search:true, name: 'tb_tl', label : 'TB/TL'},
@@ -405,6 +411,8 @@
                 {search:true, name: 'cleaning', label : 'Cleaning'},
                 {search:true, name: 'stappel', label : 'Stappel/Inap'},
                 {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
+                {search:true, name: 'total_invoice', label : 'Inv'},
+                {search:true, name: 'margin', label : 'Margin'},
                 {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
                 {search:true, name: 'tarif', label : 'Tarif'},
                 {search:true, name: 'pph_21', label : 'PPh 21-3%'},
@@ -437,6 +445,10 @@
                 var tally = $(this).jqGrid('getCell', rowId, 'tally');
                 var uang_makan = $(this).jqGrid('getCell', rowId, 'uang_makan');
                 var kuli = $(this).jqGrid('getCell', rowId, 'kuli');
+                var borongan_kuli = $(this).jqGrid('getCell', rowId, 'borongan_kuli');
+                var op = $(this).jqGrid('getCell', rowId, 'op');
+                var cleaning = $(this).jqGrid('getCell', rowId, 'cleaning');
+                var stappel = $(this).jqGrid('getCell', rowId, 'stappel');
                 var container = $(this).jqGrid('getCell', rowId, 'container');
                 var seal = $(this).jqGrid('getCell', rowId, 'seal');
                 var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
@@ -459,6 +471,10 @@
                 $('#sangu-edit').val(sangu);
                 $('#tipe-edit').val(tipe);
                 $('#simpanan').val(simpanan);
+                $('#borongan_kuli').val(borongan_kuli);
+                $('#op').val(op);
+                $('#cleaning').val(cleaning);
+                $('#stappel').val(stappel);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
                 $("#customer_id").val(customer_id).trigger('change');

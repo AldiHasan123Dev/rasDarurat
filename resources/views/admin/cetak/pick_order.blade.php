@@ -82,7 +82,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-12 mb-2 px-2">
+                            <div class="col-12 mb-2 px-2 autocomplete">
                                 <label for="tujuan">Tujuan</label>
                                 <input type="text" name="tujuan" id="tujuan" class="form-control">
                             </div>
@@ -202,6 +202,13 @@
 @endsection
 
 @section('script')
+<script src="{{asset('assets/js/autocomplete.js')}}"></script>
+<script>
+    $(function(){
+        var tujuan = @json($tujuan);
+        autocomplete(document.getElementById("tujuan"), tujuan);
+    })
+</script>
     <script>
         $('#pengirim').select2();
         $('#penerima').select2();

@@ -44,16 +44,19 @@ class OrderTruckingController extends Controller
         }
         if($data['tipe']=='20'){
             $data['borongan'] = $sangu->ukuran_20;
+            $data['borongan_kuli'] = $sangu->borongan_kuli_20;
         }
         if($data['tipe']=='40'){
             $data['borongan'] = $sangu->ukuran_40;
+            $data['borongan_kuli'] = $sangu->borongan_kuli_40;
         }
         if($data['tipe']=='COMBO'){
             $data['borongan'] = $sangu->ukuran_combo;
+            $data['borongan_kuli'] = $sangu->borongan_kuli_combo;
         }
         $data['tujuan'] = $sangu->tujuanInfo->nama;
         $data['tarif_id'] = $tarif->id;
-        
+
         $data['tb_tl'] = 0;
         if(empty($data['ambil_empty_tambak_langon'])){
             $data['ambil_empty_tambak_langon'] = 0;
@@ -103,16 +106,23 @@ class OrderTruckingController extends Controller
             $data['tujuan'] = $sangu->tujuanInfo->nama;
             $data['tarif_id'] = $tarif->id;
         }
+        if($request->borongan){
+            $data['borongan'] = str_replace(['.',','],'',$request->borongan);
+        }
         if($request->sangu){
             $data['sangu'] = str_replace(['.',','],'',$request->sangu);
-            $data['simpanan'] = $ordertrucking->borongan - $data['sangu'];
+            $data['simpanan'] = $data['borongan'] - $data['sangu'];
+        }
+        if($request->borongan_kuli){
+            $data['borongan_kuli'] = str_replace(['.',','],'',$request->borongan_kuli);
+        }
+        if($request->sangu){
+            $data['kuli'] = str_replace(['.',','],'',$request->kuli);
+            $data['simpanan_kuli'] = $data['borongan_kuli'] - $data['kuli'];
         }
         // if($request->simpanan){
         //     $data['simpanan'] = str_replace(['.',','],'',$request->simpanan);
         // }
-        if($request->borongan){
-            $data['borongan'] = str_replace(['.',','],'',$request->borongan);
-        }
         if($request->tambah_isi){
             $data['tambah_isi'] = str_replace(['.',','],'',$request->tambah_isi);
         }
@@ -140,7 +150,7 @@ class OrderTruckingController extends Controller
         if($request->stappel){
             $data['stappel'] = str_replace(['.',','],'',$request->stappel);
         }
-        
+
         $data['tb_tl'] = 0;
         if(empty($data['ambil_empty_tambak_langon'])){
             $data['ambil_empty_tambak_langon'] = 0;
@@ -177,8 +187,10 @@ class OrderTruckingController extends Controller
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->kuli + $order->tambah_isi + $order->tally + $order->tb_tl;
 
+        $margin = $order->tarif->tarif + $order->borongan + $order->borongan_kuli + $order->tambah_solar + $order->tambah_isi + $order->tambah_isi + $order->uang_makan + $order->op + $order->cleaning + $order->stappel;
         $order->update([
-            'total_sopir' => $totalan
+            'total_sopir' => $totalan,
+            'margin' => $margin
         ]);
 
         return back()->with('success','Data berhasil diupdate');

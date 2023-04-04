@@ -14,11 +14,11 @@ class SanguSopir extends Model
     protected $fillable = [
         'tujuan',
         'ukuran_20',
-        'sangu_20',
         'ukuran_40',
-        'sangu_40',
         'ukuran_combo',
-        'sangu_combo',
+        'borongan_kuli_20',
+        'borongan_kuli_40',
+        'borongan_kuli_combo',
         'is_active',
     ];
 

@@ -52,8 +52,11 @@
                                 <th>Tanggal</th>
                                 <th>Tujuan</th>
                                 <th>Borongan 20'</th>
+                                <th>Borongan Kuli 20'</th>
                                 <th>Borongan 40'</th>
+                                <th>Borongan Kuli 40'</th>
                                 <th>Borongan Combo 2x20</th>
+                                <th>Borongan Kuli Combo 2x20</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -104,8 +107,11 @@
                 { data: 'created_at', name: 'created_at' },
                 { data: 'tujuan', name: 'tujuan' },
                 { data: 'ukuran_20', name: 'ukuran_20' },
+                { data: 'borongan_kuli_20', name: 'borongan_kuli_20' },
                 { data: 'ukuran_40', name: 'ukuran_40' },
+                { data: 'borongan_kuli_40', name: 'borongan_kuli_40' },
                 { data: 'ukuran_combo', name: 'ukuran_combo' },
+                { data: 'borongan_kuli_combo', name: 'borongan_kuli_combo' },
                 { data: 'is_active', name: 'is_active' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]

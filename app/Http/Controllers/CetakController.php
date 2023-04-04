@@ -22,7 +22,9 @@ class CetakController extends Controller
         $penerima = Customer::get();
         // $pdf = PDF::loadView('pdf.contoh');
         // return $pdf->stream('document.pdf');
-        return view('admin.cetak.surat_jalan', compact('penerima'));
+        $tujuan = Lokasi::pluck('nama');
+        $jadwal_kapal = JadwalKapal::join('kapal','kapal.id','=','jadwal_kapal.kapal_id')->select('jadwal_kapal.*')->where('jadwal_kapal.is_active',1)->get();
+        return view('admin.cetak.surat_jalan', compact('penerima','tujuan','jadwal_kapal'));
         // $mpdf = new PDF();
 
         // Write some HTML code:
@@ -52,8 +54,9 @@ class CetakController extends Controller
     {
         $pengirim = Customer::get();
         $penerima = Customer::get();
+        $tujuan = Lokasi::pluck('nama');
         $jadwal_kapal = JadwalKapal::join('kapal','kapal.id','=','jadwal_kapal.kapal_id')->select('jadwal_kapal.*')->where('jadwal_kapal.is_active',1)->get();
-        return view('admin.cetak.pick_order', compact('pengirim','penerima','jadwal_kapal'));
+        return view('admin.cetak.pick_order', compact('pengirim','penerima','jadwal_kapal','tujuan'));
     }
 
     public function packingList()
