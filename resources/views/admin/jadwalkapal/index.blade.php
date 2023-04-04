@@ -76,7 +76,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'tools', name: 'tools' },
+                { data: 'tools', name: 'tools', visible:false },
                 { data: 'id', name: 'id', visible:false },
                 { data: 'kapal', name: 'kapal.nama' },
                 { data: 'voyage', name: 'voyage' },

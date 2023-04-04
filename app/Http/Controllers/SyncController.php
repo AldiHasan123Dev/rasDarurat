@@ -210,4 +210,120 @@ class SyncController extends Controller
 
         return response('success');
     }
+
+    public function kapal()
+    {
+        JadwalKapal::whereIn('kapal_id',[109,128,152,210])->update([
+            'kapal_id' => 2
+        ]);
+        JadwalKapal::whereIn('kapal_id',[201])->update([
+            'kapal_id' => 110
+        ]);
+        JadwalKapal::whereIn('kapal_id',[117,149,195,226])->update([
+            'kapal_id' => 6
+        ]);
+        JadwalKapal::whereIn('kapal_id',[176])->update([
+            'kapal_id' => 127
+        ]);
+        JadwalKapal::whereIn('kapal_id',[186,219])->update([
+            'kapal_id' => 137
+        ]);
+        JadwalKapal::whereIn('kapal_id',[170,209])->update([
+            'kapal_id' => 132
+        ]);
+        JadwalKapal::whereIn('kapal_id',[125,227])->update([
+            'kapal_id' => 5
+        ]);
+        JadwalKapal::whereIn('kapal_id',[204])->update([
+            'kapal_id' => 158
+        ]);
+        JadwalKapal::whereIn('kapal_id',[157, 228])->update([
+            'kapal_id' => 4
+        ]);
+        JadwalKapal::whereIn('kapal_id',[138,156,184,225])->update([
+            'kapal_id' => 3
+        ]);
+        JadwalKapal::whereIn('kapal_id',[230])->update([
+            'kapal_id' => 236
+        ]);
+        JadwalKapal::whereIn('kapal_id',[144,172,205])->update([
+            'kapal_id' => 143
+        ]);
+        JadwalKapal::whereIn('kapal_id',[207])->update([
+            'kapal_id' => 183
+        ]);
+        JadwalKapal::whereIn('kapal_id',[174])->update([
+            'kapal_id' => 111
+        ]);
+        JadwalKapal::whereIn('kapal_id',[199,197])->update([
+            'kapal_id' => 124
+        ]);
+        JadwalKapal::whereIn('kapal_id',[198])->update([
+            'kapal_id' => 116
+        ]);
+        JadwalKapal::whereIn('kapal_id',[213])->update([
+            'kapal_id' => 163
+        ]);
+        JadwalKapal::whereIn('kapal_id',[173])->update([
+            'kapal_id' => 133
+        ]);
+        JadwalKapal::whereIn('kapal_id',[187])->update([
+            'kapal_id' => 153
+        ]);
+        JadwalKapal::whereIn('kapal_id',[160,185])->update([
+            'kapal_id' => 129
+        ]);
+        JadwalKapal::whereIn('kapal_id',[159])->update([
+            'kapal_id' => 120
+        ]);
+        JadwalKapal::whereIn('kapal_id',[167,202,221])->update([
+            'kapal_id' => 114
+        ]);
+        JadwalKapal::whereIn('kapal_id',[192])->update([
+            'kapal_id' => 142
+        ]);
+        JadwalKapal::whereIn('kapal_id',[180,168,206])->update([
+            'kapal_id' => 130
+        ]);
+        JadwalKapal::whereIn('kapal_id',[182])->update([
+            'kapal_id' => 139
+        ]);
+        JadwalKapal::whereIn('kapal_id',[141,175,214])->update([
+            'kapal_id' => 126
+        ]);
+        JadwalKapal::whereIn('kapal_id',[164])->update([
+            'kapal_id' => 151
+        ]);
+        JadwalKapal::whereIn('kapal_id',[212])->update([
+            'kapal_id' => 200
+        ]);
+        JadwalKapal::whereIn('kapal_id',[223])->update([
+            'kapal_id' => 190
+        ]);
+        JadwalKapal::whereIn('kapal_id',[217])->update([
+            'kapal_id' => 208
+        ]);
+        JadwalKapal::whereIn('kapal_id',[148,216])->update([
+            'kapal_id' => 122
+        ]);
+        JadwalKapal::whereIn('kapal_id',[140,169])->update([
+            'kapal_id' => 113
+        ]);
+        JadwalKapal::whereIn('kapal_id',[220])->update([
+            'kapal_id' => 147
+        ]);
+        JadwalKapal::whereIn('kapal_id',[194])->update([
+            'kapal_id' => 145
+        ]);
+        JadwalKapal::whereIn('kapal_id',[154,162])->update([
+            'kapal_id' => 121
+        ]);
+        JadwalKapal::whereIn('kapal_id',[150])->update([
+            'kapal_id' => 123
+        ]);
+
+        Kapal::whereIn('id',[109,128,152,210,201,117,149,195,226,176,186,219,170,209,125,227,204,157, 228,138,156,184,225,230,144,172,205,207,174,199,198,213,173,187,160,185,159,167,202,221,192,180,168,206,182,141,175,214,164,212,223,217,148,216,140,169,220,194,154,162,150,197])->delete();
+
+        return 'success';
+    }
 }

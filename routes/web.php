@@ -140,6 +140,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::view('static-invoice', 'admin.print.invoice');
 
     Route::get('sync-import',[SyncController::class,'import']);
+    Route::get('sync-kapal',[SyncController::class,'kapal']);
     Route::get('sync-sync',[SyncController::class,'sync']);
     Route::get('sync-invoice',[SyncController::class,'invoice']);
     Route::get('sync-customer',[SyncController::class,'customerTrucking']);
