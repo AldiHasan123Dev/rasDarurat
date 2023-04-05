@@ -37,4 +37,9 @@ class TarifTruk extends Model
     {
         return $this->belongsTo(Lokasi::class,'tujuan');
     }
+
+    public function shipment()
+    {
+        return $this->belongsTo(Shipment::class,'tipe');
+    }
 }

@@ -57,6 +57,9 @@ class TarifAgenController extends Controller
             ->addColumn('dari', function($data){
                 return $data->dariInfo->nama;
             })
+            ->addColumn('tipe', function($data){
+                return $data->shipment->nama;
+            })
             ->addColumn('tujuan', function($data){
                 return $data->tujuanInfo->nama;
             })

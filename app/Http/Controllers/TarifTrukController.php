@@ -60,6 +60,9 @@ class TarifTrukController extends Controller
             ->addColumn('tujuan', function($data){
                 return $data->tujuanInfo->nama;
             })
+            ->addColumn('tipe', function($data){
+                return $data->shipment->nama;
+            })
             ->addColumn('is_active', function($data){
                 return $data->is_active==1?'AKTIF':'TIDAK AKTIF';
             })
