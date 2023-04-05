@@ -27,6 +27,8 @@ class OrderTruckingResource extends JsonResource
         return [
             'id' => $this->id,
             'order_id' => $this->order_id,
+            'invoice' => $this->invoice ?? '-',
+            'tgl_invoice' => $this->tgl_invoice ? date('d/m/y', strtotime($this->tgl_invoice)) : '-',
             'customer_id' => $this->customer_id,
             'kendaraan_id' => $this->kendaraan_id,
             'sopir_id' => $this->sopir_id,
@@ -38,7 +40,6 @@ class OrderTruckingResource extends JsonResource
             'date_sj_kembali' => $this->sj_kembali?date('Y-m-d', strtotime($this->sj_kembali)):'-',
             'date_sj_kembali_fa' => $this->sj_kembali_fa?date('Y-m-d', strtotime($this->sj_kembali_fa)):'-',
             'date_tgl_muat' => $this->tgl_muat?date('Y-m-d', strtotime($this->tgl_muat)):'-',
-            'invoice' => $this->invoice,
             'customer' => $this->customer->nama,
             'pembayar' => $this->order ? $this->order->tarif->customer->nama : '-',
             'job' => $this->order ? $this->order->job.'-'.sprintf('%02d',$this->order->no_job) : '-',

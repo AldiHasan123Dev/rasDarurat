@@ -13,6 +13,8 @@ class OrderTrucking extends Model
     protected $table = 'order_trucking';
     protected $fillable = [
         'order_id',
+        'invoice',
+        'tgl_invoice',
         'customer_id',
         'sopir_id',
         'tarif_id',
