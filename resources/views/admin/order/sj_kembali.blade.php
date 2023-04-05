@@ -96,7 +96,7 @@
                 {search:false, name: 'sangu_id', label : 'sangu_id', hidden:true},
                 {search:false, name: 'date_sj_kembali', label : 'SJ Kembali D', hidden:true},
                 {search:false, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
-                {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer'},
                 {search:true, name: 'pembayar', label : 'Pembayar'},
