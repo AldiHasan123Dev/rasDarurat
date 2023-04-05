@@ -18,7 +18,7 @@ class OrderTruckingController extends Controller
 {
     public function index()
     {
-        $data = OrderTrucking::all();
+        $data = OrderTrucking::all()->sortByDesc('tgl_muat');
         $data = OrderTruckingResource::collection($data);
         $kendaraan = Kendaraan::all()->where('is_active',1)->sortBy('nopol');
         $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
