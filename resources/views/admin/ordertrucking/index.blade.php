@@ -107,7 +107,7 @@
                     </select>
                 </div>
                 <div class="mb-2 col-4">
-                    <label for="sangu">Sangu</label>
+                    <label for="sangu">Sangu Borongan</label>
                     <input type="text" name="sangu" id="sangu" class="form-control" disabled>
                 </div>
                 <div class="my-2 col-12">
@@ -563,7 +563,7 @@
                     if(tipe==40){
                         $('#sangu').val(rp(response.ukuran_40));
                     }
-                    if(tipe=='combo'){
+                    if(tipe=='COMBO'){
                         $('#sangu').val(rp(response.ukuran_combo));
                     }
                 }

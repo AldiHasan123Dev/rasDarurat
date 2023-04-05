@@ -15,9 +15,6 @@ class SanguSopirController extends Controller
             'ukuran_20' => $data->ukuran_20,
             'ukuran_40' => $data->ukuran_40,
             'ukuran_combo' => $data->ukuran_combo,
-            'sangu_20' => $data->sangu_20,
-            'sangu_40' => $data->sangu_40,
-            'sangu_combo' => $data->sangu_combo,
         ]);
     }
 }
