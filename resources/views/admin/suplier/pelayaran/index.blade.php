@@ -73,11 +73,11 @@
                             <th>Tanggal</th>
                             <th>Dari</th>
                             <th>Tujuan</th>
-                            <th>Tipe</th>
+                            <th>Shipment</th>
                             <th>Tarif</th>
                             <th>Kubikasi</th>
                             <th>Keterangan</th>
-                            <th>Is_active</th>
+                            <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
