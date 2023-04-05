@@ -186,8 +186,8 @@ class OrderTruckingController extends Controller
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->kuli + $order->tambah_isi + $order->tally + $order->tb_tl;
-
-        $margin = $order->tarif->tarif + $order->borongan + $order->borongan_kuli + $order->tambah_solar + $order->tambah_isi + $order->tambah_isi + $order->uang_makan + $order->op + $order->cleaning + $order->stappel;
+        $pph = $order->pph_21 >= 0 ? $order->pph_21 : $order->pph_23;
+        $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->tambah_solar - $order->tambah_isi - $order->tb_tl - $order->uang_makan - $order->op - $order->cleaning - $order->stappel - $pph;
         $order->update([
             'total_sopir' => $totalan,
             'margin' => $margin
