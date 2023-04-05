@@ -5,7 +5,7 @@
 <div class="row">
 <x-input :value="$taritruk->truk_id??old('truk_id')" :col="12" :label="'Truk'" :type="'select'" :options="$agens" :name="'truk_id'" :required="true"></x-input>
 <x-input :value="$taritruk->tanggal??old('tanggal')" :col="6" :label="'Tanggal'" :type="'date'" :name="'tanggal'" :required="true"></x-input>
-<x-input :value="$taritruk->tipe??old('tipe')" :col="6" :label="'Tipe'" :type="'text'" :name="'tipe'" :required="true"></x-input>
+<x-input :value="$taritruk->tipe??old('tipe')" :col="6" :label="'Shipment'" :type="'select'" :options="$shipments" :name="'tipe'" :required="true"></x-input>
 <x-input :value="$taritruk->dari??old('dari')" :col="6" :label="'Dari'" :type="'select'" :options="$lokasi" :name="'dari'" :required="true"></x-input>
 <x-input :value="$taritruk->tujuan??old('tujuan')" :col="6" :label="'Tujuan'" :type="'select'" :options="$lokasi" :name="'tujuan'" :required="true"></x-input>
 <x-input :value="$taritruk->tarif??old('tarif')" :col="6" :label="'Tarif'" :type="'number'" :name="'tarif'" :required="true"></x-input>

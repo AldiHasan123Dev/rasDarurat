@@ -5,7 +5,7 @@
 <div class="row">
 <x-input :value="$tarifagen->agen_id??old('agen_id')" :col="12" :label="'Agen'" :type="'select'" :options="$agens" :name="'agen_id'" :required="true"></x-input>
 <x-input :value="$tarifagen->tanggal??old('tanggal')" :col="6" :label="'Tanggal'" :type="'date'" :name="'tanggal'" :required="true"></x-input>
-<x-input :value="$tarifagen->tipe??old('tipe')" :col="6" :label="'Tipe'" :type="'text'" :name="'tipe'" :required="true"></x-input>
+<x-input :value="$tarifagen->tipe??old('tipe')" :col="6" :label="'Shipment'" :type="'select'" :options="$shipments" :name="'tipe'" :required="true"></x-input>
 <x-input :value="$tarifagen->dari??old('dari')" :col="6" :label="'Dari'" :type="'select'" :options="$lokasi" :name="'dari'" :required="true"></x-input>
 <x-input :value="$tarifagen->tujuan??old('tujuan')" :col="6" :label="'Tujuan'" :type="'select'" :options="$lokasi" :name="'tujuan'" :required="true"></x-input>
 <x-input :value="$tarifagen->tarif??old('tarif')" :col="6" :label="'Tarif'" :type="'number'" :name="'tarif'" :required="true"></x-input>

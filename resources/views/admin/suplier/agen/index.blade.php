@@ -109,7 +109,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('tarifagen.store') }}" method="post">
+            <form action="{{ route('tarifagen.store') }}" method="post" id="tarif-create">
                 @csrf
                 @include('admin.tarifagen.form')
             </form>
@@ -181,6 +181,7 @@
 
         $('#tb-agen tbody').on( 'click', 'tr', function () {
             id =  tb_agen.row( this ).data().id;
+            $('#tarif-create #agen_id').val(id).trigger('change');
             agen_id = id;
             tb_tarif.ajax.reload();
         });

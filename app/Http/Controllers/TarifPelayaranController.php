@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Shipment;
 use App\Models\TarifPelayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,8 @@ class TarifPelayaranController extends Controller
 {
     public function index()
     {
-        return view('admin.tarifpelayaran.index');
+        $shipments = Shipment::pluck('nama','id');
+        return view('admin.tarifpelayaran.index',compact('shipment'));
     }
 
     public function store(Request $request)
@@ -65,7 +67,8 @@ class TarifPelayaranController extends Controller
                 return date('d/m/y',strtotime($data->tanggal));
             })
             ->addColumn('action', function ($data) {
-                $view = view('admin.tarifpelayaran.form',['tarifpelayaran'=>$data])->render();
+                $shipments = Shipment::pluck('nama','id');
+                $view = view('admin.tarifpelayaran.form',['tarifpelayaran'=>$data,'shipments'=>$shipments])->render();
                 $html = '<div class="d-flex gap-1">
                             <form action="'.route('tarifpelayaran.destroy',$data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />

@@ -6,7 +6,7 @@
 <div class="row">
     <x-input :value="$tarifpelayaran->pelayaran_id??old('pelayaran_id')" :col="12" :label="'Pelayaran'" :type="'select'" :options="$agens" :name="'pelayaran_id'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->tanggal??old('tanggal')" :col="6" :label="'Tanggal'" :type="'date'" :name="'tanggal'" :required="true"></x-input>
-    <x-input :value="$tarifpelayaran->tipe??old('tipe')" :col="6" :label="'Tipe'" :type="'text'" :name="'tipe'" :required="true"></x-input>
+    <x-input :value="$tarifpelayaran->tipe??old('tipe')" :col="6" :label="'Shipment'" :type="'select'" :options="$shipments" :name="'tipe'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->dari??old('dari')" :col="6" :label="'Dari'" :type="'select'" :options="$lokasi" :name="'dari'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->tujuan??old('tujuan')" :col="6" :label="'Tujuan'" :type="'select'" :options="$lokasi" :name="'tujuan'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->tarif??old('tarif')" :col="6" :label="'Tarif'" :type="'number'" :name="'tarif'" :required="true"></x-input>

@@ -96,7 +96,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('tarifpelayaran.store') }}" method="post">
+            <form action="{{ route('tarifpelayaran.store') }}" method="post" id="tarif-create">
                 @csrf
                 @include('admin.tarifpelayaran.form')
             </form>
@@ -140,15 +140,15 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'kode', name: 'kode' },
-            { data: 'nama', name: 'nama' },
-            { data: 'pic', name: 'pic' },
-            { data: 'alamat', name: 'alamat' },
-            { data: 'kota', name: 'kota' },
-            { data: 'telp', name: 'telp' },
-            { data: 'hp', name: 'hp' },
-            { data: 'fax', name: 'fax' },
-            { data: 'email', name: 'email' },
+                { data: 'kode', name: 'kode' },
+                { data: 'nama', name: 'nama' },
+                { data: 'pic', name: 'pic' },
+                { data: 'alamat', name: 'alamat' },
+                { data: 'kota', name: 'kota' },
+                { data: 'telp', name: 'telp' },
+                { data: 'hp', name: 'hp' },
+                { data: 'fax', name: 'fax' },
+                { data: 'email', name: 'email' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
             select:true
@@ -182,6 +182,7 @@
 
         $('#tb-pelayaran tbody').on( 'click', 'tr', function () {
             id =  tb_pelayaran.row( this ).data().id;
+            $('#tarif-create #pelayaran_id').val(id).trigger('change');
             pelayaran_id = id;
             tb_tarif.ajax.reload();
         });

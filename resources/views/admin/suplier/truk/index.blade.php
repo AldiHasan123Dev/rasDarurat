@@ -109,7 +109,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('tariftruk.store') }}" method="post">
+            <form action="{{ route('tariftruk.store') }}" method="post" id="tarif-create">
                 @csrf
                 @include('admin.tariftruk.form')
             </form>
@@ -181,6 +181,7 @@
 
         $('#tb-truk tbody').on( 'click', 'tr', function () {
             id =  tb_truk.row( this ).data().id;
+            $('#tarif-create #truk_id').val(id).trigger('change');
             truk_id = id;
             tb_tarif.ajax.reload();
         });

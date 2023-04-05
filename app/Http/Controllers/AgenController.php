@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agen;
+use App\Models\Shipment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -11,7 +12,8 @@ class AgenController extends Controller
 {
     public function index()
     {
-        return view('admin.suplier.agen.index');
+        $shipments = Shipment::pluck('nama','id');
+        return view('admin.suplier.agen.index', compact('shipments'));
     }
 
     public function store(Request $request)

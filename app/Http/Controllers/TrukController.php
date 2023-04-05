@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Shipment;
 use App\Models\Truk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,8 @@ class TrukController extends Controller
 {
     public function index()
     {
-        return view('admin.suplier.truk.index');
+        $shipments = Shipment::pluck('nama','id');
+        return view('admin.suplier.truk.index', compact('shipments'));
     }
 
     public function store(Request $request)
