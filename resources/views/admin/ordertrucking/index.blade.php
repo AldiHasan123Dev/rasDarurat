@@ -159,7 +159,7 @@
                 </div>
                 <div class="mb-2 col-3">
                     <label for="tgl_muat">Tanggal Muat</label>
-                    <input type="date" name="tgl_muat" id="tgl_muat" class="form-control">
+                    <input type="date" name="tgl_muat" id="tgl_muat_edit" class="form-control">
                 </div>
                 <div class="mb-2 col-3">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
@@ -381,6 +381,7 @@
                 {search:false, name: 'sangu_id', label : 'sangu_id', hidden:true},
                 {search:false, name: 'date_sj_kembali', label : 'SJ Kembali D', hidden:true},
                 {search:false, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
+                {search:false, name: 'date_tgl_muat', label : 'Tanggal Muat D', hidden:true},
                 // {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
@@ -455,6 +456,7 @@
                 var nopol = $(this).jqGrid('getCell', rowId, 'nopol');
                 var date_sj_kembali = $(this).jqGrid('getCell', rowId, 'date_sj_kembali');
                 var date_sj_kembali_fa = $(this).jqGrid('getCell', rowId, 'date_sj_kembali_fa');
+                var date_tgl_muat = $(this).jqGrid('getCell', rowId, 'date_tgl_muat');
                 var ambil_empty_tambak_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_tambak_langon');
                 var ambil_empty_teluk_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_teluk_langon');
                 var bongkar_full_teluk_langon = $(this).jqGrid('getCell', rowId, 'bongkar_full_teluk_langon');
@@ -483,6 +485,7 @@
                 $("#tujuan-edit").val(sangu_id).trigger('change');
                 $("#container-edit").val(container);
                 $("#seal-edit").val(seal);
+                $("#tgl_muat_edit").val(date_tgl_muat);
                 $('#btn-edit').show();
                 $('#delete').show();
                 if(ambil_empty_tambak_langon==1){

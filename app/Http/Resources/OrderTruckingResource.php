@@ -37,6 +37,7 @@ class OrderTruckingResource extends JsonResource
             'sj_kembali_fa' => $this->sj_kembali_fa?date('d/m/y', strtotime($this->sj_kembali_fa)):'-',
             'date_sj_kembali' => $this->sj_kembali?date('Y-m-d', strtotime($this->sj_kembali)):'-',
             'date_sj_kembali_fa' => $this->sj_kembali_fa?date('Y-m-d', strtotime($this->sj_kembali_fa)):'-',
+            'date_tgl_muat' => $this->tgl_muat?date('Y-m-d', strtotime($this->tgl_muat)):'-',
             'invoice' => $this->invoice,
             'customer' => $this->customer->nama,
             'pembayar' => $this->order ? $this->order->tarif->customer->nama : '-',
