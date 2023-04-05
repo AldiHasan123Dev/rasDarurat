@@ -53,7 +53,7 @@ class OrderController extends Controller
 
     public function sj_kembali()
     {
-        $data = OrderTrucking::all()->whereNull('sj_kembali');
+        $data = OrderTrucking::all()->sortByDesc('tgl_muat')->whereNull('sj_kembali');
         $data = OrderTruckingResource::collection($data);
         return view('admin.order.sj_kembali', compact('data'));
     }
