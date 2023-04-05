@@ -49,7 +49,7 @@
             {search:true, name: 'invoice', label : 'invoice', frozen:true, width:70},
             {search:true, name: 'job', label : 'job', frozen:true, width:70},
             {search:true, name: 'no', label : 'no', frozen:true, width:70},
-            {search:true, name: 'tgl_muat', label : 'Tanggal Muat', frozen:true, width:70},
+            {search:true, name: 'created_at', label : 'Tanggal', frozen:true, width:70},
             {search:true, name: 'asuransi', label : 'asuransi', frozen:true, width:70},
             {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:70},
             {search:true, name: 'id', label : 'id', hidden:true},
