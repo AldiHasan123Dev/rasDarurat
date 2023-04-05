@@ -11,15 +11,15 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Pelayaran_id</th>
+                                <th>Pelayaran</th>
                                 <th>Tanggal</th>
                                 <th>Dari</th>
                                 <th>Tujuan</th>
-                                <th>Tipe</th>
+                                <th>Shipment</th>
                                 <th>Tarif</th>
                                 <th>Kubikasi</th>
                                 <th>Keterangan</th>
-                                <th>Is_active</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -58,15 +58,15 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'pelayaran_id', name: 'pelayaran_id' },
-            { data: 'tanggal', name: 'tanggal' },
-            { data: 'dari', name: 'dari' },
-            { data: 'tujuan', name: 'tujuan' },
-            { data: 'tipe', name: 'tipe' },
-            { data: 'tarif', name: 'tarif' },
-            { data: 'kubikasi', name: 'kubikasi' },
-            { data: 'keterangan', name: 'keterangan' },
-            { data: 'is_active', name: 'is_active' },
+                { data: 'pelayaran_id', name: 'pelayaran_id' },
+                { data: 'tanggal', name: 'tanggal' },
+                { data: 'dari', name: 'dari' },
+                { data: 'tujuan', name: 'tujuan' },
+                { data: 'tipe', name: 'tipe' },
+                { data: 'tarif', name: 'tarif' },
+                { data: 'kubikasi', name: 'kubikasi' },
+                { data: 'keterangan', name: 'keterangan' },
+                { data: 'is_active', name: 'is_active' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
