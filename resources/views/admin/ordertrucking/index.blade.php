@@ -386,6 +386,7 @@
                 {search:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer'},
+                {search:true, name: 'trucking', label : 'Trucking'},
                 {search:true, name: 'pembayar', label : 'Pembayar'},
                 {search:true, name: 'job', label : 'Job'},
                 {search:true, name: 'sopir', label : 'Sopir'},

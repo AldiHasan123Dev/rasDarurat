@@ -153,16 +153,20 @@ class CetakController extends Controller
             if ($order->tarif->customer->all_in==1) {
                 $allin = $this->allinFCL($order);
                 $is_allin = true;
+                $invoice = $this->FCL($order,1);
+            }else{
+                $invoice = $this->FCL($order);
             }
-            $invoice = $this->FCL($order);
             $validate = $this->FCL($order)['validate'];
         }else{
             $allin = [];
             if ($order->tarif->customer->all_in==1) {
                 $allin = $this->allinLCL($order);
                 $is_allin = true;
+                $invoice = $this->LCL($order,1);
+            }else{
+                $invoice = $this->LCL($order);
             }
-            $invoice = $this->LCL($order);
             $validate = $this->LCL($order)['validate'];
         }
 
@@ -241,7 +245,7 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['sub_total'] = (int)((($tar->first()->tarif->tarif * $tar->count())) * 0.011)+ ($tar->first()->tarif->tarif*$tar->count());
+            $items[$idx]['sub_total'] = ceil(((($tar->first()->tarif->tarif * $tar->count())) * 0.011)+ ($tar->first()->tarif->tarif*$tar->count()));
             $items[$idx]['tarif'] = $items[$idx]['sub_total'] / $tar->count();
             $sub_total += $items[$idx]['sub_total'];
         }
@@ -346,7 +350,7 @@ class CetakController extends Controller
         ];
     }
 
-    public function FCL(Order $order)
+    public function FCL(Order $order, $type = 0)
     {
         $orders = Order::where('job',$order->job)->get();
         $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
@@ -408,7 +412,12 @@ class CetakController extends Controller
             $pph = $sub_total * 0.02;
         }
         $ppn = $sub_total * 0.011;
-        $total = $sub_total + $asuransi + (int)$ppn + $cas->sum('jumlah');
+
+        if($type==0){
+            $total = (int)$sub_total + $asuransi + (int)$ppn + $cas->sum('jumlah');
+        }else{
+            $total = (int)$sub_total + $asuransi + ceil($ppn) + $cas->sum('jumlah');
+        }
 
         return [
             'items' => $items,

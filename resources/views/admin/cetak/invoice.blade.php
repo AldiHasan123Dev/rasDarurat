@@ -1004,7 +1004,7 @@
                             <td style="border: 1px solid black">
                                 <div class="price d-flex justify-content-between px-2">
                                     <span>Rp</span>
-                                    <span>{{ number_format($invoice['ppn']) }}</span>
+                                    <span>{{ number_format((int)$invoice['ppn']) }}</span>
                                 </div>
                             </td>
                         </tr>

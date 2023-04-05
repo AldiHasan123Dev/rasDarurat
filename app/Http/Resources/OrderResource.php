@@ -47,6 +47,7 @@ class OrderResource extends JsonResource
             'pelayaran' => $this->jadwal_kapal->pelayaran->nama ?? '-',
             'kapal' => $this->jadwal_kapal->kapal->nama ?? '-',
             'voyage' => $this->jadwal_kapal->voyage ?? '-',
+            'tgl_muat' => is_null($this->truckingInfo)?'-':date('d-m-Y',strtotime($this->truckingInfo->tgl_muat)),
             'etd' => is_null($this->jadwal_kapal->etd)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->etd)),
             'td' => is_null($this->jadwal_kapal->td)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->td)),
             'ba_kirim' => is_null($this->ba_kirim)?'-':date('d-m-Y',strtotime($this->ba_kirim)),

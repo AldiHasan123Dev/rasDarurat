@@ -107,4 +107,9 @@ class Order extends Model
     {
         return $this->hasOne(Transaksi::class,'job','job');
     }
+
+    public function truckingInfo()
+    {
+        return $this->hasOne(OrderTrucking::class,'order_id');
+    }
 }
