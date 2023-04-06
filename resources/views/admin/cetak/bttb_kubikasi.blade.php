@@ -52,6 +52,9 @@
 </style>
 @endsection
 @section('content')
+@php
+    $page = 0;
+@endphp
     <div class="container">
         <div class="d-flex" style="gap:5px">
             <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
@@ -219,11 +222,16 @@
                             <hr class="mt-4">
                         </div>
                         @if (ceil($data->count()/15)!=1)
-                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of {{ ceil($data->count()/15) }}</i></div>
+                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of <span class="off-page"></span></i></div>
                         @endif
                     </div>
                     @if (ceil($data->count()/15)!=1)
-                    <p class="pagebreak"></p>
+                        @if (!$loop->last)
+                            <p class="pagebreak"></p>
+                            @php
+                                $page++;
+                            @endphp
+                        @endif
                     @endif
                     @endforeach
                 @else
@@ -386,11 +394,16 @@
                                 <hr class="mt-4">
                             </div>
                             @if (ceil($data->count()/10)!=1)
-                                <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of {{ ceil($data->count()/10) }}</i></div>
+                                <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of <span class="off-page"></span></i></div>
                             @endif
                         </div>
                         @if (ceil($data->count()/10)!=1)
-                        <p class="pagebreak"></p>
+                            @if (!$loop->last)
+                                <p class="pagebreak"></p>
+                                @php
+                                    $page++;
+                                @endphp
+                            @endif
                         @endif
                         @endforeach
                     @else
@@ -551,12 +564,17 @@
                                     @endif
                                 <hr class="mt-4">
                             </div>
-                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of 1</i></div>
+                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $loop->iteration }} of <span class="off-page"></span></i></div>
                             @if (ceil($data->count()/15)!=1)
                             @endif
                         </div>
                         @if (ceil($data->count()/15)!=1)
-                        <p class="pagebreak"></p>
+                            @if (!$loop->last)
+                                <p class="pagebreak"></p>
+                                @php
+                                    $page++;
+                                @endphp
+                            @endif
                         @endif
                         @endforeach
                     @endif
@@ -608,4 +626,12 @@
         </div>
     </div>
 
+@endsection
+
+@section('script')
+    <script>
+        $(function(){
+            $('.off-page').html(@json($page));
+        })
+    </script>
 @endsection
