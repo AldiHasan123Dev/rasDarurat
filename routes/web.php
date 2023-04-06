@@ -14,6 +14,7 @@ use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KondisiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\NSFPController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTruckingController;
@@ -25,11 +26,13 @@ use App\Http\Controllers\SanguSopirController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SopirController;
+use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\TarifAgenController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TarifPelayaranController;
+use App\Http\Controllers\TarifTruckingController;
 use App\Http\Controllers\TarifTrukController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TruckingController;
@@ -96,6 +99,10 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('role-access',RoleAccessController::class);
     Route::resource('sangusopir',SanguSopirController::class);
     Route::resource('ordertrucking',OrderTruckingController::class);
+    Route::resource('menu',MenuController::class);
+    Route::resource('submenu',SubMenuController::class);
+    Route::resource('tariftrucking',TarifTruckingController::class);
+
 
     Route::get('laporan/pelayaran', [LaporanController::class,'pelayaran'])->name('laporan.pelayaran');
     Route::get('laporan/tujuan', [LaporanController::class,'tujuan'])->name('laporan.tujuan');
@@ -108,6 +115,8 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('revisi-nsfp', [NSFPController::class,'revisi'])->name('nsfp.revisi');
     Route::post('tarik-nsfp', [NSFPController::class,'tarik'])->name('nsfp.tarik');
     Route::get('trucking/order',[TruckingController::class,'order'])->name('trucking.order');
+    Route::get('trucking/pre-invoice',[TruckingController::class,'preInvoice'])->name('trucking.pre-invoice');
+    Route::get('trucking/invoice/{order}',[TruckingController::class,'invoice'])->name('trucking.invoice');
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');
@@ -151,5 +160,3 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-menu',[SyncController::class,'menu_link']);
 });
 // Route::view('test','test');
-Route::resource('menu',App\Http\Controllers\MenuController::class);Route::resource('submenu',App\Http\Controllers\SubMenuController::class);
-Route::resource('tariftrucking',App\Http\Controllers\TarifTruckingController::class);

@@ -385,6 +385,7 @@
                 // {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
+                {search:true, name: 'tgl_invoice', label : 'Tgl Invoice'},
                 {search:true, name: 'customer', label : 'Customer'},
                 {search:true, name: 'trucking', label : 'Trucking'},
                 {search:true, name: 'pembayar', label : 'Pembayar'},
