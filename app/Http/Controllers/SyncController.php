@@ -341,4 +341,17 @@ class SyncController extends Controller
 
         return 'success';
     }
+
+    public function transaksi()
+    {
+        $data = Transaksi::all();
+        foreach ($data as $item ) {
+            $created = date('Y-m-d',strtotime($item->created_at));
+            $item->update([
+                'created_at' => $created
+            ]);
+        }
+
+        return 'success';
+    }
 }

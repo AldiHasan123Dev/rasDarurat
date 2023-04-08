@@ -152,5 +152,6 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-agen',[SyncController::class,'agen']);
     Route::get('sync-pph',[SyncController::class,'pph']);
     Route::get('sync-menu',[SyncController::class,'menu_link']);
+    Route::get('sync-transaksi',[SyncController::class,'transaksi']);
 });
 // Route::view('test','test');

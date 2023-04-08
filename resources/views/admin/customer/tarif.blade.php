@@ -211,7 +211,7 @@
             },
             columns: [
                 { data: 'id', name: 'id', visible:false },
-                { data: 'updated_at', name: 'updated_at' },
+                { data: 'created_at', name: 'created_at' },
                 { data: 'pelayaran_id', name: 'pelayaran_id' },
                 { data: 'dari', name: 'dari' },
                 { data: 'tujuan', name: 'tujuan' },

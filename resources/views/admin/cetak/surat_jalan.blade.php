@@ -117,7 +117,6 @@
                         </div>
                         <p class="fw-bold mt-3" style="width:30%; font-size:.7rem">SURAT JALAN / PENGANTAR</p>
                     </div>
-                    <hr>
                     <div class="d-flex justify-content-between mt-3" style="font-size: .7rem">
                         <div style="width: 70%">
                             <table style="width:100%">

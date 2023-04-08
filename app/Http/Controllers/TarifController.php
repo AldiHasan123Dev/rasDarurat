@@ -140,10 +140,13 @@ class TarifController extends Controller
             //     return  $data->jadwal_kapal->kapal->nama.'('.$data->jadwal_kapal->voyage.') || '.$data->jadwal_kapal->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($data->jadwal_kapal->etd)).' || '.$data->jadwal_kapal->rute ?? '-';
             // })
             ->order(function ($data){
-                $data->orderBy('updated_at','desc');
+                $data->orderBy('created_at','desc');
             })
             ->addColumn('updated_at', function($data){
                 return  date('d/m/y', strtotime($data->updated_at));
+            })
+            ->addColumn('created_at', function($data){
+                return  date('d/m/y', strtotime($data->created_at));
             })
             ->addColumn('pelayaran_id', function($data){
                 return  $data->pelayaran->nama ?? '-';
