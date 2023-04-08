@@ -64,6 +64,7 @@ class KeuanganController extends Controller
         $data['nsfp'] = $nsfp->nomor;
         $data['order'] = $no;
         $data['order_id'] = $order->id;
+        $data['created_at'] = date('Y-m-d');
         Transaksi::create($data);
         Order::where('job',$order->job)->update([
             'invoice' => $invoice,

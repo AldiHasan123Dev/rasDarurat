@@ -35,9 +35,9 @@ class TransaksiResource extends JsonResource
             'tanggal_format' => is_null($this->created_at) ? '-' : date('Y-m-d', strtotime($this->created_at)),
             'total' => number_format(ceil($this->total)),
             'sub_total' => number_format(ceil($this->sub_total)),
-            'ppn' => number_format($this->ppn),
-            'pph' =>  number_format($this->pph),
-            'ppn_subtotal' =>  number_format(ceil($this->ppn) + ceil($this->sub_total)),
+            'ppn' => number_format(round($this->ppn)),
+            'pph' =>  number_format(round($this->pph)),
+            'ppn_subtotal' =>  number_format(round($this->ppn) + ceil($this->sub_total)),
         ];
     }
 }

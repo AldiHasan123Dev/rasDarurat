@@ -56,14 +56,8 @@ Route::get('/', function () {
     return redirect('login');
 });
 Route::get('test', function () {
-    $role = Auth::user()->role_id;
-    $access = App\Models\RoleAccess::join('sub_menu','sub_menu.id','=','role_access.sub_menu_id')
-    ->join('menu','menu.id','=','sub_menu.menu_id')
-    ->where('role_access.role_id',$role)
-    ->select('menu.title as label','menu.id','sub_menu.url','sub_menu.title','role_access.role_id','role_access.sub_menu_id')
-    ->get()
-    ->groupBy('id');
-    dd($access);
+    $num = round(17288100.49);
+    dd($num);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

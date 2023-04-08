@@ -85,19 +85,19 @@
                     <div class="d-flex gap-3 mt-2 justify-content-center">
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
                             <li class="list-group-item fw-bold">Total Sub Total</li>
-                            <li class="list-group-item fw-bold">Rp. {{ number_format($sub_total,2,',','.') }}</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format($sub_total) }}</li>
                         </ul>
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
                             <li class="list-group-item fw-bold">Total PPN</li>
-                            <li class="list-group-item fw-bold">Rp. {{ number_format($ppn,2,',','.') }}</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format(round($ppn)) }}</li>
                         </ul>
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
                             <li class="list-group-item fw-bold">Total</li>
-                            <li class="list-group-item fw-bold">Rp. {{ number_format($sub_total+$ppn,2,',','.') }}</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format($sub_total+ round($ppn)) }}</li>
                         </ul>
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
                             <li class="list-group-item fw-bold">Total PPH</li>
-                            <li class="list-group-item fw-bold">Rp. {{ number_format($pph,2,',','.') }}</li>
+                            <li class="list-group-item fw-bold">Rp. {{ number_format(round($pph)) }}</li>
                         </ul>
 
                     </div>

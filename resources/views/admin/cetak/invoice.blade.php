@@ -188,7 +188,12 @@
             <script>
                 window.print();
             </script>
-            <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+            <div class="d-flex gap-2">
+                <button onclick="window.print()" class="btn btn-sm btn-success mb-3 w-75">Print</button>
+                @if ($order->tarif->customer->all_in==1)
+                <button class="btn btn-sm btn-primary mb-3 w-25" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit Tarif</button>
+                @endif
+            </div>
             @endif
         </div>
         <div class="card p-3 mt-3">
@@ -268,7 +273,7 @@
                                     <td>Sub Total</td>
                                 </tr>
                             </thead>
-                            @foreach ($allin['items'] as $item)
+                            @foreach ($allin['items'] as $idx => $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item['keterangan'] }}</td>
@@ -279,13 +284,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(ceil($item['tarif'])) }}</span>
+                                            <span><input type="text" readonly class="text-right text-end tarif-{{ $idx }}" style="border:none" value="{{ number_format(ceil($item['tarif'])) }}"></span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(ceil($item['sub_total'])) }}</span>
+                                            <span><input type="text" name="sub_total[]" readonly class="text-right text-end sub-total-{{ $idx }}" style="border:none" value="{{ number_format(ceil($item['sub_total'])) }}"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -301,7 +306,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($allin['sub_total'])) }}</span>
+                                        <span class="subtotal">{{ number_format(ceil($allin['sub_total'])) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -334,7 +339,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($allin['total'])) }}</span>
+                                        <span class="total">{{ number_format(ceil($allin['total'])) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -344,7 +349,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($allin['total'])) }}</span>
+                                        <span class="total">{{ number_format(ceil($allin['total'])) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -357,7 +362,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang(ceil($allin['total']))) }} RUPIAH</td>
+                                        <td class="terbilang">: {{ strtoupper(terbilang(ceil($allin['total']))) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>
@@ -395,7 +400,7 @@
                             <div class="col-5">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br>
+                                    <br><br><br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -477,7 +482,7 @@
                                     <td>Sub Total</td>
                                 </tr>
                             </thead>
-                            @foreach ($allin['items'] as $item)
+                            @foreach ($allin['items'] as $idx => $item)
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item['keterangan'] }}</td>
@@ -488,13 +493,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(ceil($item['tarif'])) }}</span>
+                                            <span><input type="text" readonly class="text-right text-end tarif-{{ $idx }}" style="border:none" value="{{ number_format(ceil($item['tarif'])) }}"></span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(ceil($item['sub_total'])) }}</span>
+                                            <span><input type="text" readonly class="text-right text-end sub-total-{{ $idx }}" style="border:none" value="{{ number_format(ceil($item['sub_total'])) }}"></span>
                                         </div>
                                     </td>
                                 </tr>
@@ -510,7 +515,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($allin['sub_total']) }}</span>
+                                        <span class="subtotal">{{ number_format($allin['sub_total']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -543,7 +548,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($allin['total'])) }}</span>
+                                        <span class="total">{{ number_format(ceil($allin['total'])) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -553,7 +558,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($allin['total'])) }}</span>
+                                        <span class="total">{{ number_format(ceil($allin['total'])) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -576,7 +581,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang(ceil($allin['total']))) }} RUPIAH</td>
+                                        <td class="terbilang">: {{ strtoupper(terbilang(ceil($allin['total']))) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>
@@ -859,7 +864,7 @@
                             <div class="col-5">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br>
+                                    <br><br><br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -1097,7 +1102,7 @@
                         <div class="col-5">
                             <div class="text-center" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                <br><br>
+                                <br><br><br><br><br>
                                 (LATIFAH)
                             </div>
                         </div>
@@ -1342,7 +1347,7 @@
                                     @else
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                     @endif
-                                    <br>
+                                    <br><br><br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -1353,4 +1358,107 @@
             </div>
         </div>
     </div>
+
+    @if ($order->tarif->customer->all_in==1)
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Tarif All In</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="mt-2 w-100 table" style="font-size: .7rem">
+                        <thead>
+                            <tr>
+                                <td>No</td>
+                                <td>Uraian</td>
+                                <td>Tipe Tarif</td>
+                                <td>Tarif</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($allin['items'] as $idx => $item)
+                            <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $item['keterangan'] }}</td>
+                                <td class="text-center">{{ $item['si'] }}</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span><input type="number" class="text-right text-end" onkeyup="editTarif(this,{{ $idx }},{{ $item['jumlah'] }})" style="border:none" value="{{ ceil($item['tarif']) }}"></span>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+@endsection
+
+@section('script')
+    @if ($order->tarif->customer->all_in==1)
+        <script>
+            function editTarif(e,idx,count){
+                var val = parseInt(e.value);
+                var jumlah = parseInt(count);
+                var total = val * jumlah;
+                $('.tarif-'+idx).val(val.toLocaleString('en-US'));
+                $('.sub-total-'+idx).val(total.toLocaleString('en-US'));
+                hitung();
+            }
+
+            function hitung() {
+                var asuransi = @json($allin['asuransi_total']);
+                var sub_total = 0;
+                var values = $("input[name='sub_total[]']").map(function(){return $(this).val();}).get();
+                $.each(values, function (indexInArray, item) {
+                    var price = parseInt(item.replaceAll(',',''));
+                    sub_total += price;
+                });
+                var subtotal = parseInt(sub_total);
+                var total = parseInt(asuransi) + sub_total;
+                var terbilang_nominal = terbilang(total);
+                $('.subtotal').html(subtotal.toLocaleString('en-US'));
+                $('.total').html(total.toLocaleString('en-US'));
+                $('.terbilang').html(': '+terbilang_nominal.toUpperCase()+' RUPIAH');
+            }
+
+            function terbilang(n) {
+                let bilangan = [    '', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan', 'sepuluh',    'sebelas'  ];
+                if (n < 12) {
+                    return bilangan[n];
+                } else if (n < 20) {
+                    return bilangan[n % 10] + ' belas';
+                } else if (n < 100) {
+                    return (bilangan[Math.floor(n / 10)] + ' puluh ' + bilangan[n % 10]).trim();
+                } else if (n < 200) {
+                    return 'seratus ' + terbilang(n % 100);
+                } else if (n < 1000) {
+                    return (bilangan[Math.floor(n / 100)] + ' ratus ' + terbilang(n % 100)).trim();
+                } else if (n < 2000) {
+                    return 'seribu ' + terbilang(n % 1000);
+                } else if (n < 1000000) {
+                    return (terbilang(Math.floor(n / 1000)) + ' ribu ' + terbilang(n % 1000)).trim();
+                } else if (n < 1000000000) {
+                    return (terbilang(Math.floor(n / 1000000)) + ' juta ' + terbilang(n % 1000000)).trim();
+                } else if (n < 1000000000000) {
+                    return (terbilang(Math.floor(n / 1000000000)) + ' milyar ' + terbilang(n % 1000000000)).trim();
+                } else if (n < 1000000000000000) {
+                    return (terbilang(Math.floor(n / 1000000000000)) + ' trilyun ' + terbilang(n % 1000000000000)).trim();
+                } else {
+                    return 'nilai terlalu besar';
+                }
+            }
+
+        </script>
+    @endif
 @endsection
