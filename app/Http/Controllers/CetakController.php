@@ -289,11 +289,11 @@ class CetakController extends Controller
             $items[$idx]['customer'] = $tar->tarif->customer->nama;
             $items[$idx]['alamat'] = $tar->tarif->customer->alamat;
             $items[$idx]['kota'] = $tar->tarif->customer->kota;
-            $items[$idx]['koli'] = $koli;
+            $items[$idx]['koli'] = 1;
             $items[$idx]['container'] = $tar->container;
             $items[$idx]['job'] = $tar->job.'-'.sprintf('%02d',$tar->no_job);
             $items[$idx]['si'] = 'Cont '.$tar->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = ($tar->tarif->tarif * 0.011)+ $tar->tarif->tarif;
+            $items[$idx]['tarif'] = (round($tar->tarif->tarif * 0.011))+ $tar->tarif->tarif;
             $items[$idx]['asuransi'] = $asuransi_name;
             $items[$idx]['asuransi_total'] = $asuransi + $admin;
             $items[$idx]['sub_total'] = $items[$idx]['tarif'];
