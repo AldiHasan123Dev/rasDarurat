@@ -201,7 +201,7 @@
                 @if ($order->tarif->customer->all_in==1)
                     <div class="invoice-box first-page">
                         <div class="header d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -358,7 +358,7 @@
                         </table>
 
                         <div class="row mt-3">
-                            <div class="col-12">
+                            <div class="col-9">
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
@@ -377,30 +377,28 @@
                                         </td>
                                     </tr>
                                 </table>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-7">
-                                <span>Pembayaran dapat dilakukan melalui:</span>
-                                <table style="font-size: .7rem">
-                                    <tr>
-                                        <td style="width: 150px">Rekening No.</td>
-                                        <td>: 1400 046 005 006</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Atas Nama</td>
-                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bank</td>
-                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
-                                    </tr>
-                                </table>
+                                <div class="mt-3">
+                                    <span>Pembayaran dapat dilakukan melalui:</span>
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 150px">Rekening No.</td>
+                                            <td>: 1400 046 005 006</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Atas Nama</td>
+                                            <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank</td>
+                                            <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                             <div class="col-5">
-                                <div class="text-center" style="font-size: .7rem">
+                                <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br><br><br><br>
+                                    <br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -410,7 +408,7 @@
                     <div class="page-break"></div>
                     <div class="invoice-box">
                         <div class="header d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -577,7 +575,7 @@
                         </table>
 
                         <div class="row mt-3">
-                            <div class="col-12">
+                            <div class="col-9">
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
@@ -596,28 +594,26 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <div class="mt-3">
+                                    <span>Pembayaran dapat dilakukan melalui:</span>
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 150px">Rekening No.</td>
+                                            <td>: 1400 046 005 006</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Atas Nama</td>
+                                            <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank</td>
+                                            <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-7">
-                                <span>Pembayaran dapat dilakukan melalui:</span>
-                                <table style="font-size: .7rem">
-                                    <tr>
-                                        <td style="width: 150px">Rekening No.</td>
-                                        <td>: 1400 046 005 006</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Atas Nama</td>
-                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bank</td>
-                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-5">
-                                <div class="text-center" style="font-size: .7rem">
+                            <div class="col-3">
+                                <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                         @if ($allin['total']>=5000000)
                                             <img src="{{ asset('assets/img/ttd-ifa1.png') }}" style="width: 151px; height:94px">
@@ -635,7 +631,7 @@
 
                     <div class="invoice-box">
                         <div class="header d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -822,7 +818,7 @@
                         </table>
 
                         <div class="row mt-3">
-                            <div class="col-12">
+                            <div class="col-9">
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
@@ -841,30 +837,28 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <div class="mt-3">
+                                    <span>Pembayaran dapat dilakukan melalui:</span>
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 150px">Rekening No.</td>
+                                            <td>: 1400 046 005 006</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Atas Nama</td>
+                                            <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank</td>
+                                            <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-7">
-                                <span>Pembayaran dapat dilakukan melalui:</span>
-                                <table style="font-size: .7rem">
-                                    <tr>
-                                        <td style="width: 150px">Rekening No.</td>
-                                        <td>: 1400 046 005 006</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Atas Nama</td>
-                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bank</td>
-                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-5">
-                                <div class="text-center" style="font-size: .7rem">
+                            <div class="col-3">
+                                <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br><br><br><br>
+                                    <br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -873,7 +867,7 @@
                 @else
                 <div class="invoice-box first-page">
                     <div class="header d-flex" style="gap:5px; width:100%">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                         <div style="width: 40%; margin-left:35px">
                             <table style="font-size:.7rem">
                                 <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -1060,7 +1054,7 @@
                     </table>
 
                     <div class="row mt-3">
-                        <div class="col-12">
+                        <div class="col-9">
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 100px">Terbilang</td>
@@ -1079,28 +1073,26 @@
                                     </td>
                                 </tr>
                             </table>
+                            <div class="mt-3">
+                                <span>Pembayaran dapat dilakukan melalui:</span>
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 150px">Rekening No.</td>
+                                        <td>: 1400 046 005 006</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Atas Nama</td>
+                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bank</td>
+                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-7">
-                            <span>Pembayaran dapat dilakukan melalui:</span>
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 150px">Rekening No.</td>
-                                    <td>: 1400 046 005 006</td>
-                                </tr>
-                                <tr>
-                                    <td>Atas Nama</td>
-                                    <td>: PT. RAHMAT ALAM SAMUDERA</td>
-                                </tr>
-                                <tr>
-                                    <td>Bank</td>
-                                    <td>: Mandiri Cabang Indrapura Surabaya</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-5">
-                            <div class="text-center" style="font-size: .7rem">
+                        <div class="col-3">
+                            <div class="text-center mt-3" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                 <br><br><br><br><br>
                                 (LATIFAH)
@@ -1113,7 +1105,7 @@
 
                     <div class="invoice-box">
                         <div class="header d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
                                     <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -1300,7 +1292,7 @@
                         </table>
 
                         <div class="row mt-3">
-                            <div class="col-12">
+                            <div class="col-9">
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
@@ -1319,28 +1311,26 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <div class="mt-3">
+                                    <span>Pembayaran dapat dilakukan melalui:</span>
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 150px">Rekening No.</td>
+                                            <td>: 1400 046 005 006</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Atas Nama</td>
+                                            <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank</td>
+                                            <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-7">
-                                <span>Pembayaran dapat dilakukan melalui:</span>
-                                <table style="font-size: .7rem">
-                                    <tr>
-                                        <td style="width: 150px">Rekening No.</td>
-                                        <td>: 1400 046 005 006</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Atas Nama</td>
-                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Bank</td>
-                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-5">
-                                <div class="text-center" style="font-size: .7rem">
+                            <div class="col-3">
+                                <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                     @if ($invoice['total']>=5000000)
                                         <img src="{{ asset('assets/img/ttd-ifa1.png') }}" style="width: 151px; height:94px">
