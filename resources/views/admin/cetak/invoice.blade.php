@@ -1347,6 +1347,7 @@
                                     @else
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                     @endif
+                                    <br>
                                     (LATIFAH)
                                 </div>
                             </div>
