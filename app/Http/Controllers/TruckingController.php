@@ -15,6 +15,32 @@ class TruckingController extends Controller
         return view('admin.trucking.order');
     }
 
+    public function totalan_sopir()
+    {
+        $data = OrderTrucking::join('sopir','sopir.id','=','order_trucking.sopir_id')
+                ->select('order_trucking.*','sopir.nama')
+                ->whereNull('order_trucking.tgl_total')
+                ->whereNotNull('order_trucking.sj_kembali_fa')
+                ->orderBy('sopir.nama')
+                ->orderBy('order_trucking.tgl_muat')
+                ->get()
+                ->groupBy('sopir.nama');
+        return view('admin.trucking.totalan_sopir', compact('data'));
+    }
+
+    public function generate_totalan_sopir(Request $request)
+    {
+        $order_id = explode(',',$request->order_id);
+        $orders = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('sopir_id');
+        if($orders->count()>1){
+            return back()->with('danger','Anda tidak bisa memilih '.$orders->count().' Sopir sekaligus!, Harap untuk pilih satu sopir');
+        }
+        OrderTrucking::whereIn('id',$order_id)->update([
+            'tgl_total' => date('Y-m-d')
+        ]);
+        return back()->with('success','Data Berhasil disimpan!');
+    }
+
     public function preInvoice()
     {
         $data = OrderTrucking::all()->sortByDesc('tgl_muat');

@@ -273,6 +273,10 @@
                     <label for="stappel">Stappel/Inap</label>
                     <input type="text" name="stappel" id="stappel" class="form-control rupiah" required>
                 </div>
+                <div class="mb-2 col-3">
+                    <label for="lain_lain">Lain-lain</label>
+                    <input type="text" name="lain_lain" id="lain_lain" class="form-control rupiah" required>
+                </div>
                 <div class="my-2 col-12">
                     Keterangan
                     <hr>
@@ -296,6 +300,7 @@
                             </label>
                         </div>
                     </div>
+                    <textarea name="keterangan" id="keterangan" cols="30" rows="4" class="form-control"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -413,6 +418,7 @@
                 {search:true, name: 'op', label : 'OP/naikkan Mty'},
                 {search:true, name: 'cleaning', label : 'Cleaning'},
                 {search:true, name: 'stappel', label : 'Stappel/Inap'},
+                {search:true, name: 'lain_lain', label : 'Lain-lain'},
                 {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
                 {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
                 {search:true, name: 'tarif', label : 'Tarif'},
@@ -452,6 +458,7 @@
                 var op = $(this).jqGrid('getCell', rowId, 'op');
                 var cleaning = $(this).jqGrid('getCell', rowId, 'cleaning');
                 var stappel = $(this).jqGrid('getCell', rowId, 'stappel');
+                var lain_lain = $(this).jqGrid('getCell', rowId, 'lain_lain');
                 var container = $(this).jqGrid('getCell', rowId, 'container');
                 var seal = $(this).jqGrid('getCell', rowId, 'seal');
                 var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
@@ -479,6 +486,7 @@
                 $('#op').val(op);
                 $('#cleaning').val(cleaning);
                 $('#stappel').val(stappel);
+                $('#lain_lain').val(lain_lain);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
                 $("#customer_id").val(customer_id).trigger('change');

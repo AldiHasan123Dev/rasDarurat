@@ -14,7 +14,7 @@ class OrderTruckingResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $keterangan = '';
+        $keterangan = $this->keterangan.'; ';
         if($this->ambil_empty_tambak_langon==1){
             $keterangan .= 'Ambil Empty Tambak Langon; ';
         }
@@ -60,6 +60,7 @@ class OrderTruckingResource extends JsonResource
             'op' => number_format($this->op,0,',','.'),
             'cleaning' => number_format($this->cleaning,0,',','.'),
             'stappel' => number_format($this->stappel,0,',','.'),
+            'lain_lain' => number_format($this->lain_lain,0,',','.'),
             'pph_21' => number_format($this->pph_21,0,',','.'),
             'pph_23' => number_format($this->pph_23,0,',','.'),
             'borongan' => number_format($this->borongan,0,',','.'),

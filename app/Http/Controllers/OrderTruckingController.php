@@ -150,6 +150,9 @@ class OrderTruckingController extends Controller
         if($request->stappel){
             $data['stappel'] = str_replace(['.',','],'',$request->stappel);
         }
+        if($request->lain_lain){
+            $data['lain_lain'] = str_replace(['.',','],'',$request->lain_lain);
+        }
 
         $data['tb_tl'] = 0;
         if(empty($data['ambil_empty_tambak_langon'])){
@@ -185,9 +188,9 @@ class OrderTruckingController extends Controller
 
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
-        $totalan = $order->simpanan + $order->kuli + $order->tambah_isi + $order->tally + $order->tb_tl;
+        $totalan = $order->simpanan + ($order->simpanan_kuli<=0?0:$order->simpanan_kuli) + $order->tb_tl + $order->lain_lain + $order->stappel;
         $pph = $order->pph_21 >= 0 ? $order->pph_21 : $order->pph_23;
-        $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->tambah_solar - $order->tambah_isi - $order->tb_tl - $order->uang_makan - $order->op - $order->cleaning - $order->stappel - $pph;
+        $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->tambah_solar - $order->tambah_isi - $order->uang_makan - $order->op - $order->cleaning - $pph;
         $order->update([
             'total_sopir' => $totalan,
             'margin' => $margin

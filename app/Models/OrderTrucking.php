@@ -40,6 +40,7 @@ class OrderTrucking extends Model
         'tambah_solar',
         'tb_tl',
         'tally',
+        'lain_lain',
         'uang_makan',
         'margin',
         'total_invoice',
