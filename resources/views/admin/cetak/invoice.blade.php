@@ -18,7 +18,7 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-size: .65rem !important;
+                font-size: .5rem !important;
             }
             #print {
                 width: 100%;
@@ -395,10 +395,10 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="col-5">
+                            <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br><br>
+                                    <br><br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -858,7 +858,7 @@
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br><br>
+                                    <br><br><br><br>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -1094,7 +1094,7 @@
                         <div class="col-3">
                             <div class="text-center mt-3" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                <br><br><br><br><br>
+                                <br><br><br><br>
                                 (LATIFAH)
                             </div>
                         </div>
