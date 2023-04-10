@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\JadwalKapal;
 use App\Models\Kondisi;
 use App\Models\Lokasi;
+use App\Models\Order;
 use App\Models\Pelayaran;
 use App\Models\Satuan;
 use App\Models\Shipment;
@@ -70,6 +71,11 @@ class TarifController extends Controller
     public function update(Tarif $tarif, Request $request)
     {
         $data = $request->all();
+        $cek = Order::where('tarif_id',$tarif->id)->whereHas('jadwal_kapal', function($q){
+            $q->whereNull('td');
+        })->count();
+
+        if($cek>0)
         if(!request('change_active')){
             $shipment = Shipment::find($request->shipment);
             $dari = Lokasi::find($request->dari);
