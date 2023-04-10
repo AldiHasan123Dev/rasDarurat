@@ -72,10 +72,12 @@ class TarifController extends Controller
     {
         $data = $request->all();
         $cek = Order::where('tarif_id',$tarif->id)->whereHas('jadwal_kapal', function($q){
-            $q->whereNull('td');
+            $q->whereNotNull('td');
         })->count();
 
-        if($cek>0)
+        if($cek>0){
+            return back()->with('danger','Data tidak bisa diedit!');
+        }
         if(!request('change_active')){
             $shipment = Shipment::find($request->shipment);
             $dari = Lokasi::find($request->dari);
