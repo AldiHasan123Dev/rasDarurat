@@ -17,7 +17,7 @@ class LaporanPPNExport implements FromView
     }
     public function view(): View
     {
-        $transaksi = Transaksi::all()->whereBetween('created_at',[$this->start,$this->end])->sortBy('created_at');
+        $transaksi = Transaksi::whereBetween('created_at',[$this->start,$this->end])->orderBy('created_at')->get();
         return view('exports.laporan_ppn', compact('transaksi'));
     }
 }
