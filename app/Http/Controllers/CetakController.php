@@ -251,7 +251,7 @@ class CetakController extends Controller
         }
         $asuransi += $admin;
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
-            $asuransi = (($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin);
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
         $total = $sub_total + $asuransi + $cas->sum('jumlah');
         return [
@@ -338,7 +338,7 @@ class CetakController extends Controller
         }
         $asuransi += $admin;
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
-            $asuransi = (($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin);
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
         $total = $sub_total + $asuransi + $cas->sum('jumlah');
         return [
@@ -404,7 +404,7 @@ class CetakController extends Controller
         $sub_total += $doc_total;
         $asuransi += $admin;
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
-            $asuransi = (($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin);
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
         if($doc_total>0){
             $pph = $doc_total * 0.02;
@@ -487,7 +487,7 @@ class CetakController extends Controller
         $sub_total += $doc_total;
         $asuransi += $admin;
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
-            $asuransi = (($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin);
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
         if($doc_total>0){
             $pph = $doc_total * 0.02;
