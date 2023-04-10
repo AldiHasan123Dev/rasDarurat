@@ -18,7 +18,7 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-size: .5rem !important;
+                font-size: .6rem !important;
             }
             #print {
                 width: 100%;
