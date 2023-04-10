@@ -159,7 +159,7 @@
     });
 </script>
     <script>
-        $('#add-tarif').hide();
+        // $('#add-tarif').hide();
         $('#message-error').hide();
         let id = null;
         let tablecus = $('#customer').DataTable({
@@ -284,7 +284,7 @@
         $('#customer tbody').on( 'click', 'tr', function () {
             id =  tablecus.row( this ).data().id;
             $('.nama-cus').html(tablecus.row(this).data().nama);
-            $('#add-tarif').show();
+            // $('#add-tarif').show();
             tabletar.ajax.reload()
         });
         $('#shipment').change(function (e) {
