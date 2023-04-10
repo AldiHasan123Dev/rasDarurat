@@ -398,7 +398,7 @@
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br><br><br>
+                                    <div style="height: 2.3cm"></div>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -858,7 +858,7 @@
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br><br><br>
+                                    <div style="height: 2.3cm"></div>
                                     (LATIFAH)
                                 </div>
                             </div>
@@ -1094,7 +1094,7 @@
                         <div class="col-3">
                             <div class="text-center mt-3" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                <br><br><br><br>
+                                <div style="height: 2.3cm"></div>
                                 (LATIFAH)
                             </div>
                         </div>
