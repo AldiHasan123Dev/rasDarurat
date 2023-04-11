@@ -13,8 +13,8 @@ class BTTBController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $barang = Barang::find($request->barang_id);
-        $satuan = Satuan::find($request->satuan_id);
+        $barang = Barang::where('nama',$request->barang_id)->first();
+        $satuan = Satuan::where('nama',$request->satuan_id)->first();
         if (!$satuan) {
             $satuan = Satuan::create(['nama'=>$request->satuan_id]);
         }

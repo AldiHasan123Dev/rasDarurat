@@ -430,12 +430,22 @@
 </script>
 <script>
     $(function() {
-        var barang = @json($barang);
-        var satuan = @json($satuan);
+        $.ajax({
+            type: "GET",
+            url: "{{ url('api/get-nama-barang') }}",
+            success: function (response) {
+                autocomplete(document.getElementById("barang_id"), response);
+                autocomplete(document.getElementById("selectBarang"), response);
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "{{ url('api/get-nama-satuan') }}",
+            success: function (response) {
+                autocomplete(document.getElementById("satuan_id"), response);
+            }
+        });
         var customers = @json($customers);
-        autocomplete(document.getElementById("barang_id"), barang);
-        autocomplete(document.getElementById("selectBarang"), barang);
-        autocomplete(document.getElementById("satuan_id"), satuan);
         autocomplete(document.getElementById("pengirim_bttb"), customers);
         autocomplete(document.getElementById("pengirim_id"), customers);
         autocomplete(document.getElementById("penerima_id"), customers);
@@ -780,6 +790,21 @@
                             data: data,
                             success: function (response) {
                                 if (response.status=='success') {
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "{{ url('api/get-nama-barang') }}",
+                                        success: function (response) {
+                                            autocomplete(document.getElementById("barang_id"), response);
+                                            autocomplete(document.getElementById("selectBarang"), response);
+                                        }
+                                    });
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "{{ url('api/get-nama-satuan') }}",
+                                        success: function (response) {
+                                            autocomplete(document.getElementById("satuan_id"), response);
+                                        }
+                                    });
                                     $('#no_gudang').val('');
                                     $('#qty').val('');
                                     $('#barang_id').val('');

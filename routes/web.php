@@ -161,5 +161,6 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-menu',[SyncController::class,'menu_link']);
     Route::get('sync-transaksi',[SyncController::class,'transaksi']);
     Route::get('sync-trucking',[SyncController::class,'trucking']);
+    Route::get('sync-same',[SyncController::class,'sameData']);
 });
 // Route::view('test','test');

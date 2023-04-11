@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Satuan;
 use Illuminate\Http\Request;
 
 class BarangController extends Controller
@@ -26,5 +27,17 @@ class BarangController extends Controller
             'items' => $items,
             'counts' => $counts,
         ], 200);
+    }
+
+    public function getNama()
+    {
+        $data = Barang::pluck('nama')->toArray();
+        return response($data);
+    }
+
+    public function getNamaSatuan()
+    {
+        $data = Satuan::pluck('nama')->toArray();
+        return response($data);
     }
 }

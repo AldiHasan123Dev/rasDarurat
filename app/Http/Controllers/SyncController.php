@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Barang;
 use App\Models\BTTB;
 use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
@@ -393,5 +394,41 @@ class SyncController extends Controller
         }
 
         return response('Data berhasil diupdate: '.$i);
+    }
+
+    public function sameData()
+    {
+        $barang = Barang::pluck('nama')->toArray();
+        $data_barang = array_values(array_unique($barang));
+        $satuan = Satuan::pluck('nama')->toArray();
+        $data_satuan = array_values(array_unique($satuan));
+        for ($i=0; $i < count($data_barang); $i++) {
+            $item = Barang::where('nama',$data_barang[$i])->orderBy('created_at')->first();
+            $items = Barang::where('nama',$data_barang[$i])->where('id','!=',$item->id)->pluck('id')->toArray();
+            Order::whereIn('barang_id',$items)->update([
+                'barang_id' => $item->id
+            ]);
+            BTTB::whereIn('barang_id',$items)->update([
+                'barang_id' => $item->id
+            ]);
+            Barang::where('nama',$data_barang[$i])->where('id','!=',$item->id)->delete();
+        }
+
+        for ($i=0; $i < count($data_satuan); $i++) {
+            $item = Satuan::where('nama',$data_satuan[$i])->orderBy('created_at')->first();
+            $items = Satuan::where('nama',$data_satuan[$i])->where('id','!=',$item->id)->pluck('id')->toArray();
+            Order::whereIn('satuan',$items)->update([
+                'satuan' => $item->id
+            ]);
+            Tarif::whereIn('satuan',$items)->update([
+                'satuan' => $item->id
+            ]);
+            BTTB::whereIn('satuan_id',$items)->update([
+                'satuan_id' => $item->id
+            ]);
+            Satuan::where('nama',$data_satuan[$i])->where('id','!=',$item->id)->delete();
+        }
+
+        return response('success');
     }
 }

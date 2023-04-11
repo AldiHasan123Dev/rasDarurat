@@ -49,6 +49,8 @@ Route::get('tagihan/{id}', [TagihanController::class,'getOne'])->name('api.tagih
 Route::get('get-asuransi-pelayaran/{pelayaran_id}', [AsuransiController::class,'getAsuransiByPelayaran'])->name('api.asuransi.getByPelayaran');
 Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
+Route::get('get-nama-barang', [BarangController::class,'getNama']);
+Route::get('get-nama-satuan', [BarangController::class,'getNamaSatuan']);
 Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
 Route::post('update-order', [OrderController::class,'update']);
 Route::get('get-order', [OrderController::class,'index']);
