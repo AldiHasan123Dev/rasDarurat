@@ -24,8 +24,8 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->invoice }}</td>
-                <td>{{ $item->pembayar->npwp }}</td>
-                <td>{{ $item->pembayar->nik }}</td>
+                <td>{{ $item->pembayar->npwp }}'</td>
+                <td>{{ $item->pembayar->nik }}'</td>
                 <td>{{ $item->pembayar->nama }}</td>
                 <td>{{ $item->pembayar->nama_npwp }}</td>
                 <td>{{ $item->pembayar->alamat_npwp }}</td>

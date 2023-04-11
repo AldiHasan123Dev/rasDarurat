@@ -16,6 +16,12 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex" style="gap: 12px">
+                    @if (Auth::user()->role_id==1)
+                        <form action="{{ route('order.export.ba_kembali') }}" method="post">
+                            @csrf
+                            <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
+                        </form>
+                    @endif
                     <button data-bs-toggle="modal" data-bs-target="#ba-kembali" class="btn btn-sm btn-success">BA Kembali</button>
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>

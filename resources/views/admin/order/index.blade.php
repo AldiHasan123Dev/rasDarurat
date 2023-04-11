@@ -56,6 +56,12 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex" style="gap:10px">
+                    @if (Auth::user()->role_id==1)
+                        <form action="{{ route('order.export') }}" method="post">
+                            @csrf
+                            <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
+                        </form>
+                    @endif
                     @if (!request('filter-order'))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     @endif

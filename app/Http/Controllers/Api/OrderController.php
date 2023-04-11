@@ -95,7 +95,7 @@ class OrderController extends Controller
     {
         $ids = array();
         $data1 = Order::whereHas('tarif', function($q){
-            $q->whereIn('kondisi',[1,7]);
+            $q->whereIn('kondisi',[1,6]);
         })->whereHas('jadwal_kapal', function($q){
             $q->whereNotNull('td');
         })->whereNull('invoice')->pluck('id');
@@ -104,7 +104,7 @@ class OrderController extends Controller
         }
 
         $data2 = Order::whereHas('tarif', function($q){
-            $q->whereIn('kondisi',[5,6]);
+            $q->whereIn('kondisi',[5,7]);
             $q->whereHas('customer', function($qu){
                 $qu->where('ba_kembali',1);
             });
@@ -116,7 +116,7 @@ class OrderController extends Controller
         }
 
         $data3 = Order::whereHas('tarif', function($q){
-            $q->whereIn('kondisi',[5,6]);
+            $q->whereIn('kondisi',[5,7]);
             $q->whereHas('customer', function($qu){
                 $qu->where('ba_kembali',0);
             });

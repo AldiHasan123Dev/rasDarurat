@@ -27,13 +27,16 @@ class OrderTruckingResource extends JsonResource
 
         $class = '';
 
-        if(!is_null($this->sj_kembali_fa)&&is_null($this->tgl_total)){
+        if(is_null($this->order_id)){
+            $class = 'bg-light-dark';
+        }
+        if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&is_null($this->tgl_total)){
             $class = 'bg-light-primary';
         }
-        if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&is_null($this->tgl_invoice)){
+        if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&is_null($this->tgl_invoice)){
             $class = 'bg-light-warning';
         }
-        if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&!is_null($this->tgl_invoice)){
+        if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&!is_null($this->tgl_invoice)){
             $class = 'bg-light-danger';
         }
 
@@ -65,27 +68,28 @@ class OrderTruckingResource extends JsonResource
             'dari' => 'PERAK',
             'tujuan' => $this->tujuan,
             'tipe' => $this->tipe,
-            'tarif' => $this->tarif ? number_format($this->tarif->tarif,0,',','.') : '-',
-            'sangu' => number_format($this->sangu,0,',','.'),
-            'simpanan' => number_format($this->simpanan,0,',','.'),
-            'kuli' => number_format($this->kuli,0,',','.'),
-            'borongan_kuli' => number_format($this->borongan_kuli,0,',','.'),
-            'simpanan_kuli' => number_format($this->simpanan_kuli,0,',','.'),
-            'op' => number_format($this->op,0,',','.'),
-            'cleaning' => number_format($this->cleaning,0,',','.'),
-            'stappel' => number_format($this->stappel,0,',','.'),
-            'lain_lain' => number_format($this->lain_lain,0,',','.'),
-            'pph_21' => number_format($this->pph_21,0,',','.'),
-            'pph_23' => number_format($this->pph_23,0,',','.'),
-            'borongan' => number_format($this->borongan,0,',','.'),
-            'tambah_isi' => number_format($this->tambah_isi,0,',','.'),
-            'tambah_solar' => number_format($this->tambah_solar,0,',','.'),
-            'tb_tl' => number_format($this->tb_tl,0,',','.'),
-            'tally' => number_format($this->tally,0,',','.'),
-            'uang_makan' => number_format($this->uang_makan,0,',','.'),
-            'total_sopir' => number_format($this->total_sopir,0,',','.'),
-            'total_invoice' => number_format($this->total_invoice,0,',','.'),
-            'margin' => number_format($this->margin,0,',','.'),
+            'tarif' => $this->tarif ? number_format($this->tarif->tarif) : '-',
+            'sangu' => number_format($this->sangu),
+            'simpanan' => number_format($this->simpanan),
+            'kuli' => number_format($this->kuli),
+            'borongan_kuli' => number_format($this->borongan_kuli),
+            'simpanan_kuli' => number_format($this->simpanan_kuli),
+            'sangu_kuli' => number_format($this->sangu_kuli),
+            'op' => number_format($this->op),
+            'cleaning' => number_format($this->cleaning),
+            'stappel' => number_format($this->stappel),
+            'lain_lain' => number_format($this->lain_lain),
+            'pph_21' => number_format($this->pph_21),
+            'pph_23' => number_format($this->pph_23),
+            'borongan' => number_format($this->borongan),
+            'tambah_isi' => number_format($this->tambah_isi),
+            'tambah_solar' => number_format($this->tambah_solar),
+            'tb_tl' => number_format($this->tb_tl),
+            'tally' => number_format($this->tally),
+            'uang_makan' => number_format($this->uang_makan),
+            'total_sopir' => number_format($this->total_sopir),
+            'total_invoice' => number_format($this->total_invoice),
+            'margin' => number_format($this->margin),
             'tgl_total' =>  $this->tgl_total?date('Y-m-d', strtotime($this->tgl_total)):'-',
             'keterangan' => $keterangan,
             'ambil_empty_tambak_langon' => $this->ambil_empty_tambak_langon,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\OrderTruckingExport;
 use App\Http\Resources\OrderTruckingResource;
 use App\Models\CustomerTrucking;
 use App\Models\Kendaraan;
@@ -12,6 +13,7 @@ use App\Models\Sopir;
 use App\Models\TarifTrucking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
 
 class OrderTruckingController extends Controller
@@ -204,6 +206,11 @@ class OrderTruckingController extends Controller
         $ordertrucking->delete();
 
         return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrderTruckingExport(), 'laporan_order_trucking.xlsx');
     }
 
     public function datatable()

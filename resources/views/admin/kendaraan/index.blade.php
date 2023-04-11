@@ -12,10 +12,12 @@
                             <tr>
                                 <th>ID.</th>
                                 <th>Tanggal</th>
-                                <th>Tipe</th>
                                 <th>Nopol</th>
                                 <th>Milik</th>
                                 <th>Status</th>
+                                <th>PKB</th>
+                                <th>No. Rangka</th>
+                                <th>No. Mesin</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
                             </tr>
@@ -57,10 +59,12 @@
             columns: [
                 { data: 'id', name: 'id', visible:false },
                 { data: 'created_at', name: 'created_at' },
-                { data: 'tipe', name: 'tipe' },
                 { data: 'nopol', name: 'nopol' },
                 { data: 'milik', name: 'milik' },
                 { data: 'is_active', name: 'is_active' },
+                { data: 'pkb', name: 'pkb' },
+                { data: 'no_rangka', name: 'no_rangka' },
+                { data: 'no_mesin', name: 'no_mesin' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]

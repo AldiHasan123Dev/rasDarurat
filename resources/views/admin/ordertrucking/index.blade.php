@@ -9,6 +9,9 @@
     tr td{
         padding: 2px 10px;
     }
+    .bg-light-dark{
+        background-color: #5e5e5e9e !important;
+    }
 </style>
 @endsection
 @section('content')
@@ -17,6 +20,12 @@
             <div class="card">
                 <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                     <div class="d-flex gap-2">
+                        @if (Auth::user()->role_id==1)
+                        <form action="{{ route('ordertrucking.export') }}" method="post">
+                            @csrf
+                            <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
+                        </form>
+                    @endif
                         <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
                         <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
                         <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
@@ -34,6 +43,10 @@
             <div class="card p-3 shadow">
                 <p>Keterangan:</p>
                 <table>
+                    <tr>
+                        <td style="width: 30px"><div class="bg-light-dark" style="height: 10px; width:20px"></div></td>
+                        <td>: Order JOB Kosong (Check No. Container dan Nopol harus sama persis)</td>
+                    </tr>
                     <tr>
                         <td style="width: 30px"><div class="bg-primary" style="height: 10px; width:20px"></div></td>
                         <td>: SJ Diterima FA (Belum Totalan Sopir)</td>

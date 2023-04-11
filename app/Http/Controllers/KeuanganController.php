@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\LaporanPPNExport;
 use App\Http\Resources\LaporanPPNResource;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\TransaksiResource;
 use App\Imports\InvoiceImport;
 use App\Models\Customer;
@@ -35,7 +36,42 @@ class KeuanganController extends Controller
 
     public function pre_invoice()
     {
-        return view('admin.keuangan.pre_invoice');
+        $data1_id = [];
+        $data1 = Order::whereHas('tarif', function($q){
+            $q->whereIn('kondisi',[1,6]);
+        })->whereHas('jadwal_kapal', function($q){
+            $q->whereNotNull('td');
+        })->whereNull('invoice')->pluck('id');
+        foreach ($data1 as $item ) {
+            array_push($data1_id,$item);
+        }
+
+        $data2 = Order::whereHas('tarif', function($q){
+            $q->whereIn('kondisi',[5,7]);
+            $q->whereHas('customer', function($qu){
+                $qu->where('ba_kembali',1);
+            });
+        })->whereHas('jadwal_kapal', function($q){
+            $q->whereNotNull('td');
+        })->whereNull('invoice')->whereNotNull('ba_kembali')->pluck('id');
+        foreach ($data2 as $item ) {
+            array_push($data1_id,$item);
+        }
+
+        $data3 = Order::whereHas('tarif', function($q){
+            $q->whereIn('kondisi',[5,7]);
+            $q->whereHas('customer', function($qu){
+                $qu->where('ba_kembali',0);
+            });
+        })->whereHas('jadwal_kapal', function($q){
+            $q->whereNotNull('td');
+        })->whereNull('invoice')->get();
+
+        $data1 = Order::whereIn('id', $data1_id)->get();
+        $data1 = OrderResource::collection($data1);
+        $data2 = OrderResource::collection($data3);
+
+        return view('admin.keuangan.pre_invoice2', compact('data1','data2'));
     }
 
     public function pre_invoice1()

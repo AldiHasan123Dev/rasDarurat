@@ -390,6 +390,10 @@ class SyncController extends Controller
                 'pph_21' => $pph_21,
                 'pph_23' => $pph_23,
             ]);
+            $order = Order::where('container',$item->container)->where('nopol',$item->kendaraan->nopol)->first();
+            if($order){
+                $item->update(['order_id'=>$order->id]);
+            }
             $i++;
         }
 

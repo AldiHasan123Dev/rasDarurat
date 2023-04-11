@@ -2,6 +2,7 @@
 @section('style')
     <style>
         @media print {
+            /* @page {size: landscape} */
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
 
             body * {
@@ -42,6 +43,9 @@
             .table>tbody>tr>td:first-child{
                 padding: 0px 2px !important;
             } */
+            .table-responsive{
+                overflow: visible;
+            }
             .page-break {
                 page-break-after: always;
                 overflow:hidden;
@@ -178,115 +182,87 @@
         <div class="card p-3 mt-3">
             <div id="print">
                 <div class="invoice-box first-page">
-                    <div class="header d-flex" style="gap:5px; width:100%">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
-                        <div style="width: 40%; margin-left:35px">
-                            <table style="font-size:.7rem">
-                                <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                <tr><td>Email : info@ptras.id</td></tr>
-                            </table>
-                        </div>
-                        <div style="width:30%; ">
-                            <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
-                                <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
-                            </table>
-                        </div>
-                    </div>
                     <div class="row mt-3">
                         <div class="col-6">
                             <table style="font-size: .7rem">
                                 <tr>
-                                    <td style="width: 120px">No. Invoice</td>
-                                    <td style="width:5px">:</td>
-                                    <td>{{ $order->invoice_sopir ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 60px">Sopir</td>
+                                    <td style="width: 60px">Totalan</td>
                                     <td style="width:5px">:</td>
                                     <td>{{ $order->sopir->nama }} </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 120px">Tanggal</td>
+                                    <td style="width:5px">:</td>
+                                    <td>{{ $order->tgl_total ? date('d/m/Y',strtotime($order->tgl_total)):'-' }}</td>
                                 </tr>
                             </table>
                         </div>
                     </div>
 
-                    <table class="mt-2 w-100 tables" style="font-size: .7rem">
-                        <thead>
-                            <tr class="heading">
-                                {{-- <td>No</td> --}}
-                                <td>Uraian</td>
-                                <td>TGL Muat</td>
-                                <td>Simpanan</td>
-                                <td>TB/TL</td>
-                                <td>Stappel</td>
-                                <td>Lain-lain</td>
-                                <td>Sub Total</td>
+                    <div class="table-responsive">
+                        <table class="mt-2 w-100 table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
+                            <thead>
+                                <tr class="heading">
+                                    {{-- <td>No</td> --}}
+                                    <td>TGL Muat</td>
+                                    <td>Tipe</td>
+                                    <td>No JOB</td>
+                                    <td>No Container</td>
+                                    <td>Nopol</td>
+                                    <td>Customer</td>
+                                    <td>Tujuan</td>
+                                    <td>Borongan Sopir</td>
+                                    <td>Sangu Sopir</td>
+                                    <td>Simpanan Sopir</td>
+                                    <td>Borongan Kuli</td>
+                                    <td>Sangu Kuli</td>
+                                    <td>Simpanan Kuli</td>
+                                    <td>TB/TL</td>
+                                    <td>Stappel</td>
+                                    <td>Lain-lain</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            @foreach ($orders as $item)
+                                <tr>
+                                    <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_muat)) }}</td>
+                                    <td>{{ $item->tipe }}'</td>
+                                    <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                    <td>{{ $item->container }} / {{ $item->seal }}</td>
+                                    <td>{{ $item->kendaraan->nopol }}</td>
+                                    <td>{{ $item->customer->nama }}</td>
+                                    <td>{{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                    <td class="text-center">{{ number_format($item->borongan) }}</td>
+                                    <td class="text-center">{{ number_format($item->sangu) }}</td>
+                                    <td class="text-center">{{ number_format($item->simpanan) }}</td>
+                                    <td class="text-center">{{ number_format($item->borongan_kuli) }}</td>
+                                    <td class="text-center">{{ number_format($item->sangu_kuli) }}</td>
+                                    <td class="text-center">{{ number_format($item->simpanan_kuli) }}</td>
+                                    <td class="text-center">{{ number_format($item->tb_tl) }}</td>
+                                    <td class="text-center">{{ number_format($item->stappel) }}</td>
+                                    <td class="text-center">{{ number_format($item->lain_lain) }}</td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($item->total_sopir) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr style="height: 20px !important">
+                                <td colspan="17" style="border-bottom: 1px solid black"></td>
                             </tr>
-                        </thead>
-                        @foreach ($orders as $item)
-                            <tr>
-                                <td>RIT {{ $item->tarif->tujuan->tujuanInfo->nama }} {{ $item->tipe }}' {{ $item->kendaraan->nopol }}</td>
-                                <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_muat)) }}</td>
-                                <td class="text-center">{{ number_format($item->simpanan + $item->simpanan_kuli) }}</td>
-                                <td class="text-center">{{ number_format($item->tb_tl) }}</td>
-                                <td class="text-center">{{ number_format($item->stappel) }}</td>
-                                <td class="text-center">{{ number_format($item->lain_lain) }}</td>
-                                <td>
+                            <tr class="border-bottom border-dark">
+                                <td colspan="14"></td>
+                                <td class="fw-bold text-center" colspan="2">TOTAL</td>
+                                <td class="fw-bold">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($item->total_sopir) }}</span>
+                                        <span>{{ number_format($orders->sum('total_sopir')) }}</span>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
-                        <tr style="height: 20px !important">
-                            <td colspan="7" style="border-bottom: 1px solid black"></td>
-                        </tr>
-                        <tr class="border-bottom border-dark">
-                            <td colspan="4"></td>
-                            <td class="fw-bold text-center" colspan="2">TOTAL</td>
-                            <td class="fw-bold">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($orders->sum('total_sopir')) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <div class="row mt-3">
-                        <div class="col-9">
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 100px">Terbilang</td>
-                                    <td>: {{ strtoupper(terbilang($orders->sum('total_sopir'))) }} RUPIAH</td>
-                                </tr>
-                                <tr>
-                                    <td>Keterangan</td>
-                                    <td>: </td>
-                                </tr>
-                            </table>
-                            {{-- <table style="font-size: .7rem" class="mt-2">
-                                @foreach ($r1s as $orderss)
-                                    @foreach ($orderss as $item)
-                                    <tr>
-                                        <td style="width: 150px">{{ $item->container }}</td>
-                                        <td style="width: 50px"> {{ $item->tipe }}'</td>
-                                        <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
-                                        <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
-                                    </tr>
-                                    @endforeach
-                                @endforeach
-                            </table> --}}
-                        </div>
-                        <div class="col-3">
-                            <div class="text-center" style="font-size: .7rem">
-                                <p>Surabaya, {{ is_null($order->tgl_total)?'-':tanggal($order->tgl_total) }}</p>
-                                <div style="height: 1.5cm"></div>
-                                ({{ Auth::user()->name }})
-                            </div>
-                        </div>
+                        </table>
                     </div>
                 </div>
             </div>

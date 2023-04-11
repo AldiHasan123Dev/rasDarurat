@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BAKembaliExport;
+use App\Exports\OrderExport;
 use App\Exports\SIExport;
 use App\Http\Resources\OrderTruckingResource;
 use App\Imports\OrderImport;
@@ -235,6 +237,16 @@ class OrderController extends Controller
         Excel::import(new OrderImport, $request->file);
 
         return back()->with('success', 'All good!');
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrderExport(), 'laporan_order.xlsx');
+    }
+
+    public function export_ba_kembali()
+    {
+        return Excel::download(new BAKembaliExport(), 'laporan_ba_kembali.xlsx');
     }
 
     public function datatable()
