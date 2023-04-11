@@ -77,7 +77,7 @@
             },
             columns: [
                 { data: 'tools', name: 'tools', visible:false },
-                { data: 'id', name: 'id', visible:false },
+                { data: 'id', name: 'id' },
                 { data: 'kapal', name: 'kapal.nama' },
                 { data: 'voyage', name: 'voyage' },
                 { data: 'pelayaran', name: 'pelayaran.nama' },
