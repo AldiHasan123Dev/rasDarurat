@@ -176,7 +176,7 @@
             <div id="print">
                 <div class="invoice-box first-page">
                     <div class="header d-flex" style="gap:5px; width:100%">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                         <div style="width: 40%; margin-left:35px">
                             <table style="font-size:.7rem">
                                 <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -273,7 +273,7 @@
                     </table>
 
                     <div class="row mt-3">
-                        <div class="col-12">
+                        <div class="col-9">
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 100px">Terbilang</td>
@@ -284,8 +284,6 @@
                                     <td>: </td>
                                 </tr>
                             </table>
-                        </div>
-                        <div class="col-7">
                             <table style="font-size: .7rem" class="mt-2">
                                 @foreach ($orders as $item)
                                 <tr>
@@ -297,10 +295,10 @@
                                 @endforeach
                             </table>
                         </div>
-                        <div class="col-5">
+                        <div class="col-3">
                             <div class="text-center" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                <br><br>
+                                <div style="height: 1.5cm"></div>
                                 (MARKETING)
                             </div>
                         </div>

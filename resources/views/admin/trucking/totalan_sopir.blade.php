@@ -18,19 +18,21 @@
                 <div class="d-flex gap-2">
                     <form action="{{ route('trucking.generate.total_sopir') }}" method="post">
                         <input type="hidden" name="order_id" id="order_id">
-                        <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Generate Invoice Sopir</button>
+                        <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Generate Totalan Sopir</button>
                         @csrf
                     </form>
                 </div>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm" style="font-size: .7rem">
+                    <table class="table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
                         <thead>
                             <tr>
                                 <th style="width: 150px">Sopir</th>
                                 <th style="width: 30px">#</th>
                                 <th>Tanggal Muat</th>
+                                <th>SJ Diterima FA</th>
+                                <th>Customer</th>
                                 <th>Container / Seal</th>
                                 <th>Simpanan Sopir</th>
                                 <th>Simpanan Kuli</th>
@@ -48,9 +50,11 @@
                                             <td style="vertical-align: middle; text-align:center" rowspan="{{ $orders->count() }}">{{ $order->sopir->nama }}</td>
                                         @endif
                                         <td class="text-center"><input type="checkbox" name="order_id" value="{{ $order->id }}"></td>
-                                        <td>{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
+                                        <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
+                                        <td class="text-center">{{ date('d/m/y', strtotime($order->sj_kembali_fa)) }}</td>
+                                        <td>{{ $order->customer->nama }}</td>
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
-                                        <td>{{ number_format($order->simpanan_sopir) }}</td>
+                                        <td>{{ number_format($order->simpanan) }}</td>
                                         <td>{{ number_format($order->simpanan_kuli) }}</td>
                                         <td>{{ number_format($order->tb_tl) }}</td>
                                         <td>{{ number_format($order->stappel) }}</td>
@@ -59,12 +63,12 @@
                                     </tr>
                                 @endforeach
                                 <tr class="border-bottom border-dark">
-                                    <td colspan="4" class="text-center"><b>TOTAL</b></td>
+                                    <td colspan="5" class="text-center"><b>TOTAL</b></td>
                                     <td colspan="6" class="border border-dark"><b>Rp. {{ number_format($orders->sum('total_sopir')) }}</b></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="10" class="text-center">Tidak Ada Data!</td>
+                                    <td colspan="11" class="text-center">Tidak Ada Data!</td>
                                 </tr>
                             @endforelse
                         </tbody>

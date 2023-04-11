@@ -7,6 +7,7 @@ use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
+use App\Models\OrderTrucking;
 use App\Models\SanguSopir;
 use App\Models\Satuan;
 use App\Models\Shipment;
@@ -353,5 +354,44 @@ class SyncController extends Controller
         }
 
         return 'success';
+    }
+
+    public function trucking()
+    {
+        $data = OrderTrucking::whereHas('tarif')->get();
+        $i = 0;
+        foreach($data as $item){
+            $pph_21 = 0;
+            $pph_23 = 0;
+            $price = $item->tarif->tarif;
+            if($item->customer_id!=2){
+                if ($item->kendaraan->milik=='R2') {
+                    $pph_23 = $price * 0.02;
+                }
+            }else{
+                if ($item->kendaraan->milik=='R1') {
+                    $pph_21 = ($price / 0.97) * 0.03;
+                }
+            }
+
+            $simpanan_kuli = $item->borongan_kuli - $item->kuli;
+            $simpanan_sopir = $item->borongan - $item->sangu;
+            if($simpanan_kuli < 0){
+                $simpanan_kuli = 0;
+            }
+            $pph = $pph_21 >= 0 ? $pph_21 : $pph_23;
+            $margin = $item->tarif->tarif - $item->borongan - $item->borongan_kuli - $item->tambah_solar - $item->tambah_isi - $item->uang_makan - $item->op - $item->cleaning - $pph;
+            $item->update([
+                'simpanan' => $simpanan_sopir,
+                'simpanan_kuli' => $simpanan_kuli,
+                'total_sopir' => $simpanan_sopir + $simpanan_kuli + $item->tb_tl + $item->stapel + $item->lain_lain,
+                'margin' => $margin,
+                'pph_21' => $pph_21,
+                'pph_23' => $pph_23,
+            ]);
+            $i++;
+        }
+
+        return response('Data berhasil diupdate: '.$i);
     }
 }

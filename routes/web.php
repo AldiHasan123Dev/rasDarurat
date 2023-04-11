@@ -112,7 +112,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('trucking/pre-invoice',[TruckingController::class,'preInvoice'])->name('trucking.pre-invoice');
     Route::get('trucking/totalan-sopir',[TruckingController::class,'totalan_sopir'])->name('trucking.totalan_sopir');
     Route::post('trucking/totalan-sopir',[TruckingController::class,'generate_totalan_sopir'])->name('trucking.generate.total_sopir');
-    Route::get('trucking/invoice/{order}',[TruckingController::class,'invoice'])->name('trucking.invoice');
+    Route::post('trucking/cetak-invoice',[TruckingController::class,'invoice'])->name('trucking.cetak.invoice');
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');
@@ -155,5 +155,6 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-pph',[SyncController::class,'pph']);
     Route::get('sync-menu',[SyncController::class,'menu_link']);
     Route::get('sync-transaksi',[SyncController::class,'transaksi']);
+    Route::get('sync-trucking',[SyncController::class,'trucking']);
 });
 // Route::view('test','test');
