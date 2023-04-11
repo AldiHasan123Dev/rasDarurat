@@ -111,8 +111,13 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('trucking/order',[TruckingController::class,'order'])->name('trucking.order');
     Route::get('trucking/pre-invoice',[TruckingController::class,'preInvoice'])->name('trucking.pre-invoice');
     Route::get('trucking/totalan-sopir',[TruckingController::class,'totalan_sopir'])->name('trucking.totalan_sopir');
+    Route::get('trucking/totalan-sopir/invoice',[TruckingController::class,'cetak_invoice_sopir'])->name('trucking.cetak_invoice.totalan_sopir');
+    Route::post('trucking/invoice/totalan-sopir',[TruckingController::class,'totalan_sopir_invoice'])->name('trucking.invoice.total_sopir');
     Route::post('trucking/totalan-sopir',[TruckingController::class,'generate_totalan_sopir'])->name('trucking.generate.total_sopir');
-    Route::post('trucking/cetak-invoice',[TruckingController::class,'invoice'])->name('trucking.cetak.invoice');
+    Route::get('trucking/cetak-invoice/get',[TruckingController::class,'cetak_invoice_get'])->name('trucking.cetak_get.invoice');
+    Route::get('trucking/invoice',[TruckingController::class,'invoice'])->name('trucking.invoice');
+    Route::post('trucking/cetak-invoice',[TruckingController::class,'cetak_invoice'])->name('trucking.cetak.invoice');
+    Route::post('trucking/generate-invoice',[TruckingController::class,'generate_invoice'])->name('trucking.generate.invoice');
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');

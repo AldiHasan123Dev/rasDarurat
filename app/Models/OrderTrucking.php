@@ -45,6 +45,8 @@ class OrderTrucking extends Model
         'margin',
         'total_invoice',
         'total_sopir',
+        'invoice_sopir',
+        'order_sopir',
         'tgl_total',
         'sj_kembali',
         'sj_kembali_fa',

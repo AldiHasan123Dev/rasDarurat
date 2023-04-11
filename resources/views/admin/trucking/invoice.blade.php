@@ -18,7 +18,7 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-size: .65rem !important;
+                font-size: .6rem !important;
             }
             #print {
                 width: 100%;
@@ -160,10 +160,20 @@
             @if (is_null($order->invoice))
             <div class="d-flex" style="gap:5px">
                 <a href="{{ route('trucking.pre-invoice') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
-                <form action="" method="post">
+                @if (empty($invoice))
+                <form action="{{ route('trucking.generate.invoice') }}" method="post">
                     @csrf
-                    <button type="submit" name="tipe_invoice" value="global" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
+                    <input type="hidden" name="order_id" value="{{ implode(',',$order_id) }}">
+                    <input type="hidden" name="order" value="{{ $order->id }}">
+                    <input type="hidden" name="customer_id" value="{{ $order->customer_id }}">
+                    <input type="hidden" name="tipe" value="{{ $tipe }}">
+                    <input type="hidden" name="pph" id="_pph">
+                    <input type="hidden" name="total" id="_total">
+                    <input type="hidden" name="rit" id="_rit">
+                    <input type="hidden" name="lain_lain" id="_lain_lain">
+                    <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
                 </form>
+                @endif
             </div>
             @else
             <script>
@@ -174,137 +184,571 @@
         </div>
         <div class="card p-3 mt-3">
             <div id="print">
-                <div class="invoice-box first-page">
-                    <div class="header d-flex" style="gap:5px; width:100%">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
-                        <div style="width: 40%; margin-left:35px">
-                            <table style="font-size:.7rem">
-                                <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                <tr><td>Email : info@ptras.id</td></tr>
-                            </table>
+                @if ($order->customer_id==2)
+                    @if ($r1s->count()>0)
+                    <div class="invoice-box {{ $r1s->count()==0?'first-page':'' }}">
+                        <div class="header d-flex" style="gap:5px; width:100%">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
+                            <div style="width: 40%; margin-left:35px">
+                                <table style="font-size:.7rem">
+                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email : info@ptras.id</td></tr>
+                                </table>
+                            </div>
+                            <div style="width:30%; ">
+                                <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                    <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
+                                </table>
+                            </div>
                         </div>
-                        <div style="width:30%; ">
-                            <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
-                                <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
-                            </table>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 120px">No. Invoice</td>
+                                        <td style="width:5px">:</td>
+                                        <td>{{ $order->invoice ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px">Customer</td>
+                                        <td style="width:5px">:</td>
+                                        <td>{{ $order->customer->nama }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px">Attn</td>
+                                        <td style="width:5px">:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">Alamat</td>
+                                        <td style="vertical-align: top">:</td>
+                                        <td>{{ $order->customer->alamat }}</td>
+                                    </tr>
+                                    {{-- <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $order->tarif->customer->kota }}</td>
+                                    </tr> --}}
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-6">
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 120px">No. Invoice</td>
-                                    <td style="width:5px">:</td>
-                                    <td>{{ $order->invoice ?? '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 60px">Customer</td>
-                                    <td style="width:5px">:</td>
-                                    <td>{{ $order->customer->nama }} </td>
-                                </tr>
-                                <tr>
-                                    <td style="width: 60px">Attn</td>
-                                    <td style="width:5px">:</td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td style="vertical-align: top">Alamat</td>
-                                    <td style="vertical-align: top">:</td>
-                                    <td>{{ $order->customer->alamat }}</td>
-                                </tr>
-                                {{-- <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td>{{ $order->tarif->customer->kota }}</td>
-                                </tr> --}}
-                            </table>
-                        </div>
-                    </div>
 
-                    <table class="mt-2 w-100 tables" style="font-size: .7rem">
-                        <thead>
-                            <tr class="heading">
-                                {{-- <td>No</td> --}}
-                                <td>Uraian</td>
-                                <td>Tipe</td>
-                                <td>Jumlah</td>
-                                <td>X</td>
-                                <td>Tarif</td>
-                                <td>Sub Total</td>
-                            </tr>
-                        </thead>
-                        @foreach ($orders as $item)
+                        <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                            <thead>
+                                <tr class="heading">
+                                    {{-- <td>No</td> --}}
+                                    <td>Uraian</td>
+                                    <td>Tipe</td>
+                                    <td>Jumlah</td>
+                                    <td>X</td>
+                                    <td>Tarif</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            @php
+                                $total = 0;
+                                $lain_lain = 0;
+                                $rit = 0;
+                                $pph = 0;
+                            @endphp
+                            @foreach ($r1s as $item)
+                            @php
+                                $total += round(($item->first()->tarif->tarif/0.97)) * $item->count();
+                                $lain_lain += $item->sum('lain_lain');
+                                $rit += $item->count();
+                                $pph += round($item->sum('pph_21'));
+                            @endphp
+                                <tr>
+                                    {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                    <td>Ongkos Angkut Perak - {{ $item->first()->tarif->tujuan->tujuanInfo->nama }}</td>
+                                    <td class="text-center">{{ $item->first()->tipe }}'</td>
+                                    <td class="text-center">{{ $item->count() }} Rit </td>
+                                    <td class="text-center">X</td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format(round(($item->first()->tarif->tarif/0.97))) }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format(round(($item->first()->tarif->tarif/0.97)) * $item->count()) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @if ($lain_lain>0)
+                            @php
+                                $total += $lain_lain;
+                            @endphp
                             <tr>
                                 {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
-                                <td>Ongkos Angkut Perak - {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
-                                <td class="text-center">{{ $item->tipe }}'</td>
-                                <td class="text-center">1 Rit </td>
-                                <td class="text-center">X</td>
+                                <td colspan="4">Biaya Lain-lain</td>
                                 <td>
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($item->tarif->tarif) }}</span>
+                                        <span>{{ number_format($lain_lain) }}</span>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($item->tarif->tarif) }}</span>
+                                        <span>{{ number_format($lain_lain) }}</span>
                                     </div>
                                 </td>
                             </tr>
-                        @endforeach
-                        <tr style="height: 20px !important">
-                            <td colspan="7" style="border-bottom: 1px solid black"></td>
-                        </tr>
-                        <tr class="border-bottom border-dark">
-                            <td colspan="2"></td>
-                            <td class="text-center">{{ $orders->count() }} Rit</td>
-                            <td class="fw-bold text-center" colspan="2">TOTAL</td>
-                            <td class="fw-bold">
-                                <div class="price d-flex justify-content-between px-2">
-                                    <span>Rp</span>
-                                    <span>{{ number_format($total) }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+                            @endif
+                            <tr style="height: 20px !important">
+                                <td colspan="7" style="border-bottom: 1px solid black"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="text-center">{{ $rit }} Rit</td>
+                                <td class="fw-bold text-center" colspan="2">TOTAL</td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($total) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-bottom border-dark">
+                                <td colspan="3"></td>
+                                <td class="fw-bold text-center" colspan="2">PPH 21 (3%)</td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-bottom border-dark">
+                                <td colspan="5"></td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($total - $pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
 
-                    <div class="row mt-3">
-                        <div class="col-9">
-                            <table style="font-size: .7rem">
-                                <tr>
-                                    <td style="width: 100px">Terbilang</td>
-                                    <td>: {{ strtoupper(terbilang($total)) }} RUPIAH</td>
-                                </tr>
-                                <tr>
-                                    <td>Keterangan</td>
-                                    <td>: </td>
-                                </tr>
-                            </table>
-                            <table style="font-size: .7rem" class="mt-2">
-                                @foreach ($orders as $item)
-                                <tr>
-                                    <td style="width: 150px">{{ $item->container }}</td>
-                                    <td style="width: 50px"> {{ $item->tipe }}'</td>
-                                    <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
-                                    <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
-                                </tr>
-                                @endforeach
-                            </table>
-                        </div>
-                        <div class="col-3">
-                            <div class="text-center" style="font-size: .7rem">
-                                <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                <div style="height: 1.5cm"></div>
-                                (MARKETING)
+                        <div class="row mt-3">
+                            <div class="col-9">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 100px">Terbilang</td>
+                                        <td>: {{ strtoupper(terbilang($total)) }} RUPIAH</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td>: </td>
+                                    </tr>
+                                </table>
+                                <table style="font-size: .7rem" class="mt-2">
+                                    @foreach ($r1s as $orderss)
+                                        @foreach ($orderss as $item)
+                                        <tr>
+                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 50px"> {{ $item->tipe }}'</td>
+                                            <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
+                                            <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endforeach
+                                </table>
+                            </div>
+                            <div class="col-3">
+                                <div class="text-center" style="font-size: .7rem">
+                                    <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
+                                    <div style="height: 1.5cm"></div>
+                                    ({{ Auth::user()->name }})
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    @endif
+                @else
+                    @if ($r1s->count()>0)
+                    @php
+                        $pph = 0;
+                    @endphp
+                    <div class="invoice-box first-page">
+                        <div class="header d-flex" style="gap:5px; width:100%">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
+                            <div style="width: 40%; margin-left:35px">
+                                <table style="font-size:.7rem">
+                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email : info@ptras.id</td></tr>
+                                </table>
+                            </div>
+                            <div style="width:30%; ">
+                                <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                    <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 120px">No. Invoice</td>
+                                        <td style="width:5px">:</td>
+                                        <td>{{ $order->invoice ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px">Customer</td>
+                                        <td style="width:5px">:</td>
+                                        <td>{{ $order->customer->nama }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px">Attn</td>
+                                        <td style="width:5px">:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">Alamat</td>
+                                        <td style="vertical-align: top">:</td>
+                                        <td>{{ $order->customer->alamat }}</td>
+                                    </tr>
+                                    {{-- <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $order->tarif->customer->kota }}</td>
+                                    </tr> --}}
+                                </table>
+                            </div>
+                        </div>
+
+                        <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                            <thead>
+                                <tr class="heading">
+                                    {{-- <td>No</td> --}}
+                                    <td>Uraian</td>
+                                    <td>Tipe</td>
+                                    <td>Jumlah</td>
+                                    <td>X</td>
+                                    <td>Tarif</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            @php
+                                $total = 0;
+                                $lain_lain = 0;
+                                $rit = 0;
+                            @endphp
+                            @foreach ($r1s as $item)
+                            @php
+                                $total += $item->first()->tarif->tarif * $item->count();
+                                $lain_lain += $item->sum('lain_lain');
+                                $rit += $item->count();
+                            @endphp
+                                <tr>
+                                    {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                    <td>Ongkos Angkut Perak - {{ $item->first()->tarif->tujuan->tujuanInfo->nama }}</td>
+                                    <td class="text-center">{{ $item->first()->tipe }}'</td>
+                                    <td class="text-center">{{ $item->count() }} Rit </td>
+                                    <td class="text-center">X</td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($item->first()->tarif->tarif) }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($item->first()->tarif->tarif * $item->count()) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @if ($lain_lain>0)
+                            @php
+                                $total += $lain_lain;
+                            @endphp
+                            <tr>
+                                {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                <td colspan="4">Biaya Lain-lain</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($lain_lain) }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($lain_lain) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
+                            <tr style="height: 20px !important">
+                                <td colspan="7" style="border-bottom: 1px solid black"></td>
+                            </tr>
+                            <tr class="border-bottom border-dark">
+                                <td colspan="2"></td>
+                                <td class="text-center">{{ $rit }} Rit</td>
+                                <td class="fw-bold text-center" colspan="2">TOTAL</td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($total) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="row mt-3">
+                            <div class="col-9">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 100px">Terbilang</td>
+                                        <td>: {{ strtoupper(terbilang($total)) }} RUPIAH</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td>: </td>
+                                    </tr>
+                                </table>
+                                <table style="font-size: .7rem" class="mt-2">
+                                    @foreach ($r1s as $orderss)
+                                        @foreach ($orderss as $item)
+                                        <tr>
+                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 50px"> {{ $item->tipe }}'</td>
+                                            <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
+                                            <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endforeach
+                                </table>
+                            </div>
+                            <div class="col-3">
+                                <div class="text-center" style="font-size: .7rem">
+                                    <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
+                                    <div style="height: 1.5cm"></div>
+                                    ({{ Auth::user()->name }})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    @if ($r2s->count()>0)
+                        @if ($r1s->count()>0)
+                        <div class="page-break"></div>
+                        @endif
+
+                    <div class="invoice-box {{ $r1s->count()==0?'first-page':'' }}">
+                        <div class="header d-flex" style="gap:5px; width:100%">
+                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
+                            <div style="width: 40%; margin-left:35px">
+                                <table style="font-size:.7rem">
+                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
+                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
+                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
+                                    <tr><td>Email : info@ptras.id</td></tr>
+                                </table>
+                            </div>
+                            <div style="width:30%; ">
+                                <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                    <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 120px">No. Invoice</td>
+                                        <td style="width:5px">:</td>
+                                        <td>{{ $order->invoice ?? '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px">Customer</td>
+                                        <td style="width:5px">:</td>
+                                        <td>{{ $order->customer->nama }} </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 60px">Attn</td>
+                                        <td style="width:5px">:</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align: top">Alamat</td>
+                                        <td style="vertical-align: top">:</td>
+                                        <td>{{ $order->customer->alamat }}</td>
+                                    </tr>
+                                    {{-- <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>{{ $order->tarif->customer->kota }}</td>
+                                    </tr> --}}
+                                </table>
+                            </div>
+                        </div>
+
+                        <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                            <thead>
+                                <tr class="heading">
+                                    {{-- <td>No</td> --}}
+                                    <td>Uraian</td>
+                                    <td>Tipe</td>
+                                    <td>Jumlah</td>
+                                    <td>X</td>
+                                    <td>Tarif</td>
+                                    <td>Sub Total</td>
+                                </tr>
+                            </thead>
+                            @php
+                                $total = 0;
+                                $lain_lain = 0;
+                                $rit = 0;
+                                $pph = 0;
+                            @endphp
+                            @foreach ($r2s as $item)
+                            @php
+                                $total += $item->first()->tarif->tarif * $item->count();
+                                $lain_lain += $item->sum('lain_lain');
+                                $rit += $item->count();
+                                $pph += round($item->sum('pph_23'));
+                            @endphp
+                                <tr>
+                                    {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                    <td>Ongkos Angkut Perak - {{ $item->first()->tarif->tujuan->tujuanInfo->nama }}</td>
+                                    <td class="text-center">{{ $item->first()->tipe }}'</td>
+                                    <td class="text-center">{{ $item->count() }} Rit </td>
+                                    <td class="text-center">X</td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($item->first()->tarif->tarif) }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($item->first()->tarif->tarif * $item->count()) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            @if ($lain_lain>0)
+                            @php
+                                $total += $lain_lain;
+                            @endphp
+                            <tr>
+                                {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                <td colspan="4">Biaya Lain-lain</td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($lain_lain) }}</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($lain_lain) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
+                            <tr style="height: 20px !important">
+                                <td colspan="7" style="border-bottom: 1px solid black"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td class="text-center">{{ $rit }} Rit</td>
+                                <td class="fw-bold text-center" colspan="2">TOTAL</td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($total) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-bottom border-dark">
+                                <td colspan="3"></td>
+                                <td class="fw-bold text-center" colspan="2">PPH 23 (2%)</td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="border-bottom border-dark">
+                                <td colspan="5"></td>
+                                <td class="fw-bold">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($total - $pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="row mt-3">
+                            <div class="col-9">
+                                <table style="font-size: .7rem">
+                                    <tr>
+                                        <td style="width: 100px">Terbilang</td>
+                                        <td>: {{ strtoupper(terbilang($total)) }} RUPIAH</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td>: </td>
+                                    </tr>
+                                </table>
+                                <table style="font-size: .7rem" class="mt-2">
+                                    @foreach ($r2s as $orderss)
+                                        @foreach ($orderss as $item)
+                                        <tr>
+                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 50px"> {{ $item->tipe }}'</td>
+                                            <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
+                                            <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                        </tr>
+                                        @endforeach
+                                    @endforeach
+                                </table>
+                            </div>
+                            <div class="col-3">
+                                <div class="text-center" style="font-size: .7rem">
+                                    <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
+                                    <div style="height: 1.5cm"></div>
+                                    ({{ Auth::user()->name }})
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                @endif
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $(function(){
+            var _total = @json($total);
+            var _pph = @json($pph);
+            var _rit = @json($rit);
+            var _lain_lain = @json($lain_lain);
+            $('#_total').val(_total);
+            $('#_pph').val(_pph);
+            $('#_rit').val(_rit);
+            $('#_lain_lain').val(_lain_lain);
+        })
+    </script>
 @endsection

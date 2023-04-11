@@ -16,9 +16,9 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex gap-2">
-                    <form action="{{ route('trucking.generate.total_sopir') }}" method="post">
+                    <form action="{{ route('trucking.invoice.total_sopir') }}" method="post">
                         <input type="hidden" name="order_id" id="order_id">
-                        <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Generate Totalan Sopir</button>
+                        <button class="py-2 px-3 btn btn-success" id="generate-invoice"><i class="fas fa-print"></i> Buat Invoice Totalan Sopir</button>
                         @csrf
                     </form>
                 </div>
@@ -64,11 +64,11 @@
                                 @endforeach
                                 <tr class="border-bottom border-dark">
                                     <td colspan="5" class="text-center"><b>TOTAL</b></td>
-                                    <td colspan="6" class="border border-dark"><b>Rp. {{ number_format($orders->sum('total_sopir')) }}</b></td>
+                                    <td colspan="7" class="border border-dark"><b>Rp. {{ number_format($orders->sum('total_sopir')) }}</b></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="11" class="text-center">Tidak Ada Data!</td>
+                                    <td colspan="12" class="text-center">Tidak Ada Data!</td>
                                 </tr>
                             @endforelse
                         </tbody>

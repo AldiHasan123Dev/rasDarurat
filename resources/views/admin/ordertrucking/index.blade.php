@@ -13,19 +13,40 @@
 @endsection
 @section('content')
     <div class="container mt-3">
-        <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <div class="d-flex gap-2">
-                    <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
-                    <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
-                    <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
+        <div class="card-12">
+            <div class="card">
+                <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                    <div class="d-flex gap-2">
+                        <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
+                        <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
+                        <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsives">
+                        <table id="jqGrid"></table>
+                        <div id="jqGridPager"></div>
+                    </div>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="table-responsives">
-                    <table id="jqGrid"></table>
-                    <div id="jqGridPager"></div>
-                </div>
+        </div>
+        <div class="col-12 mt-3">
+            <div class="card p-3 shadow">
+                <p>Keterangan:</p>
+                <table>
+                    <tr>
+                        <td style="width: 30px"><div class="bg-primary" style="height: 10px; width:20px"></div></td>
+                        <td>: SJ Diterima FA (Belum Totalan Sopir)</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30px"><div class="bg-warning" style="height: 10px; width:20px"></div></td>
+                        <td>: Sudah Totalan Sopir (Belum Terbit Invoice)</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30px"><div class="bg-danger" style="height: 10px; width:20px"></div></td>
+                        <td>: Sudah Terbit Invoice</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
@@ -376,6 +397,7 @@
             data: data,
             colModel: [
                 {search:false, name: 'id', label : 'id', hidden:true},
+                {search:true, name: 'class', label : 'class', hidden:true},
                 {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_teluk_langon', label:'#', hidden:true},
                 {search:false, name:'bongkar_full_teluk_langon', label:'#', hidden:true},
@@ -507,6 +529,9 @@
                 if(bongkar_full_teluk_langon==1){
                     $('#bongkar_full_teluk_langon').attr('checked',true);
                 }
+            },
+            rowattr: function (item) {
+                return { "class": item.class };
             }
         });
 

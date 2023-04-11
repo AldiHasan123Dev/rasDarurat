@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
+use App\Http\Resources\TransaksiTruckingResource;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TruckingController extends Controller
 {
@@ -28,6 +31,32 @@ class TruckingController extends Controller
         return view('admin.trucking.totalan_sopir', compact('data'));
     }
 
+    public function totalan_sopir_invoice(Request $request)
+    {
+        $order_id = explode(',',$request->order_id);
+        if (count($order_id)<=1&&$order_id[0]=="") {
+            return back()->with('danger','Harap checklist order!');
+        }
+        $orders = OrderTrucking::whereIn('id',$order_id)->get();
+        $cek = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('sopir_id');
+        $order = $orders[0];
+        if($cek->count()>1){
+            return back()->with('danger','Anda tidak bisa memilih '.$cek->count().' Sopir sekaligus!, Harap untuk pilih satu sopir');
+        }
+        return view('admin.trucking.totalan_sopir_invoice', compact('orders','order','order_id'));
+    }
+
+    public function cetak_invoice_sopir()
+    {
+        $invoice = request('invoice');
+        $order = OrderTrucking::where('invoice_sopir',$invoice)->first();
+        if(!$order){
+            return back()->with('danger','Invoice tidak ditemukan!');
+        }
+        $orders = OrderTrucking::where('invoice_sopir',$invoice)->get();
+        return view('admin.trucking.totalan_sopir_invoice', compact('orders','order','invoice'));
+    }
+
     public function generate_totalan_sopir(Request $request)
     {
         $order_id = explode(',',$request->order_id);
@@ -38,10 +67,21 @@ class TruckingController extends Controller
         if($orders->count()>1){
             return back()->with('danger','Anda tidak bisa memilih '.$orders->count().' Sopir sekaligus!, Harap untuk pilih satu sopir');
         }
+        $no = OrderTrucking::max('order_sopir') + 1;
+        $invoice = 'RIT/'.date('ymd').'/'.sprintf('%03d',$no);
         OrderTrucking::whereIn('id',$order_id)->update([
-            'tgl_total' => date('Y-m-d')
+            'tgl_total' => date('Y-m-d'),
+            'order_sopir' => $no,
+            'invoice_sopir' => $invoice
         ]);
-        return back()->with('success','Data Berhasil disimpan!');
+        return redirect()->route('trucking.cetak_invoice.totalan_sopir',['invoice'=>$invoice]);
+    }
+
+    public function invoice()
+    {
+        $data = TransaksiTrucking::all();
+        $data = TransaksiTruckingResource::collection($data);
+        return view('admin.trucking.invoice_list', compact('data'));
     }
 
     public function preInvoice()
@@ -57,7 +97,23 @@ class TruckingController extends Controller
         return view('admin.trucking.pre_invoice', compact('data'));
     }
 
-    public function invoice(Request $request)
+    public function cetak_invoice_get()
+    {
+        $invoice = request('invoice');
+        $order = OrderTrucking::where('invoice',$invoice)->first();
+        if(!$order){
+            return back()->with('danger','Invoice Tidak ditemukan!');
+        }
+        $r1s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
+            $q->where('milik','R1');
+        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        $r2s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
+            $q->where('milik','R2');
+        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        return view('admin.trucking.invoice', compact('order','r1s','r2s','invoice'));
+    }
+
+    public function cetak_invoice(Request $request)
     {
         $order_id = explode(',',$request->order_id);
         if (count($order_id)<=1&&$order_id[0]=="") {
@@ -67,9 +123,54 @@ class TruckingController extends Controller
         if($orders->count()>1){
             return back()->with('danger','Anda tidak bisa memilih '.$orders->count().' Customer sekaligus!, Harap untuk pilih satu Customer');
         }
-        $orders = OrderTrucking::whereIn('id',$order_id)->orderBy('tgl_muat')->get();
-        $order = $orders[0];
-        $total = 0;
-        return view('admin.trucking.invoice', compact('orders','order','total'));
+        $order = OrderTrucking::whereIn('id',$order_id)->first();
+        $tipe = $order->kendaraan->milik;
+        $r1s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
+            $q->where('milik','R1');
+        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        $r2s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
+            $q->where('milik','R2');
+        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        if($r1s->count()>0&&$r2s->count()>0){
+            return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
+        }
+        return view('admin.trucking.invoice', compact('orders','order','r1s','r2s','order_id','tipe'));
     }
+
+    public function generate_invoice(Request $request)
+    {
+        $order_id = explode(',',$request->order_id);
+        $no = TransaksiTrucking::max('order') + 1;
+        if($request->tipe=='R1'){
+            $invoice = sprintf('%03d',$no).'/'.date('m').'/'.date('y');
+        }else if($request->tipe=='R2'){
+            $invoice = sprintf('%03d',$no).'/RAS-'.date('m').'/'.date('y');
+        }else{
+            $invoice = sprintf('%03d',$no).'/VENDOR-'.date('m').'/'.date('y');
+        }
+
+        TransaksiTrucking::create([
+            'order_trucking_id' => $request->order,
+            'order_id' => '['.$request->order_id.']',
+            'rit' => $request->rit,
+            'customer_id' => $request->customer_id,
+            'tipe' => $request->tipe,
+            'pph' => $request->pph,
+            'total' => $request->total,
+            'lain_lain' => $request->lain_lain,
+            'submited_by' => Auth::id(),
+            'invoice' => $invoice,
+            'order' => $no,
+            'tgl_invoice' => date('Y-m-d'),
+        ]);
+
+        OrderTrucking::whereIn('id',$order_id)->update([
+            'tgl_invoice' => date('Y-m-d'),
+            'invoice' => $invoice,
+            'total_invoice' => $request->total,
+        ]);
+
+        return redirect()->route('trucking.cetak_get.invoice',['invoice'=>$invoice]);
+    }
+
 }

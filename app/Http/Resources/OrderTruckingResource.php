@@ -24,7 +24,21 @@ class OrderTruckingResource extends JsonResource
         if($this->bongkar_full_teluk_langon==1){
             $keterangan .= 'Bongkar Full Teluk Lamong; ';
         }
+
+        $class = '';
+
+        if(!is_null($this->sj_kembali_fa)&&is_null($this->tgl_total)){
+            $class = 'bg-light-primary';
+        }
+        if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&is_null($this->tgl_invoice)){
+            $class = 'bg-light-warning';
+        }
+        if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&!is_null($this->tgl_invoice)){
+            $class = 'bg-light-danger';
+        }
+
         return [
+            'class' => $class,
             'id' => $this->id,
             'order_id' => $this->order_id,
             'invoice' => $this->invoice ?? '-',
@@ -45,7 +59,7 @@ class OrderTruckingResource extends JsonResource
             'job' => $this->order ? $this->order->job.'-'.sprintf('%02d',$this->order->no_job) : '-',
             'trucking' => $this->order ? $this->order->trucking: '-',
             'sopir' => $this->sopir->nama,
-            'nopol' => $this->kendaraan->nopol,
+            'nopol' => $this->kendaraan->nopol.' | '.$this->kendaraan->milik,
             'container' => $this->container ?? '-',
             'seal' => $this->seal ?? '-',
             'dari' => 'PERAK',

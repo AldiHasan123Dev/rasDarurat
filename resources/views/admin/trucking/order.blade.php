@@ -13,20 +13,22 @@
 @endsection
 @section('content')
     <div class="container mt-3">
-        <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                {{-- <div class="d-flex gap-2">
-                    <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
-                    <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
-                </div> --}}
-            </div>
-            <div class="card-body">
-                {{-- <div class="d-flex justify-content-center">
-                    <img src="{{ asset('assets/img/loading.gif') }}" alt="Loading" class="img-fluid" id="loading" style="height:300px">
-                </div> --}}
-                <div class="table-responsives">
-                    <table id="jqGrid"></table>
-                    <div id="jqGridPager"></div>
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                    {{-- <div class="d-flex gap-2">
+                        <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
+                        <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
+                    </div> --}}
+                </div>
+                <div class="card-body">
+                    {{-- <div class="d-flex justify-content-center">
+                        <img src="{{ asset('assets/img/loading.gif') }}" alt="Loading" class="img-fluid" id="loading" style="height:300px">
+                    </div> --}}
+                    <div class="table-responsives">
+                        <table id="jqGrid"></table>
+                        <div id="jqGridPager"></div>
+                    </div>
                 </div>
             </div>
         </div>

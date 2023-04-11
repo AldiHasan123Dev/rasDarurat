@@ -35,18 +35,29 @@
                                 <th>JOB</th>
                                 <th>Container / Seal</th>
                                 <th>Tipe</th>
-                                <th>Tarif</th>
                                 <th>Nopol</th>
                                 <th>Tujuan</th>
+                                <th>Tarif</th>
                                 <th>Lain-lain</th>
                                 <th>PPH 21 (3%)</th>
                                 <th>PPH 23 (2%)</th>
-                                <th>Total</th>
+                                <th>Total (Tarif - PPH)</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse ($data as $cus => $orders)
+                            @php
+                                $total = 0;
+                            @endphp
                                 @foreach ($orders as $order)
+                                    @php
+                                        if ($order->customer_id==2&&$order->kendaraan->milik=='R1'){
+                                            $total += $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23));
+                                        }
+                                        if($order->customer_id!=2){
+                                            $total += $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23));
+                                        }
+                                    @endphp
                                     <tr>
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center" rowspan="{{ $orders->count() }}">{{ $cus }}</td>
@@ -57,18 +68,22 @@
                                         <td>{{ $order->order->job ?? '-' }}</td>
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
                                         <td>{{ $order->tipe }}'</td>
-                                        <td>{{ number_format($order->tarif->tarif) }}</td>
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
                                         <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
+                                        <td>{{ number_format($order->tarif->tarif) }}</td>
                                         <td>{{ number_format($order->lain_lain) }}</td>
-                                        <td>{{ number_format($order->pph_21) }}</td>
-                                        <td>{{ number_format($order->pph_23) }}</td>
-                                        <td>{{ number_format($order->total_sopir) }}</td>
+                                        <td>{{ number_format(round($order->pph_21)) }}</td>
+                                        <td>{{ number_format(round($order->pph_23)) }}</td>
+                                        @if ($order->customer_id==2&&$order->kendaraan->milik=='R2')
+                                        <td>0   </td>
+                                        @else
+                                        <td>{{ number_format( $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23))) }}</td>
+                                        @endif
                                     </tr>
                                 @endforeach
                                 <tr class="border-bottom border-dark">
                                     <td colspan="5" class="text-center"><b>TOTAL</b></td>
-                                    <td colspan="7" class="border border-dark"><b>Rp. {{ number_format($orders->sum('total_sopir')) }}</b></td>
+                                    <td colspan="7" class="border border-dark"><b>Rp. {{ number_format($total) }}</b></td>
                                 </tr>
                             @empty
                                 <tr>
