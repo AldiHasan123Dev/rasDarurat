@@ -53,9 +53,13 @@ class KeuanganController extends Controller
             });
         })->whereHas('jadwal_kapal', function($q){
             $q->whereNotNull('td');
-        })->whereNull('invoice')->whereNotNull('ba_kembali')->pluck('id');
+        })->whereNull('invoice')->whereNotNull('ba_kembali')->get();
         foreach ($data2 as $item ) {
-            array_push($data1_id,$item);
+            $cek = Order::where('job',$item->job)->whereNotNull('ba_kembali')->count();
+            $cek1 = Order::where('job',$item->job)->count();
+            if($cek==$cek1){
+                array_push($data1_id,$item->id);
+            }
         }
 
         $data3 = Order::whereHas('tarif', function($q){

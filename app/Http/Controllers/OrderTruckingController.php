@@ -28,7 +28,7 @@ class OrderTruckingController extends Controller
         $customers = CustomerTrucking::all()->sortBy('nama');
         $update = OrderTrucking::whereNull('order_id')->get();
         foreach ($update as $item ) {
-            $order = Order::where('container',$item->container)->where('nopol',$item->kendaraan->nopol)->first();
+            $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
             if($order){
                 $item->update(['order_id'=>$order->id]);
             }
