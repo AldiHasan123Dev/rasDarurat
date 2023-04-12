@@ -83,7 +83,7 @@ class BTTBController extends Controller
         return Datatables::of($data)
             ->addIndexColumn()
             ->order(function ($data){
-                $data->orderBy('updated_at','desc');
+                $data->orderBy('created_at','desc');
             })
             ->addColumn('created_at', function($data){
                 return date('d/m/y',strtotime($data->created_at));
