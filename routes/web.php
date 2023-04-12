@@ -131,6 +131,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('export-order/ba_kembali',[OrderController::class,'export_ba_kembali'])->name('order.export.ba_kembali');
     Route::post('export-order-trucking',[OrderTruckingController::class,'export'])->name('ordertrucking.export');
     Route::post('export-asuransi',[AsuransiController::class,'export'])->name('asuransi.export');
+    Route::post('tarik-asuransi',[AsuransiController::class,'tarik'])->name('asuransi.tarik');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
     Route::get('sj-kembali',[OrderController::class,'sj_kembali'])->name('order.sj-kembali');
     Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');

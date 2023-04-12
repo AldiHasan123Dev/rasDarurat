@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\AsuransiExport;
 use App\Models\Asuransi;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -38,6 +39,20 @@ class AsuransiController extends Controller
         $ids = explode(',',$id);
         $ids = json_encode($ids);
         return Excel::download(new AsuransiExport($ids), 'asuransi.xlsx');
+    }
+
+    public function tarik(Request $request)
+    {
+        $id = request('orders_id');
+        $ids = explode(',',$id);
+        Order::whereIn('id',$ids)->update([
+            'tipe_asuransi' => null,
+            'asuransi_id' => null,
+            'pertanggungan' => 0,
+            'asuransi_date' => null,
+        ]);
+
+        return back()->with('success','Asuransi berhasil ditarik! ');
     }
 
     public function destroy(Asuransi $asuransi)

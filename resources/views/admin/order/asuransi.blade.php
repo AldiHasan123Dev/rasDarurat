@@ -86,11 +86,16 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                        <div>
+                        <div class="d-flex gap-2">
                             <form action="{{ route('asuransi.export') }}" method="post">
                                 @csrf
-                                <input type="hidden" name="orders_id" id="orders_id">
+                                <input type="hidden" name="orders_id" class="orders_id">
                                 <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
+                            </form>
+                            <form action="{{ route('asuransi.tarik') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="orders_id" class="orders_id">
+                                <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('are you sure?')">Tarik Asuransi</button>
                             </form>
                         </div>
                         <p>List Order Dengan Asuransi</p>
@@ -257,7 +262,7 @@
                 $.each(data, function (idx, item) {
                     id.push(item.id)
                 });
-                $('#orders_id').val(id);
+                $('.orders_id').val(id);
             }, 1000);
         })
 
