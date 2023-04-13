@@ -75,12 +75,10 @@ class TarifController extends Controller
             $q->whereNotNull('td');
         })->count();
 
-        if(empty($request->is_active)){
+        if(!request('change_active')){
             if($cek>0){
                 return back()->with('danger','Data tidak bisa diedit!');
             }
-        }
-        if(!request('change_active')){
             $shipment = Shipment::find($request->shipment);
             $dari = Lokasi::find($request->dari);
             $tujuan = Lokasi::find($request->tujuan);
