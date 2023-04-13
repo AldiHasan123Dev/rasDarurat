@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Tarif extends Model
 {
@@ -27,6 +28,17 @@ class Tarif extends Model
         'customer_id',
         'is_active',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            $model->created_by = Auth::id();
+            $model->updated_by = Auth::id();
+        });
+        static::saving(function ($model) {
+            $model->updated_by = Auth::id();
+        });
+    }
 
     public function jadwal_kapal()
     {

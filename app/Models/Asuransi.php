@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Asuransi extends Model
 {
@@ -24,5 +25,16 @@ class Asuransi extends Model
     public function pelayaran()
     {
         return $this->belongsTo(Pelayaran::class);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            $model->created_by = Auth::id();
+            $model->updated_by = Auth::id();
+        });
+        static::saving(function ($model) {
+            $model->updated_by = Auth::id();
+        });
     }
 }
