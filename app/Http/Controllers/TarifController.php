@@ -75,7 +75,7 @@ class TarifController extends Controller
             $q->whereNotNull('td');
         })->count();
 
-        if(!$request->is_active){
+        if(empty($request->is_active)){
             if($cek>0){
                 return back()->with('danger','Data tidak bisa diedit!');
             }
