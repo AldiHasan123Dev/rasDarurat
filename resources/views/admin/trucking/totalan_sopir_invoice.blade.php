@@ -167,6 +167,9 @@
                 @if (empty($invoice))
                 <form action="{{ route('trucking.generate.total_sopir') }}" method="post">
                     @csrf
+                    <input type="hidden" name="order_trucking_id" value="{{ $order->id }}">
+                    <input type="hidden" name="sopir_id" value="{{ $order->sopir_id }}">
+                    <input type="hidden" name="total" value="{{ $orders->sum('total_sopir') }}">
                     <input type="hidden" name="order_id" value="{{ implode(',',$order_id) }}">
                     <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice Sopir</button>
                 </form>
@@ -227,7 +230,11 @@
                                 <tr>
                                     <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_muat)) }}</td>
                                     <td>{{ $item->tipe }}'</td>
+                                    @if ($item->order)
                                     <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                    @else
+                                    <td>-</td>
+                                    @endif
                                     <td>{{ $item->container }} / {{ $item->seal }}</td>
                                     <td>{{ $item->kendaraan->nopol }}</td>
                                     <td>{{ $item->customer->nama }}</td>

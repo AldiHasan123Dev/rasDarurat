@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
+use App\Http\Resources\TransaksiSopirResource;
 use App\Http\Resources\TransaksiTruckingResource;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\TransaksiSopir;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -67,12 +69,22 @@ class TruckingController extends Controller
         if($orders->count()>1){
             return back()->with('danger','Anda tidak bisa memilih '.$orders->count().' Sopir sekaligus!, Harap untuk pilih satu sopir');
         }
-        $no = OrderTrucking::max('order_sopir') + 1;
+        $no = TransaksiSopir::max('order') + 1;
         $invoice = 'RIT/'.date('ymd').'/'.sprintf('%03d',$no);
         OrderTrucking::whereIn('id',$order_id)->update([
             'tgl_total' => date('Y-m-d'),
             'order_sopir' => $no,
             'invoice_sopir' => $invoice
+        ]);
+        TransaksiSopir::create([
+            'tgl_invoice' => date('Y-m-d'),
+            'invoice' => $invoice,
+            'sopir_id' => $request->sopir_id,
+            'order_id' => '['.$request->order_id.']',
+            'order_trucking_id' => $request->order_trucking_id,
+            'total' => $request->total,
+            'order' => $no,
+            'submited_by' => Auth::id(),
         ]);
         return redirect()->route('trucking.cetak_invoice.totalan_sopir',['invoice'=>$invoice]);
     }
@@ -84,10 +96,24 @@ class TruckingController extends Controller
         return view('admin.trucking.invoice_list', compact('data'));
     }
 
+    public function invoice_sopir()
+    {
+        $data = TransaksiSopir::all();
+        $data = TransaksiSopirResource::collection($data);
+        return view('admin.trucking.invoice_sopir_list', compact('data'));
+    }
+
     public function preInvoice()
     {
         $data = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
+            ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
             ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
+            ->where('order_trucking.customer_id','!=',2)
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.tgl_total')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orWhere('order_trucking.customer_id',2)
+            ->where('kendaraan.milik','R1')
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.tgl_total')
             ->whereNotNull('order_trucking.sj_kembali_fa')
@@ -124,6 +150,7 @@ class TruckingController extends Controller
             return back()->with('danger','Anda tidak bisa memilih '.$orders->count().' Customer sekaligus!, Harap untuk pilih satu Customer');
         }
         $order = OrderTrucking::whereIn('id',$order_id)->first();
+        $null_job = OrderTrucking::whereIn('id',$order_id)->whereNull('order_id')->count();
         $tipe = $order->kendaraan->milik;
         $r1s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
             $q->where('milik','R1');
@@ -134,7 +161,7 @@ class TruckingController extends Controller
         if($r1s->count()>0&&$r2s->count()>0){
             return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
         }
-        return view('admin.trucking.invoice', compact('orders','order','r1s','r2s','order_id','tipe'));
+        return view('admin.trucking.invoice', compact('orders','order','r1s','r2s','order_id','tipe','null_job'));
     }
 
     public function generate_invoice(Request $request)

@@ -45,7 +45,7 @@
                 <table>
                     <tr>
                         <td style="width: 30px"><div class="bg-light-dark" style="height: 10px; width:20px"></div></td>
-                        <td>: Order JOB Kosong (Check No. Container dan Nopol harus sama persis)</td>
+                        <td>: Order JOB Kosong (Check No. Container dan Seal harus sama persis)</td>
                     </tr>
                     <tr>
                         <td style="width: 30px"><div class="bg-primary" style="height: 10px; width:20px"></div></td>
@@ -58,6 +58,10 @@
                     <tr>
                         <td style="width: 30px"><div class="bg-danger" style="height: 10px; width:20px"></div></td>
                         <td>: Sudah Terbit Invoice</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 30px"><div class="bg-success" style="height: 10px; width:20px"></div></td>
+                        <td>: Customer RAS Tipe R2 (Tanpa Invoice)</td>
                     </tr>
                 </table>
             </div>
@@ -409,7 +413,7 @@
             datatype: 'local',
             data: data,
             colModel: [
-                {search:false, name: 'id', label : 'id', hidden:true},
+                {search:false, name: 'id', label : 'ID', sorttype: 'number', width:50},
                 {search:true, name: 'class', label : 'class', hidden:true},
                 {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_teluk_langon', label:'#', hidden:true},

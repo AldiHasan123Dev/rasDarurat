@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
+                                <th>PPH 23</th>
                                 <th>Nama</th>
                                 <th>PIC</th>
                                 <th>Alamat</th>
@@ -138,6 +139,7 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
+                { data: 'pph_23', name: 'pph_23' },
                 { data: 'nama', name: 'nama' },
                 { data: 'pic', name: 'pic' },
                 { data: 'alamat', name: 'alamat' },

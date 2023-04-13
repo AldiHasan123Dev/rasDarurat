@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('customer_trucking', function (Blueprint $table) {
             $table->id();
+            $table->boolean('pph_23')->default(true);
             $table->string('nama');
             $table->text('alamat')->nullable();
             $table->string('hp')->nullable();

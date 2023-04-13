@@ -79,6 +79,7 @@
             {search:true, name: 'full', label : 'full'},
             {search:true, name: 'barang_diantar', label : 'barang_diantar'},
             {search:true, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, name: 'koli', label : 'koli'},
             {search:true, name: 'satuan', label : 'satuan'},
             {search:true, name: 'unit', label : 'unit'},
             {search:true, name: 'tarif', label : 'tarif'},

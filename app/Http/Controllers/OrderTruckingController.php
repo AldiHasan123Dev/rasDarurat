@@ -91,6 +91,20 @@ class OrderTruckingController extends Controller
             }
         }
 
+        $data['pph_21'] = 0;
+        $data['pph_23'] = 0;
+        $price = $tarif->tarif;
+        $kendaraan = Kendaraan::find($data['kendaraan_id']);
+        if($data['customer_id']!=2){
+            if ($kendaraan->milik=='R2') {
+                $data['pph_23'] = $price * 0.02;
+            }
+        }else{
+            if ($kendaraan->milik=='R1') {
+                $data['pph_21'] = ($price / 0.97) * 0.03;
+            }
+        }
+
         OrderTrucking::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -118,9 +132,12 @@ class OrderTruckingController extends Controller
         if($request->borongan_kuli){
             $data['borongan_kuli'] = str_replace(['.',','],'',$request->borongan_kuli);
         }
-        if($request->sangu){
+        if($request->kuli){
             $data['kuli'] = str_replace(['.',','],'',$request->kuli);
             $data['simpanan_kuli'] = $data['borongan_kuli'] - $data['kuli'];
+            if($data['simpanan_kuli']<=0){
+                $data['simpanan_kuli'] = 0;
+            }
         }
         // if($request->simpanan){
         //     $data['simpanan'] = str_replace(['.',','],'',$request->simpanan);
@@ -190,8 +207,8 @@ class OrderTruckingController extends Controller
 
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
-        $totalan = $order->simpanan + ($order->simpanan_kuli<=0?0:$order->simpanan_kuli) + $order->tb_tl + $order->lain_lain + $order->stappel;
-        $pph = $order->pph_21 >= 0 ? $order->pph_21 : $order->pph_23;
+        $totalan = $order->simpanan + $order->simpanan_kuli + $order->tb_tl + $order->lain_lain + $order->stappel;
+        $pph = $order->pph_21 + $order->pph_23;
         $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->tambah_solar - $order->tambah_isi - $order->uang_makan - $order->op - $order->cleaning - $pph;
         $order->update([
             'total_sopir' => $totalan,

@@ -63,12 +63,9 @@
             colModel: [
                 {search:true, name: 'tgl_invoice', label : 'Tanggal Invoice', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
-                {search:true, name: 'customer', label : 'Customer',},
-                {search:true, name: 'rit', label : 'Rit',},
-                {search:true, name: 'lain_lain', label : 'Biaya lain-lain',},
-                {search:true, name: 'pph', label : 'PPH',},
+                {search:true, name: 'sopir', label : 'Sopir',},
+                {search:true, name: 'container', label : 'Container', width:500},
                 {search:true, name: 'total', label : 'Total',},
-                {search:true, name: 'total_pph', label : 'Total - PPH',},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -78,10 +75,10 @@
             rowList:[10,25,50,100],
 			viewrecords: true,
             pager: "#jqGridPager",
-            caption: "Invoice Trucking",
+            caption: "Invoice Sopir",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
-                $('#cetak').attr('href',@json(url('admin/trucking/cetak-invoice/get'))+'?invoice='+invoice);
+                $('#cetak').attr('href',@json(url('admin/trucking/totalan-sopir/invoice'))+'?invoice='+invoice);
             },
         });
 

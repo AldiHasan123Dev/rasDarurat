@@ -14,12 +14,18 @@
 
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <a style="font-size: .7rem" class="btn-sm btn border-bottom border-dark" href="{{ route('customer.create') }}">Tambah Customer <i class="fas fa-plus"></i></a>
-                <form action="{{ route('customer.import.update') }}" method="post" enctype="multipart/form-data">
+            <div class="card-header p-2 d-flex" style="gap:10px">
+                <button data-bs-toggle="modal" data-bs-target="#modal-edit" class="py-2 px-3 btn btn-sm btn-primary">Edit Data</button>
+                <form action="" id="delete" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Hapus</button>
+                </form>
+                <a style="font-size: .7rem" class="btn-sm btn btn-success" href="{{ route('customer.create') }}">Tambah Customer <i class="fas fa-plus"></i></a>
+                {{-- <form action="{{ route('customer.import.update') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="file" id="file" onchange="submit()">
-                </form>
+                </form> --}}
             </div>
             <div class="card-body">
                 <div class="table-responsives">
@@ -41,7 +47,6 @@
                                 <th>NPWP</th>
                                 <th>Nama NPWP</th>
                                 <th>Alamat NPWP</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,6 +116,23 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" id="modal-edit" tabindex="-1"  aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="iframe-edit" style="width: 100%; height:100vh"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -156,7 +178,6 @@
                 { data: 'npwp', name: 'npwp' },
                 { data: 'nama_npwp', name: 'nama_npwp' },
                 { data: 'alamat_npwp', name: 'alamat_npwp' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
             ],"columnDefs": [
                 { className: "text-center", "targets": [0] }
             ]
@@ -246,6 +267,8 @@
         // });
         $('#customer tbody').on( 'click', 'tr', function () {
             id =  tablecus.row( this ).data().id;
+            $('#iframe-edit').attr('src','{{ url('admin/customer') }}/'+id+'/edit');
+            $('#delete').attr('action','{{ url('admin/customer') }}/'+id);
             $('.nama-cus').html(tablecus.row(this).data().nama);
             $('#add-tarif').show();
             tabletar.ajax.reload()
@@ -305,5 +328,9 @@
         });
         $('#message').hide();
 
+        var myModalEl = document.getElementById('modal-edit')
+        myModalEl.addEventListener('hidden.bs.modal', function (event) {
+            tablecus.ajax.reload();
+        })
 </script>
 @endsection

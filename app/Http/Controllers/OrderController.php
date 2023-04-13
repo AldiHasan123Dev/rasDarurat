@@ -167,7 +167,7 @@ class OrderController extends Controller
         if ($request->ba_kembali && $request->invoice==1) {
             return redirect()->route('order.ba-kembali',['filter-order'=>'ba_kembali'])->with('success','Data berhasil diupdate');
         }
-        return redirect()->route('order.index')->with('success','Data berhasil diupdate');
+        return back()->with('success','Data berhasil diupdate');
     }
 
     public function SIExport()

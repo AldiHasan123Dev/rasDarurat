@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.iframe')
 @section('style')
     <style>
         .autocomplete {

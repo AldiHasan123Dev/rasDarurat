@@ -12,6 +12,7 @@ class CustomerTrucking extends Model
 
     protected $table = 'customer_trucking';
     protected $fillable = [
+        'pph_23',
         'nama',
         'pic',
         'alamat',

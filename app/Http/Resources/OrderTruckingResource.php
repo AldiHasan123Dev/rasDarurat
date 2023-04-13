@@ -27,8 +27,11 @@ class OrderTruckingResource extends JsonResource
 
         $class = '';
 
-        if(is_null($this->order_id)){
+        if(is_null($this->order_id) && $this->customer_id==2){
             $class = 'bg-light-dark';
+        }
+        if(!is_null($this->order_id) && $this->customer_id==2 && $this->kendaraan->milik=='R2'){
+            $class = 'bg-light-success';
         }
         if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&is_null($this->tgl_total)){
             $class = 'bg-light-primary';

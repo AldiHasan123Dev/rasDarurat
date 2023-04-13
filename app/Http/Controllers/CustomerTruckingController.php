@@ -48,6 +48,17 @@ class CustomerTruckingController extends Controller
         $data = CustomerTrucking::all()->sortBy('nama');
 
         return Datatables::of($data)
+            ->addColumn('pph_23', function($data){
+                $checked = $data->pph_23==1?'checked':'';
+                $val = $data->pph_23==1?0:1;
+                $html = ' <form action="'.route('customertrucking.update',$data).'" method="post">
+                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="pph_23" value="'.$val.'" />
+                            <input type="checkbox" onchange="submit()" '.$checked.'/>
+                        </form>';
+                return $html;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.customertrucking.form',['customertrucking'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
@@ -74,7 +85,7 @@ class CustomerTruckingController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','pph_23'])
             ->make(true);
     }
 }

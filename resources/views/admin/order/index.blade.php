@@ -65,7 +65,7 @@
                     @if (!request('filter-order'))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     @endif
-                    <a href="" id="edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</a>
+                    <button data-bs-toggle="modal" data-bs-target="#modal-edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     <a href="" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</a>
                     <a href="" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</a>
                     <form action="" id="copy-order" method="post" enctype="multipart/form-data">
@@ -280,6 +280,23 @@
             </div>
         </div>
     </form>
+</div>
+
+<div class="modal fade" id="modal-edit-order" tabindex="-1"  aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit <span class="nojob"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="iframe-order" style="width: 100%; height:100vh"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -546,6 +563,7 @@
             $('#packing-list-kubikasi').attr('href','{{ url('admin/cetak/packing-list-kubikasi') }}/?order_id='+id);
             $('#delete-order').attr('action','{{ url('admin/order') }}/'+id);
             $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
+            $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
             $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
             tablebttb.ajax.reload();
             tableTagihan.ajax.reload();
@@ -982,5 +1000,9 @@
         $('#t').keyup(function (e) {
             hitungVol()
         });
+        var myModalEl = document.getElementById('modal-edit-order')
+        myModalEl.addEventListener('hidden.bs.modal', function (event) {
+            $("#jqGrid").trigger("reloadGrid");
+        })
 </script>
 @endsection

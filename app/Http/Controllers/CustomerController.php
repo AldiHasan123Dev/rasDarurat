@@ -93,7 +93,7 @@ class CustomerController extends Controller
     {
         $data = $request->all();
         $customer->update($data);
-        return redirect()->route('customer.index')->with('success','Data berhasil dupdate!');
+        return back()->with('success','Data berhasil dupdate!');
     }
 
     public function destroy(Customer $customer)
