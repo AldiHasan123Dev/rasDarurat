@@ -112,7 +112,7 @@ class TarifController extends Controller
         }
         $tarif->update($data);
 
-        return redirect()->route('customer.index')->with('success','Data berhasil diupdate');
+        return back()->with('success','Data berhasil diupdate');
     }
 
     public function destroy(Tarif $tarif)
