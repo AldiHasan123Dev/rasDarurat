@@ -33,13 +33,13 @@ class OrderTruckingResource extends JsonResource
         if(!is_null($this->order_id) && $this->customer_id==2 && $this->kendaraan->milik=='R2'){
             $class = 'bg-light-success';
         }
-        if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&is_null($this->tgl_total)){
+        if(!is_null($this->sj_kembali_fa)&&is_null($this->tgl_total)){
             $class = 'bg-light-primary';
         }
-        if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&is_null($this->tgl_invoice)){
+        if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&is_null($this->tgl_invoice)){
             $class = 'bg-light-warning';
         }
-        if(!is_null($this->order_id)&&!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&!is_null($this->tgl_invoice)){
+        if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&!is_null($this->tgl_invoice)){
             $class = 'bg-light-danger';
         }
 
