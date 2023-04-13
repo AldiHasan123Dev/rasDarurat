@@ -365,6 +365,7 @@ class SyncController extends Controller
             $pph_21 = 0;
             $pph_23 = 0;
             $price = $item->tarif->tarif;
+            $tb_tl = 0;
             if($item->customer_id!=2){
                 if ($item->kendaraan->milik=='R2') {
                     $pph_23 = $price * 0.02;
@@ -375,22 +376,52 @@ class SyncController extends Controller
                 }
             }
 
+            if($item->ambil_empty_tambak_langon==1){
+                if($item->tipe=='20'||$item->tipe=='COMBO'){
+                    $tb_tl += 50000;
+                }
+                if($item->tipe=='40'){
+                    $tb_tl += 75000;
+                }
+            }
+
+            if($item->ambil_empty_teluk_langon==1){
+                if($item->tipe=='20'||$item->tipe=='COMBO'){
+                $tb_tl += 50000;
+                }
+                if($item->tipe=='40'){
+                    $tb_tl += 75000;
+                }
+            }
+
+            if($item->bongkar_full_teluk_langon==1){
+                if($item->tipe=='20'||$item->tipe=='COMBO'){
+                    $tb_tl += 50000;
+                }
+                if($item->tipe=='40'){
+                    $tb_tl += 75000;
+                }
+            }
+
             $simpanan_kuli = $item->borongan_kuli - $item->kuli;
             $simpanan_sopir = $item->borongan - $item->sangu;
             if($simpanan_kuli < 0){
                 $simpanan_kuli = 0;
             }
-            $pph = $pph_21 >= 0 ? $pph_21 : $pph_23;
-            $margin = $item->tarif->tarif - $item->borongan - $item->borongan_kuli - $item->tambah_solar - $item->tambah_isi - $item->uang_makan - $item->op - $item->cleaning - $pph;
+
+            $totalan = $simpanan_sopir + $simpanan_kuli + $tb_tl + $item->lain_lain + $item->stappel;
+            $margin = $item->tarif->tarif - $item->borongan - $item->borongan_kuli - $item->uang_makan - $item->op - $item->cleaning;
+
             $item->update([
                 'simpanan' => $simpanan_sopir,
                 'simpanan_kuli' => $simpanan_kuli,
-                'total_sopir' => $simpanan_sopir + $simpanan_kuli + $item->tb_tl + $item->stapel + $item->lain_lain,
+                'total_sopir' => $totalan,
                 'margin' => $margin,
                 'pph_21' => $pph_21,
                 'pph_23' => $pph_23,
+                'tb_tl' => $tb_tl,
             ]);
-            $order = Order::where('container',$item->container)->where('nopol',$item->kendaraan->nopol)->first();
+            $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
             if($order){
                 $item->update(['order_id'=>$order->id]);
             }

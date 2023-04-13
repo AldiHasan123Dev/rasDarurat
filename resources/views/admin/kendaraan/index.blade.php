@@ -15,6 +15,8 @@
                                 <th>Nopol</th>
                                 <th>Milik</th>
                                 <th>Status</th>
+                                <th>Warna</th>
+                                <th>Tahun</th>
                                 <th>PKB</th>
                                 <th>No. Rangka</th>
                                 <th>No. Mesin</th>
@@ -62,6 +64,8 @@
                 { data: 'nopol', name: 'nopol' },
                 { data: 'milik', name: 'milik' },
                 { data: 'is_active', name: 'is_active' },
+                { data: 'warna', name: 'warna' },
+                { data: 'tahun', name: 'tahun' },
                 { data: 'pkb', name: 'pkb' },
                 { data: 'no_rangka', name: 'no_rangka' },
                 { data: 'no_mesin', name: 'no_mesin' },

@@ -105,14 +105,9 @@ class TruckingController extends Controller
 
     public function preInvoice()
     {
-        $data = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
+        $data1 = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
             ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
             ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
-            ->where('order_trucking.customer_id','!=',2)
-            ->whereNull('order_trucking.invoice')
-            ->whereNotNull('order_trucking.tgl_total')
-            ->whereNotNull('order_trucking.sj_kembali_fa')
-            ->orWhere('order_trucking.customer_id',2)
             ->where('kendaraan.milik','R1')
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.tgl_total')
@@ -120,7 +115,19 @@ class TruckingController extends Controller
             ->orderBy('customer')
             ->get()
             ->groupBy('customer');
-        return view('admin.trucking.pre_invoice', compact('data'));
+
+        $data2 = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
+            ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
+            ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
+            ->where('kendaraan.milik','R2')
+            ->where('order_trucking.customer_id','!=',2)
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.tgl_total')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orderBy('customer')
+            ->get()
+            ->groupBy('customer');
+        return view('admin.trucking.pre_invoice', compact('data1','data2'));
     }
 
     public function cetak_invoice_get()

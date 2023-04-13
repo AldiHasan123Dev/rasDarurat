@@ -63,30 +63,30 @@ class OrderTruckingController extends Controller
         if(empty($data['ambil_empty_tambak_langon'])){
             $data['ambil_empty_tambak_langon'] = 0;
         }else{
-            if($data['tipe']=='20'){
+            if($data['tipe']=='20'||$data['tipe']=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
-            if($data['tipe']=='40'||$data['tipe']=='COMBO'){
+            if($data['tipe']=='40'){
                 $data['tb_tl'] += 75000;
             }
         }
         if(empty($data['ambil_empty_teluk_langon'])){
             $data['ambil_empty_teluk_langon'] = 0;
         }else{
-            if($data['tipe']=='20'){
+            if($data['tipe']=='20'||$data['tipe']=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
-            if($data['tipe']=='40'||$data['tipe']=='COMBO'){
+            if($data['tipe']=='40'){
                 $data['tb_tl'] += 75000;
             }
         }
         if(empty($data['bongkar_full_teluk_langon'])){
             $data['bongkar_full_teluk_langon'] = 0;
         }else{
-            if($data['tipe']=='20'){
+            if($data['tipe']=='20'||$data['tipe']=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
-            if($data['tipe']=='40'||$data['tipe']=='COMBO'){
+            if($data['tipe']=='40'){
                 $data['tb_tl'] += 75000;
             }
         }
@@ -177,30 +177,30 @@ class OrderTruckingController extends Controller
         if(empty($data['ambil_empty_tambak_langon'])){
             $data['ambil_empty_tambak_langon'] = 0;
         }else{
-            if($ordertrucking->tipe=='20'){
+            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
-            if($ordertrucking->tipe=='40'||$ordertrucking->tipe=='COMBO'){
+            if($ordertrucking->tipe=='40'){
                 $data['tb_tl'] += 75000;
             }
         }
         if(empty($data['ambil_empty_teluk_langon'])){
             $data['ambil_empty_teluk_langon'] = 0;
         }else{
-            if($ordertrucking->tipe=='20'){
+            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
-            if($ordertrucking->tipe=='40'||$ordertrucking->tipe=='COMBO'){
+            if($ordertrucking->tipe=='40'){
                 $data['tb_tl'] += 75000;
             }
         }
         if(empty($data['bongkar_full_teluk_langon'])){
             $data['bongkar_full_teluk_langon'] = 0;
         }else{
-            if($ordertrucking->tipe=='20'){
+            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
-            if($ordertrucking->tipe=='40'||$ordertrucking->tipe=='COMBO'){
+            if($ordertrucking->tipe=='40'){
                 $data['tb_tl'] += 75000;
             }
         }
@@ -209,7 +209,7 @@ class OrderTruckingController extends Controller
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->simpanan_kuli + $order->tb_tl + $order->lain_lain + $order->stappel;
         $pph = $order->pph_21 + $order->pph_23;
-        $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->tambah_solar - $order->tambah_isi - $order->uang_makan - $order->op - $order->cleaning - $pph;
+        $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->uang_makan - $order->op - $order->cleaning;
         $order->update([
             'total_sopir' => $totalan,
             'margin' => $margin

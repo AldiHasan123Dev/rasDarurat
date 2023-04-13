@@ -14,8 +14,92 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <div class="d-flex gap-2">
+            <div class="card-header p-2">
+                <div class="d-flex gap-2 justify-content-between">
+                    <p>List Pre Invoice Trucking (R1)</p>
+                    <form action="{{ route('trucking.cetak.invoice') }}" method="post">
+                        <input type="hidden" name="order_id" id="order_id1">
+                        <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
+                        @csrf
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px">Customer</th>
+                                <th style="width: 30px">#</th>
+                                <th>Tanggal Muat</th>
+                                <th>Tanggal Totalan</th>
+                                <th>JOB</th>
+                                <th>Container / Seal</th>
+                                <th>Tipe</th>
+                                <th>Nopol</th>
+                                <th>Tujuan</th>
+                                <th>Tarif</th>
+                                <th>Lain-lain</th>
+                                <th>PPH 21 (3%)</th>
+                                <th>PPH 23 (2%)</th>
+                                <th>Total (Tarif - PPH)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($data1 as $cus => $orders)
+                            @php
+                                $total = 0;
+                            @endphp
+                                @foreach ($orders as $order)
+                                    @php
+                                        if ($order->customer_id==2&&$order->kendaraan->milik=='R1'){
+                                            $total += $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23));
+                                        }
+                                        if($order->customer_id!=2){
+                                            $total += $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23));
+                                        }
+                                    @endphp
+                                    <tr>
+                                        @if ($loop->first)
+                                            <td style="vertical-align: middle; text-align:center" rowspan="{{ $orders->count() }}">{{ $cus }}</td>
+                                        @endif
+                                        <td class="text-center"><input type="checkbox" name="order_id1" value="{{ $order->id }}"></td>
+                                        <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
+                                        <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_total)) }}</td>
+                                        <td>{{ $order->order->job ?? '-' }}</td>
+                                        <td>{{ $order->container }} / {{ $order->seal }}</td>
+                                        <td>{{ $order->tipe }}'</td>
+                                        <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
+                                        <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
+                                        <td>{{ number_format($order->tarif->tarif) }}</td>
+                                        <td>{{ number_format($order->lain_lain) }}</td>
+                                        <td>{{ number_format(round($order->pph_21)) }}</td>
+                                        <td>{{ number_format(round($order->pph_23)) }}</td>
+                                        @if ($order->customer_id==2&&$order->kendaraan->milik=='R2')
+                                        <td>0   </td>
+                                        @else
+                                        <td>{{ number_format( $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23))) }}</td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                                <tr class="border-bottom border-dark">
+                                    <td colspan="5" class="text-center"><b>TOTAL</b></td>
+                                    <td colspan="8" class="border border-dark"><b>Rp. {{ number_format($total) }}</b></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="13" class="text-center">Tidak Ada Data!</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card mt-4">
+            <div class="card-header p-2">
+                <div class="d-flex gap-2 justify-content-between">
+                    <p>List Pre Invoice Trucking (R2)</p>
                     <form action="{{ route('trucking.cetak.invoice') }}" method="post">
                         <input type="hidden" name="order_id" id="order_id">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
@@ -45,7 +129,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($data as $cus => $orders)
+                            @forelse ($data2 as $cus => $orders)
                             @php
                                 $total = 0;
                             @endphp
@@ -83,11 +167,11 @@
                                 @endforeach
                                 <tr class="border-bottom border-dark">
                                     <td colspan="5" class="text-center"><b>TOTAL</b></td>
-                                    <td colspan="7" class="border border-dark"><b>Rp. {{ number_format($total) }}</b></td>
+                                    <td colspan="8" class="border border-dark"><b>Rp. {{ number_format($total) }}</b></td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="12" class="text-center">Tidak Ada Data!</td>
+                                    <td colspan="13" class="text-center">Tidak Ada Data!</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -106,6 +190,9 @@
         $('input:checkbox[name=order_id]').change(function (e) {
             check()
         });
+        $('input:checkbox[name=order_id1]').change(function (e) {
+            check()
+        });
 
         function check() {
             id = [];
@@ -113,6 +200,13 @@
                 id.push($(this).val());
             });
             $('#order_id').val(id);
+        }
+        function check1() {
+            id = [];
+            $("input:checkbox[name=order_id1]:checked").each(function(){
+                id.push($(this).val());
+            });
+            $('#order_id1').val(id);
         }
     </script>
 @endsection

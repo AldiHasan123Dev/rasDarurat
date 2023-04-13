@@ -165,7 +165,7 @@
         <div class="card p-3 shadow">
             @if (is_null($order->invoice))
             <div class="d-flex" style="gap:5px">
-                @if ($null_job>0)
+                @if ($null_job>0 && $order->customer_id==2)
                 <div class="alert alert-danger text-center text-white w-100">
                     <strong>Ada order dengan JOB ksosong. Harap cek container dan seal!</strong>
                     <br>
@@ -751,11 +751,7 @@
                     @endif
 
                     @if ($r2s->count()>0)
-                        @if ($r1s->count()>0)
-                        <div class="page-break"></div>
-                        @endif
-
-                    <div class="invoice-box {{ $r1s->count()==0?'first-page':'' }}">
+                    <div class="invoice-box first-page">
                         <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -873,7 +869,39 @@
                             <tr style="height: 20px !important">
                                 <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
-                            <tr>
+                            @if ($order->customer->pph_23==1)
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-center">{{ $rit }} Rit</td>
+                                    <td class="fw-bold text-center" colspan="2">TOTAL</td>
+                                    <td class="fw-bold">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($total) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td colspan="3"></td>
+                                    <td class="fw-bold text-center" colspan="2">PPH 23 (2%)</td>
+                                    <td class="fw-bold">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($pph) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td colspan="5"></td>
+                                    <td class="fw-bold">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($total - $pph) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @else
+                            <tr class="border-bottom border-dark">
                                 <td colspan="2"></td>
                                 <td class="text-center">{{ $rit }} Rit</td>
                                 <td class="fw-bold text-center" colspan="2">TOTAL</td>
@@ -884,25 +912,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="border-bottom border-dark">
-                                <td colspan="3"></td>
-                                <td class="fw-bold text-center" colspan="2">PPH 23 (2%)</td>
-                                <td class="fw-bold">
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($pph) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="border-bottom border-dark">
-                                <td colspan="5"></td>
-                                <td class="fw-bold">
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($total - $pph) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
+                            @endif
                         </table>
 
                         <div class="row mt-3">
