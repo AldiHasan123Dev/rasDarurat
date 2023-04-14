@@ -33,6 +33,10 @@
                     <div class="card-header py-2 px-5 d-flex justify-content-between" style="gap:10px">
                         {{-- <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNSFP" aria-controls="offcanvasNSFP">Tambah NSFP</button> --}}
                         <b>Nomor Faktur Tersedia</b>
+                        <form action="{{ route('nsfp.delete.all') }}" method="post">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('are you sure?')">Hapus Semua NSFP</button>
+                        </form>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

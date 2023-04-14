@@ -105,6 +105,12 @@ class NSFPController extends Controller
         return back()->with('success','Faktur Berhasil di tarik!');
     }
 
+    public function deleteAll()
+    {
+        NSFP::whereNull('invoice')->delete();
+        return back()->with('success','NSFP berhasil dihapus!');
+    }
+
     public function datatable()
     {
         $data = NSFP::query();

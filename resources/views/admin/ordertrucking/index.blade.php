@@ -21,13 +21,14 @@
                 <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                     <div class="d-flex gap-2">
                         @if (Auth::user()->role_id==1)
-                        <form action="{{ route('ordertrucking.export') }}" method="post">
-                            @csrf
-                            <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
-                        </form>
-                    @endif
+                            <form action="{{ route('ordertrucking.export') }}" method="post">
+                                @csrf
+                                <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
+                            </form>
+                        @endif
                         <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
                         <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
+                        <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-warning  " id="btn-tagihan">Tambah Tagihan</button>
                         <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
                     </div>
                 </div>
@@ -348,6 +349,57 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" id="tagihan" tabindex="-1" aria-labelledby="tagihanLabel" aria-hidden="true">
+    <form action="" class="modal-dialog modal-lg" method="post" id="form-tagihan">
+        @csrf
+        @method('PUT')
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tagihan <span class="nojob"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-sm nowrap w-100" id="table-tagihan" style="font-size:.7rem">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Tagihan</th>
+                                    <th>Jumlah</th>
+                                    <th>Catatan</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <label for="nama">Nama Tagihan</label>
+                        <input type="text" id="tagihan-nama" name="nama" class="form-control" required>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <label for="jumlah">Jumlah Tagihan</label>
+                        <input type="number" name="jumlah" id="tagihan-jumlah" class="form-control" required>
+                    </div>
+                    <div class="col-4 mb-2">
+                        <label for="catatan">Catatan</label>
+                        <input type="text" name="catatan" id="tagihan-catatan" class="form-control">
+                    </div>
+                    <div class="col-12">
+
+                        <button type="button" class="btn btn-primary btn-sm" id="add-tagihan">Simpan</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('script')
@@ -379,6 +431,7 @@
         //     ]
         // });
 
+        let id;
         $('#btn-edit').hide();
         $('#delete').hide();
         $("#customer").select2({
@@ -413,8 +466,13 @@
             datatype: 'local',
             data: data,
             colModel: [
-                {search:false, name: 'id', label : 'ID', sorttype: 'number', width:50},
-                {search:true, name: 'class', label : 'class', hidden:true},
+                {search:true, frozen:true, name: 'id', label : 'ID', sorttype: 'number', width:50},
+                {search:true, frozen:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y', width:80},
+                {search:true, frozen:true, name: 'invoice', label : 'Invoice', width:80},
+                {search:true, frozen:true, name: 'tgl_invoice', label : 'Tgl Invoice', width:80},
+                {search:true, frozen:true, name: 'customer', label : 'Customer', width:80},
+                {search:true, frozen:true, name: 'trucking', label : 'Trucking', width:80},
+                {search:false, name: 'class', label : 'class', hidden:true},
                 {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_teluk_langon', label:'#', hidden:true},
                 {search:false, name:'bongkar_full_teluk_langon', label:'#', hidden:true},
@@ -427,11 +485,6 @@
                 {search:false, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
                 {search:false, name: 'date_tgl_muat', label : 'Tanggal Muat D', hidden:true},
                 // {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'invoice', label : 'Invoice'},
-                {search:true, name: 'tgl_invoice', label : 'Tgl Invoice'},
-                {search:true, name: 'customer', label : 'Customer'},
-                {search:true, name: 'trucking', label : 'Trucking'},
                 {search:true, name: 'pembayar', label : 'Pembayar'},
                 {search:true, name: 'job', label : 'Job'},
                 {search:true, name: 'sopir', label : 'Sopir'},
@@ -477,7 +530,7 @@
             pager: "#jqGridPager",
             caption: "Order Trucking",
             onCellSelect: function (rowId, iRow, iCol, e) {
-                var id = $(this).jqGrid('getCell', rowId, 'id');
+                id = $(this).jqGrid('getCell', rowId, 'id');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
                 var job = $(this).jqGrid('getCell', rowId, 'job');
                 var customer_id = $(this).jqGrid('getCell', rowId, 'customer_id');
@@ -546,6 +599,7 @@
                 if(bongkar_full_teluk_langon==1){
                     $('#bongkar_full_teluk_langon').attr('checked',true);
                 }
+                tableTagihan.ajax.reload();
             },
             rowattr: function (item) {
                 return { "class": item.class };
@@ -560,6 +614,8 @@
             del: false,
             refresh: true
         });
+
+        $("#jqGrid").jqGrid('setFrozenColumns');
 
         function getOrder(container,id) {
             $.ajax({
@@ -624,6 +680,26 @@
 
         const rp = (num) => num.toLocaleString('en-US');
 
+        let tableTagihan = $('#table-tagihan').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax:{
+                url: '{{ route('tagihantrucking.data') }}',
+                method:'POST',
+                data:function( d) {
+                    d.order_id = id;
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            },
+            columns: [
+                { data: 'DT_RowIndex', 'orderable': false, 'searchable': false },
+                { data: 'nama', name: 'nama' },
+                { data: 'jumlah', name: 'jumlah' },
+                { data: 'catatan', name: 'catatan' },
+                { data: 'action', name: 'action', orderable: false, searchable: false },
+            ]
+        });
+
         $('#delete').click(function (e) {
             e.preventDefault();
             if(confirm('are you sure?')){
@@ -640,5 +716,53 @@
                 });
             }
         });
+
+        $('#add-tagihan').click(function (e) {
+            let nama = $('#tagihan-nama').val();
+            let jumlah = $('#tagihan-jumlah').val();
+            let catatan = $('#tagihan-catatan').val();
+            if(nama==''||jumlah==''||jumlah=='0'){
+                alert('Nama dan jumlah tidak boleh kosong!');
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('api.tagihan-trucking.store') }}",
+                    data: {
+                        order_id:id,
+                        nama:nama,
+                        jumlah:jumlah,
+                        catatan:catatan,
+                    },
+                    success: function (response) {
+                        $('#tagihan-nama').val('');
+                        $('#tagihan-jumlah').val('');
+                        $('#tagihan-catatan').val('');
+                        tableTagihan.ajax.reload();
+                    }
+                });
+            }
+        });
+
+        function deleteTagihan(id){
+            $.ajax({
+                type: "DELETE",
+                url: "{{ url('api/tagihan-trucking') }}/"+id,
+                success: function (response) {
+                    tableTagihan.ajax.reload();
+                }
+            });
+        }
+
+        function editTagihan(id){
+            $.ajax({
+                type: "GET",
+                url: "{{ url('api/tagihan-trucking') }}/"+id,
+                success: function (response) {
+                    $('#tagihan-nama').val(response.nama);
+                    $('#tagihan-jumlah').val(response.jumlah);
+                    $('#tagihan-catatan').val(response.catatan);
+                }
+            });
+        }
     </script>
 @endsection

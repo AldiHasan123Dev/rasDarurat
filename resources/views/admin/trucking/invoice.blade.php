@@ -201,7 +201,7 @@
                 @if ($order->customer_id==2)
                     @if ($r1s->count()>0)
                     <div class="invoice-box first-page2">
-                        <div class="header d-flex" style="gap:5px; width:100%">
+                        {{-- <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
@@ -216,7 +216,7 @@
                                     <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
                                 </table>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row mt-3">
                             <div class="col-6">
                                 <table style="font-size: .7rem">
@@ -294,27 +294,33 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @if ($lain_lain>0)
-                            @php
-                                $total += $lain_lain;
-                            @endphp
-                            <tr>
-                                {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
-                                <td colspan="4">Biaya Lain-lain</td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endif
+                            @foreach ($r1s as $ord)
+                                @foreach ($ord as $item)
+                                    @if ($item->tagihans->sum('jumlah')>0)
+                                    @php
+                                        $total += $item->tagihans->sum('jumlah');
+                                    @endphp
+                                        @foreach ($item->tagihans as $tag)
+                                        <tr>
+                                            {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                            <td colspan="4">{{ $tag->nama }}</td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endforeach
                             <tr style="height: 20px !important">
                                 <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
@@ -384,14 +390,14 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    ({{ Auth::user()->name }})
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="page-break"></div>
                     <div class="invoice-box">
-                        <div class="header d-flex" style="gap:5px; width:100%">
+                        {{-- <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
@@ -406,7 +412,7 @@
                                     <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
                                 </table>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row mt-3">
                             <div class="col-6">
                                 <table style="font-size: .7rem">
@@ -483,28 +489,35 @@
                                         </div>
                                     </td>
                                 </tr>
+
                             @endforeach
-                            @if ($lain_lain>0)
-                            @php
-                                $total += $lain_lain;
-                            @endphp
-                            <tr>
-                                {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
-                                <td colspan="4">Biaya Lain-lain</td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endif
+                            @foreach ($r1s as $ord)
+                                @foreach ($ord as $item)
+                                    @if ($item->tagihans->sum('jumlah')>0)
+                                    @php
+                                        $total += $item->tagihans->sum('jumlah');
+                                    @endphp
+                                        @foreach ($item->tagihans as $tag)
+                                        <tr>
+                                            {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                            <td colspan="4">{{ $tag->nama }}</td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endforeach
                             <tr style="height: 20px !important">
                                 <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
@@ -574,7 +587,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    ({{ Auth::user()->name }})
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
                                 </div>
                             </div>
                         </div>
@@ -586,7 +599,7 @@
                         $pph = 0;
                     @endphp
                     <div class="invoice-box first-page">
-                        <div class="header d-flex" style="gap:5px; width:100%">
+                        {{-- <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
@@ -601,7 +614,7 @@
                                     <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
                                 </table>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row mt-3">
                             <div class="col-6">
                                 <table style="font-size: .7rem">
@@ -676,28 +689,35 @@
                                         </div>
                                     </td>
                                 </tr>
+
                             @endforeach
-                            @if ($lain_lain>0)
-                            @php
-                                $total += $lain_lain;
-                            @endphp
-                            <tr>
-                                {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
-                                <td colspan="4">Biaya Lain-lain</td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endif
+                            @foreach ($r1s as $ord)
+                                @foreach ($ord as $item)
+                                    @if ($item->tagihans->sum('jumlah')>0)
+                                    @php
+                                        $total += $item->tagihans->sum('jumlah');
+                                    @endphp
+                                        @foreach ($item->tagihans as $tag)
+                                        <tr>
+                                            {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                            <td colspan="4">{{ $tag->nama }}</td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endforeach
                             <tr style="height: 20px !important">
                                 <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
@@ -743,7 +763,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    ({{ Auth::user()->name }})
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
                                 </div>
                             </div>
                         </div>
@@ -845,27 +865,33 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @if ($lain_lain>0)
-                            @php
-                                $total += $lain_lain;
-                            @endphp
-                            <tr>
-                                {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
-                                <td colspan="4">Biaya Lain-lain</td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($lain_lain) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endif
+                            @foreach ($r2s as $ord)
+                                @foreach ($ord as $item)
+                                    @if ($item->tagihans->sum('jumlah')>0)
+                                    @php
+                                        $total += $item->tagihans->sum('jumlah');
+                                    @endphp
+                                        @foreach ($item->tagihans as $tag)
+                                        <tr>
+                                            {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
+                                            <td colspan="4">{{ $tag->nama }}</td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tag->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endforeach
                             <tr style="height: 20px !important">
                                 <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
@@ -939,12 +965,29 @@
                                         @endforeach
                                     @endforeach
                                 </table>
+                                <div class="mt-3">
+                                    <span>Pembayaran dapat dilakukan melalui:</span>
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 150px">Rekening No.</td>
+                                            <td>: 1400 046 005 006</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Atas Nama</td>
+                                            <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank</td>
+                                            <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                        </tr>
+                                    </table>
+                                </div>
                             </div>
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    ({{ Auth::user()->name }})
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
                                 </div>
                             </div>
                         </div>

@@ -94,4 +94,9 @@ class OrderTrucking extends Model
     {
         return $this->belongsTo(TarifTrucking::class,'tarif_id');
     }
+
+    public function tagihans()
+    {
+        return $this->hasMany(TagihanTrucking::class,'order_id');
+    }
 }
