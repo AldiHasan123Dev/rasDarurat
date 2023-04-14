@@ -6,8 +6,18 @@
     .select2.select2-container.select2-container--default{
         width: 100% !important;
     }
-    tr td{
-        padding: 2px 10px;
+    table { border-collapse: collapse; width: 100%; }
+    th, td { background: #fff; padding: 8px 16px; }
+
+
+    .tableFixHead {
+        overflow: auto;
+        height: 500px;
+    }
+
+    .tableFixHead thead th {
+        position: sticky !important;
+        background-color: #fff;
     }
 </style>
 @endsection
@@ -24,22 +34,22 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
+                <div class="tableFixHead">
+                    <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                         <thead>
                             <tr>
-                                <th style="width: 150px">Sopir</th>
-                                <th style="width: 30px">#</th>
-                                <th>Tanggal Muat</th>
-                                <th>SJ Diterima FA</th>
-                                <th>Customer</th>
-                                <th>Container / Seal</th>
-                                <th>Simpanan Sopir</th>
-                                <th>Simpanan Kuli</th>
-                                <th>TB/TL</th>
-                                <th>Stappel</th>
-                                <th>Lain-lain</th>
-                                <th>Total</th>
+                                <th class="fixed-top">Sopir</th>
+                                <th class="fixed-top">#</th>
+                                <th class="fixed-top">Tanggal Muat</th>
+                                <th class="fixed-top">SJ Diterima FA</th>
+                                <th class="fixed-top">Customer</th>
+                                <th class="fixed-top">Container / Seal</th>
+                                <th class="fixed-top">Simpanan Sopir</th>
+                                <th class="fixed-top">Simpanan Kuli</th>
+                                <th class="fixed-top">TB/TL</th>
+                                <th class="fixed-top">Stappel</th>
+                                <th class="fixed-top">Lain-lain</th>
+                                <th class="fixed-top">Total</th>
                             </tr>
                         </thead>
                         <tbody>

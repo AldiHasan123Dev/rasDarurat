@@ -261,7 +261,7 @@
                 </div>
                 <div class="mb-2 col-3">
                     <label for="borongan">Borongan</label>
-                    <input type="text" name="borongan" id="borongan" class="form-control rupiah" required>
+                    <input type="text" name="borongan" id="borongan" class="form-control rupiah" readonly required>
                 </div>
                 <div class="mb-2 col-3">
                     <label for="sangu">Sangu Sopir</label>
@@ -269,7 +269,7 @@
                 </div>
                 <div class="mb-2 col-3">
                     <label for="borongan_kuli">Borongan Kuli</label>
-                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" required>
+                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" readonly required>
                 </div>
                 <div class="mb-2 col-3">
                     <label for="kuli">Sangu Kuli</label>
@@ -289,7 +289,7 @@
                 </div>
                 <div class="mb-2 col-3">
                     <label for="tb_tl">TB/TL</label>
-                    <input type="text" name="tb_tl" id="tb_tl" class="form-control rupiah" required>
+                    <input type="text" name="tb_tl" id="tb_tl" class="form-control rupiah" readonly required>
                 </div>
                 <div class="mb-2 col-3">
                     <label for="tally">Tally</label>

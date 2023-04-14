@@ -101,7 +101,7 @@
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking (R2)</p>
                     <form action="{{ route('trucking.cetak.invoice') }}" method="post">
-                        <input type="hidden" name="order_id" id="order_id">
+                        <input type="hidden" name="order_id" id="order_id2">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
                         @csrf
                     </form>
@@ -146,7 +146,7 @@
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center" rowspan="{{ $orders->count() }}">{{ $cus }}</td>
                                         @endif
-                                        <td class="text-center"><input type="checkbox" name="order_id" value="{{ $order->id }}"></td>
+                                        <td class="text-center"><input type="checkbox" name="order_id2" value="{{ $order->id }}"></td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_total)) }}</td>
                                         <td>{{ $order->order->job ?? '-' }}</td>
@@ -185,28 +185,29 @@
 
 @section('script')
     <script>
-        let id = [];
+        let id1 = [];
+        let id2 = [];
 
-        $('input:checkbox[name=order_id]').change(function (e) {
-            check()
-        });
         $('input:checkbox[name=order_id1]').change(function (e) {
-            check()
+            check1()
+        });
+        $('input:checkbox[name=order_id2]').change(function (e) {
+            check2()
         });
 
-        function check() {
-            id = [];
-            $("input:checkbox[name=order_id]:checked").each(function(){
-                id.push($(this).val());
-            });
-            $('#order_id').val(id);
-        }
         function check1() {
-            id = [];
+            id1 = [];
             $("input:checkbox[name=order_id1]:checked").each(function(){
-                id.push($(this).val());
+                id1.push($(this).val());
             });
-            $('#order_id1').val(id);
+            $('#order_id1').val(id1);
+        }
+        function check2() {
+            id2 = [];
+            $("input:checkbox[name=order_id2]:checked").each(function(){
+                id2.push($(this).val());
+            });
+            $('#order_id2').val(id2);
         }
     </script>
 @endsection

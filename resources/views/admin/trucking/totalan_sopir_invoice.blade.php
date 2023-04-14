@@ -243,7 +243,7 @@
                                     <td class="text-center">{{ number_format($item->sangu) }}</td>
                                     <td class="text-center">{{ number_format($item->simpanan) }}</td>
                                     <td class="text-center">{{ number_format($item->borongan_kuli) }}</td>
-                                    <td class="text-center">{{ number_format($item->sangu_kuli) }}</td>
+                                    <td class="text-center">{{ number_format($item->kuli) }}</td>
                                     <td class="text-center">{{ number_format($item->simpanan_kuli) }}</td>
                                     <td class="text-center">{{ number_format($item->tb_tl) }}</td>
                                     <td class="text-center">{{ number_format($item->stappel) }}</td>
