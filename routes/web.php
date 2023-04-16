@@ -110,6 +110,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('tarik-nsfp', [NSFPController::class,'tarik'])->name('nsfp.tarik');
     Route::post('delete-all', [NSFPController::class,'deleteAll'])->name('nsfp.delete.all');
     Route::get('trucking/order',[TruckingController::class,'order'])->name('trucking.order');
+    Route::get('trucking/monitoring',[TruckingController::class,'monitoring'])->name('trucking.monitoring');
     Route::get('trucking/pre-invoice',[TruckingController::class,'preInvoice'])->name('trucking.pre-invoice');
     Route::get('trucking/totalan-sopir',[TruckingController::class,'totalan_sopir'])->name('trucking.totalan_sopir');
     Route::get('trucking/totalan-sopir/invoice',[TruckingController::class,'cetak_invoice_sopir'])->name('trucking.cetak_invoice.totalan_sopir');

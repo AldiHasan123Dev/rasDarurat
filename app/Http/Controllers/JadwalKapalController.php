@@ -32,6 +32,10 @@ class JadwalKapalController extends Controller
             $data['is_active'] = 1;
         }
         $data['kapal_id'] = $kapal->id;
+        $cek = JadwalKapal::where('kapal_id',$data['kapal_id'])->where('voyage',$request->voyage)->first();
+        if ($cek) {
+            return back()->with('danger','Jadwal Kapal Sudah dibuat!');
+        }
         JadwalKapal::create($data);
 
         return back()->with('success','Data berhasil disimpan');

@@ -6,8 +6,12 @@ use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
 use App\Http\Resources\TransaksiSopirResource;
 use App\Http\Resources\TransaksiTruckingResource;
+use App\Models\CustomerTrucking;
+use App\Models\Kendaraan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\SanguSopir;
+use App\Models\Sopir;
 use App\Models\TransaksiSopir;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
@@ -205,6 +209,26 @@ class TruckingController extends Controller
         ]);
 
         return redirect()->route('trucking.cetak_get.invoice',['invoice'=>$invoice]);
+    }
+
+    public function monitoring()
+    {
+        $sj_kembali = OrderTrucking::whereNull('sj_kembali')->orderBy('tgl_muat')->get();
+        $orders = OrderTrucking::whereNotNull('sj_kembali')->orderBy('tgl_muat')->get();
+        $sj_kembali = OrderTruckingResource::collection($sj_kembali);
+        $orders = OrderTruckingResource::collection($orders);
+        $kendaraan = Kendaraan::all()->where('is_active',1)->sortBy('nopol');
+        $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
+        $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->orderBy('lokasi.nama','asc')->get();
+        $customers = CustomerTrucking::all()->sortBy('nama');
+        $update = OrderTrucking::whereNull('order_id')->get();
+        foreach ($update as $item ) {
+            $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
+            if($order){
+                $item->update(['order_id'=>$order->id]);
+            }
+        }
+        return view('admin.trucking.monitoring', compact('sj_kembali','orders','kendaraan','sopir','tujuan','customers'));
     }
 
 }

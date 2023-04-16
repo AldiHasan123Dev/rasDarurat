@@ -19,7 +19,7 @@ class NSFPController extends Controller
         for ($i=0; $i < $request->jumlah; $i++) {
             $num = $res + $i;
             NSFP::create([
-                'nomor' => $depan.''.$num,
+                'nomor' => $depan.''.sprintf('%08d',$num),
                 'available' => 1
             ]);
         }

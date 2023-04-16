@@ -77,6 +77,11 @@
                         @method('DELETE')
                         <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
                     </form>
+                    <form action="" id="tarik-ba" method="post">
+                        @csrf
+                        @method('PUT')
+                        <button class="py-2 px-3 btn btn-sm btn-warning" name="ba" value="2" type="submit" onclick="return confirm('Are you sure?')">Tarik BA kembali</button>
+                    </form>
                     <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
@@ -565,6 +570,7 @@
             $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
             $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
             $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
+            $('#tarik-ba').attr('action','{{ url('admin/order') }}/'+id);
             tablebttb.ajax.reload();
             tableTagihan.ajax.reload();
         },

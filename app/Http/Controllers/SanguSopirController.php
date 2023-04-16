@@ -82,7 +82,7 @@ class SanguSopirController extends Controller
                 return number_format($data->ukuran_combo);
             })
             ->addColumn('is_active', function($data){
-                return $data->is_active ? 'Aktif' : 'Non Aktif';
+                return $data->is_active ==1 ? 'Aktif' : 'Non Aktif';
             })
             ->addColumn('action', function ($data) {
                 $view = view('admin.sangusopir.form',['sangusopir'=>$data])->render();
