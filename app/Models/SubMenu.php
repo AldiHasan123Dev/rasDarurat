@@ -17,6 +17,7 @@ class SubMenu extends Model
         'icon',
         'name',
         'url',
+        'order',
     ];
 
     public function menu()

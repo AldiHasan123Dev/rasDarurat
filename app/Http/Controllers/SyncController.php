@@ -466,4 +466,25 @@ class SyncController extends Controller
 
         return response('success');
     }
+
+    public function orderMenu()
+    {
+        $data = SubMenu::all()->groupBy('menu_id');
+        $a = 1;
+        foreach($data as $menu){
+            $i = 1;
+            $menu->first()->menu->update([
+                'order' => $a
+            ]);
+            foreach($menu as $item){
+                $item->update([
+                    'order' => $i
+                ]);
+                $i++;
+            }
+            $a++;
+        }
+
+        return 'success';
+    }
 }

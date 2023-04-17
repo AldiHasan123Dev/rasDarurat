@@ -16,7 +16,7 @@ class SubMenuController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         SubMenu::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -24,8 +24,21 @@ class SubMenuController extends Controller
 
     public function update(SubMenu $submenu, Request $request)
     {
-        $data = $request->all();
-        $submenu->update($data);
+        if(request('order')){
+            $count = SubMenu::where('menu_id',$submenu->menu_id)->count();
+            if((int)$request->order>$count){
+                return back()->with('danger','Urutan melampaui jumlah menu!');
+            }
+            SubMenu::where('menu_id',$submenu->menu_id)->where('order',$request->order)->first()->update([
+                'order' => $submenu->order
+            ]);
+            $submenu->update([
+                'order' => $request->order
+            ]);
+        }else{
+            $data = $request->all();
+            $submenu->update($data);
+        }
 
         return back()->with('success','Data berhasil diupdate');
     }
@@ -40,8 +53,22 @@ class SubMenuController extends Controller
     public function datatable()
     {
         $data = SubMenu::all()->sortByDesc('created_at');
-
+        if(request('menu_id')&&request('menu_id')>0){
+            $data = SubMenu::all()->where('menu_id', request('menu_id'))->sortByDesc('created_at');
+        }
         return Datatables::of($data)
+            ->addColumn('menu_id', function($data){
+                return $data->menu->name;
+            })
+            ->addColumn('order', function($data){
+                $count = SubMenu::where('menu_id',$data->menu_id)->count();
+                $html = '<form action="'.route('submenu.update',$data).'" method="post">
+                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="number" name="order" value="'.$data->order.'" onchange="submit()" max="'.$count.'"/>
+                        </form>';
+                return $html;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.submenu.form',['submenu'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
@@ -68,7 +95,7 @@ class SubMenuController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','order'])
             ->make(true);
     }
 }

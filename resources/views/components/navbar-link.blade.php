@@ -3,7 +3,9 @@
     $access = App\Models\RoleAccess::join('sub_menu','sub_menu.id','=','role_access.sub_menu_id')
                 ->join('menu','menu.id','=','sub_menu.menu_id')
                 ->where('role_access.role_id',$role)
-                ->select('menu.title as label','menu.name','menu.icon','menu.id','sub_menu.url','sub_menu.title','role_access.role_id','role_access.sub_menu_id')
+                ->select('menu.title as label','menu.name','menu.icon','menu.id','sub_menu.url','sub_menu.title','role_access.role_id','role_access.sub_menu_id','sub_menu.order')
+                ->orderBy('menu.order','asc')
+                ->orderBy('sub_menu.order')
                 ->get()
                 ->groupBy('id');
     // dd($access);

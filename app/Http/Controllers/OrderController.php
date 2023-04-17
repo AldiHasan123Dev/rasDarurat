@@ -146,6 +146,9 @@ class OrderController extends Controller
                 ]);
             }
         }else{
+            $request->validate([
+                'jadwal_kapal_id' => 'required|numeric'
+            ]);
             $barang = Barang::find($request->barang_id);
             if (!$barang) {
                 $barang = Barang::create(['nama'=>$request->barang_id]);

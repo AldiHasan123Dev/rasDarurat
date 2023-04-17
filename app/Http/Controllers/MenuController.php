@@ -16,7 +16,7 @@ class MenuController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         Menu::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -24,8 +24,21 @@ class MenuController extends Controller
 
     public function update(Menu $menu, Request $request)
     {
-        $data = $request->all();
-        $menu->update($data);
+        if(request('order')){
+            $count = Menu::count();
+            if((int)$request->order>$count){
+                return back()->with('danger','Urutan melampaui jumlah menu!');
+            }
+            Menu::where('order',$request->order)->first()->update([
+                'order' => $menu->order
+            ]);
+            $menu->update([
+                'order' => $request->order
+            ]);
+        }else{
+            $data = $request->all();
+            $menu->update($data);
+        }
 
         return back()->with('success','Data berhasil diupdate');
     }
@@ -42,6 +55,15 @@ class MenuController extends Controller
         $data = Menu::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('order', function($data){
+                $count = Menu::count();
+                $html = '<form action="'.route('menu.update',$data).'" method="post">
+                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="number" name="order" value="'.$data->order.'" onchange="submit()" max="'.$count.'"/>
+                        </form>';
+                return $html;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.menu.form',['menu'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
@@ -68,7 +90,7 @@ class MenuController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','order'])
             ->make(true);
     }
 }

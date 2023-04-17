@@ -11,9 +11,9 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Menu_id</th>
+                                <th>Menu</th>
                                 <th>Title</th>
-                                <th>Icon</th>
+                                <th>Urutan</th>
                                 <th>Name</th>
                                 <th>Url</th>
                                 <th>Action</th>
@@ -54,11 +54,11 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'menu_id', name: 'menu_id' },
-            { data: 'title', name: 'title' },
-            { data: 'icon', name: 'icon' },
-            { data: 'name', name: 'name' },
-            { data: 'url', name: 'url' },
+                { data: 'menu_id', name: 'menu_id' },
+                { data: 'title', name: 'title' },
+                { data: 'order', name: 'order' },
+                { data: 'name', name: 'name' },
+                { data: 'url', name: 'url' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

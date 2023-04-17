@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
+use App\Models\Order;
 use App\Models\Pelayaran;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
@@ -62,6 +63,9 @@ class JadwalKapalController extends Controller
 
     public function destroy(JadwalKapal $jadwalkapal)
     {
+        Order::where('jadwal_kapal_id',$jadwalkapal->id)->update([
+            'jadwal_kapal_id' => null
+        ]);
         $jadwalkapal->delete();
 
         return back()->with('success','Data berhasil dihapus');
