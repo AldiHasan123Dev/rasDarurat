@@ -55,6 +55,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('login');
 });
+Route::get('/logs', function () {
+    $logPath = storage_path('/logs/laravel.log');
+    $logs = fopen($logPath , "r") or die("Unable to open file!");
+    return response(stream_get_contents($logs));
+});
 Route::get('test', function () {
     $num = round(17288100.49);
     dd($num);

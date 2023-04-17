@@ -42,19 +42,15 @@ class TarifTruckingController extends Controller
         $data = TarifTrucking::query()
                 ->join('sangu_sopir','sangu_sopir.id','=','tarif_trucking.tujuan_id')
                 ->join('lokasi','lokasi.id','=','sangu_sopir.tujuan')
-                ->select('tarif_trucking.*')
-                ->orderBy('tarif_trucking.created_at','desc')
-                ->get();
+                ->select('tarif_trucking.*');
         if(request('customer_id')||!is_null(request('customer_id'))){
-            // $data = TarifTrucking::join('customer_trucking','customer_trucking.id','=','tarif_trucking.customer_id')
-            // ->join('sangu_sopir','sangu_sopir.id','=','tarif_trucking.tujuan_id')
-            // ->join('lokasi','lokasi.id','=','sangu_sopir.tujuan')
-            // ->select('tarif_trucking.*')
-            // ->where('tarif_trucking.customer_id',request('customer_id'))
-            // ->orderBy('tarif_trucking.created_at','desc')
-            // ->get();
-            $data = TarifTrucking::all();
+            $data = TarifTrucking::join('customer_trucking','customer_trucking.id','=','tarif_trucking.customer_id')
+            ->join('sangu_sopir','sangu_sopir.id','=','tarif_trucking.tujuan_id')
+            ->join('lokasi','lokasi.id','=','sangu_sopir.tujuan')
+            ->select('tarif_trucking.*')
+            ->where('tarif_trucking.customer_id',request('customer_id'));
         }
+
         return Datatables::of($data)
             ->addColumn('created_at', function($data){
                 return date('d/m/y', strtotime($data->created_at));
