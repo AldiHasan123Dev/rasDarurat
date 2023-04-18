@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\BAKembaliExport;
 use App\Exports\OrderExport;
 use App\Exports\SIExport;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
 use App\Imports\OrderImport;
 use App\Models\Agen;
@@ -62,29 +63,11 @@ class OrderController extends Controller
 
     public function baKembali()
     {
-        $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
-        $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
-                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
-                    ->join('lokasi as dari','dari.id','=','tarif.dari')
-                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
-                    ->join('shipments','shipments.id','=','tarif.shipment')
-                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
-                    ->join('satuan','satuan.id','=','tarif.satuan')
-                    ->select('tarif.*')
-                    ->where('tarif.is_active',1)
-                    ->get();
-        $barang = Barang::pluck('nama','id');
-        $satuan = Satuan::pluck('nama','id');
-        $agent = Agen::pluck('nama','id');
-        $tarif = array();
-        $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
-        $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
-        $data_tarif_lokasi = array_unique($lokasi);
-        $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
-        foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
-        }
-        return view('admin.order.ba_kembali', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi'));
+        $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
+            $a->whereIn('kondisi',[5,7]);
+        })->orderBy('job')->orderBy('no_job')->get();
+        $data = OrderResource::collection($data);
+        return view('admin.order.ba_kembali', compact('data'));
     }
 
     public function asuransi()

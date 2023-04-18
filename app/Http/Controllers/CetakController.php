@@ -250,6 +250,7 @@ class CetakController extends Controller
             $sub_total += $items[$idx]['sub_total'];
         }
         $asuransi += $admin;
+        $asuransi = round($asuransi);
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
             $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
@@ -403,6 +404,7 @@ class CetakController extends Controller
         }
         $sub_total += $doc_total;
         $asuransi += $admin;
+        $asuransi = round($asuransi);
         if ($asuransi>0&&$order->tipe_asuransi=='job') {
             $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }

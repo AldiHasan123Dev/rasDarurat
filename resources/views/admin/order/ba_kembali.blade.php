@@ -1,12 +1,13 @@
 @extends('layouts.admin')
 @section('style')
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 <style>
-    table.dataTable tbody th, table.dataTable tbody td{
-        padding: 0px 10px !important;
-    }
     .select2.select2-container.select2-container--default{
         width: 100% !important;
+    }
+    tr td{
+        padding: 2px 10px;
     }
 </style>
 @endsection
@@ -27,38 +28,9 @@
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
-                        <thead>
-                            <tr>
-                                <th>Tools</th>
-                                <th>ID.</th>
-                                <th>Group JOB</th>
-                                <th>ID JOB</th>
-                                <th>Pembayar</th>
-                                <th>Pengirim</th>
-                                <th>Penerima</th>
-                                <th>Penerima BL</th>
-                                <th>Dari</th>
-                                <th>Tujuan</th>
-                                <th>Shipment</th>
-                                <th>Kondisi</th>
-                                <th>Jenis Barang</th>
-                                <th>Pelayaran</th>
-                                <th>Kapal</th>
-                                <th>Voyage</th>
-                                <th>No Container</th>
-                                <th>No Seal</th>
-                                <th>ETD</th>
-                                <th>TD</th>
-                                <th>Barang Diantar</th>
-                                <th>BA Kembali</th>
-                                <th>Keterangan</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                <div class="table-responsives">
+                    <table id="jqGrid"></table>
+                    <div id="jqGridPager"></div>
                 </div>
             </div>
         </div>
@@ -104,87 +76,114 @@
 
 @section('script')
 
-<script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
 <script>
     $('#bttb-info').hide();
     $('#ag').hide();
     var modal = new bootstrap.Modal(document.getElementById('ba-kembali'))
-        let id = null;
-        let tableOrder = $('#table-order').DataTable({
-            processing: true,
-            serverSide: true,
-            // scrollY: '50vh',
-            // scrollCollapse: true,
-            ajax:{
-                url: '{{ route('order.data') }}',
-                method:'POST',
-                data:{filter:'ba_kembali'},
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-            columns: [
-                // { data: 'action', name: 'action', orderable: false, searchable: false },
-                { data: 'tools', name: 'tools',visible:false, orderable: false, searchable: false },
-                { data: 'id', name: 'id', visible:false },
-                { data: 'job', name: 'order.job' },
-                { data: 'no_job', name: 'no_job', searchable:false },
-                { data: 'pembayar', name: 'pembayar.nama' },
-                { data: 'pengirim', name: 'pengirim.nama' },
-                { data: 'penerima', name: 'penerima.nama' },
-                { data: 'penerima_bl', name: 'penerima_bl.nama' },
-                { data: 'dari', name: 'tarif.dari' },
-                { data: 'tujuan', name: 'tarif.tujuan' },
-                { data: 'shipment', name: 'shipments.nama' },
-                { data: 'kondisi', name: 'kondisi.nama' },
-                { data: 'barang', name: 'barang.nama' },
-                { data: 'pelayaran', name: 'pelayaran.nama' },
-                { data: 'kapal', name: 'kapal.nama' },
-                { data: 'voyage', name: 'jadwal_kapal.voyage' },
-                { data: 'container', name: 'order.container' },
-                { data: 'seal', name: 'order.seal' },
-                { data: 'etd', name: 'jadwal_kapal.etd' },
-                { data: 'td', name: 'jadwal_kapal.td' },
-                { data: 'barang_diantar', name: 'order.barang_diantar' },
-                { data: 'ba_kembali', name: 'order.ba_kembali' },
-                { data: 'keterangan', name: 'order.keterangan' },
-            ],
-            select:true
-        });
-        $("#jadwal_kapal_id-si").select2({
-            dropdownParent: $('#exampleModal'),
-        });
-        $("#tujuan-si").select2({
-            dropdownParent: $('#exampleModal'),
-        });
+    let id = null;
+    let row_id = null;
 
-
-        $('#table-order tbody').on( 'click', 'tr', function () {
-            var id =  tableOrder.row( this ).data().id;
-            var no_job =  tableOrder.row( this ).data().no_job;
+    let data = @json($data);
+    $("#jqGrid").jqGrid({
+        datatype: 'local',
+        data: data,
+        colModel: [
+            {search:true, name: 'invoice', label : 'invoice', frozen:true, width:70},
+            {search:true, name: 'job', label : 'job', frozen:true, width:70},
+            {search:true, name: 'no', label : 'no', frozen:true, width:70},
+            {search:true, name: 'asuransi', label : 'asuransi', frozen:true, width:70},
+            {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:70},
+            {search:true, name: 'id', label : 'id', hidden:true},
+            {search:true, name: 'class', label : 'class', hidden:true},
+            {search:true, name: 'marketing', label : 'marketing'},
+            {search:true, name: 'cs', label : 'cs'},
+            {search:true, name: 'pengirim', label : 'pengirim'},
+            {search:true, name: 'penerima', label : 'penerima'},
+            {search:true, name: 'dari', label : 'dari'},
+            {search:true, name: 'tujuan', label : 'tujuan'},
+            {search:true, name: 'shipment', label : 'shipment'},
+            {search:true, name: 'kondisi', label : 'kondisi'},
+            {search:true, name: 'barang', label : 'barang'},
+            {search:true, name: 'pelayaran', label : 'pelayaran'},
+            {search:true, name: 'kapal', label : 'kapal'},
+            {search:true, name: 'voyage', label : 'voyage'},
+            {search:true, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, name: 'nopol', label : 'nopol'},
+            {search:true, name: 'trucking', label : 'trucking'},
+            {search:true, name: 'container', label : 'container'},
+            {search:true, name: 'seal', label : 'seal'},
+            {search:true, name: 'stuffing', label : 'stuffing'},
+            {search:true, name: 'stuffing_type', label : 'stuffing_type'},
+            {search:true, name: 'full', label : 'full'},
+            {search:true, name: 'barang_diantar', label : 'barang_diantar'},
+            {search:true, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, name: 'satuan', label : 'satuan'},
+            {search:true, name: 'unit', label : 'unit'},
+            {search:true, name: 'tarif', label : 'tarif'},
+            {search:true, name: 'agen', label : 'agen'},
+            {search:true, name: 'penerima_bl', label : 'penerima_bl'},
+            {search:true, name: 'keterangan', label : 'keterangan'},
+        ],
+        autowidth: true,
+        shrinkToFit: false,
+        height: 250,
+        oadonce: true,
+        rowNum: 25,
+        rowList:[10,25,50,100,250,500,1000],
+        viewrecords: true,
+        pager: "#jqGridPager",
+        caption: "Order Job BA Kembali",
+        onCellSelect: function (rowId, iRow, iCol, e) {
+            row_id = rowId;
+            id = $(this).jqGrid('getCell', rowId, 'id');
+            var no = $(this).jqGrid('getCell', rowId, 'no');
             $('#order_id_bttb').val(id);
             $('#order_id').val(id);
-            $('.nojob').html(no_job);
+            $('.nojob').html(no);
             $('#form-ba-kembali').attr('action','{{ url('admin/order') }}/'+id);
-        })
+        },
+        rowattr: function (item) {
+            return { "class": item.class };
+        }
+    });
 
-        $('#simpan').click(function (e) {
-            if (confirm('are you sure?')) {
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('api/update-order') }}",
-                    data: {
-                        ba:1,
-                        order_id:$('#order_id').val(),
-                        barang_diantar:$('#barang_diantar').val(),
-                        ba_kembali:$('#ba_kembali').val(),
-                        keterangan:$('#keterangan').val(),
-                    },
-                    success: function (response) {
-                        alert('Data berhasil disimpan');
-                        modal.hide();
-                        tableOrder.ajax.reload();
-                    }
-                });
-            }
-        });
+    $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
+    $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
+        search: false, // show search button on the toolbar
+        add: false,
+        edit: false,
+        del: false,
+        refresh: true
+    });
+    $("#jqGrid").jqGrid('setFrozenColumns');
+
+    $('#simpan').click(function (e) {
+        if (confirm('are you sure?')) {
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order') }}",
+                data: {
+                    ba:1,
+                    order_id:$('#order_id').val(),
+                    barang_diantar:$('#barang_diantar').val(),
+                    ba_kembali:$('#ba_kembali').val(),
+                    keterangan:$('#keterangan').val(),
+                },
+                success: function (response) {
+                    alert('Data berhasil disimpan');
+                    modal.hide();
+                    $('#order_id').val('');
+                    $('#ba_kembali').val('');
+                    $('#barang_diantar').val('');
+                    $('#keterangan').val('');
+                    $('#jqGrid').jqGrid('delRowData',row_id);
+                }
+            });
+        }
+    });
 </script>
 @endsection
