@@ -177,14 +177,28 @@ class TruckingController extends Controller
 
     public function generate_invoice(Request $request)
     {
+        $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
+        $month_number = date("n"); // mengambil nomor bulan dari tanggal
+        $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $order_id = explode(',',$request->order_id);
-        $no = TransaksiTrucking::max('order') + 1;
+        $no1 = 0;
+        $no2 = 0;
+        $no3 = 0;
         if($request->tipe=='R1'){
-            $invoice = sprintf('%03d',$no).'/'.date('m').'/'.date('y');
+            $no1 = TransaksiTrucking::max('order_r1') + 1;
+            if($no1==1){
+                $no1 = 109;
+            }
+            $invoice = sprintf('%03d',$no1).'/'.$month_roman.'/'.date('y');
         }else if($request->tipe=='R2'){
-            $invoice = sprintf('%03d',$no).'/RAS-'.date('m').'/'.date('y');
+            $no2 = TransaksiTrucking::max('order_r2') + 1;
+            if($no2==1){
+                $no2 = 53;
+            }
+            $invoice = sprintf('%03d',$no2).'/RAS-LT/'.$month_roman.'/'.date('y');
         }else{
-            $invoice = sprintf('%03d',$no).'/VENDOR-'.date('m').'/'.date('y');
+            $no3= TransaksiTrucking::max('order_vendor') + 1;
+            $invoice = sprintf('%03d',$no3).'/VENDOR-'.$month_roman.'/'.date('y');
         }
 
         TransaksiTrucking::create([
@@ -198,7 +212,9 @@ class TruckingController extends Controller
             'lain_lain' => $request->lain_lain,
             'submited_by' => Auth::id(),
             'invoice' => $invoice,
-            'order' => $no,
+            'order_r1' => $no1,
+            'order_r2' => $no2,
+            'order_r3' => $no3,
             'tgl_invoice' => date('Y-m-d'),
         ]);
 

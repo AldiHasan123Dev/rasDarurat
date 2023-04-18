@@ -23,7 +23,9 @@ class TransaksiTrucking extends Model
         'lain_lain',
         'pph',
         'total',
-        'order',
+        'order_r1',
+        'order_r2',
+        'order_vendor',
         'submited_by',
     ];
 
