@@ -131,7 +131,7 @@
             processing: true,
             serverSide: true,
             select:true,
-            scrollY: '50vh',
+            scrollY: '200px',
             ajax:{
                 url: '{{ route('customertrucking.data') }}',
                 method:'POST',
@@ -156,7 +156,7 @@
             processing: true,
             serverSide: true,
             select: true,
-            scrollY: '50vh',
+            scrollY: '200px',
             ajax:{
                 url: '{{ route('tariftrucking.data') }}',
                 method:'POST',

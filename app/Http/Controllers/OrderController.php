@@ -74,7 +74,7 @@ class OrderController extends Controller
     {
         $data = Order::whereHas('jadwal_kapal', function($a){
             $a->whereNull('td');
-            $a->whereDate('closing','>',date('Y-m-d'));
+            $a->whereDate('etd','>',date('Y-m-d'));
         })->orderBy('job')->orderBy('no_job')->get();
         $data = OrderResource::collection($data);
         return view('admin.order.closing', compact('data'));
