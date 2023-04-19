@@ -68,7 +68,6 @@
             {search:true, name: 'voyage', label : 'voyage'},
             {search:true, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
-            {search:true, name: 'closing', label : 'closing',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'nopol', label : 'nopol'},
             {search:true, name: 'trucking', label : 'trucking'},

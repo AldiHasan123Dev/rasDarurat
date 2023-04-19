@@ -52,7 +52,7 @@ class OrderTruckingResource extends JsonResource
             'customer_id' => $this->customer_id,
             'kendaraan_id' => $this->kendaraan_id,
             'sopir_id' => $this->sopir_id,
-            'sangu_id' => $this->tarif->tujuan_id,
+            'sangu_id' => $this->tarif->tujuan_id ?? '-',
             'tanggal' => date('d/m/y', strtotime($this->created_at)),
             'tgl_muat' => $this->tgl_muat ? date('d/m/y', strtotime($this->tgl_muat)) : '-',
             'sj_kembali' => $this->sj_kembali?date('d/m/y', strtotime($this->sj_kembali)):'-',
