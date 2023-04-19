@@ -17,6 +17,7 @@ class MenuController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $data['order'] = Menu::count() + 1;
         Menu::create($data);
 
         return back()->with('success','Data berhasil disimpan');

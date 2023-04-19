@@ -17,6 +17,7 @@ class SubMenuController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $data['order'] = SubMenu::where('menu_id',$data['menu_id'])->count() + 1;
         SubMenu::create($data);
 
         return back()->with('success','Data berhasil disimpan');
