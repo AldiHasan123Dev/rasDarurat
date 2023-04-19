@@ -487,4 +487,24 @@ class SyncController extends Controller
 
         return 'success';
     }
+
+    public function pull()
+    {
+        // Print the exec output inside of a pre element
+        $res = '';
+        $res .= $this->execPrint("cd /var/www/vhosts/ptras.id/aplikasi; git pull");
+        $res .= $this->execPrint("cd /var/www/vhosts/ptras.id/aplikasi; git status");
+        return $res;
+    }
+
+    function execPrint($command) {
+        $html = '<pre>';
+        $result = array();
+        exec($command, $result);
+        foreach ($result as $line) {
+            $html .= $line . "\n";
+        }
+        $html .= '</pre>';
+        return $html;
+    }
 }

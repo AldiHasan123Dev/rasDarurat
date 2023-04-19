@@ -50,6 +50,7 @@ class OrderResource extends JsonResource
             'tgl_muat' => is_null($this->truckingInfo)?'-':date('d-m-Y',strtotime($this->truckingInfo->tgl_muat)),
             'etd' => is_null($this->jadwal_kapal->etd)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->etd)),
             'td' => is_null($this->jadwal_kapal->td)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->td)),
+            'closing' => is_null($this->jadwal_kapal->closing)?'-':date('d-m-Y',strtotime($this->jadwal_kapal->closing)),
             'ba_kirim' => is_null($this->ba_kirim)?'-':date('d-m-Y',strtotime($this->ba_kirim)),
             'nopol' => $this->nopol,
             'trucking' => $this->trucking,

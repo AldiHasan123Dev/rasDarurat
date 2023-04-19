@@ -70,6 +70,16 @@ class OrderController extends Controller
         return view('admin.order.ba_kembali', compact('data'));
     }
 
+    public function closing()
+    {
+        $data = Order::whereHas('jadwal_kapal', function($a){
+            $a->whereNull('td');
+            $a->whereDate('closing','>',date('Y-m-d'));
+        })->orderBy('job')->orderBy('no_job')->get();
+        $data = OrderResource::collection($data);
+        return view('admin.order.closing', compact('data'));
+    }
+
     public function asuransi()
     {
         $orders = Order::whereIn('asuransi',['ADA','ADA INC','ADA EXC'])->whereNull('asuransi_id')->get();

@@ -141,6 +141,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::post('export-asuransi',[AsuransiController::class,'export'])->name('asuransi.export');
     Route::post('tarik-asuransi',[AsuransiController::class,'tarik'])->name('asuransi.tarik');
     Route::get('ba-kembali',[OrderController::class,'baKembali'])->name('order.ba-kembali');
+    Route::get('closing',[OrderController::class,'closing'])->name('order.closing');
     Route::get('sj-kembali',[OrderController::class,'sj_kembali'])->name('order.sj-kembali');
     Route::get('order-asuransi',[OrderController::class,'asuransi'])->name('order.asuransi');
     Route::get('invoice',[KeuanganController::class,'invoice'])->name('order.invoice');
@@ -175,6 +176,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::get('sync-transaksi',[SyncController::class,'transaksi']);
     Route::get('sync-trucking',[SyncController::class,'trucking']);
     Route::get('sync-same',[SyncController::class,'sameData']);
+    Route::get('sync-pull',[SyncController::class,'pull']);
 });
 // Route::view('test','test');
 Route::resource('tagihantrucking',App\Http\Controllers\TagihanTruckingController::class);
