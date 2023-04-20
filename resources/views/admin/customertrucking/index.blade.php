@@ -257,6 +257,7 @@
             $('#tarif_id').val(null);
             bsOffcanvas.show();
         });
+        
         $('#edit-tarif').click(function (e) {
             let customer_id =  table_tarif.row('.selected').data().customer_id;
             tarif_id =  table_tarif.row('.selected').data().id;

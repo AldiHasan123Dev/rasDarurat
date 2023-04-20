@@ -42,6 +42,7 @@ Route::post('jadwal-kapal', [JadwalKapalController::class,'getOne'])->name('api.
 Route::post('tarif', [TarifController::class,'getOne'])->name('api.tarif.getOne');
 Route::post('sangu-sopir', [SanguSopirController::class,'getSangu'])->name('api.sangusopir.getSangu');
 Route::post('tarif-trucking', [TarifTruckingController::class,'createOrUpdate'])->name('api.tariftrucking.createorupdate');
+Route::post('sangu-sopir-action', [SanguSopirController::class,'createOrUpdate'])->name('api.sangusopir.createorupdate');
 Route::post('tarif-trucking-delete', [TarifTruckingController::class,'delete'])->name('api.tariftrucking.delete');
 Route::post('transaksi-update', [TransaksiController::class,'update'])->name('api.transaksi.update');
 Route::post('tagihan-trucking', [TagihanTruckingController::class,'store'])->name('api.tagihan-trucking.store');
