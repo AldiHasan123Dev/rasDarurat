@@ -40,6 +40,7 @@
                                 <th>Tujuan</th>
                                 <th>Tarif</th>
                                 <th>Lain-lain</th>
+                                <th>Add Cost</th>
                                 <th>PPH 21 (3%)</th>
                                 <th>PPH 23 (2%)</th>
                                 <th>Total (Tarif - PPH)</th>
@@ -73,12 +74,13 @@
                                         <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ number_format($order->tarif->tarif) }}</td>
                                         <td>{{ number_format($order->lain_lain) }}</td>
+                                        <td>{{ number_format($order->tagihans->sum('jumlah')) }}</td>
                                         <td>{{ number_format(round($order->pph_21)) }}</td>
                                         <td>{{ number_format(round($order->pph_23)) }}</td>
                                         @if ($order->customer_id==2&&$order->kendaraan->milik=='R2')
                                         <td>0   </td>
                                         @else
-                                        <td>{{ number_format( $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23))) }}</td>
+                                        <td>{{ number_format( ($order->tarif->tarif + $order->tagihans->sum('jumlah')) - (round($order->pph_21) + round($order->pph_23))) }}</td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -123,6 +125,7 @@
                                 <th>Tujuan</th>
                                 <th>Tarif</th>
                                 <th>Lain-lain</th>
+                                <th>Add Cost</th>
                                 <th>PPH 21 (3%)</th>
                                 <th>PPH 23 (2%)</th>
                                 <th>Total (Tarif - PPH)</th>
@@ -156,12 +159,13 @@
                                         <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ number_format($order->tarif->tarif) }}</td>
                                         <td>{{ number_format($order->lain_lain) }}</td>
+                                        <td>{{ number_format($order->tagihans->sum('jumlah')) }}</td>
                                         <td>{{ number_format(round($order->pph_21)) }}</td>
                                         <td>{{ number_format(round($order->pph_23)) }}</td>
                                         @if ($order->customer_id==2&&$order->kendaraan->milik=='R2')
                                         <td>0   </td>
                                         @else
-                                        <td>{{ number_format( $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23))) }}</td>
+                                        <td>{{ number_format( ($order->tarif->tarif + $order->tagihans->sum('jumlah')) - (round($order->pph_21) + round($order->pph_23))) }}</td>
                                         @endif
                                     </tr>
                                 @endforeach

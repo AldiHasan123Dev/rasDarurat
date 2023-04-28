@@ -90,6 +90,7 @@ class OrderTruckingResource extends JsonResource
             'tb_tl' => number_format($this->tb_tl),
             'tally' => number_format($this->tally),
             'uang_makan' => number_format($this->uang_makan),
+            'add_cost' => number_format($this->tagihans->sum('jumlah')),
             'total_sopir' => number_format($this->total_sopir),
             'total_invoice' => number_format($this->total_invoice),
             'margin' => number_format($this->margin),

@@ -95,8 +95,9 @@ class OrderTruckingController extends Controller
         $data['pph_23'] = 0;
         $price = $tarif->tarif;
         $kendaraan = Kendaraan::find($data['kendaraan_id']);
+        $cus = CustomerTrucking::find($data['customer_id']);
         if($data['customer_id']!=2){
-            if ($kendaraan->milik=='R2') {
+            if ($kendaraan->milik=='R2'&&$cus->pph_23==1) {
                 $data['pph_23'] = $price * 0.02;
             }
         }else{
@@ -208,7 +209,6 @@ class OrderTruckingController extends Controller
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->simpanan_kuli + $order->tb_tl + $order->lain_lain + $order->stappel;
-        $pph = $order->pph_21 + $order->pph_23;
         $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->uang_makan - $order->op - $order->cleaning;
         $order->update([
             'total_sopir' => $totalan,

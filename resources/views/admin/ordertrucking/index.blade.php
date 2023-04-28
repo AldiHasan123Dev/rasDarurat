@@ -514,6 +514,7 @@
                 {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
                 {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
                 {search:true, name: 'tarif', label : 'Tarif'},
+                {search:true, name: 'add_cost', label : 'Add Cost'},
                 {search:true, name: 'pph_21', label : 'PPh 21-3%'},
                 {search:true, name: 'pph_23', label : 'PPh 23-2%'},
                 {search:true, name: 'total_invoice', label : 'Inv'},
