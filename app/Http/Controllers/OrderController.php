@@ -177,8 +177,10 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         if(Auth::user()->role_id!=1){
-            if (!is_null($order->jadwal_kapal->td)) {
-                return back()->with('danger','Order tidak bisa di edit');
+            if($order->jadwal_kapal){
+                if (!is_null($order->jadwal_kapal->td)) {
+                    return back()->with('danger','Order tidak bisa di edit');
+                }
             }
         }
         $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
