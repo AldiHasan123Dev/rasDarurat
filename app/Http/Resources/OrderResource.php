@@ -19,8 +19,10 @@ class OrderResource extends JsonResource
         if($this->bttb->count()>0){
             $class = 'bg-light-success';
         }
-        if($this->jadwal_kapal->is_active != 1){
-            $class = 'bg-light-danger';
+        if($this->jadwal_kapal){
+            if($this->jadwal_kapal->is_active != 1){
+                $class = 'bg-light-danger';
+            }
         }
         if(!is_null($this->invoice)){
             $class = 'bg-light-warning';
