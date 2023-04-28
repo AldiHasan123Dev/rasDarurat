@@ -8,7 +8,7 @@
         <th>NAMA KAPAL</th>
         <th>VOYAGE</th>
         <th>TD STUFFING</th>
-        <th>ETD KAPAL</th>
+        <th>TD KAPAL</th>
         <th>TIPE PENGEMASAN</th>
         <th>JUMLAH YANG DI ASURANSIKAN</th>
         <th>NO CONTAINER</th>
@@ -34,7 +34,7 @@
             <td>{{ $order->jadwal_kapal->kapal->nama }}</td>
             <td>{{ $order->jadwal_kapal->voyage }}</td>
             <td>{{ $order->stuffing }}</td>
-            <td>{{ $order->jadwal_kapal->etd }}</td>
+            <td>{{ $order->jadwal_kapal->td ?? '-' }}</td>
             <td>CONT</td>
             <td>1</td>
             <td>{{ $order->container }}</td>
