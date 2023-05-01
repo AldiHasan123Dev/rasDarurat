@@ -67,7 +67,7 @@ Route::get('test', function () {
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::prefix('admin')->middleware('auth')->group( function(){
+Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('user',UserController::class)->except(['create']);
     Route::resource('customer',CustomerController::class);
     Route::resource('pelayaran',PelayaranController::class)->except(['create','edit']);
@@ -103,6 +103,7 @@ Route::prefix('admin')->middleware('auth')->group( function(){
     Route::resource('tariftrucking',TarifTruckingController::class);
 
 
+    Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');
     Route::get('laporan/pelayaran', [LaporanController::class,'pelayaran'])->name('laporan.pelayaran');
     Route::get('laporan/tujuan', [LaporanController::class,'tujuan'])->name('laporan.tujuan');
     Route::get('laporan/customer', [LaporanController::class,'customer'])->name('laporan.customer');

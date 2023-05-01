@@ -72,6 +72,8 @@ class User extends Authenticatable
         return $this->hasMany(Customer::class,'marketing_id');
     }
 
+    
+
     public function laporanCs20Fit($bulan, $thn = 2023)
     {
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')

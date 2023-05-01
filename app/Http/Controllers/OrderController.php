@@ -26,8 +26,11 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index($marketing = null)
     {
+        if($marketing){
+            $marketing = Auth::id();
+        }
         $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
         $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
                     ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
@@ -51,7 +54,7 @@ class OrderController extends Controller
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
-        return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers'));
+        return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers','marketing'));
     }
 
     public function sj_kembali()

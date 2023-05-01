@@ -275,6 +275,13 @@ class OrderController extends Controller
                 });
             });
         }
+        if(request('marketing_id')){
+            $query->whereHas('tarif',function($q){
+                $q->whereHas('customer', function($a){
+                    $a->where('marketing_id',request('marketing_id'));
+                });
+            });
+        }
         if(request('cs')){
             $query->whereHas('tarif',function($q){
                 $q->whereHas('customer', function($a){
@@ -296,7 +303,13 @@ class OrderController extends Controller
         // }else{
         // }
         $count = Order::get('id')->count();
-
+        if(request('marketing_id')){
+            $count = Order::whereHas('tarif',function($q){
+                $q->whereHas('customer', function($a){
+                    $a->where('marketing_id',request('marketing_id'));
+                });
+            })->count();
+        }
         if ($count > 0 && $limit > 0) {
             $total_pages = ceil($count / $limit);
         } else {
