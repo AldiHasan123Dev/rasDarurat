@@ -62,10 +62,12 @@
                             <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
                         </form>
                     @endif
-                    @if (!request('filter-order'))
+                    @if (!request('filter-order') && is_null($marketing))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     @endif
+                    @if (is_null($marketing))
                     <button data-bs-toggle="modal" data-bs-target="#modal-edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
+                    @endif
                     <a href="" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</a>
                     <a href="" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</a>
                     <form action="" id="copy-order" method="post" enctype="multipart/form-data">
@@ -80,7 +82,9 @@
                     <form action="" id="tarik-ba" method="post">
                         @csrf
                         @method('PUT')
+                        @if (is_null($marketing))
                         <button class="py-2 px-3 btn btn-sm btn-warning" name="ba" value="2" type="submit" onclick="return confirm('Are you sure?')">Tarik BA kembali</button>
+                        @endif
                     </form>
                     <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
