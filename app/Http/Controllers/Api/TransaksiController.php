@@ -35,6 +35,7 @@ class TransaksiController extends Controller
 
         Order::where('job',$transaksi->job)->update([
             'invoice' => $invoice,
+            'invoice_date' => $request->created_at
         ]);
         $transaksi->update([
             'invoice' => $invoice,
