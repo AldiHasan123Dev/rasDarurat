@@ -66,7 +66,8 @@ class OrderController extends Controller
             $data['barang_id'] = $barang->id;
         }
         $order->update($data);
-        return response('success');
+        $order = Order::find($request->order_id);
+        return response($order);
     }
 
     public function ba_kembali()
@@ -153,6 +154,13 @@ class OrderController extends Controller
         $start = $limit * $page - $limit;
         if ($start < 0){
             $start = 0;
+        }
+
+        if(request('ba_kembali_null')){
+            $query->whereNull('ba_kembali');
+            $query->whereHas('tarif', function($a){
+                $a->whereIn('kondisi',[5,7]);
+            });
         }
 
         if(request('job')){
@@ -308,6 +316,11 @@ class OrderController extends Controller
                 $q->whereHas('customer', function($a){
                     $a->where('marketing_id',request('marketing_id'));
                 });
+            })->count();
+        }
+        if (request('ba_kembali_null')) {
+            $count = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
+                $a->whereIn('kondisi',[5,7]);
             })->count();
         }
         if ($count > 0 && $limit > 0) {

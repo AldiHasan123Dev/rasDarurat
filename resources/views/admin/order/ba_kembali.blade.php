@@ -52,6 +52,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-12 mb-2">
+                        <label for="ba_kirim">BA Kirim</label>
+                        <input type="date" name="ba_kirim" class="form-control" id="ba_kirim">
+                    </div>
+                    <div class="col-12 mb-2">
                         <label for="ba_kembali">Barang Diantar</label>
                         <input type="date" name="barang_diantar" class="form-control" id="barang_diantar">
                     </div>
@@ -85,10 +89,11 @@
     let id = null;
     let row_id = null;
 
-    let data = @json($data);
     $("#jqGrid").jqGrid({
-        datatype: 'local',
-        data: data,
+        url: '{{ route('jqgrid.order') }}',
+        mtype: 'GET',
+        datatype: 'json',
+        postData: { ba_kembali_null: true },
         colModel: [
             {search:true, name: 'invoice', label : 'invoice', frozen:true, width:70},
             {search:true, name: 'job', label : 'job', frozen:true, width:70},
@@ -127,6 +132,8 @@
             {search:true, name: 'agen', label : 'agen'},
             {search:true, name: 'penerima_bl', label : 'penerima_bl'},
             {search:true, name: 'keterangan', label : 'keterangan'},
+            {hidden:true, name: 'ba_kirim_date', label : 'ba_kirim_date'},
+            {hidden:true, name: 'barang_diantar_date', label : 'barang_diantar_date'},
         ],
         autowidth: true,
         shrinkToFit: false,
@@ -141,8 +148,13 @@
             row_id = rowId;
             id = $(this).jqGrid('getCell', rowId, 'id');
             var no = $(this).jqGrid('getCell', rowId, 'no');
+            var ba_kirim = $(this).jqGrid('getCell', rowId, 'ba_kirim_date');
+            var barang_diantar = $(this).jqGrid('getCell', rowId, 'barang_diantar_date');
+            console.log(ba_kirim, barang_diantar);
             $('#order_id_bttb').val(id);
             $('#order_id').val(id);
+            $('#barang_diantar').val(barang_diantar);
+            $('#ba_kirim').val(ba_kirim);
             $('.nojob').html(no);
             $('#form-ba-kembali').attr('action','{{ url('admin/order') }}/'+id);
         },
@@ -151,7 +163,7 @@
         }
     });
 
-    $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
+    $('#jqGrid').jqGrid('filterToolbar');
     $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
         search: false, // show search button on the toolbar
         add: false,
@@ -171,16 +183,17 @@
                     order_id:$('#order_id').val(),
                     barang_diantar:$('#barang_diantar').val(),
                     ba_kembali:$('#ba_kembali').val(),
+                    ba_kirim:$('#ba_kirim').val(),
                     keterangan:$('#keterangan').val(),
                 },
                 success: function (response) {
+                    $('#jqGrid').trigger( 'reloadGrid' );
                     alert('Data berhasil disimpan');
                     modal.hide();
                     $('#order_id').val('');
                     $('#ba_kembali').val('');
                     $('#barang_diantar').val('');
                     $('#keterangan').val('');
-                    $('#jqGrid').jqGrid('delRowData',row_id);
                 }
             });
         }

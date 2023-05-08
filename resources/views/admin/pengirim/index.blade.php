@@ -23,6 +23,15 @@
         <div class="sub-menu">
             <a href="{{ route('pengirim.index') }}" class="btn-link p-3">Pengirim <span class="nav-link-icon"></span></span></a>
         </div>
+        <div class="sub-menu">
+            <a href="{{ route('lss.index') }}" class="btn-link p-3 text-dark">LSS <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('thc.index') }}" class="btn-link p-3 text-dark">THC <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
+            <a href="{{ route('lain.index') }}" class="btn-link p-3 text-dark">Lain <span class="nav-link-icon"></span></span></a>
+        </div>
     </div>
 </div>
     <div class="container mt-3">

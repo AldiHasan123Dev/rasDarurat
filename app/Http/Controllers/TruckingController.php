@@ -131,7 +131,17 @@ class TruckingController extends Controller
             ->orderBy('customer')
             ->get()
             ->groupBy('customer');
-        return view('admin.trucking.pre_invoice', compact('data1','data2'));
+
+        $data3 = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
+            ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
+            ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
+            ->where('kendaraan.milik','vendor')
+            ->whereNull('order_trucking.invoice')
+            // ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orderBy('customer')
+            ->get()
+            ->groupBy('customer');
+        return view('admin.trucking.pre_invoice', compact('data1','data2','data3'));
     }
 
     public function cetak_invoice_get()

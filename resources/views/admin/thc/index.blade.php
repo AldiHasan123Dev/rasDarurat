@@ -15,7 +15,7 @@
             <a href="{{ route('satuan.index') }}" class="btn-link p-3 text-dark">Data Satuan <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('barang.index') }}" class="btn-link p-3">Data Barang <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('barang.index') }}" class="btn-link p-3 text-dark">Data Barang <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('lokasi.index') }}" class="btn-link p-3 text-dark">Data Lokasi <span class="nav-link-icon"></span></span></a>
@@ -27,7 +27,7 @@
             <a href="{{ route('lss.index') }}" class="btn-link p-3 text-dark">LSS <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('thc.index') }}" class="btn-link p-3 text-dark">THC <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('thc.index') }}" class="btn-link p-3 active">THC <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('lain.index') }}" class="btn-link p-3 text-dark">Lain <span class="nav-link-icon"></span></span></a>
@@ -37,7 +37,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBarang" aria-controls="offcanvasBarang">Tambah Barang</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTHC" aria-controls="offcanvasTHC">Tambah THC</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -45,7 +45,9 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Nama</th>
+                                <th>Tujuan</th>
+                                <th>Cont 20'</th>
+                                <th>Cont 40'</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -58,15 +60,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasBarang" aria-labelledby="offcanvasBarangLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasTHC" aria-labelledby="offcanvasTHCLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasBarangLabel">Form Barang</h5>
+            <h5 class="offcanvas-title" id="offcanvasTHCLabel">Form THC</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('barang.store') }}" method="post">
+            <form action="{{ route('thc.store') }}" method="post">
                 @csrf
-                @include('admin.barang.form')
+                @include('admin.thc.form',[])
             </form>
         </div>
     </div>
@@ -74,17 +76,22 @@
 
 @section('script')
     <script>
+        $("select[name=lokasi_id]").select2({
+            dropdownParent: $('#offcanvasTHC'),
+        });
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('barang.data') }}',
+                url: '{{ route('thc.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'nama', name: 'nama' },
+            { data: 'lokasi_id', name: 'lokasi_id' },
+            { data: 'cont_20', name: 'cont_20' },
+            { data: 'cont_40', name: 'cont_40' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

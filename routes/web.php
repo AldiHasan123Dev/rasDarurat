@@ -12,8 +12,10 @@ use App\Http\Controllers\KapalController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\KondisiController;
+use App\Http\Controllers\LainController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\LSSController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\NSFPController;
 use App\Http\Controllers\OrderController;
@@ -29,11 +31,13 @@ use App\Http\Controllers\SopirController;
 use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TagihanController;
+use App\Http\Controllers\TagihanTruckingController;
 use App\Http\Controllers\TarifAgenController;
 use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TarifPelayaranController;
 use App\Http\Controllers\TarifTruckingController;
 use App\Http\Controllers\TarifTrukController;
+use App\Http\Controllers\THCController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TruckingController;
 use App\Http\Controllers\TrukController;
@@ -101,6 +105,10 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('menu',MenuController::class);
     Route::resource('submenu',SubMenuController::class);
     Route::resource('tariftrucking',TarifTruckingController::class);
+    Route::resource('tagihantrucking',TagihanTruckingController::class);
+    Route::resource('thc',THCController::class);
+    Route::resource('lss',LSSController::class);
+    Route::resource('lain',LainController::class);
 
 
     Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');
@@ -180,4 +188,3 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('sync-pull',[SyncController::class,'pull']);
 });
 // Route::view('test','test');
-Route::resource('tagihantrucking',App\Http\Controllers\TagihanTruckingController::class);

@@ -15,7 +15,7 @@
             <a href="{{ route('satuan.index') }}" class="btn-link p-3 text-dark">Data Satuan <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('barang.index') }}" class="btn-link p-3">Data Barang <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('barang.index') }}" class="btn-link p-3 text-dark">Data Barang <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('lokasi.index') }}" class="btn-link p-3 text-dark">Data Lokasi <span class="nav-link-icon"></span></span></a>
@@ -30,14 +30,14 @@
             <a href="{{ route('thc.index') }}" class="btn-link p-3 text-dark">THC <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('lain.index') }}" class="btn-link p-3 text-dark">Lain <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('lain.index') }}" class="btn-link p-3 active">Lain <span class="nav-link-icon"></span></span></a>
         </div>
     </div>
 </div>
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBarang" aria-controls="offcanvasBarang">Tambah Barang</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLain" aria-controls="offcanvasLain">Tambah Lain-lain</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -45,7 +45,10 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Nama</th>
+                                <th>Kategori</th>
+                                <th>Cont 20'</th>
+                                <th>Cont 40'</th>
+                                <th>Keterangan</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -58,15 +61,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasBarang" aria-labelledby="offcanvasBarangLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasLain" aria-labelledby="offcanvasLainLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasBarangLabel">Form Barang</h5>
+            <h5 class="offcanvas-title" id="offcanvasLainLabel">Form Lain-lain</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('barang.store') }}" method="post">
+            <form action="{{ route('lain.store') }}" method="post">
                 @csrf
-                @include('admin.barang.form')
+                @include('admin.lain.form',[])
             </form>
         </div>
     </div>
@@ -78,13 +81,16 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('barang.data') }}',
+                url: '{{ route('lain.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'nama', name: 'nama' },
+                { data: 'nama', name: 'nama' },
+                { data: 'cont_20', name: 'cont_20' },
+                { data: 'cont_40', name: 'cont_40' },
+                { data: 'keterangan', name: 'keterangan' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

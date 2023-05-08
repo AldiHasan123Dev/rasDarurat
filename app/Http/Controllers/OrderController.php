@@ -66,11 +66,11 @@ class OrderController extends Controller
 
     public function baKembali()
     {
-        $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
-            $a->whereIn('kondisi',[5,7]);
-        })->orderBy('job')->orderBy('no_job')->get();
-        $data = OrderResource::collection($data);
-        return view('admin.order.ba_kembali', compact('data'));
+        // $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
+        //     $a->whereIn('kondisi',[5,7]);
+        // })->orderBy('job')->orderBy('no_job')->get();
+        // $data = OrderResource::collection($data);
+        return view('admin.order.ba_kembali');
     }
 
     public function closing()
@@ -109,11 +109,25 @@ class OrderController extends Controller
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
+
         $num = Order::max('no');
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
         $data['job'] = date('Ym').sprintf('%04d',$num+1);
         $data['no_job'] = 1;
+
+        $tarif = Tarif::find($request->tarif_id);
+
+        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->whereHas('tarif', function($q) use($tarif){
+            $q->where('customer_id',$tarif->customer_id);
+            $q->where('tujuan',$tarif->tujuan);
+        })->first();
+
+        if($cek){
+            $data['no'] = $cek->no;
+            $data['job'] = $cek->job;
+            $data['no_job'] = (int)$cek->no_job + 1;
+        }
         // $satuan = Satuan::find($request->satuan);
         // if(!$satuan){
         //     $satuan = Satuan::create(['nama'=>$request->satuan]);

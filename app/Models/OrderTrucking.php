@@ -25,6 +25,7 @@ class OrderTrucking extends Model
         'container',
         'seal',
         'tipe',
+        'tarif_vendor',
         'sangu',
         'simpanan',
         'tagihan',

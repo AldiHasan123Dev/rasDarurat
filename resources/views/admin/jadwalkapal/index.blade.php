@@ -27,7 +27,7 @@
                                 <th>Closing</th>
                                 <th>Etd</th>
                                 <th>Td</th>
-                                <th>BA Kirim</th>
+                                {{-- <th>BA Kirim</th> --}}
                                 <th>Keterangan</th>
                                 <th>Status</th>
                                 <th>Action</th>
@@ -85,7 +85,7 @@
                 { data: 'closing', name: 'closing' },
                 { data: 'etd', name: 'etd' },
                 { data: 'td', name: 'td' },
-                { data: 'ba_kirim', name: 'ba_kirim' },
+                // { data: 'ba_kirim', name: 'ba_kirim' },
                 { data: 'keterangan', name: 'keterangan' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },

@@ -44,17 +44,40 @@ class OrderTruckingController extends Controller
         if(!$tarif){
             return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
         }
-        if($data['tipe']=='20'){
-            $data['borongan'] = $sangu->ukuran_20;
-            $data['borongan_kuli'] = $sangu->borongan_kuli_20;
-        }
-        if($data['tipe']=='40'){
-            $data['borongan'] = $sangu->ukuran_40;
-            $data['borongan_kuli'] = $sangu->borongan_kuli_40;
-        }
-        if($data['tipe']=='COMBO'){
-            $data['borongan'] = $sangu->ukuran_combo;
-            $data['borongan_kuli'] = $sangu->borongan_kuli_combo;
+        if(request('nopol')){
+            $kendaraan = Kendaraan::where('nopol',request('nopol'))->first();
+            if(!$kendaraan){
+                $kendaraan = Kendaraan::create([
+                    'nopol' => request('nopol'),
+                    'tipe' => request('tipe'),
+                    'milik' => 'vendor',
+                    'is_active' => 0
+                ]);
+            }
+            if(request('sopir_vendor')){
+                $sopir = Sopir::where('nama',request('sopir_vendor'))->first();
+                if(!$sopir){
+                    $sopir = Sopir::create([
+                        'nama' => request('sopir_vendor'),
+                        'is_active' => 0
+                    ]);
+                }
+            }
+            $data['kendaraan_id'] = $kendaraan->id;
+            $data['sopir_id'] = $sopir->id;
+        }else{
+            if($data['tipe']=='20'){
+                $data['borongan'] = $sangu->ukuran_20;
+                $data['borongan_kuli'] = $sangu->borongan_kuli_20;
+            }
+            if($data['tipe']=='40'){
+                $data['borongan'] = $sangu->ukuran_40;
+                $data['borongan_kuli'] = $sangu->borongan_kuli_40;
+            }
+            if($data['tipe']=='COMBO'){
+                $data['borongan'] = $sangu->ukuran_combo;
+                $data['borongan_kuli'] = $sangu->borongan_kuli_combo;
+            }
         }
         $data['tujuan'] = $sangu->tujuanInfo->nama;
         $data['tarif_id'] = $tarif->id;

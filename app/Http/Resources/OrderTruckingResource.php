@@ -42,6 +42,9 @@ class OrderTruckingResource extends JsonResource
         if(!is_null($this->sj_kembali_fa)&&!is_null($this->tgl_total)&&!is_null($this->tgl_invoice)){
             $class = 'bg-light-danger';
         }
+        if($this->kendaraan->milik=='vendor'){
+            $class = 'bg-purple';
+        }
 
         return [
             'class' => $class,
@@ -72,6 +75,7 @@ class OrderTruckingResource extends JsonResource
             'tujuan' => $this->tujuan,
             'tipe' => $this->tipe,
             'tarif' => $this->tarif ? number_format($this->tarif->tarif) : '-',
+            'tarif_vendor' => $this->tarif_vendor ? number_format($this->tarif_vendor) : '-',
             'sangu' => number_format($this->sangu),
             'simpanan' => number_format($this->simpanan),
             'kuli' => number_format($this->kuli),

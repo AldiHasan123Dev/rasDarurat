@@ -25,6 +25,7 @@ class Order extends Model
         'penerima_id',
         'penerima_bl_id',
         'barang_id',
+        'komisi',
         'ba_kirim',
         'stuffing',
         'stuffing_type',

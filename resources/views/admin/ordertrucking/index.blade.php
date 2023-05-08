@@ -12,6 +12,10 @@
     .bg-light-dark{
         background-color: #5e5e5e9e !important;
     }
+    .bg-purple{
+        background-color: purple !important;
+        color: #ffff;
+    }
 </style>
 @endsection
 @section('content')
@@ -64,6 +68,10 @@
                         <td style="width: 30px"><div class="bg-success" style="height: 10px; width:20px"></div></td>
                         <td>: Customer RAS Tipe R2 (Tanpa Invoice)</td>
                     </tr>
+                    <tr>
+                        <td style="width: 30px"><div class="bg-purple" style="height: 10px; width:20px"></div></td>
+                        <td>: Trucking Vendor</td>
+                    </tr>
                 </table>
             </div>
         </div>
@@ -86,99 +94,172 @@
 <!-- Modal -->
 <div class="modal fade" id="order" tabindex="-1" aria-labelledby="orderLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form action="{{ route('ordertrucking.store') }}" method="post" class="modal-content">
-            @csrf
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="orderLabel">Tambah Order Trucking</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body row">
-                <div class="mb-2 col-4">
-                    <label for="tgl_muat">Tanggal Muat</label>
-                    <input type="date" name="tgl_muat" id="tgl_muat" class="form-control" value="{{ date('Y-m-d') }}">
+            <div class="modal-body">
+                <div class="nav nav-tabs" id="myTab" role="tablist">
+                    <div class="nav-item" role="presentation">
+                        <button class="nav-link active" id="ras-tab" data-bs-toggle="tab" data-bs-target="#ras-tab-pane" type="button" role="tab" aria-controls="ras-tab-pane" aria-selected="true">Trucking RAS</button>
+                    </div>
+                    <div class="nav-item" role="presentation">
+                        <button class="nav-link" id="vendor-tab" data-bs-toggle="tab" data-bs-target="#vendor-tab-pane" type="button" role="tab" aria-controls="vendor-tab-pane" aria-selected="false">Trucking Vendor</button>
+                    </div>
                 </div>
-                <div class="mb-2 col-4">
-                    <label for="customer">Customer</label>
-                    <select name="customer_id" id="customer" class="form-control" required>
-                        @foreach ($customers as $cus)
-                            <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="kendaraan">Kendaraan</label>
-                    <select name="kendaraan_id" id="kendaraan" class="form-control" required>
-                        @foreach ($kendaraan as $kend)
-                            <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->milik }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="sopir">Sopir</label>
-                    <select name="sopir_id" id="sopir" class="form-control" required>
-                        @foreach ($sopir as $sup)
-                            <option {{ $loop->first?'selected':'' }} value="{{ $sup->id }}">{{ $sup->nama }} </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="container">No. Cont</label>
-                    <input type="text" name="container" id="container" class="form-control" required>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="seal">Seal</label>
-                    <input type="text" name="seal" id="seal" class="form-control" required>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="tipe">Tipe Cont</label>
-                    <select name="tipe" id="tipe" class="form-control" required>
-                        <option value="20">20'</option>
-                        <option value="40">40'</option>
-                        <option value="COMBO">COMBO</option>
-                    </select>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="tujuan">Tujuan</label>
-                    <select name="tujuan" id="tujuan" class="form-control" required>
-                        @foreach ($tujuan as $loc)
-                            <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2 col-4">
-                    <label for="sangu">Sangu Borongan</label>
-                    <input type="text" name="sangu" id="sangu" class="form-control" disabled>
-                </div>
-                <div class="my-2 col-12">
-                    Keterangan
-                    <hr>
-                    <div class="d-flex gap-3">
-                        <div>
-                            <label>
-                                <input type="checkbox" name="ambil_empty_tambak_langon" value="1">
-                                Ambil Empty Tambak Langon
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                <input type="checkbox" name="ambil_empty_teluk_langon" value="1">
-                                Ambil Empty Teluk Lamong
-                            </label>
-                        </div>
-                        <div>
-                            <label>
-                                <input type="checkbox" name="bongkar_full_teluk_langon" value="1">
-                                Bongkar Full Teluk Lamong
-                            </label>
-                        </div>
+                <hr>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="ras-tab-pane" role="tabpanel" aria-labelledby="ras-tab" tabindex="0">
+                        <form action="{{ route('ordertrucking.store') }}" method="post" class="row">
+                            @csrf
+                            <div class="mb-2 col-4">
+                                <label for="tgl_muat">Tanggal Muat</label>
+                                <input type="date" name="tgl_muat" id="tgl_muat" class="form-control" value="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="customer">Customer</label>
+                                <select name="customer_id" id="customer_id" class="form-control" required>
+                                    @foreach ($customers as $cus)
+                                        <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="kendaraan">Kendaraan</label>
+                                <select name="kendaraan_id" id="kendaraan" class="form-control" required>
+                                    @foreach ($kendaraan as $kend)
+                                        <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->milik }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="sopir">Sopir</label>
+                                <select name="sopir_id" id="sopir" class="form-control" required>
+                                    @foreach ($sopir as $sup)
+                                        <option {{ $loop->first?'selected':'' }} value="{{ $sup->id }}">{{ $sup->nama }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="container">No. Cont</label>
+                                <input type="text" name="container" id="container" class="form-control" required>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="seal">Seal</label>
+                                <input type="text" name="seal" id="seal" class="form-control" required>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="tipe">Tipe Cont</label>
+                                <select name="tipe" id="tipe" class="form-control" required>
+                                    <option value="20">20'</option>
+                                    <option value="40">40'</option>
+                                    <option value="COMBO">COMBO</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="tujuan">Tujuan</label>
+                                <select name="tujuan" id="tujuan" class="form-control tujuan" required>
+                                    @foreach ($tujuan as $loc)
+                                        <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="sangu">Sangu Borongan</label>
+                                <input type="text" name="sangu" id="sangu" class="form-control" disabled>
+                            </div>
+                            <div class="my-2 col-12">
+                                Keterangan
+                                <hr>
+                                <div class="d-flex gap-3">
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" name="ambil_empty_tambak_langon" value="1">
+                                            Ambil Empty Tambak Langon
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" name="ambil_empty_teluk_langon" value="1">
+                                            Ambil Empty Teluk Lamong
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" name="bongkar_full_teluk_langon" value="1">
+                                            Bongkar Full Teluk Lamong
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="vendor-tab-pane" role="tabpanel" aria-labelledby="vendor-tab" tabindex="0">
+                        <form action="{{ route('ordertrucking.store') }}" method="post" class="row">
+                            @csrf
+                            <div class="mb-2 col-4">
+                                <label for="tgl_muat">Tanggal Muat</label>
+                                <input type="date" name="tgl_muat" id="tgl_muat" class="form-control" value="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="customer">Customer</label>
+                                <select name="customer_id" class="form-control" id="customer_vendor" required>
+                                    @foreach ($customers as $cus)
+                                        <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="kendaraan">Nopol</label>
+                                <input type="text" name="nopol" id="nopol" class="form-control">
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="sopir_vendor">Sopir</label>
+                                <input type="text" name="sopir_vendor" id="sopir_vendor" class="form-control">
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="container">No. Cont</label>
+                                <input type="text" name="container" id="container" class="form-control" required>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="seal">Seal</label>
+                                <input type="text" name="seal" id="seal" class="form-control" required>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="tipe">Tipe Cont</label>
+                                <select name="tipe" id="tipe" class="form-control" required>
+                                    <option value="20">20'</option>
+                                    <option value="40">40'</option>
+                                    <option value="COMBO">COMBO</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="tujuan">Tujuan</label>
+                                <select name="tujuan" class="form-control tujuan" required>
+                                    @foreach ($tujuan as $loc)
+                                        <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-2 col-4">
+                                <label for="tarif_vendor">Tarif Trucking</label>
+                                <input type="number" name="tarif_vendor" id="tarif_vendor" class="form-control">
+                            </div>
+                            <div class="mb-2">
+                                <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-primary">Simpan</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-primary">Simpan</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -206,7 +287,7 @@
                 </div>
                 <div class="mb-2 col-3">
                     <label for="customer">Customer</label>
-                    <select name="customer_id" id="customer_id" class="form-control" required>
+                    <select name="customer_id" id="customer_id_edit" class="form-control" required>
                         @foreach ($customers as $cus)
                             <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
                         @endforeach
@@ -434,13 +515,16 @@
         let id;
         $('#btn-edit').hide();
         $('#delete').hide();
-        $("#customer").select2({
+        $("#customer_id").select2({
             dropdownParent: $('#order'),
         });
         $("#kendaraan").select2({
             dropdownParent: $('#order'),
         });
-        $("#customer_id").select2({
+        $("#customer_vendor").select2({
+            dropdownParent: $('#order'),
+        });
+        $("#customer_id_edit").select2({
             dropdownParent: $('#edit'),
         });
         $("#kendaraan_id").select2({
@@ -449,13 +533,13 @@
         $("#sopir_id").select2({
             dropdownParent: $('#edit'),
         });
-        $("#tujuan").select2({
+        $(".tujuan").select2({
             dropdownParent: $('#order'),
         });
         $("#tujuan-edit").select2({
             dropdownParent: $('#edit'),
         });
-        $("#tujuan").val('').trigger('change');
+        $(".tujuan").val('').trigger('change');
         $("#sopir").select2({
             dropdownParent: $('#order'),
         });
@@ -513,6 +597,7 @@
                 {search:true, name: 'lain_lain', label : 'Lain-lain'},
                 {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
                 {search:true, name: 'tgl_total', label : 'Tanggal Totalan'},
+                {search:true, name: 'tarif_vendor', label : 'Tarif vendor'},
                 {search:true, name: 'tarif', label : 'Tarif'},
                 {search:true, name: 'add_cost', label : 'Add Cost'},
                 {search:true, name: 'pph_21', label : 'PPh 21-3%'},
@@ -582,7 +667,7 @@
                 $('#lain_lain').val(lain_lain);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
-                $("#customer_id").val(customer_id).trigger('change');
+                $("#customer_id_edit").val(customer_id).trigger('change');
                 $("#kendaraan_id").val(kendaraan_id).trigger('change');
                 $("#sopir_id").val(sopir_id).trigger('change');
                 $("#tujuan-edit").val(sangu_id).trigger('change');
