@@ -103,6 +103,7 @@ class OrderController extends Controller
             'barang_id.required' => 'Barang Harus diisi!',
         ]);
         $data = $request->all();
+        $data['komisi'] = is_null($data['komisi']) ? 0 : $data['komisi'];
         $barang = Barang::find($request->barang_id);
         $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id;
         $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id;
@@ -140,6 +141,7 @@ class OrderController extends Controller
     public function update(Order $order, Request $request)
     {
         $data = $request->all();
+        $data['komisi'] = is_null($data['komisi']) ? 0 : $data['komisi'];
         if($request->ba){
             if($request->ba==2){
                 $data['ba_kembali'] = null;
