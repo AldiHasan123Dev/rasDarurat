@@ -132,6 +132,28 @@ class CetakController extends Controller
         return view('admin.cetak.shipment', compact('orders','jadwal_kapal','tujuan','pengirim','jadwal_kapals','data_lokasi'));
     }
 
+    public function dooring()
+    {
+        $id = request('jadwal_kapal_id');
+        $jadwal_kapal = JadwalKapal::find($id);
+        $lokasi = request('tujuan');
+        $tujuan = Lokasi::find($lokasi);
+        $pengirim = Pengirim::all();
+        $orders = Order::where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
+            $q->where('tujuan',$lokasi);
+            $q->whereIn('kondisi',[5,7]);
+        })->get();
+
+        $order = $orders->whereNotNull('agen_id')->first();
+
+        $jadwal_kapals = JadwalKapal::all()->where('is_active',0);
+        $pelayaran = $jadwal_kapals->pluck('pelayaran_id')->toArray();
+        $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
+        $data_tarif_lokasi = array_unique($lokasi);
+        $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
+        return view('admin.cetak.doring', compact('orders','jadwal_kapal','tujuan','pengirim','jadwal_kapals','data_lokasi','order'));
+    }
+
     public function invoice()
     {
         if(request('order_id')){

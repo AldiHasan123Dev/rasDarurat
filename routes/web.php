@@ -162,6 +162,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('cetak/bttb',[CetakController::class,'bttb'])->name('cetak.bttb');
     Route::get('cetak/bttb-kubikasi',[CetakController::class,'bttbKubikasi'])->name('cetak.bttb.kubikasi');
     Route::get('cetak/shipment',[CetakController::class,'shipment'])->name('cetak.shipment');
+    Route::get('cetak/dooring',[CetakController::class,'dooring'])->name('cetak.dooring');
     Route::get('cetak/invoice',[CetakController::class,'invoice'])->name('cetak.invoice');
     Route::get('cetak/invoice-cont',[CetakController::class,'invoiceCont'])->name('cetak.invoice.cont');
     Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
