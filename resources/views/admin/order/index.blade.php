@@ -539,6 +539,7 @@
             {search:true, width:100, name: 'satuan', label : 'satuan',sortable: false},
             {search:true, width:100, name: 'unit', label : 'unit',sortable: false},
             {search:true, width:100, name: 'tarif', label : 'tarif',sortable: false},
+            {search:true, width:100, name: 'komisi', label : 'komisi',sortable: false},
             {search:true, width:100, name: 'agen', label : 'agen'},
             {search:true, width:100, name: 'penerima_bl', label : 'penerima_bl',sortable: false},
             {search:true, width:100, name: 'keterangan', label : 'keterangan'},
