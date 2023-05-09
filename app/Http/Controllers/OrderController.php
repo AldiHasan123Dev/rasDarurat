@@ -211,6 +211,7 @@ class OrderController extends Controller
                     ->join('satuan','satuan.id','=','tarif.satuan')
                     ->select('tarif.*')
                     ->where('tarif.is_active',1)
+                    ->orWhere('tarif.id',$order->tarif_id)
                     ->get();
         $customers = Customer::pluck('nama');
         $barang = Barang::pluck('nama');
