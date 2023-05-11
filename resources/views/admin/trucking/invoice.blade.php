@@ -599,7 +599,8 @@
                         $pph = 0;
                     @endphp
                     <div class="invoice-box first-page">
-                        {{-- <div class="header d-flex" style="gap:5px; width:100%">
+                        @if ($order->kendaraan->milik=='vendor')
+                        <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
                                 <table style="font-size:.7rem">
@@ -614,7 +615,8 @@
                                     <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
                                 </table>
                             </div>
-                        </div> --}}
+                        </div>
+                        @endif
                         <div class="row mt-3">
                             <div class="col-6">
                                 <table style="font-size: .7rem">
@@ -663,12 +665,14 @@
                                 $total = 0;
                                 $lain_lain = 0;
                                 $rit = 0;
+                                $pph = 0;
                             @endphp
                             @foreach ($r1s as $item)
                             @php
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
+                                $pph += round($item->sum('pph_23'));
                             @endphp
                                 <tr>
                                     {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
@@ -721,6 +725,38 @@
                             <tr style="height: 20px !important">
                                 <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
+                            @if ($order->customer->pph_23==1)
+                                <tr>
+                                    <td colspan="2"></td>
+                                    <td class="text-center">{{ $rit }} Rit</td>
+                                    <td class="fw-bold text-center" colspan="2">TOTAL</td>
+                                    <td class="fw-bold">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($total) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td colspan="3"></td>
+                                    <td class="fw-bold text-center" colspan="2">PPH 23 (2%)</td>
+                                    <td class="fw-bold">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($pph) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-bottom border-dark">
+                                    <td colspan="5"></td>
+                                    <td class="fw-bold">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($total - $pph) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @else
                             <tr class="border-bottom border-dark">
                                 <td colspan="2"></td>
                                 <td class="text-center">{{ $rit }} Rit</td>
@@ -732,6 +768,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                         </table>
 
                         <div class="row mt-3">
