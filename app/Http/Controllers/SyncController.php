@@ -228,6 +228,19 @@ class SyncController extends Controller
         return response('success');
     }
 
+    public function menu_link_backup()
+    {
+        $menu = SubMenu::all();
+        foreach ($menu as $item ) {
+            $url = str_replace('https://ptras.id/','https://ptras.spydercode.my.id/',$item->url);
+            $item->update([
+                'url' => $url
+            ]);
+        }
+
+        return response('success');
+    }
+
     public function kapal()
     {
         JadwalKapal::whereIn('kapal_id',[109,128,152,210])->update([
