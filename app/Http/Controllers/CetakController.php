@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
+use App\Models\JasaKirim;
 use App\Models\Lokasi;
 use App\Models\NSFP;
 use App\Models\Order;
@@ -135,8 +136,8 @@ class CetakController extends Controller
     public function dooring()
     {
         $id = request('jadwal_kapal_id');
-        $jadwal_kapal = JadwalKapal::find($id);
         $lokasi = request('tujuan');
+        $jadwal_kapal = JadwalKapal::find($id);
         $tujuan = Lokasi::find($lokasi);
         $pengirim = Pengirim::all();
         $orders = Order::where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
@@ -151,7 +152,22 @@ class CetakController extends Controller
         $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
         $data_tarif_lokasi = array_unique($lokasi);
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
-        return view('admin.cetak.doring', compact('orders','jadwal_kapal','tujuan','pengirim','jadwal_kapals','data_lokasi','order'));
+
+        $no_dooring = '';
+        $no = '';
+        $order_id = '';
+        if($orders->count()>0){
+            $no = JasaKirim::max('no') + 1;
+            $no_dooring = 'SD/'.date('ymd').'/'.sprintf('%03d',$no);
+            $order_id = json_encode($orders->pluck('id')->toArray());
+            $cek = JasaKirim::where('lokasi_id',request('tujuan'))->where('jadwal_kapal_id',$id)->first();
+            if($cek){
+                $no = $cek->no;
+                $no_dooring = $cek->no_dooring;
+            }
+        }
+
+        return view('admin.cetak.doring', compact('orders','jadwal_kapal','tujuan','pengirim','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring'));
     }
 
     public function invoice()

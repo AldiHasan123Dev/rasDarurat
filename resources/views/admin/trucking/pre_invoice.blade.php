@@ -183,7 +183,7 @@
                 </div>
             </div>
         </div>
-        {{-- <div class="card mt-4">
+        <div class="card mt-4">
             <div class="card-header p-2">
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking Vendor</p>
@@ -211,9 +211,7 @@
                                 <th>Tarif</th>
                                 <th>Lain-lain</th>
                                 <th>Add Cost</th>
-                                <th>PPH 21 (3%)</th>
-                                <th>PPH 23 (2%)</th>
-                                <th>Total (Tarif - PPH)</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -236,7 +234,7 @@
                                         @endif
                                         <td class="text-center"><input type="checkbox" name="order_id_vendor" value="{{ $order->id }}"></td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
-                                        <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_total)) }}</td>
+                                        <td class="text-center">-</td>
                                         <td>{{ $order->order->job ?? '-' }}</td>
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
                                         <td>{{ $order->tipe }}'</td>
@@ -245,12 +243,10 @@
                                         <td>{{ number_format($order->tarif->tarif) }}</td>
                                         <td>{{ number_format($order->lain_lain) }}</td>
                                         <td>{{ number_format($order->tagihans->sum('jumlah')) }}</td>
-                                        <td>{{ number_format(round($order->pph_21)) }}</td>
-                                        <td>{{ number_format(round($order->pph_23)) }}</td>
                                         @if ($order->customer_id==2&&$order->kendaraan->milik=='R2')
                                         <td>0   </td>
                                         @else
-                                        <td>{{ number_format( ($order->tarif->tarif + $order->tagihans->sum('jumlah')) - (round($order->pph_21) + round($order->pph_23))) }}</td>
+                                        <td>{{ number_format( $order->tarif->tarif + $order->tagihans->sum('jumlah') ) }}</td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -267,7 +263,7 @@
                     </table>
                 </div>
             </div>
-        </div> --}}
+        </div>
     </div>
 
 @endsection

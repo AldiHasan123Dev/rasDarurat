@@ -109,19 +109,21 @@
     <div class="container">
         <div class="card p-3">
             <div class="d-flex justify-content-between" style="gap:5px">
+                @if ($orders->count()>0)
                 <div class="d-flex" style="gap: 10px">
                     <div class="d-flex gap-3">
-                        <button onclick="window.print()" class="btn btn-sm btn-success ml-2 mb-3">Print</button>
+                        <button onclick="printSubmit()" class="btn btn-sm btn-success ml-2 mb-3">Submit Jasa Kirim & Print Surat</button>
                     </div>
                 </div>
-                <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-info">Buat Surat Doring</button>
+                @endif
+                <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-sm btn-info">Cari JOB</button>
             </div>
         </div>
         <div class="card p-3 mt-3">
             <div id="print" style="width: 100%">
                 <div class="header d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                    <div style="width: 40%; margin-left:35px">
+                    <div style="width: 40%; margin-left:35px; font-size:.8rem">
                         <table>
                             <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
                             <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
@@ -141,7 +143,7 @@
                     <div class="col-12">
                         <table style="font-size: .9rem" class="w-100">
                             <tr>
-                                <td >No. {{ rand(1000,9999) }}/{{ $order->jadwal_kapal->voyage }}/{{ date('d/m/y') }}</td>
+                                <td >No. {{ $no_dooring }}</td>
                             </tr>
                             <tr>
                                 <td>Surabaya, {{ date('d F Y') }}</td>
@@ -264,5 +266,18 @@
         $("#tujuan-si").select2({
             dropdownParent: $('#exampleModal'),
         });
+
+        function printSubmit(){
+            if(confirm('Apa anda yakin ? proses ini sekaligus akan membuat jasa pengiriman surat')){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('api-jasakirim.store') }}",
+                    data: {no_dooring:@json($no_dooring),lokasi_id:@json(request('tujuan')),order_id:@json($order_id),jadwal_kapal_id:@json(request('jadwal_kapal_id'))},
+                    success: function (response) {
+                        window.print();
+                    }
+                });
+            }
+        }
     </script>
 @endsection

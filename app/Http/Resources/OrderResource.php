@@ -79,6 +79,7 @@ class OrderResource extends JsonResource
             'koli' => $this->bttb->sum('qty'),
             'm3' => $this->bttb->sum('vol'),
             'berat' => $this->bttb->sum('berat'),
+            'add_cost' => number_format($this->tagihan->sum('jumlah'))
         ];
     }
 }

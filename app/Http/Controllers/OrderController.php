@@ -122,12 +122,12 @@ class OrderController extends Controller
         $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->whereHas('tarif', function($q) use($tarif){
             $q->where('customer_id',$tarif->customer_id);
             $q->where('tujuan',$tarif->tujuan);
-        })->first();
+        })->get();
 
-        if($cek){
+        if($cek->count()>0){
             $data['no'] = $cek->no;
             $data['job'] = $cek->job;
-            $data['no_job'] = (int)$cek->no_job + 1;
+            $data['no_job'] = $cek->count() + 1;
         }
         // $satuan = Satuan::find($request->satuan);
         // if(!$satuan){

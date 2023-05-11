@@ -218,7 +218,7 @@
                                 <input type="text" name="nopol" id="nopol" class="form-control">
                             </div>
                             <div class="mb-2 col-4">
-                                <label for="sopir_vendor">Sopir</label>
+                                <label for="sopir_vendor">Nama Vendor</label>
                                 <input type="text" name="sopir_vendor" id="sopir_vendor" class="form-control">
                             </div>
                             <div class="mb-2 col-4">

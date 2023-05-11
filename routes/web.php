@@ -8,6 +8,7 @@ use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\JadwalKapalController;
+use App\Http\Controllers\JasaKirimController;
 use App\Http\Controllers\KapalController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KeuanganController;
@@ -109,6 +110,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('thc',THCController::class);
     Route::resource('lss',LSSController::class);
     Route::resource('lain',LainController::class);
+    Route::resource('jasakirim',JasaKirimController::class);
 
 
     Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');

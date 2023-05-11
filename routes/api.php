@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
 use App\Http\Controllers\Api\JadwalKapalController;
+use App\Http\Controllers\Api\JasaKirimController;
 use App\Http\Controllers\Api\NSFPController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderTruckingController;
@@ -67,6 +68,7 @@ Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
 Route::resource('api-tarif',TarifController::class);
+Route::resource('api-jasakirim',JasaKirimController::class)->only(['store']);
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
 
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');

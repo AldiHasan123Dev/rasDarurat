@@ -136,8 +136,9 @@ class TruckingController extends Controller
             ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
             ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
             ->where('kendaraan.milik','vendor')
+            ->where('order_trucking.customer_id','!=',2)
             ->whereNull('order_trucking.invoice')
-            // ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
             ->orderBy('customer')
             ->get()
             ->groupBy('customer');
@@ -153,6 +154,7 @@ class TruckingController extends Controller
         }
         $r1s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
             $q->where('milik','R1');
+            $q->orWhere('milik','vendor');
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
         $r2s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
             $q->where('milik','R2');
@@ -175,6 +177,7 @@ class TruckingController extends Controller
         $tipe = $order->kendaraan->milik;
         $r1s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
             $q->where('milik','R1');
+            $q->orWhere('milik','vendor');
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
         $r2s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
             $q->where('milik','R2');
