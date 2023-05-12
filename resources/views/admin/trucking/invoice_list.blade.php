@@ -17,6 +17,7 @@
                 <div class="card-header py-2">
                     <div class="d-flex gap-5">
                         <a href="" id="cetak" class="btn btn-success"><i class="fas fa-print"></i> Cetak ulang</a>
+                        <button data-bs-toggle="modal" data-bs-target="#invoice-modal" class="btn btn-sm btn-primary">Edit Tanggal Invoice</button>
                     </div>
                 </div>
                 <div class="table-responsives mt-3">
@@ -49,6 +50,30 @@
     </div>
 </div>
 
+<div class="modal fade" id="invoice-modal" tabindex="-1" aria-labelledby="customerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit <span class="invoice"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <input type="hidden" name="transaksi_id" id="transaksi_id">
+                    <div class="col-12 mb-2">
+                        <label for="created_at">Tanggal Invoice</label>
+                        <input type="date" name="created_at" id="created_at" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="btn-update">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('script')
@@ -61,6 +86,7 @@
             datatype: 'local',
             data: data,
             colModel: [
+                {search:true, name: 'id', label : 'id', hidden:true},
                 {search:true, name: 'tgl_invoice', label : 'Tanggal Invoice', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer',},
@@ -80,7 +106,10 @@
             pager: "#jqGridPager",
             caption: "Invoice Trucking",
             onCellSelect: function (rowId, iRow, iCol, e) {
+                var id = $(this).jqGrid('getCell', rowId, 'id');
                 var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
+                $('.invoice').html(invoice);
+                $('#transaksi_id').val(id);
                 $('#cetak').attr('href',@json(url('admin/trucking/cetak-invoice/get'))+'?invoice='+invoice);
             },
         });
@@ -130,6 +159,21 @@
                     }else{
                         location.reload();
                     };
+                }
+            });
+        });
+
+        $('#btn-update').click(function (e) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.transaksi-trucking.update') }}",
+                data: {
+                    transaksi_id:$('#transaksi_id').val(),
+                    created_at:$('#created_at').val(),
+                },
+                success: function (response) {
+                    alert('Update berhasil!');
+                    location.reload();
                 }
             });
         });

@@ -7,6 +7,7 @@ use App\Http\Controllers\BTTBController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTruckingController;
+use App\Http\Controllers\EstimasiController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\JasaKirimController;
 use App\Http\Controllers\KapalController;
@@ -172,7 +173,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('customer-import-update',[CustomerController::class,'importUpdate'])->name('customer.import.update');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
-    Route::view('static-invoice', 'admin.print.invoice');
+    Route::get('estimasi-biaya',[EstimasiController::class,'biaya'])->name('estimasi.biaya');
 
     Route::get('sync-kuli',[SyncController::class,'kuli']);
     Route::get('sync-import',[SyncController::class,'import']);

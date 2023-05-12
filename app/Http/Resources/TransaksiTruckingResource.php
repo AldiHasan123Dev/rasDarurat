@@ -15,6 +15,7 @@ class TransaksiTruckingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'customer' => $this->customer->nama,
             'invoice' => $this->invoice,
             'tgl_invoice' => date('d/m/y', strtotime($this->tgl_invoice)),

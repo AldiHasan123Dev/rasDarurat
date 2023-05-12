@@ -43,6 +43,7 @@
                                 <th class="fixed-top">Tanggal Muat</th>
                                 <th class="fixed-top">SJ Diterima FA</th>
                                 <th class="fixed-top">Customer</th>
+                                <th class="fixed-top">JOB</th>
                                 <th class="fixed-top">Container / Seal</th>
                                 <th class="fixed-top">Simpanan Sopir</th>
                                 <th class="fixed-top">Simpanan Kuli</th>
@@ -63,6 +64,11 @@
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->sj_kembali_fa)) }}</td>
                                         <td>{{ $order->customer->nama }}</td>
+                                        @if ($order->order)
+                                        <td>{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                        @else
+                                        <td>-</td>
+                                        @endif
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
                                         <td>{{ number_format($order->simpanan) }}</td>
                                         <td>{{ number_format($order->simpanan_kuli) }}</td>

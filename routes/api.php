@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\TagihanTruckingController;
 use App\Http\Controllers\Api\TarifController;
 use App\Http\Controllers\Api\TarifTruckingController;
 use App\Http\Controllers\Api\TransaksiController;
+use App\Http\Controllers\Api\TransaksiTruckingController;
 use App\Http\Controllers\PelayaranController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,7 @@ Route::post('tarif-trucking', [TarifTruckingController::class,'createOrUpdate'])
 Route::post('sangu-sopir-action', [SanguSopirController::class,'createOrUpdate'])->name('api.sangusopir.createorupdate');
 Route::post('tarif-trucking-delete', [TarifTruckingController::class,'delete'])->name('api.tariftrucking.delete');
 Route::post('transaksi-update', [TransaksiController::class,'update'])->name('api.transaksi.update');
+Route::post('transaksi-trucking-update', [TransaksiTruckingController::class,'update'])->name('api.transaksi-trucking.update');
 Route::post('tagihan-trucking', [TagihanTruckingController::class,'store'])->name('api.tagihan-trucking.store');
 Route::delete('tagihan-trucking/{tagihan}', [TagihanTruckingController::class,'destroy'])->name('api.tagihan-trucking.destroy');
 Route::get('tagihan-trucking/{id}', [TagihanTruckingController::class,'getOne'])->name('api.tagihan-trucking.getOne');
