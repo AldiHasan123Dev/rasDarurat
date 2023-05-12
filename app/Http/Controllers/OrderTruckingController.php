@@ -59,6 +59,7 @@ class OrderTruckingController extends Controller
                 if(!$sopir){
                     $sopir = Sopir::create([
                         'nama' => request('sopir_vendor'),
+                        'milik' => 'vendor',
                         'is_active' => 0
                     ]);
                 }

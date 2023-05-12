@@ -49,7 +49,7 @@ class LaporanController extends Controller
     }
     public function sopir()
     {
-        $data = Sopir::get();
-        return view('admin.laporan.trucking', compact('data'));
+        $data = Sopir::where('milik','!=','vendor')->get();
+        return view('admin.laporan.sopir', compact('data'));
     }
 }

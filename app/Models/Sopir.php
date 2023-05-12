@@ -16,6 +16,7 @@ class Sopir extends Model
         'nama',
         'alamat',
         'hp',
+        'milik',
         'is_active',
     ];
 
@@ -28,5 +29,18 @@ class Sopir extends Model
         static::saving(function ($model) {
             $model->updated_by = Auth::id();
         });
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(OrderTrucking::class,'sopir_id');
+    }
+
+    public function laporanRit($bulan, $thn = 2023){
+        return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->count();
+    }
+
+    public function laporanMargin($bulan, $thn = 2023){
+        return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->sum('margin');
     }
 }
