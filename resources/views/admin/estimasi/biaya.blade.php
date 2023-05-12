@@ -1,4 +1,12 @@
 @extends('layouts.admin')
+@section('style')
+    <style>
+        tr, td{
+            font-size: .8rem;
+            padding: 3px 4px !important;
+        }
+    </style>
+@endsection
 @section('content')
 <div class="container">
     <div class="card p-3 shadow">

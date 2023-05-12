@@ -120,6 +120,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('laporan/customer', [LaporanController::class,'customer'])->name('laporan.customer');
     Route::get('laporan/marketing', [LaporanController::class,'marketing'])->name('laporan.marketing');
     Route::get('laporan/cs', [LaporanController::class,'cs'])->name('laporan.cs');
+    Route::get('laporan/trucking', [LaporanController::class,'trucking'])->name('laporan.trucking');
 
     Route::get('customer-tarif', [CustomerController::class,'tarif'])->name('customer.tarif');
     Route::get('nsfp-cancel', [NSFPController::class,'cancel'])->name('nsfp.cancel');
