@@ -230,6 +230,7 @@
                         is_active:$('#is_active').val(),
                         tarif:$('#tarif').val(),
                         tarif_id:tarif_id,
+                        updated_by:@json(Auth::id()),
                     },
                     success: function (response) {
                         table_tarif.ajax.reload()
@@ -257,7 +258,7 @@
             $('#tarif_id').val(null);
             bsOffcanvas.show();
         });
-        
+
         $('#edit-tarif').click(function (e) {
             let customer_id =  table_tarif.row('.selected').data().customer_id;
             tarif_id =  table_tarif.row('.selected').data().id;

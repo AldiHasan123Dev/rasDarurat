@@ -18,6 +18,8 @@ class TarifTrucking extends Model
         'tipe',
         'tarif',
         'is_active',
+        'created_by',
+        'updated_by',
     ];
 
     protected static function booted()

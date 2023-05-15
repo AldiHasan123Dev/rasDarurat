@@ -72,7 +72,7 @@ class OrderTruckingResource extends JsonResource
             'container' => $this->container ?? '-',
             'seal' => $this->seal ?? '-',
             'dari' => 'PERAK',
-            'tujuan' => $this->tujuan,
+            'tujuan' => $this->tarif->tujuan->tujuanInfo->nama ?? '-',
             'tipe' => $this->tipe,
             'tarif' => $this->tarif ? number_format($this->tarif->tarif) : '-',
             'tarif_vendor' => $this->tarif_vendor ? number_format($this->tarif_vendor) : '-',
