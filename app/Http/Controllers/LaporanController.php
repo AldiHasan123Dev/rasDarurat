@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\Kendaraan;
 use App\Models\Lokasi;
 use App\Models\Pelayaran;
+use App\Models\Sopir;
 use App\Models\Tarif;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -39,5 +41,15 @@ class LaporanController extends Controller
     {
         $data = User::where('role_id',2)->whereHas('cs')->get();
         return view('admin.laporan.cs', compact('data'));
+    }
+    public function trucking()
+    {
+        $data = Kendaraan::where('milik','!=','vendor')->get();
+        return view('admin.laporan.trucking', compact('data'));
+    }
+    public function sopir()
+    {
+        $data = Sopir::where('milik','!=','vendor')->get();
+        return view('admin.laporan.sopir', compact('data'));
     }
 }

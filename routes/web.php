@@ -120,6 +120,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('laporan/customer', [LaporanController::class,'customer'])->name('laporan.customer');
     Route::get('laporan/marketing', [LaporanController::class,'marketing'])->name('laporan.marketing');
     Route::get('laporan/cs', [LaporanController::class,'cs'])->name('laporan.cs');
+    Route::get('laporan/trucking', [LaporanController::class,'trucking'])->name('laporan.trucking');
 
     Route::get('customer-tarif', [CustomerController::class,'tarif'])->name('customer.tarif');
     Route::get('nsfp-cancel', [NSFPController::class,'cancel'])->name('nsfp.cancel');
@@ -186,6 +187,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('sync-pph',[SyncController::class,'pph']);
     Route::get('sync-menu',[SyncController::class,'menu_link']);
     Route::get('sync-menu-backup',[SyncController::class,'menu_link_backup']);
+    Route::get('sync-menu-ras',[SyncController::class,'menu_link_ras']);
     Route::get('sync-order-menu',[SyncController::class,'orderMenu']);
     Route::get('sync-transaksi',[SyncController::class,'transaksi']);
     Route::get('sync-trucking',[SyncController::class,'trucking']);
