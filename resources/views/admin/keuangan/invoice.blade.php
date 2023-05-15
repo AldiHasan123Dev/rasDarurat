@@ -98,6 +98,7 @@
             datatype: 'local',
             data: data,
             colModel: [
+                {search:true, name: 'tipe_invoice', label : 'tipe_invoice', hidden:true},
                 {search:true, name: 'order_id', label : 'order_id', hidden:true},
                 {search:true, name: 'id', label : 'id', hidden:true},
                 {search:true, name: 'tanggal_format', label : 'Tanggal', hidden:true},
@@ -122,10 +123,14 @@
             onCellSelect: function (rowId, iRow, iCol, e) {
                 var id = $(this).jqGrid('getCell', rowId, 'id');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
+                var tipe_invoice = $(this).jqGrid('getCell', rowId, 'tipe_invoice');
                 var tanggal = $(this).jqGrid('getCell', rowId, 'tanggal_format');
                 var tanggal_kirim = $(this).jqGrid('getCell', rowId, 'tanggal_kirim_format');
-                $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+order_id);
-                $('#cetak-cont-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+order_id);
+                if (tipe_invoice=='cont') {
+                    $('#cetak-invoice').attr('href','{{ route('cetak.invoice.cont') }}?order_id='+order_id);
+                } else {
+                    $('#cetak-invoice').attr('href','{{ route('cetak.invoice') }}?order_id='+order_id);
+                }
                 $('#created_at').val(tanggal);
                 $('#tanggal_kirim').val(tanggal_kirim);
                 $('#invoice_id').val(id);
