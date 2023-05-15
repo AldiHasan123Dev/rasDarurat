@@ -16,7 +16,8 @@
             <div class="card p-3">
                 <div class="card-header">
                     <div class="d-flex gap-5">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#faktur">Tambah Faktur</button>
+                        <button type="button" class="btn btn-primary btn-sm py-0" data-bs-toggle="modal" data-bs-target="#faktur">Tambah Faktur</button>
+                        <button type="button" class="btn btn-warning btn-sm py-0" data-bs-toggle="modal" data-bs-target="#bukpot">Tambah Bukpot</button>
                         <form action="{{ route('keuangan.ppn.export') }}" method="post">
                             @csrf
                             <input type="hidden" name="start" value="{{ $start }}">
@@ -160,6 +161,75 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="bukpot" tabindex="-1" aria-labelledby="bukpotLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bukpotLabel">Tambah Bukpot</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <input type="hidden" name="id" id="id">
+                <div class="mb-2 col-12">
+                    <label for="no_job">JOB</label>
+                    <input type="text" id="no_job" class="form-control" required disabled>
+                </div>
+                <div class="mb-2 col-12">
+                    <label for="pph_23">PPH 23</label>
+                    <input type="text" id="pph_23" class="form-control" required disabled>
+                </div>
+                <div class="mb-2 col-12">
+                    <label for="bupot">Bupot</label>
+                    <input type="number" step="any" name="bupot" id="bupot" class="form-control">
+                </div>
+                <div class="mb-2 col-12">
+                    <label for="selisih_bupot">Selisih Bupot</label>
+                    <input type="text" name="selisih_bupot" id="selisih_bupot" class="form-control" required readonly>
+                </div>
+                <div class="mb-2 col-12">
+                    <label for="no_bupot">No. Bupot</label>
+                    <input type="text" name="no_bupot" id="no_bupot" class="form-control">
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="masa_bupot_bulan">Masa Bupot</label>
+                    <select name="masa_bupot_bulan" id="masa_bupot_bulan" class="form-control">
+                        <option value="JANUARI" selected>JANUARI</option>
+                        <option value="FEBRUARI">FEBRUARI</option>
+                        <option value="MARET">MARET</option>
+                        <option value="APRIL">APRIL</option>
+                        <option value="MEI">MEI</option>
+                        <option value="JUNI">JUNI</option>
+                        <option value="JULY">JULY</option>
+                        <option value="AGUSTUS">AGUSTUS</option>
+                        <option value="SEPTEMBER">SEPTEMBER</option>
+                        <option value="OKTOBER">OKTOBER</option>
+                        <option value="NOVEMBER">NOVEMBER</option>
+                        <option value="DESEMBER">DESEMBER</option>
+                    </select>
+                </div>
+                <div class="mb-2 col-6">
+                    <label for="masa_bupot_tahun"></label>
+                    <select name="masa_bupot_tahun" id="masa_bupot_tahun" class="form-control">
+                        <option value="{{ date('Y') - 2 }}">{{ date('Y') - 2 }}</option>
+                        <option value="{{ date('Y') - 1 }}">{{ date('Y') - 1 }}</option>
+                        <option value="{{ date('Y') }}" selected>{{ date('Y') }}</option>
+                        <option value="{{ date('Y') + 1 }}">{{ date('Y') + 1 }}</option>
+                        <option value="{{ date('Y') + 2 }}">{{ date('Y') + 2 }}</option>
+                    </select>
+                </div>
+                <div class="mb-2 col-12">
+                    <label for="tanggal_bukpot">Tanggal Bupot</label>
+                    <input type="date" name="tanggal_bukpot" id="tanggal_bukpot" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" id="add-bupot" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -176,11 +246,13 @@
 </script>
     <script>
         var data = @json($data);
-
+        let id;
+        let ppn;
         $("#jqGrid").jqGrid({
             datatype: 'local',
             data: data,
             colModel: [
+                {search:true, name: 'id', label : 'id', hidden: true},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'npwp', label : 'NPWP'},
                 {search:true, name: 'nik', label : 'NIK', sorttype: "int"},
@@ -196,6 +268,10 @@
                 {search:true, name: 'ppn_subtotal', label : 'Total'},
                 {search:true, name: 'pph', label : 'PPH'},
                 {search:true, name: 'no_job', label : 'JOB'},
+                {search:true, name: 'no_bupot', label : 'No Bupot'},
+                {search:true, name: 'masa_bupot', label : 'Masa Bupot'},
+                {search:true, name: 'bupot', label : 'Bupot'},
+                {search:true, name: 'selisih_bupot', label : 'Selisih Bupot'},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -205,7 +281,14 @@
             rowList:[10,25,50,100],
 			viewrecords: true,
             pager: "#jqGridPager",
-            caption: "Laporan PPN"
+            caption: "Laporan PPN",
+            onCellSelect: function (rowId, iRow, iCol, e) {
+                id = $(this).jqGrid('getCell', rowId, 'id');
+                ppn = $(this).jqGrid('getCell', rowId, 'ppn');
+                let no_job = $(this).jqGrid('getCell', rowId, 'no_job');
+                $('#no_job').val(no_job);
+                $('#pph_23').val(ppn);
+            },
         });
 
         $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
@@ -255,6 +338,35 @@
                     };
                 }
             });
+        });
+
+        $('#add-bupot').click(function (e) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.transaksi.update.bupot') }}",
+                data: {
+                    id:id,
+                    bupot:$('#bupot').val(),
+                    no_bupot:$('#no_bupot').val(),
+                    masa_bupot_bulan:$('#masa_bupot_bulan').val(),
+                    masa_bupot_tahun:$('#masa_bupot_tahun').val(),
+                    selisih_bupot:$('#selisih_bupot').val(),
+                    tanggal_bupot:$('#tanggal_bupot').val(),
+                },
+                success: function (response) {
+                    if(!response){
+                        alert('Data Tidak Ditemukan')
+                    }else{
+                        location.reload();
+                    };
+                }
+            });
+        });
+
+        $('#bupot').keyup(function (e) {
+            var val = $(this).val();
+            var ppn_23 = parseFloat(ppn.replace(/,/g, ''))
+            $('#selisih_bupot').val(ppn_23 - val);
         });
     </script>
 @endsection

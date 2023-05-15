@@ -45,4 +45,12 @@ class TransaksiController extends Controller
 
         return response('success');
     }
+
+    public function updateBupot(Request $request)
+    {
+        $data = $request->all();
+        $data['masa_bupot'] = $request->masa_bupot_bulan.' '.$request->masa_bupot_tahun;
+        Transaksi::find($request->id)->update($data);
+        return response('success');
+    }
 }

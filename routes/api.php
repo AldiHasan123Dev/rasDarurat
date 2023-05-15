@@ -47,6 +47,7 @@ Route::post('tarif-trucking', [TarifTruckingController::class,'createOrUpdate'])
 Route::post('sangu-sopir-action', [SanguSopirController::class,'createOrUpdate'])->name('api.sangusopir.createorupdate');
 Route::post('tarif-trucking-delete', [TarifTruckingController::class,'delete'])->name('api.tariftrucking.delete');
 Route::post('transaksi-update', [TransaksiController::class,'update'])->name('api.transaksi.update');
+Route::post('transaksi-update-bupot', [TransaksiController::class,'updateBupot'])->name('api.transaksi.update.bupot');
 Route::post('transaksi-trucking-update', [TransaksiTruckingController::class,'update'])->name('api.transaksi-trucking.update');
 Route::post('tagihan-trucking', [TagihanTruckingController::class,'store'])->name('api.tagihan-trucking.store');
 Route::delete('tagihan-trucking/{tagihan}', [TagihanTruckingController::class,'destroy'])->name('api.tagihan-trucking.destroy');
