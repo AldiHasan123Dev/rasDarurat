@@ -391,7 +391,7 @@
             rowList:[10,25,50,100],
 			viewrecords: true,
             pager: "#jqGridPager",
-            caption: "Order Trucking (SJ Sudah Kembali)",
+            caption: "Order Trucking (SJ Sudah Diterima FA)",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
@@ -546,7 +546,7 @@
             rowList:[10,25,50,100],
 			viewrecords: true,
             pager: "#jqGridPager1",
-            caption: "Order Trucking (SJ Belum Kembali)",
+            caption: "Order Trucking (SJ Belum diterima FA)",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 //
             },

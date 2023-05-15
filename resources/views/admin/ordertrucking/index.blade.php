@@ -32,7 +32,7 @@
                         @endif
                         <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
                         <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
-                        <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-warning  " id="btn-tagihan">Tambah Tagihan</button>
+                        <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-warning" id="btn-tagihan">Tambah Tagihan</button>
                         <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
                     </div>
                 </div>
@@ -515,6 +515,7 @@
         let id;
         $('#btn-edit').hide();
         $('#delete').hide();
+        $('#btn-tagihan').hide();
         $("#customer_id").select2({
             dropdownParent: $('#order'),
         });
@@ -617,6 +618,7 @@
             caption: "Order Trucking",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
+                var tgl_total = $(this).jqGrid('getCell', rowId, 'tgl_total');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
                 var job = $(this).jqGrid('getCell', rowId, 'job');
                 var customer_id = $(this).jqGrid('getCell', rowId, 'customer_id');
@@ -674,8 +676,16 @@
                 $("#container-edit").val(container);
                 $("#seal-edit").val(seal);
                 $("#tgl_muat_edit").val(date_tgl_muat);
-                $('#btn-edit').show();
-                $('#delete').show();
+                console.log(tgl_total);
+                if (tgl_total=='-') {
+                    $('#btn-tagihan').show();
+                    $('#btn-edit').show();
+                    $('#delete').show();
+                } else {
+                    $('#btn-tagihan').hide();
+                    $('#btn-edit').hide();
+                    $('#delete').hide();
+                }
                 if(ambil_empty_tambak_langon==1){
                     $('#ambil_empty_tambak_langon').attr('checked',true);
                 }

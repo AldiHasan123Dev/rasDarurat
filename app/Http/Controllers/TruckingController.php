@@ -242,8 +242,8 @@ class TruckingController extends Controller
 
     public function monitoring()
     {
-        $sj_kembali = OrderTrucking::whereNull('sj_kembali')->orderBy('tgl_muat')->get();
-        $orders = OrderTrucking::whereNotNull('sj_kembali')->orderBy('tgl_muat')->get();
+        $sj_kembali = OrderTrucking::whereNull('sj_kembali_fa')->orderBy('tgl_muat')->get();
+        $orders = OrderTrucking::whereNotNull('sj_kembali_fa')->orderBy('tgl_muat')->get();
         $sj_kembali = OrderTruckingResource::collection($sj_kembali);
         $orders = OrderTruckingResource::collection($orders);
         $kendaraan = Kendaraan::all()->where('is_active',1)->sortBy('nopol');

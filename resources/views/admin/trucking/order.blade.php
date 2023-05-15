@@ -32,6 +32,46 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 mt-3">
+                <div class="card">
+                    <div class="card-header" style="gap:10px" id="bttb-info">
+                        <div class="d-flex justify-content-between">
+                            <b>N0. JOB (selected): <b class="nojob"></b></b>
+                            <b><b class="koli"></b> Koli</b>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm nowrap" id="table-bttb" style="font-size:.7rem">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>No.</th>
+                                        <th>Tanggal</th>
+                                        <th>No. Gudang</th>
+                                        <th>Barang</th>
+                                        <th>Jumlah</th>
+                                        <th>Satuan</th>
+                                        <th>P</th>
+                                        <th>L</th>
+                                        <th>T</th>
+                                        <th>Vol</th>
+                                        <th>Berat</th>
+                                        <th>Tgl Masuk</th>
+                                        <th>Pengirim</th>
+                                        <th>Keterangan</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection
@@ -42,6 +82,7 @@
 <script>
 
     let data = [];
+    let id;
 
     $("#jqGrid").jqGrid({
         url: '{{ route('jqgrid.order') }}',
@@ -99,7 +140,10 @@
         pager: "#jqGridPager",
         caption: "Order Job (read only)",
         onCellSelect: function (rowId, iRow, iCol, e) {
-            // var id = $(this).jqGrid('getCell', rowId, 'id');
+            id = $(this).jqGrid('getCell', rowId, 'id');
+            var koli = $(this).jqGrid('getCell', rowId, 'koli');
+            $('.koli').html(koli);
+            tablebttb.ajax.reload();
             // var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
             // var sangu = $(this).jqGrid('getCell', rowId, 'sangu');
             // var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
@@ -123,6 +167,40 @@
         del: false,
         refresh: true
     });
+
+
+    let tablebttb = $('#table-bttb').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax:{
+                url: '{{ route('bttb.data') }}',
+                method:'POST',
+                data:function( d) {
+                    d.order_id = id;
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            },
+            columns: [
+                { data: 'id', name: 'id', visible:false },
+                { data: 'DT_RowIndex', 'orderable': false, 'searchable': false },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'no_gudang', name: 'no_gudang' },
+                { data: 'barang_id', name: 'barang_id' },
+                { data: 'qty', name: 'qty' },
+                { data: 'satuan_id', name: 'satuan_id' },
+                { data: 'p', name: 'p' },
+                { data: 'l', name: 'l' },
+                { data: 't', name: 't' },
+                { data: 'vol', name: 'vol' },
+                { data: 'berat', name: 'berat' },
+                { data: 'tgl_masuk', name: 'tgl_masuk' },
+                { data: 'pengirim_id', name: 'pengirim_id' },
+                { data: 'keterangan', name: 'keterangan' },
+                { data: 'action', name: 'action', orderable: false, searchable: false, visible:false },
+            ],
+            select:true
+        });
+
 
     function loadTable() {
         $('#jqGrid').jqGrid('clearGridData');
