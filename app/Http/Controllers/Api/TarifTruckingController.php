@@ -38,6 +38,7 @@ class TarifTruckingController extends Controller
     public function sync_trucking($tarif_id)
     {
         $data = OrderTrucking::where('tarif_id',$tarif_id)->get();
+        $tar = TarifTrucking::find($tarif_id);
         $i = 0;
         foreach($data as $item){
             $pph_21 = 0;
@@ -91,6 +92,7 @@ class TarifTruckingController extends Controller
             $margin = $item->tarif->tarif - $item->borongan - $item->borongan_kuli - $item->uang_makan - $item->op - $item->cleaning;
 
             $item->update([
+                'tujuan' => $tar->tujuan->tujuanInfo->nama,
                 'simpanan' => $simpanan_sopir,
                 'simpanan_kuli' => $simpanan_kuli,
                 'total_sopir' => $totalan,
