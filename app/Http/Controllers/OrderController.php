@@ -125,6 +125,7 @@ class OrderController extends Controller
         })->get();
 
         if($cek->count()>0){
+            $cek = $cek->first();
             $data['no'] = $cek->no;
             $data['job'] = $cek->job;
             $data['no_job'] = $cek->count() + 1;
