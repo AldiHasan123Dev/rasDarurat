@@ -137,15 +137,26 @@ class OrderTruckingController extends Controller
 
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
+        $request->validate([
+            'container' => 'nullable|unique:order_trucking,container,'.$ordertrucking->id,
+            'seal' => 'nullable|unique:order_trucking,seal,'.$ordertrucking->id
+        ]);
+
         $data = $request->all();
+        $data['tipe'] = $ordertrucking->tipe;
         if(!empty($data['tujuan'])){
             $sangu = SanguSopir::find($data['tujuan']);
-            $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
-            if(!$tarif){
-                return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
+            if($sangu->tujuanInfo->nama!=$ordertrucking->tujuan){
+                $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
+                if(!$tarif){
+                    return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
+                }
+                if($sangu->ukuran_20!=$ordertrucking->ukuran_20 || $sangu->ukuran_40!=$ordertrucking->ukuran_40 || $sangu->ukuran_combo!=$ordertrucking->ukuran_combo){
+                    return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama!');
+                }
+                $data['tujuan'] = $sangu->tujuanInfo->nama;
+                $data['tarif_id'] = $tarif->id;
             }
-            $data['tujuan'] = $sangu->tujuanInfo->nama;
-            $data['tarif_id'] = $tarif->id;
         }
         if($request->borongan){
             $data['borongan'] = str_replace(['.',','],'',$request->borongan);

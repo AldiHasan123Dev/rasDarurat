@@ -113,6 +113,7 @@ class TruckingController extends Controller
             ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
             ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
             ->where('kendaraan.milik','R1')
+            ->where('customer_trucking.r2',0)
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.tgl_total')
             ->whereNotNull('order_trucking.sj_kembali_fa')
@@ -124,6 +125,11 @@ class TruckingController extends Controller
             ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
             ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
             ->where('kendaraan.milik','R2')
+            ->where('order_trucking.customer_id','!=',2)
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.tgl_total')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orWhere('customer_trucking.r2',1)
             ->where('order_trucking.customer_id','!=',2)
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.tgl_total')
@@ -155,9 +161,14 @@ class TruckingController extends Controller
         $r1s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
             $q->where('milik','R1');
             $q->orWhere('milik','vendor');
+        })->whereHas('customer', function($a){
+            $a->where('r2',0);
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+
         $r2s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
             $q->where('milik','R2');
+        })->orWhereHas('customer', function($a){
+            $a->where('r2',1);
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
         return view('admin.trucking.invoice', compact('order','r1s','r2s','invoice'));
     }
@@ -178,10 +189,16 @@ class TruckingController extends Controller
         $r1s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
             $q->where('milik','R1');
             $q->orWhere('milik','vendor');
+        })->whereHas('customer', function($a){
+            $a->where('r2',0);
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+
         $r2s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
             $q->where('milik','R2');
+        })->orWhereHas('customer', function($a){
+            $a->where('r2',1);
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+
         if($r1s->count()>0&&$r2s->count()>0){
             return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
         }

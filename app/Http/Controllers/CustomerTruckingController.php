@@ -59,6 +59,17 @@ class CustomerTruckingController extends Controller
                         </form>';
                 return $html;
             })
+            ->addColumn('r2', function($data){
+                $checked = $data->r2==1?'checked':'';
+                $val = $data->r2==1?0:1;
+                $html = ' <form action="'.route('customertrucking.update',$data).'" method="post">
+                            <input type="hidden" name="_token" value="'.csrf_token().'" />
+                            <input type="hidden" name="_method" value="PUT" />
+                            <input type="hidden" name="r2" value="'.$val.'" />
+                            <input type="checkbox" onchange="submit()" '.$checked.'/>
+                        </form>';
+                return $html;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.customertrucking.form',['customertrucking'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
@@ -85,7 +96,7 @@ class CustomerTruckingController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action','pph_23'])
+            ->rawColumns(['action','pph_23','r2'])
             ->make(true);
     }
 }

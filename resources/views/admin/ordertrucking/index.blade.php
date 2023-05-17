@@ -273,19 +273,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body row">
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="container">Job ID</label>
                     <input type="text" name="job" id="job" class="form-control" readonly>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="tgl_muat">Tanggal Muat</label>
                     <input type="date" name="tgl_muat" id="tgl_muat_edit" class="form-control">
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="sj_kembali_fa">SJ Diterima FA</label>
                     <input type="date" name="sj_kembali_fa" id="sj_kembali_fa" class="form-control">
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="customer">Customer</label>
                     <select name="customer_id" id="customer_id_edit" class="form-control" required>
                         @foreach ($customers as $cus)
@@ -293,15 +293,7 @@
                         @endforeach
                     </select>
                 </div>
-                {{-- <div class="mb-2 col-3">
-                    <label for="kendaraan">Kendaraan</label>
-                    <select name="kendaraan_id" id="kendaraan_id" class="form-control" required>
-                        @foreach ($kendaraan as $kend)
-                            <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->milik }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2 col-3">
+                {{-- <div class="mb-2 col-3 hide-total">
                     <label for="sopir">Sopir</label>
                     <select name="sopir_id" id="sopir_id" class="form-control" required>
                         @foreach ($sopir as $sup)
@@ -309,11 +301,11 @@
                         @endforeach
                     </select>
                 </div> --}}
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="container">No. Cont</label>
                     <input type="text" name="container" id="container-edit" class="form-control" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="seal">Seal</label>
                     <input type="text" name="seal" id="seal-edit" class="form-control" required>
                 </div>
@@ -324,80 +316,88 @@
                         <option value="40">40'</option>
                         <option value="COMBO">COMBO</option>
                     </select>
+                </div> --}}
+                <div class="mb-2 col-3">
+                    <label for="kendaraan">Kendaraan</label>
+                    <select name="kendaraan_id" id="kendaraan_id" class="form-control show-total" required>
+                        @foreach ($kendaraan as $kend)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $kend->id }}">{{ $kend->nopol }} || {{ $kend->milik }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="mb-2 col-3">
                     <label for="tujuan">Tujuan</label>
-                    <select name="tujuan" id="tujuan-edit" class="form-control" required>
+                    <select name="tujuan" id="tujuan-edit" class="form-control show-total" required>
                         @foreach ($tujuan as $loc)
                             <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
                         @endforeach
                     </select>
-                </div> --}}
+                </div>
                 {{-- <div class="mb-2 col-3">
                     <label for="sangu">Sangu</label>
                     <input type="text" name="sangu" id="sangu-edit" class="form-control" disabled>
                 </div> --}}
-                <div class="col-12 my-2">
+                <div class="col-12 my-2 hide-total">
                     Biaya Lain-lain
                     <hr>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="borongan">Borongan</label>
                     <input type="text" name="borongan" id="borongan" class="form-control rupiah" readonly required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="sangu">Sangu Sopir</label>
                     <input type="text" name="sangu" id="sangu-edit" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="borongan_kuli">Borongan Kuli</label>
                     <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" readonly required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="kuli">Sangu Kuli</label>
                     <input type="text" name="kuli" id="kuli" class="form-control rupiah" required>
                 </div>
-                {{-- <div class="mb-2 col-3">
+                {{-- <div class="mb-2 col-3 hide-total">
                     <label for="simpanan">Sangu Simpanan</label>
                     <input type="text" name="simpanan" id="simpanan" class="form-control rupiah" required>
                 </div> --}}
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="tambah_isi">Tambah Isi</label>
                     <input type="text" name="tambah_isi" id="tambah_isi" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="tambah_solar">Tambah Solar</label>
                     <input type="text" name="tambah_solar" id="tambah_solar" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="tb_tl">TB/TL</label>
                     <input type="text" name="tb_tl" id="tb_tl" class="form-control rupiah" readonly required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="tally">Tally</label>
                     <input type="text" name="tally" id="tally" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="uang_makan">Uang Makan</label>
                     <input type="text" name="uang_makan" id="uang_makan" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="op">OP/naikkan Mty</label>
                     <input type="text" name="op" id="op" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="cleaning">Cleaning</label>
                     <input type="text" name="cleaning" id="cleaning" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="stappel">Stappel/Inap</label>
                     <input type="text" name="stappel" id="stappel" class="form-control rupiah" required>
                 </div>
-                <div class="mb-2 col-3">
+                <div class="mb-2 col-3 hide-total">
                     <label for="lain_lain">Lain-lain</label>
                     <input type="text" name="lain_lain" id="lain_lain" class="form-control rupiah" required>
                 </div>
-                <div class="my-2 col-12">
+                <div class="my-2 col-12 hide-total">
                     Keterangan
                     <hr>
                     <div class="d-flex gap-3">
@@ -641,6 +641,7 @@
                 var lain_lain = $(this).jqGrid('getCell', rowId, 'lain_lain');
                 var container = $(this).jqGrid('getCell', rowId, 'container');
                 var seal = $(this).jqGrid('getCell', rowId, 'seal');
+                var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
                 var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
                 var nopol = $(this).jqGrid('getCell', rowId, 'nopol');
                 var date_sj_kembali = $(this).jqGrid('getCell', rowId, 'date_sj_kembali');
@@ -676,8 +677,7 @@
                 $("#container-edit").val(container);
                 $("#seal-edit").val(seal);
                 $("#tgl_muat_edit").val(date_tgl_muat);
-                console.log(tgl_total);
-                if (tgl_total=='-') {
+                if (invoice=='-') {
                     $('#btn-tagihan').show();
                     $('#btn-edit').show();
                     $('#delete').show();
@@ -685,6 +685,11 @@
                     $('#btn-tagihan').hide();
                     $('#btn-edit').hide();
                     $('#delete').hide();
+                }
+                if(tgl_total=='-'){
+                    $('.hide-total').show();
+                }else{
+                    $('.hide-total').hide();
                 }
                 if(ambil_empty_tambak_langon==1){
                     $('#ambil_empty_tambak_langon').attr('checked',true);
