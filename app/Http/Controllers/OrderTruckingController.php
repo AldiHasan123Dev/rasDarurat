@@ -152,18 +152,18 @@ class OrderTruckingController extends Controller
                     return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
                 }
                 if($ordertrucking->tipe==20){
-                    if($sangu->ukuran_20!=$ordertrucking->ukuran_20){
-                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama!');
+                    if($sangu->ukuran_20!=$ordertrucking->borongan){
+                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_20.' != '.$ordertrucking->ukuran_20);
                     }
                 }
                 if($ordertrucking->tipe==40){
-                    if($sangu->ukuran_40!=$ordertrucking->ukuran_40){
-                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama!');
+                    if($sangu->ukuran_40!=$ordertrucking->borongan){
+                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_40.' != '.$ordertrucking->ukuran_40);
                     }
                 }
                 if($ordertrucking->tipe=='COMBO'){
-                    if($sangu->ukuran_combo!=$ordertrucking->ukuran_combo){
-                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama!');
+                    if($sangu->ukuran_combo!=$ordertrucking->borongan){
+                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_combo.' != '.$ordertrucking->ukuran_combo);
                     }
                 }
                 $data['tujuan'] = $sangu->tujuanInfo->nama;
