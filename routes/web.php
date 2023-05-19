@@ -140,6 +140,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('trucking/invoice-sopir',[TruckingController::class,'invoice_sopir'])->name('trucking.invoice_sopir');
     Route::post('trucking/cetak-invoice',[TruckingController::class,'cetak_invoice'])->name('trucking.cetak.invoice');
     Route::post('trucking/generate-invoice',[TruckingController::class,'generate_invoice'])->name('trucking.generate.invoice');
+    Route::get('keuangan/fee-cust',[KeuanganController::class,'fee_cust'])->name('keuangan.fee_cust');
     Route::get('keuangan/customer',[KeuanganController::class,'customer'])->name('keuangan.customer');
     Route::get('keuangan/order',[KeuanganController::class,'order'])->name('keuangan.order');
     Route::get('keuangan/ba_kembali',[KeuanganController::class,'ba_kembali'])->name('keuangan.ba_kembali');

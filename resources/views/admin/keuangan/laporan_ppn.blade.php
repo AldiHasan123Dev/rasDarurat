@@ -284,7 +284,7 @@
             caption: "Laporan PPN",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
-                ppn = $(this).jqGrid('getCell', rowId, 'ppn');
+                ppn = $(this).jqGrid('getCell', rowId, 'pph');
                 let no_job = $(this).jqGrid('getCell', rowId, 'no_job');
                 $('#no_job').val(no_job);
                 $('#pph_23').val(ppn);

@@ -3,7 +3,7 @@
         <div class="col-4">
             <div class="mb-2">
                 <label>Cont</label>
-                <select class="form-control" wire:model="cont" id="cont">
+                <select class="form-control" wire:change="changeCont" wire:model="cont" id="cont">
                     <option value="20" selected>20'</option>
                     <option value="40">40'</option>
                 </select>
@@ -19,15 +19,15 @@
                 <label>Dari</label>
                 <select class="form-control" wire:model="dari" id="dari">
                     @foreach ($lokasi as $item)
-                    <option value="{{ $item->lokasi_id }}" {{ $loop->first?'selected':'' }}>{{ $item->lokasi->nama }}</option>
+                    <option value="{{ $item->id }}">{{ $item->tujuan->tujuanInfo->nama }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="mb-2">
                 <label>Tujuan</label>
                 <select class="form-control" wire:model="tujuan" id="tujuan">
-                    @foreach ($lokasi as $item)
-                    <option value="{{ $item->lokasi_id }}" {{ $loop->first?'selected':'' }}>{{ $item->lokasi->nama }}</option>
+                    @foreach ($lokasiPelayaran as $item)
+                    <option value="{{ $item->lokasi_id }}">{{ $item->lokasi->nama }}</option>
                     @endforeach
                 </select>
             </div>
@@ -35,7 +35,7 @@
                 <label>Pelayaran</label>
                 <select class="form-control" wire:model="pelayaran" id="pelayaran">
                     @foreach ($pelayarans as $item)
-                    <option value="{{ $item->id }}" {{ $loop->first?'selected':'' }}>{{ $item->nama }}</option>
+                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
                     @endforeach
                 </select>
             </div>
@@ -46,19 +46,13 @@
         <div class="col-4">
             @if ($active)
             <table class="table table-sm table-bordered border border-dark">
-                @php
-                    $total = 0;
-                @endphp
                 @foreach ($data as $idx => $item)
-                @php
-                    $total += (int)$item;
-                @endphp
                 <tr>
                     <td>{{ $idx }}</td>
-                    <td>{{ number_format($item) }}</td>
+                    <td><input type="number" class="px-3 py-1" style="text-align: right" wire:keyup="hitungData" wire:change="hitungData" wire:model="data.{{ $idx }}" value="{{ $item }}"></td>
                 </tr>
                 @endforeach
-                <tr>
+                <tr class="text-end">
                     <td><b>Jumlah</b></td>
                     <td><b>{{ number_format($total) }}</b></td>
                 </tr>
@@ -67,41 +61,38 @@
         </div>
         <div class="col-4">
             @if ($active)
-            @php
-                $r = $cont==20?600000:1300000;
-            @endphp
             <table class="table table-sm table-bordered border border-dark">
-                <tr class="bg-light-info">
+                <tr class="text-end bg-light-info">
                     <td><b>HPP</b></td>
-                    <td><b>{{ number_format($total) }}</b></td>
+                    <td><b>{{ number_format($hpp) }}</b></td>
                 </tr>
-                <tr class="bg-light-info">
+                <tr class="text-end bg-light-info">
                     <td><b>Margin</b></td>
-                    <td><b>{{ number_format(($r/$total*100),2,'.','') }}</b></td>
+                    <td><b>{{ number_format($margin,2,'.','') }}</b></td>
                 </tr>
-                <tr class="bg-light-info">
+                <tr class="text-end bg-light-info">
                     <td><b></b></td>
-                    <td><b>{{ number_format($r) }}</b></td>
+                    <td><input type="number" class="py-1" style="text-align: right" wire:keyup="hitungData" wire:change="hitungData" wire:model="r" value="{{ $r }}"></td>
                 </tr>
-                <tr>
+                <tr class="text-end">
                     <td><b>TOTAL</b></td>
-                    <td><b>{{ number_format( $r+$total ) }}</b></td>
+                    <td><b>{{ number_format( $total ) }}</b></td>
                 </tr>
-                <tr class="bg-light-warning">
+                <tr class="text-end bg-light-warning">
                     <td><b>PPH (2%)</b></td>
-                    <td><b>{{ number_format( ($r+$total)*0.02 ) }}</b></td>
+                    <td><b>{{ number_format($pph) }}</b></td>
                 </tr>
-                <tr class="bg-light-warning">
+                <tr class="text-end bg-light-warning">
                     <td><b>Include PPH</b></td>
-                    <td><b>{{ number_format( (($r+$total)*0.02) + ($r+$total)) }}</b></td>
+                    <td><b>{{ number_format($total_pph) }}</b></td>
                 </tr>
-                <tr class="bg-light-danger">
+                <tr class="text-end bg-light-danger">
                     <td><b>PPN (1.1%)</b></td>
-                    <td><b>{{ number_format( ((($r+$total)*0.02) + ($r+$total)) * 0.01 )  }}</b></td>
+                    <td><b>{{ number_format($ppn)  }}</b></td>
                 </tr>
-                <tr class="bg-light-danger">
-                    <td><b>PPN (1.1%)</b></td>
-                    <td><b>{{ number_format( (((($r+$total)*0.02) + ($r+$total)) * 0.01) +  (($r+$total)*0.02) + ($r+$total))  }}</b></td>
+                <tr class="text-end bg-light-danger">
+                    <td><b>Include PPN</b></td>
+                    <td><b>{{ number_format($total_ppn)  }}</b></td>
                 </tr>
             </table>
             @endif

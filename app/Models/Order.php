@@ -47,6 +47,7 @@ class Order extends Model
         'agen',
         'satuan',
         'asuransi_date',
+        'tgl_komisi',
         'created_at',
     ];
 

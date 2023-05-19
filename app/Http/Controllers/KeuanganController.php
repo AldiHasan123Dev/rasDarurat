@@ -34,6 +34,12 @@ class KeuanganController extends Controller
         return view('admin.keuangan.customer');
     }
 
+    public function fee_cust()
+    {
+        $data = Order::where('komisi','>',0)->get();
+        return view('admin.keuangan.fee_cust', compact('data'));
+    }
+
     public function pre_invoice()
     {
         $data1_id = [];
