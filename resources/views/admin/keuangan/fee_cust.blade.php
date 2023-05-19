@@ -154,13 +154,7 @@
                     }
                 },
                 'colvis'
-            ],columnDefs: [
-                {
-                    target: 0,
-                    visible: false,
-                    searchable: false,
-                },
-            ],
+            ]
         });
         let table1 = $('#table-data').DataTable({
             scrollX : true,
