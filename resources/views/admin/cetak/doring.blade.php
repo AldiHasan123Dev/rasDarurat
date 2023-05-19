@@ -224,7 +224,7 @@
         <div class="modal-dialog">
             <form action="{{ route('cetak.dooring') }}" method="GET" class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Form Buat SI</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Form Dooring</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

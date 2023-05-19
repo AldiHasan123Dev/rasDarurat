@@ -84,14 +84,14 @@
                                                     $month++;
                                                 @endphp
                                             @else
-                                                <th class="text-center">{{ number_format($item->laporanMargin($month)) }}</th>
+                                                <th class="text-center">{{ formatNumber($item->laporanMargin($month)) }}</th>
                                                 @php
                                                     $m += $item->laporanMargin($month);
                                                     $sub[$i] = ($sub[$i]??0) + $item->laporanMargin($month);
                                                 @endphp
                                             @endif
                                         @endfor
-                                        <th class="text-center text-warning">{{ number_format($m) }}</th>
+                                        <th class="text-center text-warning">{{ formatNumber($m) }}</th>
                                         <th class="text-center text-warning">{{ $rit }}</th>
                                         {{-- <th class="text-center text-warning">{{ $rit + $m }}</th> --}}
                                         @php
@@ -104,15 +104,15 @@
                                 <tr>
                                     <th rowspan="2" class="align-middle text-center text-primary">Total</th>
                                     @for ($i = 1; $i <=26; $i++)
-                                    <th class="text-center text-primary">{{ number_format($sub[$i]) }}</th>
+                                    <th class="text-center text-primary">{{ formatNumber($sub[$i]) }}</th>
                                     @endfor
                                     {{-- <th rowspan="2" class="align-middle text-center text-primary">{{ $total }}</th> --}}
                                 </tr>
-                                <tr>
+                                {{-- <tr>
                                     @for ($i = 1; $i <= 26; $i+=2)
-                                    <th class="text-center text-primary" colspan="2">{{ number_format($sub[$i] + $sub[$i+1]) }}</th>
+                                    <th class="text-center text-primary" colspan="2">{{ formatNumber($sub[$i] + $sub[$i+1]) }}</th>
                                     @endfor
-                                </tr>
+                                </tr> --}}
                             </tbody>
                         </table>
                     </div>

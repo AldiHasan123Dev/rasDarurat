@@ -40,7 +40,7 @@ class Sopir extends Model
         return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->count();
     }
 
-    public function laporanMargin($bulan, $thn = 2023){
-        return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->sum('margin');
+    public function laporanSangu($bulan, $thn = 2023){
+        return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->sum('borongan');
     }
 }
