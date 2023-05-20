@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AgenController;
 use App\Http\Controllers\AsuransiController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BTTBController;
 use App\Http\Controllers\CetakController;
+use App\Http\Controllers\COAController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\EstimasiController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\LSSController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\NSFPController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTruckingController;
@@ -30,6 +33,7 @@ use App\Http\Controllers\SanguSopirController;
 use App\Http\Controllers\SatuanController;
 use App\Http\Controllers\ShipmentController;
 use App\Http\Controllers\SopirController;
+use App\Http\Controllers\SubaccountController;
 use App\Http\Controllers\SubMenuController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\TagihanController;
@@ -112,6 +116,10 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('lss',LSSController::class);
     Route::resource('lain',LainController::class);
     Route::resource('jasakirim',JasaKirimController::class);
+    Route::resource('neraca',NeracaController::class);
+    Route::resource('account',AccountController::class);
+    Route::resource('subaccount',SubaccountController::class);
+    Route::resource('coa',COAController::class);
 
 
     Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');

@@ -55,12 +55,12 @@ class EstimasiHpp extends Component
                 })->where('is_active',1)->first();
 
         $stuffing = $this->stuffing == 'dalam' ? 'luar' : 'dalam';
-        $lain = Lain::where('nama','NOT LIKE','%STUFFING '.$stuffing.'%')->get();
+        $lain = Lain::where('nama','NOT LIKE','%'.$stuffing.'%')->get();
         $data['TRUCKING'] = $truk->tarif ?? 0;
         $data['AGEN'] = $agen->tarif ?? 0;
         $data['PELAYARAN'] = $pelayarant->tarif ?? 0;
         $data['LSS'] = $this->cont == 20 ? ($lss->cont_20??0) : ($lss->cont_40??0);
-        $data['THC'] = $this->cont == 20 ? ($thc->cont_20??0) : ($thc->cont_40??0);
+        $data['THC TUJUAN'] = $this->cont == 20 ? ($thc->cont_20??0) : ($thc->cont_40??0);
         foreach ($lain as $item ) {
             $data[$item->nama] = $this->cont == 20 ? $item->cont_20 : $item->cont_40;
         };
