@@ -89,13 +89,13 @@
         mtype: 'GET',
         datatype: 'json',
         colModel: [
+            {search:true, frozen:true, name: 'invoice', label : 'invoice'},
+            {search:true, frozen:true, name: 'job', label : 'job'},
+            {search:true, frozen:true, name: 'no', label : 'no'},
+            {search:true, frozen:true, name: 'asuransi', label : 'asuransi'},
+            {search:true, frozen:true, name: 'pembayar', label : 'pembayar'},
             {search:true, name: 'id', label : 'id', hidden:true},
             {search:true, name: 'class', label : 'class', hidden:true},
-            {search:true, name: 'invoice', label : 'invoice'},
-            {search:true, name: 'job', label : 'job'},
-            {search:true, name: 'no', label : 'no'},
-            {search:true, name: 'asuransi', label : 'asuransi'},
-            {search:true, name: 'pembayar', label : 'pembayar'},
             {search:true, name: 'marketing', label : 'marketing'},
             {search:true, name: 'cs', label : 'cs'},
             {search:true, name: 'pengirim', label : 'pengirim'},
@@ -167,6 +167,8 @@
         del: false,
         refresh: true
     });
+
+    $("#jqGrid").jqGrid('setFrozenColumns');
 
 
     let tablebttb = $('#table-bttb').DataTable({
