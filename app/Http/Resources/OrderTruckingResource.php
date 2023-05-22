@@ -67,7 +67,7 @@ class OrderTruckingResource extends JsonResource
             'pembayar' => $this->order ? $this->order->tarif->customer->nama : '-',
             'job' => $this->order ? $this->order->job.'-'.sprintf('%02d',$this->order->no_job) : '-',
             'trucking' => $this->order ? $this->order->trucking: '-',
-            'sopir' => $this->sopir->nama,
+            'sopir' => $this->sopir->nama ?? '-',
             'nopol' => $this->kendaraan->nopol.' | '.$this->kendaraan->milik,
             'container' => $this->container ?? '-',
             'seal' => $this->seal ?? '-',

@@ -293,14 +293,14 @@
                         @endforeach
                     </select>
                 </div>
-                {{-- <div class="mb-2 col-3 hide-total">
+                <div class="mb-2 col-3 hide-total">
                     <label for="sopir">Sopir</label>
                     <select name="sopir_id" id="sopir_id" class="form-control" required>
                         @foreach ($sopir as $sup)
                             <option {{ $loop->first?'selected':'' }} value="{{ $sup->id }}">{{ $sup->nama }} </option>
                         @endforeach
                     </select>
-                </div> --}}
+                </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="container">No. Cont</label>
                     <input type="text" name="container" id="container-edit" class="form-control" required>

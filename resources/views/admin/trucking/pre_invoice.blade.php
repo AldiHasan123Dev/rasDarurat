@@ -39,7 +39,6 @@
                                 <th>Nopol</th>
                                 <th>Tujuan</th>
                                 <th>Tarif</th>
-                                <th>Lain-lain</th>
                                 <th>Add Cost</th>
                                 <th>PPH 21 (3%)</th>
                                 <th>PPH 23 (2%)</th>
@@ -73,7 +72,6 @@
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
                                         <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ number_format($order->tarif->tarif) }}</td>
-                                        <td>{{ number_format($order->lain_lain) }}</td>
                                         <td>{{ number_format($order->tagihans->sum('jumlah')) }}</td>
                                         <td>{{ number_format(round($order->pph_21)) }}</td>
                                         <td>{{ number_format(round($order->pph_23)) }}</td>
@@ -124,7 +122,6 @@
                                 <th>Nopol</th>
                                 <th>Tujuan</th>
                                 <th>Tarif</th>
-                                <th>Lain-lain</th>
                                 <th>Add Cost</th>
                                 <th>PPH 21 (3%)</th>
                                 <th>PPH 23 (2%)</th>
@@ -158,7 +155,6 @@
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
                                         <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ number_format($order->tarif->tarif) }}</td>
-                                        <td>{{ number_format($order->lain_lain) }}</td>
                                         <td>{{ number_format($order->tagihans->sum('jumlah')) }}</td>
                                         <td>{{ number_format(round($order->pph_21)) }}</td>
                                         <td>{{ number_format(round($order->pph_23)) }}</td>
@@ -209,7 +205,6 @@
                                 <th>Nopol</th>
                                 <th>Tujuan</th>
                                 <th>Tarif</th>
-                                <th>Lain-lain</th>
                                 <th>Add Cost</th>
                                 <th>PPH 21 (3%)</th>
                                 <th>PPH 23 (2%)</th>
@@ -243,7 +238,6 @@
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
                                         <td>{{ $order->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ number_format($order->tarif->tarif) }}</td>
-                                        <td>{{ number_format($order->lain_lain) }}</td>
                                         <td>{{ number_format($order->tagihans->sum('jumlah')) }}</td>
                                         <td>{{ number_format(round($order->pph_21)) }}</td>
                                         <td>{{ number_format(round($order->pph_23)) }}</td>

@@ -169,7 +169,7 @@ class TruckingController extends Controller
             $q->where('milik','R2');
         })->orWhereHas('customer', function($a){
             $a->where('r2',1);
-        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        })->where('invoice',$invoice)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
         return view('admin.trucking.invoice', compact('order','r1s','r2s','invoice'));
     }
 
@@ -187,8 +187,7 @@ class TruckingController extends Controller
         $null_job = OrderTrucking::whereIn('id',$order_id)->whereNull('order_id')->count();
         $tipe = $order->kendaraan->milik;
         $r1s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
-            $q->where('milik','R1');
-            $q->orWhere('milik','vendor');
+            $q->whereIn('milik',['R1','vendor']);
         })->whereHas('customer', function($a){
             $a->where('r2',0);
         })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
@@ -197,7 +196,7 @@ class TruckingController extends Controller
             $q->where('milik','R2');
         })->orWhereHas('customer', function($a){
             $a->where('r2',1);
-        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        })->whereIn('id',$order_id)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
 
         if($r1s->count()>0&&$r2s->count()>0){
             return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
