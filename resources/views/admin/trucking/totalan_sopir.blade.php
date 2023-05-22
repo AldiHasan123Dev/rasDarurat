@@ -58,7 +58,7 @@
                                 @foreach ($orders as $order)
                                     <tr>
                                         @if ($loop->first)
-                                            <td style="vertical-align: middle; text-align:center" rowspan="{{ $orders->count() }}">{{ $order->sopir->nama }}</td>
+                                            <td style="vertical-align: middle; text-align:center" rowspan="{{ $orders->count() }}">{{ $order->sopir->nama ?? '-' }}</td>
                                         @endif
                                         <td class="text-center"><input type="checkbox" name="order_id" value="{{ $order->id }}"></td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
