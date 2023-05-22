@@ -138,7 +138,7 @@ class OrderTruckingController extends Controller
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
         $request->validate([
-            'container' => 'nullable|unique:order_trucking,container,'.$ordertrucking->id,
+            // 'container' => 'nullable|unique:order_trucking,container,'.$ordertrucking->id,
             'seal' => 'nullable|unique:order_trucking,seal,'.$ordertrucking->id
         ]);
 

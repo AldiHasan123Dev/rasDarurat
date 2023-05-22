@@ -89,13 +89,13 @@
         mtype: 'GET',
         datatype: 'json',
         colModel: [
+            // {search:true, frozen:true, name: 'invoice', label : 'invoice'},
+            {search:true, frozen:true, name: 'job', label : 'job'},
+            {search:true, frozen:true, name: 'no', label : 'no'},
+            // {search:true, frozen:true, name: 'asuransi', label : 'asuransi'},
+            {search:true, frozen:true, name: 'pembayar', label : 'pembayar'},
             {search:true, name: 'id', label : 'id', hidden:true},
             {search:true, name: 'class', label : 'class', hidden:true},
-            {search:true, name: 'invoice', label : 'invoice'},
-            {search:true, name: 'job', label : 'job'},
-            {search:true, name: 'no', label : 'no'},
-            {search:true, name: 'asuransi', label : 'asuransi'},
-            {search:true, name: 'pembayar', label : 'pembayar'},
             {search:true, name: 'marketing', label : 'marketing'},
             {search:true, name: 'cs', label : 'cs'},
             {search:true, name: 'pengirim', label : 'pengirim'},
@@ -103,14 +103,14 @@
             {search:true, name: 'dari', label : 'dari'},
             {search:true, name: 'tujuan', label : 'tujuan'},
             {search:true, name: 'shipment', label : 'shipment'},
-            {search:true, name: 'kondisi', label : 'kondisi'},
+            // {search:true, name: 'kondisi', label : 'kondisi'},
             {search:true, name: 'barang', label : 'barang'},
             {search:true, name: 'pelayaran', label : 'pelayaran'},
-            {search:true, name: 'kapal', label : 'kapal'},
-            {search:true, name: 'voyage', label : 'voyage'},
-            {search:true, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
-            {search:true, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
-            {search:true, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
+            // {search:true, name: 'kapal', label : 'kapal'},
+            // {search:true, name: 'voyage', label : 'voyage'},
+            // {search:true, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
+            // {search:true, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
+            // {search:true, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'nopol', label : 'nopol'},
             {search:true, name: 'trucking', label : 'trucking'},
             {search:true, name: 'container', label : 'container'},
@@ -118,8 +118,8 @@
             {search:true, name: 'stuffing', label : 'stuffing'},
             {search:true, name: 'stuffing_type', label : 'stuffing_type'},
             {search:true, name: 'full', label : 'full'},
-            {search:true, name: 'barang_diantar', label : 'barang_diantar'},
-            {search:true, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
+            // {search:true, name: 'barang_diantar', label : 'barang_diantar'},
+            // {search:true, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'koli', label : 'koli'},
             {search:true, name: 'satuan', label : 'satuan'},
             {search:true, name: 'unit', label : 'unit'},
@@ -167,6 +167,8 @@
         del: false,
         refresh: true
     });
+
+    $("#jqGrid").jqGrid('setFrozenColumns');
 
 
     let tablebttb = $('#table-bttb').DataTable({

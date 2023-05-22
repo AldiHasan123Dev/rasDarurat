@@ -104,7 +104,11 @@
                                 <tr>
                                     <th rowspan="2" class="align-middle text-center text-primary">Total</th>
                                     @for ($i = 1; $i <=26; $i++)
+                                    @if ($i%2==0)
+                                    <th class="text-center text-primary">{{ $sub[$i] }}</th>
+                                    @else
                                     <th class="text-center text-primary">{{ formatNumber($sub[$i]) }}</th>
+                                    @endif
                                     @endfor
                                     {{-- <th rowspan="2" class="align-middle text-center text-primary">{{ $total }}</th> --}}
                                 </tr>

@@ -5,16 +5,16 @@ if(!function_exists('formatNumber')){
         $suffix = '';
         if ($number >= 1000 && $number < 1000000) {
             $number = $number / 1000;
-            $suffix = 'k';
+            $suffix = ' rb';
         } elseif ($number >= 1000000 && $number < 1000000000) {
             $number = $number / 1000000;
-            $suffix = 'm';
+            $suffix = ' jt';
         } elseif ($number >= 1000000000 && $number < 1000000000000) {
             $number = $number / 1000000000;
-            $suffix = 'b';
+            $suffix = ' mil';
         } elseif ($number >= 1000000000000) {
             $number = $number / 1000000000000;
-            $suffix = 't';
+            $suffix = ' trl';
         }
         return number_format($number, 2, '.', '') . $suffix;
     }
