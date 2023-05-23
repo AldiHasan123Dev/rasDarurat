@@ -137,10 +137,14 @@ class OrderTruckingController extends Controller
 
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
-        $request->validate([
-            // 'container' => 'nullable|unique:order_trucking,container,'.$ordertrucking->id,
-            'seal' => 'nullable|unique:order_trucking,seal,'.$ordertrucking->id
-        ]);
+        $cek = OrderTrucking::where('seal',$request->seal)->get();
+        if($cek->count()>1){
+            return back()->with('danger','Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
+        }
+        // $request->validate([
+        //     // 'container' => 'nullable|unique:order_trucking,container,'.$ordertrucking->id,
+        //     'seal' => 'nullable|unique:order_trucking,seal,'.$ordertrucking->id
+        // ]);
 
         $data = $request->all();
         $data['tipe'] = $ordertrucking->tipe;

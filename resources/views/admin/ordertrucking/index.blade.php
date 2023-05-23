@@ -31,7 +31,7 @@
                             </form>
                         @endif
                         <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
-                        <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
+                        <button class="py-2 px-3 btn btn-primary" onclick="editModal()" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
                         <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-warning" id="btn-tagihan">Tambah Tagihan</button>
                         <button class="py-2 px-3 btn btn-danger" type="button" id="delete"><i class="fas fa-trash"></i> Hapus</button>
                     </div>
@@ -431,6 +431,57 @@
     </div>
 </div>
 
+<div class="modal fade" id="edit-vendor" tabindex="-1" aria-labelledby="edit-vendorLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <form action="" id="edit-form" method="post" class="modal-content">
+            @csrf
+            @method('PUT')
+            <div class="modal-header">
+                <h5 class="modal-title" id="orderLabel">Update Order Trucking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row">
+                <div class="mb-2 col-3 hide-total">
+                    <label for="tgl_muat">Tanggal Muat</label>
+                    <input type="date" name="tgl_muat" id="tgl_muat_edit_vendor" class="form-control">
+                </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="sj_kembali_fa">SJ Diterima FA</label>
+                    <input type="date" name="sj_kembali_fa" id="sj_kembali_fa_vendor" class="form-control">
+                </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="customer">Customer</label>
+                    <select name="customer_id" id="customer_id_edit_vendor" class="form-control" required>
+                        @foreach ($customers as $cus)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="container">No. Cont</label>
+                    <input type="text" name="container" id="container_edit_vendor" class="form-control" required>
+                </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="seal">Seal</label>
+                    <input type="text" name="seal" id="seal_edit_vendor" class="form-control" required>
+                </div>
+                <div class="mb-2 col-3">
+                    <label for="tujuan">Tujuan</label>
+                    <select name="tujuan" id="tujuan_edit_vendor" class="form-control show-total" required>
+                        @foreach ($tujuan as $loc)
+                            <option {{ $loop->first?'selected':'' }} value="{{ $loc->id }}">{{ $loc->tujuanInfo->nama }} </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="modal fade" id="tagihan" tabindex="-1" aria-labelledby="tagihanLabel" aria-hidden="true">
     <form action="" class="modal-dialog modal-lg" method="post" id="form-tagihan">
         @csrf
@@ -513,6 +564,7 @@
         // });
 
         let id;
+        let is_vendor;
         $('#btn-edit').hide();
         $('#delete').hide();
         $('#btn-tagihan').hide();
@@ -558,6 +610,7 @@
                 {search:true, frozen:true, name: 'customer', label : 'Customer', width:80},
                 {search:true, frozen:true, name: 'trucking', label : 'Trucking', width:80},
                 {search:false, name: 'class', label : 'class', hidden:true},
+                {search:false, name:'is_vendor', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_teluk_langon', label:'#', hidden:true},
                 {search:false, name:'bongkar_full_teluk_langon', label:'#', hidden:true},
@@ -618,6 +671,7 @@
             caption: "Order Trucking",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
+                is_vendor = $(this).jqGrid('getCell', rowId, 'is_vendor');
                 var tgl_total = $(this).jqGrid('getCell', rowId, 'tgl_total');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
                 var job = $(this).jqGrid('getCell', rowId, 'job');
@@ -706,6 +760,12 @@
                 return { "class": item.class };
             }
         });
+
+        function editModal(){
+            if (is_vendor=='true') {
+                console.log(is_vendor);
+            }
+        }
 
         $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
 		$('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
