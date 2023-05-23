@@ -433,7 +433,7 @@
 
 <div class="modal fade" id="edit-vendor" tabindex="-1" aria-labelledby="edit-vendorLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
-        <form action="" id="edit-form" method="post" class="modal-content">
+        <form action="" id="edit-form-vendor" method="post" class="modal-content">
             @csrf
             @method('PUT')
             <div class="modal-header">
@@ -580,6 +580,9 @@
         $("#customer_id_edit").select2({
             dropdownParent: $('#edit'),
         });
+        $("#customer_id_edit_vendor").select2({
+            dropdownParent: $('#edit-vendor'),
+        });
         $("#kendaraan_id").select2({
             dropdownParent: $('#edit'),
         });
@@ -591,6 +594,9 @@
         });
         $("#tujuan-edit").select2({
             dropdownParent: $('#edit'),
+        });
+        $("#tujuan_edit_vendor").select2({
+            dropdownParent: $('#edit-vendor'),
         });
         $(".tujuan").val('').trigger('change');
         $("#sopir").select2({
@@ -705,6 +711,7 @@
                 var ambil_empty_teluk_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_teluk_langon');
                 var bongkar_full_teluk_langon = $(this).jqGrid('getCell', rowId, 'bongkar_full_teluk_langon');
                 $('#edit-form').attr('action','{{ url('admin/ordertrucking') }}/'+id);
+                $('#edit-form-vendor').attr('action','{{ url('admin/ordertrucking') }}/'+id);
                 $('#delete').val(id);
                 $('#job').val(job);
                 $('#borongan').val(borongan);
@@ -724,13 +731,19 @@
                 $('#lain_lain').val(lain_lain);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
+                $('#sj_kembali_fa_vendor').val(date_sj_kembali_fa);
                 $("#customer_id_edit").val(customer_id).trigger('change');
+                $("#customer_id_edit_vendor").val(customer_id).trigger('change');
                 $("#kendaraan_id").val(kendaraan_id).trigger('change');
                 $("#sopir_id").val(sopir_id).trigger('change');
                 $("#tujuan-edit").val(sangu_id).trigger('change');
+                $("#tujuan_edit_vendor").val(sangu_id).trigger('change');
                 $("#container-edit").val(container);
+                $("#container_edit_vendor").val(container);
                 $("#seal-edit").val(seal);
+                $("#seal_edit_vendor").val(seal);
                 $("#tgl_muat_edit").val(date_tgl_muat);
+                $("#tgl_muat_edit_vendor").val(date_tgl_muat);
                 if (invoice=='-') {
                     $('#btn-tagihan').show();
                     $('#btn-edit').show();
@@ -761,9 +774,14 @@
             }
         });
 
+        var editModal = new bootstrap.Modal(document.getElementById('edit'))
+        var editVendorModal = new bootstrap.Modal(document.getElementById('edit-vendor'))
+
         function editModal(){
             if (is_vendor=='true') {
-                console.log(is_vendor);
+                editVendorModal.show();
+            }else{
+                editModal.show();
             }
         }
 

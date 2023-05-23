@@ -33,6 +33,7 @@
                                 <th style="width: 30px">#</th>
                                 <th>Tanggal Muat</th>
                                 <th>Tanggal Totalan</th>
+                                <th>Trucking</th>
                                 <th>JOB</th>
                                 <th>Container / Seal</th>
                                 <th>Tipe</th>
@@ -66,7 +67,18 @@
                                         <td class="text-center"><input type="checkbox" name="order_id1" value="{{ $order->id }}"></td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_total)) }}</td>
-                                        <td>{{ $order->order->job ?? '-' }}</td>
+                                        @if ($order->order)
+                                            @if (($order->customer_id==2 && $order->order->trucking!='XPDC')||($order->customer_id!=2 && $order->order->trucking=='XPDC'))
+                                                <td class="bg-light-danger">{{ $order->order->trucking ?? '-' }}</td>
+                                                <td class="bg-light-danger">{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                            @else
+                                                <td>{{ $order->order->trucking ?? '-' }}</td>
+                                                <td>{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                            @endif
+                                        @else
+                                        <td>-</td>
+                                        <td>-</td>
+                                        @endif
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
                                         <td>{{ $order->tipe }}'</td>
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
@@ -116,6 +128,7 @@
                                 <th style="width: 30px">#</th>
                                 <th>Tanggal Muat</th>
                                 <th>Tanggal Totalan</th>
+                                <th>Trucking</th>
                                 <th>JOB</th>
                                 <th>Container / Seal</th>
                                 <th>Tipe</th>
@@ -149,7 +162,18 @@
                                         <td class="text-center"><input type="checkbox" name="order_id2" value="{{ $order->id }}"></td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_total)) }}</td>
-                                        <td>{{ $order->order->job ?? '-' }}</td>
+                                        @if ($order->order)
+                                            @if (($order->customer_id==2 && $order->order->trucking!='XPDC')||($order->customer_id!=2 && $order->order->trucking=='XPDC'))
+                                                <td class="bg-light-danger">{{ $order->order->trucking ?? '-' }}</td>
+                                                <td class="bg-light-danger">{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                            @else
+                                                <td>{{ $order->order->trucking ?? '-' }}</td>
+                                                <td>{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                            @endif
+                                        @else
+                                        <td>-</td>
+                                        <td>-</td>
+                                        @endif
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
                                         <td>{{ $order->tipe }}'</td>
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>
@@ -199,6 +223,7 @@
                                 <th style="width: 30px">#</th>
                                 <th>Tanggal Muat</th>
                                 <th>Tanggal Totalan</th>
+                                <th>Trucking</th>
                                 <th>JOB</th>
                                 <th>Container / Seal</th>
                                 <th>Tipe</th>
@@ -232,7 +257,18 @@
                                         <td class="text-center"><input type="checkbox" name="order_id_vendor" value="{{ $order->id }}"></td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->tgl_muat)) }}</td>
                                         <td class="text-center">-</td>
-                                        <td>{{ $order->order->job ?? '-' }}</td>
+                                        @if ($order->order)
+                                            @if (($order->customer_id==2 && $order->order->trucking!='XPDC')||($order->customer_id!=2 && $order->order->trucking=='XPDC'))
+                                                <td class="bg-light-danger">{{ $order->order->trucking ?? '-' }}</td>
+                                                <td class="bg-light-danger">{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                            @else
+                                                <td>{{ $order->order->trucking ?? '-' }}</td>
+                                                <td>{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                            @endif
+                                        @else
+                                        <td>-</td>
+                                        <td>-</td>
+                                        @endif
                                         <td>{{ $order->container }} / {{ $order->seal }}</td>
                                         <td>{{ $order->tipe }}'</td>
                                         <td>{{ $order->kendaraan->nopol }} | {{ $order->kendaraan->milik }}</td>

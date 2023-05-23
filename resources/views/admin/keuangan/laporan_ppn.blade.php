@@ -17,7 +17,7 @@
                 <div class="card-header">
                     <div class="d-flex gap-5">
                         <button type="button" class="btn btn-primary btn-sm py-0" data-bs-toggle="modal" data-bs-target="#faktur">Tambah Faktur</button>
-                        <button type="button" class="btn btn-warning btn-sm py-0" data-bs-toggle="modal" data-bs-target="#bukpot">Tambah Bukpot</button>
+                        <button type="button" class="btn btn-warning btn-sm py-0" data-bs-toggle="modal" data-bs-target="#bukpot">Bukpot</button>
                         <form action="{{ route('keuangan.ppn.export') }}" method="post">
                             @csrf
                             <input type="hidden" name="start" value="{{ $start }}">
@@ -166,7 +166,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="bukpotLabel">Tambah Bukpot</h5>
+                <h5 class="modal-title" id="bukpotLabel">Data Bukpot</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body row">
@@ -286,7 +286,14 @@
                 id = $(this).jqGrid('getCell', rowId, 'id');
                 ppn = $(this).jqGrid('getCell', rowId, 'pph');
                 let no_job = $(this).jqGrid('getCell', rowId, 'no_job');
+                let no_bupot = $(this).jqGrid('getCell', rowId, 'no_bupot');
+                let masa_bupot = $(this).jqGrid('getCell', rowId, 'masa_bupot');
+                let bupot = $(this).jqGrid('getCell', rowId, 'bupot');
+                let selisih_bupot = $(this).jqGrid('getCell', rowId, 'selisih_bupot');
                 $('#no_job').val(no_job);
+                $('#no_bupot').val(no_bupot);
+                $('#bupot').val(bupot);
+                $('#selisih_bupot').val(selisih_bupot);
                 $('#pph_23').val(ppn);
             },
         });
