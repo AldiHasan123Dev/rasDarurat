@@ -24,7 +24,7 @@ class TransaksiSopirResource extends JsonResource
         return [
             'tgl_invoice' => date('d/m/y', strtotime($this->tgl_invoice)),
             'invoice' => $this->invoice,
-            'sopir' => $this->sopir->nama,
+            'sopir' => $this->sopir->nama ?? '-',
             'total' => number_format($this->total),
             'container' => $container,
         ];

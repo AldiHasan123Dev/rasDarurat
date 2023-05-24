@@ -40,6 +40,14 @@ class KeuanganController extends Controller
         return view('admin.keuangan.fee_cust', compact('data'));
     }
 
+    public function fee_cust_bayar()
+    {
+        Order::whereNull('komisi_print')->whereNotNull('tgl_komisi')->where('komisi','>',0)->update([
+            'komisi_print' => date('Y-m-d')
+        ]);
+        return back()->with('success','data berhasil disimpan!');
+    }
+
     public function pre_invoice()
     {
         $data1_id = [];

@@ -213,6 +213,7 @@
                                     <td>No Container</td>
                                     <td>Nopol</td>
                                     <td>Customer</td>
+                                    <td>Pembayar</td>
                                     <td>Tujuan</td>
                                     <td>Borongan Sopir</td>
                                     <td>Sangu Sopir</td>
@@ -237,6 +238,7 @@
                                     @endif
                                     <td>{{ $item->container }} / {{ $item->seal }}</td>
                                     <td>{{ $item->kendaraan->nopol }}</td>
+                                    <td>{{ $item->order ? ($item->order->tarif->customer->nama??'-') : '-' }}</td>
                                     <td>{{ $item->customer->nama }}</td>
                                     <td>{{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                     <td class="text-center">{{ number_format($item->borongan) }}</td>
@@ -257,10 +259,10 @@
                                 </tr>
                             @endforeach
                             <tr style="height: 20px !important">
-                                <td colspan="17" style="border-bottom: 1px solid black"></td>
+                                <td colspan="18" style="border-bottom: 1px solid black"></td>
                             </tr>
                             <tr class="border-bottom border-dark">
-                                <td colspan="14"></td>
+                                <td colspan="15"></td>
                                 <td class="fw-bold text-center" colspan="2">TOTAL</td>
                                 <td class="fw-bold">
                                     <div class="price d-flex justify-content-between px-2">

@@ -32,7 +32,8 @@
                                 <th>Kapal</th>
                                 <th>Voyage</th>
                                 <th>Fee</th>
-                                <th>Tanggal</th>
+                                <th>Tgl diberikan</th>
+                                <th>Tgl inv dibayar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,6 +50,7 @@
                                     <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td>
                                     <td>{{ number_format($item->komisi) }}</td>
                                     <td>{{ is_null($item->tgl_komisi) ? '-' : date('d/m/y',strtotime($item->tgl_komisi)) }}</td>
+                                    <td>{{ is_null($item->komisi_print) ? '-' : date('d/m/y',strtotime($item->komisi_print)) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -59,7 +61,13 @@
 
         <div class="card mt-3">
             <div class="m-3">
-                <span>List Sudah Terbit Tanggal</span>
+                <div class="d-flex justify-content-between">
+                    <span>List Sudah Terbit Tanggal Belum Transfer</span>
+                    <form action="{{ route('keuangan.fee_cust.bayar') }}" method="post">
+                        @csrf
+                        <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Apa anda yakin? order yang ada dilist akan ditandai sebagai sudah dibayar pd tgl hari ini {{ date('d/m/Y') }}')">Tandai Sudah dibayar</button>
+                    </form>
+                </div>
                 <hr>
             </div>
             <div class="card-body">
@@ -76,11 +84,12 @@
                                 <th>Kapal</th>
                                 <th>Voyage</th>
                                 <th>Fee</th>
-                                <th>Tanggal</th>
+                                <th>Tgl diberikan</th>
+                                <th>Tgl inv dibayar</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data->whereNotNull('tgl_komisi') as $item)
+                            @foreach ($data->whereNotNull('tgl_komisi')->whereNull('komisi_print') as $item)
                                 <tr>
                                     <td>{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</td>
                                     <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
@@ -92,6 +101,52 @@
                                     <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td>
                                     <td>{{ number_format($item->komisi) }}</td>
                                     <td>{{ is_null($item->tgl_komisi) ? '-' : date('d/m/y',strtotime($item->tgl_komisi)) }}</td>
+                                    <td>{{ is_null($item->komisi_print) ? '-' : date('d/m/y',strtotime($item->komisi_print)) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="m-3">
+                <span>List Sudah Transfer</span>
+                <hr>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm no-wrap nowrap" id="table-payment" style="font-size:.7rem">
+                        <thead>
+                            <tr>
+                                <th>ID JOB</th>
+                                <th>Pembayar</th>
+                                <th>Pelayaran</th>
+                                <th>Shippment</th>
+                                <th>No Cont</th>
+                                <th>Seal</th>
+                                <th>Kapal</th>
+                                <th>Voyage</th>
+                                <th>Fee</th>
+                                <th>Tgl diberikan</th>
+                                <th>Tgl inv dibayar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data->whereNotNull('tgl_komisi')->whereNotNull('komisi_print') as $item)
+                                <tr>
+                                    <td>{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</td>
+                                    <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
+                                    <td>{{ $item->jadwal_kapal->pelayaran->nama ?? '-' }}</td>
+                                    <td>{{ $item->tarif->shipmentInfo->nama ?? '-' }}</td>
+                                    <td>{{ $item->container }}</td>
+                                    <td>{{ $item->seal }}</td>
+                                    <td>{{ $item->jadwal_kapal->kapal->nama ?? '-' }}</td>
+                                    <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td>
+                                    <td>{{ number_format($item->komisi) }}</td>
+                                    <td>{{ is_null($item->tgl_komisi) ? '-' : date('d/m/y',strtotime($item->tgl_komisi)) }}</td>
+                                    <td>{{ is_null($item->komisi_print) ? '-' : date('d/m/y',strtotime($item->komisi_print)) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -157,6 +212,17 @@
             ]
         });
         let table1 = $('#table-data').DataTable({
+            scrollX : true,
+            select:true,
+            columnDefs: [
+                {
+                    target: 0,
+                    visible: false,
+                    searchable: false,
+                },
+            ],
+        });
+        let table2 = $('#table-payment').DataTable({
             scrollX : true,
             select:true,
             columnDefs: [

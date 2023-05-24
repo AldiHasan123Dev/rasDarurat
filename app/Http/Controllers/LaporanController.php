@@ -44,7 +44,7 @@ class LaporanController extends Controller
     }
     public function trucking()
     {
-        $data = Kendaraan::where('milik','!=','vendor')->get();
+        $data = Kendaraan::where('milik','!=','vendor')->where('is_active',1)->get();
         return view('admin.laporan.trucking', compact('data'));
     }
     public function sopir()
