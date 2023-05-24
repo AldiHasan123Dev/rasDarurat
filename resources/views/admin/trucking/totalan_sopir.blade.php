@@ -43,6 +43,7 @@
                                 <th class="fixed-top">Tanggal Muat</th>
                                 <th class="fixed-top">SJ Diterima FA</th>
                                 <th class="fixed-top">Customer</th>
+                                <th class="fixed-top">Pembayar</th>
                                 <th class="fixed-top">Trucking</th>
                                 <th class="fixed-top">JOB</th>
                                 <th class="fixed-top">Container / Seal</th>
@@ -66,6 +67,7 @@
                                         <td class="text-center">{{ date('d/m/y', strtotime($order->sj_kembali_fa)) }}</td>
                                         <td>{{ $order->customer->nama }}</td>
                                         @if ($order->order)
+                                            <td>{{ $order->order->tarif->customer->nama }}</td>
                                             @if (($order->customer_id==2 && $order->order->trucking!='XPDC')||($order->customer_id!=2 && $order->order->trucking=='XPDC'))
                                                 <td class="bg-light-danger">{{ $order->order->trucking ?? '-' }}</td>
                                                 <td class="bg-light-danger">{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
@@ -74,6 +76,7 @@
                                                 <td>{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
                                             @endif
                                         @else
+                                        <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
                                         @endif

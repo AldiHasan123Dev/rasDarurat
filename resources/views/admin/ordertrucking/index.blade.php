@@ -615,6 +615,7 @@
                 {search:true, frozen:true, name: 'tgl_invoice', label : 'Tgl Invoice', width:80},
                 {search:true, frozen:true, name: 'customer', label : 'Customer', width:80},
                 {search:true, frozen:true, name: 'trucking', label : 'Trucking', width:80},
+                {search:true, frozen:true, name: 'pembayar', label : 'Pembayar', width:80},
                 {search:false, name: 'class', label : 'class', hidden:true},
                 {search:false, name:'is_vendor', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
@@ -629,7 +630,6 @@
                 {search:false, name: 'date_sj_kembali_fa', label : 'SJ Diterima FA D', hidden:true},
                 {search:false, name: 'date_tgl_muat', label : 'Tanggal Muat D', hidden:true},
                 // {search:true, name: 'tanggal', label : 'Tanggal', sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'pembayar', label : 'Pembayar'},
                 {search:true, name: 'job', label : 'Job'},
                 {search:true, name: 'sopir', label : 'Sopir'},
                 {search:true, name: 'nopol', label : 'Nopol'},
@@ -774,14 +774,14 @@
             }
         });
 
-        var editModal = new bootstrap.Modal(document.getElementById('edit'))
-        var editVendorModal = new bootstrap.Modal(document.getElementById('edit-vendor'))
+        var editModalTrucking = new bootstrap.Modal(document.getElementById('edit'));
+        var editVendorModal = new bootstrap.Modal(document.getElementById('edit-vendor'));
 
         function editModal(){
             if (is_vendor=='true') {
                 editVendorModal.show();
             }else{
-                editModal.show();
+                editModalTrucking.show();
             }
         }
 

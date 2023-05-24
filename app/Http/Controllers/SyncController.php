@@ -394,7 +394,7 @@ class SyncController extends Controller
             $tujuan = $item->tarif->tujuan->tujuanInfo->nama;
             $tb_tl = 0;
             if($item->customer_id!=2){
-                if (($item->kendaraan->milik=='R2'||$item->kendaraan->milik=='vendor')&&$item->customer->pph_23==1) {
+                if (($item->kendaraan->milik=='R2'||$item->kendaraan->milik=='vendor'||$item->customer->r2==1)&&$item->customer->pph_23==1) {
                     $pph_23 = $price * 0.02;
                 }
             }else{

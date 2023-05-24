@@ -220,7 +220,7 @@
                 </div>
                 <div class="mb-2 col-12">
                     <label for="tanggal_bukpot">Tanggal Bupot</label>
-                    <input type="date" name="tanggal_bukpot" id="tanggal_bukpot" class="form-control">
+                    <input type="date" name="tanggal_bupot" id="tanggal_bupot" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">
@@ -271,6 +271,10 @@
                 {search:true, name: 'no_bupot', label : 'No Bupot'},
                 {search:true, name: 'masa_bupot', label : 'Masa Bupot'},
                 {search:true, name: 'bupot', label : 'Bupot'},
+                {search:true, name: 'bupot_nominal', label : 'Bupot', hidden:true},
+                {search:true, name: 'masa_bupot_tahun', label : 'Bupot', hidden:true},
+                {search:true, name: 'masa_bupot_bulan', label : 'Bupot', hidden:true},
+                {search:true, name: 'tanggal_bupot_date', label : 'Bupot', hidden:true},
                 {search:true, name: 'selisih_bupot', label : 'Selisih Bupot'},
             ],
             autowidth: true,
@@ -287,14 +291,19 @@
                 ppn = $(this).jqGrid('getCell', rowId, 'pph');
                 let no_job = $(this).jqGrid('getCell', rowId, 'no_job');
                 let no_bupot = $(this).jqGrid('getCell', rowId, 'no_bupot');
-                let masa_bupot = $(this).jqGrid('getCell', rowId, 'masa_bupot');
-                let bupot = $(this).jqGrid('getCell', rowId, 'bupot');
+                let masa_bupot_tahun = $(this).jqGrid('getCell', rowId, 'masa_bupot_tahun');
+                let masa_bupot_bulan = $(this).jqGrid('getCell', rowId, 'masa_bupot_bulan');
+                let tanggal_bupot_date = $(this).jqGrid('getCell', rowId, 'tanggal_bupot_date');
+                let bupot = $(this).jqGrid('getCell', rowId, 'bupot_nominal');
                 let selisih_bupot = $(this).jqGrid('getCell', rowId, 'selisih_bupot');
                 $('#no_job').val(no_job);
                 $('#no_bupot').val(no_bupot);
                 $('#bupot').val(bupot);
                 $('#selisih_bupot').val(selisih_bupot);
                 $('#pph_23').val(ppn);
+                $('#masa_bupot_tahun').val(masa_bupot_tahun);
+                $('#masa_bupot_bulan').val(masa_bupot_bulan);
+                $('#tanggal_bupot').val(tanggal_bupot_date);
             },
         });
 

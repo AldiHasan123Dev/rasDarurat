@@ -39,10 +39,14 @@ class TransaksiResource extends JsonResource
             'ppn' => number_format(round($this->ppn)),
             'pph' =>  number_format(round($this->pph)),
             'bupot' =>  is_null($this->bupot) ? '-' : number_format(round($this->bupot)),
+            'bupot_nominal' => is_null($this->bupot) ? 0 : $this->bupot,
             'no_bupot' => $this->no_bupot ?? '-',
             'selisih_bupot' => $this->selisih_bupot ?? '-',
             'masa_bupot' => $this->masa_bupot ?? '-',
+            'masa_bupot_tahun' => is_null($this->masa_bupot) ? null : substr($this->masa_bupot,-4),
+            'masa_bupot_bulan' => is_null($this->masa_bupot) ? null : str_replace([substr($this->masa_bupot,-4),' '],'',$this->masa_bupot),
             'tanggal_bupot' => is_null($this->tanggal_bupot) ? '-' : date('d/m/y', strtotime($this->tanggal_bupot)),
+            'tanggal_bupot_date' => $this->tanggal_bupot,
             'ppn_subtotal' =>  number_format(round($this->ppn) + ceil($this->sub_total)),
         ];
     }

@@ -176,6 +176,7 @@ class TruckingController extends Controller
     public function cetak_invoice(Request $request)
     {
         $order_id = explode(',',$request->order_id);
+        // dd($order_id);
         if (count($order_id)<=1&&$order_id[0]=="") {
             return back()->with('danger','Harap checklist terlebih dahulu!');
         }

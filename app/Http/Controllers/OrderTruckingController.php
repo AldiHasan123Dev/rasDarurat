@@ -121,7 +121,7 @@ class OrderTruckingController extends Controller
         $kendaraan = Kendaraan::find($data['kendaraan_id']);
         $cus = CustomerTrucking::find($data['customer_id']);
         if($data['customer_id']!=2){
-            if (($kendaraan->milik=='R2'||$kendaraan->milik=='vendor')&&$cus->pph_23==1) {
+            if (($kendaraan->milik=='R2'||$kendaraan->milik=='vendor'||$cus->r2==1)&&$cus->pph_23==1) {
                 $data['pph_23'] = $price * 0.02;
             }
         }else{
