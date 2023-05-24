@@ -43,6 +43,8 @@ use App\Http\Controllers\TarifController;
 use App\Http\Controllers\TarifPelayaranController;
 use App\Http\Controllers\TarifTruckingController;
 use App\Http\Controllers\TarifTrukController;
+use App\Http\Controllers\TemplateJurnalController;
+use App\Http\Controllers\TemplateJurnalItemController;
 use App\Http\Controllers\THCController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TruckingController;
@@ -120,6 +122,8 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('account',AccountController::class);
     Route::resource('subaccount',SubaccountController::class);
     Route::resource('coa',COAController::class);
+    Route::resource('templatejurnal',TemplateJurnalController::class);
+    Route::resource('templatejurnalitem',TemplateJurnalItemController::class);
 
 
     Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');
