@@ -238,8 +238,8 @@
                                     @endif
                                     <td>{{ $item->container }} / {{ $item->seal }}</td>
                                     <td>{{ $item->kendaraan->nopol }}</td>
-                                    <td>{{ $item->order ? ($item->order->tarif->customer->nama??'-') : '-' }}</td>
                                     <td>{{ $item->customer->nama }}</td>
+                                    <td>{{ $item->order ? ($item->order->tarif->customer->nama??'-') : '-' }}</td>
                                     <td>{{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                     <td class="text-center">{{ number_format($item->borongan) }}</td>
                                     <td class="text-center">{{ number_format($item->sangu) }}</td>

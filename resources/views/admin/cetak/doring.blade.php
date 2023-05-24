@@ -167,7 +167,7 @@
                             </tr>
                         </table>
                         <p>Dengan Hormat</p>
-                        <p>Dengan ini kami sampaikan bahwa cont termuat: <br> {{ $order->tarif->dari_lokasi->nama }} - {{ $order->tarif->tujuan_lokasi->nama }}, {{ $order->jadwal_kapal->pelayaran->nama }} VOY.{{ $order->jadwal_kapal->voyage }} Td. {{ date('d F Y', strtotime($order->jadwal_kapal->td)) }} <br> Termuat {{ $orders->count() }} ({{ terbilang($orders->count()) }}) cont dengan <b><u>PELAYARAN "{{ $order->jadwal_kapal->pelayaran->nama }}" berikut data :</u></b></p>
+                        <p>Bersama ini kami sampaikan bahwa {{ $order->jadwal_kapal->kapal->nama }} VOY.{{ $order->jadwal_kapal->voyage }} TD {{ date('d F Y', strtotime($order->jadwal_kapal->td)) }} <br> Termuat {{ $orders->count() }} ({{ terbilang($orders->count()) }}) cont dengan <b><u>PELAYARAN "{{ $order->jadwal_kapal->pelayaran->nama }}" berikut data :</u></b></p>
                         <table class="w-100 mt-3 border border-dark my-2" style="font-size: .7rem">
                             <tr>
                                 <td class="border border-dark text-center fw-bold">No</td>
