@@ -803,6 +803,8 @@
                 url: "{{ url('api/api-bttb-add') }}",
                 data:data,
                 success: function (response) {
+                    $('#jqGrid').trigger( 'reloadGrid' );
+                    tablebttb.ajax.reload();
                     $('.koli').html(response);
                     $('#form-bttb-create')[0].reset();
                     alert('Data berhasil ditambahkan! Jumlah Koli Sekarang adalah '+response);
