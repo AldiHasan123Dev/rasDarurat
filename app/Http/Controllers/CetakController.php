@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agen;
 use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\JadwalKapal;
@@ -139,8 +140,8 @@ class CetakController extends Controller
         $lokasi = request('tujuan');
         $jadwal_kapal = JadwalKapal::find($id);
         $tujuan = Lokasi::find($lokasi);
-        $pengirim = Pengirim::all();
-        $orders = Order::where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
+        $agents = Agen::all();
+        $orders = Order::where('agen_id',request('agent'))->where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
             $q->where('tujuan',$lokasi);
             $q->whereIn('kondisi',[5,7]);
         })->get();
@@ -167,7 +168,7 @@ class CetakController extends Controller
             }
         }
 
-        return view('admin.cetak.doring', compact('orders','jadwal_kapal','tujuan','pengirim','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring'));
+        return view('admin.cetak.doring', compact('agents','orders','jadwal_kapal','tujuan','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring'));
     }
 
     public function invoice()

@@ -236,11 +236,20 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb">
+                    <div class="mb-2">
                         <label for="tujuan-si">Tujuan</label><br>
                         <select name="tujuan" id="tujuan-si" class="form-control w-100">
                             @foreach ($data_lokasi as $lokasi)
                                 <option value="{{ $lokasi->id }}">{{ $lokasi->nama ?? '-' }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label for="agent">Agent</label><br>
+                        <select name="agent" id="agent" class="form-control w-100">
+                            <option value=""></option>
+                            @foreach ($agents as $agent)
+                                <option value="{{ $agent->id }}">{{ $agent->nama ?? '-' }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -264,6 +273,9 @@
             dropdownParent: $('#exampleModal'),
         });
         $("#tujuan-si").select2({
+            dropdownParent: $('#exampleModal'),
+        });
+        $("#agent").select2({
             dropdownParent: $('#exampleModal'),
         });
 
