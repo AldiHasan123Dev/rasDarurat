@@ -351,7 +351,7 @@
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="borongan_kuli">Borongan Kuli</label>
-                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" readonly required>
+                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="kuli">Sangu Kuli</label>

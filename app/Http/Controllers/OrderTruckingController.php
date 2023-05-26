@@ -135,6 +135,13 @@ class OrderTruckingController extends Controller
 
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
+        if(request('sj_kembali')){
+            $ordertrucking->update([
+                'sj_kembali' => request('sj_kembali')
+            ]);
+
+            return back()->with('success','Data berhasil disimpan!');
+        }
         $cek = OrderTrucking::where('seal',$request->seal)->get();
         if($cek->count()>1){
             return response('Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
