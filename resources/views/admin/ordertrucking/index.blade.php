@@ -535,6 +535,7 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('assets/js/jquery-serializeFields.js') }}"></script>
 <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
 <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
     <script>
@@ -603,11 +604,10 @@
             dropdownParent: $('#order'),
         });
 
-        var data = @json($data);
-
         $("#jqGrid").jqGrid({
-            datatype: 'local',
-            data: data,
+            url: '{{ route('jqgrid.ordertrucking') }}',
+            mtype: 'GET',
+            datatype: 'json',
             colModel: [
                 {search:true, frozen:true, name: 'id', label : 'ID', sorttype: 'number', width:50},
                 {search:true, frozen:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y', width:80},
@@ -785,7 +785,7 @@
             }
         }
 
-        $('#jqGrid').jqGrid('filterToolbar',{stringResult: true, searchOnEnter: false, defaultSearch: 'cn'});
+        $('#jqGrid').jqGrid('filterToolbar');
 		$('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
@@ -943,5 +943,32 @@
                 }
             });
         }
+
+        $('#edit-form').submit(function (e) {
+            e.preventDefault();
+            let data = $(this).serializeFields()
+            $.ajax({
+                type: "PUT",
+                url: $(this).attr('action'),
+                data:data,
+                success: function (response) {
+                    $('#jqGrid').trigger( 'reloadGrid' );
+                    alert(response)
+                }
+            });
+        });
+        $('#edit-form-vendor').submit(function (e) {
+            e.preventDefault();
+            let data = $(this).serializeFields()
+            $.ajax({
+                type: "PUT",
+                url: $(this).attr('action'),
+                data:data,
+                success: function (response) {
+                    $('#jqGrid').trigger( 'reloadGrid' );
+                    alert(response)
+                }
+            });
+        });
     </script>
 @endsection

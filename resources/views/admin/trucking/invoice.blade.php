@@ -578,6 +578,9 @@
                                             <td>-</td>
                                             @endif
                                             <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                            @if ($item->order)
+                                            <td style="width: 100px"> {{ $item->order->tarif->customer->nama ?? '-' }} <td>
+                                            @else
                                         </tr>
                                         @endforeach
                                     @endforeach

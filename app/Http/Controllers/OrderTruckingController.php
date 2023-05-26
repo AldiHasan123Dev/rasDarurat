@@ -20,8 +20,6 @@ class OrderTruckingController extends Controller
 {
     public function index()
     {
-        $data = OrderTrucking::all()->sortByDesc('tgl_muat');
-        $data = OrderTruckingResource::collection($data);
         $kendaraan = Kendaraan::all()->where('is_active',1)->sortBy('nopol');
         $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
         $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->orderBy('lokasi.nama','asc')->get();
@@ -33,7 +31,7 @@ class OrderTruckingController extends Controller
                 $item->update(['order_id'=>$order->id]);
             }
         }
-        return view('admin.ordertrucking.index', compact('data','kendaraan','sopir','tujuan','customers'));
+        return view('admin.ordertrucking.index', compact('kendaraan','sopir','tujuan','customers'));
     }
 
     public function store(Request $request)
@@ -139,7 +137,7 @@ class OrderTruckingController extends Controller
     {
         $cek = OrderTrucking::where('seal',$request->seal)->get();
         if($cek->count()>1){
-            return back()->with('danger','Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
+            return response('Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
         }
         // $request->validate([
         //     // 'container' => 'nullable|unique:order_trucking,container,'.$ordertrucking->id,
@@ -153,21 +151,21 @@ class OrderTruckingController extends Controller
             if($sangu->tujuanInfo->nama!=$ordertrucking->tujuan){
                 $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
                 if(!$tarif){
-                    return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
+                    return response('Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
                 }
                 if($ordertrucking->tipe==20){
                     if($sangu->ukuran_20!=$ordertrucking->borongan){
-                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_20.' != '.$ordertrucking->ukuran_20);
+                        return response('Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_20.' != '.$ordertrucking->ukuran_20);
                     }
                 }
                 if($ordertrucking->tipe==40){
                     if($sangu->ukuran_40!=$ordertrucking->borongan){
-                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_40.' != '.$ordertrucking->ukuran_40);
+                        return response('Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_40.' != '.$ordertrucking->ukuran_40);
                     }
                 }
                 if($ordertrucking->tipe=='COMBO'){
                     if($sangu->ukuran_combo!=$ordertrucking->borongan){
-                        return back()->with('danger','Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_combo.' != '.$ordertrucking->ukuran_combo);
+                        return response('Tidak bisa update data karena borongan sopir tidak sama! '.$sangu->ukuran_combo.' != '.$ordertrucking->ukuran_combo);
                     }
                 }
                 $data['tujuan'] = $sangu->tujuanInfo->nama;
@@ -226,35 +224,38 @@ class OrderTruckingController extends Controller
         }
 
         $data['tb_tl'] = 0;
-        if(empty($data['ambil_empty_tambak_langon'])){
+        if($data['ambil_empty_tambak_langon']=="true"){
+            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
+                $data['tb_tl'] += 50000;
+            }
+            if($ordertrucking->tipe=='40'){
+                $data['tb_tl'] += 75000;
+            }
+            $data['ambil_empty_tambak_langon'] = 1;
+        }else{
             $data['ambil_empty_tambak_langon'] = 0;
-        }else{
+        }
+        if($data['ambil_empty_teluk_langon']=="true"){
             if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
             if($ordertrucking->tipe=='40'){
                 $data['tb_tl'] += 75000;
             }
-        }
-        if(empty($data['ambil_empty_teluk_langon'])){
+            $data['ambil_empty_teluk_langon'] = 1;
+        }else{
             $data['ambil_empty_teluk_langon'] = 0;
-        }else{
-            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
-                $data['tb_tl'] += 50000;
-            }
-            if($ordertrucking->tipe=='40'){
-                $data['tb_tl'] += 75000;
-            }
         }
-        if(empty($data['bongkar_full_teluk_langon'])){
-            $data['bongkar_full_teluk_langon'] = 0;
-        }else{
+        if($data['bongkar_full_teluk_langon']=="true"){
             if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
                 $data['tb_tl'] += 50000;
             }
             if($ordertrucking->tipe=='40'){
                 $data['tb_tl'] += 75000;
             }
+            $data['bongkar_full_teluk_langon'] = 1;
+        }else{
+            $data['bongkar_full_teluk_langon'] = 0;
         }
 
         $ordertrucking->update($data);
@@ -266,6 +267,7 @@ class OrderTruckingController extends Controller
             'margin' => $margin
         ]);
 
+        return response('Data berhasil di update!');
         return back()->with('success','Data berhasil diupdate');
     }
 

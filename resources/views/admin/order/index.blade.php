@@ -221,7 +221,7 @@
     </div>
 </div>
 
-<div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasBTTB" aria-labelledby="offcanvasBTTBLabel">
+<div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasBTTBEdit" aria-labelledby="offcanvasBTTBLabel">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasBTTBLabel">Form BTTB</h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -233,6 +233,59 @@
             <input type="hidden" name="order_id" id="order_id_bttb">
             <input type="hidden" id="bttb_id">
             @include('admin.bttb.form', ['bttb'=>[]])
+            <div class="col-12 mb-2 px-1">
+                <button type="button" class="btn btn-success btn-sm" id="update-bttb">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="offcanvas offcanvas-bottom" tabindex="-2" id="offcanvasBTTBCreate" aria-labelledby="offcanvasBTTBLabel" style="height: 700px">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasBTTBLabel">Form BTTB</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form id="form-bttb-create">
+            @csrf
+            <input type="hidden" name="order_id" id="order-id-create">
+            {{-- @include('admin.bttb.form', ['bttb'=>[]]) --}}
+            <table class="w-100 table-bordered" style="font-size: .7rem; table-layout:auto">
+                <thead>
+                    <tr class="text-center">
+                        <td>No.Gudang</td>
+                        <td>Barang</td>
+                        <td>Qty</td>
+                        <td>Satuan</td>
+                        <td>P</td>
+                        <td>L</td>
+                        <td>T</td>
+                        <td>Vol Manual</td>
+                        <td>Berat</td>
+                        <td>Tgl Masuk</td>
+                        <td>Pengirim</td>
+                        <td>Keterangan</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for ($i = 0; $i < 18; $i++)
+                        <tr>
+                            <td><input type="text" style="width: 100px" name="no_gudang-{{ $i }}" id="no_gudang-{{ $i }}"></td>
+                            <td class="autocomplete"><input type="text" name="barang_id-{{ $i }}" id="barang_id-{{ $i }}"></td>
+                            <td><input type="number" style="width: 70px" name="qty-{{ $i }}" id="qty-{{ $i }}"></td>
+                            <td class="autocomplete"><input type="text" style="width: 100px" name="satuan_id-{{ $i }}" id="satuan_id-{{ $i }}"></td>
+                            <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="p-{{ $i }}" id="p-{{ $i }}"></td>
+                            <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="l-{{ $i }}" id="l-{{ $i }}"></td>
+                            <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="t-{{ $i }}" id="t-{{ $i }}"></td>
+                            <td><input type="number" style="width: 70px" name="vol-{{ $i }}" id="vol-{{ $i }}"></td>
+                            <td><input type="number" style="width: 70px" name="berat-{{ $i }}" id="berat-{{ $i }}"></td>
+                            <td><input type="date" style="width: 100px" name="tgl_masuk-{{ $i }}" id="tgl_masuk-{{ $i }}"></td>
+                            <td class="autocomplete"><input type="text" name="pengirim_id-{{ $i }}" id="pengirim_id-{{ $i }}"></td>
+                            <td><input type="text" name="keterangan-{{ $i }}" id="keterangan-{{ $i }}"></td>
+                        </tr>
+                    @endfor
+                </tbody>
+            </table>
             <div class="col-12 mb-2 px-1">
                 <button type="button" class="btn btn-success btn-sm" id="add-bttb">Simpan</button>
             </div>
@@ -466,7 +519,9 @@
             type: "GET",
             url: "{{ url('api/get-nama-barang') }}",
             success: function (response) {
-                autocomplete(document.getElementById("barang_id"), response);
+                for (let i = 0; i < 18; i++) {
+                    autocomplete(document.getElementById("barang_id-"+i), response);
+                }
                 autocomplete(document.getElementById("selectBarang"), response);
             }
         });
@@ -474,16 +529,22 @@
             type: "GET",
             url: "{{ url('api/get-nama-satuan') }}",
             success: function (response) {
-                autocomplete(document.getElementById("satuan_id"), response);
+                for (let i = 0; i < 18; i++) {
+                    autocomplete(document.getElementById("satuan_id-"+i), response);
+                }
             }
         });
+
         var customers = @json($customers);
-        autocomplete(document.getElementById("pengirim_bttb"), customers);
-        autocomplete(document.getElementById("pengirim_id"), customers);
-        autocomplete(document.getElementById("penerima_id"), customers);
+        // autocomplete(document.getElementById("pengirim_bttb"), customers);
+        // autocomplete(document.getElementById("pengirim_id"), customers);
+        for (let i = 0; i < 18; i++) {
+            autocomplete(document.getElementById("pengirim_id-"+i), customers);
+        }
     });
 </script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
+<script src="{{ asset('assets/js/jquery-serializeFields.js') }}"></script>
 <script>
     $('#koli-info').hide();
     $('#bttb-info').hide();
@@ -567,6 +628,7 @@
             $('#packing-list').show();
             $('#packing-list-kubikasi').show();
             $('#order_id_bttb').val(id);
+            $('#order-id-create').val(id);
             $('.nojob').html(no_job);
             $('.koli').html(koli);
             $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
@@ -733,6 +795,21 @@
             e.target.value = e.target.value.toUpperCase()
         });
 
+
+        $('#add-bttb').click(function (e) {
+            let data = $("#form-bttb-create").serializeFields()
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/api-bttb-add') }}",
+                data:data,
+                success: function (response) {
+                    $('.koli').html(response);
+                    $('#form-bttb-create')[0].reset();
+                    alert('Data berhasil ditambahkan! Jumlah Koli Sekarang adalah '+response);
+                }
+            });
+        });
+
         $("select[name=tarif_id]").change(function (e) {
             var val = $(this).val();
             $.ajax({
@@ -795,7 +872,20 @@
             $('#vol').val(vol);
         }
 
-        $('#add-bttb').click(function (e) {
+        function hitungVolCreate(i){
+            var p = $('#p-'+i).val();
+            var l = $('#l-'+i).val();
+            var t = $('#t-'+i).val();
+            var vol = $('#vol-'+i).val();
+            var qty = $('#qty-'+i).val();
+            if(p>0&&l>0&&t>0){
+                vol = ((p*l*t)/1000000) * qty;
+                vol = vol.toFixed(2);
+            }
+            $('#vol-'+i).val(vol);
+        }
+
+        $('#update-bttb').click(function (e) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('api.customer.getCustomer') }}",
@@ -884,7 +974,7 @@
             var tgl = data.tgl_masuk;
             var date = tgl.split("/").reverse().join("-");
             $('#tgl_masuk').val(date);
-            var myOffcanvas = document.getElementById('offcanvasBTTB');
+            var myOffcanvas = document.getElementById('offcanvasBTTBEdit');
             var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
             offCanvas.show();
         });
@@ -920,7 +1010,7 @@
             $('#berat').val('');
             $('#pengirim_bttb').val('');
             $('#keterangan-bttb').val('');
-            var myOffcanvas = document.getElementById('offcanvasBTTB');
+            var myOffcanvas = document.getElementById('offcanvasBTTBCreate');
             var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
             offCanvas.show();
         });

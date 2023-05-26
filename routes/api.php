@@ -69,9 +69,11 @@ Route::get('get-order-pre-invoice', [OrderController::class,'pre_invoice']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
 Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
+Route::post('api-bttb-add',[BTTBController::class,'add']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
 Route::resource('api-tarif',TarifController::class);
 Route::resource('api-jasakirim',JasaKirimController::class)->only(['store']);
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
 
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
+Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
