@@ -119,16 +119,16 @@ class OrderController extends Controller
 
         $tarif = Tarif::find($request->tarif_id);
 
-        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->whereHas('tarif', function($q) use($tarif){
+        $ceks = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->whereHas('tarif', function($q) use($tarif){
             $q->where('customer_id',$tarif->customer_id);
             $q->where('tujuan',$tarif->tujuan);
         })->get();
 
-        if($cek->count()>0){
-            $cek = $cek->first();
+        if($ceks->count()>0){
+            $cek = $ceks->first();
             $data['no'] = $cek->no;
             $data['job'] = $cek->job;
-            $data['no_job'] = $cek->count() + 1;
+            $data['no_job'] = $ceks->count() + 1;
         }
         // $satuan = Satuan::find($request->satuan);
         // if(!$satuan){
