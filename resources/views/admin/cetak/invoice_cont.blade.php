@@ -432,7 +432,7 @@
                         <div class="col-5">
                             <div class="text-center" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                <br><br>
+                                <div style="height: 2.3cm"></div>
                                 (LATIFAH)
                             </div>
                         </div>
@@ -637,7 +637,7 @@
                             <div class="col-5">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
-                                    <br><br>
+                                    <div style="height: 2.3cm"></div>
                                     (LATIFAH)
                                 </div>
                             </div>
