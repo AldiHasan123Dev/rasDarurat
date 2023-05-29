@@ -97,12 +97,69 @@
                                 <input type="hidden" name="orders_id" class="orders_id">
                                 <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('are you sure?')">Tarik Asuransi</button>
                             </form>
+                            <form action="{{ route('asuransi.cetak') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="asuransi_cetak" value="1">
+                                <input type="hidden" name="orders_id" class="orders_id">
+                                <button type="submit" class="btn btn-info btn-sm" onclick="return confirm('are you sure?')">Masukan Sudah Cetak</button>
+                            </form>
                         </div>
-                        <p>List Order Dengan Asuransi</p>
+                        <p>List Order Dengan Asuransi (Belum Cetak)</p>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
+                            <table class="table table-sm nowrap" id="table-asuransi-before" style="font-size:.7rem">
+                                <thead>
+                                    <tr>
+                                        <th>Tools</th>
+                                        <th>ID.</th>
+                                        <th>Waktu Terakhir</th>
+                                        <th>Group JOB</th>
+                                        <th>ID JOB</th>
+                                        <th>Asuransi Tipe</th>
+                                        <th>Asuransi</th>
+                                        <th>Pertanggungan Asuransi</th>
+                                        <th>Pembayar</th>
+                                        <th>Pengirim</th>
+                                        <th>Penerima</th>
+                                        <th>Penerima BL</th>
+                                        <th>Dari</th>
+                                        <th>Tujuan</th>
+                                        <th>Shipment</th>
+                                        <th>Kondisi</th>
+                                        <th>Jenis Barang</th>
+                                        <th>Pelayaran</th>
+                                        <th>TD</th>
+                                        <th>Kapal</th>
+                                        <th>Voyage</th>
+                                        <th>No Container</th>
+                                        <th>No Seal</th>
+                                        <th>Keterangan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mt-3">
+                <div class="card">
+                    <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+                        <div class="d-flex gap-2">
+                            <form action="{{ route('asuransi.cetak') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="asuransi_cetak" value="0">
+                                <input type="hidden" name="orders_id" class="orders_id">
+                                <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('are you sure?')">Masukan Belum Cetak</button>
+                            </form>
+                        </div>
+                        <p>List Order Dengan Asuransi (Sudah Cetak)</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm nowrap" id="table-asuransi-after" style="font-size:.7rem">
                                 <thead>
                                     <tr>
                                         <th>Tools</th>
@@ -205,7 +262,7 @@
         ]
     });
         let id = null;
-        let tableOrder = $('#table-order').DataTable({
+        let tableOrder = $('#table-asuransi-before').DataTable({
             processing: true,
             serverSide: true,
             // scrollY: '50vh',
@@ -213,7 +270,49 @@
             ajax:{
                 url: '{{ route('order.data') }}',
                 method:'POST',
-                data:{filter:'asuransi'},
+                data:{filter:'asuransi-before'},
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+            },
+            columns: [
+                // { data: 'action', name: 'action', orderable: false, searchable: false },
+                { data: 'tools', name: 'tools',visible:false, orderable: false, searchable: false },
+                { data: 'id', name: 'id', visible:false },
+                { data: 'asuransi_date', name: 'order.asuransi_date'},
+                { data: 'job', name: 'order.job' },
+                { data: 'no_job', name: 'no_job', searchable:false },
+                { data: 'asuransi', name: 'order.asuransi' },
+                { data: 'asuransi_id', name: 'asuransi.nama' },
+                { data: 'pertanggungan', name: 'order.pertanggungan' },
+                { data: 'pembayar', name: 'pembayar.nama' },
+                { data: 'pengirim', name: 'pengirim.nama' },
+                { data: 'penerima', name: 'penerima.nama' },
+                { data: 'penerima_bl', name: 'penerima_bl.nama' },
+                { data: 'dari', name: 'tarif.dari' },
+                { data: 'tujuan', name: 'tarif.tujuan' },
+                { data: 'shipment', name: 'shipments.nama' },
+                { data: 'kondisi', name: 'kondisi.nama' },
+                { data: 'barang', name: 'barang.nama' },
+                { data: 'pelayaran', name: 'pelayaran.nama' },
+                { data: 'td', name: 'kapal.td', searchable:false },
+                { data: 'kapal', name: 'kapal.nama' },
+                { data: 'voyage', name: 'jadwal_kapal.voyage' },
+                { data: 'container', name: 'order.container' },
+                { data: 'seal', name: 'order.seal' },
+                { data: 'keterangan', name: 'order.keterangan' },
+            ],
+            select:{
+                style: 'multi'
+            }
+        });
+        let tableOrderAfter = $('#table-asuransi-after').DataTable({
+            processing: true,
+            serverSide: true,
+            // scrollY: '50vh',
+            // scrollCollapse: true,
+            ajax:{
+                url: '{{ route('order.data') }}',
+                method:'POST',
+                data:{filter:'asuransi-after'},
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
@@ -255,10 +354,21 @@
         });
 
 
-        $('#table-order tbody').on( 'click', 'tr', function () {
+        $('#table-asuransi-before tbody').on( 'click', 'tr', function () {
             let id = [];
             setTimeout(() => {
                 var data =  tableOrder.rows( { selected: true } ).data();
+                $.each(data, function (idx, item) {
+                    id.push(item.id)
+                });
+                $('.orders_id').val(id);
+            }, 1000);
+        })
+
+        $('#table-asuransi-after tbody').on( 'click', 'tr', function () {
+            let id = [];
+            setTimeout(() => {
+                var data =  tableOrderAfter.rows( { selected: true } ).data();
                 $.each(data, function (idx, item) {
                     id.push(item.id)
                 });

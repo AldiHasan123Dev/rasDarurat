@@ -324,8 +324,14 @@ class OrderController extends Controller
         if(request('filter')&&request('filter')=='invoice'){
             $data->whereNotNull('order.invoice');
         }
-        if(request('filter')&&request('filter')=='asuransi'){
+        if(request('filter')&&request('filter')=='asuransi-before'){
             $data->where('order.asuransi','LIKE','%ADA%');
+            $data->where('order.asuransi_cetak',0);
+            $data->whereNotNull('asuransi_id');
+        }
+        if(request('filter')&&request('filter')=='asuransi-after'){
+            $data->where('order.asuransi','LIKE','%ADA%');
+            $data->where('order.asuransi_cetak',1);
             $data->whereNotNull('asuransi_id');
         }
 

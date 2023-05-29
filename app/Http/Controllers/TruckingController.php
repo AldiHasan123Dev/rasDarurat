@@ -199,6 +199,8 @@ class TruckingController extends Controller
             $a->where('r2',1);
         })->whereIn('id',$order_id)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
 
+        $tipe = $r2s->count() > 0 ? 'R2' : $tipe;
+
         if($r1s->count()>0&&$r2s->count()>0){
             return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
         }

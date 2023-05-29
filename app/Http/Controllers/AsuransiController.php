@@ -55,6 +55,17 @@ class AsuransiController extends Controller
         return back()->with('success','Asuransi berhasil ditarik! ');
     }
 
+    public function cetak(Request $request)
+    {
+        $id = request('orders_id');
+        $ids = explode(',',$id);
+        Order::whereIn('id',$ids)->update([
+            'asuransi_cetak' => $request->asuransi_cetak
+        ]);
+
+        return back()->with('success','Asuransi berhasil ditarik! ');
+    }
+
     public function destroy(Asuransi $asuransi)
     {
         $asuransi->delete();

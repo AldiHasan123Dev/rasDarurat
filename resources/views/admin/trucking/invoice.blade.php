@@ -381,6 +381,9 @@
                                             <td>-</td>
                                             @endif
                                             <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                            @if ($item->order)
+                                            <td style="width: 100px"> {{ $item->order->tarif->customer->nama ?? '-' }} <td>
+                                            @endif
                                         </tr>
                                         @endforeach
                                     @endforeach
@@ -390,7 +393,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -590,7 +593,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -803,7 +806,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -1027,7 +1030,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:50px"/>)
+                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
