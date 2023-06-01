@@ -18,6 +18,7 @@ class JasaKirimController extends Controller
                 'jadwal_kapal_id' => $request->jadwal_kapal_id,
                 'no_dooring' => $request->no_dooring,
                 'lokasi_id' => $request->lokasi_id,
+                'agen_id' => $request->agen_id,
                 'no' => JasaKirim::max('no') + 1,
             ]);
 

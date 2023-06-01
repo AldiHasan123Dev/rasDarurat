@@ -193,7 +193,7 @@
                         <div style="position: relative; right:200px; font-size: .9rem">
                             <div class="text-center">
                                 <p>Hormat Kami,</p>
-                                <br><br>
+                                <div style="height: 100px"></div>
                                 <p> ({{ Auth::user()->name }})</p>
                             </div>
                         </div>
@@ -284,7 +284,7 @@
                 $.ajax({
                     type: "POST",
                     url: "{{ route('api-jasakirim.store') }}",
-                    data: {no_dooring:@json($no_dooring),lokasi_id:@json(request('tujuan')),order_id:@json($order_id),jadwal_kapal_id:@json(request('jadwal_kapal_id'))},
+                    data: {no_dooring:@json($no_dooring),lokasi_id:@json(request('tujuan')),agen_id:@json(request('agent')),order_id:@json($order_id),jadwal_kapal_id:@json(request('jadwal_kapal_id'))},
                     success: function (response) {
                         window.print();
                     }

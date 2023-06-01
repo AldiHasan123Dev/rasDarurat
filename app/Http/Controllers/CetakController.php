@@ -144,7 +144,7 @@ class CetakController extends Controller
         $orders = Order::where('agen_id',request('agent'))->where('jadwal_kapal_id', $id)->whereHas('tarif', function($q) use($lokasi){
             $q->where('tujuan',$lokasi);
             $q->whereIn('kondisi',[5,7]);
-        })->get();
+        })->orderBy('job')->orderBy('no_job')->get();
 
         $order = $orders->whereNotNull('agen_id')->first();
 

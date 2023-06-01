@@ -42,6 +42,10 @@ class OrderTruckingController extends Controller
         if(!$tarif){
             return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
         }
+        $cek = OrderTrucking::where('seal',$request->seal)->get();
+        if($cek->count()>1){
+            return response('Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
+        }
         if(request('nopol')){
             $kendaraan = Kendaraan::where('nopol',request('nopol'))->first();
             if(!$kendaraan){
