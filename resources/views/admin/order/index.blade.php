@@ -536,7 +536,7 @@
         });
 
         var customers = @json($customers);
-        // autocomplete(document.getElementById("pengirim_bttb"), customers);
+        autocomplete(document.getElementById("pengirim_bttb"), customers);
         // autocomplete(document.getElementById("pengirim_id"), customers);
         for (let i = 0; i < 18; i++) {
             autocomplete(document.getElementById("pengirim_id-"+i), customers);
