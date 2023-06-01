@@ -12,6 +12,7 @@ use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\EstimasiController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\JasaKirimController;
+use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\KapalController;
 use App\Http\Controllers\KendaraanController;
 use App\Http\Controllers\KeuanganController;
@@ -124,6 +125,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('coa',COAController::class);
     Route::resource('templatejurnal',TemplateJurnalController::class);
     Route::resource('templatejurnalitem',TemplateJurnalItemController::class);
+    Route::resource('jurnal',JurnalController::class);
 
 
     Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');
