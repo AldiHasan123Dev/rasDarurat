@@ -36,6 +36,7 @@ class OrderResource extends JsonResource
             'job' => $this->job ?? '-',
             'no' => $this->job.'-'.sprintf('%02d',$this->no_job) ?? '-',
             'asuransi' => $this->asuransi,
+            'customer_trucking' => is_null($this->truckingInfo) ? '-' : $this->truckingInfo->customer->nama,
             'pembayar' => $this->tarif->customer->nama ?? '-',
             'marketing' => $this->tarif->customer->marketing->name ?? '-',
             'cs' => $this->tarif->customer->cs->name ?? '-',

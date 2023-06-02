@@ -3,21 +3,22 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJurnal" aria-controls="offcanvasJurnal">Tambah Jurnal</button>
+                <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>
                             <tr>
-                                <th>ID.</th>
-                                <th>Coa_id</th>
-                                <th>Order_id</th>
+                                {{-- <th>ID.</th> --}}
+                                <th>Kode</th>
+                                <th>Account</th>
+                                <th>Job</th>
                                 <th>Nomor</th>
-                                <th>Nama</th>
+                                <th>Keterangan</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -29,7 +30,7 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasJurnal" aria-labelledby="offcanvasJurnalLabel">
+    {{-- <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasJurnal" aria-labelledby="offcanvasJurnalLabel">
         <div class="offcanvas-header">
             <h5 class="offcanvas-title" id="offcanvasJurnalLabel">Form Jurnal</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -40,7 +41,7 @@
                 @include('admin.jurnal.form')
             </form>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @section('script')
@@ -54,14 +55,14 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id' },
-            { data: 'coa_id', name: 'coa_id' },
-            { data: 'order_id', name: 'order_id' },
-            { data: 'nomor', name: 'nomor' },
-            { data: 'nama', name: 'nama' },
-            { data: 'debit', name: 'debit' },
-            { data: 'credit', name: 'credit' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                { data: 'code', name: 'code' },
+                { data: 'coa_id', name: 'coa_id' },
+                { data: 'order_id', name: 'order_id' },
+                { data: 'nomor', name: 'nomor' },
+                { data: 'nama', name: 'nama' },
+                { data: 'debit', name: 'debit' },
+                { data: 'credit', name: 'credit' },
+                // { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
     </script>
