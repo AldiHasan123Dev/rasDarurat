@@ -37,10 +37,10 @@ class Sopir extends Model
     }
 
     public function laporanRit($bulan, $thn = 2023){
-        return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->count();
+        return $this->orders()->whereMonth('tgl_muat',sprintf('%02d',$bulan))->whereYear('tgl_muat',$thn)->count();
     }
 
     public function laporanSangu($bulan, $thn = 2023){
-        return $this->orders()->whereMonth('created_at',sprintf('%02d',$bulan))->whereYear('created_at',$thn)->sum('borongan');
+        return $this->orders()->whereMonth('tgl_muat',sprintf('%02d',$bulan))->whereYear('tgl_muat',$thn)->sum('borongan');
     }
 }

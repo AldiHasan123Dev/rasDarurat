@@ -235,38 +235,44 @@ class OrderTruckingController extends Controller
         }
 
         $data['tb_tl'] = 0;
-        if($data['ambil_empty_tambak_langon']=="true"){
-            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
-                $data['tb_tl'] += 50000;
+        if(!empty($data['ambil_empty_tambak_langon'])){
+            if($data['ambil_empty_tambak_langon']=="true"){
+                if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
+                    $data['tb_tl'] += 50000;
+                }
+                if($ordertrucking->tipe=='40'){
+                    $data['tb_tl'] += 75000;
+                }
+                $data['ambil_empty_tambak_langon'] = 1;
+            }else{
+                $data['ambil_empty_tambak_langon'] = 0;
             }
-            if($ordertrucking->tipe=='40'){
-                $data['tb_tl'] += 75000;
-            }
-            $data['ambil_empty_tambak_langon'] = 1;
-        }else{
-            $data['ambil_empty_tambak_langon'] = 0;
         }
-        if($data['ambil_empty_teluk_langon']=="true"){
-            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
-                $data['tb_tl'] += 50000;
+        if(!empty($data['ambil_empty_teluk_langon'])){
+            if($data['ambil_empty_teluk_langon']=="true"){
+                if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
+                    $data['tb_tl'] += 50000;
+                }
+                if($ordertrucking->tipe=='40'){
+                    $data['tb_tl'] += 75000;
+                }
+                $data['ambil_empty_teluk_langon'] = 1;
+            }else{
+                $data['ambil_empty_teluk_langon'] = 0;
             }
-            if($ordertrucking->tipe=='40'){
-                $data['tb_tl'] += 75000;
-            }
-            $data['ambil_empty_teluk_langon'] = 1;
-        }else{
-            $data['ambil_empty_teluk_langon'] = 0;
         }
-        if($data['bongkar_full_teluk_langon']=="true"){
-            if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
-                $data['tb_tl'] += 50000;
+        if(!empty($data['bongkar_full_teluk_langon'])){
+            if($data['bongkar_full_teluk_langon']=="true"){
+                if($ordertrucking->tipe=='20'||$ordertrucking->tipe=='COMBO'){
+                    $data['tb_tl'] += 50000;
+                }
+                if($ordertrucking->tipe=='40'){
+                    $data['tb_tl'] += 75000;
+                }
+                $data['bongkar_full_teluk_langon'] = 1;
+            }else{
+                $data['bongkar_full_teluk_langon'] = 0;
             }
-            if($ordertrucking->tipe=='40'){
-                $data['tb_tl'] += 75000;
-            }
-            $data['bongkar_full_teluk_langon'] = 1;
-        }else{
-            $data['bongkar_full_teluk_langon'] = 0;
         }
 
         $ordertrucking->update($data);
