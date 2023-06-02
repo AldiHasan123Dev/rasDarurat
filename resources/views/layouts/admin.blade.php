@@ -138,8 +138,6 @@
             window.ajax_loading = true;
             topbar.show();
         });
-
-        $('.select2').select2();
     </script>
     @livewireScripts
 </body>
