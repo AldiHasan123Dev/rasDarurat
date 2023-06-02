@@ -159,7 +159,8 @@ class OrderTruckingController extends Controller
         $data['tipe'] = $ordertrucking->tipe;
         if(!empty($data['tujuan'])){
             $sangu = SanguSopir::find($data['tujuan']);
-            if($sangu->tujuanInfo->nama!=$ordertrucking->tujuan){
+            $milik = $ordertrucking->kendaraan->milik;
+            if($sangu->tujuanInfo->nama!=$ordertrucking->tujuan && $milik!='vendor'){
                 $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
                 if(!$tarif){
                     return response('Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');

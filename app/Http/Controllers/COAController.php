@@ -16,7 +16,7 @@ class COAController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         COA::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -39,7 +39,7 @@ class COAController extends Controller
 
     public function datatable()
     {
-        $data = COA::all()->sortByDesc('created_at');
+        $data = COA::orderBy('kode','asc')->orderBy('coa_id','asc')->get();
 
         return Datatables::of($data)
             ->addColumn('is_active', function($data){
