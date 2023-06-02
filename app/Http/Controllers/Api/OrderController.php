@@ -32,6 +32,12 @@ class OrderController extends Controller
         ]);
     }
 
+    public function show(Order $order)
+    {
+        $data = new OrderResource($order);
+        return response($data);
+    }
+
     public function update(Request $request)
     {
         $data = $request->all();

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderResource;
 use App\Models\Jurnal;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -16,8 +18,61 @@ class JurnalController extends Controller
 
     public function store(Request $request)
     {
+        // [1] pembayar
+        // [2] pengirim
+        // [3] penerima
+        // [4] pelayaran
+        // [5] customer
         $data = $request->all();
-        Jurnal::create($data);
+        if($data['jurnal_id']){
+            Jurnal::whereIn('id',json_decode($data['jurnal_id']))->delete();
+        }
+        if($data['order_id']){
+            $order = Order::find($data['order_id']);
+            $pembayar = $order->tarif->customer->nama ?? '-';
+            $penerima = $order->penerima->nama ?? '-';
+            $pengirim = $order->pengirim->nama ?? '-';
+            $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
+            $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+        }
+        for ($i=0; $i < count($data['debit_coa_id']); $i++) {
+            if ($data['debit_coa_id'][$i] && $data['debit_nomor'][$i] && $data['debit_name'][$i] && $data['debit_amount'][$i]) {
+                $name = $data['debit_name'][$i];
+                if($data['order_id']){
+                    $name = str_replace('[1]',$pembayar,$name);
+                    $name = str_replace('[2]',$pengirim,$name);
+                    $name = str_replace('[3]',$penerima,$name);
+                    $name = str_replace('[4]',$pelayaran,$name);
+                    $name = str_replace('[5]',$customer,$name);
+                }
+                Jurnal::create([
+                    'coa_id' => $data['debit_coa_id'][$i],
+                    'order_id' => $data['order_id'],
+                    'nomor' => $data['debit_nomor'][$i],
+                    'nama' => $name,
+                    'debit' => $data['debit_amount'][$i],
+                ]);
+            }
+        }
+        for ($i=0; $i < count($data['credit_coa_id']); $i++) {
+            if ($data['credit_coa_id'][$i] && $data['credit_nomor'][$i] && $data['credit_name'][$i] && $data['credit_amount'][$i]) {
+                $name = $data['credit_name'][$i];
+                if($data['order_id']){
+                    $name = str_replace('[1]',$pembayar,$name);
+                    $name = str_replace('[2]',$pengirim,$name);
+                    $name = str_replace('[3]',$penerima,$name);
+                    $name = str_replace('[4]',$pelayaran,$name);
+                    $name = str_replace('[5]',$customer,$name);
+                }
+                Jurnal::create([
+                    'coa_id' => $data['credit_coa_id'][$i],
+                    'order_id' => $data['order_id'],
+                    'nomor' => $data['credit_nomor'][$i],
+                    'nama' => $name,
+                    'credit' => $data['credit_amount'][$i],
+                ]);
+            }
+        }
 
         return back()->with('success','Data berhasil disimpan');
     }
@@ -47,31 +102,24 @@ class JurnalController extends Controller
         $data = Jurnal::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
-            ->addColumn('action', function ($data) {
-                $view = view('admin.jurnal.form',['jurnal'=>$data])->render();
-                $html = '<div class="d-flex gap-1">
-                            <form action="'.route('jurnal.destroy',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                <input type="hidden" name="_method" value="delete" />
-                                <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
-                            </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJurnalUpdate'.$data->id.'" aria-controls="offcanvasJurnalUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJurnalUpdate'.$data->id.'" aria-labelledby="offcanvasJurnalUpdate'.$data->id.'Label">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasJurnalUpdate'.$data->id.'Label">Form Jurnal</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('jurnal.update',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
-                                </form>
-                            </div>
-                        </div>';
-                return $html;
+            ->addColumn('debit', function ($data) {
+                return $data->debit == 0 ? '-' : number_format($data->debit);
+            })
+            ->addColumn('credit', function ($data) {
+                return $data->credit == 0 ? '-' : number_format($data->credit);
+            })
+            ->addColumn('coa_id', function ($data) {
+                return $data->coa->nama;
+            })
+            ->addColumn('code', function ($data) {
+                return $data->coa->kode;
+            })
+            ->addColumn('order_id', function ($data) {
+                $name = '-';
+                if($data->order){
+                    $name = $data->order->job.'-'.sprintf('%02d',$data->order->no_job);
+                }
+                return $name;
             })
             ->rawColumns(['action'])
             ->make(true);
