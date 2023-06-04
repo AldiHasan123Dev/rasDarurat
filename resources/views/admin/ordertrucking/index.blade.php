@@ -758,6 +758,9 @@
                 }else{
                     $('.hide-total').hide();
                 }
+                $('#ambil_empty_tambak_langon').attr('checked',false);
+                $('#ambil_empty_teluk_langon').attr('checked',false);
+                $('#bongkar_full_teluk_langon').attr('checked',false);
                 if(ambil_empty_tambak_langon==1){
                     $('#ambil_empty_tambak_langon').attr('checked',true);
                 }

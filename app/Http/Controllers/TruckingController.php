@@ -27,7 +27,9 @@ class TruckingController extends Controller
     public function totalan_sopir()
     {
         $data = OrderTrucking::join('sopir','sopir.id','=','order_trucking.sopir_id')
+                ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
                 ->select('order_trucking.*','sopir.nama')
+                ->where('kendaraan.milik','!=','vendor')
                 ->whereNull('order_trucking.tgl_total')
                 ->whereNotNull('order_trucking.sj_kembali_fa')
                 ->orderBy('sopir.nama')

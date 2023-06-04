@@ -44,7 +44,7 @@ class OrderTruckingController extends Controller
         }
         $cek = OrderTrucking::where('seal',$request->seal)->get();
         if($cek->count()>1){
-            return response('Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
+            return back()->with('danger','Nomer Seal Sama dengan order trucking ID '.json_encode($cek->pluck('id')));
         }
         if(request('nopol')){
             $kendaraan = Kendaraan::where('nopol',request('nopol'))->first();
