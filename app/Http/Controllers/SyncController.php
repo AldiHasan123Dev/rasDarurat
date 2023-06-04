@@ -109,6 +109,23 @@ class SyncController extends Controller
         return response('Data berhasil di update');
     }
 
+    public function resetTBTL()
+    {
+        $data = OrderTrucking::join('sopir','sopir.id','=','order_trucking.sopir_id')
+                ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
+                ->select('order_trucking.*','sopir.nama')
+                ->where('kendaraan.milik','!=','vendor')
+                ->whereNull('order_trucking.tgl_total')
+                ->whereNotNull('order_trucking.sj_kembali_fa')
+                ->update([
+                    'ambil_empty_teluk_langon' => 0,
+                    'ambil_empty_tambak_langon' => 0,
+                    'bongkar_full_teluk_langon' => 0,
+                    'tb_tl' => 0,
+                ]);
+        return response('Data berhasil di update');
+    }
+
     public function customerTrucking()
     {
         $order = Order::where('trucking','XPDC')->get();

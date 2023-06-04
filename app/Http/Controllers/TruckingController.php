@@ -120,6 +120,7 @@ class TruckingController extends Controller
             ->whereNotNull('order_trucking.tgl_total')
             ->whereNotNull('order_trucking.sj_kembali_fa')
             ->orderBy('customer')
+            ->orderBy('tgl_muat')
             ->get()
             ->groupBy('customer');
 
@@ -137,6 +138,7 @@ class TruckingController extends Controller
             ->whereNotNull('order_trucking.tgl_total')
             ->whereNotNull('order_trucking.sj_kembali_fa')
             ->orderBy('customer')
+            ->orderBy('tgl_muat')
             ->get()
             ->groupBy('customer');
 
@@ -148,6 +150,7 @@ class TruckingController extends Controller
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.sj_kembali_fa')
             ->orderBy('customer')
+            ->orderBy('tgl_muat')
             ->get()
             ->groupBy('customer');
         return view('admin.trucking.pre_invoice', compact('data1','data2','data3'));
@@ -279,6 +282,15 @@ class TruckingController extends Controller
             }
         }
         return view('admin.trucking.monitoring', compact('sj_kembali','orders','kendaraan','sopir','tujuan','customers'));
+    }
+
+    public function monitoring_invoice()
+    {
+        $orders = OrderTrucking::whereHas('kendaraan', function($q){
+            $q->whereIn('milik',['R1','vendor']);
+        })->whereNull('invoice')->orderBy('tgl_muat')->get();
+        $orders = OrderTruckingResource::collection($orders);
+        return view('admin.trucking.monitoring_invoice',compact('orders'));
     }
 
 }
