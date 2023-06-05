@@ -949,7 +949,8 @@
 
         $('#edit-form').submit(function (e) {
             e.preventDefault();
-            let data = $(this).serializeFields()
+            let data = $(this).serializeFields();
+            data.seal = $('#seal-edit').val();
             $.ajax({
                 type: "PUT",
                 url: $(this).attr('action'),
@@ -963,6 +964,7 @@
         $('#edit-form-vendor').submit(function (e) {
             e.preventDefault();
             let data = $(this).serializeFields()
+            data.seal = $('#seal_edit_vendor').val();
             $.ajax({
                 type: "PUT",
                 url: $(this).attr('action'),
