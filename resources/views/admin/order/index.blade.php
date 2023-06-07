@@ -68,6 +68,7 @@
                     @if (is_null($marketing))
                     <button data-bs-toggle="modal" data-bs-target="#modal-edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
+                    @if (is_null($marketing))
                     <a href="" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</a>
                     <a href="" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</a>
                     <form action="" id="copy-order" method="post" enctype="multipart/form-data">
@@ -87,6 +88,7 @@
                         @endif
                     </form>
                     <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
+                    @endif
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
                 <div>
@@ -160,12 +162,14 @@
                             <b><b class="koli"></b> Koli</b>
                         </div>
                         <div class="p-2 d-flex" style="gap:10px" id="bttb-info">
+                            @if (is_null($marketing))
                             <button class="py-2 px-3 btn btn-sm btn-success" id="tambah-bttb"><i class="fas fa-plus"></i> Tambah
                                 BTTB</button>
                             <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</a>
                             <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</a>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
                             <button class="py-2 px-3 btn btn-sm btn-danger" style="font-size: .7rem" id="delete-bttb"><i class="fas fa-trash"></i> Hapus</button>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
