@@ -343,59 +343,59 @@
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="borongan">Borongan</label>
-                    <input type="text" name="borongan" id="borongan" class="form-control rupiah" readonly required>
+                    <input type="text" name="borongan" id="borongan" class="form-control" readonly required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="sangu">Sangu Sopir</label>
-                    <input type="text" name="sangu" id="sangu-edit" class="form-control rupiah" required>
+                    <input type="text" name="sangu" id="sangu-edit" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="borongan_kuli">Borongan Kuli</label>
-                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control rupiah" required>
+                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="kuli">Sangu Kuli</label>
-                    <input type="text" name="kuli" id="kuli" class="form-control rupiah" required>
+                    <input type="text" name="kuli" id="kuli" class="form-control" required>
                 </div>
                 {{-- <div class="mb-2 col-3 hide-total">
                     <label for="simpanan">Sangu Simpanan</label>
-                    <input type="text" name="simpanan" id="simpanan" class="form-control rupiah" required>
+                    <input type="text" name="simpanan" id="simpanan" class="form-control" required>
                 </div> --}}
                 <div class="mb-2 col-3 hide-total">
                     <label for="tambah_isi">Tambah Isi</label>
-                    <input type="text" name="tambah_isi" id="tambah_isi" class="form-control rupiah" required>
+                    <input type="text" name="tambah_isi" id="tambah_isi" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="tambah_solar">Tambah Solar</label>
-                    <input type="text" name="tambah_solar" id="tambah_solar" class="form-control rupiah" required>
+                    <input type="text" name="tambah_solar" id="tambah_solar" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="tb_tl">TB/TL</label>
-                    <input type="text" name="tb_tl" id="tb_tl" class="form-control rupiah" readonly required>
+                    <input type="text" name="tb_tl" id="tb_tl" class="form-control" readonly required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="tally">Tally</label>
-                    <input type="text" name="tally" id="tally" class="form-control rupiah" required>
+                    <input type="text" name="tally" id="tally" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="uang_makan">Uang Makan</label>
-                    <input type="text" name="uang_makan" id="uang_makan" class="form-control rupiah" required>
+                    <input type="text" name="uang_makan" id="uang_makan" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="op">OP/naikkan Mty</label>
-                    <input type="text" name="op" id="op" class="form-control rupiah" required>
+                    <input type="text" name="op" id="op" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="cleaning">Cleaning</label>
-                    <input type="text" name="cleaning" id="cleaning" class="form-control rupiah" required>
+                    <input type="text" name="cleaning" id="cleaning" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="stappel">Stappel/Inap</label>
-                    <input type="text" name="stappel" id="stappel" class="form-control rupiah" required>
+                    <input type="text" name="stappel" id="stappel" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="lain_lain">Lain-lain</label>
-                    <input type="text" name="lain_lain" id="lain_lain" class="form-control rupiah" required>
+                    <input type="text" name="lain_lain" id="lain_lain" class="form-control" required>
                 </div>
                 <div class="my-2 col-12 hide-total">
                     Keterangan

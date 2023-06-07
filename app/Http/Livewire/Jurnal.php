@@ -17,7 +17,7 @@ class Jurnal extends Component
     {
         $this->order = null;
         $this->is_apply = false;
-        $this->coa = COA::all();
+        $this->coa = COA::doesnthave('coas')->orderBy('kode')->get();
         $this->orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;

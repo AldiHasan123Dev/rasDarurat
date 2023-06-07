@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SlipSopirExport;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
 use App\Http\Resources\TransaksiSopirResource;
@@ -291,6 +293,13 @@ class TruckingController extends Controller
         })->whereNull('invoice')->orderBy('tgl_muat')->get();
         $orders = OrderTruckingResource::collection($orders);
         return view('admin.trucking.monitoring_invoice',compact('orders'));
+    }
+
+    public function export_slip_sopir()
+    {
+        $order = OrderTrucking::where('invoice_sopir',request('invoice'))->first();
+        $name = $order->sopir->nama.'_'.date('d-m-y',strtotime($order->tgl_total));
+        return Excel::download(new SlipSopirExport(request('invoice')), $name.'.xlsx');
     }
 
 }

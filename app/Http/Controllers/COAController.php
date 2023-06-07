@@ -11,7 +11,8 @@ class COAController extends Controller
 {
     public function index()
     {
-        return view('admin.coa.index');
+        $data = COA::all()->whereNull('coa_id')->sortBy('kode');
+        return view('admin.coa.index',compact('data'));
     }
 
     public function store(Request $request)

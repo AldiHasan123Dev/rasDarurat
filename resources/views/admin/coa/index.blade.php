@@ -10,16 +10,73 @@
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>
                             <tr>
-                                <th>ID.</th>
-                                <th>COA ID</th>
                                 <th>Kode</th>
                                 <th>Nama</th>
                                 <th>Keterangan</th>
-                                <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($data as $item)
+                                <tr>
+                                    <td>{{ $item->kode }}</td>
+                                    <td>{{ $item->nama }}</td>
+                                    <td>{{ $item->keterangan }}</td>
+                                </tr>
+                                @if ($item->coas->count()>0)
+                                    @foreach ($item->coas as $a)
+                                    <tr>
+                                        <td>{{ $a->kode }}</td>
+                                        <td>{{ $a->nama }}</td>
+                                        <td>{{ $a->keterangan }}</td>
+                                    </tr>
+                                        @if ($a->coas->count()>0)
+                                            @foreach ($a->coas as $b)
+                                            <tr>
+                                                <td>{{ $b->kode }}</td>
+                                                <td>{{ $b->nama }}</td>
+                                                <td>{{ $b->keterangan }}</td>
+                                            </tr>
+                                            @if ($b->coas->count()>0)
+                                                @foreach ($b->coas as $c)
+                                                    <tr>
+                                                        <td>{{ $c->kode }}</td>
+                                                        <td>{{ $c->nama }}</td>
+                                                        <td>{{ $c->keterangan }}</td>
+                                                    </tr>
+                                                    @if ($c->coas->count()>0)
+                                                        @foreach ($c->coas as $d)
+                                                            <tr>
+                                                                <td>{{ $d->kode }}</td>
+                                                                <td>{{ $d->nama }}</td>
+                                                                <td>{{ $d->keterangan }}</td>
+                                                            </tr>
+                                                            @if ($d->coas->count()>0)
+                                                                @foreach ($d->coas as $e)
+                                                                    <tr>
+                                                                        <td>{{ $e->kode }}</td>
+                                                                        <td>{{ $e->nama }}</td>
+                                                                        <td>{{ $e->keterangan }}</td>
+                                                                    </tr>
+                                                                        @if ($e->coas->count()>0)
+                                                                            @foreach ($e->coas as $f)
+                                                                            <tr>
+                                                                                <td>{{ $f->kode }}</td>
+                                                                                <td>{{ $f->nama }}</td>
+                                                                                <td>{{ $f->keterangan }}</td>
+                                                                            </tr>
+                                                                            @endforeach
+                                                                        @endif
+                                                                    @endforeach
+                                                                @endif
+                                                            @endforeach
+                                                        @endif
+                                                    @endforeach
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    @endforeach
+                                @endif
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -43,7 +100,7 @@
 @endsection
 
 @section('script')
-    <script>
+    {{-- <script>
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
@@ -62,5 +119,5 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
-    </script>
+    </script> --}}
 @endsection

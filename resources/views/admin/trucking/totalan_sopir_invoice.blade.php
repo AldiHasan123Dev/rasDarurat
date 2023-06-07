@@ -179,7 +179,13 @@
             <script>
                 window.print();
             </script>
-            <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+            <form action="{{ route('trucking.export.slip_sopir') }}" method="post">
+                @csrf
+                <div class="d-flex gap-3">
+                    <button type="submit" name="invoice" value="{{ $invoice }}" class="btn btn-sm btn-primary mb-3">Export Excel</button>
+                    <button type="button" onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+                </div>
+            </form>
             @endif
         </div>
         <div class="card p-3 mt-3">

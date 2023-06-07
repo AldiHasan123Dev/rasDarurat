@@ -149,6 +149,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('trucking/totalan-sopir',[TruckingController::class,'totalan_sopir'])->name('trucking.totalan_sopir');
     Route::get('trucking/totalan-sopir/invoice',[TruckingController::class,'cetak_invoice_sopir'])->name('trucking.cetak_invoice.totalan_sopir');
     Route::post('trucking/invoice/totalan-sopir',[TruckingController::class,'totalan_sopir_invoice'])->name('trucking.invoice.total_sopir');
+    Route::post('export/slip-sopir',[TruckingController::class,'export_slip_sopir'])->name('trucking.export.slip_sopir');
     Route::post('trucking/totalan-sopir',[TruckingController::class,'generate_totalan_sopir'])->name('trucking.generate.total_sopir');
     Route::get('trucking/cetak-invoice/get',[TruckingController::class,'cetak_invoice_get'])->name('trucking.cetak_get.invoice');
     Route::get('trucking/invoice',[TruckingController::class,'invoice'])->name('trucking.invoice');

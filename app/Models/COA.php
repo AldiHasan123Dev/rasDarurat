@@ -24,4 +24,9 @@ class COA extends Model
     {
         return $this->belongsTo(COA::class);
     }
+
+    public function coas()
+    {
+        return $this->hasMany(COA::class,'coa_id');
+    }
 }
