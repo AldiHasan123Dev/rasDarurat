@@ -268,7 +268,7 @@ class TruckingController extends Controller
 
     public function monitoring()
     {
-        $sj_kembali = OrderTrucking::whereNull('sj_kembali_fa')->orderBy('tgl_muat')->get();
+        $sj_kembali = OrderTrucking::whereNotNull('sj_kembali')->whereNull('sj_kembali_fa')->orderBy('tgl_muat')->get();
         $orders = OrderTrucking::whereNotNull('sj_kembali_fa')->orderBy('tgl_muat')->get();
         $sj_kembali = OrderTruckingResource::collection($sj_kembali);
         $orders = OrderTruckingResource::collection($orders);
