@@ -11,10 +11,10 @@
                         <thead>
                             <tr>
                                 {{-- <th>ID.</th> --}}
+                                <th>Nomor</th>
                                 <th>Kode</th>
                                 <th>Account</th>
                                 <th>Job</th>
-                                <th>Nomor</th>
                                 <th>Keterangan</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
@@ -49,16 +49,17 @@
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
+            ordering:false,
             ajax:{
                 url: '{{ route('jurnal.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
+                { data: 'nomor', name: 'nomor' },
                 { data: 'code', name: 'code' },
                 { data: 'coa_id', name: 'coa_id' },
                 { data: 'order_id', name: 'order_id' },
-                { data: 'nomor', name: 'nomor' },
                 { data: 'nama', name: 'nama' },
                 { data: 'debit', name: 'debit' },
                 { data: 'credit', name: 'credit' },

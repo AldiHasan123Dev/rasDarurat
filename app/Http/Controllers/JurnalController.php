@@ -47,6 +47,7 @@ class JurnalController extends Controller
                         'nomor' => $data['nomor'],
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
+                        'created_at' => $data['created_at'][$i],
                     ]);
                     Jurnal::create([
                         'coa_id' => $data['credit_coa_id'][$i],
@@ -54,6 +55,7 @@ class JurnalController extends Controller
                         'nomor' => $data['nomor'],
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
+                        'created_at' => $data['created_at'][$i],
                     ]);
                 }else{
                     if($data['debit_coa_id'][$i]){
@@ -63,6 +65,7 @@ class JurnalController extends Controller
                             'nomor' => $data['nomor'],
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'][$i],
                         ]);
                     }
                     if($data['credit_coa_id'][$i]){
@@ -72,6 +75,7 @@ class JurnalController extends Controller
                             'nomor' => $data['nomor'],
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'][$i],
                         ]);
                     }
                 }
@@ -103,7 +107,7 @@ class JurnalController extends Controller
 
     public function datatable()
     {
-        $data = Jurnal::all()->sortByDesc('created_at');
+        $data = Jurnal::orderBy('created_at','desc')->get();
 
         return Datatables::of($data)
             ->addColumn('debit', function ($data) {

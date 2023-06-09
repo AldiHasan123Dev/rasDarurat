@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\OrderResource;
 use App\Models\Customer;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
+use App\Models\Order;
 use App\Models\Pelayaran;
 use App\Models\Sopir;
 use App\Models\Tarif;
@@ -51,5 +53,11 @@ class LaporanController extends Controller
     {
         $data = Sopir::where('milik','!=','vendor')->get();
         return view('admin.laporan.sopir', compact('data'));
+    }
+    public function invoice()
+    {
+        $data = Order::whereNull('invoice')->get();
+        $data = OrderResource::collection($data);
+        return view('admin.laporan.preinvoice', compact('data'));
     }
 }

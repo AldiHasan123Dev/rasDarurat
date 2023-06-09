@@ -5,18 +5,23 @@ namespace App\Http\Livewire;
 use App\Models\COA;
 use App\Models\Jurnal as ModelsJurnal;
 use App\Models\Order;
+use App\Models\TemplateJurnal;
+use App\Models\TemplateJurnalItem;
 use Livewire\Component;
 
 class Jurnal extends Component
 {
-    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id;
+    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
 
     public function mount()
     {
         $this->order = null;
+        $this->template_id = null;
+        $this->template = null;
         $this->is_apply = false;
+        $this->templates = TemplateJurnal::all();
         $this->coa = COA::doesnthave('coas')->orderBy('kode')->get();
         $this->orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
         $this->debit_idx = 2;
@@ -45,13 +50,10 @@ class Jurnal extends Component
 
     public function apply()
     {
-        if (!is_null($this->order) && $this->order>0) {
-            $jurnal = ModelsJurnal::where('order_id',$this->order)->get();
-            if($jurnal->count()>0){
-                $this->is_apply = true;
-                $this->jurnals = $jurnal;
-                $this->jurnal_id = $jurnal->pluck('id')->toArray();
-            }
+        if (!is_null($this->template_id)) {
+            $this->template = TemplateJurnalItem::where('template_jurnal_id',$this->template_id)->get();
+        }else{
+            $this->template = null;
         }
     }
 }

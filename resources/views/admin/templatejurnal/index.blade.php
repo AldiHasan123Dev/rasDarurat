@@ -3,7 +3,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <a href="{{ route('templatejurnal.create') }}" class="btn btn-sm">Buat Template</a>
+                <a href="{{ route('templatejurnal.create') }}" class="btn btn-sm btn-primary">Buat Template</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

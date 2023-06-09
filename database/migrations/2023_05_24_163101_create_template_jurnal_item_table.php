@@ -11,11 +11,9 @@ return new class extends Migration
         Schema::create('template_jurnal_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('template_jurnal_id')->constrained('template_jurnal');
-            $table->foreignId('coa_id')->constrained('coa');
-            $table->string('tipe');
-            $table->string('no')->nullable();
-            $table->string('deskripsi')->nullable();
-            $table->double('jumlah')->nullable();
+            $table->foreignId('coa_debit_id')->nullable()->constrained('coa');
+            $table->foreignId('coa_credit_id')->nullable()->constrained('coa');
+            $table->string('keterangan')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

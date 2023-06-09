@@ -19,6 +19,7 @@ class Jurnal extends Model
         'nama',
         'debit',
         'credit',
+        'created_at',
     ];
 
     protected static function booted()

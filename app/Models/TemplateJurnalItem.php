@@ -10,13 +10,10 @@ class TemplateJurnalItem extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'template_jurnal_item';
     protected $fillable = [
         'template_jurnal_id',
-        'coa_id',
-        'tipe',
-        'no',
-        'deskripsi',
-        'jumlah',
+        'coa_debit_id',
+        'coa_credit_id',
+        'keterangan',
     ];
 }

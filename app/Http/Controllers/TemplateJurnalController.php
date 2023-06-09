@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TemplateJurnal;
+use App\Models\TemplateJurnalItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -17,7 +18,24 @@ class TemplateJurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        TemplateJurnal::create($data);
+        $template = null;
+        foreach ($data['debit_coa_id'] as $idx => $item) {
+            if(is_null($data['debit_coa_id'][$idx]) && is_null($data['credit_coa_id'][$idx])){
+
+            }else{
+                if(is_null($template)){
+                    $template = TemplateJurnal::create([
+                        'nama' => $data['name']
+                    ]);
+                }
+                TemplateJurnalItem::create([
+                    'template_jurnal_id' => $template->id,
+                    'coa_debit_id' => $data['debit_coa_id'][$idx],
+                    'coa_credit_id' => $data['credit_coa_id'][$idx],
+                    'keterangan' => $data['keterangan'][$idx],
+                ]);
+            }
+        }
 
         return back()->with('success','Data berhasil disimpan');
     }
