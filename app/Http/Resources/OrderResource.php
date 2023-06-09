@@ -55,6 +55,8 @@ class OrderResource extends JsonResource
             'td' => is_null($this->jadwal_kapal)?'-':(!$this->jadwal_kapal->td?'-':date('d-m-Y',strtotime($this->jadwal_kapal->td))),
             'closing' => is_null($this->jadwal_kapal)?'-':(!$this->jadwal_kapal->closing?'-':date('d-m-Y',strtotime($this->jadwal_kapal->closing))),
             'ba_kirim' => is_null($this->ba_kirim)?'-':date('d-m-Y',strtotime($this->ba_kirim)),
+            'invoice_bayar' => is_null($this->invoice_bayar)?'-':date('d-m-Y',strtotime($this->invoice_bayar)),
+            'tgl_komisi' => is_null($this->tgl_komisi)?'-':date('d-m-Y',strtotime($this->tgl_komisi)),
             'ba_kirim_date' => is_null($this->ba_kirim)?'-':date('Y-m-d',strtotime($this->ba_kirim)),
             'barang_diantar_date' => is_null($this->barang_diantar)?'-':date('Y-m-d',strtotime($this->barang_diantar)),
             'nopol' => $this->nopol,

@@ -98,6 +98,16 @@ class OrderController extends Controller
         ]);
     }
 
+    public function update_request()
+    {
+        $order = Order::find(request('id'));
+        if($order){
+            $order->update(request()->all());
+        }
+
+        return response('success');
+    }
+
     public function pre_invoice()
     {
         $ids = array();
@@ -167,6 +177,16 @@ class OrderController extends Controller
             $query->whereHas('tarif', function($a){
                 $a->whereIn('kondisi',[5,7]);
             });
+        }
+
+        if(request('input_invoice_bayar')){
+            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNull('invoice_bayar');
+        }
+        if(request('input_komisi')){
+            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNotNull('invoice_bayar');
+        }
+        if(request('komisi_print')){
+            $query->where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar');
         }
 
         if(request('job')){
@@ -328,6 +348,15 @@ class OrderController extends Controller
             $count = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
                 $a->whereIn('kondisi',[5,7]);
             })->count();
+        }
+        if(request('input_invoice_bayar')){
+            $count = Order::where('komisi','>',0)->whereNull('tgl_komisi')->whereNull('invoice_bayar')->count();
+        }
+        if(request('input_komisi')){
+            $count = Order::where('komisi','>',0)->whereNull('tgl_komisi')->whereNotNull('invoice_bayar')->count();
+        }
+        if(request('komisi_print')){
+            $count = Order::where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar')->count();
         }
         if ($count > 0 && $limit > 0) {
             $total_pages = ceil($count / $limit);

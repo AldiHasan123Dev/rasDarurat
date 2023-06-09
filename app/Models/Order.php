@@ -17,6 +17,7 @@ class Order extends Model
         'no',
         'job',
         'invoice',
+        'invoice_bayar',
         'invoice_date',
         'nsfp',
         'no_job',
