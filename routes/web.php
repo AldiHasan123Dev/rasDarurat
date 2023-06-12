@@ -197,6 +197,11 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
     Route::get('estimasi-biaya',[EstimasiController::class,'biaya'])->name('estimasi.biaya');
 
+    Route::get('jurnal-kolektif',[JurnalController::class,'kolektif'])->name('jurnal.kolektif.create');
+    Route::get('jurnal-balik',[JurnalController::class,'balik'])->name('jurnal.balik.create');
+    Route::post('jurnal-kolektif',[JurnalController::class,'store_kolektif'])->name('jurnal.kolektif.store');
+    Route::post('jurnal-balik',[JurnalController::class,'store_balik'])->name('jurnal.balik.store');
+
     Route::get('sync-reset-tbtl',[SyncController::class,'resetTBTL']);
     Route::get('sync-kuli',[SyncController::class,'kuli']);
     Route::get('sync-import',[SyncController::class,'import']);

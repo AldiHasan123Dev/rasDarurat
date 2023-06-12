@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Models\COA;
 use App\Models\Jurnal;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -14,6 +15,28 @@ class JurnalController extends Controller
     public function index()
     {
         return view('admin.jurnal.index');
+    }
+
+    public function kolektif()
+    {
+        $job = Order::pluck('job')->toArray();
+        $job = array_unique($job);
+        $coa = COA::doesnthave('coas')->orderBy('kode')->get();
+        return view('admin.jurnal.kolektif', compact('job','coa'));
+    }
+
+    public function balik()
+    {
+        $coa = COA::doesnthave('coas')->orderBy('kode')->get();
+        $data = [];
+        $coa_debit = null;
+        $coa_credit = null;
+        if(request('draf')){
+            $data = Jurnal::whereDate('created_at',request('tujuan'))->whereIn('coa_id',[request('debit_coa_id_tujuan'),request('credit_coa_id_tujuan')])->get();
+            $coa_debit = COA::find(request('debit_coa_id'));
+            $coa_credit = COA::find(request('credit_coa_id'));
+        }
+        return view('admin.jurnal.balik', compact('coa','data','coa_debit','coa_credit'));
     }
 
     public function store(Request $request)
@@ -85,6 +108,61 @@ class JurnalController extends Controller
         return back()->with('success','Data berhasil disimpan');
     }
 
+    public function store_kolektif(Request $request)
+    {
+        // [1] pembayar
+        // [2] pengirim
+        // [3] penerima
+        // [4] pelayaran
+        // [5] customer
+        $data = $request->all();
+        for ($i=0; $i < count($data['debit_coa_id']); $i++) {
+            if ($data['name'][$i] && $data['amount'][$i] && $data['job'][$i] && $data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                $name = $data['name'][$i];
+                $jobs = Order::where('job',$data['job'][$i])->get();
+                $amount = (int)$data['amount'][$i] / $jobs->count();
+                foreach ($jobs as $order) {
+                    $pembayar = $order->tarif->customer->nama ?? '-';
+                    $penerima = $order->penerima->nama ?? '-';
+                    $pengirim = $order->pengirim->nama ?? '-';
+                    $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
+                    $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+                    $name = str_replace('[1]',$pembayar,$name);
+                    $name = str_replace('[2]',$pengirim,$name);
+                    $name = str_replace('[3]',$penerima,$name);
+                    $name = str_replace('[4]',$pelayaran,$name);
+                    $name = str_replace('[5]',$customer,$name);
+
+                    Jurnal::create([
+                        'coa_id' => $data['debit_coa_id'][$i],
+                        'order_id' => $order->id,
+                        'nomor' => $data['nomor'],
+                        'nama' => $name,
+                        'debit' => $amount,
+                        'created_at' => $data['created_at'][$i],
+                    ]);
+                    Jurnal::create([
+                        'coa_id' => $data['credit_coa_id'][$i],
+                        'order_id' => $order->id,
+                        'nomor' => $data['nomor'],
+                        'nama' => $name,
+                        'credit' => $amount,
+                        'created_at' => $data['created_at'][$i],
+                    ]);
+                }
+            }
+        }
+
+        return back()->with('success','Data berhasil disimpan');
+    }
+
+    public function store_balik(Request $request){
+        foreach ($request->jurnal as $item) {
+            Jurnal::create($item);
+        }
+        return redirect()->route('jurnal.balik.create')->with('success','Data berhasil disimpan');
+    }
+
     public function create()
     {
         return view('admin.jurnal.create');
@@ -111,16 +189,19 @@ class JurnalController extends Controller
 
         return Datatables::of($data)
             ->addColumn('debit', function ($data) {
-                return $data->debit == 0 ? '-' : number_format($data->debit);
+                return $data->debit == 0 ? '-' : number_format($data->debit,2,'.',',');
             })
             ->addColumn('credit', function ($data) {
-                return $data->credit == 0 ? '-' : number_format($data->credit);
+                return $data->credit == 0 ? '-' : number_format($data->credit,2,'.',',');
             })
             ->addColumn('coa_id', function ($data) {
                 return $data->coa->nama;
             })
             ->addColumn('code', function ($data) {
                 return $data->coa->kode;
+            })
+            ->addColumn('created_at', function ($data) {
+                return date('d/m/y', strtotime($data->created_at));
             })
             ->addColumn('order_id', function ($data) {
                 $name = '-';

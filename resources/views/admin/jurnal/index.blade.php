@@ -2,8 +2,10 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
+            <div class="card-header p-2 d-flex" style="gap:10px">
                 <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal</a>
+                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Kolektif</a>
+                <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -11,6 +13,7 @@
                         <thead>
                             <tr>
                                 {{-- <th>ID.</th> --}}
+                                <th>Tanggal</th>
                                 <th>Nomor</th>
                                 <th>Kode</th>
                                 <th>Account</th>
@@ -56,6 +59,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
+                { data: 'created_at', name: 'created_at' },
                 { data: 'nomor', name: 'nomor' },
                 { data: 'code', name: 'code' },
                 { data: 'coa_id', name: 'coa_id' },
