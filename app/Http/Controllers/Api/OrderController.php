@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Satuan;
+use App\Models\Tarif;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -166,6 +167,9 @@ class OrderController extends Controller
             $is_search = true;
         }
         $query = Order::query();
+        $query->join('tarif','tarif.id','=','order.tarif_id');
+        $query->join('customers','customers.id','=','tarif.customer_id');
+
 
         $start = $limit * $page - $limit;
         if ($start < 0){
@@ -180,13 +184,16 @@ class OrderController extends Controller
         }
 
         if(request('input_invoice_bayar')){
-            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNull('invoice_bayar');
+            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNull('invoice_bayar')->whereNull('komisi_print');
         }
         if(request('input_komisi')){
-            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNotNull('invoice_bayar');
+            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNotNull('invoice_bayar')->whereNull('komisi_print');
         }
         if(request('komisi_print')){
-            $query->where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar');
+            $query->where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar')->whereNull('komisi_print');
+        }
+        if(request('komisi_print_done')){
+            $query->where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar')->whereNotNull('komisi_print');
         }
 
         if(request('job')){
@@ -326,11 +333,18 @@ class OrderController extends Controller
             });
         }
 
-        // if($sidx){
-        //     $data = $query->orderBy($sidx,$sord)->orderBy('no_job')->skip($start)->take($limit)->get();
-        // }else{
-        // }
-        $data = $query->orderBy('job')->orderBy('no_job')->skip($start)->take($limit)->get();
+        if($sidx){
+            if($sidx=='pembayar'){
+                $query->select('order.*','customers.nama as pembayar');
+                $data = $query->orderBy('pembayar',$sord)->orderBy('order.job')->orderBy('order.no_job')->skip($start)->take($limit)->get();
+            }else{
+                $query->select('order.*');
+                $data = $query->orderBy('job')->orderBy('no_job')->skip($start)->take($limit)->get();
+            }
+        }else{
+            $query->select('order.*');
+            $data = $query->orderBy('job')->orderBy('no_job')->skip($start)->take($limit)->get();
+        }
 
         // if($is_search){
         //     $count = $query->count();

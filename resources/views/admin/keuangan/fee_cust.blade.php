@@ -42,11 +42,16 @@
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <span>List Sudah Terbit Tanggal, Belum Transfer</span>
                 <div class="d-flex gap-1">
+                    {{-- <form action="{{ route('keuangan.fee_cust.bayar') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="order_id" class="order_id_array">
+                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Apa anda yakin? order yang ada dilist akan ditandai sebagai sudah dibayar pd tgl hari ini {{ date('d/m/Y') }}')">Tandai Sudah dibayar</button>
+                    </form> --}}
                     <form action="{{ route('keuangan.fee_cust.bayar') }}" method="post">
                         @csrf
-                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Apa anda yakin? order yang ada dilist akan ditandai sebagai sudah dibayar pd tgl hari ini {{ date('d/m/Y') }}')">Tandai Sudah dibayar</button>
+                        <input type="hidden" name="order_id" id="order_id_array">
+                        <button type="submit" class="btn btn-sm btn-success">Cetak</button>
                     </form>
-                    <button class="btn btn-sm btn-success" id="export">Export to PDF</button>
                 </div>
             </div>
             <div class="card-body">
@@ -58,49 +63,30 @@
         </div>
 
         <div class="card mt-3">
-            <div class="m-3">
+            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <span>List Sudah Transfer</span>
-                <hr>
+                <div class="d-flex gap-1">
+                    {{-- <form action="{{ route('keuangan.fee_cust.bayar') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="order_id" class="order_id_array">
+                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Apa anda yakin? order yang ada dilist akan ditandai sebagai sudah dibayar pd tgl hari ini {{ date('d/m/Y') }}')">Tandai Sudah dibayar</button>
+                    </form> --}}
+                    {{-- <form action="{{ route('keuangan.fee_cust.bayar') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="order_id" id="order_id_array">
+                        <button type="submit" class="btn btn-sm btn-success">Cetak</button>
+                    </form> --}}
+                </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm no-wrap nowrap" id="table-payment" style="font-size:.7rem">
-                        <thead>
-                            <tr>
-                                <th>ID JOB</th>
-                                <th>Pembayar</th>
-                                <th>Pelayaran</th>
-                                <th>Shippment</th>
-                                <th>No Cont</th>
-                                <th>Seal</th>
-                                <th>Kapal</th>
-                                <th>Voyage</th>
-                                <th>Fee</th>
-                                <th>Tgl diberikan</th>
-                                <th>Tgl inv dibayar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($data->whereNotNull('tgl_komisi')->whereNotNull('komisi_print') as $item)
-                                <tr>
-                                    <td>{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</td>
-                                    <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
-                                    <td>{{ $item->jadwal_kapal->pelayaran->nama ?? '-' }}</td>
-                                    <td>{{ $item->tarif->shipmentInfo->nama ?? '-' }}</td>
-                                    <td>{{ $item->container }}</td>
-                                    <td>{{ $item->seal }}</td>
-                                    <td>{{ $item->jadwal_kapal->kapal->nama ?? '-' }}</td>
-                                    <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td>
-                                    <td>{{ number_format($item->komisi) }}</td>
-                                    <td>{{ is_null($item->invoice_bayar) ? '-' : date('d/m/y',strtotime($item->invoice_bayar)) }}</td>
-                                    <td>{{ is_null($item->komisi_print) ? '-' : date('d/m/y',strtotime($item->komisi_print)) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="table-responsives" id="jtable">
+                    <table id="jqGrid4"></table>
+                    <div id="jqGridPager4"></div>
                 </div>
             </div>
         </div>
+
+
     </div>
 
 
@@ -217,6 +203,7 @@
                 {search:true, name: 'komisi', label : 'komisi'},
                 {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -266,6 +253,7 @@
                 {search:true, name: 'komisi', label : 'komisi'},
                 {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -315,6 +303,7 @@
                 {search:true, name: 'komisi', label : 'komisi'},
                 {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -323,10 +312,15 @@
             rowNum: 25,
             rowList:[10,25,50,100,250,500,1000],
             viewrecords: true,
-            loadonce: true,
+            multiPageSelection: true,
+            multiselect : true,
             pager: "#jqGridPager3",
-            caption: "List Order Belum Sudah Terbit Tgl Invoice",
+            caption: "List Komisi yang Belum di Transfer",
             onCellSelect: function (rowId, iRow, iCol, e) {
+                setTimeout(() => {
+                    var selectedRows =  $("#jqGrid3").jqGrid('getGridParam', 'selarrrow');
+                    $('#order_id_array').val(selectedRows);
+                }, 2000);
                 row_id = rowId;
                 order_id = $(this).jqGrid('getCell', rowId, 'id');
                 var no = $(this).jqGrid('getCell', rowId, 'no');
@@ -347,6 +341,62 @@
         });
         $("#jqGrid3").jqGrid('setFrozenColumns');
 
+        $("#jqGrid4").jqGrid({
+            url: '{{ route('jqgrid.order') }}',
+            mtype: 'GET',
+            datatype: 'json',
+            postData: { komisi_print_done: true },
+            colModel: [
+                {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
+                {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:100},
+                {search:true, name: 'id', label : 'id', hidden:true},
+                {search:true, name: 'pelayaran', label : 'pelayaran'},
+                {search:true, name: 'shipment', label : 'shipment'},
+                {search:true, name: 'container', label : 'container'},
+                {search:true, name: 'seal', label : 'seal'},
+                {search:true, name: 'kapal', label : 'kapal'},
+                {search:true, name: 'voyage', label : 'voyage'},
+                {search:true, name: 'komisi', label : 'komisi'},
+                {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
+                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
+            ],
+            autowidth: true,
+            shrinkToFit: false,
+            height: 250,
+            oadonce: true,
+            rowNum: 25,
+            rowList:[10,25,50,100,250,500,1000],
+            viewrecords: true,
+            // multiPageSelection: true,
+            // multiselect : true,
+            pager: "#jqGridPager4",
+            caption: "List Sudah Transfer",
+            onCellSelect: function (rowId, iRow, iCol, e) {
+                setTimeout(() => {
+                    var selectedRows =  $("#jqGrid4").jqGrid('getGridParam', 'selarrrow');
+                    $('#order_id_array').val(selectedRows);
+                }, 2000);
+                row_id = rowId;
+                order_id = $(this).jqGrid('getCell', rowId, 'id');
+                var no = $(this).jqGrid('getCell', rowId, 'no');
+                $('.id_job').val(no);
+            },
+            rowattr: function (item) {
+                return { "class": item.class };
+            }
+        });
+
+        $('#jqGrid4').jqGrid('filterToolbar');
+        $('#jqGrid4').jqGrid('navGrid',"#jqGridPager", {
+            search: false, // show search button on the toolbar
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+        $("#jqGrid4").jqGrid('setFrozenColumns');
+
         function simpanInv() {
             $.ajax({
                 type: "POST",
@@ -359,9 +409,6 @@
                     alert('Data berhasil disimpan!');
                     $('#jqGrid1').trigger( 'reloadGrid' );
                     $('#jqGrid2').trigger( 'reloadGrid' );
-                    var myOffcanvas = document.getElementById('offcanvasInvBayar');
-                    var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
-                    offCanvas.hide();
                     $('#invoice_bayar').val('');
                 }
             });
@@ -376,12 +423,8 @@
                 },
                 success: function (response) {
                     alert('Data berhasil disimpan!');
-                    location.reload();
                     $('#jqGrid2').trigger( 'reloadGrid' );
                     $('#jqGrid3').trigger( 'reloadGrid' );
-                    var myOffcanvas = document.getElementById('offcanvasKomisi');
-                    var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
-                    offCanvas.hide();
                     $('#tgl_komisi').val('');
                 }
             });
