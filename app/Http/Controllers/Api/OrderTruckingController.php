@@ -35,6 +35,9 @@ class OrderTruckingController extends Controller
         if(request('id')){
             $query->where('id','LIKE','%'.request('id').'%');
         }
+        if(request('tgl_muat')){
+            $query->whereDate('tgl_muat','LIKE','%'.request('tgl_muat').'%');
+        }
         if(request('invoice')){
             $query->where('invoice','LIKE','%'.request('invoice').'%');
         }

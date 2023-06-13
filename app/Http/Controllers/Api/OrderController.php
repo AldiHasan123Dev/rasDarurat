@@ -224,11 +224,7 @@ class OrderController extends Controller
             $query->where('order.keterangan','LIKE','%'.request('keterangan').'%');
         }
         if(request('pembayar')){
-            $query->whereHas('tarif',function($q){
-                $q->whereHas('order.customer', function($a){
-                    $a->where('nama','LIKE','%'.request('pembayar').'%');
-                });
-            });
+            $query->where('customers.nama','LIKE','%'.request('pembayar').'%');
         }
         if(request('penerima_bl')){
             $query->whereHas('agent',function($q){
