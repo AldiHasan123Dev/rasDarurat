@@ -177,55 +177,55 @@ class OrderController extends Controller
         }
 
         if(request('ba_kembali_null')){
-            $query->whereNull('ba_kembali');
+            $query->whereNull('order.ba_kembali');
             $query->whereHas('tarif', function($a){
                 $a->whereIn('kondisi',[5,7]);
             });
         }
 
         if(request('input_invoice_bayar')){
-            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNull('invoice_bayar')->whereNull('komisi_print');
+            $query->where('order.komisi','>',0)->whereNull('order.tgl_komisi')->whereNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
         if(request('input_komisi')){
-            $query->where('komisi','>',0)->whereNull('tgl_komisi')->whereNotNull('invoice_bayar')->whereNull('komisi_print');
+            $query->where('order.komisi','>',0)->whereNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
         if(request('komisi_print')){
-            $query->where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar')->whereNull('komisi_print');
+            $query->where('order.komisi','>',0)->whereNotNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
         if(request('komisi_print_done')){
-            $query->where('komisi','>',0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar')->whereNotNull('komisi_print');
+            $query->where('order.komisi','>',0)->whereNotNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNotNull('order.komisi_print');
         }
 
         if(request('job')){
-            $query->where('job','LIKE','%'.request('job').'%');
+            $query->where('order.job','LIKE','%'.request('job').'%');
         }
         if(request('invoice')){
-            $query->where('invoice','LIKE','%'.request('invoice').'%');
+            $query->where('order.invoice','LIKE','%'.request('invoice').'%');
         }
         if(request('asuransi')){
-            $query->where('asuransi','LIKE','%'.request('asuransi').'%');
+            $query->where('order.asuransi','LIKE','%'.request('asuransi').'%');
         }
         if(request('nopol')){
-            $query->where('nopol','LIKE','%'.request('nopol').'%');
+            $query->where('order.nopol','LIKE','%'.request('nopol').'%');
         }
         if(request('trucking')){
-            $query->where('trucking','LIKE','%'.request('trucking').'%');
+            $query->where('order.trucking','LIKE','%'.request('trucking').'%');
         }
         if(request('container')){
-            $query->where('container','LIKE','%'.request('container').'%');
+            $query->where('order.container','LIKE','%'.request('container').'%');
         }
         if(request('seal')){
-            $query->where('seal','LIKE','%'.request('seal').'%');
+            $query->where('order.seal','LIKE','%'.request('seal').'%');
         }
         if(request('agen')){
-            $query->where('agen','LIKE','%'.request('agen').'%');
+            $query->where('order.agen','LIKE','%'.request('agen').'%');
         }
         if(request('keterangan')){
-            $query->where('keterangan','LIKE','%'.request('keterangan').'%');
+            $query->where('order.keterangan','LIKE','%'.request('keterangan').'%');
         }
         if(request('pembayar')){
             $query->whereHas('tarif',function($q){
-                $q->whereHas('customer', function($a){
+                $q->whereHas('order.customer', function($a){
                     $a->where('nama','LIKE','%'.request('pembayar').'%');
                 });
             });
