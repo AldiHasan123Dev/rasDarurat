@@ -234,6 +234,9 @@ class OrderTruckingController extends Controller
         if($request->lain_lain){
             $data['lain_lain'] = str_replace(['.',','],'',$request->lain_lain);
         }
+        if($request->lain){
+            $data['lain'] = str_replace(['.',','],'',$request->lain);
+        }
 
         $data['tb_tl'] = 0;
         if(!empty($data['ambil_empty_tambak_langon'])){

@@ -86,6 +86,7 @@ class OrderTruckingResource extends JsonResource
             'cleaning' => number_format($this->cleaning),
             'stappel' => number_format($this->stappel),
             'lain_lain' => number_format($this->lain_lain),
+            'lain' => number_format($this->lain),
             'pph_21' => number_format($this->pph_21),
             'pph_23' => number_format($this->pph_23),
             'borongan' => number_format($this->borongan),

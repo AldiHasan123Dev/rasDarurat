@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-header p-2 d-flex" style="gap:10px">
                 <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal</a>
-                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Kolektif</a>
+                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Group JOB</a>
                 <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
             </div>
             <div class="card-body">

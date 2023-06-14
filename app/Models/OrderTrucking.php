@@ -43,6 +43,7 @@ class OrderTrucking extends Model
         'tb_tl',
         'tally',
         'lain_lain',
+        'lain',
         'uang_makan',
         'margin',
         'total_invoice',

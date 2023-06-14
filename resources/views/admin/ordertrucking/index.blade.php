@@ -351,7 +351,7 @@
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="borongan_kuli">Borongan Kuli</label>
-                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control" required>
+                    <input type="text" name="borongan_kuli" id="borongan_kuli" class="form-control" readonly required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="kuli">Sangu Kuli</label>
@@ -394,8 +394,12 @@
                     <input type="text" name="stappel" id="stappel" class="form-control" required>
                 </div>
                 <div class="mb-2 col-3 hide-total">
-                    <label for="lain_lain">Lain-lain</label>
+                    <label for="lain_lain">Lain-lain Totalan</label>
                     <input type="text" name="lain_lain" id="lain_lain" class="form-control" required>
+                </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="lain">Lain-lain</label>
+                    <input type="text" name="lain" id="lain" class="form-control" required>
                 </div>
                 <div class="my-2 col-12 hide-total">
                     Keterangan
@@ -655,7 +659,8 @@
                 {search:true, name: 'op', label : 'OP/naikkan Mty'},
                 {search:true, name: 'cleaning', label : 'Cleaning'},
                 {search:true, name: 'stappel', label : 'Stappel/Inap'},
-                {search:true, name: 'lain_lain', label : 'Lain-lain'},
+                {search:true, name: 'lain_lain', label : 'Lain-lain Totalan'},
+                {search:true, name: 'lain', label : 'Lain-lain'},
                 {search:true, name: 'total_sopir', label : 'Totalan Sopir'},
                 {search:true, name: 'tarif_vendor', label : 'Tarif vendor'},
                 {search:true, name: 'tarif', label : 'Tarif'},
@@ -699,6 +704,7 @@
                 var cleaning = $(this).jqGrid('getCell', rowId, 'cleaning');
                 var stappel = $(this).jqGrid('getCell', rowId, 'stappel');
                 var lain_lain = $(this).jqGrid('getCell', rowId, 'lain_lain');
+                var lain = $(this).jqGrid('getCell', rowId, 'lain');
                 var container = $(this).jqGrid('getCell', rowId, 'container');
                 var seal = $(this).jqGrid('getCell', rowId, 'seal');
                 var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
@@ -729,6 +735,7 @@
                 $('#cleaning').val(cleaning);
                 $('#stappel').val(stappel);
                 $('#lain_lain').val(lain_lain);
+                $('#lain').val(lain);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
                 $('#sj_kembali_fa_vendor').val(date_sj_kembali_fa);
