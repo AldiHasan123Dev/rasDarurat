@@ -31,12 +31,13 @@ class JurnalController extends Controller
         $data = [];
         $coa_debit = null;
         $coa_credit = null;
+        $orders = Order::get(['id','job','no_job','seal']);
         if(request('draf')){
-            $data = Jurnal::whereDate('created_at',request('tujuan'))->whereIn('coa_id',[request('debit_coa_id_tujuan'),request('credit_coa_id_tujuan')])->get();
+            $data = Jurnal::where('is_balik',0)->where('order_id',request('order_id'))->whereIn('coa_id',[request('debit_coa_id_tujuan'),request('credit_coa_id_tujuan')])->get();
             $coa_debit = COA::find(request('debit_coa_id'));
             $coa_credit = COA::find(request('credit_coa_id'));
         }
-        return view('admin.jurnal.balik', compact('coa','data','coa_debit','coa_credit'));
+        return view('admin.jurnal.balik', compact('coa','data','coa_debit','coa_credit','orders'));
     }
 
     public function store(Request $request)
@@ -157,8 +158,14 @@ class JurnalController extends Controller
     }
 
     public function store_balik(Request $request){
+        $data = Jurnal::where('is_balik',0)->where('order_id',request('order_id'))->whereIn('coa_id',[request('debit_coa_id_tujuan'),request('credit_coa_id_tujuan')])->update([
+            'is_balik' => 1
+        ]);
         foreach ($request->jurnal as $item) {
-            Jurnal::create($item);
+            $data = $item;
+            $data['created_at'] = $request->created_at;
+            $data['nomor'] = $request->nomor;
+            Jurnal::create($data);
         }
         return redirect()->route('jurnal.balik.create')->with('success','Data berhasil disimpan');
     }

@@ -50,7 +50,7 @@
                 <input type="hidden" name="jurnal_id" id="jurnal_id" value="{{ json_encode($jurnal_id) }}">
                 <div class="col-12">
                     <div class="d-flex justify-content-between">
-                        <input name="nomor" placeholder="Nomor Jurnal" style="width: 300px" type="text">
+                        <input name="nomor" placeholder="Nomor Jurnal" required style="width: 300px" type="text">
                         <button class="btn btn-info btn-sm" type="button" onclick="addColumnDebit()">Tambah Kolom</button>
                     </div>
                     <hr>

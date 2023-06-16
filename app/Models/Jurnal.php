@@ -19,6 +19,7 @@ class Jurnal extends Model
         'nama',
         'debit',
         'credit',
+        'is_balik',
         'created_at',
     ];
 
