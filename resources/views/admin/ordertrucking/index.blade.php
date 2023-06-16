@@ -333,6 +333,10 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="keterangan_lain">Keterangan Lain</label>
+                    <input type="text" name="keterangan_lain" id="keterangan_lain" class="form-control" required>
+                </div>
                 {{-- <div class="mb-2 col-3">
                     <label for="sangu">Sangu</label>
                     <input type="text" name="sangu" id="sangu-edit" class="form-control" disabled>
@@ -400,10 +404,6 @@
                 <div class="mb-2 col-3 hide-total">
                     <label for="lain">Lain-lain</label>
                     <input type="text" name="lain" id="lain" class="form-control" required>
-                </div>
-                <div class="mb-2 col-3 hide-total">
-                    <label for="keterangan_lain">Keterangan Lain</label>
-                    <input type="text" name="keterangan_lain" id="keterangan_lain" class="form-control" required>
                 </div>
                 <div class="my-2 col-12 hide-total">
                     Keterangan
