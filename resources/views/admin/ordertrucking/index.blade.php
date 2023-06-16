@@ -401,6 +401,10 @@
                     <label for="lain">Lain-lain</label>
                     <input type="text" name="lain" id="lain" class="form-control" required>
                 </div>
+                <div class="mb-2 col-3 hide-total">
+                    <label for="keterangan_lain">Keterangan Lain</label>
+                    <input type="text" name="keterangan_lain" id="keterangan_lain" class="form-control" required>
+                </div>
                 <div class="my-2 col-12 hide-total">
                     Keterangan
                     <hr>
@@ -670,6 +674,7 @@
                 {search:true, name: 'total_invoice', label : 'Inv'},
                 {search:true, name: 'margin', label : 'Margin'},
                 {search:true, name: 'keterangan', label : 'Keterangan', width:450},
+                {search:true, name: 'keterangan_lain', label : 'Keterangan Lain', width:450},
             ],
             autowidth: true,
             shrinkToFit: false,
@@ -706,6 +711,7 @@
                 var lain_lain = $(this).jqGrid('getCell', rowId, 'lain_lain');
                 var lain = $(this).jqGrid('getCell', rowId, 'lain');
                 var container = $(this).jqGrid('getCell', rowId, 'container');
+                var keterangan_lain = $(this).jqGrid('getCell', rowId, 'keterangan_lain');
                 var seal = $(this).jqGrid('getCell', rowId, 'seal');
                 var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
                 var simpanan = $(this).jqGrid('getCell', rowId, 'simpanan');
@@ -736,6 +742,7 @@
                 $('#stappel').val(stappel);
                 $('#lain_lain').val(lain_lain);
                 $('#lain').val(lain);
+                $('#keterangan_lain').val(keterangan_lain);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);
                 $('#sj_kembali_fa_vendor').val(date_sj_kembali_fa);

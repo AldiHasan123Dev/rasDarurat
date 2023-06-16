@@ -202,6 +202,9 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::post('jurnal-kolektif',[JurnalController::class,'store_kolektif'])->name('jurnal.kolektif.store');
     Route::post('jurnal-balik',[JurnalController::class,'store_balik'])->name('jurnal.balik.store');
 
+    Route::get('jqgrid-tarif-agent',[TarifAgenController::class,'jqgrid'])->name('jqgrid.tarif.agent');
+    Route::get('jqgrid-tarif-pelayaran',[TarifPelayaranController::class,'jqgrid'])->name('jqgrid.tarif.pelayaran');
+
     Route::get('sync-reset-tbtl',[SyncController::class,'resetTBTL']);
     Route::get('sync-kuli',[SyncController::class,'kuli']);
     Route::get('sync-import',[SyncController::class,'import']);

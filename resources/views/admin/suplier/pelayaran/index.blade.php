@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+<link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 <style>
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
@@ -65,25 +66,8 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-sm nowrap" id="tb-tarif" style="font-size:.7rem">
-                    <thead>
-                        <tr>
-                            <th>ID.</th>
-                            <th>Pelayaran</th>
-                            <th>Tanggal</th>
-                            <th>Dari</th>
-                            <th>Tujuan</th>
-                            <th>Shipment</th>
-                            <th>Tarif</th>
-                            <th>Kubikasi</th>
-                            <th>Keterangan</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+                <table id="jqGrid"></table>
+                <div id="jqGridPager"></div>
             </div>
         </div>
     </div>
@@ -119,7 +103,10 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('assets/js/jquery-serializeFields.js') }}"></script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
 <script>
     $(document).ready(function() {
         document.oncontextmenu = new Function("return false");
@@ -154,46 +141,87 @@
             select:true
         });
 
-        let tb_tarif = $('#tb-tarif').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax:{
-                url: '{{ route('tarifpelayaran.data') }}',
-                method:'POST',
-                data:function(d){
-                    d.pelayaran_id = pelayaran_id;
-                },
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'pelayaran_id', name: 'pelayaran_id' },
-                { data: 'tanggal', name: 'tanggal' },
-                { data: 'dari', name: 'dari' },
-                { data: 'tujuan', name: 'tujuan' },
-                { data: 'tipe', name: 'tipe' },
-                { data: 'tarif', name: 'tarif' },
-                { data: 'kubikasi', name: 'kubikasi' },
-                { data: 'keterangan', name: 'keterangan' },
-                { data: 'is_active', name: 'is_active' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
-            ]
-        });
+    $("#jqGrid").jqGrid({
+        url: '{{ route('jqgrid.tarif.pelayaran') }}',
+        mtype: 'GET',
+        datatype: 'json',
+        postData: { pelayaran_id: 1 },
+        colModel: [
+            {search:true, name: 'class', label : 'class', hidden:true, width:10, frozen: true},
+            {search:true, name: 'id', label : 'id', width:50, frozen: true},
+            {search:true, name: 'pelayaran', label : 'pelayaran', width:50, frozen: true},
+            {search:true, name: 'tanggal', label : 'tanggal', sorttype: 'date', datefmt:'d/m/y', width:100, frozen: true},
+            {search:true, name: 'dari', label : 'dari'},
+            {search:true, name: 'tujuan', label : 'tujuan'},
+            {search:true, name: 'tipe', label : 'tipe'},
+            {search:true, name: 'tarif', label : 'tarif'},
+            {search:true, name: 'kubikasi', label : 'kubikasi'},
+            {search:true, name: 'keterangan', label : 'keterangan'},
+            {search:true, name: 'is_active', label : 'status'},
+        ],
+        autowidth: true,
+        shrinkToFit: false,
+        height: 250,
+        oadonce: true,
+        rowNum: 25,
+        rowList:[10,25,50,100,250,500,1000],
+        viewrecords: true,
+        pager: "#jqGridPager",
+        caption: "List Tarif Pelayaran",
+        onCellSelect: function (rowId, iRow, iCol, e) {
+            row_id = rowId;
+            pelayaran_id = $(this).jqGrid('getCell', rowId, 'id');
+            console.log(pelayaran_id);
+        },
+        rowattr: function (item) {
+            return { "class": item.class };
+        }
+    });
 
-        $('#tb-pelayaran tbody').on( 'click', 'tr', function () {
-            id =  tb_pelayaran.row( this ).data().id;
-            $('#tarif-create #pelayaran_id').val(id).trigger('change');
-            pelayaran_id = id;
-            tb_tarif.ajax.reload();
+    $('#jqGrid').jqGrid('filterToolbar');
+    $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
+        search: false, // show search button on the toolbar
+        add: false,
+        edit: false,
+        del: false,
+        refresh: true
+    });
+
+    $("#jqGrid").jqGrid('setFrozenColumns');
+
+    $('#tb-pelayaran tbody').on( 'click', 'tr', function () {
+        pelayaran_id =  tb_pelayaran.row( this ).data().id;
+        $('#tarif-create #pelayaran_id').val(pelayaran_id).trigger('change');
+        $("#jqGrid").jqGrid('setGridParam', {
+                postData: {pelayaran_id:pelayaran_id }
+        }).trigger('reloadGrid');
+    });
+    $("select[name=dari]").select2({
+        dropdownParent: $('#offcanvasTarifPelayaran')
+    });
+    $("select[name=tujuan]").select2({
+        dropdownParent: $('#offcanvasTarifPelayaran')
+    });
+    $("select[name=pelayaran_id]").select2({
+        dropdownParent: $('#offcanvasTarifPelayaran')
+    });
+
+    $('#tarif-create').submit(function (e) {
+        e.preventDefault();
+        let data = $(this).serializeFields();
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data:data,
+            success: function (response) {
+                $('#tarif-create').trigger("reset");
+                $('#tarif-create #pelayaran_id').val(pelayaran_id).trigger('change');
+                $("#jqGrid").jqGrid('setGridParam', {
+                        postData: {pelayaran_id:pelayaran_id }
+                }).trigger('reloadGrid');
+                alert(response)
+            }
         });
-        $("select[name=dari]").select2({
-            dropdownParent: $('#offcanvasTarifPelayaran')
-        });
-        $("select[name=tujuan]").select2({
-            dropdownParent: $('#offcanvasTarifPelayaran')
-        });
-        $("select[name=pelayaran_id]").select2({
-            dropdownParent: $('#offcanvasTarifPelayaran')
-        });
+    });
     </script>
 @endsection

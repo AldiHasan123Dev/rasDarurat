@@ -69,4 +69,11 @@ class TarifController extends Controller
             'message' => 'Data berhasil ditambahkan!'
         ]);
     }
+
+    public function update(Request $request)
+    {
+        Tarif::find($request->id)->update($request->all());
+
+        return response('success');
+    }
 }

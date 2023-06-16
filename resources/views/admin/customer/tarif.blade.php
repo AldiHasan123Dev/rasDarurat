@@ -367,5 +367,18 @@
             tablecus.ajax.reload();
         })
 
+        function changeActive(id,is_active){
+            $.ajax({
+                type: "PUT",
+                url: "{{ route('api.tarif.update') }}",
+                data: {
+                    id:id,
+                    is_active:is_active,
+                },
+                success: function (response) {
+                    alert('Data berhasil disimpana!');
+                }
+            });
+        }
 </script>
 @endsection

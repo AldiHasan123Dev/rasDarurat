@@ -199,6 +199,14 @@ class OrderController extends Controller
         if(request('job')){
             $query->where('order.job','LIKE','%'.request('job').'%');
         }
+
+        if(request('no')){
+            $me = explode('-',request('no'));
+            $query->where('order.job','LIKE','%'.$me[0].'%');
+            if(!empty($me[1])){
+                $query->where('order.no_job',(int)$me[1]);
+            }
+        }
         if(request('invoice')){
             $query->where('order.invoice','LIKE','%'.request('invoice').'%');
         }

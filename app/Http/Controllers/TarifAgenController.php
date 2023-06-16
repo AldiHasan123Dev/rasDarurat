@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\TarifAgenResource;
 use App\Models\Shipment;
 use App\Models\TarifAgen;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class TarifAgenController extends Controller
         $data = $request->all();
         TarifAgen::create($data);
 
-        return back()->with('success','Data berhasil disimpan');
+        return response('Data berhasil disimpan');
     }
 
     public function update(TarifAgen $tarifagen, Request $request)
@@ -99,5 +100,81 @@ class TarifAgenController extends Controller
             ->rawColumns(['action'])
             ->setFilteredRecords($count)
             ->toJson();
+    }
+
+    public function jqgrid()
+    {
+        $page = request('page'); // get the requested page
+        $limit = request('rows'); // get how many rows we want to have into the grid
+        $sidx = request('sidx'); // get index row - i.e. user click to sort
+        $sord = request('sord'); // get the direction
+        $search = request('_search'); // get the search
+        $is_search = false;
+        if($search=='true'){
+            $is_search = true;
+        }
+        $query = TarifAgen::query();
+
+
+        $start = $limit * $page - $limit;
+        if ($start < 0){
+            $start = 0;
+        }
+
+        if(request('agen_id')){
+            $query->where('agen_id',request('agen_id'));
+        }
+
+        if(request('tanggal')){
+            $d = substr(request('tanggal'),0,2);
+            $m = substr(request('tanggal'),3,2);
+            $y = substr(request('tanggal'),6,2);
+            $date = '20'.$y.'-'.$m.'-'.$d;
+            $query->whereDate('tanggal','LIKE','%'.$date.'%');
+        }
+
+        if(request('dari')){
+            $query->whereHas('dariInfo', function($q){
+                $q->where('nama','LIKE','%'.request('dari').'%');
+            });
+        }
+        if(request('tujuan')){
+            $query->whereHas('tujuanInfo', function($q){
+                $q->where('nama','LIKE','%'.request('tujuan').'%');
+            });
+        }
+        if(request('tipe')){
+            $query->whereHas('shipment', function($q){
+                $q->where('nama','LIKE','%'.request('tipe').'%');
+            });
+        }
+        if(request('keterangan')){
+            $query->where('keterangan','LIKE','%'.request('tipe').'%');
+        }
+
+        $data = $query->orderBy('is_active','desc')->orderBy('tanggal','desc')->skip($start)->take($limit)->get();
+
+        $count = TarifAgen::get('id')->count();
+        if(request('agen_id')){
+            $count = TarifAgen::where('agen_id',request('agen_id'))->get('id')->count();
+        }
+
+        if ($count > 0 && $limit > 0) {
+            $total_pages = ceil($count / $limit);
+        } else {
+            $total_pages = 0;
+        }
+
+        if ($page > $total_pages){
+            $page = $total_pages;
+        }
+
+        $response = TarifAgenResource::collection($data);
+        return response([
+            'page' => $page,
+            'total' => $total_pages,
+            'records' => $count,
+            'rows' => $response
+        ]);
     }
 }

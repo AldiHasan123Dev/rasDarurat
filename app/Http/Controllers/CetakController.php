@@ -10,6 +10,7 @@ use App\Models\JasaKirim;
 use App\Models\Lokasi;
 use App\Models\NSFP;
 use App\Models\Order;
+use App\Models\Kapal;
 use App\Models\Pengirim;
 use App\Models\Tagihan;
 use App\Models\Tarif;
@@ -63,24 +64,54 @@ class CetakController extends Controller
 
     public function packingList()
     {
-        $order = Order::find(request('order_id'));
-        if (!$order) {
-            return redirect()->route('order.index');
-        }
+        $customer_id = request('customer_id') ?? null;
+        $kapal_id = request('kapal_id') ?? null;
+        $tujuan_id = request('tujuan_id') ?? null;
 
-        $data = Order::where('job',$order->job)->orderBy('job')->orderBy('no_job')->get();
-        return view('admin.cetak.packing_list', compact('order','data'));
+        if(request('order_id')){
+            $order = Order::find(request('order_id'));
+        }else{
+            $order = Order::whereHas('tarif', function($q){
+                $q->where('customer_id',request('customer_id'));
+                $q->where('tujuan',request('tujuan_id'));
+            })->whereHas('jadwal_kapal', function($q){
+                $q->where('kapal_id',request('kapal_id'));
+            })->first();
+        }
+        $customers = Customer::whereHas('tarif')->get(['id','nama']);
+        $kapal = Kapal::get(['id','nama']);
+        $tujuan = Lokasi::get(['id','nama']);
+        $data = [];
+        if ($order) {
+            $data = Order::where('job',$order->job)->orderBy('job')->orderBy('no_job')->get();
+        }
+        return view('admin.cetak.packing_list', compact('order','data','customers','kapal','tujuan','customer_id','kapal_id','tujuan_id'));
     }
 
     public function packingListKubikasi()
     {
-        $order = Order::find(request('order_id'));
-        if (!$order) {
-            return redirect()->route('order.index');
-        }
+        $customer_id = request('customer_id') ?? null;
+        $kapal_id = request('kapal_id') ?? null;
+        $tujuan_id = request('tujuan_id') ?? null;
 
-        $data = Order::where('job',$order->job)->orderBy('job')->orderBy('no_job')->get();
-        return view('admin.cetak.packing_list_kubikasi', compact('order','data'));
+        if(request('order_id')){
+            $order = Order::find(request('order_id'));
+        }else{
+            $order = Order::whereHas('tarif', function($q){
+                $q->where('customer_id',request('customer_id'));
+                $q->where('tujuan',request('tujuan_id'));
+            })->whereHas('jadwal_kapal', function($q){
+                $q->where('kapal_id',request('kapal_id'));
+            })->first();
+        }
+        $customers = Customer::whereHas('tarif')->get(['id','nama']);
+        $kapal = Kapal::get(['id','nama']);
+        $tujuan = Lokasi::get(['id','nama']);
+        $data = [];
+        if ($order) {
+            $data = Order::where('job',$order->job)->orderBy('job')->orderBy('no_job')->get();
+        }
+        return view('admin.cetak.packing_list_kubikasi', compact('order','data','customers','kapal','tujuan','customer_id','kapal_id','tujuan_id'));
     }
 
     public function bttb()

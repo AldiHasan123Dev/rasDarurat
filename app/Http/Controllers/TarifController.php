@@ -190,7 +190,7 @@ class TarifController extends Controller
                             <input type="hidden" name="is_active" value="'.$val.'" />
                             <input type="hidden" name="change_active" value="true" />
                             <div class="form-check form-switch">
-                                <input class="form-check-input" onchange="submit()" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
+                                <input class="form-check-input" onchange="changeActive('.$data->id.','.$val.')" value="'.$val.'" type="checkbox" name="is_active" role="switch" id="flexSwitchCheckDefault" '.$checked.'>
                                 <label class="form-check-label" for="flexSwitchCheckDefault">'.$name.'</label>
                             </div>
                         </form>';

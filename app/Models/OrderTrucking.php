@@ -54,6 +54,7 @@ class OrderTrucking extends Model
         'sj_kembali',
         'sj_kembali_fa',
         'keterangan',
+        'keterangan_lain',
         'ambil_empty_tambak_langon',
         'ambil_empty_teluk_langon',
         'bongkar_full_teluk_langon',

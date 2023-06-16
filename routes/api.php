@@ -73,7 +73,8 @@ Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
 Route::post('api-bttb-add',[BTTBController::class,'add']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
-Route::resource('api-tarif',TarifController::class);
+Route::resource('api-tarif',TarifController::class)->except('update');
+Route::put('api-tarif',[TarifController::class,'update'])->name('api.tarif.update');
 Route::resource('api-jasakirim',JasaKirimController::class)->only(['store']);
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
 

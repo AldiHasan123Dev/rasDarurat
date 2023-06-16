@@ -101,6 +101,7 @@ class OrderTruckingResource extends JsonResource
             'margin' => number_format($this->margin),
             'tgl_total' =>  $this->tgl_total?date('Y-m-d', strtotime($this->tgl_total)):'-',
             'keterangan' => $keterangan,
+            'keterangan_lain' => $this->keterangan_lain,
             'ambil_empty_tambak_langon' => $this->ambil_empty_tambak_langon,
             'ambil_empty_teluk_langon' => $this->ambil_empty_teluk_langon,
             'bongkar_full_teluk_langon' => $this->bongkar_full_teluk_langon,

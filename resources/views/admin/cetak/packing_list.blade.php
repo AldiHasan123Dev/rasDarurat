@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 @section('style')
     <style>
+        .select2.select2-container.select2-container--default{
+            width: 100% !important;
+        }
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
             body * {
@@ -43,11 +46,32 @@
 @endsection
 @section('content')
     <div class="container">
-        <div class="d-flex" style="gap:5px">
-            <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
-            <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+        <div class="d-flex justify-content-between">
+            <div class="d-flex" style="gap:5px">
+                <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+            </div>
+            <form action="{{ route('cetak.packingList') }}" method="get" class="d-flex" style="gap:5px">
+                <select name="customer_id" class="select2" id="customer_id" style="width:180px">
+                    @foreach ($customers as $cus)
+                        <option {{ $customer_id==$cus->id?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
+                    @endforeach
+                </select>
+                <select name="kapal_id" class="select2" id="kapal_id" style="width:180px">
+                    @foreach ($kapal as $item)
+                        <option {{ $kapal_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->nama }}</option>
+                    @endforeach
+                </select>
+                <select name="tujuan_id" class="select2" id="tujuan_id" style="width:180px">
+                    @foreach ($tujuan as $item)
+                        <option {{ $tujuan_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->nama }}</option>
+                    @endforeach
+                </select>
+                <button type="submit" class="btn btn-sm btn-primary mb-3">Filter</button>
+            </form>
         </div>
         <div class="card p-3">
+            @if ($order)
             <div id="print">
                 <div class="header d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
@@ -170,6 +194,18 @@
                     </div>
                 </div>
             </div>
+            @else
+                <div class="alert alert-warning text-center">
+                    <strong>Empty!</strong>
+                </div>
+            @endif
         </div>
     </div>
+@endsection
+@section('script')
+    <script>
+        $('#customer_id').select2();
+        $('#kapal_id').select2();
+        $('#tujuan_id').select2();
+    </script>
 @endsection
