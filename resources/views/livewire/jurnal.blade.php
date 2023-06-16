@@ -22,24 +22,27 @@
     </div>
     <div class="col-12 mt-2">
         <div class="card p-3">
-            <table class="table table-sm table-bordered" style="font-size:.7rem">
-                <tr>
-                    <td class="fw-bold">Param</td>
-                    <td>[1] Pembayar (XPDC)</td>
-                    <td>[2] Pengirim (XPDC)</td>
-                    <td>[3] Penerima (XPDC)</td>
-                    <td>[4] Pelayaran (XPDC)</td>
-                    <td>[5] Customer (TRUCKING)</td>
-                </tr>
-                {{-- <tr>
-                    <td class="fw-bold">Output</td>
-                    <td id="pembayar">-</td>
-                    <td id="pengirim">-</td>
-                    <td id="penerima">-</td>
-                    <td id="pelayaran">-</td>
-                    <td id="customer">-</td>
-                </tr> --}}
-            </table>
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered" style="font-size:.7rem; white-space:nowrap">
+                    <thead>
+                        <tr>
+                            <th class="fw-bold">Param</th>
+                            <th>[1] ID JOB</th>
+                            <th>[2] Cont</th>
+                            <th>[3] Seal</th>
+                            <th>[4] Shipment</th>
+                            <th>[5] Pembayar (XPDC)</th>
+                            <th>[6] Pengirim (XPDC)</th>
+                            <th>[7] Penerima (XPDC)</th>
+                            <th>[8] Pelayaran (XPDC)</th>
+                            <th>[9] Customer (TRUCKING)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-order">
+
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <div class="col-12 mt-3">
@@ -69,7 +72,7 @@
                             <tr>
                                 <td><input type="checkbox" onchange="check(this)" name="id[]" id="{{ $i }}" value="{{ $i }}"></td>
                                 <td style="width: 200px">
-                                    <select class="form-control select2" name="order_id[]" style="font-size:.9rem !important">
+                                    <select class="form-control select2" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important">
                                         <option value=""></option>
                                         @foreach ($orders as $item)
                                         <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
@@ -216,6 +219,39 @@
             }
         }
     });
+
+    function getOrder(){
+        var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();
+        $.ajax({
+            type: "POST",
+            url: "{{ url('api/get-array-id') }}",
+            data: {
+                id:order_id
+            },
+            success: function (response) {
+                let html = '';
+                $.each(response, function (idx, item) {
+                    html  +=
+                    `
+                    <tr>
+                        <td>#</td>
+                        <td>${item.no}</td>
+                        <td>${item.container}</td>
+                        <td>${item.seal}</td>
+                        <td>${item.shipment}</td>
+                        <td>${item.pembayar}</td>
+                        <td>${item.pengirim}</td>
+                        <td>${item.penerima}</td>
+                        <td>${item.pelayaran}</td>
+                        <td>${item.customer_trucking}</td>
+                    </tr>
+                    `
+                });
+
+                $('#table-order').html(html);
+            }
+        });
+    }
 
 </script>
 @endpush

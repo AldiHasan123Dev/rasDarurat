@@ -19,11 +19,15 @@
                     <table class="table table-sm table-bordered" style="font-size:.7rem">
                         <tr>
                             <td class="fw-bold">Param</td>
-                            <td>[1] Pembayar (XPDC)</td>
-                            <td>[2] Pengirim (XPDC)</td>
-                            <td>[3] Penerima (XPDC)</td>
-                            <td>[4] Pelayaran (XPDC)</td>
-                            <td>[5] Customer (TRUCKING)</td>
+                            <td>[1] ID JOB</td>
+                            <td>[2] Cont</td>
+                            <td>[3] Seal</td>
+                            <td>[4] Shipment</td>
+                            <td>[5] Pembayar (XPDC)</td>
+                            <td>[6] Pengirim (XPDC)</td>
+                            <td>[7] Penerima (XPDC)</td>
+                            <td>[8] Pelayaran (XPDC)</td>
+                            <td>[9] Customer (TRUCKING)</td>
                         </tr>
                         {{-- <tr>
                             <td class="fw-bold">Output</td>

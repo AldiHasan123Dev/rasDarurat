@@ -42,27 +42,30 @@ class JurnalController extends Controller
 
     public function store(Request $request)
     {
-        // [1] pembayar
-        // [2] pengirim
-        // [3] penerima
-        // [4] pelayaran
-        // [5] customer
         $data = $request->all();
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
                 if($data['order_id'][$i]){
                     $order = Order::find($data['order_id'][$i]);
+                    $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
+                    $cont = $order->container;
+                    $seal = $order->seal;
+                    $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
                     $penerima = $order->penerima->nama ?? '-';
                     $pengirim = $order->pengirim->nama ?? '-';
                     $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
-                    $name = str_replace('[1]',$pembayar,$name);
-                    $name = str_replace('[2]',$pengirim,$name);
-                    $name = str_replace('[3]',$penerima,$name);
-                    $name = str_replace('[4]',$pelayaran,$name);
-                    $name = str_replace('[5]',$customer,$name);
+                    $name = str_replace('[1]',$id_job,$name);
+                    $name = str_replace('[2]',$cont,$name);
+                    $name = str_replace('[3]',$seal,$name);
+                    $name = str_replace('[4]',$shipment,$name);
+                    $name = str_replace('[5]',$pembayar,$name);
+                    $name = str_replace('[6]',$pengirim,$name);
+                    $name = str_replace('[7]',$penerima,$name);
+                    $name = str_replace('[8]',$pelayaran,$name);
+                    $name = str_replace('[9]',$customer,$name);
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     Jurnal::create([
@@ -111,11 +114,6 @@ class JurnalController extends Controller
 
     public function store_kolektif(Request $request)
     {
-        // [1] pembayar
-        // [2] pengirim
-        // [3] penerima
-        // [4] pelayaran
-        // [5] customer
         $data = $request->all();
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i] && $data['job'][$i] && $data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
@@ -123,16 +121,24 @@ class JurnalController extends Controller
                 $jobs = Order::where('job',$data['job'][$i])->get();
                 $amount = (int)$data['amount'][$i] / $jobs->count();
                 foreach ($jobs as $order) {
+                    $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
+                    $cont = $order->container;
+                    $seal = $order->seal;
+                    $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
                     $penerima = $order->penerima->nama ?? '-';
                     $pengirim = $order->pengirim->nama ?? '-';
                     $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
-                    $name = str_replace('[1]',$pembayar,$name);
-                    $name = str_replace('[2]',$pengirim,$name);
-                    $name = str_replace('[3]',$penerima,$name);
-                    $name = str_replace('[4]',$pelayaran,$name);
-                    $name = str_replace('[5]',$customer,$name);
+                    $name = str_replace('[1]',$id_job,$name);
+                    $name = str_replace('[2]',$cont,$name);
+                    $name = str_replace('[3]',$seal,$name);
+                    $name = str_replace('[4]',$shipment,$name);
+                    $name = str_replace('[5]',$pembayar,$name);
+                    $name = str_replace('[6]',$pengirim,$name);
+                    $name = str_replace('[7]',$penerima,$name);
+                    $name = str_replace('[8]',$pelayaran,$name);
+                    $name = str_replace('[9]',$customer,$name);
 
                     Jurnal::create([
                         'coa_id' => $data['debit_coa_id'][$i],

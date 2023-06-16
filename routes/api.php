@@ -68,6 +68,7 @@ Route::get('get-order', [OrderController::class,'index']);
 Route::get('get-transaksi', [TransaksiController::class,'index']);
 Route::get('get-order-ba-kembali', [OrderController::class,'ba_kembali']);
 Route::get('get-order-pre-invoice', [OrderController::class,'pre_invoice']);
+Route::post('get-array-id', [OrderController::class,'getArrayId']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
 Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);

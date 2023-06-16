@@ -395,5 +395,11 @@ class OrderController extends Controller
         ]);
     }
 
-
+    public function getArrayId(Request $request)
+    {
+        $id = $request->id;
+        $orders = Order::whereIn('id',$id)->get();
+        $data = OrderResource::collection($orders);
+        return response($data);
+    }
 }
