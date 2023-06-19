@@ -19,6 +19,7 @@ class TarifPelayaranResource extends JsonResource
             $class = 'bg-light-danger';
         }
         return [
+            'id' => $this->id,
             'pelayaran_id' => $this->pelayaran_id,
             'pelayaran' => $this->pelayaran->nama,
             'tanggal' => is_null($this->tanggal) ? '-' : date('d/m/y',strtotime($this->tanggal)),
@@ -29,7 +30,13 @@ class TarifPelayaranResource extends JsonResource
             'kubikasi' => number_format($this->kubikasi),
             'keterangan' => $this->keterangan,
             'is_active' => $this->is_active==1?'AKTIF':'NON AKTIF',
-            'class' => $class
+            'class' => $class,
+            'dari_id' => $this->dari,
+            'tujuan_id' => $this->tujuan,
+            'tipe_id' => $this->tipe,
+            'date_tanggal' => $this->tanggal,
+            'tarif_nominal' => $this->tarif,
+            'kubikasi_nominal' => $this->kubikasi,
         ];
     }
 }

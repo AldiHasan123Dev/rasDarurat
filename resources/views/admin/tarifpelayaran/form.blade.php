@@ -17,6 +17,6 @@
         <label for="is_active_0"><input type="radio" name="is_active" value="0" id="is_active_0">Non Active</label>
     </div>
     <div class="col-12 mb-2 px-1">
-        <button type="submit" class="btn btn-success btn-sm">{{ empty($tarifpelayaran)?'Tambah':'Update' }} Data</button>
+        <button type="submit" class="btn btn-success btn-sm">Simpan Data</button>
     </div>
     </div>

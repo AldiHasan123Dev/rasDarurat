@@ -20,7 +20,11 @@ class TarifPelayaranController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        TarifPelayaran::create($data);
+        if($request->tarif_id){
+            TarifPelayaran::find($request->tarif_id)->update($data);
+        }else{
+            TarifPelayaran::create($data);
+        }
 
         return response('Data berhasil disimpan');
     }

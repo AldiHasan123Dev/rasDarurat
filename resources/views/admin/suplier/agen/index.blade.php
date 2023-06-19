@@ -61,8 +61,9 @@
 
 <div class="container-fluid mt-3">
     <div class="card">
-        <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-            <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTarifAgen" aria-controls="offcanvasTarifAgen">Tambah Tarif Agen</button>
+        <div class="card-header p-2 d-flex" style="gap:10px">
+            <button class="py-2 px-3 btn btn-success" onclick="tambahTarif()">Tambah Tarif Agen</button>
+            <button class="py-2 px-3 btn btn-primary" onclick="editTarif()">Edit Tarif Agen</button>
         </div>
         <div class="card-body">
             <div class="table-responsives">
@@ -113,9 +114,18 @@
             event.preventDefault();
         });
     });
+
+    var offcanvasElementList = [].slice.call(document.querySelectorAll('.offcanvas'))
+    var offcanvasList = offcanvasElementList.map(function (offcanvasEl) {
+        return new bootstrap.Offcanvas(offcanvasEl)
+    })
 </script>
     <script>
+        var myOffcanvas = document.getElementById('offcanvasTarifAgen')
+        var offcanvas = new bootstrap.Offcanvas(myOffcanvas)
+
         let agen_id = 1;
+        let tarif_id = 1;
         let tb_agen = $('#tb-agen').DataTable({
             processing: true,
             serverSide: true,
@@ -157,6 +167,12 @@
             {search:true, name: 'kubikasi', label : 'kubikasi'},
             {search:true, name: 'keterangan', label : 'keterangan'},
             {search:true, name: 'is_active', label : 'status'},
+            {search:false, hidden:true, name: 'dari_id', label : 'status'},
+            {search:false, hidden:true, name: 'tujuan_id', label : 'status'},
+            {search:false, hidden:true, name: 'tipe_id', label : 'status'},
+            {search:false, hidden:true, name: 'date_tanggal', label : 'status'},
+            {search:false, hidden:true, name: 'tarif_nominal', label : 'status'},
+            {search:false, hidden:true, name: 'kubikasi_nominal', label : 'status'},
         ],
         autowidth: true,
         shrinkToFit: false,
@@ -169,8 +185,31 @@
         caption: "List Tarif Agen",
         onCellSelect: function (rowId, iRow, iCol, e) {
             row_id = rowId;
-            agen_id = $(this).jqGrid('getCell', rowId, 'id');
-            console.log(agen_id);
+            tarif_id = $(this).jqGrid('getCell', rowId, 'id');
+            let dari = $(this).jqGrid('getCell', rowId, 'dari_id');
+            let tujuan = $(this).jqGrid('getCell', rowId, 'tujuan_id');
+            let tipe = $(this).jqGrid('getCell', rowId, 'tipe_id');
+            let tanggal = $(this).jqGrid('getCell', rowId, 'date_tanggal');
+            let tarif = $(this).jqGrid('getCell', rowId, 'tarif_nominal');
+            let kubikasi = $(this).jqGrid('getCell', rowId, 'kubikasi_nominal');
+            let keterangan = $(this).jqGrid('getCell', rowId, 'keterangan');
+            let is_active = $(this).jqGrid('getCell', rowId, 'is_active');
+            $('#is_active_1').attr('checked',false);
+            $('#is_active_0').attr('checked',false);
+            if (is_active=='AKTIF') {
+                $('#is_active_1').attr('checked',true);
+                $('#is_active_0').attr('checked',false);
+            }else{
+                $('#is_active_1').attr('checked',false);
+                $('#is_active_0').attr('checked',true);
+            }
+            $('#tanggal').val(tanggal);
+            $('#tipe').val(tipe);
+            $('#tarif').val(tarif);
+            $('#kubikasi').val(kubikasi);
+            $('#keterangan').val(keterangan);
+            $('#tujuan').val(tujuan).trigger('change');
+            $('#dari').val(dari).trigger('change');
         },
         rowattr: function (item) {
             return { "class": item.class };
@@ -208,6 +247,10 @@
     $('#tarif-create').submit(function (e) {
         e.preventDefault();
         let data = $(this).serializeFields();
+        data.agen_id = agen_id;
+        if (tarif_id) {
+            data.tarif_id = tarif_id;
+        }
         $.ajax({
             type: "POST",
             url: $(this).attr('action'),
@@ -218,9 +261,26 @@
                 $("#jqGrid").jqGrid('setGridParam', {
                         postData: {agen_id:agen_id }
                 }).trigger('reloadGrid');
-                alert(response)
+                alert(response);
+                offcanvas.hide();
             }
         });
     });
+
+    function tambahTarif(){
+        tarif_id = null;
+        $('#tarif-create').trigger("reset");
+        $('#tarif-create #pelayaran_id').val(agen_id).trigger('change');
+        $("#jqGrid").jqGrid('setGridParam', {
+                postData: {agen_id:agen_id }
+        }).trigger('reloadGrid');
+        $('#is_active_1').attr('checked',true);
+        $('#is_active_0').attr('checked',false);
+        offcanvas.show();
+    }
+
+    function editTarif(){
+        offcanvas.show();
+    }
     </script>
 @endsection

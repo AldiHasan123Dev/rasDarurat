@@ -20,7 +20,11 @@ class TarifAgenController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        TarifAgen::create($data);
+        if($request->tarif_id){
+            TarifAgen::find($request->tarif_id)->update($data);
+        }else{
+            TarifAgen::create($data);
+        }
 
         return response('Data berhasil disimpan');
     }
