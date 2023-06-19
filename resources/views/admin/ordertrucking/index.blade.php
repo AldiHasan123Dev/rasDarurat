@@ -333,9 +333,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="mb-2 col-3 hide-total">
+                <div class="mb-2 col-4 hide-total">
                     <label for="keterangan_lain">Keterangan Lain</label>
-                    <input type="text" name="keterangan_lain" id="keterangan_lain" class="form-control" required>
+                    <input type="text" name="keterangan_lain" id="keterangan_lain" class="form-control">
                 </div>
                 {{-- <div class="mb-2 col-3">
                     <label for="sangu">Sangu</label>
