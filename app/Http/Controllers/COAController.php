@@ -26,7 +26,13 @@ class COAController extends Controller
     public function update(COA $coa, Request $request)
     {
         $data = $request->all();
+        if ($request->update_status) {
+            $data['is_active'] = $coa->is_active==1?0:1;
+        }
         $coa->update($data);
+        if ($request->update_status) {
+            return response('success');
+        }
 
         return back()->with('success','Data berhasil diupdate');
     }

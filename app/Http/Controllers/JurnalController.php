@@ -21,19 +21,32 @@ class JurnalController extends Controller
     {
         $job = Order::pluck('job')->toArray();
         $job = array_unique($job);
-        $coa = COA::doesnthave('coas')->orderBy('kode')->get();
+        $coa = COA::where('is_active',1)->orderBy('kode')->get();
         return view('admin.jurnal.kolektif', compact('job','coa'));
     }
 
     public function balik()
     {
-        $coa = COA::doesnthave('coas')->orderBy('kode')->get();
+        $coa = COA::where('is_active',1)->orderBy('kode')->get();
         $data = [];
         $coa_debit = null;
         $coa_credit = null;
         $orders = Order::get(['id','job','no_job','seal']);
         if(request('draf')){
-            $data = Jurnal::where('is_balik',0)->where('order_id',request('order_id'))->whereIn('coa_id',[request('debit_coa_id_tujuan'),request('credit_coa_id_tujuan')])->get();
+            $query = Jurnal::query();
+            $query->where('is_balik',0);
+            if (request('order_id')) {
+                $query->where('order_id',request('order_id'));
+            }
+            $query->where('coa_id',request('debit_coa_id_tujuan'));
+            $query->where('debit','>',0);
+            $query->orWhere('coa_id',request('credit_coa_id_tujuan'));
+            $query->where('credit','>',0);
+            $query->where('is_balik',0);
+            if (request('order_id')) {
+                $query->where('order_id',request('order_id'));
+            }
+            $data = $query->get();
             $coa_debit = COA::find(request('debit_coa_id'));
             $coa_credit = COA::find(request('credit_coa_id'));
         }

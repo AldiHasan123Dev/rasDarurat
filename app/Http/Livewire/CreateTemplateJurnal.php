@@ -11,7 +11,7 @@ class CreateTemplateJurnal extends Component
 
     public function mount()
     {
-        $this->coa = COA::doesnthave('coas')->orderBy('kode')->get();
+        $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
         $this->kolom = 3;
     }
 
