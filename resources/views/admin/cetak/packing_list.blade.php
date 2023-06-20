@@ -62,6 +62,7 @@
                         <option {{ $kapal_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->nama }}</option>
                     @endforeach
                 </select>
+                <input type="text" placeholder="voyage" name="voyage" style="width:180px"/>
                 <select name="tujuan_id" class="select2" id="tujuan_id" style="width:180px">
                     @foreach ($tujuan as $item)
                         <option {{ $tujuan_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->nama }}</option>

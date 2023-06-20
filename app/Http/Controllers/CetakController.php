@@ -76,6 +76,7 @@ class CetakController extends Controller
                 $q->where('tujuan',request('tujuan_id'));
             })->whereHas('jadwal_kapal', function($q){
                 $q->where('kapal_id',request('kapal_id'));
+                $q->where('voyage', request('voyage'));
             })->first();
         }
         $customers = Customer::whereHas('tarif')->get(['id','nama']);
@@ -102,6 +103,7 @@ class CetakController extends Controller
                 $q->where('tujuan',request('tujuan_id'));
             })->whereHas('jadwal_kapal', function($q){
                 $q->where('kapal_id',request('kapal_id'));
+                $q->where('voyage', request('voyage'));
             })->first();
         }
         $customers = Customer::whereHas('tarif')->get(['id','nama']);
