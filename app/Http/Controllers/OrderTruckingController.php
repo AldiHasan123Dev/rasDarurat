@@ -279,6 +279,12 @@ class OrderTruckingController extends Controller
             }
         }
 
+        $data['order_id'] = null;
+        $orderE = Order::where('container',$data['container'])->where('seal',$data['seal'])->first();
+        if($orderE){
+            $data['order_id'] = $orderE->id;
+        }
+
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->simpanan_kuli + $order->tb_tl + $order->lain_lain + $order->stappel;
