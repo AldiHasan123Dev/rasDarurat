@@ -487,7 +487,7 @@ class CetakController extends Controller
         }
         $ppn = round($sub_total * 0.011);
 
-        $total = (int)$sub_total + $asuransi + ceil($ppn) + $cas->sum('jumlah');
+        $total = (int)$sub_total + $asuransi + $ppn + $cas->sum('jumlah');
 
         return [
             'items' => $items,
@@ -568,7 +568,7 @@ class CetakController extends Controller
         }else{
             $pph = $sub_total * 0.02;
         }
-        $ppn = $sub_total * 0.011;
+        $ppn = round( $sub_total * 0.011);
         $total = $sub_total + $asuransi + $ppn + $cas->sum('jumlah');
         return [
             'items' => $items,

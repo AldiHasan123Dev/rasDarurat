@@ -272,7 +272,7 @@
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
-                                $pph += ceil($item->sum('pph_21'));
+                                $pph += round($item->sum('pph_21'));
                             @endphp
                                 <tr>
                                     {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
@@ -468,10 +468,10 @@
                             @endphp
                             @foreach ($r1s as $item)
                             @php
-                                $total += ceil(($item->first()->tarif->tarif/0.97)) * $item->count();
+                                $total += round(($item->first()->tarif->tarif/0.97)) * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
-                                $pph += ceil($item->sum('pph_21'));
+                                $pph += round($item->sum('pph_21'));
                             @endphp
                                 <tr>
                                     {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
@@ -482,13 +482,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(ceil(($item->first()->tarif->tarif/0.97))) }}</span>
+                                            <span>{{ number_format(round(($item->first()->tarif->tarif/0.97))) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(ceil(($item->first()->tarif->tarif/0.97)) * $item->count()) }}</span>
+                                            <span>{{ number_format(round(($item->first()->tarif->tarif/0.97)) * $item->count()) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -678,7 +678,7 @@
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
-                                $pph += ceil($item->sum('pph_23'));
+                                $pph += round($item->sum('pph_23'));
                             @endphp
                                 <tr>
                                     {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
@@ -886,7 +886,7 @@
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
-                                $pph += ceil($item->sum('pph_23'));
+                                $pph += round($item->sum('pph_23'));
                             @endphp
                                 <tr>
                                     {{-- <td class="text-center">{{ $loop->iteration }}</td> --}}
