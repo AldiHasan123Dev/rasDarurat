@@ -15,6 +15,7 @@ class COA extends Model
         'id',
         'coa_id',
         'kode',
+        'no_kode',
         'nama',
         'keterangan',
         'is_active',
@@ -28,5 +29,10 @@ class COA extends Model
     public function coas()
     {
         return $this->hasMany(COA::class,'coa_id');
+    }
+
+    public function jurnals()
+    {
+        return $this->hasMany(Jurnal::class,'coa_id');
     }
 }

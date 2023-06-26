@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Imports\JurnalImport;
 use App\Models\COA;
 use App\Models\Jurnal;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
 
 class JurnalController extends Controller
@@ -207,6 +209,23 @@ class JurnalController extends Controller
         $jurnal->delete();
 
         return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function import(Request $request)
+    {
+        Excel::import(new JurnalImport, $request->file);
+
+        return back()->with('success', 'All good!');
+    }
+
+    public function neraca()
+    {
+        return view('admin.jurnal.neraca');
+    }
+
+    public function laba_rugi()
+    {
+        return view('admin.jurnal.laba_rugi');
     }
 
     public function datatable()

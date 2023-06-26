@@ -51,6 +51,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TruckingController;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
+use App\Models\Jurnal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -74,7 +75,7 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $num = round(17288100.49);
+    $num = Jurnal::whereBetween('created_at',['2022-12-01','2023-01-01'])->pluck('nama');
     dd($num);
 });
 Auth::routes();
@@ -192,6 +193,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('cetak/invoice-cont',[CetakController::class,'invoiceCont'])->name('cetak.invoice.cont');
     Route::post('copy-orders/{order}',[OrderController::class,'copy'])->name('order.copy');
     Route::post('si-export',[OrderController::class,'SIExport'])->name('order.export.si');
+    Route::post('jurnal-import',[JurnalController::class,'import'])->name('jurnal.import');
     Route::post('customer-import',[CustomerController::class,'import'])->name('customer.import');
     Route::post('customer-import-update',[CustomerController::class,'importUpdate'])->name('customer.import.update');
     Route::post('order-import',[OrderController::class,'import'])->name('order.import');
@@ -199,6 +201,8 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
 
     Route::get('jurnal-kolektif',[JurnalController::class,'kolektif'])->name('jurnal.kolektif.create');
     Route::get('jurnal-balik',[JurnalController::class,'balik'])->name('jurnal.balik.create');
+    Route::get('jurnal-neraca',[JurnalController::class,'neraca'])->name('jurnal.neraca');
+    Route::get('jurnal-lr',[JurnalController::class,'laba_rugi'])->name('jurnal.laba_rugi');
     Route::post('jurnal-kolektif',[JurnalController::class,'store_kolektif'])->name('jurnal.kolektif.store');
     Route::post('jurnal-balik',[JurnalController::class,'store_balik'])->name('jurnal.balik.store');
 
@@ -223,5 +227,6 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('sync-trucking',[SyncController::class,'trucking']);
     Route::get('sync-same',[SyncController::class,'sameData']);
     Route::get('sync-pull',[SyncController::class,'pull']);
+    Route::get('sync-coa',[SyncController::class,'coa']);
 });
 // Route::view('test','test');

@@ -6,6 +6,10 @@
                 <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal</a>
                 <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Group JOB</a>
                 <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
+                <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
+                    @csrf
+                    <input type="file" name="file" id="file" onchange="submit()">
+                </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use App\Models\BTTB;
+use App\Models\COA;
 use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
@@ -550,5 +551,17 @@ class SyncController extends Controller
         }
         $html .= '</pre>';
         return $html;
+    }
+
+    public function coa()
+    {
+        $data = COA::all();
+        foreach ($data as $item ) {
+            $item->update([
+                'no_kode' => str_replace('.','',$item->kode),
+            ]);
+        }
+
+        return 'success';
     }
 }
