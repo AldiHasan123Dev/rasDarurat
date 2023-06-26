@@ -228,6 +228,11 @@ class JurnalController extends Controller
         return view('admin.jurnal.laba_rugi');
     }
 
+    public function buku_besar()
+    {
+        return view('admin.jurnal.buku_besar');
+    }
+
     public function datatable()
     {
         $data = Jurnal::orderBy('created_at','desc')->get();

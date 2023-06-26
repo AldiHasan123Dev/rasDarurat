@@ -203,6 +203,7 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('jurnal-balik',[JurnalController::class,'balik'])->name('jurnal.balik.create');
     Route::get('jurnal-neraca',[JurnalController::class,'neraca'])->name('jurnal.neraca');
     Route::get('jurnal-lr',[JurnalController::class,'laba_rugi'])->name('jurnal.laba_rugi');
+    Route::get('jurnal-buku-besar',[JurnalController::class,'buku_besar'])->name('jurnal.buku_besar');
     Route::post('jurnal-kolektif',[JurnalController::class,'store_kolektif'])->name('jurnal.kolektif.store');
     Route::post('jurnal-balik',[JurnalController::class,'store_balik'])->name('jurnal.balik.store');
 
