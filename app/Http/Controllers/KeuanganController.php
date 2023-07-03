@@ -115,7 +115,7 @@ class KeuanganController extends Controller
         $data = $request->all();
         $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
         if (!$nsfp) {
-            return back();
+            return back()->with('danger','Tidak ada NSFP yang tersedia! Harap input NSFP terlebih dahulu');
         }
         $no = Transaksi::max('order') + 1;
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi

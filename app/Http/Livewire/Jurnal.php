@@ -11,7 +11,7 @@ use Livewire\Component;
 
 class Jurnal extends Component
 {
-    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template;
+    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
 
@@ -22,7 +22,7 @@ class Jurnal extends Component
         $this->template = null;
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
-        $this->coa = COA::doesnthave('coas')->orderBy('kode')->get();
+        $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
         $this->orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
@@ -31,6 +31,7 @@ class Jurnal extends Component
         $this->jurnal_id = array();
         $this->coa_id = null;
         $this->tipe = null;
+        $this->template_count = 0;
     }
 
     public function render()
@@ -51,9 +52,15 @@ class Jurnal extends Component
     public function apply()
     {
         if (!is_null($this->template_id)) {
+            $this->template_count = 1;
             $this->template = TemplateJurnalItem::where('template_jurnal_id',$this->template_id)->get();
         }else{
             $this->template = null;
         }
+    }
+
+    public function addBarisTemplate(){
+        $this->template_count += 1;
+        // dd($this->template_count);
     }
 }
