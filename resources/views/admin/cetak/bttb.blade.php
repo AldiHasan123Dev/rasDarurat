@@ -938,6 +938,11 @@
 @endsection
 
 @section('script')
+    @if (request('print'))
+    <script>
+        window.print();
+    </script>
+    @endif
     <script>
         $(function(){
             $('.off-page').html(@json($page));

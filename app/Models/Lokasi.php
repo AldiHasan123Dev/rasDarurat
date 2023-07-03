@@ -34,8 +34,7 @@ class Lokasi extends Model
                     ->join('shipments','shipments.id','=','tarif.shipment')
                     ->where('shipments.nama','LIKE','%2%')
                     ->where('tarif.tujuan',$this->id)
-                    ->whereMonth('order.created_at',sprintf('%02d',$bulan))
-                    ->whereYear('order.created_at',$thn)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
                     ->select('order.id')
                     ->count();
         return $order;
@@ -47,8 +46,7 @@ class Lokasi extends Model
                     ->join('shipments','shipments.id','=','tarif.shipment')
                     ->where('shipments.nama','LIKE','%4%')
                     ->where('tarif.tujuan',$this->id)
-                    ->whereMonth('order.created_at',sprintf('%02d',$bulan))
-                    ->whereYear('order.created_at',$thn)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
                     ->select('order.id')
                     ->count();
         return $order;

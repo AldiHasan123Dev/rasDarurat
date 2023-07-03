@@ -204,6 +204,11 @@
     </div>
 @endsection
 @section('script')
+    @if (request('print'))
+        <script>
+            window.print();
+        </script>
+    @endif
     <script>
         $('#customer_id').select2();
         $('#kapal_id').select2();

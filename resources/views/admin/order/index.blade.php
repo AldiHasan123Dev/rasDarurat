@@ -69,8 +69,8 @@
                     <button data-bs-toggle="modal" data-bs-target="#modal-edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
                     @if (is_null($marketing))
-                    <a href="" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</a>
-                    <a href="" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</a>
+                    <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
+                    <button onclick="printPackingListKubikasi()" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</button>
                     <form action="" id="copy-order" method="post" enctype="multipart/form-data">
                         @csrf
                         <button class="py-2 px-3 btn btn-sm btn-secondary" type="button" id="copy-order-btn" onclick="return confirm('Are you sure?')">Copy Order</button>
@@ -165,8 +165,8 @@
                             @if (is_null($marketing))
                             <button class="py-2 px-3 btn btn-sm btn-success" id="tambah-bttb"><i class="fas fa-plus"></i> Tambah
                                 BTTB</button>
-                            <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</a>
-                            <a class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</a>
+                            <button onclick="printBttb()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</button>
+                            <button onclick="printBttbKubikasi()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</button>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
                             <button class="py-2 px-3 btn btn-sm btn-danger" style="font-size: .7rem" id="delete-bttb"><i class="fas fa-trash"></i> Hapus</button>
                             @endif
@@ -635,14 +635,10 @@
             $('#order-id-create').val(id);
             $('.nojob').html(no_job);
             $('.koli').html(koli);
-            $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
             $('#edit-order').attr('href','{{ url('admin/order') }}/'+id+'/edit');
-            $('#packing-list').attr('href','{{ url('admin/cetak/packing-list') }}/?order_id='+id);
-            $('#packing-list-kubikasi').attr('href','{{ url('admin/cetak/packing-list-kubikasi') }}/?order_id='+id);
             $('#delete-order').attr('action','{{ url('admin/order') }}/'+id);
             $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
             $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
-            $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
             $('#tarik-ba').attr('action','{{ url('admin/order') }}/'+id);
             tablebttb.ajax.reload();
             tableTagihan.ajax.reload();
@@ -1113,5 +1109,29 @@
         myModalEl.addEventListener('hidden.bs.modal', function (event) {
             $("#jqGrid").trigger("reloadGrid");
         })
+
+        const printPackingList = ()=>{
+            let url = @json(url('admin/cetak/packing-list'))+'?order_id='+id+'&print=1';
+            let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
+            open(url, 'Cetak Packing List', params_);
+        }
+
+        const printBttb = ()=>{
+            let url = @json(url('admin/cetak/bttb'))+'?order_id='+id+'&print=1';
+            let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
+            open(url, 'Cetak BTTB', params_);
+        }
+
+        const printPackingListKubikasi = ()=>{
+            let url = @json(url('admin/cetak/packing-list-kubikasi'))+'?order_id='+id+'&print=1';
+            let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
+            open(url, 'Cetak Packing List', params_);
+        }
+
+        const printBttbKubikasi = ()=>{
+            let url = @json(url('admin/cetak/bttb-kubikasi'))+'?order_id='+id+'&print=1';
+            let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
+            open(url, 'Cetak BTTB', params_);
+        }
 </script>
 @endsection

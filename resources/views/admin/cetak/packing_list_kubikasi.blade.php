@@ -214,3 +214,10 @@
         </div>
     </div>
 @endsection
+@section('script')
+    @if (request('print'))
+        <script>
+            window.print();
+        </script>
+    @endif
+@endsection

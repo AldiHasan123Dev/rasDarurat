@@ -86,8 +86,7 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%2%')
                     // ->orWhere('customers.marketing_id',$this->id)
                     ->where('customers.cs_id',$this->id)
-                    ->whereMonth('order.created_at',sprintf('%02d',$bulan))
-                    ->whereYear('order.created_at',$thn)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
                     ->select('order.id')
                     ->count();
         return $order;
@@ -103,8 +102,7 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%4%')
                     // ->orWhere('customers.marketing_id',$this->id)
                     ->where('customers.cs_id',$this->id)
-                    ->whereMonth('order.created_at',sprintf('%02d',$bulan))
-                    ->whereYear('order.created_at',$thn)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
                     ->select('order.id')
                     ->count();
         return $order;
@@ -120,8 +118,7 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%2%')
                     ->where('customers.marketing_id',$this->id)
                     // ->where('customers.cs_id',$this->id)
-                    ->whereMonth('order.created_at',sprintf('%02d',$bulan))
-                    ->whereYear('order.created_at',$thn)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
                     ->select('order.id')
                     ->count();
         return $order;
@@ -137,8 +134,7 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%4%')
                     ->where('customers.marketing_id',$this->id)
                     // ->where('customers.cs_id',$this->id)
-                    ->whereMonth('order.created_at',sprintf('%02d',$bulan))
-                    ->whereYear('order.created_at',$thn)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
                     ->select('order.id')
                     ->count();
         return $order;
