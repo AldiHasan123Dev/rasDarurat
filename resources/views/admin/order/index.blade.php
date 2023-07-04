@@ -1,9 +1,10 @@
 @extends('layouts.admin')
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
 <style>
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
@@ -13,36 +14,6 @@
     }
     thead input {
         width: 100%;
-    }
-    .autocomplete {
-        position: relative;
-        display: inline-block;
-    }
-    .autocomplete-items {
-        position: absolute;
-        border: 1px solid #d4d4d4;
-        border-bottom: none;
-        border-top: none;
-        z-index: 99;
-        /*position the autocomplete items to be the same width as the container:*/
-        top: 100%;
-        left: 0;
-        right: 0;
-    }
-    .autocomplete-items div {
-        padding: 10px;
-        cursor: pointer;
-        background-color: #fff;
-        border-bottom: 1px solid #d4d4d4;
-    }
-    .autocomplete-items div:hover {
-        /*when hovering an item:*/
-        background-color: #e9e9e9;
-    }
-    .autocomplete-active {
-        /*when navigating through the items using the arrow keys:*/
-        background-color: DodgerBlue !important;
-        color: #ffffff;
     }
     .dataTables_scrollBody > table > thead > tr {
         visibility: collapse;
@@ -258,7 +229,7 @@
                 <thead>
                     <tr class="text-center">
                         <td>No.Gudang</td>
-                        <td>Barang</td>
+                        <td style="width: 200px">Barang</td>
                         <td>Qty</td>
                         <td>Satuan</td>
                         <td>P</td>
@@ -275,16 +246,22 @@
                     @for ($i = 0; $i < 18; $i++)
                         <tr>
                             <td><input type="text" style="width: 100px" name="no_gudang-{{ $i }}" id="no_gudang-{{ $i }}"></td>
-                            <td class="autocomplete"><input type="text" name="barang_id-{{ $i }}" id="barang_id-{{ $i }}"></td>
+                            <td>
+                                <select name="barang_id-{{ $i }}" id="barang_id-{{ $i }}" class="barang" style="width: 200px"></select>
+                            </td>
                             <td><input type="number" style="width: 70px" name="qty-{{ $i }}" id="qty-{{ $i }}"></td>
-                            <td class="autocomplete"><input type="text" style="width: 100px" name="satuan_id-{{ $i }}" id="satuan_id-{{ $i }}"></td>
+                            <td>
+                                <select name="satuan_id-{{ $i }}" id="satuan_id-{{ $i }}" class="satuan" style="width: 100px"></select>
+                            </td>
                             <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="p-{{ $i }}" id="p-{{ $i }}"></td>
                             <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="l-{{ $i }}" id="l-{{ $i }}"></td>
                             <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="t-{{ $i }}" id="t-{{ $i }}"></td>
                             <td><input type="number" style="width: 70px" name="vol-{{ $i }}" id="vol-{{ $i }}"></td>
                             <td><input type="number" style="width: 70px" name="berat-{{ $i }}" id="berat-{{ $i }}"></td>
                             <td><input type="date" style="width: 100px" name="tgl_masuk-{{ $i }}" id="tgl_masuk-{{ $i }}"></td>
-                            <td class="autocomplete"><input type="text" name="pengirim_id-{{ $i }}" id="pengirim_id-{{ $i }}"></td>
+                            <td>
+                                <select name="pengirim_id-{{ $i }}" id="pengirim_id-{{ $i }}" class="pengirim" style="width: 100px"></select>
+                            </td>
                             <td><input type="text" name="keterangan-{{ $i }}" id="keterangan-{{ $i }}"></td>
                         </tr>
                     @endfor
@@ -369,7 +346,7 @@
 @section('script')
 <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
 <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
-<script src="{{asset('assets/js/autocomplete.js')}}"></script>
+<script src="{{ asset('assets/js/selectize.js') }}"></script>
 <script>
     $(document).ready(function() {
         topbar.show();
@@ -383,168 +360,28 @@
     $('#edit-order').hide();
     $('#btn-tagihan').hide();
     $('#delete-order').hide();
-    $(document).ready(function() {
-        $('#create select[name=pengirim_id]').select2(
-            {
-                dropdownParent: $('#offcanvasOrder'),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-        $('#form-bttb select[name=pengirim_id]').select2(
-            {
-                dropdownParent: $('#offcanvasBTTB'),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
-    $(document).ready(function() {
-        $("#create select[name=penerima_id]").select2(
-            {
-                dropdownParent: $('#offcanvasOrder'),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
-    $(document).ready(function() {
-        $("#create select[name=penerima_bl_id]").select2(
-            {
-                dropdownParent: $('#offcanvasOrder'),
-                ajax: {
-                    url: '/api/get-pengirim',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
-    $(document).ready(function() {
-        $("#create select[name=barang_id]").select2(
-            {
-                dropdownParent: $('#offcanvasOrder'),
-                ajax: {
-                    url: '/api/get-barang',
-                    data: function (params) {
-                        return {
-                            cari: params.term, // text pencarian
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 20) < data.counts
-                            }
-                        };
-                    },
-                    minimumInputLength: 2,
-                    delay: 400,
-                }
-            }
-        );
-    });
+
 </script>
 <script>
-    $(function() {
-        $.ajax({
-            type: "GET",
-            url: "{{ url('api/get-nama-barang') }}",
-            success: function (response) {
-                for (let i = 0; i < 18; i++) {
-                    autocomplete(document.getElementById("barang_id-"+i), response);
-                }
-                autocomplete(document.getElementById("selectBarang"), response);
-            }
-        });
-        $.ajax({
-            type: "GET",
-            url: "{{ url('api/get-nama-satuan') }}",
-            success: function (response) {
-                for (let i = 0; i < 18; i++) {
-                    autocomplete(document.getElementById("satuan_id-"+i), response);
-                }
-            }
-        });
-
-        var customers = @json($customers);
-        autocomplete(document.getElementById("pengirim_bttb"), customers);
-        // autocomplete(document.getElementById("pengirim_id"), customers);
-        for (let i = 0; i < 18; i++) {
-            autocomplete(document.getElementById("pengirim_id-"+i), customers);
-        }
+    $('#pengirim_id').selectize({
+        sortField: 'text',
+        maxOptions:10
+    });
+    $('#penerima_id').selectize({
+        sortField: 'text',
+        maxOptions:10
+    });
+    $('#penerima_bl_id').selectize({
+        sortField: 'text',
+        maxOptions:10
+    });
+    $('#selectBarang').selectize({
+        sortField: 'text',
+        maxOptions:10
+    });
+    $('#agen_id').selectize({
+        sortField: 'text',
+        maxOptions:10
     });
 </script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
@@ -852,9 +689,6 @@
             if (val=='AGEN') {
                 $('#ag').show();
                 $('#nag').hide();
-                $("select[name=agen_id]").select2({
-                    dropdownParent: $('#offcanvasOrder')
-                });
             }else{
                 $('#nag').show();
                 $('#ag').hide();
@@ -1012,6 +846,45 @@
             $('#berat').val('');
             $('#pengirim_bttb').val('');
             $('#keterangan-bttb').val('');
+            let barangs = @json($barang);
+            let satuans = @json($satuan);
+            let customers = @json($customers);
+            let options = [];
+            let options1 = [];
+            let options2 = [];
+            $.each(barangs, function (indexInArray, item) {
+                options.push({nama:item})
+            });
+            $.each(satuans, function (indexInArray, item) {
+                options1.push({nama:item})
+            });
+            $.each(customers, function (indexInArray, item) {
+                options2.push({nama:item})
+            });
+            $('.barang').selectize({
+                maxOptions: 10,
+                create: false,
+                valueField: 'nama',
+                labelField: 'nama',
+                searchField: 'nama',
+                options: options
+            });
+            $('.satuan').selectize({
+                maxOptions: 10,
+                create: false,
+                valueField: 'nama',
+                labelField: 'nama',
+                searchField: 'nama',
+                options: options1
+            });
+            $('.pengirim').selectize({
+                maxOptions: 10,
+                create: false,
+                valueField: 'nama',
+                labelField: 'nama',
+                searchField: 'nama',
+                options: options2
+            });
             var myOffcanvas = document.getElementById('offcanvasBTTBCreate');
             var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
             offCanvas.show();

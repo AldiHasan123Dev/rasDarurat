@@ -14,7 +14,7 @@
         $value = $value ?? old($name);
     @endphp
         <select name="{{ $name }}" id="{{ $id ?? $name }}" class="form-control" {{ $readonly?'readonly':'' }} {{ $disabled?'disabled':'' }} {{ !empty($attr)?implode(' ', $attr) : '' }}>
-            <option disabled selected>Pilih {{ $label }}</option>
+            <option disabled selected></option>
             @forelse ($options as $idx => $option)
                 <option value="{{ $idx }}" {{ $value==$idx ? 'selected' : '' }}>{{ $option }}</option>
             @empty

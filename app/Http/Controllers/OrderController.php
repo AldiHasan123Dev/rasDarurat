@@ -42,15 +42,15 @@ class OrderController extends Controller
                     ->select('tarif.*')
                     ->where('tarif.is_active',1)
                     ->get();
-        $barang = Barang::pluck('nama');
-        $satuan = Satuan::pluck('nama');
+        $barang = Barang::pluck('nama','nama');
+        $satuan = Satuan::pluck('nama','nama');
         $agent = Agen::pluck('nama','id');
         $tarif = array();
         $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
         $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
         $data_tarif_lokasi = array_unique($lokasi);
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
-        $customers = Customer::pluck('nama');
+        $customers = Customer::pluck('nama','nama');
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
@@ -107,6 +107,7 @@ class OrderController extends Controller
         $barang = Barang::find($request->barang_id);
         $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id;
         $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id;
+        $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id;
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
@@ -171,8 +172,6 @@ class OrderController extends Controller
                 $barang = Barang::create(['nama'=>$request->barang_id]);
             }
 
-            $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id;
-            $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id;
             if ($request->satuan) {
                 $satuan = Satuan::find($request->satuan);
                 if(!$satuan){
@@ -218,8 +217,8 @@ class OrderController extends Controller
                     ->where('tarif.is_active',1)
                     ->orWhere('tarif.id',$order->tarif_id)
                     ->get();
-        $customers = Customer::pluck('nama');
-        $barang = Barang::pluck('nama');
+        $customers = Customer::pluck('nama','id');
+        $barang = Barang::pluck('nama','id');
         $satuan = Satuan::pluck('nama');
         $pengirim = $customers;
         $penerima_bl = Customer::pluck('nama','id');
