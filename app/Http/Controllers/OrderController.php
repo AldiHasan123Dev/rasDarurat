@@ -105,9 +105,9 @@ class OrderController extends Controller
         $data = $request->all();
         $data['komisi'] = is_null($data['komisi']) ? 0 : $data['komisi'];
         $barang = Barang::find($request->barang_id);
-        $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id;
-        $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id;
-        $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id;
+        $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id ?? null;
+        $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id ?? null;
+        $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id ?? null;
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }

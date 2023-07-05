@@ -34,12 +34,9 @@
                 <span class="bg-light-primary px-2 py-1">[5] Voyage (XPDC)</span>
                 <span class="bg-light-primary px-2 py-1">[6] Shipment (XPDC)</span>
                 <span class="bg-light-primary px-2 py-1">[7] Pembayar (XPDC)</span>
-                <span class="bg-light-primary px-2 py-1">[8] Pengirim (XPDC)</span>
-                <span class="bg-light-primary px-2 py-1">[9] Penerima (XPDC)</span>
-                <span class="bg-light-primary px-2 py-1">[10] Pelayaran (XPDC)</span>
-                <span class="bg-light-primary px-2 py-1">[11] Customer (TRUCKING)</span>
-                <span class="bg-light-primary px-2 py-1">[12] Shipment (TRUCKING)</span>
-                <span class="bg-light-primary px-2 py-1">[13] Tujuan (TRUCKING)</span>
+                <span class="bg-light-primary px-2 py-1">[8] Customer (TRUCKING)</span>
+                <span class="bg-light-primary px-2 py-1">[9] Shipment (TRUCKING)</span>
+                <span class="bg-light-primary px-2 py-1">[10] Tujuan (TRUCKING)</span>
             </div>
         </div>
     </div>
@@ -269,9 +266,6 @@
                         <td>${item.voyage}</td>
                         <td>${item.shipment}</td>
                         <td>${item.pembayar}</td>
-                        <td>${item.pengirim}</td>
-                        <td>${item.penerima}</td>
-                        <td>${item.pelayaran}</td>
                         <td>${item.customer_trucking}</td>
                         <td>${item.shipment_trucking}</td>
                         <td>${item.tujuan_trucking}</td>

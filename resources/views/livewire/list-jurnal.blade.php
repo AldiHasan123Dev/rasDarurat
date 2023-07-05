@@ -35,6 +35,7 @@
                     <th>Nomor</th>
                     <th>No. Akun</th>
                     <th>Nama Akun</th>
+                    <th>Invoice</th>
                     <th>JOB</th>
                     <th>Keterangan</th>
                     <th>Debit</th>
@@ -49,6 +50,11 @@
                         <td>{{ $item->nomor }}</td>
                         <td>{{ $item->coa->kode }}</td>
                         <td>{{ $item->coa->nama }}</td>
+                        @if ($item->order)
+                            <td>{{ $item->order->invoice ?? '-' }}</td>
+                        @else
+                            <td>-</td>
+                        @endif
                         @if ($item->order)
                             <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                         @else

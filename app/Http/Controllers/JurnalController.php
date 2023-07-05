@@ -82,6 +82,21 @@ class JurnalController extends Controller
     {
         $data = $request->all();
         $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
+        if($no==1 && $data['tipe']=='BBK'){
+            $no = 2249;
+        }
+        if($no==1 && $data['tipe']=='BBM'){
+            $no = 751;
+        }
+        if($no==1 && $data['tipe']=='BKK'){
+            $no = 736;
+        }
+        if($no==1 && $data['tipe']=='BKM'){
+            $no = 39;
+        }
+        if($data['tipe']=='JNL'){
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        }
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
@@ -92,9 +107,6 @@ class JurnalController extends Controller
                     $seal = $order->seal;
                     $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
-                    $penerima = $order->penerima->nama ?? '-';
-                    $pengirim = $order->pengirim->nama ?? '-';
-                    $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
                     $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
                     $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
@@ -107,15 +119,12 @@ class JurnalController extends Controller
                     $name = str_replace('[5]',$voyage,$name);
                     $name = str_replace('[6]',$shipment,$name);
                     $name = str_replace('[7]',$pembayar,$name);
-                    $name = str_replace('[8]',$pengirim,$name);
-                    $name = str_replace('[9]',$penerima,$name);
-                    $name = str_replace('[10]',$pelayaran,$name);
-                    $name = str_replace('[11]',$customer,$name);
-                    $name = str_replace('[12]',$shipment_trucking,$name);
-                    $name = str_replace('[13]',$tujuan_trucking,$name);
+                    $name = str_replace('[8]',$customer,$name);
+                    $name = str_replace('[9]',$shipment_trucking,$name);
+                    $name = str_replace('[10]',$tujuan_trucking,$name);
                 }
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'-'.date('y',strtotime($data['created_at'][$i]));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at'][$i]));
                 }else{
                     $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
                 }
@@ -172,6 +181,21 @@ class JurnalController extends Controller
     {
         $data = $request->all();
         $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
+        if($no==1 && $data['tipe']=='BBK'){
+            $no = 2249;
+        }
+        if($no==1 && $data['tipe']=='BBM'){
+            $no = 751;
+        }
+        if($no==1 && $data['tipe']=='BKK'){
+            $no = 736;
+        }
+        if($no==1 && $data['tipe']=='BKM'){
+            $no = 39;
+        }
+        if($data['tipe']=='JNL'){
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        }
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i] && $data['job'][$i] && $data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                 $name = $data['name'][$i];
@@ -183,9 +207,6 @@ class JurnalController extends Controller
                     $seal = $order->seal;
                     $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
-                    $penerima = $order->penerima->nama ?? '-';
-                    $pengirim = $order->pengirim->nama ?? '-';
-                    $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
                     $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
                     $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
@@ -198,15 +219,12 @@ class JurnalController extends Controller
                     $name = str_replace('[5]',$voyage,$name);
                     $name = str_replace('[6]',$shipment,$name);
                     $name = str_replace('[7]',$pembayar,$name);
-                    $name = str_replace('[8]',$pengirim,$name);
-                    $name = str_replace('[9]',$penerima,$name);
-                    $name = str_replace('[10]',$pelayaran,$name);
-                    $name = str_replace('[11]',$customer,$name);
-                    $name = str_replace('[12]',$shipment_trucking,$name);
-                    $name = str_replace('[13]',$tujuan_trucking,$name);
+                    $name = str_replace('[8]',$customer,$name);
+                    $name = str_replace('[9]',$shipment_trucking,$name);
+                    $name = str_replace('[10]',$tujuan_trucking,$name);
 
                     if($data['tipe']=='JNL'){
-                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'-'.date('y',strtotime($data['created_at'][$i]));
+                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at'][$i]));
                     }else{
                         $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
                     }
@@ -237,8 +255,8 @@ class JurnalController extends Controller
     }
 
     public function store_balik(Request $request){
-        $no = Jurnal::where('tipe','JNL')->max('no') + 1;
-        $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'-'.date('y',strtotime($request->created_at));
+        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
         foreach ($request->jurnal as $item) {
             $data = $item;
             $data['created_at'] = $request->created_at;

@@ -42,45 +42,45 @@
                     @if ($template)
                         @foreach ($template->template_items as $i => $tem)
                             <tr>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important">
+                                <td>
+                                    <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important; width:250px">
                                         <option value=""></option>
                                         @foreach ($coa as $item)
                                         <option {{ $tem->coa_debit_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important">
+                                <td>
+                                    <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important; width:250px">
                                         <option value=""></option>
                                         @foreach ($coa as $item)
                                         <option {{ $tem->coa_credit_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input type="text" name="keterangan[]" style="width: 100%" value="{{ $tem->keterangan }}"></td>
+                                <td><input type="text" name="keterangan[]" style="width: 250px" value="{{ $tem->keterangan }}"></td>
                             </tr>
                         @endforeach
                     @else
                         @for ($i = 0; $i < $kolom; $i++)
                             <tr>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important">
+                                <td>
+                                    <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important; width:250px">
                                         <option value=""></option>
                                         @foreach ($coa as $item)
                                         <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important">
+                                <td>
+                                    <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important; width:250px">
                                         <option value=""></option>
                                         @foreach ($coa as $item)
                                         <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td><input type="text" name="keterangan[]" style="width: 100%"></td>
+                                <td><input type="text" name="keterangan[]" style="width: 250px"></td>
                             </tr>
                         @endfor
                     @endif
