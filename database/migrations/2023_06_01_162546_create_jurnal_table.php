@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('nama');
             $table->double('debit')->default(0);
             $table->double('credit')->default(0);
-            $table->enum('tipe',['JNL','BBK','BBM','BKK','BKM']);
+            $table->enum('tipe',['JNL','BBK','BBM','BKK','BKM'])->default('JNL');
             $table->integer('no')->default(0);
+            $table->integer('is_balik')->default(0);
             $table->softDeletes();
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');

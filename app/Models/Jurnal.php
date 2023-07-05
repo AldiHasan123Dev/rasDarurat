@@ -22,6 +22,7 @@ class Jurnal extends Model
         'credit',
         'tipe',
         'no',
+        'is_balik',
         'created_at',
     ];
 

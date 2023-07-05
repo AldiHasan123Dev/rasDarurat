@@ -40,19 +40,17 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_penjualan_usaha,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_penjualan_usaha,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -70,19 +68,17 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_hpp,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_hpp,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -100,19 +96,17 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_biaya_usaha,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_biaya_usaha,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -130,19 +124,17 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_biaya_depresiasi,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_biaya_depresiasi,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -160,19 +152,17 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_biaya_lain,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_biaya_lain,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -190,13 +180,13 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_biaya_keuangan1,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_biaya_keuangan1,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
@@ -218,13 +208,13 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    <td>{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
+                    <td class="text-end">{{ number_format($item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('debit') - $item->jurnals()->whereMonth('created_at',$month)->whereYear('created_at',$year)->sum('credit'),2,',','.') }}</td>
                 </tr>
                 @endforeach
                 <tfoot>
                     <tr>
                         <td colspan="2"><b>TOTAL</b></td>
-                        <td><b>{{ number_format($total_biaya_keuangan2,2,',','.') }}</b></td>
+                        <td class="text-end"><b>{{ number_format($total_biaya_keuangan2,2,',','.') }}</b></td>
                     </tr>
                 </tfoot>
             </tbody>
@@ -241,47 +231,47 @@
                 <tbody>
                     <tr>
                         <td>TOTAL PENJUALAN USAHA</td>
-                        <td>{{ number_format($total_penjualan_usaha,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_penjualan_usaha,2,',','.') }}</td>
                     </tr>
                     <tr style="border-bottom: 3px solid black !important;">
                         <td>TOTAL HARGA POKOK PENJUALAN</td>
-                        <td>{{ number_format($total_hpp,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_hpp,2,',','.') }}</td>
                     </tr>
                     <tr>
                         <td>LABA/RUGI KOTOR</td>
-                        <td>{{ number_format($total_penjualan_usaha - $total_hpp,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_penjualan_usaha - $total_hpp,2,',','.') }}</td>
                     </tr>
                     <tr>
                         <td>TOTAL BIAYA USAHA</td>
-                        <td>{{ number_format($total_biaya_usaha,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_biaya_usaha,2,',','.') }}</td>
                     </tr>
                     <tr style="border-bottom: 3px solid black !important;">
                         <td>TOTAL BIAYA PENYUSUTAN</td>
-                        <td>{{ number_format($total_biaya_depresiasi,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_biaya_depresiasi,2,',','.') }}</td>
                     </tr>
                     <tr>
                         <td>LABA/RUGI USAHA</td>
-                        <td>{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi,2,',','.') }}</td>
                     </tr>
                     <tr>
                         <td>TOTAL PENDAPATAN DAN BIAYA LAIN-LAIN</td>
-                        <td>{{ number_format($total_biaya_lain,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_biaya_lain,2,',','.') }}</td>
                     </tr>
                     <tr style="border-bottom: 3px solid black !important;">
                         <td>TOTAL BIAYA KEUANGAN I</td>
-                        <td>{{ number_format($total_biaya_keuangan1,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_biaya_keuangan1,2,',','.') }}</td>
                     </tr>
                     <tr>
                         <td>LABA/RUGI BERSIH SEBELUM PAJAK</td>
-                        <td>{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi - $total_biaya_lain - $total_biaya_keuangan1,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi - $total_biaya_lain - $total_biaya_keuangan1,2,',','.') }}</td>
                     </tr>
                     <tr style="border-bottom: 3px solid black !important;">
                         <td>TOTAL BIAYA KEUANGAN I</td>
-                        <td>{{ number_format($total_biaya_keuangan2,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_biaya_keuangan2,2,',','.') }}</td>
                     </tr>
                     <tr>
                         <td>LABA/RUGI BERSIH SESUDAH PAJAK</td>
-                        <td>{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi - $total_biaya_lain - $total_biaya_keuangan1 - $total_biaya_keuangan2,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi - $total_biaya_lain - $total_biaya_keuangan1 - $total_biaya_keuangan2,2,',','.') }}</td>
                     </tr>
                 </tbody>
             </table>

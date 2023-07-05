@@ -12,11 +12,11 @@
                 </form>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <livewire:list-jurnal/>
+                {{-- <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>
                             <tr>
-                                {{-- <th>ID.</th> --}}
                                 <th>Tanggal</th>
                                 <th>Nomor</th>
                                 <th>Kode</th>
@@ -25,13 +25,12 @@
                                 <th>Keterangan</th>
                                 <th>Debit</th>
                                 <th>Credit</th>
-                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -51,7 +50,7 @@
     </div> --}}
 @endsection
 
-@section('script')
+{{-- @section('script')
     <script>
         let table = $('.table').DataTable({
             processing: true,
@@ -75,4 +74,4 @@
             ]
         });
     </script>
-@endsection
+@endsection --}}

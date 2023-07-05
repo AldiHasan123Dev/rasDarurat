@@ -51,8 +51,6 @@
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -111,8 +109,6 @@
                 </tfoot>
             </tbody>
         </table>
-    </div>
-    <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
@@ -149,5 +145,26 @@
                 </tfoot>
             </tbody>
         </table>
+    </div>
+    <div class="col-12">
+        <div class="card shadow p-3">
+            <table class="table table-sm" style="font-size: .7rem">
+                <thead>
+                    <tr>
+                        <th colspan="2">DETAIL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>TOTAL AKTIVA</td>
+                        <td class="text-end">{{ number_format($total_aktiva_lancar + $total_aktiva_tak_lancar,2,',','.') }}</td>
+                    </tr>
+                    <tr style="border-bottom: 3px solid black !important;">
+                        <td>TOTAL PASIVA</td>
+                        <td class="text-end">{{ number_format($total_kewajiban + $total_modal,2,',','.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>

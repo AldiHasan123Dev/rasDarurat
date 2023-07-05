@@ -26,23 +26,45 @@
                             <hr>
                             <table class="table table-sm" id="table-debit">
                                 <tr>
-                                    <td>ID JOB</td>
-                                    <td>Akun Debet Tujuan</td>
-                                    <td>Akun Credit Tujuan</td>
-                                    <td>Akun Debet Baru</td>
-                                    <td>Akun Credit Baru</td>
+                                    <td>Tipe</td>
+                                    <td id="label">ID JOB</td>
+                                    <td>Noted</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <select class="form-control select2" name="order_id" style="font-size:.9rem !important">
+                                        <select name="tipe" id="tipe" class="form-control">
+                                            <option selected value="no_job">TANPA JOB</option>
+                                            <option value="job">JOB</option>
+                                            <option value="id_job">ID JOB</option>
+                                        </select>
+                                    </td>
+                                    <td id="job">
+                                        <select class="form-control select2" name="order_id" style="font-size:.9rem !important; width:300px">
                                             <option value=""></option>
                                             @foreach ($orders as $item)
                                             <option {{  request('order_id')==$item->id?'selected':''  }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
                                             @endforeach
                                         </select>
                                     </td>
+                                    <td>
+                                        <ul>
+                                            <li><small>*Tipe "TANPA JOB" tidak perlu input job/id job</small></li>
+                                            <li><small>*Tipe "JOB" pilih input ID JOB bebas sesuai Group Job nya</small></li>
+                                            <li><small>*Tipe "ID JOB" pilih ID JOB harus sesuai dengan ID JOB nya</small></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table class="table table-sm" id="table-debit">
+                                <tr>
+                                    <td>Akun Debet Awal</td>
+                                    <td>Akun Credit Awal</td>
+                                    <td>Akun Debet Tujuan</td>
+                                    <td>Akun Credit Tujuan</td>
+                                </tr>
+                                <tr>
                                     <td style="width: 200px">
-                                        <select class="form-control select2" name="debit_coa_id_tujuan" style="font-size:.9rem !important">
+                                        <select class="form-control select2" name="debit_coa_id_tujuan" id="debit_coa_id_tujuan" style="font-size:.9rem !important">
                                             <option value=""></option>
                                             @foreach ($coa as $item)
                                             <option {{ request('debit_coa_id_tujuan')==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -50,7 +72,7 @@
                                         </select>
                                     </td>
                                     <td style="width: 200px">
-                                        <select class="form-control select2" name="credit_coa_id_tujuan" style="font-size:.9rem !important">
+                                        <select class="form-control select2" name="credit_coa_id_tujuan" id="credit_coa_id_tujuan" style="font-size:.9rem !important">
                                             <option value=""></option>
                                             @foreach ($coa as $item)
                                             <option {{ request('credit_coa_id_tujuan')==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -58,7 +80,7 @@
                                         </select>
                                     </td>
                                     <td style="width: 200px">
-                                        <select class="form-control select2" name="debit_coa_id" style="font-size:.9rem !important">
+                                        <select class="form-control select2" name="debit_coa_id" id="debit_coa_id" style="font-size:.9rem !important">
                                             <option value=""></option>
                                             @foreach ($coa as $item)
                                             <option {{ request('debit_coa_id')==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -66,7 +88,7 @@
                                         </select>
                                     </td>
                                     <td style="width: 200px">
-                                        <select class="form-control select2" name="credit_coa_id" style="font-size:.9rem !important">
+                                        <select class="form-control select2" name="credit_coa_id" id="credit_coa_id" style="font-size:.9rem !important">
                                             <option value=""></option>
                                             @foreach ($coa as $item)
                                             <option {{ request('credit_coa_id')==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -83,7 +105,7 @@
             @if (request('draf'))
             <div class="col-6 mt-3">
                 <div class="card p-2">
-                    <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Tujuan</span>
+                    <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Awal</span>
                     <div class="table-responsive">
                         <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                             <thead>
@@ -97,18 +119,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $item)
+                                @foreach ($new as $item)
                                     <tr>
-                                        <td>{{ $item->nomor }}</td>
-                                        @if ($item->order)
-                                            <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                        <td>{{ $item['credit']->nomor }}</td>
+                                        @if ($item['credit']->order)
+                                            <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
                                         @else
                                             <td>-</td>
                                         @endif
-                                        <td>{{ $item->coa->kode }} - {{ $item->coa->nama }}</td>
-                                        <td>{{  $item->debit == 0 ? '-' : number_format($item->debit,2,'.',',') }}</td>
-                                        <td>{{  $item->credit == 0 ? '-' : number_format($item->credit,2,'.',',') }}</td>
-                                        <td>{{ $item->nama }}</td>
+                                        <td>{{ $item['credit']->coa->kode }} - {{ $item['credit']->coa->nama }}</td>
+                                        <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
+                                        <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
+                                        <td>{{ $item['credit']->nama }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $item['debit']->nomor }}</td>
+                                        @if ($item['debit']->order)
+                                            <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
+                                        @else
+                                            <td>-</td>
+                                        @endif
+                                        <td>{{ $item['debit']->coa->kode }} - {{ $item['debit']->coa->nama }}</td>
+                                        <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
+                                        <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
+                                        <td>{{ $item['debit']->nama }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -126,7 +160,7 @@
                         <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Balik</span>
                         <div class="row my-2">
                             <div class="col">
-                                <input name="nomor" placeholder="Nomor Jurnal" required style="width: 100%" type="text">
+                                {{-- <input name="nomor" placeholder="Nomor Jurnal" required style="width: 100%" type="text"> --}}
                             </div>
                             <div class="col">
                                 <input type="date" style="width: 100%" name="created_at" required value="{{ request('created_at') ?? date('Y-m-d') }}">
@@ -145,29 +179,65 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($data as $idx => $item)
-                                        <input type="hidden" value="{{ $item->order_id }}" name="jurnal[{{ $idx }}][order_id]">
-                                        <input type="hidden" value="{{ $item->debit }}" name="jurnal[{{ $idx }}][debit]">
-                                        <input type="hidden" value="{{ $item->credit }}" name="jurnal[{{ $idx }}][credit]">
-                                        <input type="hidden" value="{{ $item->nama }}" name="jurnal[{{ $idx }}][nama]">
+                                    @php
+                                        $k = 0;
+                                    @endphp
+                                    @foreach ($new as $idx => $item)
+                                        <input type="hidden" value="{{ $item['debit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
+                                        <input type="hidden" value="{{ $item['debit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
+                                        <input type="hidden" value="{{ $item['debit']->debit }}" name="jurnal[{{ $k }}][credit]">
+                                        <input type="hidden" value="{{ $item['debit']->credit }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" value="{{ $item['debit']->nama }}" name="jurnal[{{ $k }}][nama]">
+
                                         <tr>
                                             <td>-</td>
-                                            @if ($item->order)
-                                                <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                            @if ($item['debit']->order)
+                                                <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
                                             @else
                                                 <td>-</td>
                                             @endif
-                                            @if ($item->debit==0)
-                                                <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $idx }}][coa_id]">
-                                                <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
-                                            @else
-                                                <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $idx }}][coa_id]">
+                                            @if ($item['debit']->debit==0)
+                                                <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                                 <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
+                                            @else
+                                                <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
+                                                <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
                                             @endif
-                                            <td>{{  $item->debit == 0 ? '-' : number_format($item->debit,2,'.',',') }}</td>
-                                            <td>{{  $item->credit == 0 ? '-' : number_format($item->credit,2,'.',',') }}</td>
-                                            <td>{{ $item->nama }}</td>
+                                            <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
+                                            <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
+                                            <td>{{ $item['debit']->nama }}</td>
                                         </tr>
+
+                                        @php
+                                            $k++;
+                                        @endphp
+                                        <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
+                                        <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
+                                        <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
+                                        <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" value="{{ $item['credit']->nama }}" name="jurnal[{{ $k }}][nama]">
+
+                                        <tr>
+                                            <td>-</td>
+                                            @if ($item['credit']->order)
+                                                <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
+                                            @else
+                                                <td>-</td>
+                                            @endif
+                                            @if ($item['credit']->debit==0)
+                                                <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
+                                                <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
+                                            @else
+                                                <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
+                                                <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
+                                            @endif
+                                            <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
+                                            <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
+                                            <td>{{ $item['credit']->nama }}</td>
+                                        </tr>
+                                        @php
+                                            $k++;
+                                        @endphp
                                     @endforeach
                                 </tbody>
                             </table>
@@ -208,6 +278,26 @@
     $('#btn-save').click(function (e) {
         if(confirm('are you sure')){
             $('#form-submit').submit();
+        }
+    });
+
+    $('#debit_coa_id_tujuan').change(function (e) {
+        var val = $(this).val();
+        if(val!=''||val){
+            $('#credit_coa_id').val(val).trigger('change');
+            $('#credit_coa_id_tujuan').attr('disabled',true);
+        }else{
+            $('#credit_coa_id_tujuan').attr('disabled',false);
+        }
+    });
+
+    $('#credit_coa_id_tujuan').change(function (e) {
+        var val = $(this).val();
+        if(val!=''||val){
+            $('#debit_coa_id').val(val).trigger('change');
+            $('#debit_coa_id_tujuan').attr('disabled',true);
+        }else{
+            $('#debit_coa_id_tujuan').attr('disabled',false);
         }
     });
 
