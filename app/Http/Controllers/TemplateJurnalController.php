@@ -19,14 +19,21 @@ class TemplateJurnalController extends Controller
     {
         $data = $request->all();
         $template = null;
+        if(request('template_id')){
+            TemplateJurnalItem::where('template_jurnal_id',request('template_id'))->delete();
+            $template = TemplateJurnal::find(request('template_id'));
+        }
         foreach ($data['debit_coa_id'] as $idx => $item) {
             if(is_null($data['debit_coa_id'][$idx]) && is_null($data['credit_coa_id'][$idx])){
 
             }else{
                 if(is_null($template)){
                     $template = TemplateJurnal::create([
-                        'nama' => $data['name']
+                        'nama' => $data['name'],
+                        'tipe' => $data['tipe'],
                     ]);
+                }else{
+                    $template->update(['nama'=>$data['name'],'tipe'=>$data['tipe']]);
                 }
                 TemplateJurnalItem::create([
                     'template_jurnal_id' => $template->id,
@@ -73,21 +80,7 @@ class TemplateJurnalController extends Controller
                                 <input type="hidden" name="_method" value="delete" />
                                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
                             </form>
-                            <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasTemplateJurnalUpdate'.$data->id.'" aria-controls="offcanvasTemplateJurnalUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
-                        </div>
-
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasTemplateJurnalUpdate'.$data->id.'" aria-labelledby="offcanvasTemplateJurnalUpdate'.$data->id.'Label">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasTemplateJurnalUpdate'.$data->id.'Label">Form TemplateJurnal</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                            </div>
-                            <div class="offcanvas-body">
-                                <form action="'.route('templatejurnal.update',$data).'" method="post">
-                                <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="PUT" />
-                                    '.$view.'
-                                </form>
-                            </div>
+                            <a href="'.route('templatejurnal.create',['template_id'=>$data->id]).'" class="no-attr text-primary" title="Edit"><i class="fas fa-pencil"></i></a>
                         </div>';
                 return $html;
             })

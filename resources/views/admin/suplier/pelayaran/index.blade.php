@@ -2,6 +2,8 @@
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
 <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" />
+
 <style>
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
@@ -64,9 +66,10 @@
         <div class="card-header p-2 d-flex" style="gap:10px">
             <button class="py-2 px-3 btn btn-success" onclick="tambahTarif()">Tambah Tarif Pelayaran</button>
             <button class="py-2 px-3 btn btn-primary" onclick="editTarif()">Edit Tarif Pelayaran</button>
+            <button class="py-2 px-3 btn btn-danger" onclick="deleteTarif()">Hapus Tarif Pelayaran</button>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsives">
                 <table id="jqGrid"></table>
                 <div id="jqGridPager"></div>
             </div>
@@ -248,7 +251,6 @@
         e.preventDefault();
         let data = $(this).serializeFields();
         data.pelayaran_id = pelayaran_id;
-        console.log(tarif_id);
         if (tarif_id) {
             data.tarif_id = tarif_id;
         }
@@ -282,6 +284,23 @@
 
     function editTarif(){
         offcanvas.show();
+    }
+
+    function deleteTarif(){
+        $.ajax({
+            type: "DELETE",
+            url: "{{ url('admin/tarifpelayaran') }}/"+tarif_id,
+            data:{
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function (response) {
+                $("#jqGrid").jqGrid('setGridParam', {
+                        postData: {pelayaran_id:pelayaran_id }
+                }).trigger('reloadGrid');
+                alert(response)
+                tb_pelayaran.ajax.reload();
+            }
+        });
     }
     </script>
 @endsection

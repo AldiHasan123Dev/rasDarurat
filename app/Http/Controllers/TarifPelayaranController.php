@@ -41,7 +41,7 @@ class TarifPelayaranController extends Controller
     {
         $tarifpelayaran->delete();
 
-        return back()->with('success','Data berhasil dihapus');
+        return response('Data berhasil dihapus');
     }
 
     public function datatable()

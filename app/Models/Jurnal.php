@@ -15,11 +15,13 @@ class Jurnal extends Model
     protected $fillable = [
         'coa_id',
         'order_id',
+        'jurnal_balik',
         'nomor',
         'nama',
         'debit',
         'credit',
-        'is_balik',
+        'tipe',
+        'no',
         'created_at',
     ];
 

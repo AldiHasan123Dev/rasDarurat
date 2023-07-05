@@ -64,6 +64,7 @@
         <div class="card-header p-2 d-flex" style="gap:10px">
             <button class="py-2 px-3 btn btn-success" onclick="tambahTarif()">Tambah Tarif Agen</button>
             <button class="py-2 px-3 btn btn-primary" onclick="editTarif()">Edit Tarif Agen</button>
+            <button class="py-2 px-3 btn btn-danger" onclick="deleteTarif()">Delete Tarif Agen</button>
         </div>
         <div class="card-body">
             <div class="table-responsives">
@@ -257,7 +258,7 @@
             data:data,
             success: function (response) {
                 $('#tarif-create').trigger("reset");
-                $('#tarif-create #pelayaran_id').val(agen_id).trigger('change');
+                $('#tarif-create #agen_id').val(agen_id).trigger('change');
                 $("#jqGrid").jqGrid('setGridParam', {
                         postData: {agen_id:agen_id }
                 }).trigger('reloadGrid');
@@ -270,7 +271,7 @@
     function tambahTarif(){
         tarif_id = null;
         $('#tarif-create').trigger("reset");
-        $('#tarif-create #pelayaran_id').val(agen_id).trigger('change');
+        $('#tarif-create #agen_id').val(agen_id).trigger('change');
         $("#jqGrid").jqGrid('setGridParam', {
                 postData: {agen_id:agen_id }
         }).trigger('reloadGrid');
@@ -281,6 +282,23 @@
 
     function editTarif(){
         offcanvas.show();
+    }
+
+    function deleteTarif(){
+        $.ajax({
+            type: "DELETE",
+            url: "{{ url('admin/tarifagen') }}/"+tarif_id,
+            data:{
+                "_token": "{{ csrf_token() }}",
+            },
+            success: function (response) {
+                $("#jqGrid").jqGrid('setGridParam', {
+                        postData: {agen_id:agen_id }
+                }).trigger('reloadGrid');
+                alert(response)
+                tb_agen.ajax.reload();
+            }
+        });
     }
     </script>
 @endsection

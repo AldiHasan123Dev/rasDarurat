@@ -13,5 +13,11 @@ class TemplateJurnal extends Model
     protected $table = 'template_jurnal';
     protected $fillable = [
         'nama',
+        'tipe',
     ];
+
+    public function template_items()
+    {
+        return $this->hasMany(TemplateJurnalItem::class,'template_jurnal_id');
+    }
 }

@@ -3,13 +3,11 @@
 namespace App\Http\Livewire;
 
 use App\Models\COA;
-use App\Models\Jurnal as ModelsJurnal;
 use App\Models\Order;
 use App\Models\TemplateJurnal;
-use App\Models\TemplateJurnalItem;
 use Livewire\Component;
 
-class Jurnal extends Component
+class JurnalKolektif extends Component
 {
     public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count;
     public $form, $order, $is_apply;
@@ -17,13 +15,15 @@ class Jurnal extends Component
 
     public function mount()
     {
+        $job = Order::pluck('job')->toArray();
+        $job = array_unique($job);
         $this->order = null;
         $this->template_id = null;
         $this->template = null;
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $this->orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
+        $this->orders = $job;
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();
@@ -36,7 +36,7 @@ class Jurnal extends Component
 
     public function render()
     {
-        return view('livewire.jurnal');
+        return view('livewire.jurnal-kolektif');
     }
 
     public function addColumnDebit()

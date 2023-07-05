@@ -1,6 +1,6 @@
 <div>
     <div class="col-12">
-        <h4>FORM JURNAL</h4>
+        <h4>FORM JURNAL GROUP JOB</h4>
     </div>
     <div class="col-8">
         <div class="card p-3">
@@ -25,35 +25,27 @@
     </div>
     <div class="col-12 mt-2">
         <div class="card p-3">
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered" style="font-size:.7rem; white-space:nowrap">
-                    <thead>
-                        <tr>
-                            <th>[1] ID JOB</th>
-                            <th>[2] Cont (XPDC)</th>
-                            <th>[3] Seal (XPDC)</th>
-                            <th>[4] Kapal (XPDC)</th>
-                            <th>[5] Voyage (XPDC)</th>
-                            <th>[6] Shipment (XPDC)</th>
-                            <th>[7] Pembayar (XPDC)</th>
-                            <th>[8] Pengirim (XPDC)</th>
-                            <th>[9] Penerima (XPDC)</th>
-                            <th>[10] Pelayaran (XPDC)</th>
-                            <th>[11] Customer (TRUCKING)</th>
-                            <th>[12] Shipment (TRUCKING)</th>
-                            <th>[13] Tujuan (TRUCKING)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-order">
-
-                    </tbody>
-                </table>
+            <span>PARAM</span>
+            <div class="d-flex flex-wrap gap-2" style="white-space: nowrap">
+                <span class="bg-light-primary px-2 py-1">[1] ID JOB</span>
+                <span class="bg-light-primary px-2 py-1">[2] Cont (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[3] Seal (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[4] Kapal (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[5] Voyage (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[6] Shipment (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[7] Pembayar (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[8] Pengirim (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[9] Penerima (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[10] Pelayaran (XPDC)</span>
+                <span class="bg-light-primary px-2 py-1">[11] Customer (TRUCKING)</span>
+                <span class="bg-light-primary px-2 py-1">[12] Shipment (TRUCKING)</span>
+                <span class="bg-light-primary px-2 py-1">[13] Tujuan (TRUCKING)</span>
             </div>
         </div>
     </div>
     <div class="col-12 mt-3">
         <div class="card p-2">
-            <form action="{{ route('jurnal.store') }}" method="post" class="row" id="form-submit">
+            <form action="{{ route('jurnal.kolektif.store') }}" method="post" class="row" id="form-submit">
                 @csrf
                 <input type="hidden" name="order_id" id="order_id" value="{{ $order }}">
                 <input type="hidden" name="jurnal_id" id="jurnal_id" value="{{ json_encode($jurnal_id) }}">
@@ -82,7 +74,7 @@
                     <table class="table table-sm" id="table-debit">
                         <tr>
                             <td>#</td>
-                            <td>ID Job/Seal</td>
+                            <td>JOB</td>
                             <td>Akun Debet</td>
                             <td>Akun Credit</td>
                             <td>Keterangan</td>
@@ -94,10 +86,10 @@
                             <tr>
                                 <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $i }})" checked id="{{ $i }}" value="{{ $i }}"></td>
                                 <td style="width: 200px">
-                                    <select class="form-control select2" id="job-{{ $i }}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important">
+                                    <select class="form-control select2" id="job-{{ $i }}" name="job[]" style="font-size:.9rem !important">
                                         <option value=""></option>
                                         @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                        <option value="{{ $item }}">{{ $item }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -131,10 +123,10 @@
                                 <tr>
                                     <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $k }})" checked id="{{ $k }}" value="{{ $k }}"></td>
                                     <td style="width: 200px">
-                                        <select class="form-control select2" onchange="getOrder()" id="job-{{ $k }}" name="order_id[]" style="font-size:.9rem !important">
+                                        <select class="form-control select2" id="job-{{ $k }}" name="job[]" style="font-size:.9rem !important">
                                             <option value=""></option>
                                             @foreach ($orders as $item)
-                                            <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                            <option value="{{ $item }}">{{ $item }}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -194,10 +186,10 @@
         let html = `<tr>
                         <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
                         <td style="width: 200px">
-                            <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important">
+                            <select class="form-control select2" id="job-${debit}" name="job[]" style="font-size:.9rem !important">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
-                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                <option value="{{ $item }}">{{ $item }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -257,7 +249,7 @@
     });
 
     function getOrder(){
-        var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();
+        var order_id = $("select[name='job[]']").map(function(){return $(this).val();}).get();
         $.ajax({
             type: "POST",
             url: "{{ url('api/get-array-id') }}",

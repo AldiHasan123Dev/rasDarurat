@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('template_jurnal', function (Blueprint $table) {
             $table->id();
             $table->string('nama');
+            $table->enum('tipe',['JNL','BBK','BBM','BKK','BKM']);
             $table->softDeletes();
             $table->timestamps();
         });

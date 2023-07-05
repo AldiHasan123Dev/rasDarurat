@@ -3,32 +3,28 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <div class="card-title">Buat Template Jurnal</div>
+                <div class="card-title">Template Jurnal</div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered" style="font-size:.7rem">
-                        <tr>
-                            <td class="fw-bold">Param</td>
-                            <td>[1] Pembayar (XPDC)</td>
-                            <td>[2] Pengirim (XPDC)</td>
-                            <td>[3] Penerima (XPDC)</td>
-                            <td>[4] Pelayaran (XPDC)</td>
-                            <td>[5] Customer (TRUCKING)</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">Contoh Output</td>
-                            <td>AGRINDO PT</td>
-                            <td>CIPTA MAKMUR</td>
-                            <td>AGEN</td>
-                            <td>PT. TANTO INTIM LINE</td>
-                            <td>BP. YANSEN</td>
-                        </tr>
-                    </table>
+                <span>PARAM</span>
+                <div class="d-flex flex-wrap gap-2" style="white-space: nowrap">
+                    <span class="bg-light-primary px-2 py-1">[1] ID JOB</span>
+                    <span class="bg-light-primary px-2 py-1">[2] Cont (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[3] Seal (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[4] Kapal (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[5] Voyage (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[6] Shipment (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[7] Pembayar (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[8] Pengirim (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[9] Penerima (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[10] Pelayaran (XPDC)</span>
+                    <span class="bg-light-primary px-2 py-1">[11] Customer (TRUCKING)</span>
+                    <span class="bg-light-primary px-2 py-1">[12] Shipment (TRUCKING)</span>
+                    <span class="bg-light-primary px-2 py-1">[13] Tujuan (TRUCKING)</span>
                 </div>
             </div>
         </div>
-        <livewire:create-template-jurnal />
+        <livewire:create-template-jurnal template_id="{{ request('template_id') }}"/>
     </div>
 @endsection
 

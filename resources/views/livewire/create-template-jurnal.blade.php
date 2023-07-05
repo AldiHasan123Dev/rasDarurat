@@ -1,5 +1,6 @@
 <form action="{{ route('templatejurnal.store') }}" method="POST" class="mt-3 row flex-row-reverse">
     @csrf
+    <input type="hidden" name="template_id" value="{{ request('template_id') }}">
     <div class="col-3">
         <div class="text-center border-bottom border-dark border-3">
             <span>2</span>
@@ -7,7 +8,17 @@
         <div class="card shadow p-3 mt-2">
             <div class="mb-2">
                 <label>Nama Template</label>
-                <input type="text" name="name" required class="form-control">
+                <input type="text" name="name" required class="form-control" value="{{ $template->nama ?? '' }}">
+            </div>
+            <div class="mb-2">
+                <label for="tipe_jurnal">Tipe Jurnal</label>
+                <select name="tipe" id="tipe_jurnal" class="form-control">
+                    <option {{ !is_null($template)?($template->tipe=='JNL'?'selected':''):'' }} selected value="JNL">Jurnal Umum</option>
+                    <option {{ !is_null($template)?($template->tipe=='BBK'?'selected':''):'' }} value="BBK">Bank Keluar</option>
+                    <option {{ !is_null($template)?($template->tipe=='BBM'?'selected':''):'' }} value="BBM">Bank Masuk</option>
+                    <option {{ !is_null($template)?($template->tipe=='BKK'?'selected':''):'' }} value="BKK">Kas Keluar</option>
+                    <option {{ !is_null($template)?($template->tipe=='BKM'?'selected':''):'' }} value="BKM">Kas Masuk</option>
+                </select>
             </div>
             <div class="mb-2">
                 <button class="btn btn-sm btn-primary w-100 text-center" type="submit" onclick="return confirm('are you sure?')">Simpan Template</button>
@@ -28,27 +39,51 @@
                     </tr>
                 </thead>
                 <tbody id="tbody">
-                    @for ($i = 0; $i < $kolom; $i++)
-                        <tr>
-                            <td style="width: 200px">
-                                <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important">
-                                    <option value=""></option>
-                                    @foreach ($coa as $item)
-                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td style="width: 200px">
-                                <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important">
-                                    <option value=""></option>
-                                    @foreach ($coa as $item)
-                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td><input type="text" name="keterangan[]" style="width: 100%"></td>
-                        </tr>
-                    @endfor
+                    @if ($template)
+                        @foreach ($template->template_items as $i => $tem)
+                            <tr>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                        <option {{ $tem->coa_debit_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                        <option {{ $tem->coa_credit_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="text" name="keterangan[]" style="width: 100%" value="{{ $tem->keterangan }}"></td>
+                            </tr>
+                        @endforeach
+                    @else
+                        @for ($i = 0; $i < $kolom; $i++)
+                            <tr>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" name="debit_coa_id[]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" name="credit_coa_id[]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td><input type="text" name="keterangan[]" style="width: 100%"></td>
+                            </tr>
+                        @endfor
+                    @endif
                 </tbody>
                 <tfoot>
                     <tr>

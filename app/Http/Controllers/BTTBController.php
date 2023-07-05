@@ -25,6 +25,15 @@ class BTTBController extends Controller
         return view('admin.bttb.index', compact('order','barang','satuan','pengirim'));
     }
 
+    public function create()
+    {
+        $barang = Barang::get(['id','nama']);
+        $satuan = Satuan::get(['id','nama']);
+        $pengirim = Customer::get(['id','nama']);
+        $data = BTTB::where('order_id',request('order_id'))->get();
+        return view('admin.bttb.create', compact('barang','satuan','pengirim','data'));
+    }
+
     public function edit(BTTB $bttb)
     {
         $barang = Barang::pluck('nama','id');
@@ -36,17 +45,23 @@ class BTTBController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $barang = Barang::find($request->barang_id);
-        $satuan = Satuan::find($request->satuan_id);
-        if (!$satuan) {
-            $satuan = Satuan::create(['nama'=>$request->satuan_id]);
+        foreach ($data['bttb'] as $item ) {
+            $bttb = $item;
+            if($bttb['no_gudang'] && $bttb['barang_id'] && $bttb['qty'] && $bttb['satuan_id'] && $bttb['pengirim_id']){
+                $barang = Barang::find($bttb['barang_id']);
+                $satuan = Satuan::find($bttb['satuan_id']);
+                if (!$satuan) {
+                    $satuan = Satuan::create(['nama'=>$bttb['satuan_id']]);
+                }
+                if (!$barang) {
+                    $barang = Barang::create(['nama'=>$bttb['barang_id']]);
+                }
+                $bttb['order_id'] = $data['order_id'];
+                $bttb['barang_id'] = $barang->id;
+                $bttb['satuan_id'] = $satuan->id;
+                BTTB::create($bttb);
+            }
         }
-        if (!$barang) {
-            $barang = Barang::create(['nama'=>$request->barang_id]);
-        }
-        $data['barang_id'] = $barang->id;
-        $data['satuan_id'] = $satuan->id;
-        BTTB::create($data);
 
         return back()->with('success','Data berhasil disimpan');
     }
@@ -83,7 +98,7 @@ class BTTBController extends Controller
         return Datatables::of($data)
             ->addIndexColumn()
             ->order(function ($data){
-                $data->orderBy('created_at','desc');
+                $data->orderBy('created_at','asc');
             })
             ->addColumn('created_at', function($data){
                 return date('d/m/y',strtotime($data->created_at));

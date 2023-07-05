@@ -58,6 +58,7 @@ class JurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
@@ -71,22 +72,36 @@ class JurnalController extends Controller
                     $penerima = $order->penerima->nama ?? '-';
                     $pengirim = $order->pengirim->nama ?? '-';
                     $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
+                    $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+                    $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+                    $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
+                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tujuan;
                     $name = str_replace('[1]',$id_job,$name);
                     $name = str_replace('[2]',$cont,$name);
                     $name = str_replace('[3]',$seal,$name);
-                    $name = str_replace('[4]',$shipment,$name);
-                    $name = str_replace('[5]',$pembayar,$name);
-                    $name = str_replace('[6]',$pengirim,$name);
-                    $name = str_replace('[7]',$penerima,$name);
-                    $name = str_replace('[8]',$pelayaran,$name);
-                    $name = str_replace('[9]',$customer,$name);
+                    $name = str_replace('[4]',$kapal,$name);
+                    $name = str_replace('[5]',$voyage,$name);
+                    $name = str_replace('[6]',$shipment,$name);
+                    $name = str_replace('[7]',$pembayar,$name);
+                    $name = str_replace('[8]',$pengirim,$name);
+                    $name = str_replace('[9]',$penerima,$name);
+                    $name = str_replace('[10]',$pelayaran,$name);
+                    $name = str_replace('[11]',$customer,$name);
+                    $name = str_replace('[12]',$shipment_trucking,$name);
+                    $name = str_replace('[13]',$tujuan_trucking,$name);
+
+                    if($data['tipe']=='JNL'){
+                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'-'.date('y',strtotime($data['created_at'][$i]));
+                    }else{
+                        $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
+                    }
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     Jurnal::create([
                         'coa_id' => $data['debit_coa_id'][$i],
                         'order_id' => $data['order_id'][$i],
-                        'nomor' => $data['nomor'],
+                        'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'][$i],
@@ -94,7 +109,7 @@ class JurnalController extends Controller
                     Jurnal::create([
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $data['order_id'][$i],
-                        'nomor' => $data['nomor'],
+                        'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'][$i],
@@ -104,7 +119,7 @@ class JurnalController extends Controller
                         Jurnal::create([
                             'coa_id' => $data['debit_coa_id'][$i],
                             'order_id' => $data['order_id'][$i],
-                            'nomor' => $data['nomor'],
+                            'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'][$i],
@@ -114,7 +129,7 @@ class JurnalController extends Controller
                         Jurnal::create([
                             'coa_id' => $data['credit_coa_id'][$i],
                             'order_id' => $data['order_id'][$i],
-                            'nomor' => $data['nomor'],
+                            'nomor' => $nomor,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'][$i],
@@ -130,6 +145,7 @@ class JurnalController extends Controller
     public function store_kolektif(Request $request)
     {
         $data = $request->all();
+        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i] && $data['job'][$i] && $data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                 $name = $data['name'][$i];
@@ -144,21 +160,35 @@ class JurnalController extends Controller
                     $penerima = $order->penerima->nama ?? '-';
                     $pengirim = $order->pengirim->nama ?? '-';
                     $pelayaran = $order->jadwal_kapal->pelayaran->nama ?? '-';
+                    $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+                    $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+                    $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
+                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tujuan;
                     $name = str_replace('[1]',$id_job,$name);
                     $name = str_replace('[2]',$cont,$name);
                     $name = str_replace('[3]',$seal,$name);
-                    $name = str_replace('[4]',$shipment,$name);
-                    $name = str_replace('[5]',$pembayar,$name);
-                    $name = str_replace('[6]',$pengirim,$name);
-                    $name = str_replace('[7]',$penerima,$name);
-                    $name = str_replace('[8]',$pelayaran,$name);
-                    $name = str_replace('[9]',$customer,$name);
+                    $name = str_replace('[4]',$kapal,$name);
+                    $name = str_replace('[5]',$voyage,$name);
+                    $name = str_replace('[6]',$shipment,$name);
+                    $name = str_replace('[7]',$pembayar,$name);
+                    $name = str_replace('[8]',$pengirim,$name);
+                    $name = str_replace('[9]',$penerima,$name);
+                    $name = str_replace('[10]',$pelayaran,$name);
+                    $name = str_replace('[11]',$customer,$name);
+                    $name = str_replace('[12]',$shipment_trucking,$name);
+                    $name = str_replace('[13]',$tujuan_trucking,$name);
+
+                    if($data['tipe']=='JNL'){
+                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'-'.date('y',strtotime($data['created_at'][$i]));
+                    }else{
+                        $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
+                    }
 
                     Jurnal::create([
                         'coa_id' => $data['debit_coa_id'][$i],
                         'order_id' => $order->id,
-                        'nomor' => $data['nomor'],
+                        'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $amount,
                         'created_at' => $data['created_at'][$i],
@@ -166,7 +196,7 @@ class JurnalController extends Controller
                     Jurnal::create([
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $order->id,
-                        'nomor' => $data['nomor'],
+                        'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $amount,
                         'created_at' => $data['created_at'][$i],
