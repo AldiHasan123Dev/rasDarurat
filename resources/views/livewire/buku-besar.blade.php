@@ -85,93 +85,95 @@
                 <button wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }}" style="background: transparent; border: solid 1px gray; width:50px">{{ $item }}</button>
             @endforeach
         </div>
-        <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
-            <thead>
-                <tr>
-                    <th data-rtc-resizable="tanggal">Tanggal</th>
-                    <th data-rtc-resizable="no_jurnal">No. Jurnal</th>
-                    <th data-rtc-resizable="debit">Debit</th>
-                    <th data-rtc-resizable="credit">Credit</th>
-                    <th data-rtc-resizable="saldo">Saldo</th>
-                    <th data-rtc-resizable="nama">Keterangan</th>
-                    @if ($coa->is_cont)
-                    <th data-rtc-resizable="cont">No. Cont</th>
-                    @endif
-                    @if ($coa->is_nopol)
-                    <th data-rtc-resizable="nopol">Nopol</th>
-                    @endif
-                    @if ($coa->is_nojob)
-                    <th data-rtc-resizable="job">No. Job</th>
-                    @endif
-                    @if ($coa->is_invoice)
-                    <th data-rtc-resizable="invoice">Invoice</th>
-                    @endif
-                    @if ($coa->is_nobg)
-                    <th data-rtc-resizable="bg">No. BG</th>
-                    @endif
-                    @if ($coa->is_nobupot)
-                    <th data-rtc-resizable="nobupot">No. Bupot PPh 23</th>
-                    @endif
-                    @if ($coa->is_tglbupot)
-                    <th data-rtc-resizable="tglbupot">Tgl Bupot PPh 23</th>
-                    @endif
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="2">SALDO AWAL</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
-                </tr>
-                @foreach ($data as $item)
-                    @php
-                        if ($tipe=='D') {
-                            if ($item->debit>0) {
-                                $saldo_awal += $item->debit;
-                            } else {
-                                $saldo_awal -= $item->credit;
-                            }
-                        } else {
-                            if ($item->debit>0) {
-                                $saldo_awal -= $item->debit;
-                            } else {
-                                $saldo_awal += $item->credit;
-                            }
-                        }
-                    @endphp
+        <div class="table-responsive">
+            <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
+                <thead>
                     <tr>
-                        <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                        <td>{{ $item->nomor }}</td>
-                        <td>{{ number_format($item->debit,2,',','.') }}</td>
-                        <td>{{ number_format($item->credit,2,',','.') }}</td>
-                        <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
-                        <td>{{ $item->nama }}</td>
+                        <th data-rtc-resizable="tanggal">Tanggal</th>
+                        <th data-rtc-resizable="no_jurnal">No. Jurnal</th>
+                        <th data-rtc-resizable="debit">Debit</th>
+                        <th data-rtc-resizable="credit">Credit</th>
+                        <th data-rtc-resizable="saldo">Saldo</th>
+                        <th data-rtc-resizable="nama">Keterangan</th>
                         @if ($coa->is_cont)
-                        <td>{{ $item->order ? $item->order->container : '-' }}</td>
+                        <th data-rtc-resizable="cont">No. Cont</th>
                         @endif
                         @if ($coa->is_nopol)
-                        <td>{{ $item->order ? $item->order->nopol : '-' }}</td>
+                        <th data-rtc-resizable="nopol">Nopol</th>
                         @endif
                         @if ($coa->is_nojob)
-                        <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
+                        <th data-rtc-resizable="job">No. Job</th>
                         @endif
                         @if ($coa->is_invoice)
-                        <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
+                        <th data-rtc-resizable="invoice">Invoice</th>
                         @endif
                         @if ($coa->is_nobg)
-                        <td>-</td>
+                        <th data-rtc-resizable="bg">No. BG</th>
                         @endif
                         @if ($coa->is_nobupot)
-                        <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->no_bupot :'') : '-' }}</td>
+                        <th data-rtc-resizable="nobupot">No. Bupot PPh 23</th>
                         @endif
                         @if ($coa->is_tglbupot)
-                        <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->tgl_bupot :'') : '-' }}</td>
+                        <th data-rtc-resizable="tglbupot">Tgl Bupot PPh 23</th>
                         @endif
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2">SALDO AWAL</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
+                    </tr>
+                    @foreach ($data as $item)
+                        @php
+                            if ($tipe=='D') {
+                                if ($item->debit>0) {
+                                    $saldo_awal += $item->debit;
+                                } else {
+                                    $saldo_awal -= $item->credit;
+                                }
+                            } else {
+                                if ($item->debit>0) {
+                                    $saldo_awal -= $item->debit;
+                                } else {
+                                    $saldo_awal += $item->credit;
+                                }
+                            }
+                        @endphp
+                        <tr>
+                            <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
+                            <td>{{ $item->nomor }}</td>
+                            <td>{{ number_format($item->debit,2,',','.') }}</td>
+                            <td>{{ number_format($item->credit,2,',','.') }}</td>
+                            <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
+                            <td>{{ $item->nama }}</td>
+                            @if ($coa->is_cont)
+                            <td>{{ $item->order ? $item->order->container : '-' }}</td>
+                            @endif
+                            @if ($coa->is_nopol)
+                            <td>{{ $item->order ? $item->order->nopol : '-' }}</td>
+                            @endif
+                            @if ($coa->is_nojob)
+                            <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
+                            @endif
+                            @if ($coa->is_invoice)
+                            <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
+                            @endif
+                            @if ($coa->is_nobg)
+                            <td>-</td>
+                            @endif
+                            @if ($coa->is_nobupot)
+                            <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->no_bupot :'') : '-' }}</td>
+                            @endif
+                            @if ($coa->is_tglbupot)
+                            <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->tgl_bupot :'') : '-' }}</td>
+                            @endif
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
         {{-- {{ $data->links() }} --}}
         @if($data->hasMorePages())
             <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
