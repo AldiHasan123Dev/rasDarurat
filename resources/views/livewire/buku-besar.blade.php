@@ -163,10 +163,10 @@
                         <td>-</td>
                         @endif
                         @if ($coa->is_nobupot)
-                        <td>{{ $item->order ? ($item->order->transaksi?$item->order->transaksi->no_bupot:'') : '-' }}</td>
+                        <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->no_bupot :'') : '-' }}</td>
                         @endif
                         @if ($coa->is_tglbupot)
-                        <td>{{ $item->order ? ($item->order->transaksi-?$item->order->transaksi->tgl_bupot:'') : '-' }}</td>
+                        <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->tgl_bupot :'') : '-' }}</td>
                         @endif
                     </tr>
                 @endforeach
