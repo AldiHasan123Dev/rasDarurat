@@ -1,7 +1,6 @@
 @extends('layouts.iframe')
 @section('style')
-<link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/awesomplete.css') }}">
 @endsection
 @section('content')
     <div class="container">
@@ -23,27 +22,35 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('assets/js/selectize.js') }}"></script>
+<script src="{{ asset('assets/js/awesomplete.js') }}"></script>
 <script>
-    $('#pengirim_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    let customers = @json($customers);
+    let barang = @json($barang);
+    let agent = @json($agent);
+    new Awesomplete(document.getElementById("pengirim_id"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#penerima_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("penerima_id"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#penerima_bl_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("penerima_bl_id"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#selectBarang').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("barang_id"), {
+        list: barang,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#agen_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("agen_id"), {
+        list: agent,
+        minChars: 3,
+        maxItems: 5
     });
 </script>
 

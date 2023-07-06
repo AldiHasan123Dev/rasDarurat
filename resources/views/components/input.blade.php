@@ -6,9 +6,9 @@
     $autocomplete = $autocomplete ?? false;
 @endphp
 <div class="col-{{ $col ?? '12'}} mb-3 autocomplete">
-    <label>{{ $label ?? '' }}</label>
+    <label>{{ $label ?? '' }}</label><br>
     @if ($type=='text'|| $type=='password'||$type=='email'||$type=='number' || $type=='file' || $type=='date' || $type=='rupiah')
-        <input type="{{ $type=='rupiah'?'text':$type }}" name="{{ $name??'' }}" value="{{ $value ?? old($name) }}" id="{{ $id ?? $name }}" class="form-control {{ $type=='rupiah'?'rupiah':'' }}" step="any" {{ !empty($attr)?implode(' ', $attr) : '' }} {{ $required?'required':'' }} {{ $readonly?'readonly':'' }} {{ $disabled?'disabled':'' }}>
+        <input type="{{ $type=='rupiah'?'text':$type }}" name="{{ $name??'' }}" value="{{ $value ?? old($name) }}" id="{{ $id ?? $name }}" class="form-control w-100 {{ $type=='rupiah'?'rupiah':'' }}" step="any" {{ !empty($attr)?implode(' ', $attr) : '' }} {{ $required?'required':'' }} {{ $readonly?'readonly':'' }} {{ $disabled?'disabled':'' }}>
     @elseif($type=='select')
     @php
         $value = $value ?? old($name);

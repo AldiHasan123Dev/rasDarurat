@@ -29,18 +29,18 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
+            <table data-rtc-resizable-table="table.{{ $month }}" class="data table table-sm mt-3 table-bordered" style="font-size: .7rem; white-space:nowrap">
                 <thead>
                     <tr>
-                        <th>Tanggal</th>
-                        <th>Nomor</th>
-                        <th>No. Akun</th>
-                        <th>Nama Akun</th>
-                        <th>Invoice</th>
-                        <th>JOB</th>
-                        <th>Keterangan</th>
-                        <th>Debit</th>
-                        <th>Credit</th>
+                        <th data-rtc-resizable="tanggal">Tanggal</th>
+                        <th data-rtc-resizable="nomor">Nomor</th>
+                        <th data-rtc-resizable="akun">No. Akun</th>
+                        <th data-rtc-resizable="akun_name">Nama Akun</th>
+                        <th data-rtc-resizable="invoice">Invoice</th>
+                        <th data-rtc-resizable="job">JOB</th>
+                        <th data-rtc-resizable="keterangan">Keterangan</th>
+                        <th data-rtc-resizable="debit">Debit</th>
+                        <th data-rtc-resizable="credit">Credit</th>
                         <th>#</th>
                     </tr>
                 </thead>
@@ -76,3 +76,35 @@
         @endif
     </div>
 </div>
+
+@push('scripts')
+<script src="{{ asset('assets/js/resize-column.js') }}"></script>
+<script>
+
+    function load(){
+        (function (window, ResizableTableColumns, undefined) {
+            var store = window.store && window.store.enabled
+                ? window.store
+                : null;
+
+            var els = document.querySelectorAll('table.data');
+            for (var index = 0; index < els.length; index++) {
+                var table = els[index];
+                if (table['rtc_data_object']) {
+                    continue;
+                }
+
+                var options = { store: store };
+                if (table.querySelectorAll('thead > tr').length > 1) {
+                    options.resizeFromBody = false;
+                }
+
+                new ResizableTableColumns(els[index], options);
+            }
+
+        })(window, window.validide_resizableTableColumns.ResizableTableColumns, void (0));
+    }
+
+    load();
+</script>
+@endpush

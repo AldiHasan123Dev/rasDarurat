@@ -26,8 +26,29 @@ class COAController extends Controller
     public function update(COA $coa, Request $request)
     {
         $data = $request->all();
-        if ($request->update_status) {
+        if ($request->is_active) {
             $data['is_active'] = $coa->is_active==1?0:1;
+        }
+        if ($request->is_cont) {
+            $data['is_cont'] = $coa->is_cont==1?0:1;
+        }
+        if ($request->is_nopol) {
+            $data['is_nopol'] = $coa->is_nopol==1?0:1;
+        }
+        if ($request->is_nojob) {
+            $data['is_nojob'] = $coa->is_nojob==1?0:1;
+        }
+        if ($request->is_invoice) {
+            $data['is_invoice'] = $coa->is_invoice==1?0:1;
+        }
+        if ($request->is_nobg) {
+            $data['is_nobg'] = $coa->is_nobg==1?0:1;
+        }
+        if ($request->is_nobupot) {
+            $data['is_nobupot'] = $coa->is_nobupot==1?0:1;
+        }
+        if ($request->is_tglbupot) {
+            $data['is_tglbupot'] = $coa->is_tglbupot==1?0:1;
         }
         $coa->update($data);
         if ($request->update_status) {

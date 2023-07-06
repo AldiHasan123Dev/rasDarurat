@@ -42,15 +42,15 @@ class OrderController extends Controller
                     ->select('tarif.*')
                     ->where('tarif.is_active',1)
                     ->get();
-        $barang = Barang::pluck('nama','nama');
-        $satuan = Satuan::pluck('nama','nama');
-        $agent = Agen::pluck('nama','id');
+        $barang = Barang::pluck('nama')->toArray();
+        $satuan = Satuan::pluck('nama')->toArray();
+        $agent = Agen::pluck('nama')->toArray();
         $tarif = array();
         $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
         $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
         $data_tarif_lokasi = array_unique($lokasi);
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
-        $customers = Customer::pluck('nama','nama');
+        $customers = Customer::pluck('nama')->toArray();
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
@@ -111,7 +111,9 @@ class OrderController extends Controller
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
-
+        if($data['agen']=='AGEN'){
+            $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
+        }
         $num = Order::max('no');
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
@@ -167,9 +169,15 @@ class OrderController extends Controller
             $request->validate([
                 'jadwal_kapal_id' => 'required|numeric'
             ]);
-            $barang = Barang::find($request->barang_id);
+            $barang = Barang::where('nama',$request->barang_id)->first();
             if (!$barang) {
                 $barang = Barang::create(['nama'=>$request->barang_id]);
+            }
+            $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id ?? null;
+            $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id ?? null;
+            $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id ?? null;
+            if($data['agen']=='AGEN'){
+                $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
             }
 
             if ($request->satuan) {
@@ -217,18 +225,15 @@ class OrderController extends Controller
                     ->where('tarif.is_active',1)
                     ->orWhere('tarif.id',$order->tarif_id)
                     ->get();
-        $customers = Customer::pluck('nama','id');
-        $barang = Barang::pluck('nama','id');
-        $satuan = Satuan::pluck('nama');
-        $pengirim = $customers;
-        $penerima_bl = Customer::pluck('nama','id');
+        $customers = Customer::pluck('nama')->toArray();
+        $barang = Barang::pluck('nama')->toArray();
         $tarif = array();
-        $agent = Agen::pluck('nama','id');
+        $agent = Agen::pluck('nama')->toArray();
         foreach ($tarifs as $id => $item ) {
             $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
         }
         $pembayar = ($order->customer->nama??'-').' || '.($order->dari_lokasi->nama??'-').' || '.($order->tujuan_lokasi->nama??'-').' || '.($order->kondisiInfo->nama??'-').' || '.($order->pelayaran->nama??'-').' || '.($order->shipmentInfo->nama??'-').' || '.($order->tarif??'-');
-        return view('admin.order.edit', compact('order','agent','tarif','customers','barang','satuan','pengirim','pembayar','penerima_bl'));
+        return view('admin.order.edit', compact('order','agent','tarif','customers','barang'));
     }
 
     public function destroy(Order $order)

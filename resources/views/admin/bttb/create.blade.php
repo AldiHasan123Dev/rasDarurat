@@ -2,6 +2,7 @@
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/awesomplete.css') }}">
 @endsection
 @section('content')
     <div class="container-fluid">
@@ -10,7 +11,7 @@
                 <form method="POST" action="{{ route('bttb.store') }}">
                     @csrf
                     <input type="hidden" name="order_id" value="{{ request('order_id') }}">
-                    <div class="table-responsive">
+                    <div class="table-responsives">
                         <table class="w-100 table-bordered" style="font-size: .7rem; table-layout:auto">
                             <thead>
                                 <tr class="text-center">
@@ -32,14 +33,7 @@
                                 @for ($i = 0; $i < 5; $i++)
                                     <tr>
                                         <td><input type="text" style="width: 100px" name="bttb[{{ $i }}][no_gudang]" id="no_gudang-{{ $i }}"></td>
-                                        <td>
-                                            <select name="bttb[{{ $i }}][barang_id]" id="barang_id-{{ $i }}" class="selecttizecreate" style="width: 200px">
-                                                <option value=""></option>
-                                                @foreach ($barang as $item)
-                                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
-                                                @endforeach
-                                            </select>
-                                        </td>
+                                        <td><input name="bttb[{{ $i }}][barang_id]" id="barang_id-{{ $i }}" class="barang" style="width: 200px"/></td>
                                         <td><input type="number" style="width: 70px" name="bttb[{{ $i }}][qty]" id="qty-{{ $i }}"></td>
                                         <td>
                                             <select name="bttb[{{ $i }}][satuan_id]" id="satuan_id-{{ $i }}" class="selecttizecreate" style="width: 100px">
@@ -109,7 +103,16 @@
 @endsection
 @section('script')
 <script src="{{ asset('assets/js/selectize.js') }}"></script>
+<script src="{{ asset('assets/js/awesomplete.js') }}"></script>
 <script>
+    let barangs = @json($barang);
+    let satuans = @json($satuan);
+    let barang = document.getElementById("barang_id-3");
+        new Awesomplete(barang, {
+        list: barangs,
+        minChars: 3,
+        maxItems: 5
+    });
     $('.selecttizecreate').selectize({
         sortField: 'text',
         maxOptions:10,

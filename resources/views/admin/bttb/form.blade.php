@@ -9,7 +9,7 @@
         @endif
     @endif
 <x-input :value="$bttb->no_gudang??old('no_gudang')" :col="6" :label="'No. Gudang'" :type="'text'" :name="'no_gudang'" :required="true"></x-input>
-<x-input :value="$bttb->barang_id??old('barang_id')" :col="6" :label="'Barang'" :type="'text'" :name="'barang_id'" :required="true"></x-input>
+<x-input :value="$bttb->barang_id??old('barang_id')" :col="6" :label="'Barang'" :type="'text'" :name="'barang_id'" :id="'barang_bttb'" :required="true"></x-input>
 <x-input :value="$bttb->qty??old('qty')" :col="6" :label="'Qty'" :type="'number'" :name="'qty'" :required="true"></x-input>
 <x-input :value="$bttb->satuan_id??old('satuan_id')" :col="6" :label="'Satuan'" :type="'text'" :name="'satuan_id'" :required="true"></x-input>
 <x-input :value="$bttb->p??old('p')" :col="4" :label="'P'" :type="'number'" :name="'p'"></x-input>

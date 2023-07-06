@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/awesomplete.css') }}">
 <style>
     table.dataTable tbody th, table.dataTable tbody td{
         padding: 0px 10px !important;
@@ -134,7 +135,7 @@
                         </div>
                         <div class="p-2 d-flex" style="gap:10px" id="bttb-info">
                             @if (is_null($marketing))
-                            <button class="py-2 px-3 btn btn-sm btn-success" type="button" onclick="modalAddBTTB()"><i class="fas fa-plus"></i> Tambah BTTB</button>
+                            <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBTTBCreate"><i class="fas fa-plus"></i> Tambah BTTB</button>
                             <button onclick="printBttb()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</button>
                             <button onclick="printBttbKubikasi()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</button>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
@@ -220,6 +221,7 @@
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
+        <b>*Harap Pastikan No Gudang, Nama Barang, Jumlah, Satuan & Pengirim Terisi. Lalu pada inputan pengirim, harap pilih data yang sudah disediakan!</b>
         <form id="form-bttb-create">
             @csrf
             <input type="hidden" name="order_id" id="order-id-create">
@@ -242,32 +244,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for ($i = 0; $i < 18; $i++)
+                    @for ($i = 0; $i < 12; $i++)
                         <tr>
                             <td><input type="text" style="width: 100px" name="no_gudang-{{ $i }}" id="no_gudang-{{ $i }}"></td>
-                            <td>
-                                <select name="barang_id-{{ $i }}" id="barang_id-{{ $i }}" class="barang" style="width: 200px"></select>
-                            </td>
-                            <td><input type="number" style="width: 70px" name="qty-{{ $i }}" id="qty-{{ $i }}"></td>
-                            <td>
-                                <select name="satuan_id-{{ $i }}" id="satuan_id-{{ $i }}" class="satuan" style="width: 100px"></select>
-                            </td>
+                            <td><input name="barang_id-{{ $i }}" id="barang_id-{{ $i }}" class="barang" style="width: 200px"/></td>
+                            <td><input type="number" style="width: 70px" name="qty-{{ $i }}" id="qty-{{ $i }}"/></td>
+                            <td><input name="satuan_id-{{ $i }}" id="satuan_id-{{ $i }}" class="satuan" style="width: 100px"/></td>
                             <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="p-{{ $i }}" id="p-{{ $i }}"></td>
                             <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="l-{{ $i }}" id="l-{{ $i }}"></td>
                             <td><input type="number" step="any" onkeyup="hitungVolCreate({{ $i }})" style="width: 70px" name="t-{{ $i }}" id="t-{{ $i }}"></td>
                             <td><input type="number" style="width: 70px" name="vol-{{ $i }}" id="vol-{{ $i }}"></td>
                             <td><input type="number" style="width: 70px" name="berat-{{ $i }}" id="berat-{{ $i }}"></td>
                             <td><input type="date" style="width: 100px" name="tgl_masuk-{{ $i }}" id="tgl_masuk-{{ $i }}"></td>
-                            <td>
-                                <select name="pengirim_id-{{ $i }}" id="pengirim_id-{{ $i }}" class="pengirim" style="width: 100px"></select>
-                            </td>
+                            <td><input name="pengirim_id-{{ $i }}" id="pengirim_id-{{ $i }}" class="pengirim" style="width: 100px"/></td>
                             <td><input type="text" name="keterangan-{{ $i }}" id="keterangan-{{ $i }}"></td>
                         </tr>
                     @endfor
                 </tbody>
             </table>
             <div class="col-12 mb-2 px-1">
-                <button type="button" class="btn btn-success btn-sm" id="add-bttb">Simpan</button>
+                <button type="button" class="btn btn-success btn-sm mt-3" id="add-bttb">Simpan</button>
             </div>
         </form>
     </div>
@@ -362,7 +358,7 @@
 @section('script')
 <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
 <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
-<script src="{{ asset('assets/js/selectize.js') }}"></script>
+<script src="{{ asset('assets/js/awesomplete.js') }}"></script>
 <script>
     $(document).ready(function() {
         topbar.show();
@@ -376,28 +372,69 @@
     $('#edit-order').hide();
     $('#btn-tagihan').hide();
     $('#delete-order').hide();
-
 </script>
 <script>
-    $('#pengirim_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    let customers = @json($customers);
+    let barang = @json($barang);
+    let satuan = @json($satuan);
+    let agent = @json($agent);
+    for (let i = 0; i < 12; i++) {
+        new Awesomplete(document.getElementById("barang_id-"+i), {
+            list: barang,
+            minChars: 3,
+            maxItems: 5
+        });
+        new Awesomplete(document.getElementById("satuan_id-"+i), {
+            list: satuan,
+            minChars: 2,
+            maxItems: 5
+        });
+        new Awesomplete(document.getElementById("pengirim_id-"+i), {
+            list: customers,
+            minChars: 3,
+            maxItems: 5,
+            autoFirst:true
+        });
+    }
+    new Awesomplete(document.getElementById("pengirim_id"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#penerima_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("pengirim_bttb"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#penerima_bl_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("penerima_id"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#selectBarang').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("penerima_bl_id"), {
+        list: customers,
+        minChars: 3,
+        maxItems: 5
     });
-    $('#agen_id').selectize({
-        sortField: 'text',
-        maxOptions:10
+    new Awesomplete(document.getElementById("barang_id"), {
+        list: barang,
+        minChars: 3,
+        maxItems: 5
+    });
+    new Awesomplete(document.getElementById("barang_bttb"), {
+        list: barang,
+        minChars: 3,
+        maxItems: 5
+    });
+    new Awesomplete(document.getElementById("satuan_id"), {
+        list: satuan,
+        minChars: 2,
+        maxItems: 5
+    });
+    new Awesomplete(document.getElementById("agen_id"), {
+        list: agent,
+        minChars: 3,
+        maxItems: 5
     });
 </script>
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
@@ -597,31 +634,6 @@
             ]
         });
 
-        $('#table-order tbody').on( 'click', 'tr', function () {
-            $('#btn-tagihan').show();
-            $('#bttb-info').show();
-            $('#koli-info').show();
-            $('#edit-order').show();
-            $('#delete-order').show();
-            $('#copy-order').show();
-            $('#packing-list').show();
-            $('#packing-list-kubikasi').show();
-            id =  tableOrder.row( this ).data().id;
-            var no_job =  tableOrder.row( this ).data().no_job;
-            var koli =  tableOrder.row( this ).data().koli;
-            $('#order_id_bttb').val(id);
-            $('.nojob').html(no_job);
-            $('.koli').html(koli);
-            $('#bttb-print').attr('href','{{ route('cetak.bttb') }}?order_id='+id);
-            $('#edit-order').attr('href','{{ url('admin/order') }}/'+id+'/edit');
-            $('#packing-list').attr('href','{{ url('admin/cetak/packing-list') }}/?order_id='+id);
-            $('#packing-list-kubikasi').attr('href','{{ url('admin/cetak/packing-list-kubikasi') }}/?order_id='+id);
-            $('#delete-order').attr('action','{{ url('admin/order') }}/'+id);
-            $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
-            $('#bttb-kubikasi-print').attr('href','{{ route('cetak.bttb.kubikasi') }}?order_id='+id);
-            tablebttb.ajax.reload();
-            tableTagihan.ajax.reload();
-        })
 
         $("select[name=tarif_id]").select2({
             dropdownParent: $('#offcanvasOrder')
@@ -655,19 +667,21 @@
 
 
         $('#add-bttb').click(function (e) {
-            let data = $("#form-bttb-create").serializeFields()
-            $.ajax({
-                type: "POST",
-                url: "{{ url('api/api-bttb-add') }}",
-                data:data,
-                success: function (response) {
-                    $('#jqGrid').trigger( 'reloadGrid' );
-                    tablebttb.ajax.reload();
-                    $('.koli').html(response);
-                    $('#form-bttb-create')[0].reset();
-                    alert('Data berhasil ditambahkan! Jumlah Koli Sekarang adalah '+response);
-                }
-            });
+            if(confirm('are you sure?')){
+                let data = $("#form-bttb-create").serializeFields();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('api/api-bttb-add') }}",
+                    data:data,
+                    success: function (response) {
+                        $('#jqGrid').trigger( 'reloadGrid' );
+                        tablebttb.ajax.reload();
+                        $('.koli').html(response);
+                        $('#form-bttb-create')[0].reset()
+                        alert('Data berhasil ditambahkan! Jumlah Koli Sekarang adalah '+response);
+                    }
+                });
+            }
         });
 
         $("select[name=tarif_id]").change(function (e) {
@@ -755,7 +769,7 @@
                             id : $('#bttb_id').val(),
                             order_id : $('#order_id_bttb').val(),
                             no_gudang : $('#no_gudang').val(),
-                            barang_id : $('#barang_id').val(),
+                            barang_id : $('#barang_bttb').val(),
                             qty : $('#qty').val(),
                             satuan_id : $('#satuan_id').val(),
                             p : $('#p').val(),
@@ -774,24 +788,9 @@
                             data: data,
                             success: function (response) {
                                 if (response.status=='success') {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: "{{ url('api/get-nama-barang') }}",
-                                        success: function (response) {
-                                            autocomplete(document.getElementById("barang_id"), response);
-                                            autocomplete(document.getElementById("selectBarang"), response);
-                                        }
-                                    });
-                                    $.ajax({
-                                        type: "GET",
-                                        url: "{{ url('api/get-nama-satuan') }}",
-                                        success: function (response) {
-                                            autocomplete(document.getElementById("satuan_id"), response);
-                                        }
-                                    });
                                     $('#no_gudang').val('');
                                     $('#qty').val('');
-                                    $('#barang_id').val('');
+                                    $('#barang_bttb').val('');
                                     $('#satuan_id').val('');
                                     $('#p').val('');
                                     $('#l').val('');
@@ -819,7 +818,7 @@
             $('#bttb_id').val(data.id);
             $('#no_gudang').val(data.no_gudang);
             $('#qty').val(data.qty);
-            $('#barang_id').val(data.barang_id);
+            $('#barang_bttb').val(data.barang_id);
             $('#satuan_id').val(data.satuan_id);
             $('#p').val(data.p);
             $('#l').val(data.l);
@@ -858,7 +857,7 @@
             $('#bttb_id').val(0);
             $('#no_gudang').val('');
             $('#qty').val('');
-            $('#barang_id').val('');
+            $('#barang_bttb').val('');
             $('#satuan_id').val('');
             $('#p').val('');
             $('#l').val('');
@@ -867,45 +866,6 @@
             $('#berat').val('');
             $('#pengirim_bttb').val('');
             $('#keterangan-bttb').val('');
-            let barangs = @json($barang);
-            let satuans = @json($satuan);
-            let customers = @json($customers);
-            let options = [];
-            let options1 = [];
-            let options2 = [];
-            $.each(barangs, function (indexInArray, item) {
-                options.push({nama:item})
-            });
-            $.each(satuans, function (indexInArray, item) {
-                options1.push({nama:item})
-            });
-            $.each(customers, function (indexInArray, item) {
-                options2.push({nama:item})
-            });
-            $('.barang').selectize({
-                maxOptions: 10,
-                create: false,
-                valueField: 'nama',
-                labelField: 'nama',
-                searchField: 'nama',
-                options: options
-            });
-            $('.satuan').selectize({
-                maxOptions: 10,
-                create: false,
-                valueField: 'nama',
-                labelField: 'nama',
-                searchField: 'nama',
-                options: options1
-            });
-            $('.pengirim').selectize({
-                maxOptions: 10,
-                create: false,
-                valueField: 'nama',
-                labelField: 'nama',
-                searchField: 'nama',
-                options: options2
-            });
             var myOffcanvas = document.getElementById('offcanvasBTTBCreate');
             var offCanvas = new bootstrap.Offcanvas(myOffcanvas);
             offCanvas.show();

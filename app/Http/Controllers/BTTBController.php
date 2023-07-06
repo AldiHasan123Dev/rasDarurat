@@ -27,9 +27,9 @@ class BTTBController extends Controller
 
     public function create()
     {
-        $barang = Barang::get(['id','nama']);
-        $satuan = Satuan::get(['id','nama']);
-        $pengirim = Customer::get(['id','nama']);
+        $barang = Barang::pluck('nama')->toArray();
+        $satuan = Satuan::pluck('nama')->toArray();
+        $pengirim = Customer::pluck('nama')->toArray();
         $data = BTTB::where('order_id',request('order_id'))->get();
         return view('admin.bttb.create', compact('barang','satuan','pengirim','data'));
     }

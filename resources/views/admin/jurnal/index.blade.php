@@ -1,4 +1,7 @@
 @extends('layouts.admin')
+@section('style')
+    <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
+@endsection
 @section('content')
     <div class="container mt-3">
         <div class="card">

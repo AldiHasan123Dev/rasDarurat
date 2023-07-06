@@ -8,7 +8,7 @@
                             <th style="width:200px">Akun :</th>
                             <th>
                                 <select class="form-control px-3 py-1" wire:model="coa_id" wire:change="changeCoa" style="font-size:.8rem">
-                                    @foreach ($coa as $item)
+                                    @foreach ($coas as $item)
                                         <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
                                     @endforeach
                                 </select>
@@ -89,19 +89,37 @@
             <thead>
                 <tr>
                     <th>Tanggal</th>
-                    <th>No. Akun</th>
-                    <th>Nama Akun</th>
-                    <th>JOB</th>
-                    <th>Keterangan</th>
+                    <th>No. Jurnal</th>
                     <th>Debit</th>
                     <th>Credit</th>
                     <th>Saldo</th>
+                    <th>Keterangan</th>
+                    @if ($coa->is_cont)
+                    <th>No. Cont</th>
+                    @endif
+                    @if ($coa->is_nopol)
+                    <th>Nopol</th>
+                    @endif
+                    @if ($coa->is_nojob)
+                    <th>No. Job</th>
+                    @endif
+                    @if ($coa->is_invoice)
+                    <th>Invoice</th>
+                    @endif
+                    @if ($coa->is_nobg)
+                    <th>No. BG</th>
+                    @endif
+                    @if ($coa->is_nobupot)
+                    <th>No. Bupot PPh 23</th>
+                    @endif
+                    @if ($coa->is_tglbupot)
+                    <th>Tgl Bupot PPh 23</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td colspan="4">-</td>
-                    <td>SALDO AWAL</td>
+                    <td colspan="2">SALDO AWAL</td>
                     <td>-</td>
                     <td>-</td>
                     <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
@@ -124,17 +142,32 @@
                     @endphp
                     <tr>
                         <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                        <td>{{ $item->coa->kode }}</td>
-                        <td>{{ $item->coa->nama }}</td>
-                        @if ($item->order)
-                            <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
-                        @else
-                            <td>-</td>
+                        <td>{{ $item->nomor }}</td>
+                        @if ($coa->is_cont)
+                        <td>{{ $item->order ? $item->order->container : '-' }}</td>
                         @endif
-                        <td>{{ $item->nama }}</td>
+                        @if ($coa->is_nopol)
+                        <td>{{ $item->order ? $item->order->nopol : '-' }}</td>
+                        @endif
+                        @if ($coa->is_nojob)
+                        <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
+                        @endif
+                        @if ($coa->is_invoice)
+                        <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
+                        @endif
                         <td>{{ number_format($item->debit,2,',','.') }}</td>
                         <td>{{ number_format($item->credit,2,',','.') }}</td>
                         <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
+                        <td>{{ $item->nama }}</td>
+                        @if ($coa->is_nobg)
+                        <td>-</td>
+                        @endif
+                        @if ($coa->is_nobupot)
+                        <td>{{ $item->order ? $item->order->transaksi->no_bupot : '-' }}</td>
+                        @endif
+                        @if ($coa->is_tglbupot)
+                        <td>{{ $item->order ? $item->order->transaksi->tgl_bupot : '-' }}</td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
