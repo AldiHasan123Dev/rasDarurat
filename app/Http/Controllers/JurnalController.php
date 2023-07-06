@@ -112,7 +112,7 @@ class JurnalController extends Controller
                     $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
                     $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
-                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tujuan;
+                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
                     $name = str_replace('[1]',$id_job,$name);
                     $name = str_replace('[2]',$cont,$name);
                     $name = str_replace('[3]',$seal,$name);
@@ -217,7 +217,7 @@ class JurnalController extends Controller
                     $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
                     $customer = $order->customer->nama;
                     $shipment_trucking = $order->tipe;
-                    $tujuan_trucking = $order->tujuan;
+                    $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
                     $name = str_replace('[1]',$id_job,$name);
                     $name = str_replace('[2]',$cont,$name);
                     $name = str_replace('[3]',$seal,$name);
@@ -325,7 +325,7 @@ class JurnalController extends Controller
                     $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
                     $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
-                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tujuan;
+                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
                     $name = str_replace('[1]',$id_job,$name);
                     $name = str_replace('[2]',$cont,$name);
                     $name = str_replace('[3]',$seal,$name);

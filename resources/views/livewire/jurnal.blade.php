@@ -58,8 +58,9 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="tipe_jurnal">Tipe Jurnal</label>
-                            <select name="tipe" id="tipe_jurnal" class="form-control">
-                                <option selected value="JNL">Jurnal Umum - {{ $no_1 }}</option>
+                            <select name="tipe" required id="tipe" class="form-control">
+                                <option value="">-</option>
+                                <option value="JNL">Jurnal Umum - {{ $no_1 }}</option>
                                 <option value="BBK">Bank Keluar - {{ $no_2 }}</option>
                                 <option value="BBM">Bank Masuk - {{ $no_3 }}</option>
                                 <option value="BKK">Kas Keluar - {{ $no_4 }}</option>
@@ -237,8 +238,12 @@
         if(total_debit!=total_credit){
             alert('Jurnal Tidak Balance debit = '+total_debit+' & credit = '+total_credit+' ! Harap check lagi')
         }else{
-            if(confirm('are you sure')){
-                $('#form-submit').submit();
+            if($('#tipe').val()){
+                if(confirm('are you sure')){
+                    $('#form-submit').submit();
+                }
+            }else{
+                alert('Harap pilih tipe jurnal');
             }
         }
     });
