@@ -122,4 +122,12 @@ class OrderTruckingController extends Controller
             'rows' => $response
         ]);
     }
+
+    public function getArrayId(Request $request)
+    {
+        $id = $request->id;
+        $orders = OrderTrucking::whereIn('id',$id)->get();
+        $data = OrderTruckingResource::collection($orders);
+        return response($data);
+    }
 }

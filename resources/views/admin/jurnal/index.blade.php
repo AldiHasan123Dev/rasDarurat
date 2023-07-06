@@ -3,7 +3,8 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex" style="gap:10px">
-                <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal</a>
+                <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal Ekspedisi</a>
+                <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn btn-info">Tambah Jurnal Trucking</a>
                 <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Group JOB</a>
                 <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
                 <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">

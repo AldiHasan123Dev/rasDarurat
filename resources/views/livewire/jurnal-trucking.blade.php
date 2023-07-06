@@ -1,6 +1,9 @@
 <div>
+    {{-- If your happiness depends on money, you will never be happy with yourself. --}}
+</div>
+<div>
     <div class="col-12">
-        <h4>FORM JURNAL EKSPEDISI</h4>
+        <h4>FORM JURNAL TRUCKING</h4>
     </div>
     <div class="col-8">
         <div class="card p-3">
@@ -50,7 +53,7 @@
     </div>
     <div class="col-12 mt-3">
         <div class="card p-2">
-            <form action="{{ route('jurnal.store') }}" method="post" class="row" id="form-submit">
+            <form action="{{ route('jurnal.trucking.store') }}" method="post" class="row" id="form-submit">
                 @csrf
                 <input type="hidden" name="order_id" id="order_id" value="{{ $order }}">
                 <input type="hidden" name="jurnal_id" id="jurnal_id" value="{{ json_encode($jurnal_id) }}">
@@ -75,7 +78,7 @@
                     <table class="table table-sm" id="table-debit">
                         <tr>
                             <th>#</th>
-                            <th style="width: 300px">ID Job/Seal</th>
+                            <th style="width: 300px">CONT/SEAL</th>
                             <th style="width: 300px">Akun Debet</th>
                             <th style="width: 300px">Akun Credit</th>
                             <th>Keterangan</th>
@@ -90,7 +93,7 @@
                                     <select class="form-control select2" id="job-{{ $i }}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                         <option value=""></option>
                                         @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -127,7 +130,7 @@
                                         <select class="form-control select2" onchange="getOrder()" id="job-{{ $k }}" name="order_id[]" style="font-size:.9rem !important; width:170px;">
                                             <option value=""></option>
                                             @foreach ($orders as $item)
-                                            <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                            <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
                                             @endforeach
                                         </select>
                                     </td>
@@ -202,7 +205,7 @@
                             <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
-                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -247,7 +250,7 @@
         var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();
         $.ajax({
             type: "POST",
-            url: "{{ url('api/get-array-id') }}",
+            url: "{{ url('api/get-array-id-trucking') }}",
             data: {
                 id:order_id
             },
@@ -257,16 +260,16 @@
                     html  +=
                     `
                     <tr>
-                        <td>${item.no}</td>
+                        <td>${item.job}</td>
                         <td>${item.container}</td>
                         <td>${item.seal}</td>
                         <td>${item.kapal}</td>
                         <td>${item.voyage}</td>
                         <td>${item.shipment}</td>
                         <td>${item.pembayar}</td>
-                        <td>${item.customer_trucking}</td>
-                        <td>${item.shipment_trucking}</td>
-                        <td>${item.tujuan_trucking}</td>
+                        <td>${item.customer}</td>
+                        <td>${item.tipe}</td>
+                        <td>${item.tujuan}</td>
                     </tr>
                     `
                 });

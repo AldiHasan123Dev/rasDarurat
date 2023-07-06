@@ -7,6 +7,7 @@ use App\Imports\JurnalImport;
 use App\Models\COA;
 use App\Models\Jurnal;
 use App\Models\Order;
+use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -177,6 +178,111 @@ class JurnalController extends Controller
         return back()->with('success','Data berhasil disimpan');
     }
 
+    public function store_trucking(Request $request)
+    {
+        $data = $request->all();
+        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
+        if($no==1 && $data['tipe']=='BBK'){
+            $no = 2249;
+        }
+        if($no==1 && $data['tipe']=='BBM'){
+            $no = 751;
+        }
+        if($no==1 && $data['tipe']=='BKK'){
+            $no = 736;
+        }
+        if($no==1 && $data['tipe']=='BKM'){
+            $no = 39;
+        }
+        if($data['tipe']=='JNL'){
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        }
+        for ($i=0; $i < count($data['debit_coa_id']); $i++) {
+            if ($data['name'][$i] && $data['amount'][$i]) {
+                $name = $data['name'][$i];
+                $order_id = null;
+                if($data['order_id'][$i]){
+                    $order = OrderTrucking::find($data['order_id'][$i]);
+                    $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
+                    $cont = $order->container;
+                    $seal = $order->seal;
+                    $order_id = $order->order ? $order->order->id : null;
+                    $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+                    $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+                    $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+                    $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+                    $customer = $order->customer->nama;
+                    $shipment_trucking = $order->tipe;
+                    $tujuan_trucking = $order->tujuan;
+                    $name = str_replace('[1]',$id_job,$name);
+                    $name = str_replace('[2]',$cont,$name);
+                    $name = str_replace('[3]',$seal,$name);
+                    $name = str_replace('[4]',$kapal,$name);
+                    $name = str_replace('[5]',$voyage,$name);
+                    $name = str_replace('[6]',$shipment,$name);
+                    $name = str_replace('[7]',$pembayar,$name);
+                    $name = str_replace('[8]',$customer,$name);
+                    $name = str_replace('[9]',$shipment_trucking,$name);
+                    $name = str_replace('[10]',$tujuan_trucking,$name);
+                }
+                if($data['tipe']=='JNL'){
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at'][$i]));
+                }else{
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
+                }
+                if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    Jurnal::create([
+                        'coa_id' => $data['debit_coa_id'][$i],
+                        'order_id' => $order_id,
+                        'order_trucking_id' => $data['order_id'][$i],
+                        'nomor' => $nomor,
+                        'nama' => $name,
+                        'debit' => $data['amount'][$i],
+                        'created_at' => $data['created_at'][$i],
+                        'no' => $no
+                    ]);
+                    Jurnal::create([
+                        'coa_id' => $data['credit_coa_id'][$i],
+                        'order_id' => $order_id,
+                        'order_trucking_id' => $data['order_id'][$i],
+                        'nomor' => $nomor,
+                        'nama' => $name,
+                        'credit' => $data['amount'][$i],
+                        'created_at' => $data['created_at'][$i],
+                        'no' => $no
+                    ]);
+                }else{
+                    if($data['debit_coa_id'][$i]){
+                        Jurnal::create([
+                            'coa_id' => $data['debit_coa_id'][$i],
+                            'order_id' => $order_id,
+                            'order_trucking_id' => $data['order_id'][$i],
+                            'nomor' => $nomor,
+                            'nama' => $name,
+                            'debit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'][$i],
+                            'no' => $no
+                        ]);
+                    }
+                    if($data['credit_coa_id'][$i]){
+                        Jurnal::create([
+                            'coa_id' => $data['credit_coa_id'][$i],
+                            'order_id' => $order_id,
+                            'order_trucking_id' => $data['order_id'][$i],
+                            'nomor' => $nomor,
+                            'nama' => $name,
+                            'credit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'][$i],
+                            'no' => $no
+                        ]);
+                    }
+                }
+            }
+        }
+
+        return back()->with('success','Data berhasil disimpan');
+    }
+
     public function store_kolektif(Request $request)
     {
         $data = $request->all();
@@ -275,6 +381,11 @@ class JurnalController extends Controller
     public function create()
     {
         return view('admin.jurnal.create');
+    }
+
+    public function trucking()
+    {
+        return view('admin.jurnal.trucking');
     }
 
     public function edit(Jurnal $jurnal)

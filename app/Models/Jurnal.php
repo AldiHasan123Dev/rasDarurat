@@ -15,6 +15,7 @@ class Jurnal extends Model
     protected $fillable = [
         'coa_id',
         'order_id',
+        'order_trucking_id',
         'jurnal_balik',
         'nomor',
         'nama',
