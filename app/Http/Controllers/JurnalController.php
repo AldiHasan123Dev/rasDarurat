@@ -131,6 +131,7 @@ class JurnalController extends Controller
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     Jurnal::create([
+                        'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
                         'order_id' => $data['order_id'][$i],
                         'nomor' => $nomor,
@@ -140,6 +141,7 @@ class JurnalController extends Controller
                         'no' => $no
                     ]);
                     Jurnal::create([
+                        'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $data['order_id'][$i],
                         'nomor' => $nomor,
@@ -151,6 +153,7 @@ class JurnalController extends Controller
                 }else{
                     if($data['debit_coa_id'][$i]){
                         Jurnal::create([
+                            'tipe' => $data['tipe'],
                             'coa_id' => $data['debit_coa_id'][$i],
                             'order_id' => $data['order_id'][$i],
                             'nomor' => $nomor,
@@ -162,6 +165,7 @@ class JurnalController extends Controller
                     }
                     if($data['credit_coa_id'][$i]){
                         Jurnal::create([
+                            'tipe' => $data['tipe'],
                             'coa_id' => $data['credit_coa_id'][$i],
                             'order_id' => $data['order_id'][$i],
                             'nomor' => $nomor,
@@ -232,6 +236,7 @@ class JurnalController extends Controller
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     Jurnal::create([
+                        'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
                         'order_id' => $order_id,
                         'order_trucking_id' => $data['order_id'][$i],
@@ -242,6 +247,7 @@ class JurnalController extends Controller
                         'no' => $no
                     ]);
                     Jurnal::create([
+                        'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $order_id,
                         'order_trucking_id' => $data['order_id'][$i],
@@ -254,6 +260,7 @@ class JurnalController extends Controller
                 }else{
                     if($data['debit_coa_id'][$i]){
                         Jurnal::create([
+                            'tipe' => $data['tipe'],
                             'coa_id' => $data['debit_coa_id'][$i],
                             'order_id' => $order_id,
                             'order_trucking_id' => $data['order_id'][$i],
@@ -266,6 +273,7 @@ class JurnalController extends Controller
                     }
                     if($data['credit_coa_id'][$i]){
                         Jurnal::create([
+                            'tipe' => $data['tipe'],
                             'coa_id' => $data['credit_coa_id'][$i],
                             'order_id' => $order_id,
                             'order_trucking_id' => $data['order_id'][$i],
@@ -336,6 +344,7 @@ class JurnalController extends Controller
                     }
 
                     Jurnal::create([
+                        'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
                         'order_id' => $order->id,
                         'nomor' => $nomor,
@@ -345,6 +354,7 @@ class JurnalController extends Controller
                         'no' => $no
                     ]);
                     Jurnal::create([
+                        'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $order->id,
                         'nomor' => $nomor,
