@@ -12,7 +12,7 @@ use Livewire\Component;
 class Jurnal extends Component
 {
     public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count;
-    public $no_1, $no_2, $no_3, $no_4, $no_5, $no;
+    public $no_1, $no_2, $no_3, $no_4, $no_5;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
 
@@ -23,6 +23,18 @@ class Jurnal extends Component
         $no_3 = ModelsJurnal::where('tipe','BBM')->max('no') + 1;
         $no_4 = ModelsJurnal::where('tipe','BKK')->max('no') + 1;
         $no_5 = ModelsJurnal::where('tipe','BKM')->max('no') + 1;
+        if($no_2==1){
+            $no_2 = 2249;
+        }
+        if($no_3==1){
+            $no_3 = 751;
+        }
+        if($no_4==1){
+            $no_4 = 736;
+        }
+        if($no_5==1){
+            $no_5 = 39;
+        }
         $this->order = null;
         $this->template_id = null;
         $this->template = null;
@@ -65,13 +77,6 @@ class Jurnal extends Component
         if (!is_null($this->template_id)) {
             $this->template_count = 1;
             $this->template = TemplateJurnal::find($this->template_id);
-            $no_1 = ModelsJurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-            $no_2 = ModelsJurnal::where('tipe',$this->template->tipe)->max('no') + 1;
-            if($this->template->tipe=='JNL'){
-                $this->no = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
-            }else{
-                $this->no = sprintf('%03d',$no_2).'/'.$this->template->tipe.'-RAS/'.date('y');
-            }
         }else{
             $this->template = null;
         }

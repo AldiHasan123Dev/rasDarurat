@@ -28,46 +28,48 @@
                 </div>
             </div>
         </div>
-        <table class="table table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
-            <thead>
-                <tr>
-                    <th>Tanggal</th>
-                    <th>Nomor</th>
-                    <th>No. Akun</th>
-                    <th>Nama Akun</th>
-                    <th>Invoice</th>
-                    <th>JOB</th>
-                    <th>Keterangan</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                    <th>#</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($data as $item)
+        <div class="table-responsive">
+            <table class="table table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
+                <thead>
                     <tr>
-                        <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                        <td>{{ $item->nomor }}</td>
-                        <td>{{ $item->coa->kode }}</td>
-                        <td>{{ $item->coa->nama }}</td>
-                        @if ($item->order)
-                            <td>{{ $item->order->invoice ?? '-' }}</td>
-                        @else
-                            <td>-</td>
-                        @endif
-                        @if ($item->order)
-                            <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
-                        @else
-                            <td>-</td>
-                        @endif
-                        <td>{{ $item->nama }}</td>
-                        <td>{{ number_format($item->debit,2,',','.') }}</td>
-                        <td>{{ number_format($item->credit,2,',','.') }}</td>
-                        <td><a href="{{ route('jurnal.edit',$item) }}" class="text-primary"><i class="fas fa-pencil"></i></a></td>
+                        <th>Tanggal</th>
+                        <th>Nomor</th>
+                        <th>No. Akun</th>
+                        <th>Nama Akun</th>
+                        <th>Invoice</th>
+                        <th>JOB</th>
+                        <th>Keterangan</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>#</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($data as $item)
+                        <tr>
+                            <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
+                            <td>{{ $item->nomor }}</td>
+                            <td>{{ $item->coa->kode }}</td>
+                            <td>{{ $item->coa->nama }}</td>
+                            @if ($item->order)
+                                <td>{{ $item->order->invoice ?? '-' }}</td>
+                            @else
+                                <td>-</td>
+                            @endif
+                            @if ($item->order)
+                                <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                            @else
+                                <td>-</td>
+                            @endif
+                            <td>{{ $item->nama }}</td>
+                            <td>{{ number_format($item->debit,2,',','.') }}</td>
+                            <td>{{ number_format($item->credit,2,',','.') }}</td>
+                            <td><a href="{{ route('jurnal.edit',$item) }}" class="text-primary"><i class="fas fa-pencil"></i></a></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
         {{-- {{ $data->links() }} --}}
         @if($data->hasMorePages())
             <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>

@@ -37,7 +37,7 @@
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     @endif
                     @if (is_null($marketing))
-                    <button data-bs-toggle="modal" data-bs-target="#modal-edit-order" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
+                    <button type="button" onclick="modalEditOrder()" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
                     @if (is_null($marketing))
                     <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
@@ -134,7 +134,7 @@
                         </div>
                         <div class="p-2 d-flex" style="gap:10px" id="bttb-info">
                             @if (is_null($marketing))
-                            <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modal-add-bttb"><i class="fas fa-plus"></i> Tambah BTTB</button>
+                            <button class="py-2 px-3 btn btn-sm btn-success" type="button" onclick="modalAddBTTB()"><i class="fas fa-plus"></i> Tambah BTTB</button>
                             <button onclick="printBttb()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</button>
                             <button onclick="printBttbKubikasi()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</button>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
@@ -412,6 +412,8 @@
 
     let data = [];
     let id;
+    let iframe_bttb = '';
+    let iframe_order = '';
     $("#jqGrid").jqGrid({
         url: '{{ route('jqgrid.order') }}',
         mtype: 'GET',
@@ -491,8 +493,10 @@
             $('#edit-order').attr('href','{{ url('admin/order') }}/'+id+'/edit');
             $('#delete-order').attr('action','{{ url('admin/order') }}/'+id);
             $('#copy-order').attr('action','{{ url('admin/copy-orders') }}/'+id);
-            $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
-            $('#iframe-bttb').attr('src','{{ url('admin/bttb/create') }}?order_id='+id);
+            iframe_bttb = '{{ url('admin/bttb/create') }}?order_id='+id;
+            iframe_order = '{{ url('admin/order') }}/'+id+'/edit'
+            // $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
+            // $('#iframe-bttb').attr('src','{{ url('admin/bttb/create') }}?order_id='+id);
             $('#tarik-ba').attr('action','{{ url('admin/order') }}/'+id);
             tablebttb.ajax.reload();
             tableTagihan.ajax.reload();
@@ -1027,6 +1031,18 @@
             let url = @json(url('admin/cetak/bttb-kubikasi'))+'?order_id='+id+'&print=1';
             let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
             open(url, 'Cetak BTTB', params_);
+        }
+
+        function modalEditOrder(){
+            var myModal = new bootstrap.Modal(document.getElementById('modal-edit-order'));
+            $('#iframe-order').attr('src',iframe_order);
+            myModal.show();
+        }
+
+        function modalAddBTTB(){
+            var myModal = new bootstrap.Modal(document.getElementById('modal-add-bttb'));
+            $('#iframe-bttb').attr('src',iframe_bttb);
+            myModal.show();
         }
 </script>
 @endsection

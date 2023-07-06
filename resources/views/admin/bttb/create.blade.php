@@ -29,7 +29,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @for ($i = 0; $i < 3; $i++)
+                                @for ($i = 0; $i < 5; $i++)
                                     <tr>
                                         <td><input type="text" style="width: 100px" name="bttb[{{ $i }}][no_gudang]" id="no_gudang-{{ $i }}"></td>
                                         <td>
@@ -70,7 +70,7 @@
                         </table>
                     </div>
                     <div class="col-12 mb-2 px-1 mt-3">
-                        <button type="submit" class="btn btn-success btn-sm w-100">Tambah BTTB</button>
+                        <button type="submit" class="btn btn-success btn-sm w-100" onclick="return confirm('are you sure?')">Tambah BTTB</button>
                     </div>
                 </form>
             </div>

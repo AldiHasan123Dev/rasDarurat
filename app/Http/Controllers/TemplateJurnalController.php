@@ -30,10 +30,9 @@ class TemplateJurnalController extends Controller
                 if(is_null($template)){
                     $template = TemplateJurnal::create([
                         'nama' => $data['name'],
-                        'tipe' => $data['tipe'],
                     ]);
                 }else{
-                    $template->update(['nama'=>$data['name'],'tipe'=>$data['tipe']]);
+                    $template->update(['nama'=>$data['name']]);
                 }
                 TemplateJurnalItem::create([
                     'template_jurnal_id' => $template->id,
