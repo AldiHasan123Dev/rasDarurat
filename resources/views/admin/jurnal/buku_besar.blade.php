@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('style')
+<link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
     <style>
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');

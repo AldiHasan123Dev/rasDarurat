@@ -85,35 +85,35 @@
                 <button wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }}" style="background: transparent; border: solid 1px gray; width:50px">{{ $item }}</button>
             @endforeach
         </div>
-        <table class="table table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
+        <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
             <thead>
                 <tr>
-                    <th>Tanggal</th>
-                    <th>No. Jurnal</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                    <th>Saldo</th>
-                    <th>Keterangan</th>
+                    <th data-rtc-resizable="tanggal">Tanggal</th>
+                    <th data-rtc-resizable="no_jurnal">No. Jurnal</th>
+                    <th data-rtc-resizable="debit">Debit</th>
+                    <th data-rtc-resizable="credit">Credit</th>
+                    <th data-rtc-resizable="saldo">Saldo</th>
+                    <th data-rtc-resizable="nama">Keterangan</th>
                     @if ($coa->is_cont)
-                    <th>No. Cont</th>
+                    <th data-rtc-resizable="cont">No. Cont</th>
                     @endif
                     @if ($coa->is_nopol)
-                    <th>Nopol</th>
+                    <th data-rtc-resizable="nopol">Nopol</th>
                     @endif
                     @if ($coa->is_nojob)
-                    <th>No. Job</th>
+                    <th data-rtc-resizable="job">No. Job</th>
                     @endif
                     @if ($coa->is_invoice)
-                    <th>Invoice</th>
+                    <th data-rtc-resizable="invoice">Invoice</th>
                     @endif
                     @if ($coa->is_nobg)
-                    <th>No. BG</th>
+                    <th data-rtc-resizable="bg">No. BG</th>
                     @endif
                     @if ($coa->is_nobupot)
-                    <th>No. Bupot PPh 23</th>
+                    <th data-rtc-resizable="nobupot">No. Bupot PPh 23</th>
                     @endif
                     @if ($coa->is_tglbupot)
-                    <th>Tgl Bupot PPh 23</th>
+                    <th data-rtc-resizable="tglbupot">Tgl Bupot PPh 23</th>
                     @endif
                 </tr>
             </thead>
@@ -143,6 +143,10 @@
                     <tr>
                         <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                         <td>{{ $item->nomor }}</td>
+                        <td>{{ number_format($item->debit,2,',','.') }}</td>
+                        <td>{{ number_format($item->credit,2,',','.') }}</td>
+                        <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
+                        <td>{{ $item->nama }}</td>
                         @if ($coa->is_cont)
                         <td>{{ $item->order ? $item->order->container : '-' }}</td>
                         @endif
@@ -155,10 +159,6 @@
                         @if ($coa->is_invoice)
                         <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
                         @endif
-                        <td>{{ number_format($item->debit,2,',','.') }}</td>
-                        <td>{{ number_format($item->credit,2,',','.') }}</td>
-                        <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
-                        <td>{{ $item->nama }}</td>
                         @if ($coa->is_nobg)
                         <td>-</td>
                         @endif
@@ -178,3 +178,34 @@
         @endif
     </div>
 </div>
+@push('scripts')
+<script src="{{ asset('assets/js/resize-column.js') }}"></script>
+<script>
+
+    function load(){
+        (function (window, ResizableTableColumns, undefined) {
+            var store = window.store && window.store.enabled
+                ? window.store
+                : null;
+
+            var els = document.querySelectorAll('table.data');
+            for (var index = 0; index < els.length; index++) {
+                var table = els[index];
+                if (table['rtc_data_object']) {
+                    continue;
+                }
+
+                var options = { store: store };
+                if (table.querySelectorAll('thead > tr').length > 1) {
+                    options.resizeFromBody = false;
+                }
+
+                new ResizableTableColumns(els[index], options);
+            }
+
+        })(window, window.validide_resizableTableColumns.ResizableTableColumns, void (0));
+    }
+
+    load();
+</script>
+@endpush
