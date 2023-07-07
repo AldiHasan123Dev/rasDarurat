@@ -40,7 +40,7 @@ class BTTBController extends Controller
     public function add(Request $request)
     {
         $data = $request->all();
-        for ($i=0; $i < 18; $i++) {
+        for ($i=0; $i < 12; $i++) {
             $input = array();
             $customer = Customer::where('nama',$data['pengirim_id-'.$i])->first();
             if ($data['no_gudang-'.$i] && $data['barang_id-'.$i] && $data['satuan_id-'.$i] && $data['qty-'.$i] && $customer) {
