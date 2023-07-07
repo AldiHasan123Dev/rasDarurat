@@ -82,8 +82,12 @@
         <div class="d-flex gap-2">
             <b class="mt-2">Bulan: </b>
             @foreach ($months as $idx => $item)
-                <button wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }}" style="background: transparent; border: solid 1px gray; width:50px">{{ $item }}</button>
+                <a href="{{ route('jurnal.buku_besar',['month'=>sprintf('%02d',$idx+1)]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
             @endforeach
+        </div>
+        <div class="my-3">
+            <label for="search">Search</label>
+            <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal">
         </div>
         <div class="table-responsive">
             <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
@@ -91,10 +95,8 @@
                     <tr>
                         <th data-rtc-resizable="tanggal">Tanggal</th>
                         <th data-rtc-resizable="no_jurnal">No. Jurnal</th>
-                        <th data-rtc-resizable="debit">Debit</th>
-                        <th data-rtc-resizable="credit">Credit</th>
-                        <th data-rtc-resizable="saldo">Saldo</th>
-                        <th data-rtc-resizable="nama">Keterangan</th>
+                        <th data-rtc-resizable="no_akun">No. Akun</th>
+                        <th data-rtc-resizable="akun">Akun</th>
                         @if ($coa->is_cont)
                         <th data-rtc-resizable="cont">No. Cont</th>
                         @endif
@@ -107,6 +109,9 @@
                         @if ($coa->is_invoice)
                         <th data-rtc-resizable="invoice">Invoice</th>
                         @endif
+                        <th data-rtc-resizable="nama">Keterangan</th>
+                        <th data-rtc-resizable="debit">Debit</th>
+                        <th data-rtc-resizable="credit">Credit</th>
                         @if ($coa->is_nobg)
                         <th data-rtc-resizable="bg">No. BG</th>
                         @endif
@@ -119,12 +124,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    {{-- <tr>
                         <td colspan="2">SALDO AWAL</td>
                         <td>-</td>
                         <td>-</td>
                         <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
-                    </tr>
+                    </tr> --}}
                     @foreach ($data as $item)
                         @php
                             if ($tipe=='D') {
@@ -142,12 +147,11 @@
                             }
                         @endphp
                         <tr>
+                            {{-- <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td> --}}
                             <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                             <td>{{ $item->nomor }}</td>
-                            <td>{{ number_format($item->debit,2,',','.') }}</td>
-                            <td>{{ number_format($item->credit,2,',','.') }}</td>
-                            <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
-                            <td>{{ $item->nama }}</td>
+                            <td>{{ $item->coa->kode }}</td>
+                            <td>{{ $item->coa->nama }}</td>
                             @if ($coa->is_cont)
                             <td>{{ $item->order ? $item->order->container : '-' }}</td>
                             @endif
@@ -160,6 +164,9 @@
                             @if ($coa->is_invoice)
                             <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
                             @endif
+                            <td>{{ $item->nama }}</td>
+                            <td>{{ number_format($item->debit,2,',','.') }}</td>
+                            <td>{{ number_format($item->credit,2,',','.') }}</td>
                             @if ($coa->is_nobg)
                             <td>-</td>
                             @endif

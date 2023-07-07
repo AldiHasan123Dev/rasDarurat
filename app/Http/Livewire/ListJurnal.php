@@ -9,12 +9,12 @@ class ListJurnal extends Component
 {
     public $months, $month, $year, $perPage, $search;
 
-    public function mount()
+    public function mount($month = null)
     {
         $this->perPage = 100;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->year = date('Y');
-        $this->month = date('m');
+        $this->month = $month ?? date('m');
     }
 
     public function render()

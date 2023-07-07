@@ -34,7 +34,7 @@
         <div class="card-body">
             <button class="btn btn-sm btn-success my-2" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
             <div id="print">
-                <livewire:buku-besar/>
+                <livewire:buku-besar :month="request('month')"/>
             </div>
         </div>
     </div>

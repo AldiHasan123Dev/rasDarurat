@@ -5,7 +5,7 @@
                 <div class="d-flex gap-2">
                     <b class="mt-2">Bulan: </b>
                     @foreach ($months as $idx => $item)
-                        <button wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }}" style="background: transparent; border: solid 1px gray; width:50px">{{ $item }}</button>
+                        <a href="{{ route('jurnal.index',['month'=>sprintf('%02d',$idx+1)]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
                     @endforeach
                 </div>
             </div>

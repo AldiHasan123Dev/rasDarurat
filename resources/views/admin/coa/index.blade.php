@@ -1,4 +1,17 @@
 @extends('layouts.admin')
+@section('style')
+    <style>
+        table{
+            position: relative;
+            overflow-y: scroll;
+        }
+        th{
+            background-color: white !important;
+            position: sticky !important;
+            top: 0;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="container mt-3">
         <div class="card">
@@ -6,10 +19,10 @@
                 <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA" aria-controls="offcanvasCOA">Tambah COA</button>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="height: 600px">
                     <table class="table table-sm" style="font-size:.7rem">
-                        <thead>
-                            <tr>
+                        <thead style="background-color: white">
+                            <tr style="background-color: white">
                                 <th>#</th>
                                 <th>Kode</th>
                                 <th>Nama</th>

@@ -11,16 +11,16 @@ class BukuBesar extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
-    public $coa, $coas, $coa_id, $months, $month, $year, $saldo, $saldo_awal, $perPage, $tipe;
+    public $coa, $coas, $coa_id, $months, $month, $year, $saldo, $saldo_awal, $perPage, $tipe, $search;
 
-    public function mount()
+    public function mount($month = null)
     {
         $this->perPage = 100;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->coa_id = 45;
         $this->coa = COA::find(45);
         $this->year = date('Y');
-        $this->month = date('m');
+        $this->month = $month ?? date('m');
         $this->coas = COA::orderBy('kode')->get(['id','nama','kode']);
         $c = COA::find($this->coa_id);
         $this->tipe = 'D';
@@ -61,8 +61,37 @@ class BukuBesar extends Component
 
     public function render()
     {
+        $data =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+            ->leftJoin('order','order.id','=','jurnal.order_id')
+            ->orWhere('order.job','LIKE','%'.$this->search.'%')
+            ->whereMonth('jurnal.created_at',$this->month)
+            ->whereYear('jurnal.created_at',$this->year)
+            ->where('jurnal.coa_id',$this->coa_id)
+            ->orWhere('coa.kode','LIKE','%'.$this->search.'%')
+            ->whereMonth('jurnal.created_at',$this->month)
+            ->whereYear('jurnal.created_at',$this->year)
+            ->where('jurnal.coa_id',$this->coa_id)
+            ->orWhere('coa.nama','LIKE','%'.$this->search.'%')
+            ->whereMonth('jurnal.created_at',$this->month)
+            ->whereYear('jurnal.created_at',$this->year)
+            ->where('jurnal.coa_id',$this->coa_id)
+            ->orWhere('jurnal.nama','LIKE','%'.$this->search.'%')
+            ->whereMonth('jurnal.created_at',$this->month)
+            ->whereYear('jurnal.created_at',$this->year)
+            ->where('jurnal.coa_id',$this->coa_id)
+            ->orWhere('jurnal.nomor','LIKE','%'.$this->search.'%')
+            ->whereMonth('jurnal.created_at',$this->month)
+            ->whereYear('jurnal.created_at',$this->year)
+            ->where('jurnal.coa_id',$this->coa_id)
+            ->orWhere('jurnal.created_at','LIKE','%'.$this->search.'%')
+            ->whereMonth('jurnal.created_at',$this->month)
+            ->whereYear('jurnal.created_at',$this->year)
+            ->where('jurnal.coa_id',$this->coa_id)
+            ->select('jurnal.*')
+            ->orderBy('jurnal.created_at')
+            ->paginate($this->perPage);
         return view('livewire.buku-besar',[
-            'data' => Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',$this->month)->whereYear('created_at',$this->year)->orderBy('created_at')->paginate($this->perPage)
+            'data' => $data
         ]);
     }
 
