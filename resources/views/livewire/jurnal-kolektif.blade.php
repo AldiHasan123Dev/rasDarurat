@@ -51,15 +51,11 @@
                         <div class="col-6">
                             <label for="tipe_jurnal">Tipe Jurnal</label>
                             <select name="tipe" id="tipe_jurnal" class="form-control">
-                                @if ($template)
-                                    <option selected value="{{ $template->tipe }}">{{ $template->tipe }}</option>
-                                @else
-                                    <option selected value="JNL">Jurnal Umum</option>
-                                    <option value="BBK">Bank Keluar</option>
-                                    <option value="BBM">Bank Masuk</option>
-                                    <option value="BKK">Kas Keluar</option>
-                                    <option value="BKM">Kas Masuk</option>
-                                @endif
+                                <option selected value="JNL">Jurnal Umum</option>
+                                <option value="BBK">Bank Keluar</option>
+                                <option value="BBM">Bank Masuk</option>
+                                <option value="BKK">Kas Keluar</option>
+                                <option value="BKM">Kas Masuk</option>
                             </select>
                         </div>
                         <div class="col-6 mt-4 text-end">
