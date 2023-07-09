@@ -46,6 +46,15 @@ class TemplateJurnalController extends Controller
         return back()->with('success','Data berhasil disimpan');
     }
 
+    public function show(TemplateJurnal $templatejurnal)
+    {
+        $item = $templatejurnal->template_items;
+        return response([
+            'template' => $templatejurnal,
+            'items' => $item
+        ]);
+    }
+
     public function create()
     {
         return view('admin.templatejurnal.create');

@@ -205,6 +205,8 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('jurnal-lr',[JurnalController::class,'laba_rugi'])->name('jurnal.laba_rugi');
     Route::get('jurnal-buku-besar',[JurnalController::class,'buku_besar'])->name('jurnal.buku_besar');
     Route::get('jurnal-trucking',[JurnalController::class,'trucking'])->name('jurnal.trucking');
+    Route::get('jurnal-merge',[JurnalController::class,'merge'])->name('jurnal.merge');
+    Route::post('jurnal-merge',[JurnalController::class,'store_merge'])->name('jurnal.merge.store');
     Route::post('jurnal-kolektif',[JurnalController::class,'store_kolektif'])->name('jurnal.kolektif.store');
     Route::post('jurnal-balik',[JurnalController::class,'store_balik'])->name('jurnal.balik.store');
     Route::post('jurnal-trucking',[JurnalController::class,'store_trucking'])->name('jurnal.trucking.store');

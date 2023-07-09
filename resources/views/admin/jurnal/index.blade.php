@@ -10,10 +10,11 @@
                 <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn btn-info">Tambah Jurnal Trucking</a>
                 <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Group JOB</a>
                 <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
-                <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
+                <a href="{{ route('jurnal.merge') }}" class="py-2 px-3 btn btn-secondary">Merge No. Jurnal</a>
+                {{-- <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <input type="file" name="file" id="file" onchange="submit()">
-                </form>
+                </form> --}}
             </div>
             <div class="card-body">
                 <livewire:list-jurnal :month="request('month')"/>

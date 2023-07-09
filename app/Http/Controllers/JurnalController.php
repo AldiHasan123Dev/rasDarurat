@@ -28,6 +28,13 @@ class JurnalController extends Controller
         return view('admin.jurnal.kolektif', compact('job','coa'));
     }
 
+    public function merge()
+    {
+        $data = Jurnal::pluck('nomor')->toArray();
+        $data = array_unique($data);
+        return view('admin.jurnal.merge', compact('data'));
+    }
+
     public function balik()
     {
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
@@ -180,6 +187,17 @@ class JurnalController extends Controller
         }
 
         return back()->with('success','Data berhasil disimpan');
+    }
+
+    public function store_merge(Request $request){
+        $tujuan = Jurnal::where('nomor',$request->tujuan)->first();
+        Jurnal::where('nomor',$request->awal)->update([
+            'nomor' => $tujuan->nomor,
+            'no' => $tujuan->no,
+            'tipe' => $tujuan->tipe,
+        ]);
+
+        return back()->with('success','Merge No. Jurnal berhasil');
     }
 
     public function store_trucking(Request $request)

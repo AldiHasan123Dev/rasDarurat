@@ -77,6 +77,7 @@ class Jurnal extends Component
         if (!is_null($this->template_id)) {
             $this->template_count = 1;
             $this->template = TemplateJurnal::find($this->template_id);
+            dd($this->template);
         }else{
             $this->template = null;
         }
