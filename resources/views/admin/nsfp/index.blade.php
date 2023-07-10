@@ -66,6 +66,11 @@
                             <span class="mt-2">NSFP: <span class="nsfp"></span></span>
                             <span class="mt-2">INVOICE: <span class="invoice"></span></span>
                             <div class="d-flex gap-2" id="action">
+                                <form action="{{ route('nsfp.revisi.non') }}" method="post" id="revisi1">
+                                    @csrf
+                                    <input type="hidden" name="id" class="id-nsfp">
+                                    <button type="submit" onclick="return confirm('are you sure?')" class="btn btn-sm btn-primary"> Revisi Tarif</button>
+                                </form>
                                 <form action="{{ route('nsfp.revisi') }}" method="post" id="revisi">
                                     @csrf
                                     <input type="hidden" name="id" class="id-nsfp">
@@ -120,6 +125,7 @@
 @section('script')
     <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
     <script>
+        $('#revisi1').hide();
         $('#revisi').hide();
         $('#tarik').hide();
         let id;
@@ -170,6 +176,7 @@
         });
 
         $('#table-invoice tbody').on( 'click', 'tr', function () {
+            $('#revisi1').show();
             $('#revisi').show();
             $('#tarik').show();
             id =  tableInvoice.row( this ).data().id;

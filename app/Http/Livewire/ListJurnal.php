@@ -41,6 +41,7 @@ class ListJurnal extends Component
                 ->whereYear('jurnal.created_at',$this->year)
                 ->select('jurnal.*')
                 ->orderBy('jurnal.created_at')
+                ->orderBy('jurnal.tipe')
                 ->paginate($this->perPage);
         return view('livewire.list-jurnal',[
             'data' => $data

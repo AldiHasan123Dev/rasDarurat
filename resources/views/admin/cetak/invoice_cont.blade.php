@@ -177,7 +177,7 @@
                         <input type="hidden" name="total" value="{{ $invoice['total'] }}">
                         <input type="hidden" name="pembayar_id" value="{{ $order->tarif->customer_id }}">
                         <input type="hidden" name="job" value="{{ $order->job }}">
-                        <input type="hidden" name="keterangan" value="{{ $order->tarif->kondisiInfo->nama }}">
+                        <input type="hidden" name="keterangan" value="{{ $invoice['keterangan'] }}">
                         <input type="hidden" name="tujuan" value="{{ $order->tarif->tujuan_lokasi->nama }}">
                         <input type="hidden" name="tagihan" value="{{ $cas->sum('jumlah') }}">
                         <input type="hidden" name="admin" value="{{ $invoice['admin'] }}">

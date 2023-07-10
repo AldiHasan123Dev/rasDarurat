@@ -60,7 +60,7 @@ class NSFPController extends Controller
         }
 
         if ($order->tarif->customer->all_in==1) {
-            $sub_total = $invoice['sub_total'] - $invoice['doc_total'];
+            $sub_total = $invoice['sub_total'];
             $ppn = $sub_total * 0.011;
             $asuransi = $invoice['asuransi_total'];
             $total = $sub_total + $ppn + $asuransi;
@@ -93,6 +93,40 @@ class NSFPController extends Controller
             return back()->with('success','Faktur berhasil direvisi!');
         }
         return back()->with('success','Revisi Faktur Berhasil di buat!');
+    }
+
+    public function revisi_non_faktur(Request $request)
+    {
+        $nsfp = NSFP::find($request->id);
+        $order = Order::where('invoice',$nsfp->invoice)->first();
+        $type = strtoupper(strtolower($order->tarif->shipmentInfo->nama[0]));
+        if ($type=='F') {
+            $invoice = $this->FCL($order);
+        }else{
+            $invoice = $this->LCL($order);
+        }
+
+        if ($order->tarif->customer->all_in==1) {
+            $sub_total = $invoice['sub_total'];
+            $ppn = $sub_total * 0.011;
+            $asuransi = $invoice['asuransi_total'];
+            $total = $sub_total + $ppn + $asuransi;
+            Transaksi::where('invoice',$nsfp->invoice)->update([
+                'sub_total' => $sub_total,
+                'ppn' => $ppn,
+                'asuransi' => $asuransi,
+                'total' => $total
+            ]);
+        }else{
+            Transaksi::where('invoice',$nsfp->invoice)->update([
+                'sub_total' => $invoice['sub_total'],
+                'ppn' => $invoice['ppn'],
+                'asuransi' => $invoice['asuransi_total'],
+                'total' => $invoice['total']
+            ]);
+        }
+
+        return back()->with('success','Revisi Faktur Berhasil di simpan!');
     }
 
     public function tarik(Request $request)

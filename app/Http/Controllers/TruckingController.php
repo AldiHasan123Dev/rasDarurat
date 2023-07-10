@@ -17,6 +17,7 @@ use App\Models\Sopir;
 use App\Models\TransaksiSopir;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class TruckingController extends Controller
@@ -24,6 +25,16 @@ class TruckingController extends Controller
     public function order()
     {
         return view('admin.trucking.order');
+    }
+
+    public function invoice_yansen()
+    {
+        $carbon = new Carbon();
+        $start = request('start') ?? date('Y-m-d');
+        $end = request('end') ?? $carbon->addMonths(1)->format('Y-m-d');
+        $data1 = OrderTrucking::where('customer_id',3)->whereBetween('tgl_muat',[$start,$end])->get();
+        $data2 = OrderTrucking::where('customer_id',24)->whereBetween('tgl_muat',[$start,$end])->get();
+        return view('admin.trucking.yansen',compact('data1','data2','start','end'));
     }
 
     public function totalan_sopir()
