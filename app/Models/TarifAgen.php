@@ -14,6 +14,8 @@ class TarifAgen extends Model
     protected $table = 'tarif_agen';
     protected $fillable = [
         'agen_id',
+        'pembayar_id',
+        'penerima_id',
         'tanggal',
         'dari',
         'tujuan',
@@ -33,6 +35,16 @@ class TarifAgen extends Model
         static::saving(function ($model) {
             $model->updated_by = Auth::id();
         });
+    }
+
+    public function penerima()
+    {
+        return $this->belongsTo(Customer::class,'penerima_id');
+    }
+
+    public function pembayar()
+    {
+        return $this->belongsTo(Customer::class,'pembayar_id');
     }
 
     public function agen()

@@ -132,9 +132,9 @@ class JurnalController extends Controller
                     $name = str_replace('[10]',$tujuan_trucking,$name);
                 }
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at'][$i]));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
                 }else{
-                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     Jurnal::create([
@@ -144,7 +144,7 @@ class JurnalController extends Controller
                         'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
-                        'created_at' => $data['created_at'][$i],
+                        'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
                     Jurnal::create([
@@ -154,7 +154,7 @@ class JurnalController extends Controller
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
-                        'created_at' => $data['created_at'][$i],
+                        'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
                 }else{
@@ -166,7 +166,7 @@ class JurnalController extends Controller
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
-                            'created_at' => $data['created_at'][$i],
+                            'created_at' => $data['created_at'],
                             'no' => $no
                         ]);
                     }
@@ -178,7 +178,7 @@ class JurnalController extends Controller
                             'nomor' => $nomor,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
-                            'created_at' => $data['created_at'][$i],
+                            'created_at' => $data['created_at'],
                             'no' => $no
                         ]);
                     }
@@ -248,9 +248,9 @@ class JurnalController extends Controller
                     $name = str_replace('[10]',$tujuan_trucking,$name);
                 }
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at'][$i]));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
                 }else{
-                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     Jurnal::create([
@@ -261,7 +261,7 @@ class JurnalController extends Controller
                         'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
-                        'created_at' => $data['created_at'][$i],
+                        'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
                     Jurnal::create([
@@ -272,7 +272,7 @@ class JurnalController extends Controller
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
-                        'created_at' => $data['created_at'][$i],
+                        'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
                 }else{
@@ -285,7 +285,7 @@ class JurnalController extends Controller
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
-                            'created_at' => $data['created_at'][$i],
+                            'created_at' => $data['created_at'],
                             'no' => $no
                         ]);
                     }
@@ -298,7 +298,7 @@ class JurnalController extends Controller
                             'nomor' => $nomor,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
-                            'created_at' => $data['created_at'][$i],
+                            'created_at' => $data['created_at'],
                             'no' => $no
                         ]);
                     }
@@ -356,9 +356,9 @@ class JurnalController extends Controller
                     $name = str_replace('[10]',$tujuan_trucking,$name);
 
                     if($data['tipe']=='JNL'){
-                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at'][$i]))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at'][$i]));
+                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
                     }else{
-                        $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at'][$i]));
+                        $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                     }
 
                     Jurnal::create([
@@ -368,7 +368,7 @@ class JurnalController extends Controller
                         'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $amount,
-                        'created_at' => $data['created_at'][$i],
+                        'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
                     Jurnal::create([
@@ -378,7 +378,7 @@ class JurnalController extends Controller
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $amount,
-                        'created_at' => $data['created_at'][$i],
+                        'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
                 }

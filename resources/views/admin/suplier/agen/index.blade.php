@@ -161,8 +161,12 @@
             {search:true, name: 'id', label : 'id', width:50, frozen: true},
             {search:true, name: 'agen', label : 'agen', width:50, frozen: true},
             {search:true, name: 'tanggal', label : 'tanggal', sorttype: 'date', datefmt:'d/m/y', width:100, frozen: true},
+            {search:true, name: 'pembayar_id', label : 'pembayar_id', hidden:true},
+            {search:true, name: 'penerima_id', label : 'penerima_id', hidden:true},
             {search:true, name: 'dari', label : 'dari'},
             {search:true, name: 'tujuan', label : 'tujuan'},
+            {search:true, name: 'pembayar', label : 'pembayar'},
+            {search:true, name: 'penerima', label : 'penerima'},
             {search:true, name: 'tipe', label : 'tipe'},
             {search:true, name: 'tarif', label : 'tarif'},
             {search:true, name: 'kubikasi', label : 'kubikasi'},
@@ -190,6 +194,8 @@
             let dari = $(this).jqGrid('getCell', rowId, 'dari_id');
             let tujuan = $(this).jqGrid('getCell', rowId, 'tujuan_id');
             let tipe = $(this).jqGrid('getCell', rowId, 'tipe_id');
+            let pembayar = $(this).jqGrid('getCell', rowId, 'pembayar_id');
+            let penerima = $(this).jqGrid('getCell', rowId, 'penerima_id');
             let tanggal = $(this).jqGrid('getCell', rowId, 'date_tanggal');
             let tarif = $(this).jqGrid('getCell', rowId, 'tarif_nominal');
             let kubikasi = $(this).jqGrid('getCell', rowId, 'kubikasi_nominal');
@@ -210,6 +216,8 @@
             $('#kubikasi').val(kubikasi);
             $('#keterangan').val(keterangan);
             $('#tujuan').val(tujuan).trigger('change');
+            $('#pembayar_id').val(pembayar).trigger('change');
+            $('#penerima_id').val(penerima).trigger('change');
             $('#dari').val(dari).trigger('change');
         },
         rowattr: function (item) {
@@ -244,6 +252,12 @@
     $("select[name=agen_id]").select2({
         dropdownParent: $('#offcanvasTarifAgen')
     });
+    $("select[name=pembayar_id]").select2({
+        dropdownParent: $('#offcanvasTarifAgen')
+    });
+    $("select[name=penerima_id]").select2({
+        dropdownParent: $('#offcanvasTarifAgen')
+    });
 
     $('#tarif-create').submit(function (e) {
         e.preventDefault();
@@ -272,6 +286,10 @@
         tarif_id = null;
         $('#tarif-create').trigger("reset");
         $('#tarif-create #agen_id').val(agen_id).trigger('change');
+        $('#tarif-create #pembayar_id').val('').trigger('change');
+        $('#tarif-create #penerima_id').val('').trigger('change');
+        $('#tarif-create #dari').val('').trigger('change');
+        $('#tarif-create #tujuan').val('').trigger('change');
         $("#jqGrid").jqGrid('setGridParam', {
                 postData: {agen_id:agen_id }
         }).trigger('reloadGrid');

@@ -1,6 +1,17 @@
 @extends('layouts.admin')
 @section('style')
     <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
+    <style>
+        .table-responsie table{
+            position: relative;
+            overflow-y: scroll;
+        }
+        .table-responsive th{
+            background-color: white !important;
+            position: sticky !important;
+            top: 0;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="container mt-3">

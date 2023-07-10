@@ -16,7 +16,7 @@
                 </div>
                 <div class="mb-2 col-4">
                     <div class="btn-group">
-                        <button class="btn btn-success btn-sm w-100 mt-3" onclick="addTemplate()">Terapkan</button>
+                        <button class="btn btn-success btn-sm w-100 mt-3" id="apply">Terapkan</button>
                         <button class="btn btn-warning btn-sm w-100 mt-3" id="reset">Reset</button>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                                 </div>
                                 <div class="col-6">
                                     <label for="created_at">Tanggal Jurnal</label>
-                                    <input type="date" name="created_at" id="created_at" class="form-control">
+                                    <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d') }}" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -90,9 +90,8 @@
                             <th>Keterangan</th>
                             <th>Nominal</th>
                         </tr>
-                        @if (is_null($template))
                         @for ($i = 0; $i < $debit_idx; $i++)
-                        <tr>
+                        <tr class="init-table">
                             <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $i }})" checked id="{{ $i }}" value="{{ $i }}"></td>
                             <td>
                                 <select class="form-control select2" id="job-{{ $i }}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
@@ -122,7 +121,6 @@
                             <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
                         </tr>
                         @endfor
-                        @endif
                     </table>
                     <table>
                         <tr>
@@ -287,6 +285,7 @@
     }
 
     $('#apply').click(function (e) {
+        $('.init-table').hide();
         addTemplate();
     });
     $('#addBarisTemplate').click(function (e) {
@@ -299,7 +298,7 @@
             type: "get",
             url: "{{ url('admin/templatejurnal') }}"+"/"+id,
             success: function (response) {
-                $.each(response.items, function (idx, item) { 
+                $.each(response.items, function (idx, item) {
                     var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
                     debit = amounts.length + 1;
                     let html = '';
@@ -332,9 +331,9 @@
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" value="${item.keterangan}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
                     </tr>`;
-                    $('#debit-'+debit).val(item.debit_coa_id);
-                    $('#credit-'+debit).val(item.credit_coa_id);
                     $('#table-debit').append(html);
+                    $('#debit-'+debit).val(item.coa_debit_id);
+                    $('#credit-'+debit).val(item.coa_credit_id);
                 });
             }
         });

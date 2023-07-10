@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="mb-2 col-8">
                     <label>Template Jurnal</label>
-                    <select class="form-control" id="template_id" wire:model="template_id" style="font-size:.9rem !important">
+                    <select class="form-control" id="template_id" style="font-size:.9rem !important">
                         <option value=""></option>
                         @foreach ($templates as $item)
                         <option value="{{ $item->id }}">{{ $item->nama }}</option>
@@ -16,7 +16,7 @@
                 </div>
                 <div class="mb-2 col-4">
                     <div class="btn-group">
-                        <button class="btn btn-success btn-sm w-100 mt-3" id="apply" wire:click="apply">Terapkan</button>
+                        <button class="btn btn-success btn-sm w-100 mt-3" id="apply">Terapkan</button>
                         <button class="btn btn-warning btn-sm w-100 mt-3" id="reset">Reset</button>
                     </div>
                 </div>
@@ -48,18 +48,27 @@
                 <input type="hidden" name="jurnal_id" id="jurnal_id" value="{{ json_encode($jurnal_id) }}">
                 <div class="col-12">
                     <div class="row">
-                        <div class="col-6">
-                            <label for="tipe_jurnal">Tipe Jurnal</label>
-                            <select name="tipe" id="tipe_jurnal" class="form-control">
-                                <option selected value="JNL">Jurnal Umum</option>
-                                <option value="BBK">Bank Keluar</option>
-                                <option value="BBM">Bank Masuk</option>
-                                <option value="BKK">Kas Keluar</option>
-                                <option value="BKM">Kas Masuk</option>
-                            </select>
+                        <div class="col-8">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="tipe_jurnal">Tipe Jurnal</label>
+                                    <select name="tipe" required id="tipe" class="form-control">
+                                        <option value="">-</option>
+                                        <option value="JNL">Jurnal Umum - {{ $no_1 }}</option>
+                                        <option value="BBK">Bank Keluar - {{ $no_2 }}</option>
+                                        <option value="BBM">Bank Masuk - {{ $no_3 }}</option>
+                                        <option value="BKK">Kas Keluar - {{ $no_4 }}</option>
+                                        <option value="BKM">Kas Masuk - {{ $no_5 }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label for="created_at">Tanggal Jurnal</label>
+                                    <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d') }}" class="form-control">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-6 mt-4 text-end">
-                            <button class="btn btn-primary btn-sm mx-2" type="button" id="addBarisTemplate" wire:click="addBarisTemplate">Tambah Baris Template</button>
+                        <div class="col-4 mt-4 text-end">
+                            <button class="btn btn-primary btn-sm mx-2" type="button" id="addBarisTemplate">Tambah Baris Template</button>
                             <button class="btn btn-info btn-sm mx-2" type="button" onclick="addColumnDebit()">Tambah Baris</button>
                         </div>
                     </div>
@@ -72,83 +81,48 @@
                             <td>Akun Credit</td>
                             <td>Keterangan</td>
                             <td>Nominal</td>
-                            <td>Tanggal</td>
                         </tr>
-                        @if (is_null($template))
-                            @for ($i = 0; $i < $debit_idx; $i++)
-                            <tr>
-                                <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $i }})" checked id="{{ $i }}" value="{{ $i }}"></td>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" id="job-{{ $i }}" name="job[]" style="font-size:.9rem !important">
-                                        <option value=""></option>
-                                        @foreach ($orders as $item)
-                                        <option value="{{ $item }}">{{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" id="debit-{{ $i }}" name="debit_coa_id[]" style="font-size:.9rem !important">
-                                        <option value=""></option>
-                                        @foreach ($coa as $item)
-                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td style="width: 200px">
-                                    <select class="form-control select2" id="credit-{{ $i }}" name="credit_coa_id[]" style="font-size:.9rem !important">
-                                        <option value=""></option>
-                                        @foreach ($coa as $item)
-                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td style="width: 300px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
-                                <td><input type="number" name="amount[]" id="amount-{{ $i }}"></td>
-                                <td><input type="date" name="created_at[]" value="{{ date('Y-m-d') }}"></td>
-                            </tr>
-                            @endfor
-                        @else
-                            @php
-                                $k = 0;
-                            @endphp
-                            @for ($j = 0; $j < $template_count; $j++)
-                                @foreach ($template->template_items as $i => $temp)
-                                <tr>
-                                    <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $k }})" checked id="{{ $k }}" value="{{ $k }}"></td>
-                                    <td style="width: 200px">
-                                        <select class="form-control select2" id="job-{{ $k }}" name="job[]" style="font-size:.9rem !important">
-                                            <option value=""></option>
-                                            @foreach ($orders as $item)
-                                            <option value="{{ $item }}">{{ $item }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="width: 200px">
-                                        <select class="form-control select2" id="debit-{{ $k }}" name="debit_coa_id[]" style="font-size:.9rem !important">
-                                            <option value=""></option>
-                                            @foreach ($coa as $item)
-                                            <option value="{{ $item->id }}" {{ $item->id==$temp->coa_debit_id?'selected':'' }}>{{ $item->kode }} - {{ $item->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="width: 200px">
-                                        <select class="form-control select2" id="credit-{{ $k }}" name="credit_coa_id[]" style="font-size:.9rem !important">
-                                            <option value=""></option>
-                                            @foreach ($coa as $item)
-                                            <option value="{{ $item->id }}" {{ $item->id==$temp->coa_credit_id?'selected':'' }}>{{ $item->kode }} - {{ $item->nama }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="width: 300px"><input name="name[]" id="keterangan-{{ $k }}" value="{{ $temp->keterangan }}" style="width: 300px" type="text"></td>
-                                    <td><input type="number" name="amount[]" id="amount-{{ $k }}"></td>
-                                    <td><input type="date" name="created_at[]" value="{{ date('Y-m-d') }}"></td>
-                                </tr>
-                                @php
-                                    $k++;
-                                @endphp
-                                @endforeach
-                            @endfor
-                        @endif
+                        @for ($i = 0; $i < $debit_idx; $i++)
+                        <tr class="init-table">
+                            <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $i }})" checked id="{{ $i }}" value="{{ $i }}"></td>
+                            <td style="width: 200px">
+                                <select class="form-control select2" id="job-{{ $i }}" name="job[]" style="font-size:.9rem !important">
+                                    <option value=""></option>
+                                    @foreach ($orders as $item)
+                                    <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td style="width: 200px">
+                                <select class="form-control select2" onchange="total()" id="debit-{{ $i }}" name="debit_coa_id[]" style="font-size:.9rem !important">
+                                    <option value=""></option>
+                                    @foreach ($coa as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td style="width: 200px">
+                                <select class="form-control select2" onchange="total()" id="credit-{{ $i }}" name="credit_coa_id[]" style="font-size:.9rem !important">
+                                    <option value=""></option>
+                                    @foreach ($coa as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td style="width: 300px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
+                            <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
+                        </tr>
+                        @endfor
+                    </table>
+                    <table>
+                        <tr>
+                            <td style="width: 300px"><b>TOTAL DEBET</b></td>
+                            <td><b id="total_debit"></b></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 300px"><b>TOTAL CREDIT</b></td>
+                            <td><b id="total_credit"></b></td>
+                        </tr>
                     </table>
                 </div>
                 <button type="button" class="btn btn-success btn-sm w-100" id="btn-save">Simpan Jurnal</button>
@@ -163,6 +137,8 @@
 <script>
     let credit = 2;
     let debit = 2;
+    let total_debit = 0;
+    let total_credit = 0;
     $('.select2').select2();
     $('#reset').click(function (e) {
         location.reload();
@@ -187,7 +163,7 @@
                             </select>
                         </td>
                         <td style="width: 200px">
-                            <select class="form-control select2" id="debit-${debit}" name="debit_coa_id[]" style="font-size:.9rem !important">
+                            <select class="form-control select2" onchange="total()" id="debit-${debit}" name="debit_coa_id[]" style="font-size:.9rem !important">
                                 <option value=""></option>
                                 @foreach ($coa as $item)
                                 <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -195,7 +171,7 @@
                             </select>
                         </td>
                         <td style="width: 200px">
-                            <select class="form-control select2" id="credit-${debit}" name="credit_coa_id[]" style="font-size:.9rem !important">
+                            <select class="form-control select2" onchange="total()" id="credit-${debit}" name="credit_coa_id[]" style="font-size:.9rem !important">
                                 <option value=""></option>
                                 @foreach ($coa as $item)
                                 <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -203,8 +179,7 @@
                             </select>
                         </td>
                         <td style="width: 300px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
-                        <td><input type="number" name="amount[]" id="amount-${debit}"></td>
-                        <td><input type="date" name="created_at[]" value="{{ date('Y-m-d') }}"></td>
+                        <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
                     </tr>`;
         $('#table-debit').append(html);
         setTimeout(() => {
@@ -214,29 +189,15 @@
     }
 
     $('#btn-save').click(function (e) {
-        var debits = $("select[name='debit_coa_id[]']").map(function(){return $(this).val();}).get();
-        var credits = $("select[name='credit_coa_id[]']").map(function(){return $(this).val();}).get();
-        var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
-        var ids = $("input[name='id[]']").map(function(){return $(this).val();}).get();
-        let deb = 0;
-        let cre = 0;
-        for (let i = 0; i < amounts.length; i++) {
-            const amount = parseInt(amounts[i]);
-            if (isNaN(amount)) {
-                if(debits[i]!=''){
-                    deb += amount;
-                }
-                if(credits[i]!=''){
-                    cre += amount;
-                }
-            }
-        }
-
-        if(deb!=cre){
-            alert('Jurnal Tidak Balance debit = '+deb+' & credit = '+cre+' ! Harap check lagi')
+        if(total_debit!=total_credit){
+            alert('Jurnal Tidak Balance debit = '+total_debit+' & credit = '+total_credit+' ! Harap check lagi')
         }else{
-            if(confirm('are you sure')){
-                $('#form-submit').submit();
+            if($('#tipe').val()){
+                if(confirm('are you sure')){
+                    $('#form-submit').submit();
+                }
+            }else{
+                alert('Harap pilih tipe jurnal');
             }
         }
     });
@@ -288,18 +249,90 @@
             $('#keterangan-'+id).attr('disabled',true)
             $('#amount-'+id).attr('disabled',true)
         }
+        total();
+    }
+
+    function total(){
+        var check = $("input[name='id[]']").map(function(){
+            if($(this).is(":checked")){
+                return $(this).val();
+            }
+        }).get();
+        total_credit = 0;
+        total_debit = 0;
+        for (let i = 0; i < check.length; i++) {
+            const item = check[i];
+            var d = $('#debit-'+item).val();
+            var c = $('#credit-'+item).val();
+            var a = parseInt($('#amount-'+item).val());
+            if(d!=""){
+                total_debit+=a;
+            }
+            if(c!=""){
+                total_credit+=a;
+            }
+        }
+        $('#total_debit').html('Rp. '+total_debit.toLocaleString('en-US'));
+        $('#total_credit').html('Rp. '+total_credit.toLocaleString('en-US'));
     }
 
     $('#apply').click(function (e) {
-        setTimeout(() => {
-            $('.select2').select2();
-        }, 3000);
+        $('.init-table').hide();
+        addTemplate();
     });
     $('#addBarisTemplate').click(function (e) {
+        addTemplate();
+    });
+
+    function addTemplate(){
+        let id = $('#template_id').val();
+        $.ajax({
+            type: "get",
+            url: "{{ url('admin/templatejurnal') }}"+"/"+id,
+            success: function (response) {
+                $.each(response.items, function (idx, item) {
+                    var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
+                    debit = amounts.length + 1;
+                    let html = '';
+                    html += `<tr>
+                        <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
+                        <td>
+                            <select class="form-control select2" onchange="total()" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
+                                <option value=""></option>
+                                @foreach ($orders as $item)
+                                <option value="{{ $item }}">{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control select2" onchange="total()" id="debit-${debit}" name="debit_coa_id[]" style="font-size:.9rem !important; width:170px">
+                                <option value=""></option>
+                                @foreach ($coa as $item)
+                                <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control select2" onchange="total()" id="credit-${debit}" name="credit_coa_id[]" style="font-size:.9rem !important; width:170px">
+                                <option value=""></option>
+                                @foreach ($coa as $item)
+                                <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" value="${item.keterangan}" style="width: 300px" type="text"></td>
+                        <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                    </tr>`;
+                    $('#table-debit').append(html);
+                    $('#debit-'+debit).val(item.coa_debit_id);
+                    $('#credit-'+debit).val(item.coa_credit_id);
+                });
+            }
+        });
         setTimeout(() => {
             $('.select2').select2();
         }, 2000);
-    });
+    }
 
 </script>
 @endpush
