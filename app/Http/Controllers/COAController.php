@@ -41,6 +41,9 @@ class COAController extends Controller
         if ($request->is_invoice) {
             $data['is_invoice'] = $coa->is_invoice==1?0:1;
         }
+        if ($request->is_invoice_trucking) {
+            $data['is_invoice_trucking'] = $coa->is_invoice_trucking==1?0:1;
+        }
         if ($request->is_nobg) {
             $data['is_nobg'] = $coa->is_nobg==1?0:1;
         }

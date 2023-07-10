@@ -21,6 +21,7 @@ class COA extends Model
         'is_nopol',
         'is_nojob',
         'is_invoice',
+        'is_invoice_trucking',
         'is_nobg',
         'is_nobupot',
         'is_tglbupot',

@@ -29,11 +29,11 @@
                                 <th>View Cont</th>
                                 <th>View Nopol</th>
                                 <th>View No JOB</th>
-                                <th>View Invoice</th>
+                                <th>View Invoice XPDC</th>
+                                <th>View Invoice TRX</th>
                                 <th>View No BG</th>
                                 <th>View No Bupot</th>
                                 <th>View Tgl Bupot</th>
-                                <th>Keterangan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,10 +46,10 @@
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nopol')" {{ $item->is_nopol==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nojob')" {{ $item->is_nojob==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice')" {{ $item->is_invoice==1?'checked':'' }}></td>
+                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice_trucking')" {{ $item->is_invoice_trucking==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nobg')" {{ $item->is_nobg==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nobupot')" {{ $item->is_nobupot==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_tglbupot')" {{ $item->is_tglbupot==1?'checked':'' }}></td>
-                                    <td>{{ $item->keterangan }}</td>
                                 </tr>
                                 @if ($item->coas->count()>0)
                                     @foreach ($item->coas as $a)
@@ -58,13 +58,13 @@
                                         <td>{{ $a->kode }}</td>
                                         <td>{{ $a->nama }}</td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_cont')" {{ $a->is_cont==1?'checked':'' }}></td>
-                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nopol')" {{ $a->is_nopol==1?'checked':'' }}></td>
-                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nojob')" {{ $a->is_nojob==1?'checked':'' }}></td>
-                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice')" {{ $a->is_invoice==1?'checked':'' }}></td>
-                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobg')" {{ $a->is_nobg==1?'checked':'' }}></td>
-                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobupot')" {{ $a->is_nobupot==1?'checked':'' }}></td>
-                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_tglbupot')" {{ $a->is_tglbupot==1?'checked':'' }}></td>
-                                        <td>{{ $a->keterangan }}</td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nopol')" {{ $a->is_nopol==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nojob')" {{ $a->is_nojob==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice')" {{ $a->is_invoice==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice_trucking')" {{ $a->is_invoice_trucking==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobg')" {{ $a->is_nobg==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobupot')" {{ $a->is_nobupot==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_tglbupot')" {{ $a->is_tglbupot==1?'checked':'' }}></td>
                                     </tr>
                                         @if ($a->coas->count()>0)
                                             @foreach ($a->coas as $b)
@@ -76,10 +76,10 @@
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nopol')" {{ $b->is_nopol==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nojob')" {{ $b->is_nojob==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice')" {{ $b->is_invoice==1?'checked':'' }}></td>
+                                                <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice_trucking')" {{ $b->is_invoice_trucking==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nobg')" {{ $b->is_nobg==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nobupot')" {{ $b->is_nobupot==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_tglbupot')" {{ $b->is_tglbupot==1?'checked':'' }}></td>
-                                                <td>{{ $b->keterangan }}</td>
                                             </tr>
                                             @if ($b->coas->count()>0)
                                                 @foreach ($b->coas as $c)
@@ -91,10 +91,10 @@
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nopol')" {{ $c->is_nopol==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nojob')" {{ $c->is_nojob==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice')" {{ $c->is_invoice==1?'checked':'' }}></td>
+                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice_trucking')" {{ $c->is_invoice_trucking==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nobg')" {{ $c->is_nobg==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nobupot')" {{ $c->is_nobupot==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_tglbupot')" {{ $c->is_tglbupot==1?'checked':'' }}></td>
-                                                        <td>{{ $c->keterangan }}</td>
                                                     </tr>
                                                     @if ($c->coas->count()>0)
                                                         @foreach ($c->coas as $d)
@@ -106,10 +106,10 @@
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nopol')" {{ $d->is_nopol==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nojob')" {{ $d->is_nojob==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice')" {{ $d->is_invoice==1?'checked':'' }}></td>
+                                                                <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice_trucking')" {{ $d->is_invoice_trucking==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nobg')" {{ $d->is_nobg==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nobupot')" {{ $d->is_nobupot==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_tglbupot')" {{ $d->is_tglbupot==1?'checked':'' }}></td>
-                                                                <td>{{ $d->keterangan }}</td>
                                                             </tr>
                                                             @if ($d->coas->count()>0)
                                                                 @foreach ($d->coas as $e)
@@ -121,10 +121,10 @@
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nopol')" {{ $e->is_nopol==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nojob')" {{ $e->is_nojob==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice')" {{ $e->is_invoice==1?'checked':'' }}></td>
+                                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice_trucking')" {{ $e->is_invoice_trucking==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nobg')" {{ $e->is_nobg==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nobupot')" {{ $e->is_nobupot==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_tglbupot')" {{ $e->is_tglbupot==1?'checked':'' }}></td>
-                                                                        <td>{{ $e->keterangan }}</td>
                                                                     </tr>
                                                                         @if ($e->coas->count()>0)
                                                                             @foreach ($e->coas as $f)
@@ -136,10 +136,10 @@
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nopol')" {{ $f->is_nopol==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nojob')" {{ $f->is_nojob==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice')" {{ $f->is_invoice==1?'checked':'' }}></td>
+                                                                                <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice_trucking')" {{ $f->is_invoice_trucking==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nobg')" {{ $f->is_nobg==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nobupot')" {{ $f->is_nobupot==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_tglbupot')" {{ $f->is_tglbupot==1?'checked':'' }}></td>
-                                                                                <td>{{ $f->keterangan }}</td>
                                                                             </tr>
                                                                             @endforeach
                                                                         @endif

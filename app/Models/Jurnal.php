@@ -47,4 +47,9 @@ class Jurnal extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function order_trucking()
+    {
+        return $this->belongsTo(OrderTrucking::class);
+    }
 }

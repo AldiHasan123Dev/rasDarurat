@@ -109,6 +109,9 @@
                         @if ($coa->is_invoice)
                         <th data-rtc-resizable="invoice">Invoice</th>
                         @endif
+                        @if ($coa->is_invoice_trucking)
+                        <th data-rtc-resizable="invoice">Invoice</th>
+                        @endif
                         <th data-rtc-resizable="nama">Keterangan</th>
                         <th data-rtc-resizable="debit">Debit</th>
                         <th data-rtc-resizable="credit">Credit</th>
@@ -163,6 +166,9 @@
                             @endif
                             @if ($coa->is_invoice)
                             <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
+                            @endif
+                            @if ($coa->is_invoice_trucking)
+                            <td>{{ $item->order_trucking ? $item->order_trucking->invoice : '-' }}</td>
                             @endif
                             <td>{{ $item->nama }}</td>
                             <td>{{ number_format($item->debit,2,',','.') }}</td>
