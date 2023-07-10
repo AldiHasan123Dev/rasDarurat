@@ -16,6 +16,8 @@
             <th>Pelayaran</th>
             <th>Kapal</th>
             <th>Voyage</th>
+            <th>Container</th>
+            <th>Seal</th>
             <th>ETD</th>
             <th>TD</th>
             <th>Barang Diantar</th>
@@ -41,6 +43,8 @@
                 <td>{{ $item['pelayaran'] }}</td>
                 <td>{{ $item['kapal'] }}</td>
                 <td>{{ $item['voyage'] }}</td>
+                <td>{{ $item['container'] }}</td>
+                <td>{{ $item['seal'] }}</td>
                 <td>{{ $item['etd'] }}</td>
                 <td>{{ $item['td'] }}</td>
                 <td>{{ $item['barang_diantar'] }}</td>
