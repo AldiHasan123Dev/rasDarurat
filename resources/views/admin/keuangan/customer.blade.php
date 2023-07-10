@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <style>
         table.dataTable tbody th, table.dataTable tbody td{
             padding: 0px 10px !important;
@@ -20,7 +21,7 @@
                         </form> --}}
                     </div>
                     <div class="card-body">
-                        <div class="table-responsives">
+                        <div class="table-responsive">
                             <table class="table table-sm" id="customer" style="font-size:.7rem; white-space: nowrap;">
                                 <thead>
                                     <tr>
@@ -107,6 +108,7 @@
 @endsection
 @section('script')
 <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
 <script>
     $(document).ready(function() {
         document.oncontextmenu = new Function("return false");
@@ -117,12 +119,10 @@
 </script>
     <script>
         let tablecus = $('#customer').DataTable({
+            responsive: true,
             processing: true,
             serverSide: true,
             select:true,
-            scrollY: '50vh',
-            scrollX: true,
-            scrollCollapse: true,
             ajax:{
                 url: '{{ route('customer.data') }}',
                 method:'POST',

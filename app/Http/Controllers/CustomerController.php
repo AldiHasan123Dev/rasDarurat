@@ -144,7 +144,7 @@ class CustomerController extends Controller
                 }
             })
             ->addColumn('alamat', function($data){
-                return Str::limit($data->alamat, 30, '...');
+                return $data->alamat ?? '-';
             })
             ->addColumn('marketing_id', function($data){
                 return $data->marketing->name ?? '-';

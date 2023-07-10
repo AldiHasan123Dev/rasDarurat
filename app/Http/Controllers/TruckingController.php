@@ -9,11 +9,13 @@ use App\Http\Resources\OrderTruckingResource;
 use App\Http\Resources\TransaksiSopirResource;
 use App\Http\Resources\TransaksiTruckingResource;
 use App\Models\CustomerTrucking;
+use App\Models\Jurnal;
 use App\Models\Kendaraan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\SanguSopir;
 use App\Models\Sopir;
+use App\Models\TemplateJurnal;
 use App\Models\TransaksiSopir;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
@@ -251,7 +253,7 @@ class TruckingController extends Controller
             $invoice = sprintf('%03d',$no3).'/VENDOR-'.$month_roman.'/'.date('y');
         }
 
-        TransaksiTrucking::create([
+        $trx = TransaksiTrucking::create([
             'order_trucking_id' => $request->order,
             'order_id' => '['.$request->order_id.']',
             'rit' => $request->rit,
@@ -273,6 +275,93 @@ class TruckingController extends Controller
             'invoice' => $invoice,
             'total_invoice' => $request->total,
         ]);
+
+        $order = OrderTrucking::whereIn('id',$order_id)->first();
+        $orders = OrderTrucking::whereIn('id',$order_id)->get();
+
+        $template = TemplateJurnal::find(9);
+        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+        foreach ($template->template_items as $key => $item) {
+            $name = $item->keterangan;
+            $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
+            $cont = $order->container;
+            $seal = $order->seal;
+            $order_id = $order->order ? $order->order->id : null;
+            $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+            $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+            $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+            $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+            $customer = $order->customer->nama;
+            $shipment_trucking = $order->tipe;
+            $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]',$id_job,$name);
+            $name = str_replace('[2]',$cont,$name);
+            $name = str_replace('[3]',$seal,$name);
+            $name = str_replace('[4]',$kapal,$name);
+            $name = str_replace('[5]',$voyage,$name);
+            $name = str_replace('[6]',$shipment,$name);
+            $name = str_replace('[7]',$pembayar,$name);
+            $name = str_replace('[8]',$customer,$name);
+            $name = str_replace('[9]',$shipment_trucking,$name);
+            $name = str_replace('[10]',$tujuan_trucking,$name);
+            if($item->coa_debit_id){
+                $deb = 0;
+                foreach ($orders as $ord) {
+                    $deb += $ord->tarif->tarif;
+                    if($ord->tagihans->count()>0){
+                        foreach ($ord->tagihans as $tag) {
+                            $deb += $tag->jumlah;
+                        }
+                    }
+                }
+                Jurnal::create([
+                    'coa_id' => $item->coa_debit_id,
+                    'order_trucking_id' => $order->id,
+                    'nomor' => $nomor,
+                    'nama' => $name,
+                    'debit' => $deb,
+                    'credit' => 0,
+                    'tipe' => 'JNL',
+                    'no' => $no,
+                    'created_at' => date('Y-m-d'),
+                ]);
+            }
+            if($item->coa_credit_id==87){
+                foreach ($orders as $ord) {
+                    Jurnal::create([
+                        'coa_id' => $item->coa_credit_id,
+                        'order_trucking_id' => $ord->id,
+                        'nomor' => $nomor,
+                        'nama' => $name,
+                        'credit' => $ord->tarif->tarif,
+                        'debit' => 0,
+                        'tipe' => 'JNL',
+                        'no' => $no,
+                        'created_at' => date('Y-m-d'),
+                    ]);
+                }
+            }
+            if($item->coa_credit_id==28){
+                foreach ($orders as $ord) {
+                    if($ord->tagihans->count()>0){
+                        foreach ($ord->tagihans as $tag) {
+                            Jurnal::create([
+                                'coa_id' => $item->coa_credit_id,
+                                'order_trucking_id' => $ord->id,
+                                'nomor' => $nomor,
+                                'nama' => $tag->nama,
+                                'credit' => $tag->jumlah,
+                                'debit' => 0,
+                                'tipe' => 'JNL',
+                                'no' => $no,
+                                'created_at' => date('Y-m-d'),
+                            ]);
+                        }
+                    }
+                }
+            }
+        }
 
         return redirect()->route('trucking.cetak_get.invoice',['invoice'=>$invoice]);
     }

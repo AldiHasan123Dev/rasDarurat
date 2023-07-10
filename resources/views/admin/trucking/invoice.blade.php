@@ -372,7 +372,7 @@
                                     @foreach ($r1s as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
-                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
                                             <td style="width: 50px"> {{ $item->tipe }}'</td>
                                             <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
                                             @if ($item->order)
@@ -382,7 +382,7 @@
                                             @endif
                                             <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                             @if ($item->order)
-                                            <td style="width: 100px"> {{ $item->order->tarif->customer->nama ?? '-' }} <td>
+                                            <td style="width: 250px"> {{ $item->order->tarif->customer->nama ?? '-' }} <td>
                                             @endif
                                         </tr>
                                         @endforeach
@@ -572,7 +572,7 @@
                                     @foreach ($r1s as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
-                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
                                             <td style="width: 50px"> {{ $item->tipe }}'</td>
                                             <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
                                             @if ($item->order)
@@ -582,7 +582,7 @@
                                             @endif
                                             <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                             @if ($item->order)
-                                            <td style="width: 100px"> {{ $item->order->tarif->customer->nama ?? '-' }} <td>
+                                            <td style="width: 250px"> {{ $item->order->tarif->customer->nama ?? '-' }} <td>
                                             @endif
                                         </tr>
                                         @endforeach
@@ -793,7 +793,7 @@
                                     @foreach ($r1s as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
-                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
                                             <td style="width: 50px"> {{ $item->tipe }}'</td>
                                             <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
                                             <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
@@ -1000,7 +1000,7 @@
                                     @foreach ($r2s as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
-                                            <td style="width: 150px">{{ $item->container }}</td>
+                                            <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
                                             <td style="width: 50px"> {{ $item->tipe }}'</td>
                                             <td style="width: 100px"> {{ $item->kendaraan->nopol }}</td>
                                             <td style="width: 150px"> {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>

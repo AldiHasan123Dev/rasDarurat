@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HutangAgen;
 use App\Models\JadwalKapal;
 use App\Models\Kapal;
 use App\Models\Order;
 use App\Models\Pelayaran;
 use App\Models\Tarif;
+use App\Models\TarifAgen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -50,6 +52,26 @@ class JadwalKapalController extends Controller
             Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
                 'is_active' => 0
             ]);
+            $orders = Order::where('jadwal_kapal_id',$jadwalkapal->id)->get();
+            foreach ($orders as $order) {
+                if($order->agent){
+                    $tarif_agen = TarifAgen::where('agen_id',$order->agen_id)
+                                    ->where('dari',$order->tarif->dari)
+                                    ->where('tujuan',$order->tarif->tujuan)
+                                    ->where('tipe',$order->tarif->shipment)
+                                    ->where('penerima_id',$order->penerima_id)
+                                    ->where('pembayar_id',$order->tarif->customer_id)
+                                    ->first();
+                    if($tarif_agen){
+                        HutangAgen::create([
+                            'tarif_agen_id' => $tarif_agen->id,
+                            'order_id' => $order->id,
+                            'jumlah' => $tarif_agen->tarif,
+                            'status' => 0,
+                        ]);
+                    }
+                }
+            }
         }else{
             $data['is_active'] = 1;
             Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([

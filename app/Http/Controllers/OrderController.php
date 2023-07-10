@@ -18,6 +18,8 @@ use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\Satuan;
 use App\Models\Tarif;
+use App\Models\TarifPelayaran;
+use App\Models\HutangPelayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
@@ -133,12 +135,21 @@ class OrderController extends Controller
             $data['job'] = $cek->job;
             $data['no_job'] = $ceks->count() + 1;
         }
-        // $satuan = Satuan::find($request->satuan);
-        // if(!$satuan){
-        //     $satuan = Satuan::create(['nama'=>$request->satuan]);
-        // }
-        // $data['satuan'] = $satuan->id;
         $order = Order::create($data);
+        $tarif_pelayaran = TarifPelayaran::where('pelayaran_id',$order->jadwal_kapal->pelayaran_id)
+                            ->where('dari',$order->tarif->dari)
+                            ->where('tujuan',$order->tarif->tujuan)
+                            ->where('tipe',$order->tarif->shipment)
+                            ->where('is_active',1)
+                            ->first();
+        if($tarif_pelayaran){
+            HutangPelayaran::create([
+                'tarif_pelayaran_id' => $tarif_pelayaran->id,
+                'order_id' => $order->id,
+                'jumlah' => $tarif_pelayaran->tarif,
+                'status' => 0,
+            ]);
+        }
         return back()->with('success','Data berhasil disimpan');
     }
 

@@ -10,6 +10,8 @@ use App\Http\Controllers\COAController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\EstimasiController;
+use App\Http\Controllers\HutangAgenController;
+use App\Http\Controllers\HutangPelayaranController;
 use App\Http\Controllers\JadwalKapalController;
 use App\Http\Controllers\JasaKirimController;
 use App\Http\Controllers\JurnalController;
@@ -127,6 +129,8 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::resource('templatejurnal',TemplateJurnalController::class);
     Route::resource('templatejurnalitem',TemplateJurnalItemController::class);
     Route::resource('jurnal',JurnalController::class);
+    Route::resource('hutang-agen',HutangAgenController::class);
+    Route::resource('hutang-pelayaran',HutangPelayaranController::class);
 
 
     Route::get('marketing/{marketing}', [OrderController::class,'index'])->name('order.index.marketing');

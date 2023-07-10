@@ -68,4 +68,9 @@ class Transaksi extends Model
     {
         return $this->hasMany(Order::class,'job','job');
     }
+
+    public function orderInfo()
+    {
+        return $this->belongsTo(Order::class,'order_id');
+    }
 }

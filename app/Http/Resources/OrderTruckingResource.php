@@ -65,7 +65,7 @@ class OrderTruckingResource extends JsonResource
             'date_tgl_muat' => $this->tgl_muat?date('Y-m-d', strtotime($this->tgl_muat)):'-',
             'customer' => $this->customer->nama,
             'pembayar' => $this->order ? $this->order->tarif->customer->nama : '-',
-            'kapal' => $this->order ? $this->order->jadwal_kapal->kapal->nama : '-',
+            'kapal' => $this->order ? ($this->order->jadwal_kapal ? $this->order->jadwal_kapal->kapal->nama : '-') : '-',
             'voyage' => $this->order ? $this->order->jadwal_kapal->voyage : '-',
             'shipment' => $this->order ? $this->order->tarif->shipmentInfo->nama : '-',
             'job' => $this->order ? $this->order->job.'-'.sprintf('%02d',$this->order->no_job) : '-',

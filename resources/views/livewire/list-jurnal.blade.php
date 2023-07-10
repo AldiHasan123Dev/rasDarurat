@@ -72,8 +72,18 @@
         </div>
         {{-- {{ $data->links() }} --}}
         @if($data->hasMorePages())
-            <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
+        <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
         @endif
+        <table class="table table-sm mt-2">
+            <tr>
+                <td>Debit</td>
+                <td>: {{ number_format($data->sum('debit'),2,',','.') }}</td>
+            </tr>
+            <tr>
+                <td>Credit</td>
+                <td>: {{ number_format($data->sum('debit'),2,',','.') }}</td>
+            </tr>
+        </table>
     </div>
 </div>
 
