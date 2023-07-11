@@ -76,8 +76,8 @@
                                     </select>
                                 </td>
                                 <td style="width: 300px"><input name="jurnal[{{ $temp->id }}][nama]" id="nama-{{ $i }}" value="{{ $temp->nama }}" style="width: 300px" type="text"></td>
-                                <td><input type="number" name="jurnal[{{ $temp->id }}][debit]" id="debit-{{ $i }}" value="{{ $temp->debit }}"></td>
-                                <td><input type="number" name="jurnal[{{ $temp->id }}][credit]" id="credit-{{ $i }}" value="{{ $temp->credit }}"></td>
+                                <td><input type="text" name="jurnal[{{ $temp->id }}][debit]" id="debit-{{ $i }}" value="{{ $temp->debit }}"></td>
+                                <td><input type="text" name="jurnal[{{ $temp->id }}][credit]" id="credit-{{ $i }}" value="{{ $temp->credit }}"></td>
                             </tr>
                         @endforeach
                         <tr>
