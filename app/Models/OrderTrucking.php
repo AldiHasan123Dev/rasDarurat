@@ -102,4 +102,9 @@ class OrderTrucking extends Model
     {
         return $this->hasMany(TagihanTrucking::class,'order_id');
     }
+
+    public function jurnals()
+    {
+        return $this->hasMany(Jurnal::class,'order_trucking_id');
+    }
 }

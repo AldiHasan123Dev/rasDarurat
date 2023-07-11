@@ -76,6 +76,7 @@ Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'get
 Route::resource('api-bttb',BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
 Route::post('api-bttb-add',[BTTBController::class,'add']);
+Route::post('get-jurnal',[JurnalController::class,'index']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
 Route::resource('api-tarif',TarifController::class)->except('update');
 Route::put('api-tarif',[TarifController::class,'update'])->name('api.tarif.update');

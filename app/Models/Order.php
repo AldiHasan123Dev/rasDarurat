@@ -129,4 +129,9 @@ class Order extends Model
     {
         return $this->hasOne(OrderTrucking::class,'order_id');
     }
+
+    public function jurnals()
+    {
+        return $this->hasMany(Jurnal::class,'order_id');
+    }
 }

@@ -150,6 +150,8 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::post('tarik-nsfp', [NSFPController::class,'tarik'])->name('nsfp.tarik');
     Route::post('delete-all', [NSFPController::class,'deleteAll'])->name('nsfp.delete.all');
     Route::get('trucking/order',[TruckingController::class,'order'])->name('trucking.order');
+    Route::get('jurnal-order',[JurnalController::class,'order'])->name('jurnal.order');
+    Route::get('jurnal-order-trucking',[JurnalController::class,'order_trucking'])->name('jurnal.order_trucking');
     Route::get('trucking/monitoring',[TruckingController::class,'monitoring'])->name('trucking.monitoring');
     Route::get('trucking/monitoring-invoice',[TruckingController::class,'monitoring_invoice'])->name('trucking.monitoring.invoice');
     Route::get('trucking/pre-invoice',[TruckingController::class,'preInvoice'])->name('trucking.pre-invoice');

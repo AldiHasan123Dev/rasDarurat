@@ -20,6 +20,16 @@ class JurnalController extends Controller
         return view('admin.jurnal.index');
     }
 
+    public function order()
+    {
+        return view('admin.jurnal.order');
+    }
+    
+    public function order_trucking()
+    {
+        return view('admin.jurnal.order_trucking');
+    }
+
     public function kolektif()
     {
         $job = Order::pluck('job')->toArray();
