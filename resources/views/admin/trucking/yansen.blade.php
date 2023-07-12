@@ -66,7 +66,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $total1 = 0;
+                                    @endphp
                                     @foreach ($data1 as $item)
+                                    @php
+                                        $total1 += $item->tarif->tarif;
+                                    @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $item->customer->nama }}</td>
@@ -77,6 +83,12 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5"><b>Total</b></td>
+                                        <td><b>Rp. {{ number_format($total1) }}</b></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                         <div class="mt-2">
@@ -93,7 +105,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $total2 = 0;
+                                    @endphp
                                     @foreach ($data2 as $item)
+                                    @php
+                                        $total2 += $item->tarif->tarif;
+                                    @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td>{{ $item->customer->nama }}</td>
@@ -104,6 +122,12 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="5"><b>Total</b></td>
+                                        <td><b>Rp. {{ number_format($total2) }}</b></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
