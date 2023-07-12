@@ -24,7 +24,7 @@ class JurnalController extends Controller
     {
         return view('admin.jurnal.order');
     }
-    
+
     public function order_trucking()
     {
         return view('admin.jurnal.order_trucking');
@@ -322,6 +322,7 @@ class JurnalController extends Controller
     public function store_kolektif(Request $request)
     {
         $data = $request->all();
+        // dd($data);
         $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
         if($no==1 && $data['tipe']=='BBK'){
             $no = 2249;

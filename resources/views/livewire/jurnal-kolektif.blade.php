@@ -151,7 +151,7 @@
 
     function addColumnDebit(){
         var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
-        debit = amounts + 1;
+        debit = amounts.length + 1;
         let html = `<tr>
                         <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
                         <td style="width: 200px">
@@ -277,10 +277,11 @@
     }
 
     $('#apply').click(function (e) {
-        $('.init-table').hide();
+        $('.init-table').remove();
         addTemplate();
     });
     $('#addBarisTemplate').click(function (e) {
+        $('.init-table').remove();
         addTemplate();
     });
 
@@ -297,7 +298,7 @@
                     html += `<tr>
                         <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
                         <td>
-                            <select class="form-control select2" onchange="total()" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
+                            <select class="form-control select2" onchange="total()" id="job-${debit}" onchange="getOrder()" name="job[]" style="font-size:.9rem !important; width:170px">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
                                 <option value="{{ $item }}">{{ $item }}</option>

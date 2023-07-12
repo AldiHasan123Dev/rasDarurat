@@ -28,7 +28,7 @@
                 </form> --}}
             </div>
             <div class="card-body">
-                <livewire:list-jurnal :month="request('month')"/>
+                <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')"/>
                 {{-- <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>

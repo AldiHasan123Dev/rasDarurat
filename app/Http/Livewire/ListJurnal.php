@@ -7,14 +7,15 @@ use Livewire\Component;
 
 class ListJurnal extends Component
 {
-    public $months, $month, $year, $perPage, $search;
+    public $months, $month, $year, $perPage, $search, $tipe;
 
-    public function mount($month = null)
+    public function mount($month = null, $tipe = null)
     {
         $this->perPage = 100;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->year = date('Y');
         $this->month = $month ?? date('m');
+        $this->tipe = $tipe ?? 'BBK';
     }
 
     public function render()
@@ -23,21 +24,27 @@ class ListJurnal extends Component
                 ->leftJoin('order','order.id','=','jurnal.order_id')
                 ->orWhere('order.job','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe',$this->tipe)
                 ->whereYear('jurnal.created_at',$this->year)
                 ->orWhere('coa.kode','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe',$this->tipe)
                 ->whereYear('jurnal.created_at',$this->year)
                 ->orWhere('coa.nama','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe',$this->tipe)
                 ->whereYear('jurnal.created_at',$this->year)
                 ->orWhere('jurnal.nama','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe',$this->tipe)
                 ->whereYear('jurnal.created_at',$this->year)
                 ->orWhere('jurnal.nomor','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe',$this->tipe)
                 ->whereYear('jurnal.created_at',$this->year)
                 ->orWhere('jurnal.created_at','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe',$this->tipe)
                 ->whereYear('jurnal.created_at',$this->year)
                 ->select('jurnal.*')
                 ->orderBy('jurnal.created_at')

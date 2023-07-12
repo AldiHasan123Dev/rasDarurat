@@ -27,6 +27,16 @@
                     <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal">
                 </div>
             </div>
+            <div class="col-6">
+                <div class="d-flex gap-2 mt-5">
+                    <b class="mt-2">Tipe: </b>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BKK']) }}" class="{{ $tipe=='BKK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BKK</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BKM']) }}" class="{{ $tipe=='BKM'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BKM</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BBK']) }}" class="{{ $tipe=='BBK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BBK</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BBM']) }}" class="{{ $tipe=='BBM'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BBM</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'JNL']) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                </div>
+            </div>
         </div>
         <div class="table-responsive" style="height: 400px">
             <table data-rtc-resizable-table="table.{{ $month }}" class="data table table-sm mt-3 table-bordered" style="font-size: .7rem; white-space:nowrap">
