@@ -15,15 +15,35 @@ class JurnalImport implements ToModel
         if($row[2]){
             $coa = COA::where('kode',str_replace(' ','',$row[2]))->first();
             if ($coa) {
+                if(str_contains($row[1],'BBK')){
+                    $tipe = 'BBK';
+                }else if(str_contains($row[1],'BBM')){
+                    $tipe = 'BBM';
+                }else if(str_contains($row[1],'BKK')){
+                    $tipe = 'BKK';
+                }else if(str_contains($row[1],'BKM')){
+                    $tipe = 'BKM';
+                }else{
+                    $tipe = 'JNL';
+                }
+                $order_array = explode('-',$row[3]);
+                // dd($order_array,count($order_array),$order_array[0]);
+                // dd(c);
+                if(count($order_array)==2){
+                    $order = Order::where('job',$order_array[0])->where('no_job',(int)$order_array[1])->first();
+                }else{
+                    $order = Order::where('job',$order_array[0])->first();
+                }
                 Jurnal::create([
                     'coa_id' => $coa->id,
-                    'order_id' => null,
+                    'order_id' => $order ? $order->id : null,
                     'nomor' => $row[1],
                     'nama' => str_replace(["'"],'',$row[4]),
                     'debit' => $row[5] ?? 0,
                     'credit' => $row[6] ?? 0,
                     'is_balik' => 1,
-                    'created_at' => $row[0]
+                    'created_at' => $row[0],
+                    'tipe' => $tipe
                 ]);
             }
         }

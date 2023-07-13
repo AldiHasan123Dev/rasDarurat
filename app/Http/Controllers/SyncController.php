@@ -7,6 +7,7 @@ use App\Models\BTTB;
 use App\Models\COA;
 use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
+use App\Models\Jurnal;
 use App\Models\Kapal;
 use App\Models\Order;
 use App\Models\OrderTrucking;
@@ -559,6 +560,30 @@ class SyncController extends Controller
         foreach ($data as $item ) {
             $item->update([
                 'no_kode' => str_replace('.','',$item->kode),
+            ]);
+        }
+
+        return 'success';
+    }
+
+    public function jurnal()
+    {
+        $data = Jurnal::whereMonth('created_at','01')->get(['id','tipe','nomor']);
+        foreach ($data as $item ) {
+            if(str_contains($item->nomor,'BBK')){
+                $tipe = 'BBK';
+            }else if(str_contains($item->nomor,'BBM')){
+                $tipe = 'BBM';
+            }else if(str_contains($item->nomor,'BKK')){
+                $tipe = 'BKK';
+            }else if(str_contains($item->nomor,'BKM')){
+                $tipe = 'BKM';
+            }else{
+                $tipe = 'JNL';
+            }
+
+            $item->update([
+                'tipe' => $tipe
             ]);
         }
 

@@ -30,10 +30,8 @@
             <div class="col-6">
                 <div class="d-flex gap-2 mt-5">
                     <b class="mt-2">Tipe: </b>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BKK']) }}" class="{{ $tipe=='BKK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BKK</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BKM']) }}" class="{{ $tipe=='BKM'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BKM</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BBK']) }}" class="{{ $tipe=='BBK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BBK</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BBM']) }}" class="{{ $tipe=='BBM'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BBM</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BB']) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BK']) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
                     <a href="{{ route('jurnal.index',['tipe'=>'JNL']) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
                 </div>
             </div>

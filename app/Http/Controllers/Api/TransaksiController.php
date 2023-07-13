@@ -45,10 +45,10 @@ class TransaksiController extends Controller
             'created_at' => $request->created_at
         ]);
 
-        if(request('tanggal_kirim')){
+        if(request('tanggal_kirim') && is_null($transaksi->tanggal_kirim)){
             $template = TemplateJurnal::find(8);
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($request->tanggal_kirim)))->whereYear('created_at',date('Y',strtotime($request->tanggal_kirim)))->max('no') + 1;
-            $nomor = sprintf('%02d',date('m',strtotime($request->tanggal_kirim))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->tanggal_kirim));
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
             foreach ($template->template_items as $key => $item) {
                 $name = $item->keterangan;
                 $order = Order::find($transaksi->order_id);

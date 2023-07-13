@@ -241,5 +241,6 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('sync-same',[SyncController::class,'sameData']);
     Route::get('sync-pull',[SyncController::class,'pull']);
     Route::get('sync-coa',[SyncController::class,'coa']);
+    Route::get('sync-jurnal',[SyncController::class,'jurnal']);
 });
 // Route::view('test','test');

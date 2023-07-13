@@ -80,6 +80,7 @@ class OrderTruckingController extends Controller
         if(request('nopol')){
             $query->whereHas('kendaraan', function($q){
                 $q->where('nopol','LIKE','%'.request('nopol').'%');
+                $q->orWhere('milik','LIKE','%'.request('nopol').'%');
             });
         }
         if(request('pembayar')){
