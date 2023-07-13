@@ -30,9 +30,9 @@
             <div class="col-6">
                 <div class="d-flex gap-2 mt-5">
                     <b class="mt-2">Tipe: </b>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BB']) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BK']) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'JNL']) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
+                    <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
                 </div>
             </div>
         </div>
@@ -44,6 +44,8 @@
                         <th data-rtc-resizable="nomor">Nomor</th>
                         <th data-rtc-resizable="akun">No. Akun</th>
                         <th data-rtc-resizable="akun_name">Nama Akun</th>
+                        <th data-rtc-resizable="container">Cont</th>
+                        <th data-rtc-resizable="nopol">Nopol</th>
                         <th data-rtc-resizable="invoice">Invoice</th>
                         <th data-rtc-resizable="job">JOB</th>
                         <th data-rtc-resizable="keterangan">Keterangan</th>
@@ -60,9 +62,19 @@
                             <td>{{ $item->coa->kode }}</td>
                             <td>{{ $item->coa->nama }}</td>
                             @if ($item->order)
+                                <td>{{ $item->order->container ?? '-' }}</td>
+                            @else
+                                <td>{{ $item->order_trucking ? $item->order_trucking->container : '-' }}</td>
+                            @endif
+                            @if ($item->order)
+                                <td>{{ $item->order->nopol ?? '-' }}</td>
+                            @else
+                                <td>{{ $item->order_trucking ? ($item->order_trucking->kendaraan ? $item->order_trucking->kendaraan->nopol : '-') : '-' }}</td>
+                            @endif
+                            @if ($item->order)
                                 <td>{{ $item->order->invoice ?? '-' }}</td>
                             @else
-                                <td>-</td>
+                                <td>{{ $item->order_trucking ? $item->order_trucking->invoice : '-' }}</td>
                             @endif
                             @if ($item->order)
                                 <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
