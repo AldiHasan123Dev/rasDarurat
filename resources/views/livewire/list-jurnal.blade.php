@@ -62,7 +62,7 @@
                             <td>{{ $item->coa->kode }}</td>
                             <td>{{ $item->coa->nama }}</td>
                             @if ($item->order)
-                                @if ($item->kode=='1.1.3.1'||$item->kode=='5.1.1'||$item->kode=='1.1.6.2')
+                                @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
                                     <td></td>
                                 @else
                                     <td>{{ $item->order->container ?? '-' }}</td>
@@ -81,7 +81,7 @@
                                 <td>{{ $item->order_trucking ? $item->order_trucking->invoice : '-' }}</td>
                             @endif
                             @if ($item->order)
-                                @if ($item->kode=='1.1.3.1'||$item->kode=='5.1.1'||$item->kode=='1.1.6.2')
+                                @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
                                     <td>{{ $item->order->job }}</td>
                                 @else
                                     <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
