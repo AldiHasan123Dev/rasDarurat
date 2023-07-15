@@ -65,6 +65,7 @@
             <button class="py-2 px-3 btn btn-success" onclick="tambahTarif()">Tambah Tarif Agen</button>
             <button class="py-2 px-3 btn btn-primary" onclick="editTarif()">Edit Tarif Agen</button>
             <button class="py-2 px-3 btn btn-danger" onclick="deleteTarif()">Delete Tarif Agen</button>
+            <button class="py-2 px-3 btn btn-secondary" onclick="nonAktif()">Non Aktif</button>
         </div>
         <div class="card-body">
             <div class="table-responsives">
@@ -281,6 +282,28 @@
             }
         });
     });
+
+    function nonAktif(){
+        if(confirm('are you sure?')){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST",
+                url: "{{ route('tarifagen.store') }}",
+                data:{
+                    tarif_id:tarif_id,
+                    is_active:0,
+                },
+                success: function (response) {
+                    $("#jqGrid").jqGrid('setGridParam', {
+                        postData: {agen_id:agen_id }
+                    }).trigger('reloadGrid');
+                    alert(response);
+                }
+            });
+        }
+    }
 
     function tambahTarif(){
         tarif_id = null;

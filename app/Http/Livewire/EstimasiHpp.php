@@ -2,6 +2,8 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Agen;
+use App\Models\Customer;
 use App\Models\Lain;
 use App\Models\Lokasi;
 use App\Models\LSS;
@@ -14,27 +16,36 @@ use Livewire\Component;
 
 class EstimasiHpp extends Component
 {
-    public $lokasi, $pelayarans, $data, $active, $lokasiPelayaran;
-    public $cont, $stuffing, $dari, $tujuan, $pelayaran;
+    public $lokasi, $pelayarans, $agens, $data, $active, $lokasiPelayaran, $customers;
+    public $cont, $stuffing, $dari, $tujuan, $pelayaran, $agen, $pembayar_id;
     public $hpp, $margin, $r, $total, $pph, $total_pph, $ppn, $total_ppn;
 
     public function mount()
     {
         $this->hitung();
-        $this->lokasi = TarifTrucking::where('customer_id',2)->where('tipe',20)->get();
+        $this->lokasi = Lokasi::orderBy('nama')->get();
         $this->pelayarans = Pelayaran::orderBy('nama')->get();
         $this->cont = 20;
         $this->stuffing = 'dalam';
-        $this->dari = 41;
-        $this->tujuan = 114;
+        $this->dari = 'PELABUHAN SURABAYA';
+        $this->tujuan = 'JAYAPURA';
         $this->pelayaran = 3;
         $this->active = false;
-        $this->lokasiPelayaran = LSS::get();
+        $this->lokasiPelayaran = Lokasi::orderBy('nama')->get();
+        $this->agens = Agen::where('kota',$this->tujuan)->get();
+        $this->agen = 1;
+        $this->customers = Customer::orderBy('nama')->get(['id','nama']);
     }
 
     public function changeCont()
     {
         $this->lokasi = TarifTrucking::where('customer_id',2)->where('tipe',$this->cont)->get();
+    }
+
+    public function changeTujuan()
+    {
+        $this->agens = Agen::where('kota','LIKE','%'.$this->tujuan.'%')->get();
+        $this->agen = '';
     }
 
     public function render()
@@ -45,18 +56,28 @@ class EstimasiHpp extends Component
     public function hitung()
     {
         $truk = TarifTrucking::find($this->dari);
-        $lss = LSS::where('lokasi_id',$this->tujuan)->first();
-        $thc = THC::where('lokasi_id',$this->tujuan)->first();
-        $agen = TarifAgen::where('dari',$this->dari)->where('tujuan',$this->tujuan)->whereHas('shipment', function($q){
-                    $q->where('nama','LIKE','%'.$this->cont.'%');
-                })->where('is_active',1)->first();
-        $pelayarant = TarifPelayaran::where('tujuan',$this->tujuan)->whereHas('shipment', function($q){
-                    $q->where('nama','LIKE','%'.$this->cont.'%');
-                })->where('is_active',1)->first();
-
+        $lss = LSS::whereHas('lokasi',function($q){
+            $q->where('nama','like','%'.$this->tujuan.'%');
+        })->first();
+        $thc = THC::whereHas('lokasi',function($q){
+            $q->where('nama','like','%'.$this->tujuan.'%');
+        })->first();
+        $agen = TarifAgen::where('agen_id',$this->agen)
+                    ->where('pembayar_id',$this->pembayar_id)
+                    ->whereHas('dariInfo', function($q){
+                        $q->where('nama',$this->dari);
+                    })->whereHas('tujuanInfo',function($q){
+                        $q->where('nama',$this->tujuan);
+                    })->where('is_active',1)->first();
+        $pelayarant = TarifPelayaran::where('pelayaran_id',$this->pelayaran)
+                    ->whereHas('tujuanInfo',function($q){
+                        $q->where('nama',$this->tujuan);
+                    })->whereHas('shipment', function($q){
+                        $q->where('nama','LIKE','%'.$this->cont.'%');
+                    })->where('is_active',1)->first();
         $stuffing = $this->stuffing == 'dalam' ? 'luar' : 'dalam';
         $lain = Lain::where('nama','NOT LIKE','%'.$stuffing.'%')->get();
-        $data['TRUCKING'] = $truk->tarif ?? 0;
+        $data['TRUCKING'] = $this->stuffing=='dalam'? 0 : ($truk->tarif??0);
         $data['AGEN'] = $agen->tarif ?? 0;
         $data['PELAYARAN'] = $pelayarant->tarif ?? 0;
         $data['LSS'] = $this->cont == 20 ? ($lss->cont_20??0) : ($lss->cont_40??0);

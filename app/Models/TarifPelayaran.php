@@ -20,6 +20,7 @@ class TarifPelayaran extends Model
         'tipe',
         'tarif',
         'kubikasi',
+        'komoditi',
         'keterangan',
         'is_active',
     ];

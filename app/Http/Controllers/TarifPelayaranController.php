@@ -153,7 +153,10 @@ class TarifPelayaranController extends Controller
             });
         }
         if(request('keterangan')){
-            $query->where('keterangan','LIKE','%'.request('tipe').'%');
+            $query->where('keterangan','LIKE','%'.request('keterangan').'%');
+        }
+        if(request('komoditi')){
+            $query->where('komoditi','LIKE','%'.request('komoditi').'%');
         }
 
         $data = $query->orderBy('is_active','desc')->orderBy('tanggal','desc')->skip($start)->take($limit)->get();

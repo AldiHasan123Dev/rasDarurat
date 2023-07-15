@@ -67,6 +67,7 @@
             <button class="py-2 px-3 btn btn-success" onclick="tambahTarif()">Tambah Tarif Pelayaran</button>
             <button class="py-2 px-3 btn btn-primary" onclick="editTarif()">Edit Tarif Pelayaran</button>
             <button class="py-2 px-3 btn btn-danger" onclick="deleteTarif()">Hapus Tarif Pelayaran</button>
+            <button class="py-2 px-3 btn btn-secondary" onclick="nonAktif()">Non Aktif</button>
         </div>
         <div class="card-body">
             <div class="table-responsives">
@@ -168,6 +169,7 @@
             {search:true, name: 'tipe', label : 'tipe'},
             {search:true, name: 'tarif', label : 'tarif'},
             {search:true, name: 'kubikasi', label : 'kubikasi'},
+            {search:true, name: 'komoditi', label : 'komoditi'},
             {search:true, name: 'keterangan', label : 'keterangan'},
             {search:true, name: 'is_active', label : 'status'},
             {search:false, hidden:true, name: 'dari_id', label : 'status'},
@@ -196,6 +198,7 @@
             let tarif = $(this).jqGrid('getCell', rowId, 'tarif_nominal');
             let kubikasi = $(this).jqGrid('getCell', rowId, 'kubikasi_nominal');
             let keterangan = $(this).jqGrid('getCell', rowId, 'keterangan');
+            let komoditi = $(this).jqGrid('getCell', rowId, 'komoditi');
             let is_active = $(this).jqGrid('getCell', rowId, 'is_active');
             $('#is_active_1').attr('checked',false);
             $('#is_active_0').attr('checked',false);
@@ -211,6 +214,7 @@
             $('#tarif').val(tarif);
             $('#kubikasi').val(kubikasi);
             $('#keterangan').val(keterangan);
+            $('#komoditi').val(komoditi);
             $('#tujuan').val(tujuan).trigger('change');
             $('#dari').val(dari).trigger('change');
         },
@@ -269,6 +273,28 @@
             }
         });
     });
+
+    function nonAktif(){
+        if(confirm('are you sure?')){
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: "POST",
+                url: "{{ route('tarifpelayaran.store') }}",
+                data:{
+                    tarif_id:tarif_id,
+                    is_active:0,
+                },
+                success: function (response) {
+                    $("#jqGrid").jqGrid('setGridParam', {
+                            postData: {pelayaran_id:pelayaran_id }
+                    }).trigger('reloadGrid');
+                    alert(response);
+                }
+            });
+        }
+    }
 
     function tambahTarif(){
         tarif_id = null;

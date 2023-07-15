@@ -11,6 +11,7 @@
     <x-input :value="$tarifpelayaran->tujuan??old('tujuan')" :col="6" :label="'Tujuan'" :type="'select'" :options="$lokasi" :name="'tujuan'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->tarif??old('tarif')" :col="6" :label="'Tarif'" :type="'number'" :name="'tarif'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->kubikasi??old('kubikasi')" :col="6" :label="'Kubikasi'" :type="'number'" :name="'kubikasi'" :required="true"></x-input>
+    <x-input :value="$tarifpelayaran->komoditi??old('komoditi')" :col="12" :label="'Komoditi'" :type="'text'" :name="'komoditi'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'text'" :name="'keterangan'" :required="true"></x-input>
     <div class="col-6 mb-2">
         <label for="is_active_1"><input type="radio" name="is_active" value="1" id="is_active_1" checked> Active</label>

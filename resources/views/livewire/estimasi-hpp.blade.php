@@ -19,15 +19,15 @@
                 <label>Dari</label>
                 <select class="form-control" wire:model="dari" id="dari">
                     @foreach ($lokasi as $item)
-                    <option value="{{ $item->id }}">{{ $item->tujuan->tujuanInfo->nama }}</option>
+                    <option value="{{ $item->nama }}">{{ $item->nama }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="mb-2">
                 <label>Tujuan</label>
-                <select class="form-control" wire:model="tujuan" id="tujuan">
+                <select class="form-control" wire:model="tujuan" wire:change="changeTujuan" id="tujuan">
                     @foreach ($lokasiPelayaran as $item)
-                    <option value="{{ $item->lokasi_id }}">{{ $item->lokasi->nama }}</option>
+                    <option value="{{ $item->nama }}">{{ $item->nama }}</option>
                     @endforeach
                 </select>
             </div>
@@ -35,6 +35,22 @@
                 <label>Pelayaran</label>
                 <select class="form-control" wire:model="pelayaran" id="pelayaran">
                     @foreach ($pelayarans as $item)
+                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>Agen</label>
+                <select class="form-control" wire:model="agen" id="agen">
+                    @foreach ($agens as $item)
+                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-2">
+                <label>Pembayar</label>
+                <select class="form-control" wire:model="pembayar_id" id="pembayar_id">
+                    @foreach ($customers as $item)
                     <option value="{{ $item->id }}">{{ $item->nama }}</option>
                     @endforeach
                 </select>
