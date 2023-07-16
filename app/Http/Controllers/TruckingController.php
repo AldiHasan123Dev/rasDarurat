@@ -126,11 +126,27 @@ class TruckingController extends Controller
 
     public function preInvoice()
     {
+        // $data1 = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
+        //     ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
+        //     ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
+        //     ->where('kendaraan.milik','R1')
+        //     ->where('customer_trucking.r2',0)
+        //     ->whereNull('order_trucking.invoice')
+        //     ->whereNotNull('order_trucking.tgl_total')
+        //     ->whereNotNull('order_trucking.sj_kembali_fa')
+        //     ->orderBy('customer')
+        //     ->orderBy('tgl_muat')
+        //     ->get()
+        //     ->groupBy('customer');
+
         $data1 = OrderTrucking::join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id')
             ->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id')
             ->select('order_trucking.*','customer_trucking.nama as customer','customer_trucking.id as id_customer')
             ->where('kendaraan.milik','R1')
-            ->where('customer_trucking.r2',0)
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.tgl_total')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orWhere('customer_trucking.r1',1)
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.tgl_total')
             ->whereNotNull('order_trucking.sj_kembali_fa')
@@ -178,19 +194,10 @@ class TruckingController extends Controller
         if(!$order){
             return back()->with('danger','Invoice Tidak ditemukan!');
         }
-        $r1s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
-            $q->where('milik','R1');
-            $q->orWhere('milik','vendor');
-        })->whereHas('customer', function($a){
-            $a->where('r2',0);
-        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
-
-        $r2s = OrderTrucking::where('invoice',$invoice)->whereHas('kendaraan', function($q){
-            $q->where('milik','R2');
-        })->orWhereHas('customer', function($a){
-            $a->where('r2',1);
-        })->where('invoice',$invoice)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
-        return view('admin.trucking.invoice', compact('order','r1s','r2s','invoice'));
+        $transaksi = TransaksiTrucking::where('invoice',request('invoice'))->first();
+        $tipe = $transaksi->tipe;
+        $data = OrderTrucking::where('invoice',$invoice)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        return view('admin.trucking.invoice', compact('order','data','tipe','invoice'));
     }
 
     public function cetak_invoice(Request $request)
@@ -206,29 +213,19 @@ class TruckingController extends Controller
         }
         $order = OrderTrucking::whereIn('id',$order_id)->first();
         $null_job = OrderTrucking::whereIn('id',$order_id)->whereNull('order_id')->count();
-        $tipe = $order->kendaraan->milik;
-        $r1s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
-            $q->whereIn('milik',['R1','vendor']);
-        })->whereHas('customer', function($a){
-            $a->where('r2',0);
-        })->orderBy('tgl_muat')->get()->groupBy('tarif_id');
 
-        $r2s = OrderTrucking::whereIn('id',$order_id)->whereHas('kendaraan', function($q){
-            $q->where('milik','R2');
-        })->orWhereHas('customer', function($a){
-            $a->where('r2',1);
-        })->whereIn('id',$order_id)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
+        $tipe = $request->tipe;
+        $data = OrderTrucking::whereIn('id',$order_id)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
 
-        $tipe = $r2s->count() > 0 ? 'R2' : $tipe;
-
-        if($r1s->count()>0&&$r2s->count()>0){
-            return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
-        }
-        return view('admin.trucking.invoice', compact('orders','order','r1s','r2s','order_id','tipe','null_job'));
+        // if(count($r1s)>0&&count($r2s)>0){
+        //     return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
+        // }
+        return view('admin.trucking.invoice', compact('orders','order','data','order_id','tipe','null_job'));
     }
 
     public function generate_invoice(Request $request)
     {
+
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
         $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
@@ -238,15 +235,9 @@ class TruckingController extends Controller
         $no3 = 0;
         if($request->tipe=='R1'){
             $no1 = TransaksiTrucking::max('order_r1') + 1;
-            if($no1==1){
-                $no1 = 109;
-            }
             $invoice = sprintf('%03d',$no1).'/'.$month_roman.'/'.date('y');
         }else if($request->tipe=='R2'){
             $no2 = TransaksiTrucking::max('order_r2') + 1;
-            if($no2==1){
-                $no2 = 53;
-            }
             $invoice = sprintf('%03d',$no2).'/RAS-LT/'.$month_roman.'/'.date('y');
         }else{
             $no3= TransaksiTrucking::max('order_vendor') + 1;
@@ -281,14 +272,24 @@ class TruckingController extends Controller
             $orders = OrderTrucking::whereIn('id',$order_id)->get();
 
             $template = TemplateJurnal::find(9);
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+            $month = date('m');
+            $month1 = date('m',strtotime($order->tgl_muat));
+            if($month1!=$month){
+                $carbon = new Carbon($order->tgl_muat);
+                $date = $carbon->endOfMonth()->toDateString();
+                $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($date)))->whereYear('created_at',date('Y',strtotime($date)))->max('no') + 1;
+                $nomor = sprintf('%02d',date('m',strtotime($date))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($date));
+            }else{
+                $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+                $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+                $date = date('Y-m-d');
+            }
             foreach ($template->template_items as $key => $item) {
                 $name = $item->keterangan;
                 $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
                 $cont = $order->container;
                 $seal = $order->seal;
-                $order_id = $order->order ? $order->order->id : null;
+                // $order_id = $order->order ? $order->order->id : null;
                 $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
                 $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
                 $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
@@ -325,7 +326,7 @@ class TruckingController extends Controller
                         'credit' => 0,
                         'tipe' => 'JNL',
                         'no' => $no,
-                        'created_at' => date('Y-m-d'),
+                        'created_at' => $date,
                     ]);
                 }
                 if($item->coa_credit_id==87){
@@ -339,7 +340,7 @@ class TruckingController extends Controller
                             'debit' => 0,
                             'tipe' => 'JNL',
                             'no' => $no,
-                            'created_at' => date('Y-m-d'),
+                            'created_at' => $date,
                         ]);
                     }
                 }
@@ -356,13 +357,19 @@ class TruckingController extends Controller
                                     'debit' => 0,
                                     'tipe' => 'JNL',
                                     'no' => $no,
-                                    'created_at' => date('Y-m-d'),
+                                    'created_at' => $date,
                                 ]);
                             }
                         }
                     }
                 }
             }
+            OrderTrucking::whereIn('id',$order_id)->update([
+                'jurnal_piutang' => $nomor,
+            ]);
+            $trx->update([
+                'jurnal_piutang' => $nomor,
+            ]);
         }
 
         return redirect()->route('trucking.cetak_get.invoice',['invoice'=>$invoice]);

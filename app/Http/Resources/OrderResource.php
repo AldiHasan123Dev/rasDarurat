@@ -86,6 +86,7 @@ class OrderResource extends JsonResource
             'm3' => $this->bttb->sum('vol'),
             'berat' => $this->bttb->sum('berat'),
             'add_cost' => number_format($this->tagihan->sum('jumlah')),
+            'jurnal_piutang' => $this->jurnal_piutang,
             'jurnal' => implode(',',array_unique($this->jurnals()->pluck('nomor')->toArray())),
         ];
     }

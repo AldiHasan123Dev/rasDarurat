@@ -100,7 +100,7 @@
             datatype: 'json',
             colModel: [
                 {search:true, frozen:true, name: 'id', label : 'ID', sorttype: 'number', width:50},
-                {search:true, frozen:true, name: 'jurnal', label : 'no jurnal', width:90},
+                {search:true, frozen:true, name: 'jurnal_piutang', label : 'Jurnal Otomatis', width:90},
                 {search:true, frozen:true, name: 'tgl_muat', label : 'Tanggal Muat', sorttype: 'date', datefmt:'d/m/y', width:80},
                 {search:true, frozen:true, name: 'invoice', label : 'Invoice', width:80},
                 {search:true, frozen:true, name: 'tgl_invoice', label : 'Tgl Invoice', width:80},
@@ -170,11 +170,12 @@
             caption: "Order Trucking",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
+                let nomor = $(this).jqGrid('getCell', rowId, 'jurnal_piutang');
                 $.ajax({
                 type: "POST",
                 url: "{{ url('api/get-jurnal') }}",
                 data:{
-                    order_trucking_id:id
+                    nomor:nomor
                 },
                 success: function (response) {
                     let html = '';

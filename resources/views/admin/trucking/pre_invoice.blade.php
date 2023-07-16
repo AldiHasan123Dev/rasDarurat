@@ -18,6 +18,7 @@
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking (R1)</p>
                     <form action="{{ route('trucking.cetak.invoice') }}" method="post">
+                        <input type="hidden" name="tipe" value="R1">
                         <input type="hidden" name="order_id" id="order_id1">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
                         @csrf
@@ -113,6 +114,7 @@
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking (R2)</p>
                     <form action="{{ route('trucking.cetak.invoice') }}" method="post">
+                        <input type="hidden" name="tipe" value="R2">
                         <input type="hidden" name="order_id" id="order_id2">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
                         @csrf
@@ -208,6 +210,7 @@
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking Vendor</p>
                     <form action="{{ route('trucking.cetak.invoice') }}" method="post">
+                        <input type="hidden" name="tipe" value="R1">
                         <input type="hidden" name="order_id" id="order_id_vendor">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')" id="generate-invoice-vendor"><i class="fas fa-print"></i> Cetak Invoice</button>
                         @csrf

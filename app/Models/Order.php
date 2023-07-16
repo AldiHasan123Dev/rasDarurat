@@ -13,6 +13,7 @@ class Order extends Model
 
     protected $table = 'order';
     protected $fillable = [
+        'jurnal_piutang',
         'jadwal_kapal_id',
         'no',
         'job',

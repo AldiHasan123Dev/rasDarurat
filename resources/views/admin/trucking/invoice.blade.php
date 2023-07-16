@@ -199,7 +199,7 @@
         <div class="card p-3 mt-3">
             <div id="print">
                 @if ($order->customer_id==2)
-                    @if ($r1s->count()>0)
+                    @if ($tipe=='R1')
                     <div class="invoice-box first-page2">
                         {{-- <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
@@ -267,7 +267,7 @@
                                 $rit = 0;
                                 $pph = 0;
                             @endphp
-                            @foreach ($r1s as $item)
+                            @foreach ($data as $item)
                             @php
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
@@ -294,7 +294,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @foreach ($r1s as $ord)
+                            @foreach ($data as $ord)
                                 @foreach ($ord as $item)
                                     @if ($item->tagihans->sum('jumlah')>0)
                                     @php
@@ -369,7 +369,7 @@
                                     </tr>
                                 </table>
                                 <table style="font-size: .7rem" class="mt-2">
-                                    @foreach ($r1s as $orderss)
+                                    @foreach ($data as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
                                             <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
@@ -466,7 +466,7 @@
                                 $rit = 0;
                                 $pph = 0;
                             @endphp
-                            @foreach ($r1s as $item)
+                            @foreach ($data as $item)
                             @php
                                 $total += round(($item->first()->tarif->tarif/0.97)) * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
@@ -494,7 +494,7 @@
                                 </tr>
 
                             @endforeach
-                            @foreach ($r1s as $ord)
+                            @foreach ($data as $ord)
                                 @foreach ($ord as $item)
                                     @if ($item->tagihans->sum('jumlah')>0)
                                     @php
@@ -569,7 +569,7 @@
                                     </tr>
                                 </table>
                                 <table style="font-size: .7rem" class="mt-2">
-                                    @foreach ($r1s as $orderss)
+                                    @foreach ($data as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
                                             <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
@@ -600,7 +600,7 @@
                     </div>
                     @endif
                 @else
-                    @if ($r1s->count()>0)
+                    @if ($tipe=='R1')
                     @php
                         $pph = 0;
                     @endphp
@@ -673,7 +673,7 @@
                                 $rit = 0;
                                 $pph = 0;
                             @endphp
-                            @foreach ($r1s as $item)
+                            @foreach ($data as $item)
                             @php
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
@@ -701,7 +701,7 @@
                                 </tr>
 
                             @endforeach
-                            @foreach ($r1s as $ord)
+                            @foreach ($data as $ord)
                                 @foreach ($ord as $item)
                                     @if ($item->tagihans->sum('jumlah')>0)
                                     @php
@@ -790,7 +790,7 @@
                                     </tr>
                                 </table>
                                 <table style="font-size: .7rem" class="mt-2">
-                                    @foreach ($r1s as $orderss)
+                                    @foreach ($data as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
                                             <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>
@@ -813,7 +813,7 @@
                     </div>
                     @endif
 
-                    @if ($r2s->count()>0)
+                    @if ($tipe=='R2')
                     <div class="invoice-box first-page">
                         <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
@@ -881,7 +881,7 @@
                                 $rit = 0;
                                 $pph = 0;
                             @endphp
-                            @foreach ($r2s as $item)
+                            @foreach ($data as $item)
                             @php
                                 $total += $item->first()->tarif->tarif * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
@@ -908,7 +908,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            @foreach ($r2s as $ord)
+                            @foreach ($data as $ord)
                                 @foreach ($ord as $item)
                                     @if ($item->tagihans->sum('jumlah')>0)
                                     @php
@@ -997,7 +997,7 @@
                                     </tr>
                                 </table>
                                 <table style="font-size: .7rem" class="mt-2">
-                                    @foreach ($r2s as $orderss)
+                                    @foreach ($data as $orderss)
                                         @foreach ($orderss as $item)
                                         <tr>
                                             <td style="width: 150px">{{ $item->container }}/{{ $item->seal }}</td>

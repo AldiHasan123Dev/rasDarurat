@@ -21,6 +21,9 @@ class JurnalController extends Controller
     public function index()
     {
         $query = Jurnal::query();
+        if(request('nomor')){
+            $query->where('nomor',request('nomor'));
+        }
         if(request('order_id')){
             $query->where('order_id',request('order_id'));
         }

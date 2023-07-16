@@ -26,6 +26,7 @@
                             <tr>
                                 <th>ID.</th>
                                 <th>PPH 23</th>
+                                <th>Inv R1</th>
                                 <th>Inv R2</th>
                                 <th>Nama</th>
                                 <th>PIC</th>
@@ -141,6 +142,7 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'pph_23', name: 'pph_23' },
+                { data: 'r1', name: 'r1' },
                 { data: 'r2', name: 'r2' },
                 { data: 'nama', name: 'nama' },
                 { data: 'pic', name: 'pic' },

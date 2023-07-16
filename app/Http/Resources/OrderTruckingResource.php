@@ -109,6 +109,7 @@ class OrderTruckingResource extends JsonResource
             'ambil_empty_teluk_langon' => $this->ambil_empty_teluk_langon,
             'bongkar_full_teluk_langon' => $this->bongkar_full_teluk_langon,
             'is_vendor' => $this->kendaraan->milik != 'vendor' ? false : true,
+            'jurnal_piutang' => $this->jurnal_piutang,
             'jurnal' => implode(',',array_unique($this->jurnals()->pluck('nomor')->toArray())),
         ];
     }

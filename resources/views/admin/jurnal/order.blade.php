@@ -101,7 +101,7 @@
         datatype: 'json',
         colModel: [
             // {search:true, frozen:true, name: 'invoice', label : 'invoice'},
-            {search:true, frozen:true, name: 'jurnal', label : 'No Jurnal'},
+            {search:true, frozen:true, name: 'jurnal_piutang', label : 'Jurnal Otomatis'},
             {search:true, frozen:true, name: 'job', label : 'job'},
             {search:true, frozen:true, name: 'no', label : 'no'},
             // {search:true, frozen:true, name: 'asuransi', label : 'asuransi'},
@@ -154,11 +154,12 @@
         onCellSelect: function (rowId, iRow, iCol, e) {
             id = $(this).jqGrid('getCell', rowId, 'id');
             let no = $(this).jqGrid('getCell', rowId, 'no');
+            let jurnal_piutang = $(this).jqGrid('getCell', rowId, 'jurnal_piutang');
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/get-jurnal') }}",
                 data:{
-                    order_id:id
+                    nomor:jurnal_piutang,
                 },
                 success: function (response) {
                     let html = '';
