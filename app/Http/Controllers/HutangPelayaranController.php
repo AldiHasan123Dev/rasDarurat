@@ -57,12 +57,11 @@ class HutangPelayaranController extends Controller
     public function datatable()
     {
         $data1 = HutangPelayaran::join('order', 'order.id', '=', 'hutang_pelayaran.order_id')
-            ->join('tarif_pelayaran', 'tarif_pelayaran.id', '=', 'hutang_pelayaran.tarif_pelayaran_id')
             ->select('order.*')
-            ->select('tarif_pelayaran.*', 'tarif_pelayaran.id as tarif_pelayaran_id')
+            // ->select('tarif_pelayaran.*', 'tarif_pelayaran.id as tarif_pelayaran_id')
             // ->orderBy('created_at')
             ->get()
-            ->groupBy('group_job');
+            ->groupBy('order.job');
 
         // dd($data1);
         return view('admin.hutangpelayaran.index', compact('data1'));

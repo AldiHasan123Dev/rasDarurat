@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($data1 as $hutpel => $orders)
+                            @forelse ($data1 as $order => $orders)
                                 @php
                                     $total = 0;
                                 @endphp
@@ -52,12 +52,13 @@
                                     <tr>
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center"
-                                                rowspan="{{ $order->count() }}">{{ $hutpel }}</td>
+                                                rowspan="{{ $orders->count() }}">{{ $order }}</td>
                                         @endif
                                         <td class="text-center"><input type="checkbox" name="order_id1"
                                                 value="{{ $order->id }}"></td>
-                                        <td>{{ $order->tarif }}</td>
-                                        <td>{{ $order->tarif }}</td>
+                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order-> }}</td>
+                                        <td>{{ $order->no_job }}</td>
                                     </tr>
                                 @endforeach
                                 <tr class="border-bottom border-dark">
