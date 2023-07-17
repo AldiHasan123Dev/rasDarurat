@@ -214,7 +214,9 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('jurnal-buku-besar',[JurnalController::class,'buku_besar'])->name('jurnal.buku_besar');
     Route::get('jurnal-trucking',[JurnalController::class,'trucking'])->name('jurnal.trucking');
     Route::get('jurnal-merge',[JurnalController::class,'merge'])->name('jurnal.merge');
+    Route::get('jurnal-manual',[JurnalController::class,'manual'])->name('jurnal.manual');
     Route::post('jurnal-merge',[JurnalController::class,'store_merge'])->name('jurnal.merge.store');
+    Route::post('jurnal-manual',[JurnalController::class,'store_manual'])->name('jurnal.manual.store');
     Route::post('jurnal-kolektif',[JurnalController::class,'store_kolektif'])->name('jurnal.kolektif.store');
     Route::post('jurnal-balik',[JurnalController::class,'store_balik'])->name('jurnal.balik.store');
     Route::post('jurnal-trucking',[JurnalController::class,'store_trucking'])->name('jurnal.trucking.store');
@@ -242,5 +244,6 @@ Route::prefix('admin')->middleware(['auth','protect'])->group( function(){
     Route::get('sync-pull',[SyncController::class,'pull']);
     Route::get('sync-coa',[SyncController::class,'coa']);
     Route::get('sync-jurnal',[SyncController::class,'jurnal']);
+    Route::get('sync-penjurnal',[SyncController::class,'penjurnal']);
 });
 // Route::view('test','test');

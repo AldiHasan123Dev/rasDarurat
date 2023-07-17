@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="col-12 mt-2">
-                <form action="{{ route('jurnal.update', $data[0]) }}" method="POST" class="card p-3">
+                <form action="{{ route('jurnal.update', $data[0]) }}" method="POST" class="card p-3" id="form-jurnal">
                     @csrf
                     @method('PUT')
                     <span>EDIT JURNAL</span>
@@ -51,6 +51,7 @@
                     </div>
                     <table class="table table-sm mt-3" id="table-debit">
                         <tr>
+                            <td>#</td>
                             <td>ID Job/Seal</td>
                             <td>COA</td>
                             <td>Keterangan</td>
@@ -59,8 +60,9 @@
                         </tr>
                         @foreach ($data as $i => $temp)
                             <tr>
+                                <td style="width: 50px"><input id="{{ $temp->id }}" type="checkbox" onchange="uncheck(this,{{ $temp->id }})" name="id[]" value="{{ $temp->id }}" checked></td>
                                 <td style="width: 200px">
-                                    <select class="form-control select2" id="job-{{ $i }}" name="jurnal[{{ $temp->id }}][order_id]" style="font-size:.9rem !important">
+                                    <select class="form-control select2" id="job-{{ $temp->id }}" name="jurnal[{{ $temp->id }}][order_id]" style="font-size:.9rem !important">
                                         <option value=""></option>
                                         @foreach ($orders as $item)
                                         <option {{ $temp->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
@@ -68,22 +70,32 @@
                                     </select>
                                 </td>
                                 <td style="width: 200px">
-                                    <select class="form-control select2" id="coa_id-{{ $i }}" name="jurnal[{{ $temp->id }}][coa_id]" style="font-size:.9rem !important">
+                                    <select class="form-control select2" id="coa_id-{{ $temp->id }}" name="jurnal[{{ $temp->id }}][coa_id]" style="font-size:.9rem !important">
                                         <option value=""></option>
                                         @foreach ($coa as $item)
                                         <option {{ $temp->coa_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
                                         @endforeach
                                     </select>
                                 </td>
-                                <td style="width: 300px"><input name="jurnal[{{ $temp->id }}][nama]" id="nama-{{ $i }}" value="{{ $temp->nama }}" style="width: 300px" type="text"></td>
-                                <td><input type="text" name="jurnal[{{ $temp->id }}][debit]" id="debit-{{ $i }}" value="{{ $temp->debit }}"></td>
-                                <td><input type="text" name="jurnal[{{ $temp->id }}][credit]" id="credit-{{ $i }}" value="{{ $temp->credit }}"></td>
+                                <td style="width: 300px"><input name="jurnal[{{ $temp->id }}][nama]" id="nama-{{ $temp->id }}" value="{{ $temp->nama }}" style="width: 300px" type="text"></td>
+                                <td><input type="text" onkeyup="total()" name="jurnal[{{ $temp->id }}][debit]" id="debit-{{ $temp->id }}" value="{{ $temp->debit }}"></td>
+                                <td><input type="text" onkeyup="total()" name="jurnal[{{ $temp->id }}][credit]" id="credit-{{ $temp->id }}" value="{{ $temp->credit }}"></td>
                             </tr>
                         @endforeach
                         <tr>
                             <td colspan="6">
-                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('are you sure?')">Simpan</button>
+                                <button type="button" class="btn btn-sm btn-success" id="btn-save">Simpan</button>
                             </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td style="width: 300px"><b>TOTAL DEBET</b></td>
+                            <td><b id="total_debit"></b></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 300px"><b>TOTAL CREDIT</b></td>
+                            <td><b id="total_credit"></b></td>
                         </tr>
                     </table>
                 </form>
@@ -95,5 +107,58 @@
 @section('script')
     <script>
         $('.select2').select2();
+        var total_credit = 0;
+        var total_debit = 0;
+        function uncheck (e,id) {
+            if($('#' + id).is(":checked")){
+                $('#job-'+id).attr('disabled',false);
+                $('#coa_id-'+id).attr('disabled',false);
+                $('#nama-'+id).attr('disabled',false)
+                $('#amount-'+id).attr('disabled',false)
+                $('#debit-'+id).attr('disabled',false)
+                $('#credit-'+id).attr('disabled',false)
+            }else{
+                $('#job-'+id).attr('disabled',true);
+                $('#coa_id-'+id).attr('disabled',true);
+                $('#nama-'+id).attr('disabled',true)
+                $('#amount-'+id).attr('disabled',true)
+                $('#debit-'+id).attr('disabled',true)
+                $('#credit-'+id).attr('disabled',true)
+            }
+            total();
+        }
+
+        function total(){
+            var check = $("input[name='id[]']").map(function(){
+                if($(this).is(":checked")){
+                    return $(this).val();
+                }
+            }).get();
+            total_credit = 0;
+            total_debit = 0;
+            for (let i = 0; i < check.length; i++) {
+                const item = check[i];
+                var d = parseInt($('#debit-'+item).val());
+                var c = parseInt($('#credit-'+item).val());
+                if(d!=""){
+                    total_debit+=d;
+                }
+                if(c!=""){
+                    total_credit+=c;
+                }
+            }
+            $('#total_debit').html('Rp. '+total_debit.toLocaleString('en-US'));
+            $('#total_credit').html('Rp. '+total_credit.toLocaleString('en-US'));
+        }
+
+        $('#btn-save').click(function (e) {
+            if(total_debit!=total_credit){
+                alert('Jurnal Tidak Balance debit = '+total_debit+' & credit = '+total_credit+' ! Harap check lagi')
+            }else{
+                if(confirm('are you sure')){
+                    $('#form-jurnal').submit();
+                }
+            }
+        });
     </script>
 @endsection

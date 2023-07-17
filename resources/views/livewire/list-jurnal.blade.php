@@ -61,25 +61,13 @@
                             <td>{{ $item->nomor }}</td>
                             <td>{{ $item->coa->kode }}</td>
                             <td>{{ $item->coa->nama }}</td>
-                            @if ($item->order)
-                                @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
-                                    <td></td>
-                                @else
-                                    <td>{{ $item->order->container ?? '-' }}</td>
-                                @endif
+                            @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
+                                <td></td>
                             @else
-                                <td>{{ $item->order_trucking ? $item->order_trucking->container : '-' }}</td>
+                                <td>{{ $item->container ?? '-' }}</td>
                             @endif
-                            @if ($item->order)
-                                <td>{{ $item->order->nopol ?? '-' }}</td>
-                            @else
-                                <td>{{ $item->order_trucking ? ($item->order_trucking->kendaraan ? $item->order_trucking->kendaraan->nopol : '-') : '-' }}</td>
-                            @endif
-                            @if ($item->order)
-                                <td>{{ $item->order->invoice ?? '-' }}</td>
-                            @else
-                                <td>{{ $item->order_trucking ? $item->order_trucking->invoice : '-' }}</td>
-                            @endif
+                            <td>{{ $item->nopol ?? '-' }}</td>
+                            <td>{{ $item->invoice ?? '-' }}</td>
                             @if ($item->order)
                                 @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
                                     <td>{{ $item->order->job }}</td>
