@@ -34,36 +34,43 @@
                     <table class="table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
                         <thead>
                             <tr>
-                                <th style="width: 150px">Group id</th>
+                                <th style="width: 150px">Group JOB</th>
                                 <th style="width: 30px">#</th>
-                                <th>ID.</th>
+                                <th>ID JOB.</th>
                                 <th>Pelayaran</th>
-                                <th>JOB</th>
-                                <th>Jumlah</th>
-                                <th>Status</th>
+                                <th>Container</th>
+                                <th>Seal</th>
+                                <th>Tarif Pelayaran</th>
+                                {{-- <th>Status</th> --}}
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($data1 as $order => $orders)
+                            @forelse ($data as $hutpel => $orders)
                                 @php
                                     $total = 0;
                                 @endphp
                                 @foreach ($orders as $order)
+                                    @php
+                                        $total += $order->jumlah;
+                                    @endphp
                                     <tr>
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center"
                                                 rowspan="{{ $orders->count() }}">{{ $order }}</td>
                                         @endif
                                         <td class="text-center"><input type="checkbox" name="order_id1"
-                                                value="{{ $order->id }}"></td>
-                                        <td>{{ $order->id }}</td>
-                                        <td>{{ $order-> }}</td>
-                                        <td>{{ $order->no_job }}</td>
+                                                value="{{ $order->order->id }}"></td>
+                                        <td>{{ $order->order->job }}-{{ sprintf('%02d', $order->order->no_job) }}</td>
+                                        <td>{{ $order->order->jadwal_kapal->pelayaran->nama }}</td>
+                                        <td>{{ $order->order->container }}</td>
+                                        <td>{{ $order->order->seal }}</td>
+                                        <td>Rp. {{ number_format($order->jumlah ?? 0) }}</td>
+                                        {{-- <td></td> --}}
                                     </tr>
                                 @endforeach
                                 <tr class="border-bottom border-dark">
                                     <td colspan="5" class="text-center"><b>TOTAL</b></td>
-                                    {{-- <td colspan="8" class="border border-dark"><b>Rp. {{ number_format($total) }}</b> --}}
+                                    <td colspan="8" class="border border-dark"><b>Rp. {{ number_format($total) }}</b>
                                     </td>
                                 </tr>
                             @empty

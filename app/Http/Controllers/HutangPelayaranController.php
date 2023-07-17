@@ -13,7 +13,8 @@ class HutangPelayaranController extends Controller
 {
     public function index()
     {
-        return view('admin.hutangpelayaran.index');
+        $data = HutangPelayaran::with('order')->get()->groupBy('order.job');
+        return view('admin.hutangpelayaran.index', compact('data'));
     }
 
     public function store(Request $request)
@@ -39,31 +40,18 @@ class HutangPelayaranController extends Controller
         return back()->with('success', 'Data berhasil dihapus');
     }
 
-    // public function datatable()
-    // {
-    //     $data = HutangPelayaran::all()->sortByDesc('created_at');
-
-    //     return Datatables::of($data)
-    //         ->addColumn('tarif_pelayaran_id', function ($data) {
-    //             return $data->tarif_pelayaran->pelayaran->nama;
-    //         })
-    //         ->addColumn('order_id', function ($data) {
-    //             return $data->order->job . '-' . sprintf('%02d', $data->no_job);
-    //         })
-    //         ->rawColumns(['action'])
-    //         ->make(true);
-    // }
-
     public function datatable()
     {
-        $data1 = HutangPelayaran::join('order', 'order.id', '=', 'hutang_pelayaran.order_id')
-            ->select('order.*')
-            // ->select('tarif_pelayaran.*', 'tarif_pelayaran.id as tarif_pelayaran_id')
-            // ->orderBy('created_at')
-            ->get()
-            ->groupBy('order.job');
+        $data = HutangPelayaran::all()->sortByDesc('created_at');
 
-        // dd($data1);
-        return view('admin.hutangpelayaran.index', compact('data1'));
+        return Datatables::of($data)
+            ->addColumn('tarif_pelayaran_id', function ($data) {
+                return $data->tarif_pelayaran->pelayaran->nama;
+            })
+            ->addColumn('order_id', function ($data) {
+                return $data->order->job . '-' . sprintf('%02d', $data->no_job);
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }
