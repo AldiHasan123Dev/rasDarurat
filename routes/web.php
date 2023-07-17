@@ -129,7 +129,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('templatejurnal', TemplateJurnalController::class);
     Route::resource('templatejurnalitem', TemplateJurnalItemController::class);
     Route::resource('jurnal', JurnalController::class);
-    Route::resource('hutang-agen', HutangAgenController::class);
+    // Route::resource('hutang-agen', HutangAgenController::class);
     Route::get('hutang-pelayaran', [HutangPelayaranController::class, 'datatable'])->name('admin.hutang-pelayaran.datatable');
 
     Route::get('marketing/{marketing}', [OrderController::class, 'index'])->name('order.index.marketing');
