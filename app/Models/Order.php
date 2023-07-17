@@ -135,4 +135,9 @@ class Order extends Model
     {
         return $this->hasMany(Jurnal::class,'order_id');
     }
+
+    public function hutang_pelayaran()
+    {
+        return $this->hasOne(HutangPelayaran::class,'order_id');
+    }
 }
