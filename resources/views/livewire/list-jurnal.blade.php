@@ -61,25 +61,13 @@
                             <td>{{ $item->nomor }}</td>
                             <td>{{ $item->coa->kode }}</td>
                             <td>{{ $item->coa->nama }}</td>
-                            @if ($item->order)
-                                @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
-                                    <td></td>
-                                @else
-                                    <td>{{ $item->order->container ?? '-' }}</td>
-                                @endif
+                            @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
+                                <td></td>
                             @else
-                                <td>{{ $item->order_trucking ? $item->order_trucking->container : '-' }}</td>
+                                <td>{{ $item->container ?? '-' }}</td>
                             @endif
-                            @if ($item->order)
-                                <td>{{ $item->order->nopol ?? '-' }}</td>
-                            @else
-                                <td>{{ $item->order_trucking ? ($item->order_trucking->kendaraan ? $item->order_trucking->kendaraan->nopol : '-') : '-' }}</td>
-                            @endif
-                            @if ($item->order)
-                                <td>{{ $item->order->invoice ?? '-' }}</td>
-                            @else
-                                <td>{{ $item->order_trucking ? $item->order_trucking->invoice : '-' }}</td>
-                            @endif
+                            <td>{{ $item->nopol ?? '-' }}</td>
+                            <td>{{ $item->invoice ?? '-' }}</td>
                             @if ($item->order)
                                 @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
                                     <td>{{ $item->order->job }}</td>
@@ -103,13 +91,18 @@
         <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
         @endif
         <table class="table table-sm mt-2">
+            @if ($total_debit!=$total_credit)
+                <tr>
+                    <td colspan="2" class="text-center text-danger"><div class="alert alert-danger">JURNAL TIDAK BALANCE</div></td>
+                </tr>
+            @endif
             <tr>
                 <td>Debit</td>
-                <td>: {{ number_format($data->sum('debit'),2,',','.') }}</td>
+                <td>: {{ number_format($total_debit,2,',','.') }}</td>
             </tr>
             <tr>
                 <td>Credit</td>
-                <td>: {{ number_format($data->sum('debit'),2,',','.') }}</td>
+                <td>: {{ number_format($total_credit,2,',','.') }}</td>
             </tr>
         </table>
     </div>

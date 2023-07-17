@@ -124,18 +124,24 @@ class TransaksiController extends Controller
                         ]);
                     }
                     if($item->coa_credit_id==25){
-                        if($transaksi->asuransi>0){
-                            Jurnal::create([
-                                'coa_id' => $item->coa_credit_id,
-                                'order_id' => $transaksi->order_id,
-                                'nomor' => $nomor,
-                                'nama' => 'Asuransi '.$transaksi->orderInfo->asuransiInfo->nama,
-                                'credit' => round($transaksi->asuransi),
-                                'debit' => 0,
-                                'tipe' => 'JNL',
-                                'no' => $no,
-                                'created_at' => $date,
-                            ]);
+                        foreach ($transaksi->jobs as $job) {
+                            if($job->asuransi=='ADA EXC'){
+                                if (!is_null($job->asuransi_id)) {
+                                    $asuransi = ($job->asuransiInfo->rate/100) * $job->pertanggungan;
+                                    $admin = $job->asuransiInfo->admin;
+                                    Jurnal::create([
+                                        'coa_id' => $item->coa_credit_id,
+                                        'order_id' => $job->id,
+                                        'nomor' => $nomor,
+                                        'nama' => 'Asuransi '.$job->asuransiInfo->nama,
+                                        'credit' => round($asuransi + $admin),
+                                        'debit' => 0,
+                                        'tipe' => 'JNL',
+                                        'no' => $no,
+                                        'created_at' => '2023-07-15',
+                                    ]);
+                                }
+                            }
                         }
                     }
                     if($item->coa_credit_id==28){

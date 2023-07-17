@@ -156,19 +156,19 @@
                             <td>{{ $item->coa->kode }}</td>
                             <td>{{ $item->coa->nama }}</td>
                             @if ($coa->is_cont)
-                            <td>{{ $item->order ? $item->order->container : '-' }}</td>
+                            <td>{{ $item->container ?? '-' }}</td>
                             @endif
                             @if ($coa->is_nopol)
-                            <td>{{ $item->order ? $item->order->nopol : '-' }}</td>
+                            <td>{{ $item->nopol ?? '-' }}</td>
                             @endif
                             @if ($coa->is_nojob)
                             <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
                             @endif
                             @if ($coa->is_invoice)
-                            <td>{{ $item->order ? $item->order->invoice : '-' }}</td>
+                            <td>{{ $item->invoice ?? '-' }}</td>
                             @endif
                             @if ($coa->is_invoice_trucking)
-                            <td>{{ $item->order_trucking ? $item->order_trucking->invoice : '-' }}</td>
+                            <td>{{ $item->invoice ?? '-' }}</td>
                             @endif
                             <td>{{ $item->nama }}</td>
                             <td>{{ number_format($item->debit,2,',','.') }}</td>

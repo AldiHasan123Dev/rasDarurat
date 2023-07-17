@@ -218,6 +218,20 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('jurnal-balik', [JurnalController::class, 'store_balik'])->name('jurnal.balik.store');
     Route::post('jurnal-trucking', [JurnalController::class, 'store_trucking'])->name('jurnal.trucking.store');
 
+    Route::get('jurnal-kolektif', [JurnalController::class, 'kolektif'])->name('jurnal.kolektif.create');
+    Route::get('jurnal-balik', [JurnalController::class, 'balik'])->name('jurnal.balik.create');
+    Route::get('jurnal-neraca', [JurnalController::class, 'neraca'])->name('jurnal.neraca');
+    Route::get('jurnal-lr', [JurnalController::class, 'laba_rugi'])->name('jurnal.laba_rugi');
+    Route::get('jurnal-buku-besar', [JurnalController::class, 'buku_besar'])->name('jurnal.buku_besar');
+    Route::get('jurnal-trucking', [JurnalController::class, 'trucking'])->name('jurnal.trucking');
+    Route::get('jurnal-merge', [JurnalController::class, 'merge'])->name('jurnal.merge');
+    Route::get('jurnal-manual', [JurnalController::class, 'manual'])->name('jurnal.manual');
+    Route::post('jurnal-merge', [JurnalController::class, 'store_merge'])->name('jurnal.merge.store');
+    Route::post('jurnal-manual', [JurnalController::class, 'store_manual'])->name('jurnal.manual.store');
+    Route::post('jurnal-kolektif', [JurnalController::class, 'store_kolektif'])->name('jurnal.kolektif.store');
+    Route::post('jurnal-balik', [JurnalController::class, 'store_balik'])->name('jurnal.balik.store');
+    Route::post('jurnal-trucking', [JurnalController::class, 'store_trucking'])->name('jurnal.trucking.store');
+
     Route::get('jqgrid-tarif-agent', [TarifAgenController::class, 'jqgrid'])->name('jqgrid.tarif.agent');
     Route::get('jqgrid-tarif-pelayaran', [TarifPelayaranController::class, 'jqgrid'])->name('jqgrid.tarif.pelayaran');
 
@@ -241,5 +255,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-pull', [SyncController::class, 'pull']);
     Route::get('sync-coa', [SyncController::class, 'coa']);
     Route::get('sync-jurnal', [SyncController::class, 'jurnal']);
+    Route::get('sync-penjurnal', [SyncController::class, 'penjurnal']);
 });
 // Route::view('test','test');
