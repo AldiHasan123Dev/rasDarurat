@@ -58,6 +58,7 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center">No.</th>
+                                        <th class="text-center">Tgl Muat</th>
                                         <th>Nama Cust Pembayar</th>
                                         <th>No. Cont / Seal</th>
                                         <th>Tujuan</th>
@@ -75,6 +76,7 @@
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_muat)) }}</td>
                                         <td>{{ $item->customer->nama }}</td>
                                         <td>{{ $item->container }} / {{ $item->seal }}</td>
                                         <td>{{ $item->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
