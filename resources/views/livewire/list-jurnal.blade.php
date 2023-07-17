@@ -91,18 +91,18 @@
         <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
         @endif
         <table class="table table-sm mt-2">
-            @if ($data->sum('debit')!=$data->sum('credit'))
+            @if ($total_debit!=$total_credit)
                 <tr>
                     <td colspan="2" class="text-center text-danger"><div class="alert alert-danger">JURNAL TIDAK BALANCE</div></td>
                 </tr>
             @endif
             <tr>
                 <td>Debit</td>
-                <td>: {{ number_format($data->sum('debit'),2,',','.') }}</td>
+                <td>: {{ number_format($total_debit,2,',','.') }}</td>
             </tr>
             <tr>
                 <td>Credit</td>
-                <td>: {{ number_format($data->sum('credit'),2,',','.') }}</td>
+                <td>: {{ number_format($total_credit,2,',','.') }}</td>
             </tr>
         </table>
     </div>

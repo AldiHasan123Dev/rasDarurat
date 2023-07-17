@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class ListJurnal extends Component
 {
-    public $months, $month, $year, $perPage, $search, $tipe;
+    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit;
 
     public function mount($month = null, $tipe = null)
     {
@@ -51,8 +51,24 @@ class ListJurnal extends Component
                 ->orderBy('jurnal.tipe')
                 ->orderBy('jurnal.nomor')
                 ->paginate($this->perPage);
+        $debit =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+                ->leftJoin('order','order.id','=','jurnal.order_id')
+                ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal.created_at',$this->year)
+                ->select('jurnal.*')
+                ->sum('debit');
+        $credit =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+                ->leftJoin('order','order.id','=','jurnal.order_id')
+                ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal.created_at',$this->year)
+                ->select('jurnal.*')
+                ->sum('credit');
         return view('livewire.list-jurnal',[
-            'data' => $data
+            'data' => $data,
+            'total_debit' => $debit,
+            'total_credit' => $credit,
         ]);
     }
 
