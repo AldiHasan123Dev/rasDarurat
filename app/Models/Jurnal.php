@@ -55,4 +55,15 @@ class Jurnal extends Model
     {
         return $this->belongsTo(OrderTrucking::class);
     }
+
+    public function is_balance()
+    {
+        $debit = Jurnal::where('nomor',$this->nomor)->sum('debit');
+        $credit = Jurnal::where('nomor',$this->nomor)->sum('credit');
+        if($debit!=$credit){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

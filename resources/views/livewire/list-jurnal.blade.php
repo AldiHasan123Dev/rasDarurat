@@ -56,7 +56,7 @@
                 </thead>
                 <tbody>
                     @foreach ($data as $item)
-                        <tr>
+                        <tr class="{{ $item->is_balance()?'':'bg-danger text-white' }}">
                             <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                             <td>{{ $item->nomor }}</td>
                             <td>{{ $item->coa->kode }}</td>
