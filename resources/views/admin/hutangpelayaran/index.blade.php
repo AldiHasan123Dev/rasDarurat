@@ -17,18 +17,18 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            {{-- <div class="card-header p-2">
+            <div class="card-header p-2">
                 <div class="d-flex gap-2 justify-content-between">
-                    <p>List Pre Invoice Trucking (R1)</p>
-                    <form action="{{ route('trucking.cetak.invoice') }}" method="post">
-                        <input type="hidden" name="tipe" value="R1">
+                    <p>List Hutang Pelayaran</p>
+                    <form action="{{ route('hutang-pelayaran.cetak.voucher') }}" method="post">
+                        {{-- <input type="hidden" name="nama_pel" value="pelayaran"> --}}
                         <input type="hidden" name="order_id" id="order_id1">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
                             id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
                         @csrf
                     </form>
                 </div>
-            </div> --}}
+            </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
@@ -56,12 +56,12 @@
                                     <tr>
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center"
-                                                rowspan="{{ $orders->count() }}">{{ $order }}</td>
+                                                rowspan="{{ $orders->count() }}">{{ $order->order->job }}</td>
                                         @endif
                                         <td class="text-center"><input type="checkbox" name="order_id1"
                                                 value="{{ $order->order->id }}"></td>
                                         <td>{{ $order->order->job }}-{{ sprintf('%02d', $order->order->no_job) }}</td>
-                                        <td>{{ $order->order->jadwal_kapal->pelayaran->nama }}</td>
+                                        <td id="pelayaran">{{ $order->order->jadwal_kapal->pelayaran->nama }}</td>
                                         <td>{{ $order->order->container }}</td>
                                         <td>{{ $order->order->seal }}</td>
                                         <td>Rp. {{ number_format($order->jumlah ?? 0) }}</td>
