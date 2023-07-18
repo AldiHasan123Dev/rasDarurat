@@ -19,7 +19,7 @@ class HutangAgenController extends Controller
         $data = $request->all();
         HutangAgen::create($data);
 
-        return back()->with('success','Data berhasil disimpan');
+        return back()->with('success', 'Data berhasil disimpan');
     }
 
     public function update(HutangAgen $hutangagen, Request $request)
@@ -27,14 +27,14 @@ class HutangAgenController extends Controller
         $data = $request->all();
         $hutangagen->update($data);
 
-        return back()->with('success','Data berhasil diupdate');
+        return back()->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy(HutangAgen $hutangagen)
     {
         $hutangagen->delete();
 
-        return back()->with('success','Data berhasil dihapus');
+        return back()->with('success', 'Data berhasil dihapus');
     }
 
     public function datatable()
@@ -46,7 +46,7 @@ class HutangAgenController extends Controller
                 return $data->tarif_agen->agen->nama;
             })
             ->addColumn('order_id', function ($data) {
-                return $data->order->job.'-'.sprintf('%02d',$data->no_job);
+                return $data->order->job . '-' . sprintf('%02d', $data->no_job);
             })
             ->rawColumns([])
             ->make(true);
