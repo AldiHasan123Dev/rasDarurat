@@ -50,16 +50,17 @@
                                     $total = 0;
                                 @endphp
                                 @foreach ($orders as $order)
-                                @php
-                                    $total+=$order->jumlah;
-                                @endphp
+                                    @php
+                                        $total += $order->jumlah;
+                                    @endphp
                                     <tr>
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center"
-                                                rowspan="{{ $order->count() }}">{{ $hutpel }}</td>
+                                                rowspan="{{ $orders->count() }}">{{ $order }}</td>
                                         @endif
-                                        <td class="text-center"><input type="checkbox" name="order_id1" value="{{ $order->order->id }}"></td>
-                                        <td>{{ $order->order->job }}-{{ sprintf('%02d',$order->order->no_job) }}</td>
+                                        <td class="text-center"><input type="checkbox" name="order_id1"
+                                                value="{{ $order->order->id }}"></td>
+                                        <td>{{ $order->order->job }}-{{ sprintf('%02d', $order->order->no_job) }}</td>
                                         <td>{{ $order->order->jadwal_kapal->pelayaran->nama }}</td>
                                         <td>{{ $order->order->container }}</td>
                                         <td>{{ $order->order->seal }}</td>
