@@ -1,5 +1,5 @@
 <div class="row">
-    @if (count($balances)>0)
+    {{-- @if (count($balances)>0)
     <div class="col-12">
         <div class="card shadow-lg my-2 p-2">
             <h4 class="text-danger">List Jurnal Tidak Balance!</h4>
@@ -28,7 +28,7 @@
             </table>
         </div>
     </div>
-    @endif
+    @endif --}}
     <div class="col-12 mt-3">
         <div class="row">
             <div class="col-9">
