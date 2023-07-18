@@ -577,6 +577,7 @@ class JurnalController extends Controller
         $jurnal_data = Jurnal::where('nomor',$jurnal->nomor)->pluck('id')->toArray();
         foreach ($request->jurnal as $idx => $item) {
             $data = $item;
+            $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
             if($data['order_id']){
                 $name = $data['nama'];
                 $order = Order::find($data['order_id']);
