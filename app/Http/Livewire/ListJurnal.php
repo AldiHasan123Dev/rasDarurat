@@ -3,11 +3,12 @@
 namespace App\Http\Livewire;
 
 use App\Models\Jurnal;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class ListJurnal extends Component
 {
-    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit;
+    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances;
 
     public function mount($month = null, $tipe = null)
     {
@@ -16,6 +17,7 @@ class ListJurnal extends Component
         $this->year = date('Y');
         $this->month = $month ?? date('m');
         $this->tipe = $tipe ?? 'BB';
+        $this->balances = DB::select("SELECT nomor, SUM(debit) as debit, SUM(credit) as credit FROM `jurnal` WHERE nomor like '07-086%' and debit != credit GROUP by nomor;");
     }
 
     public function render()

@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
@@ -564,11 +565,12 @@ class JurnalController extends Controller
         return view('admin.jurnal.trucking');
     }
 
-    public function edit(Jurnal $jurnal)
+    public function edit()
     {
+        $jurnal = request('jurnal');
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
         $orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
-        $data = Jurnal::where('nomor',$jurnal->nomor)->get();
+        $data = Jurnal::where('nomor',$jurnal)->get();
         return view('admin.jurnal.edit', compact('data','orders','coa'));
     }
 

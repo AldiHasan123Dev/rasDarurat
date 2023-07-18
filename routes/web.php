@@ -128,7 +128,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('coa', COAController::class);
     Route::resource('templatejurnal', TemplateJurnalController::class);
     Route::resource('templatejurnalitem', TemplateJurnalItemController::class);
-    Route::resource('jurnal', JurnalController::class);
+    Route::resource('jurnal', JurnalController::class)->except('edit');
     Route::resource('hutang-agen', HutangAgenController::class);
     Route::resource('hutang-pelayaran', HutangPelayaranController::class);
 
@@ -206,6 +206,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('order-import', [OrderController::class, 'import'])->name('order.import');
     Route::get('estimasi-biaya', [EstimasiController::class, 'biaya'])->name('estimasi.biaya');
 
+    Route::get('jurnal-edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
     Route::get('jurnal-kolektif', [JurnalController::class, 'kolektif'])->name('jurnal.kolektif.create');
     Route::get('jurnal-balik', [JurnalController::class, 'balik'])->name('jurnal.balik.create');
     Route::get('jurnal-neraca', [JurnalController::class, 'neraca'])->name('jurnal.neraca');

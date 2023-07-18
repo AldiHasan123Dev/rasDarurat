@@ -1,4 +1,34 @@
 <div class="row">
+    @if (count($balances)>0)
+    <div class="col-12">
+        <div class="card shadow-lg my-2 p-2">
+            <h4 class="text-danger">List Jurnal Tidak Balance!</h4>
+            <hr>
+            <table class="table-sm table">
+                <thead>
+                    <tr>
+                        <td>No.</td>
+                        <td>Nomor Jurnal</td>
+                        <td>Total Debit</td>
+                        <td>Total Credit</td>
+                        <td>#</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($balances as $item)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $item->nomor }}</td>
+                        <td>{{ number_format($item->debit) }}</td>
+                        <td>{{ number_format($item->credit) }}</td>
+                        <td><a href="{{ route('jurnal.edit',['jurnal'=>$item->nomor]) }}" class="btn btn-sm btn-primary">Edit</a></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
     <div class="col-12 mt-3">
         <div class="row">
             <div class="col-9">
@@ -80,7 +110,7 @@
                             <td>{{ $item->nama }}</td>
                             <td>{{ number_format($item->debit,2,',','.') }}</td>
                             <td>{{ number_format($item->credit,2,',','.') }}</td>
-                            <td><a href="{{ route('jurnal.edit',$item) }}" class="text-primary"><i class="fas fa-pencil"></i></a></td>
+                            <td><a href="{{ route('jurnal.edit',$item->nomor,['jurnal'=>$item->nomor]) }}" class="text-primary"><i class="fas fa-pencil"></i></a></td>
                         </tr>
                     @endforeach
                 </tbody>
