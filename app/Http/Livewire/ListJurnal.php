@@ -17,7 +17,6 @@ class ListJurnal extends Component
         $this->year = date('Y');
         $this->month = $month ?? date('m');
         $this->tipe = $tipe ?? 'BB';
-        $this->balances = DB::select("SELECT nomor, SUM(debit) as debit, SUM(credit) as credit FROM `jurnal` WHERE debit != credit GROUP by nomor;");
     }
 
     public function render()
@@ -45,6 +44,18 @@ class ListJurnal extends Component
                 ->where('jurnal.tipe','LIKE',$this->tipe.'%')
                 ->whereYear('jurnal.created_at',$this->year)
                 ->orWhere('jurnal.created_at','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal.created_at',$this->year)
+                ->orWhere('jurnal.invoice','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal.created_at',$this->year)
+                ->orWhere('jurnal.container','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal.created_at',$this->month)
+                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal.created_at',$this->year)
+                ->orWhere('jurnal.nopol','LIKE','%'.$this->search.'%')
                 ->whereMonth('jurnal.created_at',$this->month)
                 ->where('jurnal.tipe','LIKE',$this->tipe.'%')
                 ->whereYear('jurnal.created_at',$this->year)

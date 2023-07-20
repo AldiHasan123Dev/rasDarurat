@@ -1,34 +1,4 @@
 <div class="row">
-    {{-- @if (count($balances)>0)
-    <div class="col-12">
-        <div class="card shadow-lg my-2 p-2">
-            <h4 class="text-danger">List Jurnal Tidak Balance!</h4>
-            <hr>
-            <table class="table-sm table">
-                <thead>
-                    <tr>
-                        <td>No.</td>
-                        <td>Nomor Jurnal</td>
-                        <td>Total Debit</td>
-                        <td>Total Credit</td>
-                        <td>#</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($balances as $item)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $item->nomor }}</td>
-                        <td>{{ number_format($item->debit) }}</td>
-                        <td>{{ number_format($item->credit) }}</td>
-                        <td><a href="{{ route('jurnal.edit',['jurnal'=>$item->nomor]) }}" class="btn btn-sm btn-primary">Edit</a></td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-    @endif --}}
     <div class="col-12 mt-3">
         <div class="row">
             <div class="col-9">
@@ -54,7 +24,7 @@
             <div class="col-6">
                 <div class="my-3">
                     <label for="search">Search</label>
-                    <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal">
+                    <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal/invoice/container">
                 </div>
             </div>
             <div class="col-6">
