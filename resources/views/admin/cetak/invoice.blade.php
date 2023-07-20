@@ -59,6 +59,7 @@
 @endsection
 @section('content')
 @php
+    $addCost = 0;
     function terbilang($angka) {
         $angka = (float)$angka;
         $bilangan = array(
@@ -323,6 +324,9 @@
                             </tr>
                             @endif
                             @foreach ($cas as $tagihan)
+                            @php
+                                $addCost += $tagihan->jumlah;
+                            @endphp
                             <tr>
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
@@ -1386,7 +1390,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -1400,7 +1403,8 @@
             function editTarif(e,idx,count){
                 var val = parseInt(e.value);
                 var jumlah = parseInt(count);
-                var total = val * jumlah;
+                var addCost = @json($addCost);
+                var total = (val * jumlah) + addCost;
                 $('.tarif-'+idx).val(val.toLocaleString('en-US'));
                 $('.sub-total-'+idx).val(total.toLocaleString('en-US'));
                 hitung();
@@ -1409,13 +1413,15 @@
             function hitung() {
                 var asuransi = @json($allin['asuransi_total']);
                 var sub_total = 0;
+                var addCost = @json($addCost);
                 var values = $("input[name='sub_total[]']").map(function(){return $(this).val();}).get();
                 $.each(values, function (indexInArray, item) {
                     var price = parseInt(item.replaceAll(',',''));
                     sub_total += price;
                 });
                 var subtotal = parseInt(sub_total);
-                var total = parseInt(asuransi) + sub_total;
+                var total = parseInt(asuransi) + sub_total + parseInt(addCost);
+
                 var terbilang_nominal = terbilang(total);
                 $('.subtotal').html(subtotal.toLocaleString('en-US'));
                 $('.total').html(total.toLocaleString('en-US'));
