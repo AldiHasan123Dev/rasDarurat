@@ -12,7 +12,7 @@ class ListJurnal extends Component
 
     public function mount($month = null, $tipe = null)
     {
-        $this->perPage = 100;
+        $this->perPage = 50;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->year = date('Y');
         $this->month = $month ?? date('m');
@@ -92,6 +92,6 @@ class ListJurnal extends Component
 
     public function loadMore()
     {
-        $this->perPage += 100;
+        $this->perPage += 50;
     }
 }
