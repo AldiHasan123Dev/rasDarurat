@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('style')
     <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
     <style>
         .table-responsie table{
             position: relative;
@@ -67,8 +69,10 @@
     </div> --}}
 @endsection
 
-{{-- @section('script')
-    <script>
+@section('script')
+<script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
+<script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
+    {{-- <script>
         let table = $('.table').DataTable({
             processing: true,
             serverSide: true,
@@ -90,5 +94,5 @@
                 // { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
-    </script>
-@endsection --}}
+    </script> --}}
+@endsection

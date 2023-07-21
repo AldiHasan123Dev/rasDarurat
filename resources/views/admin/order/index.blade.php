@@ -545,7 +545,7 @@
 
     $('#jqGrid').jqGrid('filterToolbar');
     $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
-        search: false, // show search button on the toolbar
+        search: false,
         add: false,
         edit: false,
         del: false,

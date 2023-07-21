@@ -34,4 +34,70 @@ class JurnalController extends Controller
         $data = JurnalResource::collection($data);
         return response($data);
     }
+
+    public function jqgrid()
+    {
+        $page = request('page'); // get the requested page
+        $limit = request('rows'); // get how many rows we want to have into the grid
+        $sidx = request('sidx'); // get index row - i.e. user click to sort
+        $sord = request('sord'); // get the direction
+        $search = request('_search'); // get the search
+        $is_search = false;
+        if($search=='true'){
+            $is_search = true;
+        }
+        $query = Jurnal::query();
+
+
+        $start = $limit * $page - $limit;
+        if ($start < 0){
+            $start = 0;
+        }
+
+        if(request('month')){
+            $query->whereMonth('created_at',request('month'));
+        }
+        if(request('tipe')){
+            $query->where('tipe','LIKE','%'.request('tipe').'%');
+        }
+
+        if(request('search')){
+            $query->orWhereHas('order', function($q){
+                $q->where('job','LIKE','%'.request('search').'%');
+            });
+            $query->orWhere('nomor','LIKE','%'.request('search').'%');
+            $query->orWhere('container','LIKE','%'.request('search').'%');
+            $query->orWhere('nopol','LIKE','%'.request('search').'%');
+            $query->orWhere('invoice','LIKE','%'.request('search').'%');
+            $d = substr(request('search'),0,2);
+            $m = substr(request('search'),3,2);
+            $y = substr(request('search'),6,2);
+            $date = '20'.$y.'-'.$m.'-'.$d;
+            $query->orWhereDate('created_at','LIKE','%'.$date.'%');
+        }
+        $data = $query->orderBy('nomor')->skip($start)->take($limit)->get();
+
+        $count = Jurnal::get('id')->count();
+        if(request('month') && request('tipe')){
+            $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe',request('tipe'))->get('id')->count();
+        }
+
+        if ($count > 0 && $limit > 0) {
+            $total_pages = ceil($count / $limit);
+        } else {
+            $total_pages = 0;
+        }
+
+        if ($page > $total_pages){
+            $page = $total_pages;
+        }
+
+        $response = JurnalResource::collection($data);
+        return response([
+            'page' => $page,
+            'total' => $total_pages,
+            'records' => $count,
+            'rows' => $response
+        ]);
+    }
 }

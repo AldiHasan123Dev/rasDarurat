@@ -89,7 +89,7 @@
             <label for="search">Search</label>
             <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal">
         </div>
-        <div class="table-responsive">
+        <div class="table-responsives">
             <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
                 <thead>
                     <tr>
@@ -127,12 +127,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- <tr>
-                        <td colspan="2">SALDO AWAL</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td>
-                    </tr> --}}
                     @foreach ($data as $item)
                         @php
                             if ($tipe=='D') {
@@ -150,7 +144,6 @@
                             }
                         @endphp
                         <tr>
-                            {{-- <td class="text-end">{{ number_format($saldo_awal,2,',','.') }}</td> --}}
                             <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                             <td>{{ $item->nomor }}</td>
                             <td>{{ $item->coa->kode }}</td>
@@ -186,6 +179,7 @@
                     @endforeach
                 </tbody>
             </table>
+
         </div>
         {{-- {{ $data->links() }} --}}
         @if($data->hasMorePages())

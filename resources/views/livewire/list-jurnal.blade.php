@@ -5,7 +5,7 @@
                 <div class="d-flex gap-2">
                     <b class="mt-2">Bulan: </b>
                     @foreach ($months as $idx => $item)
-                        <a href="{{ route('jurnal.index',['month'=>sprintf('%02d',$idx+1)]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
+                        <a href="{{ route('jurnal.index',['month'=>sprintf('%02d',$idx+1),'tipe'=>$tipe]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
                     @endforeach
                 </div>
             </div>
@@ -24,7 +24,7 @@
             <div class="col-6">
                 <div class="my-3">
                     <label for="search">Search</label>
-                    <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal/invoice/container">
+                    <input type="text" id="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal/invoice/container">
                 </div>
             </div>
             <div class="col-6">
@@ -36,8 +36,8 @@
                 </div>
             </div>
         </div>
-        <div class="table-responsive" style="height: 400px">
-            <table data-rtc-resizable-table="table.{{ $month }}" class="data table table-sm mt-3 table-bordered" style="font-size: .7rem; white-space:nowrap">
+        <div class="table-responsives">
+            {{-- <table data-rtc-resizable-table="table.{{ $month }}" class="data table table-sm mt-3 table-bordered" style="font-size: .7rem; white-space:nowrap">
                 <thead>
                     <tr>
                         <th data-rtc-resizable="tanggal">Tanggal</th>
@@ -49,7 +49,7 @@
                         <th data-rtc-resizable="invoice">Invoice</th>
                         <th data-rtc-resizable="job">JOB</th>
                         <th data-rtc-resizable="keterangan">Keterangan</th>
-                        <th data-rtc-resizable="debit">Debit</th>
+                        <th data-rtc-resizable="credit">Debit</th>
                         <th data-rtc-resizable="credit">Credit</th>
                         <th>#</th>
                     </tr>
@@ -84,11 +84,13 @@
                         </tr>
                     @endforeach
                 </tbody>
-            </table>
+            </table> --}}
+            <table id="jqGrid"></table>
+            <div id="jqGridPager"></div>
         </div>
         {{-- {{ $data->links() }} --}}
         @if($data->hasMorePages())
-        <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
+        {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
         @endif
         <table class="table table-sm mt-2">
             @if ($total_debit!=$total_credit)
@@ -111,31 +113,56 @@
 @push('scripts')
 <script src="{{ asset('assets/js/resize-column.js') }}"></script>
 <script>
+    let id;
+    $("#jqGrid").jqGrid({
+        url: '{{ route('jqgrid.jurnal') }}',
+        mtype: 'GET',
+        datatype: 'json',
+        postData: { month:  @json(request('month')), tipe:@json(request('tipe')) },
+        colModel: [
+            {search:true, width:50, name: 'created_at', label : 'Tanggal', frozen:true},
+            {search:true, width:100, name: 'nomor', label : 'Nomor Jurnal', frozen:true, sortable: false},
+            {search:true, width:50, name: 'coa_kode', label : 'Kode', frozen:true,},
+            {search:true, width:100, name: 'coa_nama', label : 'Akun', frozen:true,},
+            {search:true, width:100, name: 'id', label : 'id', hidden:true},
+            {search:true, width:100, name: 'invoice', label : 'Invoice'},
+            {search:true, width:100, name: 'container', label : 'Container'},
+            {search:true, width:100, name: 'nopol', label : 'Nopol'},
+            {search:true, width:300, name: 'nama', label : 'Keterangan'},
+            {search:true, width:100, name: 'debit', label : 'Debit'},
+            {search:true, width:100, name: 'credit', label : 'Credit'},
+        ],
+        autowidth: true,
+        shrinkToFit: false,
+        height: 250,
+        oadonce: true,
+        rowNum: 25,
+        rowList:[10,25,50,100,250,500,1000],
+        viewrecords: true,
+        pager: "#jqGridPager",
+        caption: "Jurnal List",
+        onCellSelect: function (rowId, iRow, iCol, e) {
+            id = $(this).jqGrid('getCell', rowId, 'id');
+        },
+        rowattr: function (item) {
+            return { "class": item.class };
+        }
+    });
 
-    function load(){
-        (function (window, ResizableTableColumns, undefined) {
-            var store = window.store && window.store.enabled
-                ? window.store
-                : null;
+    $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
+        search: false,
+        add: false,
+        edit: false,
+        del: false,
+        refresh: true
+    });
+    $("#jqGrid").jqGrid('setFrozenColumns');
 
-            var els = document.querySelectorAll('table.data');
-            for (var index = 0; index < els.length; index++) {
-                var table = els[index];
-                if (table['rtc_data_object']) {
-                    continue;
-                }
-
-                var options = { store: store };
-                if (table.querySelectorAll('thead > tr').length > 1) {
-                    options.resizeFromBody = false;
-                }
-
-                new ResizableTableColumns(els[index], options);
-            }
-
-        })(window, window.validide_resizableTableColumns.ResizableTableColumns, void (0));
-    }
-
-    load();
+    $('#search').keyup(function (e) {
+        let val = $(this).val();
+        $("#jqGrid").jqGrid('setGridParam', {
+                postData: { month:  @json(request('month')), tipe:@json(request('tipe')), search:val }
+        }).trigger('reloadGrid');
+    });
 </script>
 @endpush

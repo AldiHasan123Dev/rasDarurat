@@ -83,5 +83,6 @@ Route::put('api-tarif',[TarifController::class,'update'])->name('api.tarif.updat
 Route::resource('api-jasakirim',JasaKirimController::class)->only(['store']);
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
 
+Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
 Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
