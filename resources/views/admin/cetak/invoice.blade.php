@@ -1404,7 +1404,7 @@
                 var val = parseInt(e.value);
                 var jumlah = parseInt(count);
                 var addCost = @json($addCost);
-                var total = (val * jumlah) + addCost;
+                var total = val * jumlah;
                 $('.tarif-'+idx).val(val.toLocaleString('en-US'));
                 $('.sub-total-'+idx).val(total.toLocaleString('en-US'));
                 hitung();
