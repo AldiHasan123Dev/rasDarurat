@@ -118,7 +118,7 @@
         url: '{{ route('jqgrid.jurnal') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { month:  @json(request('month')), tipe:@json(request('tipe')) },
+        postData: { month:  @json($month), tipe:@json($tipe) },
         colModel: [
             {search:true, width:50, name: 'created_at', label : 'Tanggal', frozen:true},
             {search:true, width:100, name: 'nomor', label : 'Nomor Jurnal', frozen:true, sortable: false},
@@ -161,7 +161,7 @@
     $('#search').keyup(function (e) {
         let val = $(this).val();
         $("#jqGrid").jqGrid('setGridParam', {
-                postData: { month:  @json(request('month')), tipe:@json(request('tipe')), search:val }
+                postData: { month:  @json($month), tipe:@json($tipe), search:val }
         }).trigger('reloadGrid');
     });
 </script>

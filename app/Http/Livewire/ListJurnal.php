@@ -15,8 +15,8 @@ class ListJurnal extends Component
         $this->perPage = 50;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->year = date('Y');
-        $this->month = $month ?? date('m');
-        $this->tipe = $tipe ?? 'BB';
+        $this->month = request('month') ?? date('m');
+        $this->tipe = request('tipe') ?? 'BB';
     }
 
     public function render()
