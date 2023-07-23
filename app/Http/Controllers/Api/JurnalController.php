@@ -74,12 +74,18 @@ class JurnalController extends Controller
             $y = substr(request('search'),6,2);
             $date = '20'.$y.'-'.$m.'-'.$d;
             $query->orWhereDate('created_at','LIKE','%'.$date.'%');
+            if(request('month')){
+                $query->whereMonth('created_at',request('month'));
+            }
+            if(request('tipe')){
+                $query->where('tipe','LIKE','%'.request('tipe').'%');
+            }
         }
         $data = $query->orderBy('nomor')->skip($start)->take($limit)->get();
 
         $count = Jurnal::get('id')->count();
         if(request('month') && request('tipe')){
-            $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe',request('tipe'))->get('id')->count();
+            $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
         }
 
         if ($count > 0 && $limit > 0) {
