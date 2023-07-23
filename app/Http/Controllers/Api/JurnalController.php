@@ -62,18 +62,18 @@ class JurnalController extends Controller
         }
 
         if(request('search')){
-            $query->orWhereHas('order', function($q){
-                $q->where('job','LIKE','%'.request('search').'%');
-            });
+            // $query->orWhereHas('order', function($q){
+            //     $q->where('job','LIKE','%'.request('search').'%');
+            // });
             $query->orWhere('nomor','LIKE','%'.request('search').'%');
             $query->orWhere('container','LIKE','%'.request('search').'%');
             $query->orWhere('nopol','LIKE','%'.request('search').'%');
             $query->orWhere('invoice','LIKE','%'.request('search').'%');
-            $d = substr(request('search'),0,2);
-            $m = substr(request('search'),3,2);
-            $y = substr(request('search'),6,2);
-            $date = '20'.$y.'-'.$m.'-'.$d;
-            $query->orWhereDate('created_at','LIKE','%'.$date.'%');
+            // $d = substr(request('search'),0,2);
+            // $m = substr(request('search'),3,2);
+            // $y = substr(request('search'),6,2);
+            // $date = '20'.$y.'-'.$m.'-'.$d;
+            // $query->orWhereDate('created_at','LIKE','%'.$date.'%');
             if(request('month')){
                 $query->whereMonth('created_at',request('month'));
             }
