@@ -47,7 +47,7 @@ class CustomerController extends Controller
 
     public function create()
     {
-        $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
+        $jadwal_kapal = JadwalKapal::whereHas('pelayaran')->where('is_active',1)->get();
         $customer = Customer::pluck('nama','id');
         $lokasi = Lokasi::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
