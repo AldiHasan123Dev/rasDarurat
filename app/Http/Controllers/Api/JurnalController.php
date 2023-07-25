@@ -64,7 +64,7 @@ class JurnalController extends Controller
         if(request('search')){
             $query->search(request('search'));
         }
-        $data = $query->orderBy('nomor')->skip($start)->take($limit)->get();
+        $data = $query->orderBy('created_at','desc')->skip($start)->take($limit)->get();
 
         $count = Jurnal::get('id')->count();
         if(request('month') && request('tipe')){
