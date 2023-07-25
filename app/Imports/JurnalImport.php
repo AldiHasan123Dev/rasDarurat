@@ -27,6 +27,8 @@ class JurnalImport implements ToModel
                     $tipe = 'JNL';
                 }
                 $order_array = explode('-',$row[3]);
+                $no = explode('/',$row[1]);
+                $no = (int)$no[0];
                 // dd($order_array,count($order_array),$order_array[0]);
                 // dd(c);
                 $container = null;
@@ -43,6 +45,7 @@ class JurnalImport implements ToModel
                     $order = Order::where('job',$order_array[0])->first();
                 }
                 Jurnal::create([
+                    'no' => $no,
                     'coa_id' => $coa->id,
                     'order_id' => $order ? $order->id : null,
                     'nomor' => $row[1],
