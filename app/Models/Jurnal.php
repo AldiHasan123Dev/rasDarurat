@@ -30,6 +30,14 @@ class Jurnal extends Model
         'created_at',
     ];
 
+    protected $searchable = [
+        'nomor',
+        'invoice',
+        'nopol',
+        'container',
+        'nama',
+    ];
+
     protected static function booted()
     {
         static::creating(function ($model) {
@@ -65,5 +73,16 @@ class Jurnal extends Model
         }else{
             return true;
         }
+    }
+
+    public function scopeSearch($query, $term)
+    {
+        return $query->where(
+            fn ($query) => $query->where('nomor', 'like', '%'.$term.'%')
+                ->orWhere('invoice', 'like', '%'.$term.'%')
+                ->orWhere('nopol', 'like', '%'.$term.'%')
+                ->orWhere('container', 'like', '%'.$term.'%')
+                ->orWhere('nama', 'like', '%'.$term.'%')
+        );
     }
 }

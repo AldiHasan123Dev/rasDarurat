@@ -29,8 +29,8 @@ class JurnalResource extends JsonResource
             'invoice' => $this->invoice,
             'container' => $this->container,
             'nopol' => $this->nopol,
-            'debit' => $this->debit,
-            'credit' => $this->credit,
+            'debit' => number_format($this->debit,2,',','.'),
+            'credit' => number_format($this->credit,2,',','.'),
             'created_at' => date('d/m/y',strtotime($this->created_at)),
         ];
     }

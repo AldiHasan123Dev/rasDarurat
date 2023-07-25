@@ -28,11 +28,16 @@
                 </div>
             </div>
             <div class="col-6">
-                <div class="d-flex gap-2 mt-5">
-                    <b class="mt-2">Tipe: </b>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
-                    <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex gap-2 mt-5">
+                        <b class="mt-2">Tipe: </b>
+                        <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                    </div>
+                    <div>
+                        <a href="" class="btn btn-sm btn-primary mt-5" id="edit-btn">Edit</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,6 +148,8 @@
         caption: "Jurnal List",
         onCellSelect: function (rowId, iRow, iCol, e) {
             id = $(this).jqGrid('getCell', rowId, 'id');
+            let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+            $('#edit-btn').attr('href',@json(url('admin/jurnal-edit'))+'?jurnal='+nomor);
         },
         rowattr: function (item) {
             return { "class": item.class };

@@ -47,7 +47,7 @@ class JadwalKapalController extends Controller
     public function update(JadwalKapal $jadwalkapal, Request $request)
     {
         $data = $request->all();
-        if ($data['td']&&!is_null($data['td'])) {
+        if (!empty($data['td'])) {
             $data['is_active'] = 0;
             Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
                 'is_active' => 0
