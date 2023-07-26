@@ -27,14 +27,25 @@ class JurnalImport implements ToModel
                     $tipe = 'JNL';
                 }
                 $order_array = explode('-',$row[3]);
+                $no = explode('/',$row[1]);
+                $no = (int)$no[0];
                 // dd($order_array,count($order_array),$order_array[0]);
                 // dd(c);
+                $container = null;
+                $invoice = null;
+                $nopol = null;
                 if(count($order_array)==2){
                     $order = Order::where('job',$order_array[0])->where('no_job',(int)$order_array[1])->first();
+                    if($order){
+                        $container = $order->container;
+                        $invoice = $order->invoice;
+                        $nopol = $order->nopol;
+                    }
                 }else{
                     $order = Order::where('job',$order_array[0])->first();
                 }
                 Jurnal::create([
+                    'no' => $no,
                     'coa_id' => $coa->id,
                     'order_id' => $order ? $order->id : null,
                     'nomor' => $row[1],
@@ -43,7 +54,10 @@ class JurnalImport implements ToModel
                     'credit' => $row[6] ?? 0,
                     'is_balik' => 1,
                     'created_at' => $row[0],
-                    'tipe' => $tipe
+                    'tipe' => $tipe,
+                    'container' => $container,
+                    'invoice' => $invoice,
+                    'nopol' => $nopol,
                 ]);
             }
         }
