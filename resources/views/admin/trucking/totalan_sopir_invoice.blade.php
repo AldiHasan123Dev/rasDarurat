@@ -197,7 +197,7 @@
                                 <tr>
                                     <td style="width: 60px">Totalan</td>
                                     <td style="width:5px">:</td>
-                                    <td>{{ $order->sopir->nama }} </td>
+                                    <td>{{ $order->sopir ? $order->sopir->nama : '-' }} </td>
                                 </tr>
                                 <tr>
                                     <td style="width: 120px">Tanggal</td>
