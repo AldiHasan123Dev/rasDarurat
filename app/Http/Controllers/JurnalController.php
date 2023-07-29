@@ -612,7 +612,48 @@ class JurnalController extends Controller
         Jurnal::whereIn('id',$ids)->delete();
         $jurnal = Jurnal::where('nomor',$jurnal->nomor)->first();
 
-        return redirect()->route('jurnal.edit',$jurnal)->with('success','Data berhasil diupdate');
+        if(count($request->jurnal_create)>0){
+            foreach($request->jurnal_create as $idx => $item){
+                $data = $item;
+                $data['nomor'] = $jurnal->nomor;
+                $data['tipe'] = $jurnal->tipe;
+                $data['no'] = $jurnal->no;
+                $data['created_at'] = $jurnal->created_at;
+                $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
+                if($data['order_id']){
+                    $name = $data['nama'];
+                    $order = Order::find($data['order_id']);
+                    $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
+                    $cont = $order->container;
+                    $seal = $order->seal;
+                    $shipment = $order->tarif->shipmentInfo->nama;
+                    $pembayar = $order->tarif->customer->nama ?? '-';
+                    $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+                    $voyage = $order->jadwal_kapal->voyage ?? '-';
+                    $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+                    $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
+                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
+                    $name = str_replace('[1]',$id_job,$name);
+                    $name = str_replace('[2]',$cont,$name);
+                    $name = str_replace('[3]',$seal,$name);
+                    $name = str_replace('[4]',$kapal,$name);
+                    $name = str_replace('[5]',$voyage,$name);
+                    $name = str_replace('[6]',$shipment,$name);
+                    $name = str_replace('[7]',$pembayar,$name);
+                    $name = str_replace('[8]',$customer,$name);
+                    $name = str_replace('[9]',$shipment_trucking,$name);
+                    $name = str_replace('[10]',$tujuan_trucking,$name);
+                    $data['nama'] = $name;
+                    $data['invoice'] = $order->invoice;
+                    $data['nopol'] = $order->nopol;
+                    $data['container'] = $order->container;
+                }
+
+                Jurnal::create($data);
+            }
+        }
+
+        return redirect()->route('jurnal.edit',['jurnal'=>$jurnal->nomor])->with('success','Data berhasil diupdate');
     }
 
     public function destroy(Jurnal $jurnal)
