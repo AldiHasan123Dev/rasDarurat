@@ -12,7 +12,7 @@ use Livewire\Component;
 
 class JurnalManual extends Component
 {
-    public $coa, $coa_id, $tipe, $jurnals, $jurnal_id, $kendaraan;
+    public $coa, $coa_id, $tipe, $jurnals, $jurnal_id, $kendaraan, $templates;
     public $no_1, $no_2, $no_3, $no_4, $no_5;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
@@ -40,6 +40,7 @@ class JurnalManual extends Component
         $this->is_apply = false;
         $this->kendaraan = Kendaraan::get(['id','nopol']);
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
+        $this->templates = TemplateJurnal::all();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();

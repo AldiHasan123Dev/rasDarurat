@@ -2,6 +2,27 @@
     <div class="col-12">
         <h4>FORM JURNAL MANUAL</h4>
     </div>
+    <div class="col-8">
+        <div class="card p-3">
+            <div class="row">
+                <div class="mb-2 col-8">
+                    <label>Template Jurnal</label>
+                    <select class="form-control" id="template_id" style="font-size:.9rem !important">
+                        <option value=""></option>
+                        @foreach ($templates as $item)
+                        <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="mb-2 col-4">
+                    <div class="btn-group">
+                        <button class="btn btn-success btn-sm w-100 mt-3" id="apply">Terapkan</button>
+                        <button class="btn btn-warning btn-sm w-100 mt-3" id="reset">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-12 mt-3">
         <div class="card p-2">
             <form action="{{ route('jurnal.manual.store') }}" method="post" class="row" id="form-submit">
@@ -30,6 +51,7 @@
                             </div>
                         </div>
                         <div class="col-4 mt-4 text-end">
+                            <button class="btn btn-primary btn-sm mx-2" type="button" id="addBarisTemplate">Tambah Baris Template</button>
                             <button class="btn btn-info btn-sm mx-2" type="button" onclick="addColumnDebit()">Tambah Baris</button>
                         </div>
                     </div>
@@ -200,6 +222,66 @@
         }
         $('#total_debit').html('Rp. '+total_debit.toLocaleString('en-US'));
         $('#total_credit').html('Rp. '+total_credit.toLocaleString('en-US'));
+    }
+
+    $('#apply').click(function (e) { 
+        $('.init-table').hide();
+        addTemplate();
+    });
+
+    $('#addBarisTemplate').click(function (e) {
+        addTemplate();
+    });
+
+    function addTemplate(){
+        let id = $('#template_id').val();
+        $.ajax({
+            type: "get",
+            url: "{{ url('admin/templatejurnal') }}"+"/"+id,
+            success: function (response) {
+                $.each(response.items, function (idx, item) {
+                    var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
+                    debit = amounts.length + 1;
+                    let html = '';
+                    html += `<tr class="init-table">
+                            <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
+                            <td style="width: 150px"><input name="invoice[]" id="invoice-${debit}" style="width: 150px" type="text"></td>
+                            <td style="width: 150px">
+                                <select class="form-control select2" id="nopol-${debit}" name="nopol[]" style="font-size:.9rem !important; width:150px">
+                                    <option value=""></option>
+                                    @foreach ($kendaraan as $item)
+                                        <option value="{{ $item->nopol }}">{{ $item->nopol }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control select2" onchange="total()" id="debit-${debit}" name="debit_coa_id[]" style="font-size:.9rem !important; width:170px">
+                                    <option value=""></option>
+                                    @foreach ($coa as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-control select2" onchange="total()" id="credit-${debit}" name="credit_coa_id[]" style="font-size:.9rem !important; width:170px">
+                                    <option value=""></option>
+                                    @foreach ($coa as $item)
+                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td style="width: 250px"><input name="name[]" value="${item.keterangan}" id="keterangan-${debit}" style="width: 300px" type="text"></td>
+                            <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                        </tr>`;
+                    $('#table-debit').append(html);
+                    $('#debit-'+debit).val(item.coa_debit_id);
+                    $('#credit-'+debit).val(item.coa_credit_id);
+                });
+            }
+        });
+        setTimeout(() => {
+            $('.select2').select2();
+        }, 2000);
     }
 </script>
 @endpush
