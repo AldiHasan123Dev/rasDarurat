@@ -31,6 +31,30 @@
                 </form>
             </div>
             <div class="card-body">
+                <div class="card p-3 shadow my-2">
+                    <b>Jurnal tidak balance</b>
+                    <hr>
+                    <table class="tables w-100 table-bordered" style="font-size: .7rem; padding:5px">
+                        <thead>
+                            <tr>
+                                <th>Nomor</th>
+                                <th>Debit</th>
+                                <th>Credit</th>
+                                <th>#</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($unbalance as $item)
+                                <tr>
+                                    <td>{{ $item->nomor }}</td>
+                                    <td>{{ number_format($item->debit,2,',','.') }}</td>
+                                    <td>{{ number_format($item->credit,2,',','.') }}</td>
+                                    <td><a href="{{ route('jurnal.edit',['jurnal'=>$item->nomor]) }}" class="btn btn-sm px-3 py-1 btn-primary">Edit</a></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
                 <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')"/>
                 {{-- <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">

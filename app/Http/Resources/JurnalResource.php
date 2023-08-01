@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Jurnal;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,7 +15,14 @@ class JurnalResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $class = '';
+        $debit = Jurnal::where('nomor',$this->nomor)->sum('debit');
+        $credit = Jurnal::where('nomor',$this->nomor)->sum('credit');
+        if($debit!=$credit){
+            $class = 'bg-light-danger';
+        }
         return [
+            'class' => $class,
             'id' => $this->id,
             'nomor' => $this->nomor,
             'coa_id' => $this->coa_id,

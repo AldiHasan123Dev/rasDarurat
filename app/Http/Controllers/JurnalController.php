@@ -18,7 +18,10 @@ class JurnalController extends Controller
 {
     public function index()
     {
-        return view('admin.jurnal.index');
+        $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"),'nomor'])->groupBy('nomor')->get()->reject(function ($data) {
+            return $data->debit == $data->credit;
+        });
+        return view('admin.jurnal.index', compact('unbalance'));
     }
 
     public function order()
@@ -119,7 +122,7 @@ class JurnalController extends Controller
             $no = 39;
         }
         if($data['tipe']=='JNL'){
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
@@ -203,7 +206,7 @@ class JurnalController extends Controller
             $no = 39;
         }
         if($data['tipe']=='JNL'){
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
@@ -335,7 +338,7 @@ class JurnalController extends Controller
             $no = 39;
         }
         if($data['tipe']=='JNL'){
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
@@ -463,7 +466,7 @@ class JurnalController extends Controller
             $no = 39;
         }
         if($data['tipe']=='JNL'){
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i] && $data['job'][$i] && $data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
