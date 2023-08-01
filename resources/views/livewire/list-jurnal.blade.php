@@ -98,11 +98,11 @@
         {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
         @endif
         <table class="table table-sm mt-2">
-            @if ($total_debit!=$total_credit)
+            {{-- @if ($total_debit!=$total_credit)
                 <tr>
                     <td colspan="2" class="text-center text-danger"><div class="alert alert-danger">JURNAL TIDAK BALANCE</div></td>
                 </tr>
-            @endif
+            @endif --}}
             <tr>
                 <td>Debit</td>
                 <td>: {{ number_format($total_debit,2,',','.') }}</td>
