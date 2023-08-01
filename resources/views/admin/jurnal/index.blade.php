@@ -31,6 +31,7 @@
                 </form>
             </div>
             <div class="card-body">
+                @if (count($unbalance)>0)
                 <div class="card p-3 shadow my-2">
                     <b>Jurnal tidak balance</b>
                     <hr>
@@ -55,6 +56,7 @@
                         </tbody>
                     </table>
                 </div>
+                @endif
                 <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')"/>
                 {{-- <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">
