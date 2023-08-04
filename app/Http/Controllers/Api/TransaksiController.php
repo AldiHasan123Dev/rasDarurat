@@ -86,6 +86,9 @@ class TransaksiController extends Controller
                     $name = str_replace('[10]',$tujuan_trucking,$name);
                     if($item->coa_debit_id){
                         Jurnal::create([
+                            'invoice' => $order->invoice ?? null,
+                            'nopol' => $order->nopol ?? null,
+                            'container' => $order->container ?? null,
                             'coa_id' => $item->coa_debit_id,
                             'order_id' => $transaksi->order_id,
                             'nomor' => $nomor,
@@ -99,6 +102,9 @@ class TransaksiController extends Controller
                     }
                     if($item->coa_credit_id==86){
                         Jurnal::create([
+                            'invoice' => $order->invoice ?? null,
+                            'nopol' => $order->nopol ?? null,
+                            'container' => $order->container ?? null,
                             'coa_id' => $item->coa_credit_id,
                             'order_id' => $transaksi->order_id,
                             'nomor' => $nomor,
@@ -112,6 +118,9 @@ class TransaksiController extends Controller
                     }
                     if($item->coa_credit_id==56){
                         Jurnal::create([
+                            'invoice' => $order->invoice ?? null,
+                            'nopol' => $order->nopol ?? null,
+                            'container' => $order->container ?? null,
                             'coa_id' => $item->coa_credit_id,
                             'order_id' => $transaksi->order_id,
                             'nomor' => $nomor,
@@ -130,6 +139,9 @@ class TransaksiController extends Controller
                                     $asuransi = ($job->asuransiInfo->rate/100) * $job->pertanggungan;
                                     $admin = $job->asuransiInfo->admin;
                                     Jurnal::create([
+                                        'invoice' => $order->invoice ?? null,
+                                        'nopol' => $order->nopol ?? null,
+                                        'container' => $order->container ?? null,
                                         'coa_id' => $item->coa_credit_id,
                                         'order_id' => $job->id,
                                         'nomor' => $nomor,
@@ -149,6 +161,9 @@ class TransaksiController extends Controller
                             if($job->tagihan->count()>0){
                                 foreach ($job->tagihan as $tagihan) {
                                     Jurnal::create([
+                                        'invoice' => $order->invoice ?? null,
+                                        'nopol' => $order->nopol ?? null,
+                                        'container' => $order->container ?? null,
                                         'coa_id' => $item->coa_credit_id,
                                         'order_id' => $tagihan->order_id,
                                         'nomor' => $nomor,
