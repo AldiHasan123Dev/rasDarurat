@@ -48,7 +48,7 @@ class TransaksiController extends Controller
 
         if(request('tanggal_kirim')){
             if(is_null($transaksi->jurnal_piutang)){
-                $month = date('m',strtotime(request('tanggal_kirim')));
+                $month = date('m');
                 $month1 = date('m',strtotime($transaksi->created_at));
                 if($month1!=$month){
                     $carbon = new Carbon($transaksi->created_at);
