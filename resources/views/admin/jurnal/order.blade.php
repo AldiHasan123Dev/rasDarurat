@@ -100,8 +100,8 @@
         mtype: 'GET',
         datatype: 'json',
         colModel: [
-            // {search:true, frozen:true, name: 'invoice', label : 'invoice'},
             {search:true, frozen:true, name: 'jurnal_piutang', label : 'Jurnal Otomatis'},
+            {search:true, frozen:true, name: 'invoice', label : 'invoice'},
             {search:true, frozen:true, name: 'job', label : 'job'},
             {search:true, frozen:true, name: 'no', label : 'no'},
             // {search:true, frozen:true, name: 'asuransi', label : 'asuransi'},
