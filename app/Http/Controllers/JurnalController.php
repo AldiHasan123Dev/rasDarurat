@@ -572,9 +572,14 @@ class JurnalController extends Controller
     {
         $jurnal = request('jurnal');
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
         $data = Jurnal::where('nomor',$jurnal)->get();
-        return view('admin.jurnal.edit', compact('data','orders','coa'));
+        $orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
+        $tipe = 'xpdc';
+        if($data[0]->order_trucking_id){
+            $tipe = 'trucking';
+            $orders = OrderTrucking::select('container','seal','id')->orderBy('container')->get();
+        }
+        return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
     }
 
     public function update(Jurnal $jurnal, Request $request)
@@ -583,7 +588,7 @@ class JurnalController extends Controller
         foreach ($request->jurnal as $idx => $item) {
             $data = $item;
             $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
-            if($data['order_id']){
+            if(!empty($data['order_id'])){
                 $name = $data['nama'];
                 $order = Order::find($data['order_id']);
                 $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
@@ -606,6 +611,38 @@ class JurnalController extends Controller
                 $name = str_replace('[8]',$customer,$name);
                 $name = str_replace('[9]',$shipment_trucking,$name);
                 $name = str_replace('[10]',$tujuan_trucking,$name);
+                $data['invoice'] = $order->invoice;
+                $data['nopol'] = $order->nopol;
+                $data['container'] = $order->container;
+                $data['nama'] = $name;
+            }
+            if(!empty($data['order_trucking_id'])){
+                $name = $data['nama'];
+                $order = OrderTrucking::find($data['order_trucking_id']);
+                $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
+                $cont = $order->container;
+                $seal = $order->seal;
+                $order_id = $order->order ? $order->order->id : null;
+                $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+                $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+                $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+                $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+                $customer = $order->customer->nama;
+                $shipment_trucking = $order->tipe;
+                $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
+                $name = str_replace('[1]',$id_job,$name);
+                $name = str_replace('[2]',$cont,$name);
+                $name = str_replace('[3]',$seal,$name);
+                $name = str_replace('[4]',$kapal,$name);
+                $name = str_replace('[5]',$voyage,$name);
+                $name = str_replace('[6]',$shipment,$name);
+                $name = str_replace('[7]',$pembayar,$name);
+                $name = str_replace('[8]',$customer,$name);
+                $name = str_replace('[9]',$shipment_trucking,$name);
+                $name = str_replace('[10]',$tujuan_trucking,$name);
+                $data['invoice'] = $order->invoice;
+                $data['nopol'] = $order->kendaraan->nopol;
+                $data['container'] = $order->container;
                 $data['nama'] = $name;
             }
             Jurnal::find($idx)->update($data);
@@ -615,7 +652,7 @@ class JurnalController extends Controller
         Jurnal::whereIn('id',$ids)->delete();
         $jurnal = Jurnal::where('nomor',$jurnal->nomor)->first();
 
-        if(count($request->jurnal_create)>0){
+        if(!empty($request->jurnal_create)){
             foreach($request->jurnal_create as $idx => $item){
                 $data = $item;
                 $data['nomor'] = $jurnal->nomor;
@@ -623,7 +660,7 @@ class JurnalController extends Controller
                 $data['no'] = $jurnal->no;
                 $data['created_at'] = $jurnal->created_at;
                 $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
-                if($data['order_id']){
+                if(!empty($data['order_id'])){
                     $name = $data['nama'];
                     $order = Order::find($data['order_id']);
                     $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
@@ -650,6 +687,35 @@ class JurnalController extends Controller
                     $data['invoice'] = $order->invoice;
                     $data['nopol'] = $order->nopol;
                     $data['container'] = $order->container;
+                }
+                if(!empty($data['order_trucking_id'])){
+                    $name = $data['nama'];
+                    $order = OrderTrucking::find($data['order_trucking_id']);
+                    $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
+                    $cont = $order->container;
+                    $seal = $order->seal;
+                    $order_id = $order->order ? $order->order->id : null;
+                    $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+                    $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+                    $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+                    $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+                    $customer = $order->customer->nama;
+                    $shipment_trucking = $order->tipe;
+                    $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
+                    $name = str_replace('[1]',$id_job,$name);
+                    $name = str_replace('[2]',$cont,$name);
+                    $name = str_replace('[3]',$seal,$name);
+                    $name = str_replace('[4]',$kapal,$name);
+                    $name = str_replace('[5]',$voyage,$name);
+                    $name = str_replace('[6]',$shipment,$name);
+                    $name = str_replace('[7]',$pembayar,$name);
+                    $name = str_replace('[8]',$customer,$name);
+                    $name = str_replace('[9]',$shipment_trucking,$name);
+                    $name = str_replace('[10]',$tujuan_trucking,$name);
+                    $data['invoice'] = $order->invoice;
+                    $data['nopol'] = $order->kendaraan->nopol;
+                    $data['container'] = $order->container;
+                    $data['nama'] = $name;
                 }
 
                 Jurnal::create($data);

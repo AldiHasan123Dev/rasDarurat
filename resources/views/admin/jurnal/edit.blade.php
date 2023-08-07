@@ -56,7 +56,12 @@
                         <tbody id="table-debit">
                             <tr>
                                 <td>#</td>
-                                <td>ID Job/Seal</td>
+                                @if ($tipe=='xpdc')
+                                    <td>ID Job/Seal</td>
+                                @endif
+                                @if ($tipe=='trucking')
+                                    <td>Cont / Seal</td>
+                                @endif
                                 <td>COA</td>
                                 <td>Keterangan</td>
                                 <td>Debit</td>
@@ -65,14 +70,26 @@
                             @foreach ($data as $i => $temp)
                                 <tr>
                                     <td style="width: 50px"><input id="{{ $temp->id }}" type="checkbox" onchange="uncheck(this,{{ $temp->id }})" name="id[]" value="{{ $temp->id }}" checked></td>
-                                    <td style="width: 200px">
-                                        <select class="form-control select2" id="job-{{ $temp->id }}" name="jurnal[{{ $temp->id }}][order_id]" style="font-size:.9rem !important">
-                                            <option value=""></option>
-                                            @foreach ($orders as $item)
-                                            <option {{ $temp->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
-                                            @endforeach
-                                        </select>
-                                    </td>
+                                    @if ($tipe=='xpdc')
+                                        <td style="width: 200px">
+                                            <select class="form-control select2" id="job-{{ $temp->id }}" name="jurnal[{{ $temp->id }}][order_id]" style="font-size:.9rem !important">
+                                                <option value=""></option>
+                                                @foreach ($orders as $item)
+                                                <option {{ $temp->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    @endif
+                                    @if ($tipe=='trucking')
+                                        <td style="width: 200px">
+                                            <select class="form-control select2" id="job-{{ $temp->id }}" name="jurnal[{{ $temp->id }}][order_trucking_id]" style="font-size:.9rem !important">
+                                                <option value=""></option>
+                                                @foreach ($orders as $item)
+                                                    <option {{ $temp->order_trucking_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    @endif
                                     <td style="width: 200px">
                                         <select class="form-control select2" id="coa_id-{{ $temp->id }}" name="jurnal[{{ $temp->id }}][coa_id]" style="font-size:.9rem !important">
                                             <option value=""></option>
@@ -134,30 +151,58 @@
         }
 
         function addColumnDebit(){
+            let tipe = @json($tipe);
             var amounts = $("input[name='id[]']").map(function(){return $(this).val();}).get();
             debit = amounts.length + 1;
-            let html = `<tr>
-                            <td style="width: 50px"><input id="add-${debit}" type="checkbox" onchange="uncheck(this,${debit})" name="id[]" value="${debit}" checked></td>
-                            <td style="width: 200px">
-                                <select class="form-control select2" id="add-job-${debit}" name="jurnal_create[${debit}][order_id]" style="font-size:.9rem !important">
-                                    <option value=""></option>
-                                    @foreach ($orders as $item)
-                                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td style="width: 200px">
-                                <select class="form-control select2" id="add-coa_id-${debit}" name="jurnal_create[${debit}][coa_id]" style="font-size:.9rem !important">
-                                    <option value=""></option>
-                                    @foreach ($coa as $item)
-                                    <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
-                            <td style="width: 300px"><input name="jurnal_create[${debit}][nama]" id="add-nama-${debit}" style="width: 300px" type="text"></td>
-                            <td><input type="text" onkeyup="total()" value="0" name="jurnal_create[${debit}][debit]" id="debit-${debit}"></td>
-                            <td><input type="text" onkeyup="total()" value="0" name="jurnal_create[${debit}][credit]" id="credit-${debit}"></td>
-                        </tr>`;
+            let html;
+            if(tipe=='trucking'){
+                html = `<tr>
+                                <td style="width: 50px"><input id="add-${debit}" type="checkbox" onchange="uncheck(this,${debit})" name="id[]" value="${debit}" checked></td>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" id="add-job-id-${debit}" name="jurnal_create[${debit}][order_trucking_id]" style="font-size:.9rem !important">
+                                            <option value=""></option>
+                                            @foreach ($orders as $item)
+                                                <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                                            @endforeach
+                                    </select>
+                                </td>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" id="add-coa_id-${debit}" name="jurnal_create[${debit}][coa_id]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td style="width: 300px"><input name="jurnal_create[${debit}][nama]" id="add-nama-${debit}" style="width: 300px" type="text"></td>
+                                <td><input type="text" onkeyup="total()" value="0" name="jurnal_create[${debit}][debit]" id="debit-${debit}"></td>
+                                <td><input type="text" onkeyup="total()" value="0" name="jurnal_create[${debit}][credit]" id="credit-${debit}"></td>
+                            </tr>`;
+            }else{
+                html = `<tr>
+                                <td style="width: 50px"><input id="add-${debit}" type="checkbox" onchange="uncheck(this,${debit})" name="id[]" value="${debit}" checked></td>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" id="add-job-${debit}" name="jurnal_create[${debit}][order_id]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($orders as $item)
+                                        <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td style="width: 200px">
+                                    <select class="form-control select2" id="add-coa_id-${debit}" name="jurnal_create[${debit}][coa_id]" style="font-size:.9rem !important">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td style="width: 300px"><input name="jurnal_create[${debit}][nama]" id="add-nama-${debit}" style="width: 300px" type="text"></td>
+                                <td><input type="text" onkeyup="total()" value="0" name="jurnal_create[${debit}][debit]" id="debit-${debit}"></td>
+                                <td><input type="text" onkeyup="total()" value="0" name="jurnal_create[${debit}][credit]" id="credit-${debit}"></td>
+                            </tr>`;
+
+            }
             $('#table-debit').append(html);
             setTimeout(() => {
                 $('.select2').select2();
