@@ -203,10 +203,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                                                    <p>Pengantar</p>
+                                                    {{-- <p>Pengantar</p>
                                                     <div style="margin-top: 95px">
                                                         <span class="text-center">(....................................................)</span>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                                 <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                                     <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
@@ -367,10 +367,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                                                    <p>Pengantar</p>
+                                                    {{-- <p>Pengantar</p>
                                                     <div style="margin-top: 95px">
                                                         <span class="text-center">(....................................................)</span>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                                 <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                                     <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
