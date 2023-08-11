@@ -84,9 +84,24 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'nama', name: 'nama' },
+                { data: 'nama', name: 'nama' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
+        });
+
+        function hitung()
+        {
+            let rate = $('#rate_c').val();
+            let discount = $('#discount_c').val();
+            let harga_net = rate - (rate * (discount/100));
+            $('#harga_net_c').val(harga_net);
+        }
+
+        $('#rate_c').keyup(function (e) {
+            hitung();
+        });
+        $('#discount_c').keyup(function (e) {
+            hitung();
         });
     </script>
 @endsection

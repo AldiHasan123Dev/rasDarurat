@@ -34,13 +34,9 @@
                 <td>{{ date('Y',strtotime($item->created_at)) }}</td>
                 <td>{{ date('d/m/Y',strtotime($item->created_at)) }}</td>
                 <td>{{ str_replace(['.',',','-'],'',$item->pembayar->npwp) }}</td>
-                <td>{{ $item->pembayar->nama_npwp ?? '0000000000000000#NIK#NAMA#'.strtoupper(strtolower($item->pembayar->nama)) }}</td>
+                <td>{{ $item->pembayar->npwp ? $item->pembayar->nama_npwp : $item->pembayar->nik.'#NIK#NAMA#'.strtoupper(strtolower($item->pembayar->nama)) }}</td>
                 <td>{{ $item->pembayar->alamat_npwp }}</td>
-                @if (substr($item->keterangan,1,2)=='TP')
-                    <td>{{ ceil($item->sub_total - 500000) }}</td>
-                @else
-                    <td>{{ ceil($item->sub_total) }}</td>
-                @endif
+                <td>{{ ceil($item->sub_total) }}</td>
                 <td>{{ $item->ppn }}</td>
                 <td>0</td>
                 <td></td>
