@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\LaporanPPNExport;
+use App\Exports\PajakExport;
 use App\Http\Resources\LaporanPPNResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\TransaksiResource;
@@ -165,6 +166,11 @@ class KeuanganController extends Controller
     public function PPNExport()
     {
         return Excel::download(new LaporanPPNExport(request('start'),request('end')), 'laporan.xlsx');
+    }
+
+    public function PajakExport()
+    {
+        return Excel::download(new PajakExport(request('start'),request('end')), 'laporan_pajak.csv',\Maatwebsite\Excel\Excel::CSV,['Content-Type' => 'text/csv',]);
     }
 
     public function invoiceTable()

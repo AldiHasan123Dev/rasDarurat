@@ -16,13 +16,19 @@
             <div class="card p-3">
                 <div class="card-header">
                     <div class="d-flex gap-5">
-                        <button type="button" class="btn btn-primary btn-sm py-0" data-bs-toggle="modal" data-bs-target="#faktur">Tambah Faktur</button>
-                        <button type="button" class="btn btn-warning btn-sm py-0" data-bs-toggle="modal" data-bs-target="#bukpot">Bukpot</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#faktur">Tambah Faktur</button>
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#bukpot">Bukpot</button>
                         <form action="{{ route('keuangan.ppn.export') }}" method="post">
                             @csrf
                             <input type="hidden" name="start" value="{{ $start }}">
                             <input type="hidden" name="end" value="{{ $end }}">
                             <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
+                        </form>
+                        <form action="{{ route('keuangan.pajak.export') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="start" value="{{ $start }}">
+                            <input type="hidden" name="end" value="{{ $end }}">
+                            <button type="submit" class="btn btn-success btn-sm">Export CSV</button>
                         </form>
                         <form method="get" action="{{ url()->current() }}" class="d-flex gap-3">
                             <div class="btn-group">
