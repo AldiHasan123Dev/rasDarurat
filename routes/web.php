@@ -53,6 +53,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TruckingController;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderBiayaController;
 use App\Models\Jurnal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -239,6 +240,10 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
 
     Route::get('jqgrid-tarif-agent', [TarifAgenController::class, 'jqgrid'])->name('jqgrid.tarif.agent');
     Route::get('jqgrid-tarif-pelayaran', [TarifPelayaranController::class, 'jqgrid'])->name('jqgrid.tarif.pelayaran');
+    Route::get('jqgrid-order-biaya', [OrderBiayaController::class, 'jqgrid'])->name('order_biaya.jqgrid');
+    Route::get('monitoring-shipment', [OrderBiayaController::class, 'index'])->name('order_biaya.index');
+    Route::get('monitoring-shipment/{order}', [OrderBiayaController::class, 'edit'])->name('order_biaya.edit');
+    Route::put('monitoring-shipment/{order}', [OrderBiayaController::class, 'update'])->name('order_biaya.update');
 
     Route::get('sync-reset-tbtl', [SyncController::class, 'resetTBTL']);
     Route::get('sync-kuli', [SyncController::class, 'kuli']);
