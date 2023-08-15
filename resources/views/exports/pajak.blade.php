@@ -48,15 +48,21 @@
                 <td></td>
             </tr>
             <tr>
+                @php
+                    $price = $item->sub_total;
+                    if(substr($item->keterangan,1,2)=='TP'){
+                        $price = $item->sub_total - ($item->jobs->count()*500000);
+                    }
+                @endphp
                 <td>OF</td>
                 <td></td>
                 <td>{{ $item->keterangan }}</td>
-                <td>{{ ceil($item->sub_total) }}</td>
+                <td>{{ ceil($price) }}</td>
                 <td>1</td>
-                <td>{{ ceil($item->sub_total) }}</td>
+                <td>{{ ceil($price) }}</td>
                 <td>0</td>
-                <td>{{ ceil($item->sub_total) }}</td>
-                <td>{{ $item->ppn }}</td>
+                <td>{{ ceil($price) }}</td>
+                <td>{{ ceil($price*0.011) }}</td>
                 <td>0</td>
                 <td>0</td>
                 <td></td>
@@ -74,12 +80,12 @@
                 <td>OF</td>
                 <td></td>
                 <td>JASA EKSPEDISI</td>
-                <td>500000</td>
+                <td>{{ ceil($item->jobs->count()*500000) }}</td>
                 <td>1</td>
-                <td>500000</td>
+                <td>{{ ceil($item->jobs->count()*500000) }}</td>
                 <td>0</td>
-                <td>500000</td>
-                <td>5500</td>
+                <td>{{ ceil($item->jobs->count()*500000) }}</td>
+                <td>{{ ceil(($item->jobs->count()*500000) * 0.011) }}</td>
                 <td>0</td>
                 <td>0</td>
                 <td></td>
