@@ -13,6 +13,7 @@ class TarifPelayaran extends Model
 
     protected $table = 'tarif_pelayaran';
     protected $fillable = [
+        'customer_id',
         'pelayaran_id',
         'tanggal',
         'dari',
@@ -24,6 +25,11 @@ class TarifPelayaran extends Model
         'keterangan',
         'is_active',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 
     protected static function booted()
     {

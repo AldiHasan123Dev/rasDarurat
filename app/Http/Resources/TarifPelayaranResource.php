@@ -20,6 +20,8 @@ class TarifPelayaranResource extends JsonResource
         }
         return [
             'id' => $this->id,
+            'customer_id' => $this->customer_id,
+            'customer' => $this->customer ? $this->customer->nama : '-',
             'pelayaran_id' => $this->pelayaran_id,
             'pelayaran' => $this->pelayaran->nama,
             'komoditi' => $this->komoditi,

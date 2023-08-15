@@ -162,8 +162,10 @@
         colModel: [
             {search:true, name: 'class', label : 'class', hidden:true, width:10, frozen: true},
             {search:true, name: 'id', label : 'id', width:50, frozen: true},
+            {search:true, name: 'customer', label : 'pembayar', width:50, frozen: true},
             {search:true, name: 'pelayaran', label : 'pelayaran', width:50, frozen: true},
             {search:true, name: 'tanggal', label : 'tanggal', sorttype: 'date', datefmt:'d/m/y', width:100, frozen: true},
+            {search:true, name: 'customer_id', label : 'customer_id',hidden:true},
             {search:true, name: 'dari', label : 'dari'},
             {search:true, name: 'tujuan', label : 'tujuan'},
             {search:true, name: 'tipe', label : 'tipe'},
@@ -199,6 +201,7 @@
             let kubikasi = $(this).jqGrid('getCell', rowId, 'kubikasi_nominal');
             let keterangan = $(this).jqGrid('getCell', rowId, 'keterangan');
             let komoditi = $(this).jqGrid('getCell', rowId, 'komoditi');
+            let customer_id = $(this).jqGrid('getCell', rowId, 'customer_id');
             let is_active = $(this).jqGrid('getCell', rowId, 'is_active');
             $('#is_active_1').attr('checked',false);
             $('#is_active_0').attr('checked',false);
@@ -215,6 +218,7 @@
             $('#kubikasi').val(kubikasi);
             $('#keterangan').val(keterangan);
             $('#komoditi').val(komoditi);
+            $('#customer_id').val(customer_id).trigger('change');
             $('#tujuan').val(tujuan).trigger('change');
             $('#dari').val(dari).trigger('change');
         },
@@ -242,6 +246,9 @@
         }).trigger('reloadGrid');
     });
     $("select[name=dari]").select2({
+        dropdownParent: $('#offcanvasTarifPelayaran')
+    });
+    $("select[name=customer_id]").select2({
         dropdownParent: $('#offcanvasTarifPelayaran')
     });
     $("select[name=tujuan]").select2({
@@ -305,6 +312,9 @@
         }).trigger('reloadGrid');
         $('#is_active_1').attr('checked',true);
         $('#is_active_0').attr('checked',false);
+        $('#customer_id').val('').trigger('change');
+        $('#tujuan').val('').trigger('change');
+        $('#dari').val('').trigger('change');
         offcanvas.show();
     }
 

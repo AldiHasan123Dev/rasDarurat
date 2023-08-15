@@ -104,6 +104,7 @@
                             <thead>
                                 <tr>
                                     <th>ID JOB</th>
+                                    <th>Invoice</th>
                                     <th>Pembayar</th>
                                     <th>Pelayaran</th>
                                     <th>Shippment</th>
@@ -117,6 +118,7 @@
                             @foreach ($orders as $item)
                                 <tr>
                                     <td>{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</td>
+                                    <td>{{ $item->invoice ?? '-' }}</td>
                                     <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
                                     <td>{{ $item->jadwal_kapal->pelayaran->nama ?? '-' }}</td>
                                     <td>{{ $item->tarif->shipmentInfo->nama ?? '-' }}</td>
