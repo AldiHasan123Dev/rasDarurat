@@ -189,7 +189,10 @@ class OrderController extends Controller
             $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id ?? null;
             if($data['agen']=='AGEN'){
                 $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
+            }else{
+                $data['agen_id'] = null;
             }
+
 
             if ($request->satuan) {
                 $satuan = Satuan::find($request->satuan);

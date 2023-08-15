@@ -45,7 +45,7 @@
     <x-input :value="$order->asuransi??old('asuransi')" :col="3" :label="'Asuransi'" :type="'select'" :options="['ADA INC'=>'ADA INC','ADA EXC'=>'ADA EXC','TIDAK'=>'TIDAK']" :name="'asuransi'"></x-input>
     <x-input :value="$order->no_bl??old('no_bl')" :col="3" :label="'No. BL'" :type="'text'" :name="'no_bl'"></x-input>
     <x-input :value="$order->resi??old('resi')" :col="3" :label="'No. Resi'" :type="'text'" :name="'resi'"></x-input>
-    <x-input :value="$order->komisi??old('komisi')" :col="3" :label="'RC Customer/fee'" :type="'number'" :name="'komisi'"></x-input>
+    <x-input :value="$order->komisi??old('komisi')" :col="3" :label="'RC Customer/fee'" :type="'number'" :name="'komisi'" :required="true"></x-input>
     <x-input :value="$order->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'"></x-input>
 </div>
 
