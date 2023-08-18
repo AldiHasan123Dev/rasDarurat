@@ -37,7 +37,7 @@
                 <td>{{ $item->pembayar->npwp ? $item->pembayar->nama_npwp : $item->pembayar->nik.'#NIK#NAMA#'.strtoupper(strtolower($item->pembayar->nama)) }}</td>
                 <td>{{ $item->pembayar->alamat_npwp }}</td>
                 <td>{{ ceil($item->sub_total) }}</td>
-                <td>{{ $item->ppn }}</td>
+                <td>{{ ceil($item->ppn) }}</td>
                 <td>0</td>
                 <td></td>
                 <td>0</td>
