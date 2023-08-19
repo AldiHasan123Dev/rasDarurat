@@ -5,7 +5,7 @@
 @endphp
 
 <div class="row">
-    <x-input :value="$tarifpelayaran->customer_id??old('customer_id')" :col="12" :label="'Pembayar'" :type="'select'" :options="$customers" :name="'customer_id'" :required="true"></x-input>
+    <x-input :value="$tarifpelayaran->customer_id??old('customer_id')" :col="12" :label="'Pembayar'" :type="'select'" :options="$customers" :name="'customer_id'" :required="false"></x-input>
     <x-input :value="$tarifpelayaran->pelayaran_id??old('pelayaran_id')" :col="12" :label="'Pelayaran'" :type="'select'" :options="$agens" :name="'pelayaran_id'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->tanggal??old('tanggal')" :col="6" :label="'Tanggal'" :type="'date'" :name="'tanggal'" :required="true"></x-input>
     <x-input :value="$tarifpelayaran->tipe??old('tipe')" :col="6" :label="'Shipment'" :type="'select'" :options="$shipments" :name="'tipe'" :required="true"></x-input>

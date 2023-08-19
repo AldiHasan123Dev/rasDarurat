@@ -63,6 +63,7 @@ class BTTBController extends Controller
                 $input['vol'] = $data['vol-'.$i];
                 $input['berat'] = $data['berat-'.$i];
                 $input['tgl_masuk'] = $data['tgl_masuk-'.$i];
+                $input['keterangan'] = $data['keterangan-'.$i];
                 $input['pengirim_id'] = $customer->id;
                 $bttb = BTTB::create($input);
             }

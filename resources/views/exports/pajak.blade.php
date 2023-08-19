@@ -45,7 +45,7 @@
                 </td>
                 <td>{{ $item->pembayar->alamat_npwp }}</td>
                 <td>{{ ceil($item->sub_total) }}</td>
-                <td>{{ $item->ppn }}</td>
+                <td>{{ ceil($item->ppn) }}</td>
                 <td>0</td>
                 <td></td>
                 <td>0</td>
