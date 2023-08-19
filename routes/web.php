@@ -214,6 +214,9 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
 
     Route::get('jurnal-edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
     Route::get('jurnal-kolektif', [JurnalController::class, 'kolektif'])->name('jurnal.kolektif.create');
+    Route::get('jurnal-tampungan', [JurnalController::class, 'tampungan'])->name('jurnal.tampungan');
+    Route::delete('jurnal-tampungan', [JurnalController::class, 'tampungan_destroy'])->name('jurnal.tampungan.destroy');
+    Route::post('jurnal-tampungan', [JurnalController::class, 'tampungan_store'])->name('jurnal.tampungan.store');
     Route::get('jurnal-balik', [JurnalController::class, 'balik'])->name('jurnal.balik.create');
     Route::get('jurnal-neraca', [JurnalController::class, 'neraca'])->name('jurnal.neraca');
     Route::get('jurnal-lr', [JurnalController::class, 'laba_rugi'])->name('jurnal.laba_rugi');

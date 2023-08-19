@@ -136,7 +136,11 @@
                         </tr>
                     </table>
                 </div>
-                <button type="button" class="btn btn-success btn-sm w-100" id="btn-save">Simpan Jurnal</button>
+                <div class="btn-group">
+                    <input type="hidden" name="simpan" id="simpan">
+                    <button type="button" class="btn btn-success btn-sm w-50 mx-2 btn-save" onclick="simpan_jurnal('jurnal')">Simpan Jurnal</button>
+                    <button type="button" class="btn btn-warning btn-sm w-50 mx-2 btn-save" onclick="simpan_jurnal('tampungan')">Simpan Tampungan</button>
+                </div>
             </form>
         </div>
     </div>
@@ -159,6 +163,21 @@
             $('.select2').select2();
         }, 2000);
     });
+
+    function simpan_jurnal(name) {
+        $('#simpan').val(name);
+        if(total_debit!=total_credit){
+            alert('Jurnal Tidak Balance debit = '+total_debit+' & credit = '+total_credit+' ! Harap check lagi')
+        }else{
+            if($('#tipe').val()){
+                if(confirm('are you sure')){
+                    $('#form-submit').submit();
+                }
+            }else{
+                alert('Harap pilih tipe jurnal');
+            }
+        }
+    }
 
     function addColumnDebit(){
         var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
@@ -198,20 +217,6 @@
         }, 1000);
         debit++;
     }
-
-    $('#btn-save').click(function (e) {
-        if(total_debit!=total_credit){
-            alert('Jurnal Tidak Balance debit = '+total_debit+' & credit = '+total_credit+' ! Harap check lagi')
-        }else{
-            if($('#tipe').val()){
-                if(confirm('are you sure')){
-                    $('#form-submit').submit();
-                }
-            }else{
-                alert('Harap pilih tipe jurnal');
-            }
-        }
-    });
 
     function getOrder(){
         var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();

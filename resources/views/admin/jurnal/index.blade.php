@@ -23,12 +23,14 @@
                 <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn btn-info">Tambah Jurnal Trucking</a>
                 <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Group JOB</a>
                 <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
-                <a href="{{ route('jurnal.merge') }}" class="py-2 px-3 btn btn-secondary">Merge No. Jurnal</a>
+                <a href="{{ route('jurnal.tampungan') }}" class="py-2 px-3 btn btn-secondary">Jurnal Tampungan</a>
                 <a href="{{ route('jurnal.manual') }}" class="py-2 px-3 btn btn-light border-dark border">Jurnal Manual</a>
-                <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" name="file" id="file" onchange="submit()">
-                </form>
+                @if (Auth::user()->role_id==1)
+                    <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <input type="file" name="file" id="file" onchange="submit()">
+                    </form>
+                @endif
             </div>
             <div class="card-body">
                 @if (count($unbalance)>0)

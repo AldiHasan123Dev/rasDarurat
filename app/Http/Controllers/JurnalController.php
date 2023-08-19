@@ -6,6 +6,7 @@ use App\Http\Resources\OrderResource;
 use App\Imports\JurnalImport;
 use App\Models\COA;
 use App\Models\Jurnal;
+use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
@@ -52,6 +53,63 @@ class JurnalController extends Controller
         $data = Jurnal::pluck('nomor')->toArray();
         $data = array_unique($data);
         return view('admin.jurnal.merge', compact('data'));
+    }
+
+    public function tampungan()
+    {
+        $data = JurnalTampungan::get();
+        if (request()->ajax()) {
+            $view = view('data.jurnal',compact('data'))->render();
+            return response()->json(['html'=>$view]);
+        }
+        $no_1 = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_2 = Jurnal::where('tipe','BBK')->max('no') + 1;
+        $no_3 = Jurnal::where('tipe','BBM')->max('no') + 1;
+        $no_4 = Jurnal::where('tipe','BKK')->max('no') + 1;
+        $no_5 = Jurnal::where('tipe','BKM')->max('no') + 1;
+        $jno_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
+        $jno_2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
+        $jno_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
+        $jno_4 = sprintf('%03d',$no_4).'/BKK-RAS/'.date('y');
+        $jno_5 = sprintf('%03d',$no_5).'/BKM-RAS/'.date('y');
+        $data = [];
+        return view('admin.jurnal.tampungan', compact('no_1','no_2','no_3','no_4','no_5','jno_1','jno_2','jno_3','jno_4','jno_5','data'));
+    }
+
+    public function tampungan_store(Request $request)
+    {
+        $debit = JurnalTampungan::sum('debit');
+        $credit = JurnalTampungan::sum('credit');
+        $status = true;
+        $message = 'Jurnal tampungan berhasil diterbitkan!';
+        if($debit!=$credit){
+            $status = false;
+            $message = 'Debit dan Credit tidak balance!';
+        }elseif(!$request->nomor){
+            $status = false;
+            $message = 'Harap pilih tipe jurnal!';
+        }else{
+            $data = JurnalTampungan::all()->toArray();
+            foreach ($data as $item) {
+                $jurnal = $item;
+                $jurnal['nomor'] = $request->nomor;
+                $jurnal['tipe'] = $request->tipe;
+                $jurnal['no'] = $request->no;
+                $jurnal['created_at'] = $request->created_at;
+                Jurnal::create($jurnal);
+            }
+            JurnalTampungan::truncate();
+        }
+        return response([
+            'status' => $status,
+            'message' => $message,
+        ]);
+    }
+
+    public function tampungan_destroy()
+    {
+        JurnalTampungan::find(request('id'))->delete();
+        return response('success');
     }
 
     public function balik()
@@ -124,6 +182,12 @@ class JurnalController extends Controller
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
+
+        $jurnal_model = new Jurnal();
+        if($data['simpan']=='tampungan'){
+            $jurnal_model = new JurnalTampungan();
+        }
+
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
@@ -133,7 +197,7 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $data['invoice'][$i],
                         'nopol' => $data['nopol'][$i],
@@ -144,7 +208,7 @@ class JurnalController extends Controller
                         'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $data['invoice'][$i],
                         'nopol' => $data['nopol'][$i],
@@ -157,7 +221,7 @@ class JurnalController extends Controller
                     ]);
                 }else{
                     if($data['debit_coa_id'][$i]){
-                        Jurnal::create([
+                        $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $data['invoice'][$i],
                             'nopol' => $data['nopol'][$i],
@@ -170,7 +234,7 @@ class JurnalController extends Controller
                         ]);
                     }
                     if($data['credit_coa_id'][$i]){
-                        Jurnal::create([
+                        $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $data['invoice'][$i],
                             'nopol' => $data['nopol'][$i],
@@ -208,6 +272,12 @@ class JurnalController extends Controller
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
+
+        $jurnal_model = new Jurnal();
+        if($data['simpan']=='tampungan'){
+            $jurnal_model = new JurnalTampungan();
+        }
+
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
@@ -246,7 +316,7 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $invoice,
                         'nopol' => $nopol,
@@ -259,7 +329,7 @@ class JurnalController extends Controller
                         'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $invoice,
                         'nopol' => $nopol,
@@ -274,7 +344,7 @@ class JurnalController extends Controller
                     ]);
                 }else{
                     if($data['debit_coa_id'][$i]){
-                        Jurnal::create([
+                        $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $invoice,
                             'nopol' => $nopol,
@@ -289,7 +359,7 @@ class JurnalController extends Controller
                         ]);
                     }
                     if($data['credit_coa_id'][$i]){
-                        Jurnal::create([
+                        $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $invoice,
                             'nopol' => $nopol,
@@ -340,6 +410,12 @@ class JurnalController extends Controller
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
+
+        $jurnal_model = new Jurnal();
+        if($data['simpan']=='tampungan'){
+            $jurnal_model = new JurnalTampungan();
+        }
+
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
@@ -380,7 +456,7 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
                         'invoice' => $invoice,
@@ -394,7 +470,7 @@ class JurnalController extends Controller
                         'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
                         'invoice' => $invoice,
@@ -410,7 +486,7 @@ class JurnalController extends Controller
                     ]);
                 }else{
                     if($data['debit_coa_id'][$i]){
-                        Jurnal::create([
+                        $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'coa_id' => $data['debit_coa_id'][$i],
                             'invoice' => $invoice,
@@ -426,7 +502,7 @@ class JurnalController extends Controller
                         ]);
                     }
                     if($data['credit_coa_id'][$i]){
-                        Jurnal::create([
+                        $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'coa_id' => $data['credit_coa_id'][$i],
                             'invoice' => $invoice,
@@ -468,6 +544,12 @@ class JurnalController extends Controller
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
+
+        $jurnal_model = new Jurnal();
+        if($data['simpan']=='tampungan'){
+            $jurnal_model = new JurnalTampungan();
+        }
+
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i] && $data['job'][$i] && $data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                 $name = $data['name'][$i];
@@ -507,7 +589,7 @@ class JurnalController extends Controller
                         $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
                     }
 
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
                         'order_id' => $order->id,
@@ -520,7 +602,7 @@ class JurnalController extends Controller
                         'created_at' => $data['created_at'],
                         'no' => $no
                     ]);
-                    Jurnal::create([
+                    $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $order->id,
