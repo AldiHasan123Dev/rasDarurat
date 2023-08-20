@@ -667,9 +667,18 @@ class JurnalController extends Controller
     public function update(Jurnal $jurnal, Request $request)
     {
         $jurnal_data = Jurnal::where('nomor',$jurnal->nomor)->pluck('id')->toArray();
+        $no = Jurnal::where('nomor',$jurnal->nomor)->first()->no;
+        $tipe = Jurnal::where('nomor',$jurnal->nomor)->first()->tipe;
+        if($tipe=='JNL'){
+            $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
+        }else{
+            $nomor = sprintf('%03d',$no).'/'.$request->tipe.'-RAS/'.date('y',strtotime($request->created_at));
+        }
         foreach ($request->jurnal as $idx => $item) {
             $data = $item;
             $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
+            $data['nomor'] = $nomor;
+            $data['created_at'] = $request->created_at;
             if(!empty($data['order_id'])){
                 $name = $data['nama'];
                 $order = Order::find($data['order_id']);
@@ -737,10 +746,10 @@ class JurnalController extends Controller
         if(!empty($request->jurnal_create)){
             foreach($request->jurnal_create as $idx => $item){
                 $data = $item;
-                $data['nomor'] = $jurnal->nomor;
+                $data['nomor'] = $nomor;
                 $data['tipe'] = $jurnal->tipe;
                 $data['no'] = $jurnal->no;
-                $data['created_at'] = $jurnal->created_at;
+                $data['created_at'] = $request->created_at;
                 $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
                 if(!empty($data['order_id'])){
                     $name = $data['nama'];
@@ -804,7 +813,7 @@ class JurnalController extends Controller
             }
         }
 
-        return redirect()->route('jurnal.edit',['jurnal'=>$jurnal->nomor])->with('success','Data berhasil diupdate');
+        return redirect()->route('jurnal.edit',['jurnal'=>$nomor])->with('success','Data berhasil diupdate');
     }
 
     public function destroy(Jurnal $jurnal)

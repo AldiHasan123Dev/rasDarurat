@@ -772,6 +772,12 @@
                 }else{
                     $('.hide-total').hide();
                 }
+                let role = "{{ Auth::user()->role_id }}";
+                if(parseInt(role)==1){
+                    $('#btn-tagihan').show();
+                    $('#btn-edit').show();
+                    $('#delete').show();
+                }
                 $('#ambil_empty_tambak_langon').attr('checked',false);
                 $('#ambil_empty_teluk_langon').attr('checked',false);
                 $('#bongkar_full_teluk_langon').attr('checked',false);

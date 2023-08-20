@@ -153,8 +153,8 @@
         }, 2000);
     });
 
-    function simpan_jurnal(){
-        $('#simpan').val();
+    function simpan_jurnal(name){
+        $('#simpan').val(name);
         if(total_debit!=total_credit){
             alert('Jurnal Tidak Balance debit = '+total_debit+' & credit = '+total_credit+' ! Harap check lagi')
         }else{

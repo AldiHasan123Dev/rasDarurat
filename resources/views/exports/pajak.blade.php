@@ -70,7 +70,7 @@
                 <td>{{ ceil($price) }}</td>
                 <td>0</td>
                 <td>{{ ceil($price) }}</td>
-                <td>{{ ceil($price*0.011) }}</td>
+                <td>{{ ceil(ceil($price) * 0.011) }}</td>
                 <td>0</td>
                 <td>0</td>
                 <td></td>
