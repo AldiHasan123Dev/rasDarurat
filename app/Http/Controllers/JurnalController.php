@@ -672,7 +672,7 @@ class JurnalController extends Controller
         if($tipe=='JNL'){
             $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
         }else{
-            $nomor = sprintf('%03d',$no).'/'.$request->tipe.'-RAS/'.date('y',strtotime($request->created_at));
+            $nomor = sprintf('%03d',$no).'/'.$tipe.'-RAS/'.date('y',strtotime($request->created_at));
         }
         foreach ($request->jurnal as $idx => $item) {
             $data = $item;
