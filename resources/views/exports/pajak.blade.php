@@ -70,7 +70,11 @@
                 <td>{{ ceil($price) }}</td>
                 <td>0</td>
                 <td>{{ ceil($price) }}</td>
-                <td>{{ ceil(ceil($price) * 0.011) }}</td>
+                @if (substr($item->keterangan,1,2)=='TP')
+                    <td>{{ ceil(ceil($price) * 0.011) }}</td>
+                @else
+                    <td>{{ ceil($item->ppn) }}</td>
+                @endif
                 <td>0</td>
                 <td>0</td>
                 <td></td>
