@@ -233,7 +233,7 @@
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking Vendor</p>
                     <form action="{{ route('trucking.cetak.invoice') }}" method="post">
-                        <input type="hidden" name="tipe" value="R1">
+                        <input type="hidden" name="tipe" value="VENDOR">
                         <input type="hidden" name="order_id" id="order_id_vendor">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
                             id="generate-invoice-vendor"><i class="fas fa-print"></i> Cetak Invoice</button>
