@@ -199,7 +199,7 @@
         <div class="card p-3 mt-3">
             <div id="print">
                 @if ($order->customer_id==2)
-                    @if ($tipe=='R1')
+                    @if ($tipe=='R1'||$tipe=='VENDOR')
                     <div class="invoice-box first-page2">
                         {{-- <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
@@ -600,7 +600,7 @@
                     </div>
                     @endif
                 @else
-                    @if ($tipe=='R1')
+                    @if ($tipe=='R1'||$tipe=='VENDOR')
                     @php
                         $pph = 0;
                     @endphp
