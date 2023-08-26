@@ -738,7 +738,7 @@
             var qty = $('#qty').val();
             if(p>0&&l>0&&t>0){
                 vol = ((p*l*t)/1000000) * qty;
-                vol = vol.toFixed(2);
+                vol = vol.toFixed(3);
             }
             $('#vol').val(vol);
         }
@@ -751,7 +751,7 @@
             var qty = $('#qty-'+i).val();
             if(p>0&&l>0&&t>0){
                 vol = ((p*l*t)/1000000) * qty;
-                vol = vol.toFixed(2);
+                vol = vol.toFixed(3);
             }
             $('#vol-'+i).val(vol);
         }
