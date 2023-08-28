@@ -172,23 +172,29 @@ class TruckingController extends Controller
             ->whereNull('order_trucking.invoice')
             ->whereNotNull('order_trucking.tgl_total')
             ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orWhere('kendaraan.milik', 'vendor')
+            ->where('order_trucking.customer_id', '!=', 2)
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->where('customer_trucking.r1', 0)
+            ->where('customer_trucking.r2', 0)
             ->orderBy('customer')
             ->orderBy('tgl_muat')
             ->get()
             ->groupBy('customer');
 
-        $data3 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
-            ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
-            ->select('order_trucking.*', 'customer_trucking.nama as customer', 'customer_trucking.id as id_customer')
-            ->where('kendaraan.milik', 'vendor')
-            ->where('order_trucking.customer_id', '!=', 2)
-            ->whereNull('order_trucking.invoice')
-            ->whereNotNull('order_trucking.sj_kembali_fa')
-            ->orderBy('customer')
-            ->orderBy('tgl_muat')
-            ->get()
-            ->groupBy('customer');
-        return view('admin.trucking.pre_invoice', compact('data1', 'data2', 'data3'));
+        // $data3 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
+        //     ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
+        //     ->select('order_trucking.*', 'customer_trucking.nama as customer', 'customer_trucking.id as id_customer')
+        //     ->where('kendaraan.milik', 'vendor')
+        //     ->where('order_trucking.customer_id', '!=', 2)
+        //     ->whereNull('order_trucking.invoice')
+        //     ->whereNotNull('order_trucking.sj_kembali_fa')
+        //     ->orderBy('customer')
+        //     ->orderBy('tgl_muat')
+        //     ->get()
+        //     ->groupBy('customer');
+        return view('admin.trucking.pre_invoice', compact('data1', 'data2'));
     }
 
     public function cetak_invoice_get()

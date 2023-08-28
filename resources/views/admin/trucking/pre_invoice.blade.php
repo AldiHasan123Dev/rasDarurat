@@ -171,7 +171,7 @@
                                             $total += $order->tarif->tarif - (round($order->pph_21) + round($order->pph_23));
                                         }
                                     @endphp
-                                    <tr>
+                                    <tr class="{{ $order->kendaraan->milik=='vendor'?'bg-light-info':''}}">
                                         @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center"
                                                 rowspan="{{ $orders->count() }}">{{ $cus }}</td>
@@ -228,7 +228,7 @@
                 </div>
             </div>
         </div>
-        <div class="card mt-4">
+        {{-- <div class="card mt-4">
             <div class="card-header p-2">
                 <div class="d-flex gap-2 justify-content-between">
                     <p>List Pre Invoice Trucking Vendor</p>
@@ -333,7 +333,7 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 @endsection
