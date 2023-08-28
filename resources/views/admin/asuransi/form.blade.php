@@ -5,6 +5,7 @@
         'MSIG' => 'MSIG',
         'PALISADE' => 'PALISADE',
         'BHAYANGKARA' => 'BHAYANGKARA',
+        'MARINE CARGO HARTA' => 'MARINE CARGO HARTA',
     ];
 @endphp
 
