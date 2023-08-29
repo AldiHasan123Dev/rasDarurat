@@ -779,6 +779,9 @@
                     $('#btn-edit').show();
                     $('#delete').show();
                 }
+                if(parseInt(sangu)>0){
+                    $('#delete').hide();
+                }
                 $('#ambil_empty_tambak_langon').attr('checked',false);
                 $('#ambil_empty_teluk_langon').attr('checked',false);
                 $('#bongkar_full_teluk_langon').attr('checked',false);
