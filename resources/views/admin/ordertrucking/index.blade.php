@@ -771,6 +771,7 @@
                     $('.hide-total').show();
                 }else{
                     $('.hide-total').hide();
+                    $('#delete').hide();
                 }
                 let role = "{{ Auth::user()->role_id }}";
                 if(parseInt(role)==1){
