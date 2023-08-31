@@ -159,7 +159,7 @@ class CetakController extends Controller
             $q->where('tujuan',$lokasi);
         })->get();
 
-        $jadwal_kapals = JadwalKapal::all()->where('is_active',0);
+        $jadwal_kapals = JadwalKapal::whereHas('kapal')->whereHas('pelayaran')->where('is_active',0)->get();
         $pelayaran = $jadwal_kapals->pluck('pelayaran_id')->toArray();
         $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
         $data_tarif_lokasi = array_unique($lokasi);
@@ -181,7 +181,7 @@ class CetakController extends Controller
 
         $order = $orders->whereNotNull('agen_id')->first();
 
-        $jadwal_kapals = JadwalKapal::all()->where('is_active',0);
+        $jadwal_kapals = JadwalKapal::whereHas('kapal')->whereHas('pelayaran')->where('is_active',0)->get();
         $pelayaran = $jadwal_kapals->pluck('pelayaran_id')->toArray();
         $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
         $data_tarif_lokasi = array_unique($lokasi);
