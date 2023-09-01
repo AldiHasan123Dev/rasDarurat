@@ -17,6 +17,10 @@
             <th>Total</th>
             <th>PPH</th>
             <th>No.JOB</th>
+            <th>No BUPOT</th>
+            <th>Masa BUPOT</th>
+            <th>BUPOT</th>
+            <th>Selisih BUPOT</th>
         </tr>
     </thead>
     <tbody>
@@ -38,6 +42,10 @@
                 <td>{{ number_format(round($item->ppn)+ceil($item->sub_total)) }}</td>
                 <td>{{ number_format($item->pph) }}</td>
                 <td>{{ $item->no_job() }}</td>
+                <td>{{ $item->no_bupot }}</td>
+                <td>{{ $item->masa_bupot }}</td>
+                <td>{{ number_format(round($item->bupot)) }}</td>
+                <td>{{ $item->selisih_bupot }}</td>
             </tr>
         @endforeach
         <tr>
