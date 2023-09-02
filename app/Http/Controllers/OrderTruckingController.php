@@ -38,7 +38,10 @@ class OrderTruckingController extends Controller
     {
         $data = $request->all();
         $sangu = SanguSopir::find($data['tujuan']);
-        $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->where('tujuan_id',$data['tujuan'])->where('tipe',$data['tipe'])->where('is_active',1)->first();
+        $tj = $sangu->tujuan;
+        $tarif = TarifTrucking::where('customer_id',$data['customer_id'])->whereHas('tujuan',function($q) use($tj){
+            $q->where('tujuan',$tj);
+        })->where('tipe',$data['tipe'])->where('is_active',1)->first();
         if(!$tarif){
             return back()->with('danger','Master Tarif Customer belum dibuat! Harap input master tarif terlebih dahulu dan pastikan tarif berstatus Aktif!');
         }
