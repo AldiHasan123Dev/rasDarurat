@@ -14,7 +14,8 @@ class CustomerTruckingController extends Controller
     {
         $customers = CustomerTrucking::orderBy('nama')->pluck('nama','id');
         $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')
-                    ->select('sangu_sopir.id','lokasi.nama')
+                    ->select('sangu_sopir.id','lokasi.nama','sangu_sopir.is_active')
+                    ->where('sangu_sopir.is_active',1)
                     ->orderBy('lokasi.nama')
                     ->pluck('lokasi.nama','sangu_sopir.id');
         return view('admin.customertrucking.index',compact('customers','tujuan'));
