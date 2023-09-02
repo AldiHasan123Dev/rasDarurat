@@ -8,15 +8,16 @@ use Livewire\Component;
 
 class ListJurnal extends Component
 {
-    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances;
+    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances, $date;
 
-    public function mount($month = null, $tipe = null)
+    public function mount($month = null, $tipe = null, $date = null)
     {
         $this->perPage = 50;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->year = date('Y');
         $this->month = request('month') ?? date('m');
         $this->tipe = request('tipe') ?? 'BB';
+        $this->date = $date;
     }
 
     public function render()

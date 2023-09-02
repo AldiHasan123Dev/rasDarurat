@@ -31,6 +31,7 @@ class JurnalResource extends JsonResource
             'coa_kode' => $this->coa->kode,
             'order_id' => $this->order_id,
             'order' => $this->order,
+            'job' => $this->order->job ?? '-',
             'order_trucking_id' => $this->order_trucking_id,
             'order_trucking' => $this->order_trucking,
             'nama' => $this->nama,

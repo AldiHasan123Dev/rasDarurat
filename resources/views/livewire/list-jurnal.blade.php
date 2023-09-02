@@ -21,13 +21,25 @@
                     <option value="2030">2030</option>
                 </select>
             </div>
-            <div class="col-6">
+            <div class="col-8">
                 <div class="my-3">
-                    <label for="search">Search</label>
-                    <input type="text" id="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal/invoice/container">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="search">Search</label>
+                            <input type="text" id="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal/invoice/container">
+                        </div>
+                        <div class="col-6">
+                            <label for="search">Filter Tanggal</label>
+                            <form action="{{ route('jurnal.index') }}" method="get">
+                                <input type="hidden" name="tipe" value="{{ $tipe }}">
+                                <input type="hidden" name="month" value="{{ request('month') }}">
+                                <input type="date" class="form-control" name="date" onchange="submit()" value="{{ request('date') }}">
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-4">
                 <div class="d-flex justify-content-between">
                     <div class="d-flex gap-2 mt-5">
                         <b class="mt-2">Tipe: </b>
@@ -123,7 +135,7 @@
         url: '{{ route('jqgrid.jurnal') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { month:  @json($month), tipe:@json($tipe) },
+        postData: { month:  @json($month), tipe:@json($tipe), date:@json($date) },
         colModel: [
             {search:true, width:50, name: 'created_at', label : 'Tanggal', frozen:true},
             {search:true, width:100, name: 'nomor', label : 'Nomor Jurnal', frozen:true, sortable: false},
@@ -131,6 +143,7 @@
             {search:true, width:100, name: 'coa_nama', label : 'Akun', frozen:true,},
             {search:true, width:100, name: 'id', label : 'id', hidden:true},
             {search:true, width:100, name: 'invoice', label : 'Invoice'},
+            {search:true, width:100, name: 'job', label : 'Group JOB'},
             {search:true, width:100, name: 'container', label : 'Container'},
             {search:true, width:100, name: 'nopol', label : 'Nopol'},
             {search:true, width:300, name: 'nama', label : 'Keterangan'},

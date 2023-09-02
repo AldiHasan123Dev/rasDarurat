@@ -22,7 +22,7 @@ class SanguSopirController extends Controller
     public function createOrUpdate(Request $request)
     {
         $data = $request->all();
-        $tujuan = Lokasi::find($request->tujuan);
+        $tujuan = Lokasi::where('nama',$request->tujuan);
         if(!$tujuan){
             $tujuan = Lokasi::create(['nama'=>$request->tujuan]);
         }

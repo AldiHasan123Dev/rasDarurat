@@ -54,11 +54,15 @@ class JurnalController extends Controller
             $start = 0;
         }
 
-        if(request('month')){
-            $query->whereMonth('created_at',request('month'));
-        }
-        if(request('tipe')){
-            $query->where('tipe','LIKE','%'.request('tipe').'%');
+        if(request('date')){
+            $query->whereDate('created_at',request('date'));
+        }else{
+            if(request('month')){
+                $query->whereMonth('created_at',request('month'));
+            }
+            if(request('tipe')){
+                $query->where('tipe','LIKE','%'.request('tipe').'%');
+            }
         }
 
         if(request('search')){
@@ -67,9 +71,14 @@ class JurnalController extends Controller
         $data = $query->orderBy('created_at','desc')->orderBy('nomor','desc')->skip($start)->take($limit)->get();
 
         $count = Jurnal::get('id')->count();
-        if(request('month') && request('tipe')){
-            $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
+        if (request('date')) {
+            $count = Jurnal::whereDate('created_at',request('date'))->get('id')->count();
+        }else{
+            if(request('month') && request('tipe')){
+                $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
+            }
         }
+
 
         if ($count > 0 && $limit > 0) {
             $total_pages = ceil($count / $limit);

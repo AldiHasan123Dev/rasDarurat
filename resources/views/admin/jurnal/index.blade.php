@@ -60,7 +60,7 @@
                     </table>
                 </div>
                 @endif
-                <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')"/>
+                <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')" :date="request('date')"/>
                 {{-- <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>

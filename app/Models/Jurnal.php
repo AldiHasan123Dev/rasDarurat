@@ -83,6 +83,9 @@ class Jurnal extends Model
                 ->orWhere('nopol', 'like', '%'.$term.'%')
                 ->orWhere('container', 'like', '%'.$term.'%')
                 ->orWhere('nama', 'like', '%'.$term.'%')
+                ->orWhereHas('order', function($q) use($term){
+                    $q->where('job','like','%'.$term.'%');
+                })
         );
     }
 }

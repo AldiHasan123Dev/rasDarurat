@@ -170,7 +170,7 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id', visible:false },
+                { data: 'id', name: 'id' },
                 { data: 'customer_id', name: 'customer_id', visible:false },
                 { data: 'tujuan_id', name: 'tujuan_id', visible:false },
                 { data: 'created_at', name: 'created_at', searchable:false },
