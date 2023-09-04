@@ -70,6 +70,8 @@ Route::get('get-transaksi', [TransaksiController::class,'index']);
 Route::get('get-order-ba-kembali', [OrderController::class,'ba_kembali']);
 Route::get('get-order-pre-invoice', [OrderController::class,'pre_invoice']);
 Route::post('jurnal/id-data', [JurnalController::class,'getArrayID']);
+Route::delete('jurnal/delete', [JurnalController::class,'destroy']);
+Route::post('jurnal/add', [JurnalController::class,'store']);
 Route::post('get-array-id', [OrderController::class,'getArrayId']);
 Route::post('get-array-id-trucking', [OrderTruckingController::class,'getArrayId']);
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);

@@ -89,12 +89,19 @@ class JurnalController extends Controller
             $status = false;
             $message = 'Harap pilih tipe jurnal!';
         }else{
+            if($request->tipe=='JNL'){
+                $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($request->created_at)))->whereYear('created_at',date('Y',strtotime($request->created_at)))->max('no') + 1;
+                $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
+            }else{
+                $no = Jurnal::where('tipe',$request->tipe)->max('no') + 1;
+                $nomor = sprintf('%03d',$no).'/'.$request->tipe.'-RAS/'.date('y',strtotime($request->created_at));
+            }
             $data = JurnalTampungan::all()->toArray();
             foreach ($data as $item) {
                 $jurnal = $item;
-                $jurnal['nomor'] = $request->nomor;
+                $jurnal['nomor'] = $nomor;
                 $jurnal['tipe'] = $request->tipe;
-                $jurnal['no'] = $request->no;
+                $jurnal['no'] = $no;
                 $jurnal['created_at'] = $request->created_at;
                 Jurnal::create($jurnal);
             }
@@ -661,7 +668,28 @@ class JurnalController extends Controller
             $tipe = 'trucking';
             $orders = OrderTrucking::select('container','seal','id')->orderBy('container')->get();
         }
-        return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
+        $jur = $data[0];
+        // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
+        return view('admin.jurnal.new_edit', compact('data','orders','coa','tipe','jur'));
+    }
+
+    public function editOne(Jurnal $jurnal)
+    {
+        $coa = COA::where('is_active',1)->orderBy('kode')->get();
+        $orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
+        $tipe = 'xpdc';
+        if($jurnal->order_trucking_id){
+            $tipe = 'trucking';
+            $orders = OrderTrucking::select('container','seal','id')->orderBy('container')->get();
+        }
+        // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
+        return view('admin.jurnal.form_edit', compact('jurnal','orders','coa','tipe'));
+    }
+
+    public function updateOne(Request $request, Jurnal $jurnal)
+    {
+        $jurnal->update($request->all());
+        return back()->with('success','Data berhasil disimpan!');
     }
 
     public function update(Jurnal $jurnal, Request $request)

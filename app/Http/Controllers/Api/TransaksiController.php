@@ -150,7 +150,7 @@ class TransaksiController extends Controller
                                         'debit' => 0,
                                         'tipe' => 'JNL',
                                         'no' => $no,
-                                        'created_at' => '2023-07-15',
+                                        'created_at' => $date,
                                     ]);
                                 }
                             }
