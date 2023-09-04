@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\COA;
 use App\Models\Jurnal;
+use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -28,24 +29,33 @@ class BukuBesar extends Component
             $this->tipe = 'C';
         }
         foreach ($this->months as $idx => $item) {
+            $bln = $idx + 1;
+            $c = new Carbon($this->year.'-'.sprintf('%02d',$bln).'-01');
+            $now = $c->startOfMonth()->format('Y-m-d');
+            $last = $c->endOfMonth()->format('Y-m-d');
+            $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
+            $des = $c->endOfMonth()->format('Y-m-d');
+            // dd($start,$des);
             if($idx==0){
                 if($this->tipe=='D'){
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('credit');
+                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$des])->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$des])->sum('credit');
                 }else{
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('debit');
+                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
                 }
             }else{
-                if ($this->tipe=='D') {
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('credit');
-                } else {
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('debit');
-                }
-                if($saldo_awal>0){
-                    $saldo_awal +=  $this->saldo['saldo_awal'][$idx-1];
-                }
+                // if ($this->tipe=='D') {
+                //     $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
+                // } else {
+                //     $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+                // }
+                // if($saldo_awal>0){
+                // }
+                $start = $now;
+                $saldo_awal =  $this->saldo['saldo_akhir'][$idx-1];
+                // dd($start,$last,$saldo_awal);
             }
-            $debit = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx+1))->whereYear('created_at',$this->year)->sum('debit');
-            $credit = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx+1))->whereYear('created_at',$this->year)->sum('credit');
+            $debit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+            $credit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
             $this->saldo['saldo_awal'][$idx] = $saldo_awal;
             if ($this->tipe=='D') {
                 $this->saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal ) - $credit;
@@ -56,7 +66,7 @@ class BukuBesar extends Component
             $this->saldo['credit'][$idx] = $credit;
         }
         $m = (int)$this->month;
-        $this->saldo_awal = $this->saldo['saldo_awal'][$m];
+        $this->saldo_awal = $this->saldo['saldo_awal'][$m-1];
     }
 
     public function render()
@@ -89,7 +99,7 @@ class BukuBesar extends Component
             ->where('jurnal.coa_id',$this->coa_id)
             ->select('jurnal.*')
             ->orderBy('jurnal.created_at')
-            ->paginate($this->perPage);
+            ->get();
         return view('livewire.buku-besar',[
             'data' => $data
         ]);
@@ -114,25 +124,27 @@ class BukuBesar extends Component
             $this->tipe = 'C';
         }
         foreach ($this->months as $idx => $item) {
+            $c = new Carbon($this->year.'-'.sprintf('%02d',$idx+1).'-01');
+            $last = $c->endOfMonth()->format('Y-m-d');
+            $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
             if($idx==0){
                 if($this->tipe=='D'){
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('credit');
+                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
                 }else{
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d','12'))->whereYear('created_at',$this->year-1)->sum('debit');
+                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
                 }
             }else{
                 if ($this->tipe=='D') {
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('credit');
+                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
                 } else {
-                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx))->whereYear('created_at',$this->year)->sum('debit');
+                    $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
                 }
-                if($saldo_awal>0){
-                    $saldo_awal +=  $this->saldo['saldo_awal'][$idx-1];
-                }
-
+                // if($saldo_awal>0){
+                //     $saldo_awal +=  $this->saldo['saldo_awal'][$idx-1];
+                // }
             }
-            $debit = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx+1))->whereYear('created_at',$this->year)->sum('debit');
-            $credit = Jurnal::where('coa_id',$this->coa_id)->whereMonth('created_at',sprintf('%02d',$idx+1))->whereYear('created_at',$this->year)->sum('credit');
+            $debit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+            $credit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
             $this->saldo['saldo_awal'][$idx] = $saldo_awal;
             if ($this->tipe=='D') {
                 $this->saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal ) - $credit;

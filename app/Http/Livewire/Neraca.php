@@ -73,6 +73,7 @@ class Neraca extends Component
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $this->lr = ($kel5->sum('credit') - $kel5->sum('debit')) - (($kel6->sum('debit') - $kel6->sum('credit')) + ($kel7->sum('debit') - $kel7->sum('credit')));
+        // dd($this->end);
     }
 
     public function changeYear()
@@ -97,6 +98,7 @@ class Neraca extends Component
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $this->lr = ($kel5->sum('credit') - $kel5->sum('debit')) - (($kel6->sum('debit') - $kel6->sum('credit')) + ($kel7->sum('debit') - $kel7->sum('credit')));
+        dd($this->end);
     }
 
     public function getLastDay()

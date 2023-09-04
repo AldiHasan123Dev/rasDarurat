@@ -124,6 +124,7 @@
                         @if ($coa->is_tglbupot)
                         <th data-rtc-resizable="tglbupot">Tgl Bupot PPh 23</th>
                         @endif
+                        <th data-rtc-resizable="tglbupot">Saldo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -175,6 +176,7 @@
                             @if ($coa->is_tglbupot)
                             <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->tgl_bupot :'') : '-' }}</td>
                             @endif
+                            <td>{{ number_format($saldo_awal,2,',','.') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -182,9 +184,9 @@
 
         </div>
         {{-- {{ $data->links() }} --}}
-        @if($data->hasMorePages())
+        {{-- @if($data->hasMorePages())
             <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
-        @endif
+        @endif --}}
     </div>
 </div>
 @push('scripts')
