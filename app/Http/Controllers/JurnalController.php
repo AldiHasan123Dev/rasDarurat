@@ -694,152 +694,17 @@ class JurnalController extends Controller
 
     public function update(Jurnal $jurnal, Request $request)
     {
-        $jurnal_data = Jurnal::where('nomor',$jurnal->nomor)->pluck('id')->toArray();
-        $no = Jurnal::where('nomor',$jurnal->nomor)->first()->no;
         $tipe = Jurnal::where('nomor',$jurnal->nomor)->first()->tipe;
+        $no = Jurnal::where('nomor',$jurnal->nomor)->first()->no;
         if($tipe=='JNL'){
             $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
         }else{
             $nomor = sprintf('%03d',$no).'/'.$tipe.'-RAS/'.date('y',strtotime($request->created_at));
         }
-        foreach ($request->jurnal as $idx => $item) {
-            $data = $item;
-            $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
-            $data['nomor'] = $nomor;
-            $data['created_at'] = $request->created_at;
-            if(!empty($data['order_id'])){
-                $name = $data['nama'];
-                $order = Order::find($data['order_id']);
-                $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
-                $cont = $order->container;
-                $seal = $order->seal;
-                $shipment = $order->tarif->shipmentInfo->nama;
-                $pembayar = $order->tarif->customer->nama ?? '-';
-                $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
-                $voyage = $order->jadwal_kapal->voyage ?? '-';
-                $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
-                $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
-                $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
-                $name = str_replace('[1]',$id_job,$name);
-                $name = str_replace('[2]',$cont,$name);
-                $name = str_replace('[3]',$seal,$name);
-                $name = str_replace('[4]',$kapal,$name);
-                $name = str_replace('[5]',$voyage,$name);
-                $name = str_replace('[6]',$shipment,$name);
-                $name = str_replace('[7]',$pembayar,$name);
-                $name = str_replace('[8]',$customer,$name);
-                $name = str_replace('[9]',$shipment_trucking,$name);
-                $name = str_replace('[10]',$tujuan_trucking,$name);
-                $data['invoice'] = $order->invoice;
-                $data['nopol'] = $order->nopol;
-                $data['container'] = $order->container;
-                $data['nama'] = $name;
-            }
-            if(!empty($data['order_trucking_id'])){
-                $name = $data['nama'];
-                $order = OrderTrucking::find($data['order_trucking_id']);
-                $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
-                $cont = $order->container;
-                $seal = $order->seal;
-                $order_id = $order->order ? $order->order->id : null;
-                $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
-                $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
-                $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
-                $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
-                $customer = $order->customer->nama;
-                $shipment_trucking = $order->tipe;
-                $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
-                $name = str_replace('[1]',$id_job,$name);
-                $name = str_replace('[2]',$cont,$name);
-                $name = str_replace('[3]',$seal,$name);
-                $name = str_replace('[4]',$kapal,$name);
-                $name = str_replace('[5]',$voyage,$name);
-                $name = str_replace('[6]',$shipment,$name);
-                $name = str_replace('[7]',$pembayar,$name);
-                $name = str_replace('[8]',$customer,$name);
-                $name = str_replace('[9]',$shipment_trucking,$name);
-                $name = str_replace('[10]',$tujuan_trucking,$name);
-                $data['invoice'] = $order->invoice;
-                $data['nopol'] = $order->kendaraan->nopol;
-                $data['container'] = $order->container;
-                $data['nama'] = $name;
-            }
-            Jurnal::find($idx)->update($data);
-        }
-
-        $ids = array_diff($jurnal_data,array_map('intval',$request->id));
-        Jurnal::whereIn('id',$ids)->delete();
-        $jurnal = Jurnal::where('nomor',$jurnal->nomor)->first();
-
-        if(!empty($request->jurnal_create)){
-            foreach($request->jurnal_create as $idx => $item){
-                $data = $item;
-                $data['nomor'] = $nomor;
-                $data['tipe'] = $jurnal->tipe;
-                $data['no'] = $jurnal->no;
-                $data['created_at'] = $request->created_at;
-                $data['nama'] = empty($data['nama']) ? '-' : ($data['nama'] ?? '-');
-                if(!empty($data['order_id'])){
-                    $name = $data['nama'];
-                    $order = Order::find($data['order_id']);
-                    $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
-                    $cont = $order->container;
-                    $seal = $order->seal;
-                    $shipment = $order->tarif->shipmentInfo->nama;
-                    $pembayar = $order->tarif->customer->nama ?? '-';
-                    $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
-                    $voyage = $order->jadwal_kapal->voyage ?? '-';
-                    $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
-                    $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
-                    $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
-                    $name = str_replace('[1]',$id_job,$name);
-                    $name = str_replace('[2]',$cont,$name);
-                    $name = str_replace('[3]',$seal,$name);
-                    $name = str_replace('[4]',$kapal,$name);
-                    $name = str_replace('[5]',$voyage,$name);
-                    $name = str_replace('[6]',$shipment,$name);
-                    $name = str_replace('[7]',$pembayar,$name);
-                    $name = str_replace('[8]',$customer,$name);
-                    $name = str_replace('[9]',$shipment_trucking,$name);
-                    $name = str_replace('[10]',$tujuan_trucking,$name);
-                    $data['nama'] = $name;
-                    $data['invoice'] = $order->invoice;
-                    $data['nopol'] = $order->nopol;
-                    $data['container'] = $order->container;
-                }
-                if(!empty($data['order_trucking_id'])){
-                    $name = $data['nama'];
-                    $order = OrderTrucking::find($data['order_trucking_id']);
-                    $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
-                    $cont = $order->container;
-                    $seal = $order->seal;
-                    $order_id = $order->order ? $order->order->id : null;
-                    $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
-                    $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
-                    $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
-                    $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
-                    $customer = $order->customer->nama;
-                    $shipment_trucking = $order->tipe;
-                    $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
-                    $name = str_replace('[1]',$id_job,$name);
-                    $name = str_replace('[2]',$cont,$name);
-                    $name = str_replace('[3]',$seal,$name);
-                    $name = str_replace('[4]',$kapal,$name);
-                    $name = str_replace('[5]',$voyage,$name);
-                    $name = str_replace('[6]',$shipment,$name);
-                    $name = str_replace('[7]',$pembayar,$name);
-                    $name = str_replace('[8]',$customer,$name);
-                    $name = str_replace('[9]',$shipment_trucking,$name);
-                    $name = str_replace('[10]',$tujuan_trucking,$name);
-                    $data['invoice'] = $order->invoice;
-                    $data['nopol'] = $order->kendaraan->nopol;
-                    $data['container'] = $order->container;
-                    $data['nama'] = $name;
-                }
-
-                Jurnal::create($data);
-            }
-        }
+        Jurnal::where('nomor',$jurnal->nomor)->update([
+            'created_at' => $request->created_at,
+            'nomor' => $nomor
+        ]);
 
         return redirect()->route('jurnal.edit',['jurnal'=>$nomor])->with('success','Data berhasil diupdate');
     }

@@ -34,24 +34,30 @@
                 </div>
             </div>
             <div class="col-12 mt-2">
-                <form action="{{ route('jurnal.update', $data[0]) }}" method="POST" class="card p-3" id="form-jurnal">
-                    @csrf
-                    @method('PUT')
-                    <span>EDIT JURNAL</span>
-                    <hr>
-                    <div class="row">
-                        <div class="col-4">
-                            <label for="tipe_jurnal">Nomor Jurnal</label>
-                            <input type="text" name="nomor" id="nomor" class="form-control" disabled value="{{ $data[0]->nomor }}">
+                <div class="card p-3" id="form-jurnal">
+                    <form action="{{ route('jurnal.update', $data[0]) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <span>EDIT JURNAL</span>
+                        <hr>
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="tipe_jurnal">Nomor Jurnal</label>
+                                <input type="text" name="nomor" id="nomor" class="form-control" disabled value="{{ $data[0]->nomor }}">
+                            </div>
+                            <div class="col-4">
+                                <label for="created_at">Tanggal Jurnal</label>
+                                <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d',strtotime($data[0]->created_at)) }}" class="form-control">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-info btn-sm mx-2 mt-3" type="submit" onclick="return confirm('are you sure?')">Simpan Tanggal</button>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-info btn-sm mx-2 mt-3" type="button" onclick="addColumnDebit()">Tambah Baris</button>
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <label for="created_at">Tanggal Jurnal</label>
-                            <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d',strtotime($data[0]->created_at)) }}" class="form-control">
-                        </div>
-                        <div class="col-2">
-                            <button class="btn btn-info btn-sm mx-2 mt-3" type="button" onclick="addColumnDebit()">Tambah Baris</button>
-                        </div>
-                    </div>
+                    </form>
                     <table class="table table-sm mt-3">
                         <tbody id="table-debit">
                             <tr>
@@ -120,7 +126,7 @@
                             <td><b id="total_credit"></b></td>
                         </tr>
                     </table>
-                </form>
+                </div>
             </div>
         </div>
     </div>

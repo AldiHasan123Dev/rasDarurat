@@ -37,24 +37,30 @@
                 </div>
             </div>
             <div class="col-12 mt-2">
-                <form action="{{ route('jurnal.update', $data[0]) }}" method="POST" class="card p-3" id="form-jurnal">
-                    @csrf
-                    @method('PUT')
-                    <span>EDIT JURNAL</span>
-                    <hr>
-                    <div class="row">
-                        <div class="col-4">
-                            <label for="tipe_jurnal">Nomor Jurnal</label>
-                            <input type="text" name="nomor" id="nomor" class="form-control" disabled value="{{ $data[0]->nomor }}">
+                <div class="card p-3" id="form-jurnal">
+                    <form action="{{ route('jurnal.update', $data[0]) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <span>EDIT JURNAL</span>
+                        <hr>
+                        <div class="row">
+                            <div class="col-4">
+                                <label for="tipe_jurnal">Nomor Jurnal</label>
+                                <input type="text" name="nomor" id="nomor" class="form-control" disabled value="{{ $data[0]->nomor }}">
+                            </div>
+                            <div class="col-4">
+                                <label for="created_at">Tanggal Jurnal</label>
+                                <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d',strtotime($data[0]->created_at)) }}" class="form-control">
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-success btn-sm mx-2 mt-3" type="submit" onclick="return confirm('are you sure?')">Simpan Tanggal</button>
+                            </div>
+                            <div class="col-2">
+                                <button class="btn btn-info btn-sm mx-2 mt-3" type="button" onclick="addModal()">Tambah Baris</button>
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <label for="created_at">Tanggal Jurnal</label>
-                            <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d',strtotime($data[0]->created_at)) }}" class="form-control">
-                        </div>
-                        <div class="col-2">
-                            <button class="btn btn-info btn-sm mx-2 mt-3" type="button" onclick="addModal()">Tambah Baris</button>
-                        </div>
-                    </div>
+                    </form>
                     <div class="table-responsive">
                         <table class="table table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
                             <thead>
@@ -87,7 +93,7 @@
                             <td><b id="total_credit">{{ number_format($data->sum('credit'),2,',','.') }}</b></td>
                         </tr>
                     </table>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -155,11 +161,11 @@
                         </div>
                         <div class="col-12 mb-3">
                             <label for="debit">Debit</label>
-                            <input class="form-control" onclick="this.select()" type="text" onkeyup="total()" name="debit" id="debit">
+                            <input class="form-control" onclick="this.select()" type="text" onkeyup="total()" value="0" name="debit" id="debit">
                         </div>
                         <div class="col-12 mb-3">
                             <label for="credit">Credit</label>
-                            <input class="form-control" onclick="this.select()" type="text" onkeyup="total()" name="credit" id="credit">
+                            <input class="form-control" onclick="this.select()" type="text" onkeyup="total()" value="0" name="credit" id="credit">
                         </div>
                         <div class="col-12 mb-3">
                             <button type="button" onclick="save()" class="btn btn-success w-100">Simpan</button>
