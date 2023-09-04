@@ -719,4 +719,16 @@ class SyncController extends Controller
 
         return response('Success');
     }
+    public function jurnalAsuransi()
+    {
+        $data = Jurnal::where('coa_id',25)->whereDate('created_at','2023-07-15')->get();
+        foreach($data as $item){
+            $jurnal = Jurnal::where('nomor',$item->nomor)->where('coa_id','!=',25)->first();
+            $item->update([
+                'created_at' => $jurnal->created_at
+            ]);
+        }
+
+        return response('success');
+    }
 }

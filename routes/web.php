@@ -272,5 +272,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-coa', [SyncController::class, 'coa']);
     Route::get('sync-jurnal', [SyncController::class, 'jurnal']);
     Route::get('sync-penjurnal', [SyncController::class, 'penjurnal']);
+    Route::get('sync-jurnal-asuransi', [SyncController::class, 'jurnalAsuransi']);
 });
 // Route::view('test','test');
