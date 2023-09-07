@@ -18,12 +18,14 @@ return new class extends Migration
             $table->date('tgl_opt')->nullable();
             $table->date('tgl_truk')->nullable();
             $table->date('tgl_kuli')->nullable();
+            $table->date('tgl_jc')->nullable();
             $table->double('nominal_do')->default(0);
             $table->double('nominal_cleaning')->default(0);
             $table->double('nominal_fee')->default(0);
             $table->double('nominal_opt')->default(0);
             $table->double('nominal_truk')->default(0);
             $table->double('nominal_kuli')->default(0);
+            $table->double('nominal_jc')->default(0);
             $table->foreignId('created_by')->nullable()->constrained('users');
             $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->timestamps();

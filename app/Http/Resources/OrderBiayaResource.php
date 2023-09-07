@@ -29,12 +29,14 @@ class OrderBiayaResource extends JsonResource
             'tgl_opt' => $this->tgl_opt ? date('d/m/y',strtotime($this->tgl_opt)) : '-',
             'tgl_truk' => $this->tgl_truk ? date('d/m/y',strtotime($this->tgl_truk)) : '-',
             'tgl_kuli' => $this->tgl_kuli ? date('d/m/y',strtotime($this->tgl_kuli)) : '-',
+            'tgl_jc' => $this->tgl_jc ? date('d/m/y',strtotime($this->tgl_jc)) : '-',
             'nominal_do' => $this->nominal_do,
             'nominal_cleaning' => $this->nominal_cleaning,
             'nominal_fee' => number_format($this->nominal_fee),
             'nominal_opt' => number_format($this->nominal_opt),
             'nominal_truk' => number_format($this->nominal_truk),
             'nominal_kuli' => number_format($this->nominal_kuli),
+            'nominal_jc' => number_format($this->nominal_jc),
         ];
     }
 }

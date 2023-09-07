@@ -17,12 +17,14 @@ class OrderBiaya extends Model
         'tgl_opt',
         'tgl_truk',
         'tgl_kuli',
+        'tgl_jc',
         'nominal_do',
         'nominal_cleaning',
         'nominal_fee',
         'nominal_opt',
         'nominal_truk',
         'nominal_kuli',
+        'nominal_jc',
     ];
 
     public function order()

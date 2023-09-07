@@ -8,11 +8,11 @@
                     @method('PUT')
                     <div class="row">
                         <div class="col-6 col-md-3 mb-2">
-                            <label for="tgl_dcf">Tanggal</label>
+                            <label for="tgl_dcf">Tanggal DO & Lolo Meratus</label>
                             <input type="date" name="tgl_dcf" id="tgl_dcf" class="form-control" value="{{ $order->tgl_dcf }}">
                         </div>
                         <div class="col-6 col-md-3 mb-2">
-                            <label for="nominal_do">Nominal DO</label>
+                            <label for="nominal_do">Nominal DO & Lolo Meratus</label>
                             <input type="number" onclick="this.select()" name="nominal_do" id="nominal_do" class="form-control" value="{{ $order->nominal_do }}">
                         </div>
                         <div class="col-6 col-md-3 mb-2">
@@ -52,6 +52,16 @@
                         <div class="col-6 col-md-3 mb-2">
                             <label for="nominal_kuli">Nominal Kuli</label>
                             <input type="number" onclick="this.select()" name="nominal_kuli" id="nominal_kuli" class="form-control" value="{{ $order->nominal_kuli }}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 col-md-3 mb-2">
+                            <label for="tgl_jc">Tanggal JC</label>
+                            <input type="date" name="tgl_jc" id="tgl_jc" class="form-control" value="{{ $order->tgl_jc }}">
+                        </div>
+                        <div class="col-6 col-md-3 mb-2">
+                            <label for="nominal_jc">Nominal JC</label>
+                            <input type="number" onclick="this.select()" name="nominal_jc" id="nominal_jc" class="form-control" value="{{ $order->nominal_jc }}">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('are you sure?')">Simpan</button>
