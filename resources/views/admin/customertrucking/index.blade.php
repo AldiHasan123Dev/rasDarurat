@@ -300,5 +300,20 @@
                 });
             }
         });
+
+        function changeStatus(id,val){
+            $.ajax({
+                    type: "POST",
+                    url: "{{ route('api.tariftrucking.createorupdate') }}",
+                    data: {
+                        is_active:val,
+                        tarif_id:id,
+                        updated_by:@json(Auth::id()),
+                    },
+                    success: function (response) {
+                        table_tarif.ajax.reload()
+                    }
+                });
+        }
     </script>
 @endsection

@@ -13,7 +13,9 @@ class TarifTruckingController extends Controller
     public function createOrUpdate(Request $request)
     {
         $data = $request->all();
-        $data['tarif'] = str_replace([',','.'],'',$request->tarif);
+        if (!empty($data['tarif'])) {
+            $data['tarif'] = str_replace([',','.'],'',$request->tarif);
+        }
 
         try {
             if ($request->tarif_id) {

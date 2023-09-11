@@ -65,9 +65,16 @@ class TarifTruckingController extends Controller
                 return number_format($data->tarif,0,',','.');
             })
             ->addColumn('is_active', function($data){
-                return $data->is_active==1?'Aktif':'Non Aktif';
+                $checked = $data->is_active == 1 ? 'checked' : '';
+                $label = $data->is_active == 1 ? 'Aktif' : 'Non Aktif';
+                $val = $data->is_active == 1 ? 0 : 1;
+                $html = '<div class="form-check form-switch">
+                            <input class="form-check-input" onchange="changeStatus('.$data->id.','.$val.')" type="checkbox" id="flexSwitchCheckDefault" '.$checked.'>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">'.$label.'</label>
+                        </div>';
+                return $html;
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['action','is_active'])
             ->make(true);
     }
 }
