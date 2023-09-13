@@ -61,15 +61,15 @@ class Neraca extends Component
         $this->end = $this->getLastDay();
         $this->modal = COA::whereIn('kode',['3','3.1','3.2','3.3'])->orderBy('kode')->get();
         $kel5 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->whereIn('coa.kode',['5','5.2','5.3','5.1','5.1.1','5.1.2','5.1.3','5.1.4','5.1.5'])
+                ->where('coa.kode','like','5.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $kel6 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->whereIn('coa.kode',['6','6.1','6.1.1','6.1.2','6.1.3','6.3.1','6.3.2','6.2.1','6.2.2','6.2.1.1','6.2.2.1','6.3','6.2','6.4','6.5','6.6','6.7','6.8','6.7.1','6.7.2','6.7.3','6.7.4','6.7.5','6.8.1','6.8.2','6.11.1','6.11.2','6.12.1','6.12.2','6.12.3','6.13.1','6.13.2','6.9','6.10','6.11','6.12','6.13','6.14'])
+                ->where('coa.kode','like','6.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $kel7 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->whereIn('coa.kode',['7','7.1'])
+                ->where('coa.kode','like','7.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $this->lr = ($kel5->sum('credit') - $kel5->sum('debit')) - (($kel6->sum('debit') - $kel6->sum('credit')) + ($kel7->sum('debit') - $kel7->sum('credit')));
@@ -86,19 +86,18 @@ class Neraca extends Component
         $this->end = $this->getLastDay();
         $this->modal = COA::whereIn('kode',['3','3.1','3.2','3.3'])->orderBy('kode')->get();
         $kel5 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->whereIn('coa.kode',['5','5.2','5.3','5.1','5.1.1','5.1.2','5.1.3','5.1.4','5.1.5'])
+                ->where('coa.kode','like','5.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $kel6 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->whereIn('coa.kode',['6','6.1','6.1.1','6.1.2','6.1.3','6.3.1','6.3.2','6.2.1','6.2.2','6.2.1.1','6.2.2.1','6.3','6.2','6.4','6.5','6.6','6.7','6.8','6.7.1','6.7.2','6.7.3','6.7.4','6.7.5','6.8.1','6.8.2','6.11.1','6.11.2','6.12.1','6.12.2','6.12.3','6.13.1','6.13.2','6.9','6.10','6.11','6.12','6.13','6.14'])
+                ->where('coa.kode','like','6.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $kel7 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->whereIn('coa.kode',['7','7.1'])
+                ->where('coa.kode','like','7.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
                 ->get();
         $this->lr = ($kel5->sum('credit') - $kel5->sum('debit')) - (($kel6->sum('debit') - $kel6->sum('credit')) + ($kel7->sum('debit') - $kel7->sum('credit')));
-        dd($this->end);
     }
 
     public function getLastDay()

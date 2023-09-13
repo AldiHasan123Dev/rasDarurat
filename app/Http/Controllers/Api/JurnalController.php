@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JurnalResource;
+use App\Models\COA;
 use App\Models\Jurnal;
 use App\Models\Order;
 use App\Models\OrderTrucking;
@@ -168,6 +169,92 @@ class JurnalController extends Controller
             'total' => $total_pages,
             'records' => $count,
             'rows' => $response
+        ]);
+    }
+
+    public function buku_besar()
+    {
+        $start = request('start');
+        $tipe = request('tipe');
+        $saldo_awal = request('saldo_awal');
+        $coa = COA::find(request('coa_id'));
+        $data =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+            ->leftJoin('order','order.id','=','jurnal.order_id')
+            ->orWhere('order.job','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('coa.kode','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('coa.nama','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('jurnal.nama','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('jurnal.nomor','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('jurnal.created_at','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->select('jurnal.*')
+            ->orderBy('jurnal.created_at')
+            ->skip($start)
+            ->take(100)
+            ->get();
+
+        $count = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+            ->leftJoin('order','order.id','=','jurnal.order_id')
+            ->orWhere('order.job','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('coa.kode','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('coa.nama','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('jurnal.nama','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('jurnal.nomor','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->orWhere('jurnal.created_at','LIKE','%'.request('search').'%')
+            ->whereMonth('jurnal.created_at',request('month'))
+            ->whereYear('jurnal.created_at',request('year'))
+            ->where('jurnal.coa_id', request('coa_id'))
+            ->select('jurnal.id')
+            ->count();
+
+        $view = view('data.buku_besar',compact('data','tipe','coa','saldo_awal'))->render();
+        if ($tipe=='D') {
+            $saldo_awal = $data->sum('debit') - $data->sum('credit');
+        } else {
+            $saldo_awal = $data->sum('credit') - $data->sum('debit');
+        }
+        
+        $continue = 1;
+        if(($start+100)>=$count){
+            $continue = 0;
+        }
+        return response([
+            'view' => $view,
+            'start' => $start + 100,
+            'saldo_awal' => $saldo_awal,
+            'continue' => $continue
         ]);
     }
 }

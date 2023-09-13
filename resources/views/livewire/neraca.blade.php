@@ -22,10 +22,10 @@
             </div>
         </div>
     </div>
-    {{-- <div class="col-12">
+    <div class="col-12">
         <pre>{{ $start }}</pre>
         <pre>{{ $end }}</pre>
-    </div> --}}
+    </div>
     <div class="col-6">
         <table class="table table-sm" style="font-size: .7rem">
             <thead>

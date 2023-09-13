@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('jurnal-buku-besar', [JurnalController::class,'buku_besar'])->name('api.jurnal.buku_besar');
 Route::post('generate-nsfp', [NSFPController::class,'generate'])->name('api.nsfp.generate');
 Route::post('nsfp', [NSFPController::class,'store'])->name('api.nsfp.store');
 Route::post('customer', [CustomerController::class,'getOne'])->name('api.customer.getOne');
