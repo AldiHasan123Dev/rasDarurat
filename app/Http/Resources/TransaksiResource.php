@@ -34,8 +34,8 @@ class TransaksiResource extends JsonResource
             'tanggal_kirim_format' => is_null($this->tanggal_kirim) ? '-' : date('Y-m-d', strtotime($this->tanggal_kirim)),
             'tanggal' => is_null($this->created_at) ? '-' : date('d/m/y', strtotime($this->created_at)),
             'tanggal_format' => is_null($this->created_at) ? '-' : date('Y-m-d', strtotime($this->created_at)),
-            'total' => number_format(ceil($this->total)),
-            'sub_total' => number_format(ceil($this->sub_total)),
+            'total' => number_format(round($this->total)),
+            'sub_total' => number_format(round($this->sub_total)),
             'ppn' => number_format(round($this->ppn)),
             'pph' =>  number_format(round($this->pph)),
             'bupot' =>  is_null($this->bupot) ? '-' : number_format(round($this->bupot)),
@@ -47,7 +47,7 @@ class TransaksiResource extends JsonResource
             'masa_bupot_bulan' => is_null($this->masa_bupot) ? null : str_replace([substr($this->masa_bupot,-4),' '],'',$this->masa_bupot),
             'tanggal_bupot' => is_null($this->tanggal_bupot) ? '-' : date('d/m/y', strtotime($this->tanggal_bupot)),
             'tanggal_bupot_date' => $this->tanggal_bupot,
-            'ppn_subtotal' =>  number_format(round($this->ppn) + ceil($this->sub_total)),
+            'ppn_subtotal' =>  number_format(round($this->ppn) + round($this->sub_total)),
         ];
     }
 }
