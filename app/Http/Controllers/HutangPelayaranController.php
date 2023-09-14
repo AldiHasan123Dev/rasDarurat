@@ -15,7 +15,12 @@ class HutangPelayaranController extends Controller
 {
     public function index()
     {
-        $data = HutangPelayaran::with('order')->get()->groupBy('order.job');
+        $lists = HutangPelayaran::with(['order','tarif_pelayaran'])->get()->groupBy('tarif_pelayaran.pelayaran_id')->groupBy('order.job');
+        $data = array();
+        foreach ($lists as $list) {
+            array_push($data,$list);
+        }
+        $data = $data[0];
         return view('admin.hutangpelayaran.index', compact('data'));
     }
 
@@ -65,19 +70,16 @@ class HutangPelayaranController extends Controller
         if (count($order_id) <= 1 && $order_id[0] == "") {
             return back()->with('danger', 'Harap checklist terlebih dahulu!');
         }
-        $orders = Order::whereIn('id', $order_id)->get()->groupBy('job');
-        if ($orders->count() > 1) {
-            return back()->with('danger', 'Anda tidak bisa memilih ' . $orders->count() . ' Customer sekaligus!, Harap untuk pilih satu Customer');
+
+        $cek = HutangPelayaran::with(['order','tarif_pelayaran'])->whereIn('order_id', $order_id)->get()->groupBy('tarif_pelayaran.pelayaran_id');
+        if(count($cek)>1){
+            return back()->with('danger', 'Harap checklist pelayaran yang sama!');
         }
-        $order = Order::whereIn('id', $order_id)->first();
-        // $null_job = Order::whereIn('id', $order_id)->whereNull('id')->count();
-
-        // $tipe = $request->tipe;
         $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
-
+        $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first();
         // $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
 
-        return view('admin.hutangpelayaran.invoice', compact('data', 'order'));
+        return view('admin.hutangpelayaran.invoice', compact('data','pelayaran'));
     }
 
     public function cetak_invoice_get()

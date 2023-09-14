@@ -22,7 +22,7 @@
                     <p>List Hutang Pelayaran</p>
                     <form action="{{ route('hutang-pelayaran.cetak.voucher') }}" method="post">
                         {{-- <input type="hidden" name="nama_pel" value="pelayaran"> --}}
-                        <input type="hidden" name="order_id" id="order_id1">
+                        <input type="hidden" name="order_id" id="order_id">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
                             id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
                         @csrf
@@ -45,34 +45,41 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $first = true;
+                            @endphp
                             @forelse ($data as $hutpel => $orders)
-                                @php
-                                    $total = 0;
-                                @endphp
-                                @foreach ($orders as $order)
-                                    @php
-                                        $total += $order->jumlah;
-                                    @endphp
-                                    <tr>
-                                        @if ($loop->first)
-                                            <td style="vertical-align: middle; text-align:center"
-                                                rowspan="{{ $orders->count() }}">{{ $order->order->job }}</td>
-                                        @endif
-                                        <td class="text-center"><input type="checkbox" name="order_id1"
-                                                value="{{ $order->order->id }}"></td>
-                                        <td>{{ $order->order->job }}-{{ sprintf('%02d', $order->order->no_job) }}</td>
-                                        <td id="pelayaran">{{ $order->order->jadwal_kapal->pelayaran->nama }}</td>
-                                        <td>{{ $order->order->container }}</td>
-                                        <td>{{ $order->order->seal }}</td>
-                                        <td>Rp. {{ number_format($order->jumlah ?? 0) }}</td>
-                                        {{-- <td></td> --}}
-                                    </tr>
+                                <tr style="height: 30px; border:2px solid black; vertical-align:middle">
+                                    <td colspan="7" class="text-center fw-bold text-uppercase">{{ $orders->first()->tarif_pelayaran->pelayaran->nama }}</td>
+                                </tr>
+                                @foreach ($orders->groupBy('order.job') as $order)
+                                    @foreach ($order as $item)
+                                        <tr>
+                                            @if ($first)
+                                            <td style="vertical-align: middle; text-align:center" rowspan="{{ $order->count() }}">
+                                                {{ $order->first()->order->job }}
+                                            </td>
+                                            @php
+                                                $first = false;
+                                            @endphp
+                                            @endif
+                                            <td class="text-center"><input type="checkbox" name="order_id" value="{{ $item->order->id }}"></td>
+                                            <td>{{ $item->order->job }}-{{ sprintf('%02d', $item->order->no_job) }}</td>
+                                            <td id="pelayaran">{{ $item->order->jadwal_kapal->pelayaran->nama }}</td>
+                                            <td>{{ $item->order->container }}</td>
+                                            <td>{{ $item->order->seal }}</td>
+                                            <td>Rp. {{ number_format($item->jumlah ?? 0) }}</td>
+                                        </tr>
+                                    @endforeach
+                                        @php
+                                            $first = true;
+                                        @endphp
                                 @endforeach
-                                <tr class="border-bottom border-dark">
+                                {{-- <tr class="border-bottom border-dark">
                                     <td colspan="5" class="text-center"><b>TOTAL</b></td>
                                     <td colspan="8" class="border border-dark"><b>Rp. {{ number_format($total) }}</b>
                                     </td>
-                                </tr>
+                                </tr> --}}
                             @empty
                                 <tr>
                                     <td colspan="13" class="text-center">Tidak Ada Data!</td>
@@ -90,41 +97,17 @@
 @section('script')
     <script>
         let id1 = [];
-        let id2 = [];
-        let id3 = [];
 
-        $('input:checkbox[name=order_id1]').change(function(e) {
-            check1()
-        });
-        $('input:checkbox[name=order_id2]').change(function(e) {
-            check2()
-        });
-        $('input:checkbox[name=order_id_vendor]').change(function(e) {
-            check3()
+        $('input:checkbox[name=order_id]').change(function(e) {
+            check()
         });
 
-        function check1() {
+        function check() {
             id1 = [];
-            $("input:checkbox[name=order_id1]:checked").each(function() {
+            $("input:checkbox[name=order_id]:checked").each(function() {
                 id1.push($(this).val());
             });
-            $('#order_id1').val(id1);
-        }
-
-        function check2() {
-            id2 = [];
-            $("input:checkbox[name=order_id2]:checked").each(function() {
-                id2.push($(this).val());
-            });
-            $('#order_id2').val(id2);
-        }
-
-        function check3() {
-            id3 = [];
-            $("input:checkbox[name=order_id_vendor]:checked").each(function() {
-                id3.push($(this).val());
-            });
-            $('#order_id_vendor').val(id3);
+            $('#order_id').val(id1);
         }
     </script>
 @endsection
