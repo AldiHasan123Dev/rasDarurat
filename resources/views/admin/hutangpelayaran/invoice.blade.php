@@ -77,7 +77,8 @@
 @section('content')
     <div class="container">
         <div class="card p-3 mt-3">
-            <div id="print">
+            <form action="{{ route('hutang-pelayaran.store') }}" method="POST" id="print">
+                @csrf
                 <div class="invoice-box first-page">
                     <div class="header d-flex" style="gap:5px; width:100%">
                         <div style="width: 100%;">
@@ -133,42 +134,53 @@
                                             <tr>
                                                 <td rowspan="5" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                 <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                                <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                             </tr>
                                             <tr>
                                                 <td>THC LoLo SBY</td>
-                                                <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                                <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                             </tr>
                                             <tr>
                                                 <td>APBS</td>
-                                                <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                                <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                             </tr>
                                             <tr>
                                                 <td>Cleaning</td>
-                                                <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                                <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                             </tr>
                                             <tr>
                                                 <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                                <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                             </tr>
                                         @endforeach
                                     @endforeach
                                 </tbody>
                                 <tfoot>
                                     <tr>
+                                        <td colspan="2" class="text-end">PPH {{ $pelayaran->tarif_pelayaran->pelayaran->pph }}%</td>
+                                        <td><input type="number" onkeyup="hitung()" readonly id="pph" name="pph" value="{{ $pelayaran->tarif_pelayaran->pelayaran->pph==0?0:'' }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="text-end">Pembulatan</td>
+                                        <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" name="pembulatan" id="pembulatan" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                        <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                        <td><input type="text" name="nominal_bg" id="nominal_bg" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                        <td><input type="text" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                        <td><input type="text" name="no_bg" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                     </tr>
                                     <tr>
                                         <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                        <td><input type="date" style="width: 100%; padding:5px; border:1px solid gray" name="" id=""></td>
+                                        <td><input type="date" name="tanggal_bg" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                     </tr>
                                 </tfoot>
                             </table>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-primary w-100" onclick="return confirm('are you sure?')">Cetak BBK</button>
                         </div>
                     </div>
 
@@ -199,10 +211,58 @@
                         </div>
                     </div> --}}
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 @endsection
 
 @section('script')
+<script>
+    let pph = @json($pelayaran->tarif_pelayaran->pelayaran->pph);
+    $('.opp').keyup(function (e) {
+        let jumlah = 0;
+        $('input[type="number"].opp').each(function () {
+            jumlah+=parseFloat($(this).val());
+        });
+        let a = jumlah / 1.11;
+        let total = parseInt(pph) / 100;
+        total *= a;
+        $('#pph').val(Math.round(total));
+        hitung();
+    });
+
+    let timer
+    function hitung(){
+        clearTimeout(timer)
+        setTimeout(() => {
+            let opp = 0;
+            let lss = 0;
+            let thc = 0;
+            let apbs = 0;
+            let cleaning = 0;
+            let jumlah = 0;
+            let pph = parseFloat($('#pph').val());
+            let pembulatan = parseFloat($('#pembulatan').val());
+            $('input[type="number"].opp').each(function () {
+                opp+=parseFloat($(this).val());
+            });
+            $('input[type="number"].lss').each(function () {
+                lss+=parseFloat($(this).val());
+            });
+            $('input[type="number"].thc').each(function () {
+                thc+=parseFloat($(this).val());
+            });
+            $('input[type="number"].apbs').each(function () {
+                apbs+=parseFloat($(this).val());
+            });
+            $('input[type="number"].cleaning').each(function () {
+                cleaning+=parseFloat($(this).val());
+            });
+
+            jumlah = (opp + lss + thc + apbs + cleaning+ pembulatan) - pph;
+            $('#nominal_bg').val(jumlah);
+
+        }, 1000);
+    }
+</script>
 @endsection

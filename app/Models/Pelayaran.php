@@ -22,6 +22,7 @@ class Pelayaran extends Model
         'fax',
         'email',
         'hp',
+        'pph',
     ];
 
     protected static function booted()

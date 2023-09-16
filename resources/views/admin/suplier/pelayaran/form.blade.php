@@ -1,4 +1,5 @@
 <div class="row">
+    <x-input :value="$pelayaran->pph??old('pph')" :col="6" :label="'Pph (%)'" :type="'number'" :name="'pph'" :required="true"></x-input>
     <x-input :value="$pelayaran->kode??old('kode')" :col="6" :label="'Kode'" :type="'text'" :name="'kode'" :required="true"></x-input>
     <x-input :value="$pelayaran->nama??old('nama')" :col="6" :label="'Nama'" :type="'text'" :name="'nama'" :required="true"></x-input>
     <x-input :value="$pelayaran->pic??old('pic')" :col="6" :label="'Pic'" :type="'text'" :name="'pic'"></x-input>

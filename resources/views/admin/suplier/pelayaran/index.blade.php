@@ -41,6 +41,7 @@
                     <thead>
                         <tr>
                             <th>ID.</th>
+                            <th>PPh %</th>
                             <th>Kode</th>
                             <th>Nama</th>
                             <th>Pic</th>
@@ -140,6 +141,7 @@
             },
             columns: [
                 { data: 'id', name: 'id' },
+                { data: 'pph', name: 'pph' },
                 { data: 'kode', name: 'kode' },
                 { data: 'nama', name: 'nama' },
                 { data: 'pic', name: 'pic' },

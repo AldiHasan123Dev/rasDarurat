@@ -24,7 +24,7 @@
                         {{-- <input type="hidden" name="nama_pel" value="pelayaran"> --}}
                         <input type="hidden" name="order_id" id="order_id">
                         <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
-                            id="generate-invoice"><i class="fas fa-print"></i> Cetak Invoice</button>
+                            id="generate-invoice"><i class="fas fa-print"></i> Buat BBK</button>
                         @csrf
                     </form>
                 </div>
@@ -55,7 +55,7 @@
                                 @foreach ($orders->groupBy('order.job') as $order)
                                     @foreach ($order as $item)
                                         <tr>
-                                            @if ($first)
+                                            @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center" rowspan="{{ $order->count() }}">
                                                 {{ $order->first()->order->job }}
                                             </td>

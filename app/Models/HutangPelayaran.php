@@ -15,6 +15,11 @@ class HutangPelayaran extends Model
         'tarif_pelayaran_id',
         'order_id',
         'jumlah',
+        'opp',
+        'apbs',
+        'thc',
+        'cleaning',
+        'lss',
         'status',
     ];
 

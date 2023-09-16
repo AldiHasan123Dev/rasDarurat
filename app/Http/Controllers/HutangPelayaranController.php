@@ -9,6 +9,7 @@ use App\Models\TarifPelayaran;
 use App\Models\HutangPelayaran;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
+use App\Models\Jurnal;
 use Illuminate\Support\Facades\Hash;
 
 class HutangPelayaranController extends Controller
@@ -27,6 +28,28 @@ class HutangPelayaranController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $ids = array();
+        foreach ($data['data'] as $id => $item) {
+            $prop = $item;
+            $prop['tgl_bg'] = $data['tanggal_bg'];
+            $prop['no_bg'] = $data['no_bg'];
+            $prop['nominal_bg'] = $data['nominal_bg'];
+            $prop['pph'] = $data['pph'];
+            $prop['pembulatan'] = $data['pembulatan'];
+            HutangPelayaran::find($id)->update($prop);
+            array_push($ids,$id);
+        }
+        return redirect()->route('hutang-pelayaran.index');
+
+        $lists = HutangPelayaran::whereIn('id',$ids)->get();
+        foreach ($lists as $item) {
+            Jurnal::create([
+                'coa_id' => 45,
+                'order_id' => $item->order_id,
+                'nomor' => '',
+                'nama' => ''
+            ]);
+        }
         HutangPelayaran::create($data);
 
         return back()->with('success', 'Data berhasil disimpan');
