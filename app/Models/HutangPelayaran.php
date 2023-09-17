@@ -12,15 +12,27 @@ class HutangPelayaran extends Model
 
     protected $table = 'hutang_pelayaran';
     protected $fillable = [
-        'tarif_pelayaran_id',
+        'jurnal',
+        'no_bg',
+        'tgl_bg',
+        'pelayaran_id',
         'order_id',
         'jumlah',
         'opp',
         'apbs',
-        'thc',
         'cleaning',
+        'thc',
         'lss',
+        'opp_stamp',
+        'opt',
+        'opt_stamp',
+        'ut',
+        'bl',
+        'ut_stamp',
+        'pph',
+        'pembulatan',
         'status',
+        'is_lock',
     ];
 
     public function tarif_pelayaran()

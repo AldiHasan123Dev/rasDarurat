@@ -140,4 +140,34 @@ class Order extends Model
     {
         return $this->hasOne(HutangPelayaran::class,'order_id');
     }
+
+    public function tipe($dari)
+    {
+        if(str_contains($dari,'SURABAYA') || str_contains($dari,'surabaya')){
+            return 'muatan';
+        }
+        return 'bongkaran';
+    }
+
+    public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan)
+    {
+        if(str_contains($dari,'SURABAYA') || str_contains($dari,'surabaya')){
+            $type = 'muatan';
+        }else{
+            $type = 'bongkaran';
+        }
+        $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id;
+        $dari_id = Lokasi::where('nama',$dari)->first()->id;
+        if($type=='muatan'){
+            return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
+                    ->where('tujuan',$tujuan_id)
+                    ->where('is_active',1)
+                    ->get();
+        }else{
+            return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
+                    ->where('dari',$dari_id)
+                    ->where('is_active',1)
+                    ->get();
+        }
+    }
 }

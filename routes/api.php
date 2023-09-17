@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AsuransiController;
 use App\Http\Controllers\Api\BarangController;
 use App\Http\Controllers\Api\BTTBController;
 use App\Http\Controllers\Api\CustomerController;
+use App\Http\Controllers\Api\HutangPelayaranController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\JasaKirimController;
 use App\Http\Controllers\Api\JurnalController;
@@ -36,6 +37,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('update-hutang-pelayaran', [HutangPelayaranController::class,'updateByOrder'])->name('api.hutang-pelayaran.update');
 Route::post('jurnal-buku-besar', [JurnalController::class,'buku_besar'])->name('api.jurnal.buku_besar');
 Route::post('generate-nsfp', [NSFPController::class,'generate'])->name('api.nsfp.generate');
 Route::post('nsfp', [NSFPController::class,'store'])->name('api.nsfp.store');

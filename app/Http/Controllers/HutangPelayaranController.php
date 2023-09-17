@@ -16,12 +16,25 @@ class HutangPelayaranController extends Controller
 {
     public function index()
     {
-        $lists = HutangPelayaran::with(['order','tarif_pelayaran'])->get()->groupBy('tarif_pelayaran.pelayaran_id')->groupBy('order.job');
-        $data = array();
-        foreach ($lists as $list) {
-            array_push($data,$list);
+        $lists = HutangPelayaran::where('status',0)->pluck('order_id')->toArray();
+        $data = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
+            ->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id')
+            ->join('kapal','kapal.id','=','jadwal_kapal.kapal_id')
+            ->join('tarif','tarif.id','=','order.tarif_id')
+            ->join('lokasi as dari','dari.id','=','tarif.dari')
+            ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
+            ->join('hutang_pelayaran','hutang_pelayaran.order_id','=','order.id')
+            ->whereIn('order.id',$lists)
+            ->select('order.job','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama')
+            ->get()
+            ->groupBy('pelayaran_id')
+            ->groupBy('voyage')
+            ->groupBy('job');
+        $list = array();
+        foreach ($data as $da) {
+            array_push($list,$da);
         }
-        $data = $data[0];
+        $data = $list[0];
         return view('admin.hutangpelayaran.index', compact('data'));
     }
 

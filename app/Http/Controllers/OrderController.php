@@ -136,20 +136,19 @@ class OrderController extends Controller
             $data['no_job'] = $ceks->count() + 1;
         }
         $order = Order::create($data);
-        $tarif_pelayaran = TarifPelayaran::where('pelayaran_id',$order->jadwal_kapal->pelayaran_id)
-                            ->where('dari',$order->tarif->dari)
-                            ->where('tujuan',$order->tarif->tujuan)
-                            ->where('tipe',$order->tarif->shipment)
-                            ->where('is_active',1)
-                            ->first();
-        if($tarif_pelayaran){
-            HutangPelayaran::create([
-                'tarif_pelayaran_id' => $tarif_pelayaran->id,
-                'order_id' => $order->id,
-                'jumlah' => $tarif_pelayaran->tarif,
-                'status' => 0,
-            ]);
-        }
+        // $tarif_pelayaran = TarifPelayaran::where('pelayaran_id',$order->jadwal_kapal->pelayaran_id)
+        //                     ->where('dari',$order->tarif->dari)
+        //                     ->where('tujuan',$order->tarif->tujuan)
+        //                     ->where('tipe',$order->tarif->shipment)
+        //                     ->where('is_active',1)
+        //                     ->first();
+        // if($tarif_pelayaran){
+        // }
+        HutangPelayaran::create([
+            'pelayaran_id' => $order->jadwal_kapal->pelayaran_id,
+            'order_id' => $order->id,
+            'status' => 0,
+        ]);
         return back()->with('success','Data berhasil disimpan');
     }
 
@@ -253,7 +252,7 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $order->delete();
-
+        HutangPelayaran::where('order_id',$order->id)->delete();
         return back()->with('success','Data berhasil dihapus');
     }
 
@@ -271,7 +270,12 @@ class OrderController extends Controller
         $data['full'] = null;
         $data['keterangan'] = null;
         $data['created_at'] = date('Y-m-d');
-        Order::create($data);
+        $order = Order::create($data);
+        HutangPelayaran::create([
+            'pelayaran_id' => $order->jadwal_kapal->pelayaran_id,
+            'order_id' => $order->id,
+            'status' => 0,
+        ]);
         return response('copy data berhasil!');
         // return back()->with('success','Copy data berhasil');
     }
