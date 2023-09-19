@@ -34,7 +34,7 @@ class TruckingController extends Controller
         $carbon = new Carbon();
         $start = request('start') ?? date('Y-m-d');
         $end = request('end') ?? $carbon->addMonths(1)->format('Y-m-d');
-        $data1 = OrderTrucking::where('customer_id', 3)->whereBetween('tgl_muat', [$start, $end])->get();
+        $data1 = OrderTrucking::where('customer_id', 23)->whereBetween('tgl_muat', [$start, $end])->get();
         $data2 = OrderTrucking::where('customer_id', 24)->whereBetween('tgl_muat', [$start, $end])->get();
         return view('admin.trucking.yansen', compact('data1', 'data2', 'start', 'end'));
     }
