@@ -41,25 +41,25 @@
                     <button type="button" onclick="modalEditOrder()" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
                     @if (is_null($marketing))
-                    <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
-                    <button onclick="printPackingListKubikasi()" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</button>
-                    <form action="" id="copy-order" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <button class="py-2 px-3 btn btn-sm btn-secondary" type="button" id="copy-order-btn" onclick="return confirm('Are you sure?')">Copy Order</button>
-                    </form>
-                    <form action="" id="delete-order" method="post" enctype="multipart/form-data">
-                        @csrf
-                        @method('DELETE')
-                        <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
-                    </form>
-                    <form action="" id="tarik-ba" method="post">
-                        @csrf
-                        @method('PUT')
-                        @if (is_null($marketing))
-                        <button class="py-2 px-3 btn btn-sm btn-warning" name="ba" value="2" type="submit" onclick="return confirm('Are you sure?')">Tarik BA kembali</button>
-                        @endif
-                    </form>
-                    <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
+                        <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
+                        <button onclick="printPackingListKubikasi()" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</button>
+                        <form action="" id="copy-order" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <button class="py-2 px-3 btn btn-sm btn-secondary" type="button" id="copy-order-btn" onclick="return confirm('Are you sure?')">Copy Order</button>
+                        </form>
+                        <form action="" id="delete-order" method="post" enctype="multipart/form-data">
+                            @csrf
+                            @method('DELETE')
+                            <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
+                        </form>
+                        <form action="" id="tarik-ba" method="post">
+                            @csrf
+                            @method('PUT')
+                            @if (is_null($marketing))
+                            <button class="py-2 px-3 btn btn-sm btn-warning" name="ba" value="2" type="submit" onclick="return confirm('Are you sure?')">Tarik BA kembali</button>
+                            @endif
+                        </form>
+                        <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
                     @endif
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
@@ -515,6 +515,7 @@
             id = $(this).jqGrid('getCell', rowId, 'id');
             var no_job = $(this).jqGrid('getCell', rowId, 'no');
             var koli = $(this).jqGrid('getCell', rowId, 'koli');
+            var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
             $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#koli-info').show();
@@ -535,6 +536,15 @@
             // $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
             // $('#iframe-bttb').attr('src','{{ url('admin/bttb/create') }}?order_id='+id);
             $('#tarik-ba').attr('action','{{ url('admin/order') }}/'+id);
+            if(invoice=='-'){
+                $('#btn-tagihan').show();
+            }else{
+                $('#btn-tagihan').hide();
+            }
+            let role = "{{ Auth::user()->role_id }}";
+            if(parseInt(role)==1){
+                $('#btn-tagihan').show();
+            }
             tablebttb.ajax.reload();
             tableTagihan.ajax.reload();
         },
