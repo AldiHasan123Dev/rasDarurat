@@ -28,6 +28,9 @@ class Jurnal extends Model
         'no',
         'is_balik',
         'created_at',
+        'no_bg',
+        'tgl_bg',
+        'nominal_bg',
     ];
 
     protected $searchable = [

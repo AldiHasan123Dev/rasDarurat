@@ -18,19 +18,85 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2">
-                <div class="d-flex gap-2 justify-content-between">
-                    <p>List Hutang Pelayaran</p>
-                    <form action="{{ route('hutang-pelayaran.cetak.voucher') }}" method="post">
-                        {{-- <input type="hidden" name="nama_pel" value="pelayaran"> --}}
-                        <input type="hidden" name="order_id" id="order_id">
-                        <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
-                            id="generate-invoice"><i class="fas fa-print"></i> Buat BBK</button>
-                        @csrf
-                    </form>
+                <div class="row">
+                    <div class="col-8">
+                        <p>List Hutang Pelayaran</p>
+                        <div class="d-flex gap-2">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                <i class="fas fa-list"></i> Filter
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <form action="{{ route('hutang-pelayaran.index') }}" method="GET" class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body row">
+                                            <div class="col-12">
+                                                <h5>Pelayaran</h5><hr>
+                                                <div class="row">
+                                                    @foreach ($data as $pelayaran)
+                                                    <div class="col-3">
+                                                        <label for="pel-{{ $loop->iteration }}">
+                                                            <input type="checkbox" name="pelayaran[]" id="pel-{{ $loop->iteration }}" value="{{ $pelayaran->first()->pelayaran_id }}">
+                                                            {{ $pelayaran->first()->nama }}
+                                                        </label>
+                                                    </div>
+                                                    @endforeach
+                                                </div>
+                                                <hr>
+                                                <h5>Kapal</h5><hr>
+                                                <div class="row">
+                                                    @foreach ($data as $orders)
+                                                        @foreach ($orders->groupBy('nama_kapal')->sortBy('nama_kapal') as $order)
+                                                            <div class="col-2">
+                                                                <label for="nama_kapal-{{ $order->first()->id }}">
+                                                                    <input type="checkbox" name="kapal[]" id="nama_kapal-{{ $order->first()->id }}" value="{{ $pelayaran->first()->kapal_id }}">
+                                                                    {{ $order->first()->nama_kapal }}
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="{{ route('hutang-pelayaran.index') }}" class="btn btn-secondary">Reset Filter</a>
+                                            <button type="submit" name="search" value="1" class="btn btn-primary">Cari Berdasarkan Filter</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <form action="{{ route('hutang-pelayaran.cetak.voucher') }}" method="post">
+                                <input type="hidden" name="order_id" class="order_id">
+                                <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
+                                    id="generate-invoice"><i class="fas fa-print"></i> Buat BBK</button>
+                                @csrf
+                            </form>
+                            <form action="{{ route('hutang-pelayaran.delete') }}" method="post">
+                                <input type="hidden" name="order_id" class="order_id">
+                                <button class="py-2 px-3 btn btn-danger" onclick="return confirm('are you sure?')"><i class="fas fa-trash"></i> Delete</button>
+                                @csrf
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-4" style="font-size: .8rem">
+                        <b>Syarat cetak BBK:</b>
+                        <ol>
+                            <li>Harga harus dilock</li>
+                            <li>Pelayaran yang sama</li>
+                            <li>Kapal yang sama</li>
+                            <li>Voyage yang sama</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="height: 500px">
                     <table class="table table-sm nowrap" style="font-size: .7rem; white-space:nowrap">
                         <thead>
                             <tr>
@@ -129,7 +195,7 @@
             $("input:checkbox[name=order_id]:checked").each(function() {
                 id1.push($(this).val());
             });
-            $('#order_id').val(id1);
+            $('.order_id').val(id1);
         }
 
         function checkGroup(job){

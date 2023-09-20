@@ -135,6 +135,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
+    Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');
     Route::get('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice_get'])->name('hutang-pelayaran.cetak.voucher.get');
 
     Route::get('marketing/{marketing}', [OrderController::class, 'index'])->name('order.index.marketing');
@@ -273,5 +274,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-jurnal', [SyncController::class, 'jurnal']);
     Route::get('sync-penjurnal', [SyncController::class, 'penjurnal']);
     Route::get('sync-jurnal-asuransi', [SyncController::class, 'jurnalAsuransi']);
+    Route::get('sync-hutang-pelayaran', [SyncController::class, 'hutang_pelayaran']);
 });
 // Route::view('test','test');

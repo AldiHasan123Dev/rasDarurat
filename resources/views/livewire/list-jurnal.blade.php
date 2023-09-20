@@ -46,6 +46,7 @@
                         <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
                         <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
                         <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'TEST','month'=>request('month')]) }}" class="{{ $tipe=='TEST'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">TEST</a>
                     </div>
                     <div>
                         <a href="" class="btn btn-sm btn-primary mt-5" id="edit-btn">Edit</a>

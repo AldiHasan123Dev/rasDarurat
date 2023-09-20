@@ -13,8 +13,15 @@ class HutangPelayaran extends Model
     protected $table = 'hutang_pelayaran';
     protected $fillable = [
         'jurnal',
-        'no_bg',
-        'tgl_bg',
+        'no_bg_opp',
+        'tgl_bg_opp',
+        'nominal_bg_opp',
+        'no_bg_opt',
+        'tgl_bg_opt',
+        'nominal_bg_opt',
+        'no_bg_ut',
+        'tgl_bg_ut',
+        'nominal_bg_ut',
         'pelayaran_id',
         'order_id',
         'jumlah',

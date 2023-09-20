@@ -17,17 +17,24 @@ class HutangPelayaranController extends Controller
     public function index()
     {
         $lists = HutangPelayaran::where('status',0)->pluck('order_id')->toArray();
-        $data = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
-            ->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id')
-            ->join('kapal','kapal.id','=','jadwal_kapal.kapal_id')
-            ->join('tarif','tarif.id','=','order.tarif_id')
-            ->join('lokasi as dari','dari.id','=','tarif.dari')
-            ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
-            ->join('hutang_pelayaran','hutang_pelayaran.order_id','=','order.id')
-            ->whereIn('order.id',$lists)
-            ->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama')
-            ->get()
-            ->groupBy('jadwal_kapal.pelayaran_id','order.job');
+        $q = Order::query();
+            $q->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+            $q->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+            $q->join('kapal','kapal.id','=','jadwal_kapal.kapal_id');
+            $q->join('tarif','tarif.id','=','order.tarif_id');
+            $q->join('lokasi as dari','dari.id','=','tarif.dari');
+            $q->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan');
+            $q->join('hutang_pelayaran','hutang_pelayaran.order_id','=','order.id');
+            $q->whereIn('order.id',$lists);
+            $q->where('hutang_pelayaran.status',0);
+            if(request('pelayaran')){
+                $q->whereIn('jadwal_kapal.pelayaran_id',request('pelayaran'));
+            }
+            if(request('kapal')){
+                $q->whereIn('jadwal_kapal.kapal_id',request('kapal'));
+            }
+            $q->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama');
+        $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','order.job');
         return view('admin.hutangpelayaran.index', compact('data'));
     }
 
@@ -37,28 +44,155 @@ class HutangPelayaranController extends Controller
         $ids = array();
         foreach ($data['data'] as $id => $item) {
             $prop = $item;
-            $prop['tgl_bg'] = $data['tanggal_bg'];
-            $prop['no_bg'] = $data['no_bg'];
-            $prop['nominal_bg'] = $data['nominal_bg'];
+            $prop['tgl_bg_opp'] = $data['tanggal_bg_opp'];
+            $prop['tgl_bg_opt'] = $data['tanggal_bg_opt'];
+            $prop['tgl_bg_ut'] = $data['tanggal_bg_ut'];
+            $prop['no_bg_opp'] = $data['no_bg_opp'];
+            $prop['no_bg_opt'] = $data['no_bg_opt'];
+            $prop['no_bg_ut'] = $data['no_bg_ut'];
+            $prop['nominal_bg_opp'] = $data['nominal_bg_opp'];
+            $prop['nominal_bg_opt'] = $data['nominal_bg_opt'];
+            $prop['nominal_bg_ut'] = $data['nominal_bg_ut'];
             $prop['pph'] = $data['pph'];
             $prop['pembulatan'] = $data['pembulatan'];
+            $prop['status'] = 1;
             HutangPelayaran::find($id)->update($prop);
             array_push($ids,$id);
         }
-        return redirect()->route('hutang-pelayaran.index');
 
-        $lists = HutangPelayaran::whereIn('id',$ids)->get();
-        foreach ($lists as $item) {
-            Jurnal::create([
-                'coa_id' => 45,
-                'order_id' => $item->order_id,
-                'nomor' => '',
-                'nama' => ''
-            ]);
+        $tgl = [$data['tanggal_bg_opp'],$data['tanggal_bg_opt'],$data['tanggal_bg_ut']];
+        $tgl_group = array_unique($tgl);
+        $data_nomor = array();
+        $no = Jurnal::where('tipe','TEST')->max('no') + 1;
+        foreach($tgl_group as $tg){
+            $nomor = 'TS/'.date('ymd').'/'.sprintf('%02d',$no);
+            $data_nomor[$tg] = ['no'=>$no,'nomor'=>$nomor];
+            $no++;
         }
-        HutangPelayaran::create($data);
 
-        return back()->with('success', 'Data berhasil disimpan');
+        $lists = HutangPelayaran::with(['order','order.tarif','order.tarif.shipmentInfo','order.tarif.customer'])->whereIn('id',$ids)->get()->toArray();
+        foreach ($lists as $item) {
+            $opp = ['opp','apbs','cleaning','thc','lss'];
+            $opt = ['opt','opt_stamp'];
+            $ut = ['ut','ut_stamp','bl'];
+            foreach($opp as $a){
+                if($a=='thc'){
+                    $title = 'THC LOLO';
+                }else{
+                    $title = strtoupper($a);
+                }
+                $name = $title.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
+                if($item[$a]>0){
+                    Jurnal::create([
+                        'tipe' => 'TEST',
+                        'no_bg' => $item['no_bg_opp'],
+                        'tgl_bg' => $item['tgl_bg_opp'],
+                        'nominal_bg' => $item['nominal_bg_opp'],
+                        'coa_id' => 31,
+                        'order_id' => $item['order_id'],
+                        'nomor' => $data_nomor[$item['tgl_bg_opp']]['nomor'],
+                        'no' => $data_nomor[$item['tgl_bg_opp']]['no'],
+                        'nama' => $name,
+                        'debit' => $item[$a],
+                        'credit' => 0,
+                    ]);
+                    Jurnal::create([
+                        'tipe' => 'TEST',
+                        'no_bg' => $item['no_bg_opp'],
+                        'tgl_bg' => $item['tgl_bg_opp'],
+                        'nominal_bg' => $item['nominal_bg_opp'],
+                        'coa_id' => 62,
+                        'order_id' => $item['order_id'],
+                        'nomor' => $data_nomor[$item['tgl_bg_opp']]['nomor'],
+                        'no' => $data_nomor[$item['tgl_bg_opp']]['no'],
+                        'nama' => $name,
+                        'debit' => 0,
+                        'credit' => $item[$a],
+                    ]);
+                }
+            }
+            foreach($opt as $a){
+                if($a=='opt_stamp'){
+                    $title = 'STAMP OPT';
+                }else{
+                    $title = strtoupper($a);
+                }
+                $name = $title.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
+                if($item[$a]>0){
+                    Jurnal::create([
+                        'tipe' => 'TEST',
+                        'no_bg' => $item['no_bg_opt'],
+                        'tgl_bg' => $item['tgl_bg_opt'],
+                        'nominal_bg' => $item['nominal_bg_opt'],
+                        'coa_id' => 31,
+                        'order_id' => $item['order_id'],
+                        'nomor' => $data_nomor[$item['tgl_bg_opt']]['nomor'],
+                        'no' => $data_nomor[$item['tgl_bg_opt']]['no'],
+                        'nama' => $name,
+                        'debit' => $item[$a],
+                        'credit' => 0,
+                    ]);
+                    Jurnal::create([
+                        'tipe' => 'TEST',
+                        'no_bg' => $item['no_bg_opt'],
+                        'tgl_bg' => $item['tgl_bg_opt'],
+                        'nominal_bg' => $item['nominal_bg_opt'],
+                        'coa_id' => 62,
+                        'order_id' => $item['order_id'],
+                        'nomor' => $data_nomor[$item['tgl_bg_opt']]['nomor'],
+                        'no' => $data_nomor[$item['tgl_bg_opt']]['no'],
+                        'nama' => $name,
+                        'debit' => 0,
+                        'credit' => $item[$a],
+                    ]);
+                }
+            }
+            foreach($ut as $a){
+                if($a=='ut_stamp'){
+                    $title = 'STAMP UT';
+                }else{
+                    $title = strtoupper($a);
+                }
+                $name = $title.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
+                if($item[$a]>0){
+                    Jurnal::create([
+                        'tipe' => 'TEST',
+                        'no_bg' => $item['no_bg_ut'],
+                        'tgl_bg' => $item['tgl_bg_ut'],
+                        'nominal_bg' => $item['nominal_bg_ut'],
+                        'coa_id' => 31,
+                        'order_id' => $item['order_id'],
+                        'nomor' => $data_nomor[$item['tgl_bg_ut']]['nomor'],
+                        'no' => $data_nomor[$item['tgl_bg_ut']]['no'],
+                        'nama' => $name,
+                        'debit' => $item[$a],
+                        'credit' => 0,
+                    ]);
+                    Jurnal::create([
+                        'tipe' => 'TEST',
+                        'no_bg' => $item['no_bg_ut'],
+                        'tgl_bg' => $item['tgl_bg_ut'],
+                        'nominal_bg' => $item['nominal_bg_ut'],
+                        'coa_id' => 62,
+                        'order_id' => $item['order_id'],
+                        'nomor' => $data_nomor[$item['tgl_bg_ut']]['nomor'],
+                        'no' => $data_nomor[$item['tgl_bg_ut']]['no'],
+                        'nama' => $name,
+                        'debit' => 0,
+                        'credit' => $item[$a],
+                    ]);
+                }
+            }
+        }
+
+        return redirect()->route('hutang-pelayaran.index')->with('success', 'Data berhasil disimpan');
+    }
+
+    public function delete(Request $request)
+    {
+        $order_id = explode(',', $request->order_id);
+        HutangPelayaran::whereIn('order_id',$order_id)->delete();
+        return back()->with('success','Data berhasil dihapus');
     }
 
     public function update(HutangPelayaran $hutangpelayaran, Request $request)
@@ -100,9 +234,17 @@ class HutangPelayaranController extends Controller
             return back()->with('danger', 'Harap checklist terlebih dahulu!');
         }
 
-        $cek = HutangPelayaran::with(['order','pelayaran'])->whereIn('order_id', $order_id)->get()->groupBy('tarif_pelayaran.pelayaran_id');
+        $cek = HutangPelayaran::whereIn('order_id', $order_id)->get()->groupBy('pelayaran_id');
         if(count($cek)>1){
             return back()->with('danger', 'Harap checklist pelayaran yang sama!');
+        }
+        $cek = HutangPelayaran::whereIn('order_id', $order_id)->where('is_lock',0)->get();
+        if(count($cek)>0){
+            return back()->with('danger', 'Harap lock harga terlebih dahulu!');
+        }
+        $cek = Order::whereIn('id', $order_id)->get()->groupBy('jadwal_kapal_id');
+        if(count($cek)>1){
+            return back()->with('danger', 'Data Kapal dan Voyage yang dipilih tidak sama!');
         }
         $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
         $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;
@@ -122,6 +264,16 @@ class HutangPelayaranController extends Controller
         $nama = $hutangpelayaran->order->jadwal_kapal->pelayaran->nama;
         $data = Order::where('order_id', $order_id)->orderBy('tgl_muat')->get()->groupBy('job');
         return view('admin.hutangpelayaran.invoice', compact('order', 'data', 'nama'));
+    }
+
+    function groupByValue($array) {
+        $groups = [];
+
+        foreach ($array as $item) {
+            $groups[$item][] = $item;
+        }
+
+        return array_values($groups);
     }
 
     // public function show()

@@ -107,6 +107,11 @@
                                 </li>
                             </ul>
                             <div class="card p-3 shadow-xl">
+                                <div class="my-2">
+                                    <label for="kolektif">
+                                        <input type="checkbox" name="kolektif" id="kolektif" value="1" checked> Kolektif Input
+                                    </label>
+                                </div>
                                 <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                                         <table class="mt-2 table" style="font-size: .7rem; width:100%; border:1px solid black;">
@@ -126,23 +131,23 @@
                                                         <tr>
                                                             <td rowspan="5" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="0" min="0" class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>THC LoLo SBY</td>
-                                                            <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="opp-thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('thc',this.value)" onclick="this.select()" value="0" min="0" class="opp-thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>APBS</td>
-                                                            <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="opp-apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('apbs',this.value)" onclick="this.select()" value="0" min="0" class="opp-apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>Cleaning</td>
-                                                            <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('cleaning',this.value)" onclick="this.select()" value="0" min="0" class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="0" min="0" class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                     @endforeach
                                                 @endforeach
@@ -158,15 +163,15 @@
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" class="nominal_bg_opp" name="nominal_bg" id="nominal_bg" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" class="nominal_bg_opp" required name="nominal_bg_opp" id="nominal_bg_opp" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" class="no_bg_opp" name="no_bg" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" id="no_bg_opp" required name="no_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" class="tgl_bg_opp" name="tanggal_bg" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" id="tgl_bg_opp" required name="tanggal_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -189,11 +194,11 @@
                                                         <tr>
                                                             <td rowspan="4" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPT (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitungOpt()" onclick="this.select()" value="0" min="0" class="opt-opt" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungOpt('opt',this.value)" onclick="this.select()" value="0" min="0" class="opt-opt" name="data[{{ $item->id }}][opt]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungOpt()" onclick="this.select()" value="0" min="0" class="opt-stamp" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="0" min="0" class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -209,15 +214,15 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" class="nominal_bg_opt" name="nominal_bg" id="nominal_bg_opt" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" class="nominal_bg_opt" required name="nominal_bg_opt" id="nominal_bg_opt" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" class="no_bg_opt" name="no_bg" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" id="no_bg_opt" required name="no_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" class="tgl_bg_opt" name="tanggal_bg" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" id="tgl_bg_opt" required name="tanggal_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -240,15 +245,15 @@
                                                         <tr>
                                                             <td rowspan="4" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>Uang Tambang</td>
-                                                            <td><input type="number" onkeyup="hitungUT()" onclick="this.select()" value="0" min="0" class="ut-ut" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('ut',this.value)" readonly onclick="this.select()" value="{{ $item->ut }}" min="0" class="ut-ut" name="data[{{ $item->id }}][ut]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>BL</td>
-                                                            <td><input type="number" onkeyup="hitungUT()" onclick="this.select()" value="0" min="0" class="ut-bl" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="0" min="0" class="ut-bl" name="data[{{ $item->id }}][bl]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungUT()" onclick="this.select()" value="0" min="0" class="ut-stamp" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('stamp',this.value)" onclick="this.select()" value="0" min="0" class="ut-stamp" name="data[{{ $item->id }}][ut_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -260,15 +265,15 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" name="nominal_bg" class="nominal_bg_ut" value="0" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" required name="nominal_bg_ut" class="nominal_bg_ut" value="0" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" name="no_bg" class="no_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" required name="no_bg_ut" id="no_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" name="tanggal_bg" class="tgl_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" required name="tanggal_bg_ut" id="tgl_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -346,7 +351,34 @@
 @section('script')
 <script>
 
-    function hitung(){
+    function hitung(tipe,val){
+        if ($('#kolektif').is(':checked')) {
+            if (tipe=='opp') {
+                $('input[type="number"].opp-opp').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if (tipe=='lss') {
+                $('input[type="number"].opp-lss').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if (tipe=='thc') {
+                $('input[type="number"].opp-thc').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if (tipe=='apbs') {
+                $('input[type="number"].opp-apbs').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if (tipe=='cleaning') {
+                $('input[type="number"].opp-cleaning').each(function () {
+                    $(this).val(val);
+                });
+            }
+        }
         let opp = 0;
         let lss = 0;
         let thc = 0;
@@ -376,7 +408,19 @@
         $('.nominal_bg_opp').text(jumlah.toLocaleString('en-US'));
     }
 
-    function hitungOpt(){
+    function hitungOpt(tipe,val){
+        if ($('#kolektif').is(':checked')) {
+            if(tipe=='opt'){
+                $('input[type="number"].opt-opt').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if(tipe=='stamp'){
+                $('input[type="number"].opt-stamp').each(function () {
+                    $(this).val(val);
+                });
+            }
+        }
         let opt = 0;
         let stamp = 0;
         $('input[type="number"].opt-opt').each(function () {
@@ -391,7 +435,24 @@
         $('.nominal_bg_opt').text(jumlah.toLocaleString('en-US'));
     }
 
-    function hitungUT(){
+    function hitungUT(tipe,val){
+        if($('#kolektif').is(':checked')){
+            if(tipe=='ut'){
+                $('input[type="number"].ut-ut').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if(tipe=='bl'){
+                $('input[type="number"].ut-bl').each(function () {
+                    $(this).val(val);
+                });
+            }
+            if(tipe=='stamp'){
+                $('input[type="number"].ut-stamp').each(function () {
+                    $(this).val(val);
+                });
+            }
+        }
         let ut = 0;
         let bl = 0;
         let stamp = 0;
@@ -409,5 +470,41 @@
         $('.nominal_bg_ut').val(jumlah);
         $('.nominal_bg_ut').text(jumlah.toLocaleString('en-US'));
     }
+
+    $('#no_bg_opp').keyup(function (e) {
+        let val = $(this).val();
+        $('.no_bg_opp').text(val);
+    });
+    $('#no_bg_opt').keyup(function (e) {
+        let val = $(this).val();
+        $('.no_bg_opt').text(val);
+    });
+    $('#no_bg_ut').keyup(function (e) {
+        let val = $(this).val();
+        $('.no_bg_ut').text(val);
+    });
+    $('#tgl_bg_opp').change(function (e) {
+        let date = new Date($(this).val());
+        let d = date.getDate();
+        let m = date.getMonth() + 1;
+        let y = date.getFullYear();
+        $('.tgl_bg_opp').text(String(d).padStart(2, '0')+'/'+String(m).padStart(2, '0')+'/'+y);
+    });
+    $('#tgl_bg_opt').change(function (e) {
+        let date = new Date($(this).val());
+        let d = date.getDate();
+        let m = date.getMonth() + 1;
+        let y = date.getFullYear();
+        $('.tgl_bg_opt').text(String(d).padStart(2, '0')+'/'+String(m).padStart(2, '0')+'/'+y);
+    });
+    $('#tgl_bg_ut').change(function (e) {
+        let date = new Date($(this).val());
+        let d = date.getDate();
+        let m = date.getMonth() + 1;
+        let y = date.getFullYear();
+        $('.tgl_bg_ut').text(String(d).padStart(2, '0')+'/'+String(m).padStart(2, '0')+'/'+y);
+    });
+
+    hitungUT('as',0);
 </script>
 @endsection

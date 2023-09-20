@@ -18,6 +18,7 @@ use App\Models\SubMenu;
 use App\Models\Tarif;
 use App\Models\TemplateJurnal;
 use App\Models\Transaksi;
+use App\Models\HutangPelayaran;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -565,6 +566,21 @@ class SyncController extends Controller
         }
 
         return 'success';
+    }
+
+    public function hutang_pelayaran()
+    {
+        $ids = HutangPelayaran::pluck('order_id')->toArray();
+        $data = Order::whereNotIn('id',$ids)->whereBetween('stuffing',['2023-09-01','2023-10-01'])->orderBy('stuffing')->get();
+        foreach($data as $order){
+            HutangPelayaran::create([
+                'pelayaran_id' => $order->jadwal_kapal->pelayaran_id,
+                'order_id' => $order->id,
+                'status' => 0,
+            ]);
+        }
+
+        return response('success');
     }
 
     public function jurnal()
