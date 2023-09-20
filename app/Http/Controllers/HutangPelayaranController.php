@@ -25,16 +25,9 @@ class HutangPelayaranController extends Controller
             ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
             ->join('hutang_pelayaran','hutang_pelayaran.order_id','=','order.id')
             ->whereIn('order.id',$lists)
-            ->select('order.job','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama')
+            ->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama')
             ->get()
-            ->groupBy('pelayaran_id')
-            ->groupBy('voyage')
-            ->groupBy('job');
-        $list = array();
-        foreach ($data as $da) {
-            array_push($list,$da);
-        }
-        $data = $list[0];
+            ->groupBy('jadwal_kapal.pelayaran_id','order.job');
         return view('admin.hutangpelayaran.index', compact('data'));
     }
 
@@ -107,12 +100,12 @@ class HutangPelayaranController extends Controller
             return back()->with('danger', 'Harap checklist terlebih dahulu!');
         }
 
-        $cek = HutangPelayaran::with(['order','tarif_pelayaran'])->whereIn('order_id', $order_id)->get()->groupBy('tarif_pelayaran.pelayaran_id');
+        $cek = HutangPelayaran::with(['order','pelayaran'])->whereIn('order_id', $order_id)->get()->groupBy('tarif_pelayaran.pelayaran_id');
         if(count($cek)>1){
             return back()->with('danger', 'Harap checklist pelayaran yang sama!');
         }
         $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
-        $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first();
+        $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;
         // $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
 
         return view('admin.hutangpelayaran.invoice', compact('data','pelayaran'));

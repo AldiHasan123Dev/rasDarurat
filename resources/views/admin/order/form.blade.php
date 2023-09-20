@@ -47,5 +47,18 @@
     <x-input :value="$order->resi??old('resi')" :col="3" :label="'No. Resi'" :type="'text'" :name="'resi'"></x-input>
     <x-input :value="$order->komisi??old('komisi')" :col="3" :label="'RC Customer/fee'" :type="'number'" :name="'komisi'" :required="true"></x-input>
     <x-input :value="$order->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'"></x-input>
+    <div class="col-6 mb-3">
+        <label for="tipe">Tipe</label>
+        <div class="d-flex gap-3">
+            <label for="tipe1">
+                <input type="radio" name="tipe" {{ $order?($order->tipe=='muatan'?'checked':''):'checked' }} id="tipe1" value="muatan">
+                MUATAN
+            </label>
+            <label for="tipe2">
+                <input type="radio" name="tipe" {{ $order?($order->tipe=='bongkaran'?'checked':''):'' }} id="tipe2" value="bongkaran">
+                BONGKARAN
+            </label>
+        </div>
+    </div>
 </div>
 

@@ -53,6 +53,7 @@ class Order extends Model
         'asuransi_cetak',
         'tgl_komisi',
         'created_at',
+        'tipe',
     ];
 
     protected static function booted()
@@ -141,21 +142,9 @@ class Order extends Model
         return $this->hasOne(HutangPelayaran::class,'order_id');
     }
 
-    public function tipe($dari)
-    {
-        if(str_contains($dari,'SURABAYA') || str_contains($dari,'surabaya')){
-            return 'muatan';
-        }
-        return 'bongkaran';
-    }
-
     public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan)
     {
-        if(str_contains($dari,'SURABAYA') || str_contains($dari,'surabaya')){
-            $type = 'muatan';
-        }else{
-            $type = 'bongkaran';
-        }
+        $type = $this->tipe;
         $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id;
         $dari_id = Lokasi::where('nama',$dari)->first()->id;
         if($type=='muatan'){

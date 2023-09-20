@@ -53,12 +53,12 @@
                                 $first = true;
                             @endphp
                             @forelse ($data as $hutpel => $orders)
-                                @foreach ($orders as $order)
-                                    <tr style="height: 30px; border:2px solid black; vertical-align:middle">
-                                        <td colspan="11" class="text-center fw-bold text-uppercase">{{ $order->first()->nama }}</td>
-                                    </tr>
+                                <tr style="height: 30px; border:2px solid black; vertical-align:middle">
+                                    <td colspan="11" class="text-center fw-bold text-uppercase">{{ $orders->first()->nama }}</td>
+                                </tr>
+                                @foreach ($orders->groupBy('job') as $order)
                                     @foreach ($order as $item)
-                                        <tr>
+                                        <tr class="{{ $item->tipe=='bongkaran'?'table-info':'' }}">
                                             @if ($loop->first)
                                             <td style="vertical-align: middle; text-align:center" rowspan="{{ $order->count() }}">
                                                 <input type="checkbox" id="g-{{ $order->first()->job }}" onchange="checkGroup('{{ $order->first()->job }}')"> {{ $order->first()->job }}
@@ -93,10 +93,10 @@
                                             </td>
                                         </tr>
                                     @endforeach
-                                        @php
-                                            $first = true;
-                                        @endphp
                                 @endforeach
+                                @php
+                                    $first = true;
+                                @endphp
                                 {{-- <tr class="border-bottom border-dark">
                                     <td colspan="5" class="text-center"><b>TOTAL</b></td>
                                     <td colspan="8" class="border border-dark"><b>Rp. {{ number_format($total) }}</b>
@@ -138,6 +138,7 @@
             } else {
                 $(".c-"+job).prop('checked',false);
             }
+            check()
         }
 
         function individualCheck(job){
@@ -146,6 +147,7 @@
             } else {
                 $("#g-"+job).prop('checked', false);
             }
+            check()
         }
 
         function lock(id){

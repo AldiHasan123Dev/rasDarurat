@@ -35,9 +35,9 @@ class HutangPelayaran extends Model
         'is_lock',
     ];
 
-    public function tarif_pelayaran()
+    public function pelayaran()
     {
-        return $this->belongsTo(TarifPelayaran::class,'tarif_pelayaran_id');
+        return $this->belongsTo(Pelayaran::class,'pelayaran_id');
     }
 
     public function order()
