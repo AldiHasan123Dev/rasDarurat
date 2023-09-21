@@ -42,8 +42,13 @@ class HutangPelayaranController extends Controller
     {
         $data = $request->all();
         $ids = array();
+        $n = HutangPelayaran::max('no') + 1;
+        $code = 'HP/'.date('ymd').'/'.sprintf('%02d',$n);
         foreach ($data['data'] as $id => $item) {
             $prop = $item;
+            $prop['no'] = $n;
+            $prop['invoice'] = $code;
+            $prop['tgl_invoice'] = date('Y-m-d');
             $prop['tgl_bg_opp'] = $data['tanggal_bg_opp'];
             $prop['tgl_bg_opt'] = $data['tanggal_bg_opt'];
             $prop['tgl_bg_ut'] = $data['tanggal_bg_ut'];
@@ -264,6 +269,11 @@ class HutangPelayaranController extends Controller
         $nama = $hutangpelayaran->order->jadwal_kapal->pelayaran->nama;
         $data = Order::where('order_id', $order_id)->orderBy('tgl_muat')->get()->groupBy('job');
         return view('admin.hutangpelayaran.invoice', compact('order', 'data', 'nama'));
+    }
+
+    public function print()
+    {
+        return view('admin.hutangpelayaran.print');
     }
 
     function groupByValue($array) {

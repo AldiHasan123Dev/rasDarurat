@@ -12,6 +12,8 @@ class HutangPelayaran extends Model
 
     protected $table = 'hutang_pelayaran';
     protected $fillable = [
+        'invoice',
+        'tgl_invoice',
         'jurnal',
         'no_bg_opp',
         'tgl_bg_opp',
