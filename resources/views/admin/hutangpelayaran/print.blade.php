@@ -115,7 +115,7 @@
             </thead>
             <tbody>
                 <tr style="background-color: red" class="bg-red text-white">
-                    <td style="background: white" rowspan="{{ ($jobs->count() * 6) + 2 }}"></td>
+                    <td style="background: white" rowspan="{{ ($jobs->count() * 7) + 2 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
                     <td class="text-center">PERKIRAAN</td>
                     <td class="text-center" colspan="2">URAIAN</td>
@@ -185,6 +185,21 @@
                                 <td></td>
                                 <td colspan="2">Cleaning</td>
                                 <td class="text-end">{{ number_format($item->first()->cleaning,2,',','.') }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
+                    @foreach ($list->groupBy('opp_stamp') as $item)
+                        @if ($item->count()>1)
+                            <tr>
+                                <td></td>
+                                <td colspan="2">STAMP</td>
+                                <td class="text-end">{{ number_format($item->first()->opp_stamp * $item->count(),2,',','.') }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td></td>
+                                <td colspan="2">STAMP</td>
+                                <td class="text-end">{{ number_format($item->first()->opp_stamp,2,',','.') }}</td>
                             </tr>
                         @endif
                     @endforeach

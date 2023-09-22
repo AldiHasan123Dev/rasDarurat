@@ -93,12 +93,14 @@ class HutangPelayaranController extends Controller
 
         $lists = HutangPelayaran::with(['order','order.tarif','order.tarif.shipmentInfo','order.tarif.customer'])->whereIn('id',$ids)->get()->toArray();
         foreach ($lists as $item) {
-            $opp = ['opp','apbs','cleaning','thc','lss'];
+            $opp = ['opp','apbs','cleaning','thc','lss','opp_stamp'];
             $opt = ['opt','opt_stamp'];
             $ut = ['ut','ut_stamp','bl'];
             foreach($opp as $a){
                 if($a=='thc'){
                     $title = 'THC LOLO';
+                }else if($a=='opp_stamp'){
+                    $title = 'STAMP OPP';
                 }else{
                     $title = strtoupper($a);
                 }

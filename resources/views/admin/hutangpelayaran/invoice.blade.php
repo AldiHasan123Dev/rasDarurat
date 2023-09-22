@@ -146,6 +146,10 @@
                                                             <td><input type="number" onkeyup="hitung('cleaning',this.value)" onclick="this.select()" value="0" min="0" class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
+                                                            <td>Stamp</td>
+                                                            <td><input type="number" onkeyup="hitung('opp_stamp',this.value)" onclick="this.select()" value="0" min="0" class="opp-stamp" name="data[{{ $item->id }}][opp_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                        </tr>
+                                                        <tr>
                                                             <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
                                                             <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="0" min="0" class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
@@ -378,12 +382,18 @@
                     $(this).val(val);
                 });
             }
+            if (tipe=='opp_stamp') {
+                $('input[type="number"].opp-stamp').each(function () {
+                    $(this).val(val);
+                });
+            }
         }
         let opp = 0;
         let lss = 0;
         let thc = 0;
         let apbs = 0;
         let cleaning = 0;
+        let stamp = 0;
         let jumlah = 0;
         let pph = parseFloat($('#pph').val());
         let pembulatan = parseFloat($('#pembulatan').val());
@@ -402,8 +412,11 @@
         $('input[type="number"].opp-cleaning').each(function () {
             cleaning+=parseFloat($(this).val());
         });
+        $('input[type="number"].opp-stamp').each(function () {
+            stamp+=parseFloat($(this).val());
+        });
 
-        jumlah = (opp + lss + thc + apbs + cleaning+ pembulatan) - pph;
+        jumlah = (opp + lss + thc + apbs + cleaning+ stamp + pembulatan) - pph;
         $('.nominal_bg_opp').val(jumlah);
         $('.nominal_bg_opp').text(jumlah.toLocaleString('en-US'));
     }

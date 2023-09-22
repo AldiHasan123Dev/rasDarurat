@@ -10,6 +10,8 @@ use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
@@ -735,7 +737,68 @@ class JurnalController extends Controller
 
     public function buku_besar()
     {
-        return view('admin.jurnal.buku_besar');
+        $coas = COA::orderBy('kode')->get(['id','nama','kode']);
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $coa_id = request('coa_id') ?? 45;
+        $coa = COA::find($coa_id);
+        $year = date('Y');
+        $month = request('month') ?? date('m');
+        $tipe = 'D';
+        if(substr($coa->kode,0,1)=='2'||substr($coa->kode,0,1)=='3'||substr($coa->kode,0,1)=='5'){
+            $tipe = 'C';
+        }
+        $saldo = array();
+        foreach ($months as $idx => $item) {
+            $bln = $idx + 1;
+            $c = new Carbon($year.'-'.sprintf('%02d',$bln).'-01');
+            $now = $c->startOfMonth()->format('Y-m-d');
+            $last = $c->endOfMonth()->format('Y-m-d');
+            $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
+            $des = $c->endOfMonth()->format('Y-m-d');
+            // dd($start,$des);
+            if($idx==0){
+                if($tipe=='D'){
+                    $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('credit');
+                }else{
+                    $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+                }
+            }else{
+                // if ($tipe=='D') {
+                //     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
+                // } else {
+                //     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+                // }
+                // if($saldo_awal>0){
+                // }
+                $start = $now;
+                $saldo_awal =  $saldo['saldo_akhir'][$idx-1];
+                // dd($start,$last,$saldo_awal);
+            }
+            $debit = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+            $credit = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
+            $saldo['saldo_awal'][$idx] = $saldo_awal;
+            if ($tipe=='D') {
+                $saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal ) - $credit;
+            } else {
+                $saldo['saldo_akhir'][$idx] = ($credit + $saldo_awal) - $debit ;
+            }
+            $saldo['debit'][$idx] = $debit;
+            $saldo['credit'][$idx] = $credit;
+        }
+        $m = (int)$month;
+        $saldo_awal = $saldo['saldo_awal'][$m-1];
+        $search = null;
+        $data = Cache::remember('data-jurnal-'.$coa_id.'-'.$month.'-'.$year,60*60*24, function() use($month,$year,$coa_id){
+            return Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+                ->leftJoin('order','order.id','=','jurnal.order_id')
+                ->whereMonth('jurnal.created_at',$month)
+                ->whereYear('jurnal.created_at',$year)
+                ->where('jurnal.coa_id',$coa_id)
+                ->select('jurnal.*')
+                ->orderBy('jurnal.created_at')
+                ->get();
+        });
+        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe'));
     }
 
     public function datatable()
