@@ -1,0 +1,40 @@
+@extends('layouts.admin')
+@section('content')
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <a href="{{ route('hutang-pelayaran.index') }}" class="btn btn-sm btn-primary">Kembali</a>
+                <div class="card p-3 shadow-lg mt-2">
+                    <table class="table table-bordered" style="font-size: .8rem">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Kode</th>
+                                <th>Tanggal Cetak</th>
+                                <th>BG OPP</th>
+                                <th>BG OPT</th>
+                                <th>BG UT</th>
+                                <th><i class="fas fa-print"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data as $item)
+                                <tr>
+                                    <td class="text-center">{{ $loop->iteration }}</td>
+                                    <td>{{ $item->first()->invoice }}</td>
+                                    <td>{{ date('d/m/y',strtotime($item->first()->tgl_invoice)) }}</td>
+                                    <td>{{ $item->first()->no_bg_opp?date('d/m/y',strtotime($item->first()->tgl_bg_opp)):'' }} - {{ $item->first()->no_bg_opp }} - {{ number_format($item->first()->nominal_bg_opp,2,',','.') }}</td>
+                                    <td>{{ $item->first()->no_bg_opt?date('d/m/y',strtotime($item->first()->tgl_bg_opt)):'' }} - {{ $item->first()->no_bg_opt }} - {{ number_format($item->first()->nominal_bg_opt,2,',','.') }}</td>
+                                    <td>{{ $item->first()->no_bg_ut?date('d/m/y',strtotime($item->first()->tgl_bg_ut)):'' }} - {{ $item->first()->no_bg_ut }} - {{ number_format($item->first()->nominal_bg_ut,2,',','.') }}</td>
+                                    <td>
+                                        <a href="{{ route('hutang-pelayaran.print',['invoice'=>$item->first()->invoice]) }}" class="btn btn-sm btn-success">Print</a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

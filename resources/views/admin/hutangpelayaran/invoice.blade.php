@@ -163,15 +163,15 @@
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" class="nominal_bg_opp" required name="nominal_bg_opp" id="nominal_bg_opp" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" class="nominal_bg_opp" name="nominal_bg_opp" id="nominal_bg_opp" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" id="no_bg_opp" required name="no_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" id="no_bg_opp" name="no_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" id="tgl_bg_opp" required name="tanggal_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" id="tgl_bg_opp" name="tanggal_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -214,15 +214,15 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" class="nominal_bg_opt" required name="nominal_bg_opt" id="nominal_bg_opt" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" class="nominal_bg_opt" name="nominal_bg_opt" id="nominal_bg_opt" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" id="no_bg_opt" required name="no_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" id="no_bg_opt" name="no_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" id="tgl_bg_opt" required name="tanggal_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" id="tgl_bg_opt" name="tanggal_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -265,15 +265,15 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" required name="nominal_bg_ut" class="nominal_bg_ut" value="0" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" name="nominal_bg_ut" class="nominal_bg_ut" value="0" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" required name="no_bg_ut" id="no_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" name="no_bg_ut" id="no_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" required name="tanggal_bg_ut" id="tgl_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" name="tanggal_bg_ut" id="tgl_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>

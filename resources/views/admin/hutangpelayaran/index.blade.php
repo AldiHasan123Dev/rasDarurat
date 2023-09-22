@@ -19,9 +19,10 @@
         <div class="card">
             <div class="card-header p-2">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-4">
                         <p>List Hutang Pelayaran</p>
-                        <div class="d-flex gap-2">
+                        <a href="{{ route('hutang-pelayaran.cetak') }}" class="py-2 px-3 btn btn-warning w-100"><i class="fas fa-print"></i> List Sudah Cetak</a>
+                        <div class="d-flex gap-2 mt-2">
                             <!-- Button trigger modal -->
                             <button type="button" class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 <i class="fas fa-list"></i> Filter
@@ -74,7 +75,7 @@
                             <form action="{{ route('hutang-pelayaran.cetak.voucher') }}" method="post">
                                 <input type="hidden" name="order_id" class="order_id">
                                 <button class="py-2 px-3 btn btn-success" onclick="return confirm('are you sure?')"
-                                    id="generate-invoice"><i class="fas fa-print"></i> Buat BBK</button>
+                                    id="generate-invoice"><i class="fas fa-save"></i> Buat BBK</button>
                                 @csrf
                             </form>
                             <form action="{{ route('hutang-pelayaran.delete') }}" method="post">
@@ -84,14 +85,31 @@
                             </form>
                         </div>
                     </div>
-                    <div class="col-4" style="font-size: .8rem">
-                        <b>Syarat cetak BBK:</b>
-                        <ol>
-                            <li>Harga harus dilock</li>
-                            <li>Pelayaran yang sama</li>
-                            <li>Kapal yang sama</li>
-                            <li>Voyage yang sama</li>
-                        </ol>
+                    <div class="col-8" style="font-size: .8rem">
+                        <div class="row">
+                            <div class="col-6">
+                                <b>Syarat cetak BBK:</b>
+                                <ol>
+                                    <li>Harga harus dilock</li>
+                                    <li>Pelayaran yang sama</li>
+                                    <li>Kapal yang sama</li>
+                                    <li>Voyage yang sama</li>
+                                </ol>
+                            </div>
+                            <div class="col-6">
+                                <b>Keterangan Warna:</b>
+                                <table class="table">
+                                    <tr>
+                                        <td style="width: 50px" class="table-success"></td>
+                                        <td>: Harga Sudah di Lock</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 50px" class="table-info"></td>
+                                        <td>: Bongkaran</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -102,6 +120,7 @@
                             <tr>
                                 <th style="width: 150px">Group JOB</th>
                                 <th style="width: 30px">#</th>
+                                <th>Tarif Pelayaran</th>
                                 <th>ID JOB.</th>
                                 <th>Pelayaran</th>
                                 <th>Kapal</th>
@@ -110,7 +129,6 @@
                                 <th>Tujuan</th>
                                 <th>Container</th>
                                 <th>Seal</th>
-                                <th>Tarif Pelayaran</th>
                                 {{-- <th>Status</th> --}}
                             </tr>
                         </thead>
@@ -122,26 +140,18 @@
                                 <tr style="height: 30px; border:2px solid black; vertical-align:middle">
                                     <td colspan="11" class="text-center fw-bold text-uppercase">{{ $orders->first()->nama }}</td>
                                 </tr>
-                                @foreach ($orders->groupBy('job') as $order)
+                                @foreach ($orders->groupBy('kapal_id') as $order)
                                     @foreach ($order as $item)
-                                        <tr class="{{ $item->tipe=='bongkaran'?'table-info':'' }}">
+                                        <tr id="row-{{ $item->id }}" class="{{ $item->tipe=='bongkaran'?'table-info':($item->is_lock==1?'table-success':'') }}">
                                             @if ($loop->first)
-                                            <td style="vertical-align: middle; text-align:center" rowspan="{{ $order->count() }}">
-                                                <input type="checkbox" id="g-{{ $order->first()->job }}" onchange="checkGroup('{{ $order->first()->job }}')"> {{ $order->first()->job }}
+                                            <td style="vertical-align: middle; background-color:white" rowspan="{{ $order->count() }}">
+                                                <input type="checkbox" id="g-{{ $order->first()->kapal_id }}" onchange="checkGroup('{{ $order->first()->kapal_id }}')"> {{ $order->first()->nama_kapal }}
                                             </td>
                                             @php
                                                 $first = false;
                                             @endphp
                                             @endif
-                                            <td class="text-center"><input onchange="individualCheck('{{ $item->job }}')" type="checkbox" class="c-{{ $item->job }}" name="order_id" value="{{ $item->id }}"></td>
-                                            <td>{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}</td>
-                                            <td id="pelayaran">{{ $item->nama }}</td>
-                                            <td>{{ $item->nama_kapal }}</td>
-                                            <td>{{ $item->voyage }}</td>
-                                            <td>{{ $item->dari }}</td>
-                                            <td>{{ $item->tujuan }}</td>
-                                            <td>{{ $item->container }}</td>
-                                            <td>{{ $item->seal }}</td>
+                                            <td class="text-center"><input onchange="individualCheck({{ $item->kapal_id }})" type="checkbox" class="c-{{ $item->kapal_id }}" name="order_id" value="{{ $item->id }}"></td>
                                             <td id="tarif-{{ $item->id }}">
                                                 @if ($item->is_lock==0)
                                                     <div class="d-flex">
@@ -157,6 +167,14 @@
                                                     {{ number_format($item->ut) }}
                                                 @endif
                                             </td>
+                                            <td>({{ preg_replace("/[^0-9]/", "", $item->fit ) }}') {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}</td>
+                                            <td id="pelayaran">{{ $item->nama }}</td>
+                                            <td>{{ $item->nama_kapal }}</td>
+                                            <td>{{ $item->voyage }}</td>
+                                            <td>{{ $item->dari }}</td>
+                                            <td>{{ $item->tujuan }}</td>
+                                            <td>{{ $item->container }}</td>
+                                            <td>{{ $item->seal }}</td>
                                         </tr>
                                     @endforeach
                                 @endforeach
@@ -230,6 +248,7 @@
                     },
                     success: function (response) {
                         $('#tarif-'+id).html(val.toLocaleString('id-ID'));
+                        $('#row-'+id).addClass('table-success');
                     }
                 });
             }

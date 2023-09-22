@@ -9,6 +9,7 @@ use App\Models\TarifPelayaran;
 use App\Models\HutangPelayaran;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
+use App\Models\JadwalKapal;
 use App\Models\Jurnal;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,25 +18,40 @@ class HutangPelayaranController extends Controller
     public function index()
     {
         $lists = HutangPelayaran::where('status',0)->pluck('order_id')->toArray();
+        $kapal = [];
+        $pelayaran = [];
+        if(request('kapal')){
+            $kapal = request('kapal');
+        }
+        if(request('pelayaran')){
+            $pelayaran = request('pelayaran');
+        }
         $q = Order::query();
             $q->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
             $q->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
             $q->join('kapal','kapal.id','=','jadwal_kapal.kapal_id');
             $q->join('tarif','tarif.id','=','order.tarif_id');
+            $q->join('shipments','tarif.shipment','=','shipments.id');
             $q->join('lokasi as dari','dari.id','=','tarif.dari');
             $q->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan');
             $q->join('hutang_pelayaran','hutang_pelayaran.order_id','=','order.id');
             $q->whereIn('order.id',$lists);
             $q->where('hutang_pelayaran.status',0);
             if(request('pelayaran')){
-                $q->whereIn('jadwal_kapal.pelayaran_id',request('pelayaran'));
+                $q->whereIn('jadwal_kapal.pelayaran_id',$pelayaran);
             }
             if(request('kapal')){
-                $q->whereIn('jadwal_kapal.kapal_id',request('kapal'));
+                $q->whereIn('jadwal_kapal.kapal_id',$kapal);
             }
-            $q->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama');
-        $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','order.job');
-        return view('admin.hutangpelayaran.index', compact('data'));
+            $q->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama','shipments.nama as fit');
+        $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id');
+        return view('admin.hutangpelayaran.index', compact('data','pelayaran','kapal'));
+    }
+
+    public function cetak()
+    {
+        $data = HutangPelayaran::where('status',1)->whereNotNull('invoice')->get()->groupBy('invoice');
+        return view('admin.hutangpelayaran.cetak', compact('data'));
     }
 
     public function store(Request $request)
@@ -55,9 +71,9 @@ class HutangPelayaranController extends Controller
             $prop['no_bg_opp'] = $data['no_bg_opp'];
             $prop['no_bg_opt'] = $data['no_bg_opt'];
             $prop['no_bg_ut'] = $data['no_bg_ut'];
-            $prop['nominal_bg_opp'] = $data['nominal_bg_opp'];
-            $prop['nominal_bg_opt'] = $data['nominal_bg_opt'];
-            $prop['nominal_bg_ut'] = $data['nominal_bg_ut'];
+            $prop['nominal_bg_opp'] = $data['nominal_bg_opp'] ?? 0;
+            $prop['nominal_bg_opt'] = $data['nominal_bg_opt'] ?? 0;
+            $prop['nominal_bg_ut'] = $data['nominal_bg_ut'] ?? 0;
             $prop['pph'] = $data['pph'];
             $prop['pembulatan'] = $data['pembulatan'];
             $prop['status'] = 1;
@@ -66,7 +82,7 @@ class HutangPelayaranController extends Controller
         }
 
         $tgl = [$data['tanggal_bg_opp'],$data['tanggal_bg_opt'],$data['tanggal_bg_ut']];
-        $tgl_group = array_unique($tgl);
+        $tgl_group = array_filter(array_unique($tgl));
         $data_nomor = array();
         $no = Jurnal::where('tipe','TEST')->max('no') + 1;
         foreach($tgl_group as $tg){
@@ -87,7 +103,7 @@ class HutangPelayaranController extends Controller
                     $title = strtoupper($a);
                 }
                 $name = $title.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
-                if($item[$a]>0){
+                if($item[$a]>0 && !is_null($item['no_bg_opp'])){
                     Jurnal::create([
                         'tipe' => 'TEST',
                         'no_bg' => $item['no_bg_opp'],
@@ -123,7 +139,7 @@ class HutangPelayaranController extends Controller
                     $title = strtoupper($a);
                 }
                 $name = $title.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
-                if($item[$a]>0){
+                if($item[$a]>0 && !is_null($item['no_bg_opt'])){
                     Jurnal::create([
                         'tipe' => 'TEST',
                         'no_bg' => $item['no_bg_opt'],
@@ -159,7 +175,7 @@ class HutangPelayaranController extends Controller
                     $title = strtoupper($a);
                 }
                 $name = $title.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
-                if($item[$a]>0){
+                if($item[$a]>0 && !is_null($item['no_bg_ut'])){
                     Jurnal::create([
                         'tipe' => 'TEST',
                         'no_bg' => $item['no_bg_ut'],
@@ -190,7 +206,7 @@ class HutangPelayaranController extends Controller
             }
         }
 
-        return redirect()->route('hutang-pelayaran.index')->with('success', 'Data berhasil disimpan');
+        return redirect()->route('hutang-pelayaran.cetak',['invoice'=>$code]);
     }
 
     public function delete(Request $request)
@@ -273,7 +289,14 @@ class HutangPelayaranController extends Controller
 
     public function print()
     {
-        return view('admin.hutangpelayaran.print');
+        $data = HutangPelayaran::with('order')->where('invoice',request('invoice'))->get();
+        if($data->count()<=0){
+            return back()->with('danger','Data tidak ditemukan!');
+        }
+        $hp = $data->first();
+        $jobs = $data->groupBy('order.job');
+        $jadwal_kapal = JadwalKapal::find($data->first()->order->jadwal_kapal_id);
+        return view('admin.hutangpelayaran.print', compact('data','jadwal_kapal','jobs','hp'));
     }
 
     function groupByValue($array) {
