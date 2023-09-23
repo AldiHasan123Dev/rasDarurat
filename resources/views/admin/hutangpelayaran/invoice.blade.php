@@ -129,7 +129,7 @@
                                                 @foreach ($data as $job)
                                                     @foreach ($job as $item)
                                                         <tr>
-                                                            <td rowspan="5" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                                            <td rowspan="6" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
                                                             <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="0" min="0" class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
