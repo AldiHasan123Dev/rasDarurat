@@ -136,6 +136,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
     Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');
+    Route::post('hutang-pelayaran/tarik', [HutangPelayaranController::class, 'tarik'])->name('hutang-pelayaran.tarik');
     Route::get('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice_get'])->name('hutang-pelayaran.cetak.voucher.get');
     Route::get('hutang-pelayaran-print', [HutangPelayaranController::class, 'print'])->name('hutang-pelayaran.print');
     Route::get('hutang-pelayaran-cetak', [HutangPelayaranController::class, 'cetak'])->name('hutang-pelayaran.cetak');

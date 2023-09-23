@@ -123,11 +123,11 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
+                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->kapal->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
-                    @foreach ($list->groupBy('opp') as $item)
+                    @foreach ($list->where('opp','>',0)->groupBy('opp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -143,7 +143,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('thc') as $item)
+                    @foreach ($list->where('thc','>',0)->groupBy('thc') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -158,7 +158,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('apbs') as $item)
+                    @foreach ($list->where('apbs','>',0)->groupBy('apbs') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -173,7 +173,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('cleaning') as $item)
+                    @foreach ($list->where('cleaning','>',0)->groupBy('cleaning') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -188,7 +188,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('opp_stamp') as $item)
+                    @foreach ($list->where('opp_stamp','>',0)->groupBy('opp_stamp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -203,7 +203,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('lss') as $item)
+                    @foreach ($list->where('lss','>',0)->groupBy('lss') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -236,8 +236,8 @@
                 @endforeach --}}
                 <tr style="border: 2px solid red">
                     <td style="color:red">Ch/ BG. No :</td>
-                    <td>{{ $hp->no_bg_opp }}</td>
-                    <td colspan="2"></td>
+                    <td class="fw-bold">{{ $hp->no_bg_opp }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opp)) }})</td>
+                    <td></td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_opp,2,',','.') }}</td>
                 </tr>
             </tbody>
@@ -272,7 +272,7 @@
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
-                    @foreach ($list->groupBy('opt') as $item)
+                    @foreach ($list->where('opt','>',0)->groupBy('opt') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -288,7 +288,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('opt_stamp') as $item)
+                    @foreach ($list->where('opt_stamp','>',0)->groupBy('opt_stamp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -320,8 +320,8 @@
                 @endforeach --}}
                 <tr style="border: 2px solid red">
                     <td style="color:red">Ch/ BG. No :</td>
-                    <td>{{ $hp->no_bg_opt }}</td>
-                    <td colspan="2"></td>
+                    <td class="fw-bold">{{ $hp->no_bg_opt }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opt)) }})</td>
+                    <td></td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_opt,2,',','.') }}</td>
                 </tr>
             </tbody>
@@ -357,7 +357,7 @@
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
-                    @foreach ($list->groupBy('ut') as $item)
+                    @foreach ($list->where('ut','>',0)->groupBy('ut') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -373,7 +373,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('ut_stamp') as $item)
+                    @foreach ($list->where('ut_stamp','>',0)->groupBy('ut_stamp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -420,8 +420,8 @@
                 @endforeach --}}
                 <tr style="border: 2px solid red">
                     <td style="color:red">Ch/ BG. No :</td>
-                    <td>{{ $hp->no_bg_ut }}</td>
-                    <td colspan="2"></td>
+                    <td>{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
+                    <td></td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_ut,2,',','.') }}</td>
                 </tr>
             </tbody>

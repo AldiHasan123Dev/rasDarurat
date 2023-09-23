@@ -81,7 +81,7 @@ class HutangPelayaranController extends Controller
             array_push($ids,$id);
         }
 
-        $tgl = [$data['tanggal_bg_opp'],$data['tanggal_bg_opt'],$data['tanggal_bg_ut']];
+        $tgl = [$data['no_bg_opp'],$data['no_bg_opt'],$data['no_bg_ut']];
         $tgl_group = array_filter(array_unique($tgl));
         $data_nomor = array();
         $no = Jurnal::where('tipe','TEST')->max('no') + 1;
@@ -113,8 +113,8 @@ class HutangPelayaranController extends Controller
                         'nominal_bg' => $item['nominal_bg_opp'],
                         'coa_id' => 31,
                         'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['tgl_bg_opp']]['nomor'],
-                        'no' => $data_nomor[$item['tgl_bg_opp']]['no'],
+                        'nomor' => $data_nomor[$item['no_bg_opp']]['nomor'],
+                        'no' => $data_nomor[$item['no_bg_opp']]['no'],
                         'nama' => $name,
                         'debit' => $item[$a],
                         'credit' => 0,
@@ -126,8 +126,8 @@ class HutangPelayaranController extends Controller
                         'nominal_bg' => $item['nominal_bg_opp'],
                         'coa_id' => 62,
                         'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['tgl_bg_opp']]['nomor'],
-                        'no' => $data_nomor[$item['tgl_bg_opp']]['no'],
+                        'nomor' => $data_nomor[$item['no_bg_opp']]['nomor'],
+                        'no' => $data_nomor[$item['no_bg_opp']]['no'],
                         'nama' => $name,
                         'debit' => 0,
                         'credit' => $item[$a],
@@ -149,8 +149,8 @@ class HutangPelayaranController extends Controller
                         'nominal_bg' => $item['nominal_bg_opt'],
                         'coa_id' => 31,
                         'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['tgl_bg_opt']]['nomor'],
-                        'no' => $data_nomor[$item['tgl_bg_opt']]['no'],
+                        'nomor' => $data_nomor[$item['no_bg_opt']]['nomor'],
+                        'no' => $data_nomor[$item['no_bg_opt']]['no'],
                         'nama' => $name,
                         'debit' => $item[$a],
                         'credit' => 0,
@@ -162,8 +162,8 @@ class HutangPelayaranController extends Controller
                         'nominal_bg' => $item['nominal_bg_opt'],
                         'coa_id' => 62,
                         'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['tgl_bg_opt']]['nomor'],
-                        'no' => $data_nomor[$item['tgl_bg_opt']]['no'],
+                        'nomor' => $data_nomor[$item['no_bg_opt']]['nomor'],
+                        'no' => $data_nomor[$item['no_bg_opt']]['no'],
                         'nama' => $name,
                         'debit' => 0,
                         'credit' => $item[$a],
@@ -185,8 +185,8 @@ class HutangPelayaranController extends Controller
                         'nominal_bg' => $item['nominal_bg_ut'],
                         'coa_id' => 31,
                         'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['tgl_bg_ut']]['nomor'],
-                        'no' => $data_nomor[$item['tgl_bg_ut']]['no'],
+                        'nomor' => $data_nomor[$item['no_bg_ut']]['nomor'],
+                        'no' => $data_nomor[$item['no_bg_ut']]['no'],
                         'nama' => $name,
                         'debit' => $item[$a],
                         'credit' => 0,
@@ -198,8 +198,8 @@ class HutangPelayaranController extends Controller
                         'nominal_bg' => $item['nominal_bg_ut'],
                         'coa_id' => 62,
                         'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['tgl_bg_ut']]['nomor'],
-                        'no' => $data_nomor[$item['tgl_bg_ut']]['no'],
+                        'nomor' => $data_nomor[$item['no_bg_ut']]['nomor'],
+                        'no' => $data_nomor[$item['no_bg_ut']]['no'],
                         'nama' => $name,
                         'debit' => 0,
                         'credit' => $item[$a],
@@ -216,6 +216,21 @@ class HutangPelayaranController extends Controller
         $order_id = explode(',', $request->order_id);
         HutangPelayaran::whereIn('order_id',$order_id)->delete();
         return back()->with('success','Data berhasil dihapus');
+    }
+
+    public function tarik(Request $request)
+    {
+        $data = HutangPelayaran::where('invoice',$request->invoice)->get();
+        $hp = $data->first();
+        Jurnal::where('no_bg',$hp->no_bg_opp)->delete();
+        Jurnal::where('no_bg',$hp->no_bg_opt)->delete();
+        Jurnal::where('no_bg',$hp->no_bg_ut)->delete();
+        $data->update([
+            'invoice' => null,
+            'tgl_invoice' => null,
+            'status' => 0
+        ]);
+        return back()->with('success','Data berhasil ditarik!');
     }
 
     public function update(HutangPelayaran $hutangpelayaran, Request $request)

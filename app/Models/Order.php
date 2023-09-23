@@ -145,6 +145,8 @@ class Order extends Model
     public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan)
     {
         $type = $this->tipe;
+        $arr_tujuan = explode(' ',$tujuan);
+        $tujuan = $arr_tujuan[count($arr_tujuan)-1];
         $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id;
         $dari_id = Lokasi::where('nama',$dari)->first()->id;
         if($type=='muatan'){

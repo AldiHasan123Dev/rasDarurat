@@ -15,6 +15,7 @@
                                 <th>BG OPT</th>
                                 <th>BG UT</th>
                                 <th><i class="fas fa-print"></i></th>
+                                <th><i class="fas fa-upload"></i></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -28,6 +29,12 @@
                                     <td>{{ $item->first()->no_bg_ut?date('d/m/y',strtotime($item->first()->tgl_bg_ut)):'' }} - {{ $item->first()->no_bg_ut }} - {{ number_format($item->first()->nominal_bg_ut,2,',','.') }}</td>
                                     <td>
                                         <a href="{{ route('hutang-pelayaran.print',['invoice'=>$item->first()->invoice]) }}" class="btn btn-sm btn-success">Print</a>
+                                    </td>
+                                    <td>
+                                        <form action="{{ route('hutang-pelayaran.tarik') }}" method="post">
+                                            @csrf
+                                            <button type="submit" name="invoice" value="{{ $item->first()->invoice }}" onclick="return confirm('are you sure?')" class="btn btn-sm btn-danger">Tarik</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
