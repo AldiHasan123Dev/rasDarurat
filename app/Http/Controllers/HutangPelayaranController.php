@@ -222,10 +222,16 @@ class HutangPelayaranController extends Controller
     {
         $data = HutangPelayaran::where('invoice',$request->invoice)->get();
         $hp = $data->first();
-        Jurnal::where('no_bg',$hp->no_bg_opp)->delete();
-        Jurnal::where('no_bg',$hp->no_bg_opt)->delete();
-        Jurnal::where('no_bg',$hp->no_bg_ut)->delete();
-        $data->update([
+        if($hp->no_bg_opp){
+            Jurnal::where('no_bg',$hp->no_bg_opp)->delete();
+        }
+        if($hp->no_bg_opt){
+            Jurnal::where('no_bg',$hp->no_bg_opt)->delete();
+        }
+        if($hp->no_bg_ut){
+            Jurnal::where('no_bg',$hp->no_bg_ut)->delete();
+        }
+        HutangPelayaran::where('invoice',$request->invoice)->update([
             'invoice' => null,
             'tgl_invoice' => null,
             'status' => 0
