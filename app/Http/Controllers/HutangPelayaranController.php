@@ -179,18 +179,34 @@ class HutangPelayaranController extends Controller
             }
         }
 
-        Jurnal::create([
-            'tipe' => 'TEST',
-            'no_bg' => $hp->no_bg_opp,
-            'tgl_bg' => $hp->tgl_bg_opp,
-            'nominal_bg' => $hp->nominal_bg_opp,
-            'coa_id' => 73,
-            'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
-            'no' => $data_nomor[$hp->no_bg_opp]['no'],
-            'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
-            'debit' => 0,
-            'credit' => $hp->pph,
-        ]);
+        if($hp->pph>0){
+            Jurnal::create([
+                'tipe' => 'TEST',
+                'no_bg' => $hp->no_bg_opp,
+                'tgl_bg' => $hp->tgl_bg_opp,
+                'nominal_bg' => $hp->nominal_bg_opp,
+                'coa_id' => 73,
+                'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
+                'no' => $data_nomor[$hp->no_bg_opp]['no'],
+                'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
+                'debit' => 0,
+                'credit' => $hp->pph,
+            ]);
+        }
+        if($hp->pembulatan>0){
+            Jurnal::create([
+                'tipe' => 'TEST',
+                'no_bg' => $hp->no_bg_opp,
+                'tgl_bg' => $hp->tgl_bg_opp,
+                'nominal_bg' => $hp->nominal_bg_opp,
+                'coa_id' => 130,
+                'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
+                'no' => $data_nomor[$hp->no_bg_opp]['no'],
+                'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
+                'debit' => 0,
+                'credit' => $hp->pembulatan,
+            ]);
+        }
         Jurnal::create([
             'tipe' => 'TEST',
             'no_bg' => $hp->no_bg_op,
@@ -201,7 +217,7 @@ class HutangPelayaranController extends Controller
             'no' => $data_nomor[$hp->no_bg_opp]['no'],
             'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
             'debit' => 0,
-            'credit' => $opp_total - $hp->pph,
+            'credit' => ($opp_total + $hp->pembulatan) - $hp->pph,
         ]);
         Jurnal::create([
             'tipe' => 'TEST',
