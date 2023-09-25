@@ -788,16 +788,14 @@ class JurnalController extends Controller
         $m = (int)$month;
         $saldo_awal = $saldo['saldo_awal'][$m-1];
         $search = null;
-        $data = Cache::remember('data-jurnal-'.$coa_id.'-'.$month.'-'.$year,60*60*24, function() use($month,$year,$coa_id){
-            return Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->leftJoin('order','order.id','=','jurnal.order_id')
-                ->whereMonth('jurnal.created_at',$month)
-                ->whereYear('jurnal.created_at',$year)
-                ->where('jurnal.coa_id',$coa_id)
-                ->select('jurnal.*')
-                ->orderBy('jurnal.created_at')
-                ->get();
-        });
+        $data = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+                    ->leftJoin('order','order.id','=','jurnal.order_id')
+                    ->whereMonth('jurnal.created_at',$month)
+                    ->whereYear('jurnal.created_at',$year)
+                    ->where('jurnal.coa_id',$coa_id)
+                    ->select('jurnal.*')
+                    ->orderBy('jurnal.created_at')
+                    ->get();
         return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe'));
     }
 

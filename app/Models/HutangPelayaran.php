@@ -42,6 +42,7 @@ class HutangPelayaran extends Model
         'pembulatan',
         'status',
         'is_lock',
+        'no',
     ];
 
     public function pelayaran()

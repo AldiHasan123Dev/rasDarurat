@@ -1,6 +1,8 @@
 @extends('layouts.admin')
 @section('style')
 <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css">
     <style>
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
@@ -26,6 +28,7 @@
                 color: #000;
             }
         }
+        table.data th, td { white-space: nowrap; }
     </style>
 @endsection
 @section('content')
@@ -44,11 +47,14 @@
                                         <tr>
                                             <th style="width:200px">Akun :</th>
                                             <th>
-                                                <select class="form-control px-3 py-1" wire:model="coa_id" wire:change="changeCoa" style="font-size:.8rem">
-                                                    @foreach ($coas as $item)
-                                                        <option {{ $coa_id == $item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <form action="{{ url()->current() }}" method="get">
+                                                    <input type="hidden" name="month" value="{{ $month }}">
+                                                    <select class="form-control px-3 py-1" name="coa_id" onchange="submit()" style="font-size:.8rem">
+                                                        @foreach ($coas as $item)
+                                                            <option {{ $coa_id == $item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </form>
                                             </th>
                                         </tr>
                                     </thead>
@@ -119,15 +125,15 @@
                         <div class="d-flex gap-2">
                             <b class="mt-2">Bulan: </b>
                             @foreach ($months as $idx => $item)
-                                <a href="{{ route('jurnal.buku_besar',['month'=>sprintf('%02d',$idx+1)]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
+                                <a href="{{ route('jurnal.buku_besar',['month'=>sprintf('%02d',$idx+1),'coa_id'=>$coa_id]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
                             @endforeach
                         </div>
-                        <div class="my-3">
+                        {{-- <div class="my-3">
                             <label for="search">Search</label>
                             <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal">
-                        </div>
-                        <div class="table-responsives">
-                            <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3" style="font-size: .7rem; white-space:nowrap">
+                        </div> --}}
+                        <div class="table-responsive mt-3">
+                            <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3 data-table" style="font-size: .7rem;">
                                 <thead>
                                     <tr>
                                         <th data-rtc-resizable="tanggal">Tanggal</th>
@@ -226,40 +232,53 @@
                         @endif --}}
                     </div>
                 </div>
-                @push('scripts')
-                <script src="{{ asset('assets/js/resize-column.js') }}"></script>
-                <script>
-
-                    function load(){
-                        (function (window, ResizableTableColumns, undefined) {
-                            var store = window.store && window.store.enabled
-                                ? window.store
-                                : null;
-
-                            var els = document.querySelectorAll('table.data');
-                            for (var index = 0; index < els.length; index++) {
-                                var table = els[index];
-                                if (table['rtc_data_object']) {
-                                    continue;
-                                }
-
-                                var options = { store: store };
-                                if (table.querySelectorAll('thead > tr').length > 1) {
-                                    options.resizeFromBody = false;
-                                }
-
-                                new ResizableTableColumns(els[index], options);
-                            }
-
-                        })(window, window.validide_resizableTableColumns.ResizableTableColumns, void (0));
-                    }
-
-                    load();
-                </script>
-                @endpush
-
             </div>
         </div>
     </div>
 </div>
+@push('scripts')
+<script src="{{ asset('assets/js/resize-column.js') }}"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/3.3.1/js/dataTables.fixedColumns.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+<script>
+
+    function load(){
+        (function (window, ResizableTableColumns, undefined) {
+            var store = window.store && window.store.enabled
+                ? window.store
+                : null;
+
+            var els = document.querySelectorAll('table.data');
+            for (var index = 0; index < els.length; index++) {
+                var table = els[index];
+                if (table['rtc_data_object']) {
+                    continue;
+                }
+
+                var options = { store: store };
+                if (table.querySelectorAll('thead > tr').length > 1) {
+                    options.resizeFromBody = false;
+                }
+
+                new ResizableTableColumns(els[index], options);
+            }
+
+        })(window, window.validide_resizableTableColumns.ResizableTableColumns, void (0));
+    }
+
+    // load();
+
+    $('table.data').dataTable({
+        aLengthMenu: [
+            [25, 50, 100, 200, -1],
+            [25, 50, 100, 200, "All"]
+        ],
+        iDisplayLength: 25,
+        fixedHeader: true,
+        fixedColumns: {
+            leftColumns: 2
+        },
+    });
+</script>
+@endpush
 @endsection

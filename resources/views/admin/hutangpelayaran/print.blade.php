@@ -115,7 +115,7 @@
             </thead>
             <tbody>
                 <tr style="background-color: red" class="bg-red text-white">
-                    <td style="background: white" rowspan="{{ ($jobs->count() * 7) + 2 }}"></td>
+                    <td style="background: white" rowspan="{{ ($jobs->count() * 7) + 4 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
                     <td class="text-center">PERKIRAAN</td>
                     <td class="text-center" colspan="2">URAIAN</td>
@@ -131,7 +131,7 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">OPP(1X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
+                                <td colspan="2">OPP({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
                                 </td>
                                 <td class="text-end">{{ number_format($item->first()->opp * $item->count(),2,',','.') }}</td>
                             </tr>
@@ -207,7 +207,7 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">LSS (1X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
+                                <td colspan="2">LSS ({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
                                 </td>
                                 <td class="text-end">{{ number_format($item->first()->lss * $item->count(),2,',','.') }}</td>
                             </tr>
@@ -225,6 +225,16 @@
                         <td></td>
                     </tr>
                 @endforeach
+                <tr style="height:30px">
+                    <td></td>
+                    <td colspan="2">PPh (2%)</td>
+                    <td class="text-end text-danger">{{ number_format($hp->pph,2,',','.') }}</td>
+                </tr>
+                <tr style="height:30px">
+                    <td></td>
+                    <td colspan="2">Pembulatan</td>
+                    <td class="text-end text-danger">{{ number_format($hp->pembulatan,2,',','.') }}</td>
+                </tr>
                 {{-- @foreach ($opp as $list)
                     @foreach ($list->groupBy('order.job') as $item)
                         <tr>
@@ -236,8 +246,7 @@
                 @endforeach --}}
                 <tr style="border: 2px solid red">
                     <td style="color:red">Ch/ BG. No :</td>
-                    <td class="fw-bold">{{ $hp->no_bg_opp }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opp)) }})</td>
-                    <td></td>
+                    <td class="fw-bold" colspan="2">{{ $hp->no_bg_opp }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opp)) }})</td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_opp,2,',','.') }}</td>
                 </tr>
             </tbody>
@@ -276,7 +285,7 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">OPT(1X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
+                                <td colspan="2">OPT({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
                                 </td>
                                 <td class="text-end">{{ number_format($item->first()->opt * $item->count(),2,',','.') }}</td>
                             </tr>
@@ -319,9 +328,8 @@
                     @endforeach
                 @endforeach --}}
                 <tr style="border: 2px solid red">
-                    <td style="color:red">Ch/ BG. No :</td>
-                    <td class="fw-bold">{{ $hp->no_bg_opt }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opt)) }})</td>
-                    <td></td>
+                    <td style="color:red" colspan="2">Ch/ BG. No :</td>
+                    <td class="fw-bold" colspan="2">{{ $hp->no_bg_opt }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opt)) }})</td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_opt,2,',','.') }}</td>
                 </tr>
             </tbody>
@@ -361,7 +369,7 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">UT (1X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
+                                <td colspan="2">UT ({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
                                 </td>
                                 <td class="text-end">{{ number_format($item->first()->ut * $item->count(),2,',','.') }}</td>
                             </tr>
@@ -419,9 +427,8 @@
                     @endforeach
                 @endforeach --}}
                 <tr style="border: 2px solid red">
-                    <td style="color:red">Ch/ BG. No :</td>
-                    <td>{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
-                    <td></td>
+                    <td style="color:red" colspan="2">Ch/ BG. No :</td>
+                    <td colspan="2" class="fw-bold">{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_ut,2,',','.') }}</td>
                 </tr>
             </tbody>
