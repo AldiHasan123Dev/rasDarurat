@@ -19,7 +19,7 @@
             #print, #print * {
                 visibility: visible;
                 font-family: 'Open Sans', sans-serif;
-                font-size: 1rem !important;
+                font-size: .7rem !important;
                 color: black !important;
             }
             #print {

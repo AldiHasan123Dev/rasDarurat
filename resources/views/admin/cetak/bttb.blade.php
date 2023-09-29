@@ -12,6 +12,7 @@
             }
             body * {
                 visibility: hidden;
+                -webkit-print-color-adjust: exact;
             }
             body{
                 width: 100%;
@@ -88,7 +89,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex justify-content-between">
-                                                    <div class="s">
+                                                    <div class="s" style="width: 70%">
                                                         <table style="font-size: .7rem; white-space:nowrap">
                                                             <tr>
                                                                 <td style="width: 100px">No. BTTB</td>
@@ -109,7 +110,7 @@
                                                         </table>
                                                     </div>
                                                     <div class="s">
-                                                        <table style="font-size: .7rem; white-space:nowrap">
+                                                        <table style="font-size: .7rem;">
                                                             <tr>
                                                                 <td style="width: 100px">Penerima</td>
                                                                 <td>: {{ $order->penerima->nama }}</td>
@@ -256,7 +257,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex justify-content-between">
-                                                    <div class="s">
+                                                    <div class="s" style="width: 70%">
                                                         <table style="font-size: .7rem; white-space:nowrap">
                                                             <tr>
                                                                 <td style="width: 100px">No. BTTB</td>
@@ -277,7 +278,7 @@
                                                         </table>
                                                     </div>
                                                     <div class="s">
-                                                        <table style="font-size: .7rem; white-space:nowrap">
+                                                        <table style="font-size: .7rem;">
                                                             <tr>
                                                                 <td style="width: 100px">Penerima</td>
                                                                 <td>: {{ $order->penerima->nama }}</td>
@@ -424,7 +425,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-between">
-                                            <div class="s">
+                                            <div class="s" style="width: 70%">
                                                 <table style="font-size: .7rem; white-space:nowrap">
                                                     <tr>
                                                         <td style="width: 100px">No. BTTB</td>
@@ -445,7 +446,7 @@
                                                 </table>
                                             </div>
                                             <div class="s">
-                                                <table style="font-size: .7rem; white-space:nowrap">
+                                                <table style="font-size: .7rem;">
                                                     <tr>
                                                         <td style="width: 100px">Penerima</td>
                                                         <td>: {{ $order->penerima->nama }}</td>
@@ -594,7 +595,7 @@
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-between">
-                                            <div class="s">
+                                            <div class="s" style="width: 70%">
                                                 <table style="font-size: .7rem; white-space:nowrap">
                                                     <tr>
                                                         <td style="width: 100px">No. BTTB</td>
@@ -615,7 +616,7 @@
                                                 </table>
                                             </div>
                                             <div class="s">
-                                                <table style="font-size: .7rem; white-space:nowrap">
+                                                <table style="font-size: .7rem;">
                                                     <tr>
                                                         <td style="width: 100px">Penerima</td>
                                                         <td>: {{ $order->penerima->nama }}</td>
@@ -762,7 +763,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">
-                                        <div class="s">
+                                        <div class="s" style="width: 70%">
                                             <table style="font-size: .7rem; white-space:nowrap">
                                                 <tr>
                                                     <td style="width: 100px">No. BTTB</td>
@@ -783,7 +784,7 @@
                                             </table>
                                         </div>
                                         <div class="s">
-                                            <table style="font-size: .7rem; white-space:nowrap">
+                                            <table style="font-size: .7rem;">
                                                 <tr>
                                                     <td style="width: 100px">Penerima</td>
                                                     <td>: {{ $order->penerima->nama }}</td>
