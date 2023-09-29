@@ -355,7 +355,56 @@ class HutangPelayaranController extends Controller
         $hp = $data->first();
         $jobs = $data->groupBy('order.job');
         $jadwal_kapal = JadwalKapal::find($data->first()->order->jadwal_kapal_id);
-        return view('admin.hutangpelayaran.print', compact('data','jadwal_kapal','jobs','hp'));
+        $opp = 0;
+        $opt = 0;
+        $ut = 0;
+        foreach ($jobs as $list){
+            $a = $list->where('opp','>',0)->groupBy('opp')->count();
+            $b = $list->where('thc','>',0)->groupBy('thc')->count();
+            $c = $list->where('apbs','>',0)->groupBy('apbs')->count();
+            $d = $list->where('cleaning','>',0)->groupBy('cleaning')->count();
+            $e = $list->where('opp_stamp','>',0)->groupBy('opp_stamp')->count();
+            $f = $list->where('lss','>',0)->groupBy('lss')->count();
+            $g = $list->where('opt','>',0)->groupBy('opt')->count();
+            $h = $list->where('opt_stamp','>',0)->groupBy('opt_stamp')->count();
+            $i = $list->where('ut','>',0)->groupBy('ut')->count();
+            $j = $list->where('bl','>',0)->groupBy('bl')->count();
+            $k = $list->where('ut_stamp','>',0)->groupBy('ut_stamp')->count();
+            if($a>0){
+                $opp+=1;
+            }
+            if($b>0){
+                $opp+=1;
+            }
+            if($c>0){
+                $opp+=1;
+            }
+            if($d>0){
+                $opp+=1;
+            }
+            if($e>0){
+                $opp+=1;
+            }
+            if($f>0){
+                $opp+=1;
+            }
+            if($g>0){
+                $opt+=1;
+            }
+            if($h>0){
+                $opt+=1;
+            }
+            if($i>0){
+                $ut+=1;
+            }
+            if($j>0){
+                $ut+=1;
+            }
+            if($k>0){
+                $ut+=1;
+            }
+        }
+        return view('admin.hutangpelayaran.print', compact('data','jadwal_kapal','jobs','hp','opp','opt','ut'));
     }
 
     function groupByValue($array) {
