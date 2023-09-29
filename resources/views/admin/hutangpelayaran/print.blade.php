@@ -2,13 +2,12 @@
 @section('style')
     <style>
         @media print {
-            @import url('https://fonts.cdnfonts.com/css/dot-matrix');
 
             body * {
                 visibility: hidden;
-                font-family: 'Dot Matrix', sans-serif;
                 color: #000;
-                -webkit-print-color-adjust: exact;
+                -webkit-print-color-adjust:exact !important;
+                print-color-adjust:exact !important;
             }
 
             .first-page {
@@ -56,7 +55,12 @@
 
             .bg-red{
                 background-color: red !important;
-                color: #fff !important;
+                color: #ffffff !important;
+            }
+            .table tr td {
+                padding: 3px 10px !important;
+                color: #000;
+                font-weight: 600;
             }
         }
 
@@ -67,7 +71,8 @@
 
         .bg-red{
             background-color: red !important;
-            color: #fff !important;
+            color: #ffffff !important;
+            font-weight: bold;
         }
 
         tr.heading td {
@@ -98,12 +103,62 @@
     </style>
 @endsection
 @section('content')
+@php
+    function terbilang($angka) {
+        $angka = (float)$angka;
+        $bilangan = array(
+                '',
+                'satu',
+                'dua',
+                'tiga',
+                'empat',
+                'lima',
+                'enam',
+                'tujuh',
+                'delapan',
+                'sembilan',
+                'sepuluh',
+                'sebelas'
+            );
+            if ($angka < 12) {
+                return $bilangan[$angka];
+            } else if ($angka < 20) {
+                return $bilangan[$angka - 10] . ' belas';
+            } else if ($angka < 100) {
+                $hasil_bagi = (int)($angka / 10);
+                $hasil_mod = $angka % 10;
+                return trim(sprintf('%s puluh %s', $bilangan[$hasil_bagi], $bilangan[$hasil_mod]));
+            } else if ($angka < 200) {
+                return 'seratus ' . terbilang($angka - 100);
+            } else if ($angka < 1000) {
+                $hasil_bagi = (int)($angka / 100);
+                $hasil_mod = $angka % 100;
+                return trim(sprintf('%s ratus %s', $bilangan[$hasil_bagi], terbilang($hasil_mod)));
+            } else if ($angka < 2000) {
+                return 'seribu ' . terbilang($angka - 1000);
+            } else if ($angka < 1000000) {
+                $hasil_bagi = (int)($angka / 1000);
+                $hasil_mod = $angka % 1000;
+                return trim(sprintf('%s ribu %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
+            } else if ($angka < 1000000000) {
+                $hasil_bagi = (int)($angka / 1000000);
+                $hasil_mod = $angka % 1000000;
+                return trim(sprintf('%s juta %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
+            } else if ($angka < 1000000000000) {
+                $hasil_bagi = (int)($angka / 1000000000);
+                $hasil_mod = fmod($angka, 1000000000);
+                return trim(sprintf('%s miliar %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
+            } else {
+                return 'Angka terlalu besar';
+            }
+        }
+@endphp
     <div id="print">
         <table class="w-100 table">
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
-                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK BAYAR</th>
+                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
                     <th style="width: 250px"></th>
                 </tr>
@@ -114,12 +169,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="background-color: red" class="bg-red text-white">
+                <tr style="background-color: red" class="text-white">
                     <td style="background: white" rowspan="{{ ($jobs->count() * 7) + 4 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
-                    <td class="text-center">PERKIRAAN</td>
-                    <td class="text-center" colspan="2">URAIAN</td>
-                    <td class="text-center">JUMLAH</td>
+                    <td class="bg-red text-center">PERKIRAAN</td>
+                    <td class="bg-red text-center" colspan="2">URAIAN</td>
+                    <td class="bg-red text-center">JUMLAH</td>
                 </tr>
                 <tr>
                     <td></td>
@@ -245,9 +300,33 @@
                     @endforeach
                 @endforeach --}}
                 <tr style="border: 2px solid red">
-                    <td style="color:red">Ch/ BG. No :</td>
+                    <td colspan="2" style="color:red">Ch/ BG. No :</td>
                     <td class="fw-bold" colspan="2">{{ $hp->no_bg_opp }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opp)) }})</td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_opp,2,',','.') }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="w-100 table">
+            <thead>
+                <tr>
+                    <th class="text-start" style="color: red">TERBILANG :</th>
+                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opp) }}</th>
+                </tr>
+                <tr>
+                    <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
+                    <th class="bg-red">Pembukuan</th>
+                    <th class="bg-red">Mengetahui</th>
+                    <th class="bg-red" colspan="2" style="width: 100px">Kasir</th>
+                    <th class="bg-red">Penerima</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border: none !important; height:60px">
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
@@ -257,7 +336,7 @@
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
-                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK BAYAR</th>
+                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
                     <th style="width: 250px"></th>
                 </tr>
@@ -268,12 +347,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="background-color: red" class="bg-red text-white">
+                <tr style="background-color: red" class="text-white">
                     <td style="background: white" rowspan="{{ ($jobs->count() * 3) + 2 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
-                    <td class="text-center">PERKIRAAN</td>
-                    <td class="text-center" colspan="2">URAIAN</td>
-                    <td class="text-center">JUMLAH</td>
+                    <td class="bg-red text-center">PERKIRAAN</td>
+                    <td class="bg-red text-center" colspan="2">URAIAN</td>
+                    <td class="bg-red text-center">JUMLAH</td>
                 </tr>
                 <tr>
                     <td></td>
@@ -334,6 +413,30 @@
                 </tr>
             </tbody>
         </table>
+        <table class="w-100 table">
+            <thead>
+                <tr>
+                    <th class="text-start" style="color: red">TERBILANG :</th>
+                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opt) }}</th>
+                </tr>
+                <tr>
+                    <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
+                    <th class="bg-red">Pembukuan</th>
+                    <th class="bg-red">Mengetahui</th>
+                    <th class="bg-red" colspan="2" style="width: 100px">Kasir</th>
+                    <th class="bg-red">Penerima</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border: none !important; height:60px">
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
         @endif
         @if ($hp->no_bg_ut)
         <p class="page-break"></p>
@@ -341,7 +444,7 @@
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
-                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK BAYAR</th>
+                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
                     <th style="width: 250px"></th>
                 </tr>
@@ -352,12 +455,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr style="background-color: red" class="bg-red text-white">
+                <tr style="background-color: red" class="text-white">
                     <td style="background: white" rowspan="{{ ($jobs->count() * 4) + 2 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
-                    <td class="text-center">PERKIRAAN</td>
-                    <td class="text-center" colspan="2">URAIAN</td>
-                    <td class="text-center">JUMLAH</td>
+                    <td class="bg-red text-center">PERKIRAAN</td>
+                    <td class="bg-red text-center" colspan="2">URAIAN</td>
+                    <td class="bg-red text-center">JUMLAH</td>
                 </tr>
                 <tr>
                     <td></td>
@@ -430,6 +533,30 @@
                     <td style="color:red" colspan="2">Ch/ BG. No :</td>
                     <td colspan="2" class="fw-bold">{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_ut,2,',','.') }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="w-100 table">
+            <thead>
+                <tr>
+                    <th class="text-start" style="color: red">TERBILANG :</th>
+                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_ut) }}</th>
+                </tr>
+                <tr>
+                    <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
+                    <th class="bg-red">Pembukuan</th>
+                    <th class="bg-red">Mengetahui</th>
+                    <th class="bg-red" colspan="2" style="width: 100px">Kasir</th>
+                    <th class="bg-red">Penerima</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border: none !important; height:60px">
+                    <td colspan="2"></td>
+                    <td></td>
+                    <td></td>
+                    <td colspan="2"></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>

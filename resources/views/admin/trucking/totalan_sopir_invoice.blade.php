@@ -2,9 +2,12 @@
 @section('style')
     <style>
         @media print {
-            /* @page {size: landscape} */
+            @page {size: landscape}
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
-
+            /* @page {
+                size: 210mm 297mm;
+                margin: 1cm 0cm 0cm 0cm;
+            } */
             body * {
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;
@@ -24,7 +27,7 @@
             #print {
                 width: 100%;
                 position: relative;
-                left: 0;
+                left: -260px;
                 /* top: -20px; */
             }
             #table td, #table th{
