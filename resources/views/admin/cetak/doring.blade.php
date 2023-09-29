@@ -6,21 +6,24 @@
         }
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+            @page {
+                size: 210mm 297mm;
+                margin: 0cm 0cm 0cm 0cm;
+            }
             body * {
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;
                 color: #000;
-
             }
             #print, #print * {
                 visibility: visible;
-                /* font-size: .9rem !important; */
+                font-size: 1rem !important;
             }
             #print {
-                width: 100%;
+                width: 210mm;
                 position: absolute;
                 left: 0;
-                top: -180px;
+                top: -140px !important;
             }
             .table tr td{
                 border: #000 1px solid;
@@ -122,7 +125,7 @@
         <div class="card p-3 mt-3">
             <div id="print" style="width: 100%">
                 <div class="header d-flex" style="gap:5px; width:100%">
-                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
+                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px; font-size:.8rem">
                         <table>
                             <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
@@ -291,5 +294,15 @@
                 });
             }
         }
+
+        $(document).on('keydown', function(e) {
+            if((e.ctrlKey || e.metaKey) && (e.key == "p" || e.charCode == 16 || e.charCode == 112 || e.keyCode == 80) ){
+                alert("Harap klik tombol cetak");
+                e.cancelBubble = true;
+                e.preventDefault();
+
+                e.stopImmediatePropagation();
+            }
+        });
     </script>
 @endsection

@@ -6,6 +6,10 @@
         }
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+            @page {
+                size: 210mm 297mm;
+                margin: .5cm 0cm 0cm 0cm;
+            }
             body * {
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;

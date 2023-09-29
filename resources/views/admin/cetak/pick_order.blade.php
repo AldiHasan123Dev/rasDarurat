@@ -16,7 +16,7 @@
         #print, #print * {
             visibility: visible;
             font-family: 'Open Sans', sans-serif;
-            font-size: .7rem !important;
+            font-size: .65rem !important;
             color: black !important;
         }
         #print {

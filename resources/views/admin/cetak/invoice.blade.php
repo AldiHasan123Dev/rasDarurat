@@ -3,7 +3,10 @@
     <style>
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
-
+            @page {
+                size: 210mm 297mm;
+                margin: 1cm 0cm 0cm 0cm;
+            }
             body * {
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;
@@ -14,7 +17,7 @@
                 width: 100%;
                 height: 100%;
                 position: absolute;
-                top: -180px;
+                top: -193px;
             }
             #print, #print * {
                 visibility: visible;
