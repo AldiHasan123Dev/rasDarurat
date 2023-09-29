@@ -42,6 +42,9 @@
             .page-number{
                 float:right;
                 font-style: italic;
+                position: relative;
+                bottom: 0px;
+                right: 0px;
             }
         }
     .table>:not(caption)>*>*{
@@ -49,6 +52,18 @@
     }
     .table tr td{
         border: none !important;
+    }
+    .page-number{
+        float:right;
+        font-style: italic;
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+    }
+    .page{
+        position: relative;
+        height: 12cm;
+        /* height: 5in !important; */
     }
 </style>
 @endsection
@@ -220,7 +235,7 @@
                                                     </div>
                                                 </div>
                                             @endif
-                                            <hr class="mt-4">
+
                                         </div>
                                         @if (ceil($data->count()/10)!=1)
                                             <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
@@ -388,7 +403,7 @@
                                                     </div>
                                                 </div>
                                             @endif
-                                            <hr class="mt-4">
+
                                         </div>
                                         @if (ceil($data->count()/15)!=1)
                                             <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
@@ -556,7 +571,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                    <hr class="mt-4">
+
                                 </div>
                                 @if (ceil($data->count()/15)!=1)
                                     <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
@@ -726,7 +741,7 @@
                                             </div>
                                         </div>
                                     @endif
-                                    <hr class="mt-4">
+
                                 </div>
                                 @if (ceil($data->count()/10)!=1)
                                     <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
@@ -894,7 +909,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                <hr class="mt-4">
+
                             </div>
                             <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
                         </div>
