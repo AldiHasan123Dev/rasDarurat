@@ -22,7 +22,7 @@
             #print, #print * {
                 visibility: visible;
                 font-family: 'Open Sans', sans-serif;
-                font-size: 1rem !important;
+                font-size: .6rem !important;
                 color: black !important;
             }
             #print {
@@ -86,45 +86,49 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-6">
-                                                <table style="font-size: .7rem">
-                                                    <tr>
-                                                        <td style="width: 200px">No. BTTB</td>
-                                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Nama Kapal</td>
-                                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>No. Container</td>
-                                                        <td>: {{ $order->container }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>No. Seal</td>
-                                                        <td>: {{ $order->seal }}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="col-6">
-                                                <table style="font-size: .7rem">
-                                                    <tr>
-                                                        <td style="width: 200px">Penerima</td>
-                                                        <td>: {{ $order->penerima->nama }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Alamat</td>
-                                                        <td>: {{ $order->penerima->alamat }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Kota</td>
-                                                        <td>: {{ $order->penerima->kota }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>HP</td>
-                                                        <td>: {{ $order->penerima->hp }}</td>
-                                                    </tr>
-                                                </table>
+                                            <div class="col-12">
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="s">
+                                                        <table style="font-size: .7rem; white-space:nowrap">
+                                                            <tr>
+                                                                <td style="width: 100px">No. BTTB</td>
+                                                                <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Nama Kapal</td>
+                                                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>No. Container</td>
+                                                                <td>: {{ $order->container }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>No. Seal</td>
+                                                                <td>: {{ $order->seal }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="s">
+                                                        <table style="font-size: .7rem; white-space:nowrap">
+                                                            <tr>
+                                                                <td style="width: 100px">Penerima</td>
+                                                                <td>: {{ $order->penerima->nama }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Alamat</td>
+                                                                <td>: {{ $order->penerima->alamat }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Kota</td>
+                                                                <td>: {{ $order->penerima->kota }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>HP</td>
+                                                                <td>: {{ $order->penerima->hp }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
                                                 <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
@@ -250,45 +254,49 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-6">
-                                                <table style="font-size: .7rem">
-                                                    <tr>
-                                                        <td style="width: 200px">No. BTTB</td>
-                                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Nama Kapal</td>
-                                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>No. Container</td>
-                                                        <td>: {{ $order->container }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>No. Seal</td>
-                                                        <td>: {{ $order->seal }}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div class="col-6">
-                                                <table style="font-size: .7rem">
-                                                    <tr>
-                                                        <td style="width: 200px">Penerima</td>
-                                                        <td>: {{ $order->penerima->nama }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Alamat</td>
-                                                        <td>: {{ $order->penerima->alamat }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Kota</td>
-                                                        <td>: {{ $order->penerima->kota }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>HP</td>
-                                                        <td>: {{ $order->penerima->hp }}</td>
-                                                    </tr>
-                                                </table>
+                                            <div class="col-12">
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="s">
+                                                        <table style="font-size: .7rem; white-space:nowrap">
+                                                            <tr>
+                                                                <td style="width: 100px">No. BTTB</td>
+                                                                <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Nama Kapal</td>
+                                                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>No. Container</td>
+                                                                <td>: {{ $order->container }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>No. Seal</td>
+                                                                <td>: {{ $order->seal }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                    <div class="s">
+                                                        <table style="font-size: .7rem; white-space:nowrap">
+                                                            <tr>
+                                                                <td style="width: 100px">Penerima</td>
+                                                                <td>: {{ $order->penerima->nama }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Alamat</td>
+                                                                <td>: {{ $order->penerima->alamat }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Kota</td>
+                                                                <td>: {{ $order->penerima->kota }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>HP</td>
+                                                                <td>: {{ $order->penerima->hp }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
                                                 <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
@@ -414,45 +422,49 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <table style="font-size: .7rem">
-                                            <tr>
-                                                <td style="width: 200px">No. BTTB</td>
-                                                <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Nama Kapal</td>
-                                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>No. Container</td>
-                                                <td>: {{ $order->container }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>No. Seal</td>
-                                                <td>: {{ $order->seal }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-6">
-                                        <table style="font-size: .7rem">
-                                            <tr>
-                                                <td style="width: 200px">Penerima</td>
-                                                <td>: {{ $order->penerima->nama }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Alamat</td>
-                                                <td>: {{ $order->penerima->alamat }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Kota</td>
-                                                <td>: {{ $order->penerima->kota }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>HP</td>
-                                                <td>: {{ $order->penerima->hp }}</td>
-                                            </tr>
-                                        </table>
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="s">
+                                                <table style="font-size: .7rem; white-space:nowrap">
+                                                    <tr>
+                                                        <td style="width: 100px">No. BTTB</td>
+                                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nama Kapal</td>
+                                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Container</td>
+                                                        <td>: {{ $order->container }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Seal</td>
+                                                        <td>: {{ $order->seal }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="s">
+                                                <table style="font-size: .7rem; white-space:nowrap">
+                                                    <tr>
+                                                        <td style="width: 100px">Penerima</td>
+                                                        <td>: {{ $order->penerima->nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Alamat</td>
+                                                        <td>: {{ $order->penerima->alamat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Kota</td>
+                                                        <td>: {{ $order->penerima->kota }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>HP</td>
+                                                        <td>: {{ $order->penerima->hp }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
                                         <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
@@ -580,45 +592,49 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6">
-                                        <table style="font-size: .7rem">
-                                            <tr>
-                                                <td style="width: 200px">No. BTTB</td>
-                                                <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Nama Kapal</td>
-                                                <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>No. Container</td>
-                                                <td>: {{ $order->container }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>No. Seal</td>
-                                                <td>: {{ $order->seal }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="col-6">
-                                        <table style="font-size: .7rem">
-                                            <tr>
-                                                <td style="width: 200px">Penerima</td>
-                                                <td>: {{ $order->penerima->nama }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Alamat</td>
-                                                <td>: {{ $order->penerima->alamat }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Kota</td>
-                                                <td>: {{ $order->penerima->kota }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td>HP</td>
-                                                <td>: {{ $order->penerima->hp }}</td>
-                                            </tr>
-                                        </table>
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="s">
+                                                <table style="font-size: .7rem; white-space:nowrap">
+                                                    <tr>
+                                                        <td style="width: 100px">No. BTTB</td>
+                                                        <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Nama Kapal</td>
+                                                        <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Container</td>
+                                                        <td>: {{ $order->container }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>No. Seal</td>
+                                                        <td>: {{ $order->seal }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <div class="s">
+                                                <table style="font-size: .7rem; white-space:nowrap">
+                                                    <tr>
+                                                        <td style="width: 100px">Penerima</td>
+                                                        <td>: {{ $order->penerima->nama }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Alamat</td>
+                                                        <td>: {{ $order->penerima->alamat }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Kota</td>
+                                                        <td>: {{ $order->penerima->kota }}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>HP</td>
+                                                        <td>: {{ $order->penerima->hp }}</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
                                         <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
@@ -744,45 +760,49 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-6">
-                                    <table style="font-size: .7rem">
-                                        <tr>
-                                            <td style="width: 200px">No. BTTB</td>
-                                            <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Nama Kapal</td>
-                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>No. Container</td>
-                                            <td>: {{ $order->container }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>No. Seal</td>
-                                            <td>: {{ $order->seal }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="col-6">
-                                    <table style="font-size: .7rem">
-                                        <tr>
-                                            <td style="width: 200px">Penerima</td>
-                                            <td>: {{ $order->penerima->nama }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Alamat</td>
-                                            <td>: {{ $order->penerima->alamat }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kota</td>
-                                            <td>: {{ $order->penerima->kota }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>HP</td>
-                                            <td>: {{ $order->penerima->hp }}</td>
-                                        </tr>
-                                    </table>
+                                <div class="col-12">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="s">
+                                            <table style="font-size: .7rem; white-space:nowrap">
+                                                <tr>
+                                                    <td style="width: 100px">No. BTTB</td>
+                                                    <td>: {{ $order->job }}.{{ sprintf('%02d',$order->no_job) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nama Kapal</td>
+                                                    <td>: {{ $order->jadwal_kapal->kapal->nama }} Voy.{{ $order->jadwal_kapal->voyage }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>No. Container</td>
+                                                    <td>: {{ $order->container }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>No. Seal</td>
+                                                    <td>: {{ $order->seal }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="s">
+                                            <table style="font-size: .7rem; white-space:nowrap">
+                                                <tr>
+                                                    <td style="width: 100px">Penerima</td>
+                                                    <td>: {{ $order->penerima->nama }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Alamat</td>
+                                                    <td>: {{ $order->penerima->alamat }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Kota</td>
+                                                    <td>: {{ $order->penerima->kota }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>HP</td>
+                                                    <td>: {{ $order->penerima->hp }}</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:245px':'' }}">
                                     <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
