@@ -520,6 +520,21 @@
                             </tr>
                         @endif
                     @endforeach
+                    @foreach ($list->groupBy('ut_cleaning') as $item)
+                        @if ($item->count()>1)
+                            <tr>
+                                <td></td>
+                                <td colspan="2">Cleaning</td>
+                                <td class="text-end">{{ number_format($item->first()->ut_cleaning * $item->count(),2,',','.') }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td></td>
+                                <td colspan="2">Cleaning</td>
+                                <td class="text-end">{{ number_format($item->first()->ut_cleaning,2,',','.') }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
                     <tr style="height:30px">
                         <td></td>
                         <td colspan="2"></td>

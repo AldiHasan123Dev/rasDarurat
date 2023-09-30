@@ -38,6 +38,7 @@ class HutangPelayaran extends Model
         'ut',
         'bl',
         'ut_stamp',
+        'ut_cleaning',
         'pph',
         'pembulatan',
         'penambahan',

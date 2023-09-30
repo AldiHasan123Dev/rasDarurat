@@ -260,6 +260,10 @@
                                                             <td><input type="number" onkeyup="hitungUT('stamp',this.value)" onclick="this.select()" value="0" min="0" class="ut-stamp" name="data[{{ $item->id }}][ut_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
+                                                            <td>CLEANING</td>
+                                                            <td><input type="number" onkeyup="hitungUT('ut_cleaning',this.value)" onclick="this.select()" value="0" min="0" class="ut-cleaning" name="data[{{ $item->id }}][ut_cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                        </tr>
+                                                        <tr>
                                                             <td>-</td>
                                                             <td>-</td>
                                                         </tr>
@@ -473,10 +477,16 @@
                     $(this).val(val);
                 });
             }
+            if(tipe=='ut_cleaning'){
+                $('input[type="number"].ut-cleaning').each(function () {
+                    $(this).val(val);
+                });
+            }
         }
         let ut = 0;
         let bl = 0;
         let stamp = 0;
+        let ut_cleaning = 0;
         let penambahan = parseFloat($('#penambahan_nominal').val());
         // let pengurangan = parseFloat($('#pengurangan_nominal').val());
         $('input[type="number"].ut-ut').each(function () {
@@ -485,11 +495,14 @@
         $('input[type="number"].ut-stamp').each(function () {
             stamp+=parseFloat($(this).val());
         });
+        $('input[type="number"].ut-cleaning').each(function () {
+            ut_cleaning+=parseFloat($(this).val());
+        });
         $('input[type="number"].ut-bl').each(function () {
             bl+=parseFloat($(this).val());
         });
 
-        jumlah = ut + stamp + bl + penambahan;
+        jumlah = ut + stamp + bl + penambahan + ut_cleaning;
         $('.nominal_bg_ut').val(jumlah);
         $('.nominal_bg_ut').text(jumlah.toLocaleString('en-US'));
     }

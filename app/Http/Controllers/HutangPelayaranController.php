@@ -102,7 +102,7 @@ class HutangPelayaranController extends Controller
         foreach ($lists as $item) {
             $opp = ['opp','apbs','cleaning','thc','lss','opp_stamp'];
             $opt = ['opt','opt_stamp'];
-            $ut = ['ut','ut_stamp','bl'];
+            $ut = ['ut','ut_stamp','bl','ut_cleaning'];
             foreach($opp as $a){
                 if($a=='thc'){
                     $title = 'THC LOLO';
@@ -158,6 +158,8 @@ class HutangPelayaranController extends Controller
             foreach($ut as $a){
                 if($a=='ut_stamp'){
                     $title = 'STAMP UT';
+                }elseif($a=='ut_cleaning'){
+                    $title = 'CLEANING';
                 }else{
                     $title = strtoupper($a);
                 }
@@ -419,6 +421,7 @@ class HutangPelayaranController extends Controller
             $i = $list->where('ut','>',0)->groupBy('ut')->count();
             $j = $list->where('bl','>',0)->groupBy('bl')->count();
             $k = $list->where('ut_stamp','>',0)->groupBy('ut_stamp')->count();
+            $l = $list->where('ut_cleaning','>',0)->groupBy('ut_cleaning')->count();
             if($a>0){
                 $opp+=1;
             }
@@ -450,6 +453,9 @@ class HutangPelayaranController extends Controller
                 $ut+=1;
             }
             if($k>0){
+                $ut+=1;
+            }
+            if($l>0){
                 $ut+=1;
             }
         }
