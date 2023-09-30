@@ -366,7 +366,7 @@ class HutangPelayaranController extends Controller
         if(count($cek)>1){
             return back()->with('danger', 'Data Kapal dan Voyage yang dipilih tidak sama!');
         }
-        $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
+        $data = HutangPelayaran::join('order','order.id','hutang_pelayaran.order_id')->whereIn('hutang_pelayaran.order_id', $order_id)->orderBy('order.job')->orderBy('order.no_job')->get()->groupBy('order.job');
         $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;
         // $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
 
