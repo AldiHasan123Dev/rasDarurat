@@ -41,7 +41,7 @@ class HutangPelayaranController extends Controller
                 $q->whereIn('jadwal_kapal.pelayaran_id',$pelayaran);
             }
             if(request('kapal')){
-                $q->whereIn('jadwal_kapal.kapal_id',$kapal);
+                $q->whereIn('kapal.nama',$kapal);
             }
             $q->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama','shipments.nama as fit');
         $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id');
@@ -219,30 +219,34 @@ class HutangPelayaranController extends Controller
             'debit' => 0,
             'credit' => $opp_total - ($hp->pph + $hp->pembulatan),
         ]);
-        Jurnal::create([
-            'tipe' => 'TEST',
-            'no_bg' => $hp->no_bg_opt,
-            'tgl_bg' => $hp->tgl_bg_opt,
-            'nominal_bg' => $hp->nominal_bg_opt,
-            'coa_id' => 62,
-            'nomor' => $data_nomor[$hp->no_bg_opt]['nomor'],
-            'no' => $data_nomor[$hp->no_bg_opt]['no'],
-            'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
-            'debit' => 0,
-            'credit' => $opt_total,
-        ]);
-        Jurnal::create([
-            'tipe' => 'TEST',
-            'no_bg' => $hp->no_bg_ut,
-            'tgl_bg' => $hp->tgl_bg_ut,
-            'nominal_bg' => $hp->nominal_bg_ut,
-            'coa_id' => 62,
-            'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
-            'no' => $data_nomor[$hp->no_bg_ut]['no'],
-            'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
-            'debit' => 0,
-            'credit' => $ut_total,
-        ]);
+        if (!is_null($hp->no_bg_opt)) {
+            Jurnal::create([
+                'tipe' => 'TEST',
+                'no_bg' => $hp->no_bg_opt,
+                'tgl_bg' => $hp->tgl_bg_opt,
+                'nominal_bg' => $hp->nominal_bg_opt,
+                'coa_id' => 62,
+                'nomor' => $data_nomor[$hp->no_bg_opt]['nomor'],
+                'no' => $data_nomor[$hp->no_bg_opt]['no'],
+                'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
+                'debit' => 0,
+                'credit' => $opt_total,
+            ]);
+        }
+        if (!is_null($hp->no_bg_ut)) {
+            Jurnal::create([
+                'tipe' => 'TEST',
+                'no_bg' => $hp->no_bg_ut,
+                'tgl_bg' => $hp->tgl_bg_ut,
+                'nominal_bg' => $hp->nominal_bg_ut,
+                'coa_id' => 62,
+                'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                'no' => $data_nomor[$hp->no_bg_ut]['no'],
+                'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
+                'debit' => 0,
+                'credit' => $ut_total,
+            ]);
+        }
 
         return redirect()->route('hutang-pelayaran.print',['invoice'=>$code]);
     }
