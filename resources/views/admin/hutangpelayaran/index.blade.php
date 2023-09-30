@@ -141,7 +141,7 @@
                                     <td colspan="11" class="text-center fw-bold text-uppercase">{{ $orders->first()->nama }}</td>
                                 </tr>
                                 @foreach ($orders->groupBy('kapal_id') as $order)
-                                    @foreach ($order->sortBy('job')->sortBy('no_job') as $item)
+                                    @foreach ($order as $item)
                                         <tr id="row-{{ $item->id }}" class="{{ $item->tipe=='bongkaran'?'table-info':($item->is_lock==1?'table-success':'') }}">
                                             @if ($loop->first)
                                             <td style="vertical-align: middle; background-color:white" rowspan="{{ $order->count() }}">

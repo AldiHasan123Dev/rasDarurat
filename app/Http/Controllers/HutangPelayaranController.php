@@ -44,7 +44,8 @@ class HutangPelayaranController extends Controller
                 $q->whereIn('kapal.nama',$kapal);
             }
             $q->select('order.job','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama','shipments.nama as fit');
-        $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id');
+            $q->orderBy('order.job')->orderBy('order.no_job');
+            $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id');
         return view('admin.hutangpelayaran.index', compact('data','pelayaran','kapal'));
     }
 
