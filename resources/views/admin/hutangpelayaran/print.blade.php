@@ -361,7 +361,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
+                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->kapal->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
@@ -470,7 +470,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
+                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->kapal->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
