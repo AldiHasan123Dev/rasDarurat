@@ -56,7 +56,7 @@
                                                         @foreach ($orders->groupBy('nama_kapal')->sortBy('nama_kapal') as $order)
                                                             <div class="col-2">
                                                                 <label for="nama_kapal-{{ $order->first()->id }}">
-                                                                    <input type="checkbox" name="kapal[]" id="nama_kapal-{{ $order->first()->nama_kapal }}" value="{{ $pelayaran->first()->nama_kapal }}">
+                                                                    <input type="checkbox" name="kapal[]" id="nama_kapal-{{ $order->first()->nama_kapal }}" value="{{ $order->first()->nama_kapal }}">
                                                                     {{ $order->first()->nama_kapal }}
                                                                 </label>
                                                             </div>
