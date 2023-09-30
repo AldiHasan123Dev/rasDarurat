@@ -76,6 +76,8 @@ class HutangPelayaranController extends Controller
             $prop['nominal_bg_ut'] = $data['nominal_bg_ut'] ?? 0;
             $prop['pph'] = $data['pph'];
             $prop['pembulatan'] = $data['pembulatan'];
+            $prop['penambahan'] = $data['penambahan'];
+            $prop['penambahan_nominal'] = $data['penambahan_nominal'];
             $prop['status'] = 1;
             HutangPelayaran::find($id)->update($prop);
             array_push($ids,$id);
@@ -244,9 +246,42 @@ class HutangPelayaranController extends Controller
                 'no' => $data_nomor[$hp->no_bg_ut]['no'],
                 'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
                 'debit' => 0,
-                'credit' => $ut_total,
+                'credit' => $ut_total + $hp->penambahan_nominal,
             ]);
+
+            if(!is_null($hp->penambahan)){
+                if($hp->penambahan_nominal!=0){
+                    if($hp->penambahan_nominal>0){
+                        Jurnal::create([
+                            'tipe' => 'TEST',
+                            'no_bg' => $hp->no_bg_ut,
+                            'tgl_bg' => $hp->tgl_bg_ut,
+                            'nominal_bg' => $hp->nominal_bg_ut,
+                            'coa_id' => 23,
+                            'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                            'no' => $data_nomor[$hp->no_bg_ut]['no'],
+                            'nama' => $hp->penambahan,
+                            'debit' => $hp->penambahan_nominal,
+                            'credit' => 0,
+                        ]);
+                    }else{
+                        Jurnal::create([
+                            'tipe' => 'TEST',
+                            'no_bg' => $hp->no_bg_ut,
+                            'tgl_bg' => $hp->tgl_bg_ut,
+                            'nominal_bg' => $hp->nominal_bg_ut,
+                            'coa_id' => 23,
+                            'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                            'no' => $data_nomor[$hp->no_bg_ut]['no'],
+                            'nama' => $hp->penambahan,
+                            'debit' => 0,
+                            'credit' => $hp->penambahan_nominal * -1,
+                        ]);
+                    }
+                }
+            }
         }
+
 
         return redirect()->route('hutang-pelayaran.print',['invoice'=>$code]);
     }
@@ -362,6 +397,15 @@ class HutangPelayaranController extends Controller
         $opp = 0;
         $opt = 0;
         $ut = 0;
+        if($hp->pph>0){
+            $opp+=1;
+        }
+        if($hp->pembulatan>0){
+            $opp+=1;
+        }
+        if($hp->penambahan_nominal!=0){
+            $ut+=1;
+        }
         foreach ($jobs as $list){
             $a = $list->where('opp','>',0)->groupBy('opp')->count();
             $b = $list->where('thc','>',0)->groupBy('thc')->count();

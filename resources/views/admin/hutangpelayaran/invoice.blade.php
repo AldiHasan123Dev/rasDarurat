@@ -268,6 +268,14 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
+                                                    <td colspan="2" class="text-end fw-bold"><input type="text" name="penambahan" id="penambahan" value="PENAMBAHAN" onclick="this.select()" style="width: 100%"></td>
+                                                    <td><input type="number" name="penambahan_nominal" class="penambahan_nominal" onkeyup="hitungUT('penambahan',this.value)" onclick="this.select()" value="0" id="penambahan_nominal" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                </tr>
+                                                {{-- <tr>
+                                                    <td colspan="2" class="text-end fw-bold"><input type="text" name="pengurangan" id="pengurangan" value="PENGURANGAN" onclick="this.select()" style="width: 100%"></td>
+                                                    <td><input type="number" name="pengurangan_nominal" class="pengurangan_nominal" onkeyup="hitungUT('pengurangan',this.value)" onclick="this.select()" value="0" id="pengurangan_nominal" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                </tr> --}}
+                                                <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
                                                     <td><input type="text" name="nominal_bg_ut" class="nominal_bg_ut" value="0" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
@@ -469,6 +477,8 @@
         let ut = 0;
         let bl = 0;
         let stamp = 0;
+        let penambahan = parseFloat($('#penambahan_nominal').val());
+        // let pengurangan = parseFloat($('#pengurangan_nominal').val());
         $('input[type="number"].ut-ut').each(function () {
             ut+=parseFloat($(this).val());
         });
@@ -479,7 +489,7 @@
             bl+=parseFloat($(this).val());
         });
 
-        jumlah = ut + stamp + bl;
+        jumlah = ut + stamp + bl + penambahan;
         $('.nominal_bg_ut').val(jumlah);
         $('.nominal_bg_ut').text(jumlah.toLocaleString('en-US'));
     }
