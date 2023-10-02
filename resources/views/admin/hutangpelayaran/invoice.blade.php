@@ -107,10 +107,15 @@
                                 </li>
                             </ul>
                             <div class="card p-3 shadow-xl">
-                                <div class="my-2">
-                                    <label for="kolektif">
-                                        <input type="checkbox" name="kolektif" id="kolektif" value="1" checked> Kolektif Input
-                                    </label>
+                                <div class="d-flex justify-content-between">
+                                    <div class="my-2">
+                                        <label for="kolektif">
+                                            <input type="checkbox" name="kolektif" id="kolektif" value="1" checked> Kolektif Input
+                                        </label>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    Input BL
+                                    </button>
                                 </div>
                                 <div class="tab-content" id="pills-tabContent">
                                     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -253,7 +258,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>BL</td>
-                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="0" min="0" class="ut-bl" name="data[{{ $item->id }}][bl]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="0" min="0" class="ut-bl {{ $item->order->job }}" name="data[{{ $item->id }}][bl]" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
@@ -272,7 +277,7 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="2" class="text-end fw-bold"><input type="text" name="penambahan" id="penambahan" value="PENAMBAHAN" onclick="this.select()" style="width: 100%"></td>
+                                                    <td colspan="2" class="text-end fw-bold"><input type="text" name="penambahan" id="penambahan" onclick="this.select()" style="width: 100%"></td>
                                                     <td><input type="number" name="penambahan_nominal" class="penambahan_nominal" onkeyup="hitungUT('penambahan',this.value)" onclick="this.select()" value="0" id="penambahan_nominal" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 {{-- <tr>
@@ -362,6 +367,41 @@
             </form>
         </div>
     </div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Input BL</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-sm w-100">
+                    <thead>
+                        <tr>
+                            <td>Group JOB</td>
+                            <td class="text-center">CONT</td>
+                            <td>TOTAL BL</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($data as $idx => $item)
+                        <tr>
+                            <td>{{ $idx }}</td>
+                            <td class="text-center">{{ $item->count() }}</td>
+                            <td><input type="number" value="0" min="0" onclick="this.select()" onkeyup="hitungBL('{{ $idx }}',{{ $item->count() }},this.value)"></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('script')
@@ -541,6 +581,24 @@
         $('.tgl_bg_ut').text(String(d).padStart(2, '0')+'/'+String(m).padStart(2, '0')+'/'+y);
     });
 
-    hitungUT('as',0);
+    function hitungBL(job,count,val){
+        let price = Math.floor(val / count);
+        let selisih = val - (price * count)
+        let data = Array(count);
+        let last = count;
+        for (let i = 0; i < count; i++) {
+            if(i==(last-1)){
+                data[i] = price + selisih
+            }else{
+                data[i] = price;
+            }
+        }
+
+        $('input[type="number"].'+job).each(function (index) {
+            $(this).val(data[index]);
+        });
+
+        hitungUT('as',0);
+    }
 </script>
 @endsection
