@@ -118,7 +118,7 @@ class TarifAgenController extends Controller
             $is_search = true;
         }
         $query = TarifAgen::query();
-
+        $query->join('customers','customers.id','=','tarif_agen.pembayar_id');
 
         $start = $limit * $page - $limit;
         if ($start < 0){
@@ -142,6 +142,11 @@ class TarifAgenController extends Controller
                 $q->where('nama','LIKE','%'.request('dari').'%');
             });
         }
+        if(request('pembayar')){
+            $query->whereHas('pembayar', function($q){
+                $q->where('nama','LIKE','%'.request('pembayar').'%');
+            });
+        }
         if(request('tujuan')){
             $query->whereHas('tujuanInfo', function($q){
                 $q->where('nama','LIKE','%'.request('tujuan').'%');
@@ -156,7 +161,8 @@ class TarifAgenController extends Controller
             $query->where('keterangan','LIKE','%'.request('tipe').'%');
         }
 
-        $data = $query->orderBy('is_active','desc')->orderBy('tanggal','desc')->skip($start)->take($limit)->get();
+        $query->select('tarif_agen.*','customers.nama as nama_pembayar');
+        $data = $query->orderBy('is_active','desc')->orderBy('tanggal','desc')->orderBy('nama_pembayar')->skip($start)->take($limit)->get();
 
         $count = TarifAgen::get('id')->count();
         if(request('agen_id')){

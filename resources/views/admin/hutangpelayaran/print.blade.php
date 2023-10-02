@@ -158,19 +158,20 @@
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
-                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
+                    <th style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
                     <th style="width: 250px"></th>
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
+                    <th style="color: red; border:none">{{ $hp->jurnal_opp() }}</th>
                     <th style="color: red">Tanggal</th>
                     <th style="width: 250px"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr style="background-color: red" class="text-white">
-                    <td style="background: white" id="rowspan-opp" rowspan="{{ ($jobs->count() + $opp) + 4 }}"></td>
+                    <td style="background: white" id="rowspan-opp" rowspan="{{ ($jobs->count() + $opp) + 2 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
                     <td class="bg-red text-center">PERKIRAAN</td>
                     <td class="bg-red text-center" colspan="2">URAIAN</td>
@@ -262,14 +263,13 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">LSS ({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
-                                </td>
+                                <td colspan="2">LSS</td>
                                 <td class="text-end">{{ number_format($item->first()->lss * $item->count(),2,',','.') }}</td>
                             </tr>
                         @else
                             <tr>
                                 <td></td>
-                                <td colspan="2">LSS (1X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}-{{ sprintf('%02d',$item->first()->order->no_job) }})</td>
+                                <td colspan="2">LSS</td>
                                 <td class="text-end">{{ number_format($item->first()->lss,2,',','.') }}</td>
                             </tr>
                         @endif
@@ -280,16 +280,20 @@
                         <td></td>
                     </tr>
                 @endforeach
+                @if ($hp->pph>0)
                 <tr style="height:30px">
                     <td></td>
                     <td colspan="2">PPh (2%)</td>
                     <td class="text-end text-danger">{{ number_format($hp->pph,2,',','.') }}</td>
                 </tr>
+                @endif
+                @if ($hp->pembulatan>0)
                 <tr style="height:30px">
                     <td></td>
                     <td colspan="2">Pembulatan</td>
                     <td class="text-end text-danger">{{ number_format($hp->pembulatan,2,',','.') }}</td>
                 </tr>
+                @endif
                 {{-- @foreach ($opp as $list)
                     @foreach ($list->groupBy('order.job') as $item)
                         <tr>
@@ -306,11 +310,11 @@
                 </tr>
             </tbody>
         </table>
-        <table class="w-100 table">
+        <table class="w-100 table" style="position: relative; top:-10px">
             <thead>
                 <tr>
                     <th class="text-start" style="color: red">TERBILANG :</th>
-                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opp) }}</th>
+                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opp) }} RUPIAH</th>
                 </tr>
                 <tr>
                     <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
@@ -336,12 +340,13 @@
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
-                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
+                    <th style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
                     <th style="width: 250px"></th>
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
+                    <th style="color: red">{{ $hp->jurnal_opt() }}</th>
                     <th style="color: red">Tanggal</th>
                     <th style="width: 250px"></th>
                 </tr>
@@ -356,7 +361,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
+                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->kapal->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
@@ -364,7 +369,7 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">OPT({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
+                                <td colspan="2">OPT
                                 </td>
                                 <td class="text-end">{{ number_format($item->first()->opt * $item->count(),2,',','.') }}</td>
                             </tr>
@@ -413,11 +418,11 @@
                 </tr>
             </tbody>
         </table>
-        <table class="w-100 table">
+        <table class="w-100 table" style="position: relative; top:-10px">
             <thead>
                 <tr>
                     <th class="text-start" style="color: red">TERBILANG :</th>
-                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opt) }}</th>
+                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opt) }} RUPIAH</th>
                 </tr>
                 <tr>
                     <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
@@ -444,12 +449,13 @@
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
-                    <th rowspan="2" style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
+                    <th style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
                     <th style="width: 250px"></th>
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
+                    <th style="color: red">{{ $hp->jurnal_ut() }}</th>
                     <th style="color: red">Tanggal</th>
                     <th style="width: 250px"></th>
                 </tr>
@@ -464,7 +470,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
+                    <td class="text-center" colspan="2">{{ strtoupper($jadwal_kapal->kapal->nama) }} VOY. {{ strtoupper($jadwal_kapal->voyage) }}</td>
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
@@ -514,12 +520,34 @@
                             </tr>
                         @endif
                     @endforeach
+                    @foreach ($list->groupBy('ut_cleaning') as $item)
+                        @if ($item->count()>1)
+                            <tr>
+                                <td></td>
+                                <td colspan="2">Cleaning</td>
+                                <td class="text-end">{{ number_format($item->first()->ut_cleaning * $item->count(),2,',','.') }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td></td>
+                                <td colspan="2">Cleaning</td>
+                                <td class="text-end">{{ number_format($item->first()->ut_cleaning,2,',','.') }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
                     <tr style="height:30px">
                         <td></td>
                         <td colspan="2"></td>
                         <td></td>
                     </tr>
                 @endforeach
+                @if (!is_null($hp->penambahan))
+                <tr style="height:30px">
+                    <td></td>
+                    <td colspan="2">{{ $hp->penambahan }}</td>
+                    <td class="text-end {{ $hp->penambahan_nominal < 0 ? 'text-danger' : '' }}">{{ number_format($hp->penambahan_nominal,2,',','.') }}</td>
+                </tr>
+                @endif
                 {{-- @foreach ($opp as $list)
                     @foreach ($list->groupBy('order.job') as $item)
                         <tr>
@@ -536,11 +564,11 @@
                 </tr>
             </tbody>
         </table>
-        <table class="w-100 table">
+        <table class="w-100 table" style="position: relative; top:-10px">
             <thead>
                 <tr>
                     <th class="text-start" style="color: red">TERBILANG :</th>
-                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_ut) }}</th>
+                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_ut) }} RUPIAH</th>
                 </tr>
                 <tr>
                     <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>

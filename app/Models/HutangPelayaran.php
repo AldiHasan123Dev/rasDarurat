@@ -38,8 +38,13 @@ class HutangPelayaran extends Model
         'ut',
         'bl',
         'ut_stamp',
+        'ut_cleaning',
         'pph',
         'pembulatan',
+        'penambahan',
+        'penambahan_nominal',
+        'pengurangan',
+        'pengurangan_nominal',
         'status',
         'is_lock',
         'no',
@@ -53,5 +58,23 @@ class HutangPelayaran extends Model
     public function order()
     {
         return $this->belongsTo(Order::class,'order_id');
+    }
+
+    public function jurnal_opp()
+    {
+        $jurnal = Jurnal::where('no_bg',$this->no_bg_opp)->whereIn('tipe',['JNL','TEST'])->first();
+        return $jurnal->nomor;
+    }
+
+    public function jurnal_opt()
+    {
+        $jurnal = Jurnal::where('no_bg',$this->no_bg_opt)->whereIn('tipe',['JNL','TEST'])->first();
+        return $jurnal->nomor;
+    }
+
+    public function jurnal_ut()
+    {
+        $jurnal = Jurnal::where('no_bg',$this->no_bg_ut)->whereIn('tipe',['JNL','TEST'])->first();
+        return $jurnal->nomor;
     }
 }
