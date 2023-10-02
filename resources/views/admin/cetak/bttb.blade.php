@@ -758,7 +758,7 @@
                         @endforeach
                     @else
                         @foreach ($data->chunk(15) as $bttb)
-                        <div class="page" style="margin-top: 50px">
+                        <div class="page" style="margin-top: 20px; height:100%; position: absolute;">
                             <div class="headers d-flex" style="gap:5px; width:100%">
                                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                                 <div style="width: 40%; margin-left:35px">
@@ -891,7 +891,7 @@
                                                 <td>: </td>
                                             </tr>
                                         </table>
-                                        <div style="margin-top: 70px; margin-left:70px">
+                                        <div style="margin-top: 40px; margin-left:70px">
                                             <span class="text-center">(....................................................)</span><br>
                                             <span class="text-center">Stampel + TTD + Nama</span>
                                         </div>
@@ -904,14 +904,14 @@
                                     </div>
                                     <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
                                         <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
-                                        <div style="margin-top: 90px">
+                                        <div style="margin-top: 60px">
                                             <span class="text-left">({{ Auth::user()->name }})</span>
                                         </div>
                                     </div>
                                 @endif
 
                             </div>
-                            <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
+                            {{-- <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div> --}}
                         </div>
                         @if (ceil($data->count()/15)!=1)
                             @if (!$loop->last)
