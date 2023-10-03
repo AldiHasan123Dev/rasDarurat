@@ -749,6 +749,8 @@
             if(p>0&&l>0&&t>0){
                 vol = ((p*l*t)/1000000) * qty;
                 vol = vol.toFixed(3);
+            }else{
+                vol = 0;
             }
             $('#vol').val(vol);
         }
