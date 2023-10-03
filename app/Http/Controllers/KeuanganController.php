@@ -132,7 +132,8 @@ class KeuanganController extends Controller
         Order::where('job',$order->job)->update([
             'invoice' => $invoice,
             'nsfp' => $nsfp->nomor,
-            'invoice_date' => date('Y-m-d')
+            'invoice_date' => date('Y-m-d'),
+            'lock_biaya' => 1
         ]);
         $nsfp->update([
             'available' => 0,
