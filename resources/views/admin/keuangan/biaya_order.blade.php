@@ -69,6 +69,7 @@
             {search:true, name: 'container', label : 'Container'},
             {search:true, name: 'seal', label : 'Seal'},
             {search:true, name: 'kapal', label : 'Kapal'},
+            {search:true, name: 'voyage', label : 'Voy'},
             {search:true, name: 'tgl_dcf', label : 'Tanggal'},
             {search:true, name: 'nominal_do', label : 'Nominal DO & Lolo Meratus'},
             {search:true, name: 'nominal_cleaning', label : 'Nominal Cleaning'},

@@ -25,6 +25,7 @@ class OrderBiayaResource extends JsonResource
             'container' => $this->order->container,
             'seal' => $this->order->seal,
             'kapal' => $this->order->jadwal_kapal->kapal->nama,
+            'voyage' => $this->order->jadwal_kapal->voyage,
             'tgl_dcf' => $this->tgl_dcf ? date('d/m/y',strtotime($this->tgl_dcf)) : '-',
             'tgl_opt' => $this->tgl_opt ? date('d/m/y',strtotime($this->tgl_opt)) : '-',
             'tgl_truk' => $this->tgl_truk ? date('d/m/y',strtotime($this->tgl_truk)) : '-',
