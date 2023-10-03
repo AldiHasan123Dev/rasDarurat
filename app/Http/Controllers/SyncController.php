@@ -545,6 +545,15 @@ class SyncController extends Controller
         return $res;
     }
 
+    public function lock()
+    {
+        $data = Order::whereNotNull('invoice')->update([
+            'lock_biaya' => 1,
+        ]);
+
+        return response('success');
+    }
+
     function execPrint($command) {
         $html = '<pre>';
         $result = array();

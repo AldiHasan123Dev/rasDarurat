@@ -278,5 +278,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-penjurnal', [SyncController::class, 'penjurnal']);
     Route::get('sync-jurnal-asuransi', [SyncController::class, 'jurnalAsuransi']);
     Route::get('sync-hutang-pelayaran', [SyncController::class, 'hutang_pelayaran']);
+    Route::get('sync-lock', [SyncController::class, 'lock']);
 });
 // Route::view('test','test');

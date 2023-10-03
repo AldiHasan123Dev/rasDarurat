@@ -66,6 +66,7 @@ class OrderResource extends JsonResource
             'trucking' => $this->trucking,
             'container' => $this->container,
             'seal' => $this->seal,
+            'lock_biaya' => $this->lock_biaya,
             'stuffing' => is_null($this->stuffing)?'-':date('d-m-Y',strtotime($this->stuffing)),
             'stuffing_type' => $this->tarif->stuffing ?? '-',
             'full' => is_null($this->full)?'-':date('d-m-Y',strtotime($this->full)),

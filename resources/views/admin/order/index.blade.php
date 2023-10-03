@@ -27,7 +27,7 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <div class="d-flex" style="gap:10px">
+                <div class="d-flex flex-wrap" style="gap:10px;">
                     @if (Auth::user()->role_id==1 || Auth::id()==5)
                         <form action="{{ route('order.export') }}" method="post">
                             @csrf
@@ -60,6 +60,9 @@
                             @endif
                         </form>
                         <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
+                    @endif
+                    @if (Auth::user()->role_id==1)
+                        <button class="py-2 px-3 btn btn-sm btn-light text-dark border border-dark" id="btn-lock">-</button>
                     @endif
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
@@ -449,6 +452,7 @@
 
     let data = [];
     let id;
+    let lock_biaya;
     let iframe_bttb = '';
     let iframe_order = '';
     $("#jqGrid").jqGrid({
@@ -464,6 +468,7 @@
             {search:true, width:100, name: 'asuransi', label : 'asuransi'},
             {search:true, width:100, name: 'pembayar', label : 'pembayar',sortable: false},
             {search:true, width:100, name: 'id', label : 'id', hidden:true},
+            {search:true, width:100, name: 'lock_biaya', label : 'lock_biaya', hidden:true},
             {search:true, width:100, name: 'class', label : 'class', hidden:true},
             {search:true, width:100, name: 'marketing', label : 'marketing',sortable: false},
             {search:true, width:100, name: 'cs', label : 'cs',sortable: false},
@@ -516,6 +521,7 @@
             var no_job = $(this).jqGrid('getCell', rowId, 'no');
             var koli = $(this).jqGrid('getCell', rowId, 'koli');
             var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
+            lock_biaya = $(this).jqGrid('getCell', rowId, 'lock_biaya');
             $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#koli-info').show();
@@ -536,15 +542,17 @@
             // $('#iframe-order').attr('src','{{ url('admin/order') }}/'+id+'/edit');
             // $('#iframe-bttb').attr('src','{{ url('admin/bttb/create') }}?order_id='+id);
             $('#tarik-ba').attr('action','{{ url('admin/order') }}/'+id);
-            if(invoice=='-'){
+            if(lock_biaya!=1){
                 $('#btn-tagihan').show();
+                $('#btn-lock').html('Kunci Biaya');
             }else{
                 $('#btn-tagihan').hide();
+                $('#btn-lock').html('Buka Kunci Biaya');
             }
-            let role = "{{ Auth::user()->role_id }}";
-            if(parseInt(role)==1){
-                $('#btn-tagihan').show();
-            }
+            // let role = "{{ Auth::user()->role_id }}";
+            // if(parseInt(role)==1){
+            //     $('#btn-tagihan').show();
+            // }
             tablebttb.ajax.reload();
             tableTagihan.ajax.reload();
         },
@@ -980,6 +988,34 @@
             $("#jqGrid").trigger("reloadGrid");
             tablebttb.ajax.reload();
         })
+
+        $('#btn-lock').click(function (e) {
+            let val = 1;
+            if(lock_biaya==1){
+                val = 0;
+            }
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order-request') }}",
+                data: {
+                    lock_biaya:val,
+                    id:id
+                },
+                success: function (response) {
+                    alert('Data berhasil disimpan')
+                    if(val!=1){
+                        $('#btn-tagihan').show();
+                        $('#btn-lock').html('Kunci Biaya');
+                    }else{
+                        $('#btn-tagihan').hide();
+                        $('#btn-lock').html('Buka Kunci Biaya');
+                    }
+                    $("#jqGrid").trigger("reloadGrid");
+                    tablebttb.ajax.reload();
+
+                }
+            });
+        });
 
         const printPackingList = ()=>{
             let url = @json(url('admin/cetak/packing-list'))+'?order_id='+id+'&print=1';

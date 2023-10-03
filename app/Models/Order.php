@@ -54,6 +54,7 @@ class Order extends Model
         'tgl_komisi',
         'created_at',
         'tipe',
+        'lock_biaya',
     ];
 
     protected static function booted()
