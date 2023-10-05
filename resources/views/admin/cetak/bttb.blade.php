@@ -758,7 +758,7 @@
                         @endforeach
                     @else
                         @foreach ($data->chunk(15) as $bttb)
-                        <div class="page" style="margin-top: 20px; height:100%; position: absolute;">
+                        <div class="page" style="margin-top: 50px; height:100%; position: absolute;">
                             <div class="headers d-flex" style="gap:5px; width:100%">
                                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                                 <div style="width: 40%; margin-left:35px">
@@ -820,7 +820,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:245px':'' }}">
+                                <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
                                     <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                                         <thead>
                                             <tr style="border-bottom: solid 2px black">
