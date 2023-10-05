@@ -505,7 +505,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('bl') as $item)
+                    @foreach ($list->where('bl','>',0)->groupBy('bl') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -520,7 +520,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->groupBy('ut_cleaning') as $item)
+                    @foreach ($list->where('ut_cleaning','>',0)->groupBy('ut_cleaning') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>

@@ -80,8 +80,9 @@ class HutangPelayaranController extends Controller
             $prop['penambahan'] = $data['penambahan'];
             $prop['penambahan_nominal'] = $data['penambahan_nominal'];
             $prop['status'] = 1;
-            HutangPelayaran::find($id)->update($prop);
-            array_push($ids,$id);
+            $hp =  HutangPelayaran::where('order_id',$id)->first();
+            $hp->update($prop);
+            array_push($ids,$hp->id);
         }
 
         $tgl = [$data['no_bg_opp'],$data['no_bg_opt'],$data['no_bg_ut']];
@@ -371,9 +372,10 @@ class HutangPelayaranController extends Controller
         }
         $data = HutangPelayaran::join('order','order.id','hutang_pelayaran.order_id')->whereIn('hutang_pelayaran.order_id', $order_id)->orderBy('order.job')->orderBy('order.no_job')->get()->groupBy('order.job');
         $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;
+        $hp = HutangPelayaran::whereIn('order_id', $order_id)->first();
         // $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
 
-        return view('admin.hutangpelayaran.invoice', compact('data','pelayaran','ids'));
+        return view('admin.hutangpelayaran.invoice', compact('data','pelayaran','ids','hp'));
     }
 
     public function cetak_invoice_get()
@@ -424,40 +426,40 @@ class HutangPelayaranController extends Controller
             $k = $list->where('ut_stamp','>',0)->groupBy('ut_stamp')->count();
             $l = $list->where('ut_cleaning','>',0)->groupBy('ut_cleaning')->count();
             if($a>0){
-                $opp+=1;
+                $opp+=$a;
             }
             if($b>0){
-                $opp+=1;
+                $opp+=$b;
             }
             if($c>0){
-                $opp+=1;
+                $opp+=$c;
             }
             if($d>0){
-                $opp+=1;
+                $opp+=$d;
             }
             if($e>0){
-                $opp+=1;
+                $opp+=$e;
             }
             if($f>0){
-                $opp+=1;
+                $opp+=$f;
             }
             if($g>0){
-                $opt+=1;
+                $opt+=$g;
             }
             if($h>0){
-                $opt+=1;
+                $opt+=$h;
             }
             if($i>0){
-                $ut+=1;
+                $ut+=$i;
             }
             if($j>0){
-                $ut+=1;
+                $ut+=$j;
             }
             if($k>0){
-                $ut+=1;
+                $ut+=$k;
             }
             if($l>0){
-                $ut+=1;
+                $ut+=$l;
             }
         }
         return view('admin.hutangpelayaran.print', compact('data','jadwal_kapal','jobs','hp','opp','opt','ut'));

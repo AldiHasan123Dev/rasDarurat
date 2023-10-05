@@ -137,27 +137,27 @@
                                                         <tr>
                                                             <td rowspan="6" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="0" min="0" class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="{{ $item->opp ?? 0 }}" min="0" class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>THC LoLo SBY</td>
-                                                            <td><input type="number" onkeyup="hitung('thc',this.value)" onclick="this.select()" value="0" min="0" class="opp-thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('thc',this.value)" onclick="this.select()" value="{{ $item->thc }}" min="0" class="opp-thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>APBS</td>
-                                                            <td><input type="number" onkeyup="hitung('apbs',this.value)" onclick="this.select()" value="0" min="0" class="opp-apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('apbs',this.value)" onclick="this.select()" value="{{ $item->apbs }}" min="0" class="opp-apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>Cleaning</td>
-                                                            <td><input type="number" onkeyup="hitung('cleaning',this.value)" onclick="this.select()" value="0" min="0" class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('cleaning',this.value)" onclick="this.select()" value="{{ $item->cleaning }}" min="0" class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>Stamp</td>
-                                                            <td><input type="number" onkeyup="hitung('opp_stamp',this.value)" onclick="this.select()" value="0" min="0" class="opp-stamp" name="data[{{ $item->id }}][opp_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('opp_stamp',this.value)" onclick="this.select()" value="{{ $item->opp_stamp }}" min="0" class="opp-stamp" name="data[{{ $item->id }}][opp_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="0" min="0" class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="{{ $item->lss }}" min="0" class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                     @endforeach
                                                 @endforeach
@@ -165,23 +165,23 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" class="text-end">PPH 2%</td>
-                                                    <td><input type="number" onkeyup="hitung()" onclick="this.select()" id="pph" name="pph" value="0" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="number" onkeyup="hitung()" onclick="this.select()" id="pph" name="pph" value="{{ $hp->pph }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end">Pembulatan</td>
-                                                    <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="0" min="0" name="pembulatan" id="pembulatan" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="{{ $hp->pembulatan }}" min="0" name="pembulatan" id="pembulatan" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" class="nominal_bg_opp" name="nominal_bg_opp" id="nominal_bg_opp" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" class="nominal_bg_opp" name="nominal_bg_opp" id="nominal_bg_opp" value="{{ $hp->nominal_bg_opp }}" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" id="no_bg_opp" name="no_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" id="no_bg_opp" name="no_bg_opp" value="{{ $hp->no_bg_opp }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" id="tgl_bg_opp" name="tanggal_bg_opp" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" id="tgl_bg_opp" name="tanggal_bg_opp" value="{{ $hp->tgl_bg_opp  }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -204,11 +204,11 @@
                                                         <tr>
                                                             <td rowspan="4" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPT (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitungOpt('opt',this.value)" onclick="this.select()" value="0" min="0" class="opt-opt" name="data[{{ $item->id }}][opt]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungOpt('opt',this.value)" onclick="this.select()" value="{{ $item->opt }}" min="0" class="opt-opt" name="data[{{ $item->id }}][opt]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="0" min="0" class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="{{ $item->opt_stamp }}" min="0" class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -224,15 +224,15 @@
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" class="nominal_bg_opt" name="nominal_bg_opt" id="nominal_bg_opt" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" class="nominal_bg_opt" name="nominal_bg_opt" id="nominal_bg_opt" value="{{ $hp->nominal_bg_opt }}" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" id="no_bg_opt" name="no_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" id="no_bg_opt" name="no_bg_opt" value="{{ $hp->no_bg_opt }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" id="tgl_bg_opt" name="tanggal_bg_opt" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" id="tgl_bg_opt" name="tanggal_bg_opt" value="{{ $hp->tgl_bg_opt }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -259,15 +259,15 @@
                                                         </tr>
                                                         <tr>
                                                             <td>BL</td>
-                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="0" min="0" class="ut-bl {{ $item->order->job }}" name="data[{{ $item->id }}][bl]" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="{{ $item->bl }}" min="0" class="ut-bl {{ $item->order->job }}" name="data[{{ $item->id }}][bl]" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungUT('stamp',this.value)" onclick="this.select()" value="0" min="0" class="ut-stamp" name="data[{{ $item->id }}][ut_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('stamp',this.value)" onclick="this.select()" value="{{ $item->ut_stamp }}" min="0" class="ut-stamp" name="data[{{ $item->id }}][ut_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>CLEANING</td>
-                                                            <td><input type="number" onkeyup="hitungUT('ut_cleaning',this.value)" onclick="this.select()" value="0" min="0" class="ut-cleaning" name="data[{{ $item->id }}][ut_cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('ut_cleaning',this.value)" onclick="this.select()" value="{{ $item->ut_cleaning }}" min="0" class="ut-cleaning" name="data[{{ $item->id }}][ut_cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -278,8 +278,8 @@
                                             </tbody>
                                             <tfoot>
                                                 <tr>
-                                                    <td colspan="2" class="text-end fw-bold"><input type="text" name="penambahan" id="penambahan" onclick="this.select()" style="width: 100%"></td>
-                                                    <td><input type="number" name="penambahan_nominal" class="penambahan_nominal" onkeyup="hitungUT('penambahan',this.value)" onclick="this.select()" value="0" id="penambahan_nominal" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td colspan="2" class="text-end fw-bold"><input type="text" name="penambahan" id="penambahan" value="{{ $hp->penambahan }}" onclick="this.select()" style="width: 100%"></td>
+                                                    <td><input type="number" name="penambahan_nominal" class="penambahan_nominal" onkeyup="hitungUT('penambahan',this.value)" onclick="this.select()" value="{{ $hp->penambahan_nominal }}" id="penambahan_nominal" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 {{-- <tr>
                                                     <td colspan="2" class="text-end fw-bold"><input type="text" name="pengurangan" id="pengurangan" value="PENGURANGAN" onclick="this.select()" style="width: 100%"></td>
@@ -287,15 +287,15 @@
                                                 </tr> --}}
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
-                                                    <td><input type="text" name="nominal_bg_ut" class="nominal_bg_ut" value="0" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" name="nominal_bg_ut" class="nominal_bg_ut" value="{{ $hp->nominal_bg_ut }}" id="nominal_bg_ut" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
-                                                    <td><input type="text" name="no_bg_ut" id="no_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="text" name="no_bg_ut" id="no_bg_ut" value="{{ $hp->no_bg_ut }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">TANGGAL BG</td>
-                                                    <td><input type="date" name="tanggal_bg_ut" id="tgl_bg_ut" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="date" name="tanggal_bg_ut" id="tgl_bg_ut" value="{{ $hp->tgl_bg_ut }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -313,21 +313,21 @@
                                             <tbody>
                                                 <tr>
                                                     <td>OPP</td>
-                                                    <td class="nominal_bg_opp"></td>
-                                                    <td class="no_bg_opp"></td>
-                                                    <td class="tgl_bg_opp"></td>
+                                                    <td class="nominal_bg_opp">{{ $hp->nominal_bg_opp ?? '' }}</td>
+                                                    <td class="no_bg_opp">{{ $hp->no_bg_opp ?? '' }}</td>
+                                                    <td class="tgl_bg_opp">{{ $hp->tgl_bg_opp ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>OPT</td>
-                                                    <td class="nominal_bg_opt"></td>
-                                                    <td class="no_bg_opt"></td>
-                                                    <td class="tgl_bg_opt"></td>
+                                                    <td class="nominal_bg_opt">{{ $hp->nominal_bg_opt ?? '' }}</td>
+                                                    <td class="no_bg_opt">{{ $hp->no_bg_opt ?? '' }}</td>
+                                                    <td class="tgl_bg_opt">{{ $hp->tgl_bg_opt ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>UT</td>
-                                                    <td class="nominal_bg_ut"></td>
-                                                    <td class="no_bg_ut"></td>
-                                                    <td class="tgl_bg_ut"></td>
+                                                    <td class="nominal_bg_ut">{{ $hp->nominal_bg_ut ?? '' }}</td>
+                                                    <td class="no_bg_ut">{{ $hp->no_bg_ut ?? '' }}</td>
+                                                    <td class="tgl_bg_ut">{{ $hp->tgl_bg_ut ?? '' }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
