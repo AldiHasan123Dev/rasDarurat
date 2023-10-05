@@ -77,8 +77,9 @@
 @section('content')
     <div class="container">
         <div class="card p-3 mt-3">
-            <form action="{{ route('hutang-pelayaran.store') }}" method="POST" id="print">
+            <form action="{{ route('hutang-pelayaran.store') }}" method="POST" id="form-id">
                 @csrf
+                <input type="hidden" name="ids" value="{{ $ids }}">
                 <div class="invoice-box first-page">
                     <div class="header d-flex" style="gap:5px; width:100%">
                         <div style="width: 100%;">
@@ -405,6 +406,7 @@
 @endsection
 
 @section('script')
+<script src="{{ asset('assets/js/jquery-serializeFields.js') }}"></script>
 <script>
 
     function hitung(tipe,val){
@@ -600,5 +602,23 @@
 
         hitungUT('as',0);
     }
+
+    function save(){
+        let data = $( '#form-id' ).serializeFields();
+        $.ajax({
+            type: "POST",
+            url: "{{ route('api.hutang-pelayaran.updateId') }}",
+            data: {
+                data:data
+            },
+            success: function (response) {
+                console.log(response);
+            }
+        });
+    }
+
+    setInterval(() => {
+        save();
+    }, 10000);
 </script>
 @endsection

@@ -349,6 +349,7 @@ class HutangPelayaranController extends Controller
 
     public function cetak_invoice(Request $request)
     {
+        $ids = $request->order_id;
         $order_id = explode(',', $request->order_id);
         // // dd($request->all());
 
@@ -372,7 +373,7 @@ class HutangPelayaranController extends Controller
         $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;
         // $data = HutangPelayaran::whereIn('order_id', $order_id)->orderBy('created_at')->get()->groupBy('job');
 
-        return view('admin.hutangpelayaran.invoice', compact('data','pelayaran'));
+        return view('admin.hutangpelayaran.invoice', compact('data','pelayaran','ids'));
     }
 
     public function cetak_invoice_get()
