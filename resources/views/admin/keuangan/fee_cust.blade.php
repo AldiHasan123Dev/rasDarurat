@@ -225,7 +225,11 @@
             }
         });
 
-        $('#jqGrid1').jqGrid('filterToolbar');
+        $('#jqGrid1').jqGrid('filterToolbar',{
+            beforeSearch: function (filters) {
+                $("#jqGrid1").jqGrid("setGridParam", { postData: {  input_invoice_bayar: true } });
+            },
+        });
         $('#jqGrid1').jqGrid('navGrid',"#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
@@ -275,7 +279,11 @@
             }
         });
 
-        $('#jqGrid2').jqGrid('filterToolbar');
+        $('#jqGrid2').jqGrid('filterToolbar', {
+            beforeSearch: function (filters) {
+                $("#jqGrid2").jqGrid("setGridParam", { postData: {  input_komisi: true } });
+            },
+        });
         $('#jqGrid2').jqGrid('navGrid',"#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
@@ -331,7 +339,11 @@
             }
         });
 
-        $('#jqGrid3').jqGrid('filterToolbar');
+        $('#jqGrid3').jqGrid('filterToolbar',{
+            beforeSearch: function (filters) {
+                $("#jqGrid3").jqGrid("setGridParam", { postData: {  komisi_print: true } });
+            },
+        });
         $('#jqGrid3').jqGrid('navGrid',"#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
@@ -387,7 +399,11 @@
             }
         });
 
-        $('#jqGrid4').jqGrid('filterToolbar');
+        $('#jqGrid4').jqGrid('filterToolbar',{
+            beforeSearch: function (filters) {
+                $("#jqGrid4").jqGrid("setGridParam", { postData: {  komisi_print_done: true } });
+            },
+        });
         $('#jqGrid4').jqGrid('navGrid',"#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,

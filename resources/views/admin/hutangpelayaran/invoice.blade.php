@@ -331,6 +331,28 @@
                                                 </tr>
                                             </tbody>
                                         </table>
+                                        {{-- <table class="table mt-3">
+                                            <thead>
+                                                <tr>
+                                                    <td>JOB</td>
+                                                    <td>ID JOB</td>
+                                                    <td>Penerima BL</td>
+                                                    <td>BL</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($data as $job)
+                                                    @foreach ($job as $item)
+                                                    <tr>
+                                                        <td rowspan="{{ $job->count() }}">{{ $job->first()->order->job }}</td>
+                                                        <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                                        <td>{{ $item->order->penerima_bl->nama ?? '-'}}</td>
+                                                        <td>0</td>
+                                                    </tr>
+                                                    @endforeach
+                                                @endforeach
+                                            </tbody>
+                                        </table> --}}
                                         <button type="submit" class="btn btn-success mt-3 w-100" onclick="return confirm('are you sure?')">Cetak BBK</button>
                                     </div>
                                 </div>
