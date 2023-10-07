@@ -755,7 +755,6 @@ class JurnalController extends Controller
             $last = $c->endOfMonth()->format('Y-m-d');
             $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
             $des = $c->endOfMonth()->format('Y-m-d');
-            // dd($start,$des);
             if($idx==0){
                 if($tipe=='D'){
                     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('credit');
@@ -774,8 +773,8 @@ class JurnalController extends Controller
                 $saldo_awal =  $saldo['saldo_akhir'][$idx-1];
                 // dd($start,$last,$saldo_awal);
             }
-            $debit = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
-            $credit = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
+            $debit = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$now,$last])->sum('debit');
+            $credit = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$now,$last])->sum('credit');
             $saldo['saldo_awal'][$idx] = $saldo_awal;
             if ($tipe=='D') {
                 $saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal ) - $credit;
