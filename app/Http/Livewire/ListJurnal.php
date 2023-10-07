@@ -67,16 +67,16 @@ class ListJurnal extends Component
                 ->paginate($this->perPage);
         $debit =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
                 ->leftJoin('order','order.id','=','jurnal.order_id')
-                // ->whereMonth('jurnal.created_at',$this->month)
+                ->whereMonth('jurnal.created_at',$this->month)
                 // ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                // ->whereYear('jurnal.created_at',$this->year)
+                ->whereYear('jurnal.created_at',$this->year)
                 ->select('jurnal.*')
                 ->sum('debit');
         $credit =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
                 ->leftJoin('order','order.id','=','jurnal.order_id')
-                // ->whereMonth('jurnal.created_at',$this->month)
+                ->whereMonth('jurnal.created_at',$this->month)
                 // ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                // ->whereYear('jurnal.created_at',$this->year)
+                ->whereYear('jurnal.created_at',$this->year)
                 ->select('jurnal.*')
                 ->sum('credit');
         return view('livewire.list-jurnal',[
