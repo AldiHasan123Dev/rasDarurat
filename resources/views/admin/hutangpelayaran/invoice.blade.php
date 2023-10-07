@@ -334,25 +334,23 @@
                                         <table class="table mt-3">
                                             <thead>
                                                 <tr>
-                                                    <td style="width: 300px">JOB</td>
+                                                    <td style="width: 300px">PENERIMA BL</td>
                                                     <td>TOTAL BL</td>
                                                     <td>ID JOB</td>
                                                     <td>BL</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach ($data->groupBy('order.penerima_bl_id') as $job)
-                                                    @foreach ($job as $joba)
-                                                        @foreach ($joba as $i => $item)
-                                                            <tr>
-                                                                @if ($loop->first)
-                                                                    <td rowspan="{{ $joba->count() }}">{{ $joba->first()->order->penerima_bl->nama ?? '-' }}</td>
-                                                                    <td class="text-center" rowspan="{{ $joba->count() }}"><b>{{ number_format($joba->sum('bl'),2,',','.') }}</b></td>
-                                                                @endif
-                                                                <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
-                                                                <td>{{ number_format($item->bl,2,',','.') }}</td>
-                                                            </tr>
-                                                        @endforeach
+                                                @foreach ($data_bl as $job)
+                                                    @foreach ($job as $item)
+                                                    <tr>
+                                                        @if ($loop->first)
+                                                            <td rowspan="{{ $job->count() }}">{{ $job->first()->order->penerimabl ?? '-' }}</td>
+                                                            <td class="text-center" rowspan="{{ $job->count() }}"><b>{{ number_format($job->sum('bl'),2,',','.') }}</b></td>
+                                                        @endif
+                                                        <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                                        <td>{{ number_format($item->bl,2,',','.') }}</td>
+                                                    </tr>
                                                     @endforeach
                                                 @endforeach
                                             </tbody>

@@ -110,11 +110,13 @@ class OrderController extends Controller
         $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id ?? null;
         $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id ?? null;
         $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id ?? null;
+        $data['penerimabl'] = Customer::where('nama',$request->penerima_bl_id)->first()->nama ?? null;
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
         if($data['agen']=='AGEN'){
             $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
+            $data['penerimabl'] = Agen::where('nama',$request->agen_id)->first()->nama ?? null;
         }
         $num = Order::max('no');
         $data['barang_id'] = $barang->id;
@@ -186,8 +188,10 @@ class OrderController extends Controller
             $data['pengirim_id'] = Customer::where('nama',$request->pengirim_id)->first()->id ?? null;
             $data['penerima_id'] = Customer::where('nama',$request->penerima_id)->first()->id ?? null;
             $data['penerima_bl_id'] = Customer::where('nama',$request->penerima_bl_id)->first()->id ?? null;
+            $data['penerimabl'] = Customer::where('nama',$request->penerima_bl_id)->first()->nama ?? null;
             if($data['agen']=='AGEN'){
                 $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
+                $data['penerimabl'] = Agen::where('nama',$request->agen_id)->first()->nama ?? null;
             }else{
                 $data['agen_id'] = null;
             }

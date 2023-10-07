@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agen;
 use App\Models\Barang;
 use App\Models\BTTB;
 use App\Models\COA;
+use App\Models\Customer;
 use App\Models\CustomerTrucking;
 use App\Models\JadwalKapal;
 use App\Models\Jurnal;
@@ -751,6 +753,22 @@ class SyncController extends Controller
             $jurnal = Jurnal::where('nomor',$item->nomor)->where('coa_id','!=',25)->first();
             $item->update([
                 'created_at' => $jurnal->created_at
+            ]);
+        }
+
+        return response('success');
+    }
+
+    public function penerimabl(){
+        $data = Order::all()->whereNull('penerimabl');
+        foreach ($data as $item) {
+            if($item->agen=='AGEN'){
+                $nama = Agen::find($item->agen_id)->nama ?? null;
+            }else{
+                $nama = Customer::find($item->penerima_bl_id)->nama ?? null;
+            }
+            $item->update([
+                'penerimabl' => $nama
             ]);
         }
 
