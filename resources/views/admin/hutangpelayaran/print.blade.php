@@ -505,21 +505,19 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('bl','>',0)->groupBy('bl') as $item)
-                        @if ($item->count()>1)
-                            <tr>
-                                <td></td>
-                                <td colspan="2">BL</td>
-                                <td class="text-end">{{ number_format($item->first()->bl * $item->count(),2,',','.') }}</td>
-                            </tr>
-                        @else
-                            <tr>
-                                <td></td>
-                                <td colspan="2">BL</td>
-                                <td class="text-end">{{ number_format($item->first()->bl,2,',','.') }}</td>
-                            </tr>
-                        @endif
+                    @php
+                        $bls = 0;
+                    @endphp
+                    @foreach ($list->where('bl','>',0) as $item)
+                        @php
+                            $bls += $item->first()->bl;
+                        @endphp
                     @endforeach
+                    <tr>
+                        <td></td>
+                        <td colspan="2">BL</td>
+                        <td class="text-end">{{ number_format($bls,2,',','.') }}</td>
+                    </tr>
                     @foreach ($list->where('ut_cleaning','>',0)->groupBy('ut_cleaning') as $item)
                         @if ($item->count()>1)
                             <tr>

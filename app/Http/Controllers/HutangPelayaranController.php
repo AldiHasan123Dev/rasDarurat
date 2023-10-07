@@ -423,7 +423,7 @@ class HutangPelayaranController extends Controller
             $g = $list->where('opt','>',0)->groupBy('opt')->count();
             $h = $list->where('opt_stamp','>',0)->groupBy('opt_stamp')->count();
             $i = $list->where('ut','>',0)->groupBy('ut')->count();
-            $j = $list->where('bl','>',0)->groupBy('bl')->count();
+            $j = $list->where('bl','>',0)->count();
             $k = $list->where('ut_stamp','>',0)->groupBy('ut_stamp')->count();
             $l = $list->where('ut_cleaning','>',0)->groupBy('ut_cleaning')->count();
             if($a>0){
@@ -454,7 +454,7 @@ class HutangPelayaranController extends Controller
                 $ut+=$i;
             }
             if($j>0){
-                $ut+=$j;
+                $ut+=1;
             }
             if($k>0){
                 $ut+=$k;

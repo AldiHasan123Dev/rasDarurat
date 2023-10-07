@@ -313,19 +313,19 @@
                                             <tbody>
                                                 <tr>
                                                     <td>OPP</td>
-                                                    <td class="nominal_bg_opp">{{ $hp->nominal_bg_opp ?? '' }}</td>
+                                                    <td class="nominal_bg_opp">{{ number_format($hp->nominal_bg_opp,2,',','.') ?? '' }}</td>
                                                     <td class="no_bg_opp">{{ $hp->no_bg_opp ?? '' }}</td>
                                                     <td class="tgl_bg_opp">{{ $hp->tgl_bg_opp ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>OPT</td>
-                                                    <td class="nominal_bg_opt">{{ $hp->nominal_bg_opt ?? '' }}</td>
+                                                    <td class="nominal_bg_opt">{{ number_format($hp->nominal_bg_opt,2,',','.') ?? '' }}</td>
                                                     <td class="no_bg_opt">{{ $hp->no_bg_opt ?? '' }}</td>
                                                     <td class="tgl_bg_opt">{{ $hp->tgl_bg_opt ?? '' }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>UT</td>
-                                                    <td class="nominal_bg_ut">{{ $hp->nominal_bg_ut ?? '' }}</td>
+                                                    <td class="nominal_bg_ut">{{ number_format($hp->nominal_bg_ut,2,',','.') ?? '' }}</td>
                                                     <td class="no_bg_ut">{{ $hp->no_bg_ut ?? '' }}</td>
                                                     <td class="tgl_bg_ut">{{ $hp->tgl_bg_ut ?? '' }}</td>
                                                 </tr>
@@ -335,21 +335,28 @@
                                             <thead>
                                                 <tr>
                                                     <td style="width: 300px">PENERIMA BL</td>
-                                                    <td>TOTAL BL</td>
+                                                    <td>TOTAL OPP</td>
+                                                    <td>TOTAL OPT</td>
+                                                    <td>TOTAL UT</td>
                                                     <td>ID JOB</td>
-                                                    <td>BL</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach ($data_bl as $job)
                                                     @foreach ($job as $item)
                                                     <tr>
+                                                        @php
+                                                            $t_opp = $job->sum('opp') + $job->sum('apbs') + $job->sum('lss') + $job->sum('cleaning') + $job->sum('thc') + $job->sum('opp_stamp');
+                                                            $t_opt = $job->sum('opt') + $job->sum('opt_stamp');
+                                                            $t_ut = $job->sum('ut') + $job->sum('bl') + $job->sum('ut_stamp') + $job->sum('ut_cleaning');
+                                                        @endphp
                                                         @if ($loop->first)
                                                             <td rowspan="{{ $job->count() }}">{{ $job->first()->order->penerimabl ?? '-' }}</td>
-                                                            <td class="text-center" rowspan="{{ $job->count() }}"><b>{{ number_format($job->sum('bl'),2,',','.') }}</b></td>
+                                                            <td class="text-center" rowspan="{{ $job->count() }}"><b>{{ number_format($t_opp,2,',','.') }}</b></td>
+                                                            <td class="text-center" rowspan="{{ $job->count() }}"><b>{{ number_format($t_opt,2,',','.') }}</b></td>
+                                                            <td class="text-center" rowspan="{{ $job->count() }}"><b>{{ number_format($t_ut,2,',','.') }}</b></td>
                                                         @endif
                                                         <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
-                                                        <td>{{ number_format($item->bl,2,',','.') }}</td>
                                                     </tr>
                                                     @endforeach
                                                 @endforeach
