@@ -11,6 +11,7 @@ use App\Http\Resources\TransaksiTruckingResource;
 use App\Models\CustomerTrucking;
 use App\Models\Jurnal;
 use App\Models\Kendaraan;
+use App\Models\MutasiTotalanSopir;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\SanguSopir;
@@ -98,6 +99,16 @@ class TruckingController extends Controller
             'invoice_sopir' => $invoice
         ]);
         TransaksiSopir::create([
+            'tgl_invoice' => date('Y-m-d'),
+            'invoice' => $invoice,
+            'sopir_id' => $request->sopir_id,
+            'order_id' => '[' . $request->order_id . ']',
+            'order_trucking_id' => $request->order_trucking_id,
+            'total' => $request->total,
+            'order' => $no,
+            'submited_by' => Auth::id(),
+        ]);
+        MutasiTotalanSopir::create([
             'tgl_invoice' => date('Y-m-d'),
             'invoice' => $invoice,
             'sopir_id' => $request->sopir_id,

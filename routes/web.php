@@ -24,6 +24,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\LSSController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MutasiTotalanSopirController;
 use App\Http\Controllers\NeracaController;
 use App\Http\Controllers\NSFPController;
 use App\Http\Controllers\OrderController;
@@ -132,6 +133,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('jurnal', JurnalController::class)->except('edit');
     Route::resource('hutang-agen', HutangAgenController::class);
     Route::resource('hutang-pelayaran', HutangPelayaranController::class);
+    Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');

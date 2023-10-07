@@ -164,31 +164,58 @@
 @endphp
     <div class="container">
         <div class="card p-3 shadow">
-            @if (is_null($order->invoice_sopir))
-            <div class="d-flex" style="gap:5px">
-                <a href="{{ route('trucking.totalan_sopir') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
-                @if (empty($invoice))
-                <form action="{{ route('trucking.generate.total_sopir') }}" method="post">
+            @if (request('mutasi'))
+                @php
+                    $no_1 = App\Models\Jurnal::where('tipe','BBK')->max('no') + 1;
+                    $no1 = sprintf('%03d',$no_1).'/BBK-RAS/'.date('y');
+                    $no_2 = App\Models\Jurnal::where('tipe','BKK')->max('no') + 1;
+                    $no2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
+                @endphp
+                <form action="{{ route('mutasi-totalan-sopir.store') }}" method="post">
                     @csrf
-                    <input type="hidden" name="order_trucking_id" value="{{ $order->id }}">
-                    <input type="hidden" name="sopir_id" value="{{ $order->sopir_id }}">
-                    <input type="hidden" name="total" value="{{ $orders->sum('total_sopir') }}">
-                    <input type="hidden" name="order_id" value="{{ implode(',',$order_id) }}">
-                    <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice Sopir</button>
+                    <input type="hidden" name="invoice" value="{{ $invoice }}">
+                    <div class="d-flex gap-3">
+                        <div class="mb-2">
+                            <label for="nomor">Nomor Jurnal</label>
+                            <select name="nomor" id="nomor" class="form-select" required>
+                                <option value="">-</option>
+                                <option value="{{ $no1 }}">{{ $no1 }}</option>
+                                <option value="{{ $no2 }}">{{ $no2 }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-2 mt-3">
+                            <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('are you sure?')">Generate Jurnal</button>
+                            <a href="{{ route('mutasi-totalan-sopir.index') }}" class="btn btn-primary btn-sm">Kembali</a>
+                        </div>
+                    </div>
+                </form>
+            @else
+                @if (is_null($order->invoice_sopir))
+                <div class="d-flex" style="gap:5px">
+                    <a href="{{ route('trucking.totalan_sopir') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                    @if (empty($invoice))
+                    <form action="{{ route('trucking.generate.total_sopir') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="order_trucking_id" value="{{ $order->id }}">
+                        <input type="hidden" name="sopir_id" value="{{ $order->sopir_id }}">
+                        <input type="hidden" name="total" value="{{ $orders->sum('total_sopir') }}">
+                        <input type="hidden" name="order_id" value="{{ implode(',',$order_id) }}">
+                        <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice Sopir</button>
+                    </form>
+                    @endif
+                </div>
+                @else
+                <script>
+                    window.print();
+                </script>
+                <form action="{{ route('trucking.export.slip_sopir') }}" method="post">
+                    @csrf
+                    <div class="d-flex gap-3">
+                        <button type="submit" name="invoice" value="{{ $invoice }}" class="btn btn-sm btn-primary mb-3">Export Excel</button>
+                        <button type="button" onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+                    </div>
                 </form>
                 @endif
-            </div>
-            @else
-            <script>
-                window.print();
-            </script>
-            <form action="{{ route('trucking.export.slip_sopir') }}" method="post">
-                @csrf
-                <div class="d-flex gap-3">
-                    <button type="submit" name="invoice" value="{{ $invoice }}" class="btn btn-sm btn-primary mb-3">Export Excel</button>
-                    <button type="button" onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
-                </div>
-            </form>
             @endif
         </div>
         <div class="card p-3 mt-3">
