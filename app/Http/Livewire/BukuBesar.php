@@ -38,11 +38,18 @@ class BukuBesar extends Component
             $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
             $des = $c->endOfMonth()->format('Y-m-d');
             // dd($start,$des);
+            $debit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+            $credit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
             if($idx==0){
                 if($this->tipe=='D'){
                     $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$des])->sum('debit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$des])->sum('credit');
                 }else{
                     $saldo_awal = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+                }
+                if ($this->tipe=='D') {
+                    $this->saldo['saldo_akhir'][$idx] = $debit - $credit;
+                } else {
+                    $this->saldo['saldo_akhir'][$idx] = $credit - $debit ;
                 }
             }else{
                 // if ($this->tipe=='D') {
@@ -56,16 +63,9 @@ class BukuBesar extends Component
                 $saldo_awal =  $this->saldo['saldo_akhir'][$idx-1];
                 // dd($start,$last,$saldo_awal);
             }
-            $debit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
-            $credit = Jurnal::where('coa_id',$this->coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
+
             $this->saldo['saldo_awal'][$idx] = $saldo_awal;
-            if ($idx==0) {
-                if ($this->tipe=='D') {
-                    $this->saldo['saldo_akhir'][$idx] = $debit - $credit;
-                } else {
-                    $this->saldo['saldo_akhir'][$idx] = $credit - $debit ;
-                }
-            }else{
+            if ($idx!=0) {
                 if ($this->tipe=='D') {
                     $this->saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal ) - $credit;
                 } else {
