@@ -148,8 +148,12 @@ class Order extends Model
     {
         $type = $this->tipe;
         $arr_tujuan = explode(' ',$tujuan);
-        $tujuan = $arr_tujuan[count($arr_tujuan)-1];
-        $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id ?? null;
+        $tujuan_via = $arr_tujuan[count($arr_tujuan)-1];
+        if (in_array("via", $arr_tujuan) || in_array("Via", $arr_tujuan) || in_array("VIA", $arr_tujuan)) {
+            $tujuan_id = Lokasi::where('nama',$tujuan_via)->first()->id ?? null;
+        }else{
+            $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id ?? null;
+        }
         $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
         if($type=='muatan'){
             return TarifPelayaran::where('pelayaran_id',$pelayaran_id)

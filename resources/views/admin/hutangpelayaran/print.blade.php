@@ -284,14 +284,14 @@
                 <tr style="height:30px">
                     <td></td>
                     <td colspan="2">PPh (2%)</td>
-                    <td class="text-end text-danger">{{ number_format($hp->pph,2,',','.') }}</td>
+                    <td class="text-end text-danger">- {{ number_format($hp->pph,2,',','.') }}</td>
                 </tr>
                 @endif
                 @if ($hp->pembulatan>0)
                 <tr style="height:30px">
                     <td></td>
                     <td colspan="2">Pembulatan</td>
-                    <td class="text-end text-danger">{{ number_format($hp->pembulatan,2,',','.') }}</td>
+                    <td class="text-end text-primary">+ {{ number_format($hp->pembulatan,2,',','.') }}</td>
                 </tr>
                 @endif
                 {{-- @foreach ($opp as $list)
@@ -539,7 +539,7 @@
                         <td></td>
                     </tr>
                 @endforeach
-                @if (!is_null($hp->penambahan))
+                @if (!is_null($hp->penambahan) && $hp->penambahan_nominal > 0)
                 <tr style="height:30px">
                     <td></td>
                     <td colspan="2">{{ $hp->penambahan }}</td>

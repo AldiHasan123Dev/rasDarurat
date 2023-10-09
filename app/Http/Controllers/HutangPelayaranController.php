@@ -200,6 +200,7 @@ class HutangPelayaranController extends Controller
             ]);
         }
         if($hp->pembulatan>0){
+            $opp_total += $hp->pembulatan;
             Jurnal::create([
                 'tipe' => 'TEST',
                 'no_bg' => $hp->no_bg_opp,
@@ -209,13 +210,13 @@ class HutangPelayaranController extends Controller
                 'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_opp]['no'],
                 'nama' => 'Pembulatan OPP '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage,
-                'debit' => 0,
-                'credit' => $hp->pembulatan,
+                'debit' => $hp->pembulatan,
+                'credit' => 0,
             ]);
         }
         Jurnal::create([
             'tipe' => 'TEST',
-            'no_bg' => $hp->no_bg_op,
+            'no_bg' => $hp->no_bg_opp,
             'tgl_bg' => $hp->tgl_bg_opp,
             'nominal_bg' => $hp->nominal_bg_opp,
             'coa_id' => 62,
@@ -223,7 +224,7 @@ class HutangPelayaranController extends Controller
             'no' => $data_nomor[$hp->no_bg_opp]['no'],
             'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
             'debit' => 0,
-            'credit' => $opp_total - ($hp->pph + $hp->pembulatan),
+            'credit' => $opp_total - $hp->pph,
         ]);
         if (!is_null($hp->no_bg_opt)) {
             Jurnal::create([
@@ -248,7 +249,7 @@ class HutangPelayaranController extends Controller
                 'coa_id' => 62,
                 'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
+                'nama' => 'Hutang '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_ut.' ('.date('d/m/y',strtotime($hp->tgl_bg_ut)).')',
                 'debit' => 0,
                 'credit' => $ut_total + $hp->penambahan_nominal,
             ]);
