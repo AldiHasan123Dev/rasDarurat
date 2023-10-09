@@ -27,7 +27,7 @@
             #print,
             #print * {
                 visibility: visible;
-                font-size: .7rem !important;
+                font-size: .5rem !important;
             }
 
             #print {
@@ -58,7 +58,7 @@
                 color: #ffffff !important;
             }
             .table tr td {
-                padding: 3px 10px !important;
+                padding: 0px 5px !important;
                 color: #000;
                 font-weight: 600;
             }
@@ -154,7 +154,7 @@
         }
 @endphp
     <div id="print">
-        <table class="w-100 table">
+        <table class="w-100 table" style="font-size: .7rem">
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
@@ -274,21 +274,21 @@
                             </tr>
                         @endif
                     @endforeach
-                    <tr style="height:30px">
+                    <tr style="height:12px">
                         <td></td>
                         <td colspan="2"></td>
                         <td></td>
                     </tr>
                 @endforeach
                 @if ($hp->pph>0)
-                <tr style="height:30px">
+                <tr>
                     <td></td>
                     <td colspan="2">PPh (2%)</td>
                     <td class="text-end text-danger">- {{ number_format($hp->pph,2,',','.') }}</td>
                 </tr>
                 @endif
                 @if ($hp->pembulatan>0)
-                <tr style="height:30px">
+                <tr>
                     <td></td>
                     <td colspan="2">Pembulatan</td>
                     <td class="text-end text-primary">+ {{ number_format($hp->pembulatan,2,',','.') }}</td>
@@ -313,19 +313,19 @@
         <table class="w-100 table" style="position: relative; top:-10px">
             <thead>
                 <tr>
-                    <th class="text-start" style="color: red">TERBILANG :</th>
-                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opp) }} RUPIAH</th>
+                    <td class="text-start" style="color: red">TERBILANG :</td>
+                    <td colspan="7" style="text-transform: uppercase; font-weight:bold">{{ terbilang($hp->nominal_bg_opp) }} RUPIAH</td>
                 </tr>
                 <tr>
-                    <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
-                    <th class="bg-red">Pembukuan</th>
-                    <th class="bg-red">Mengetahui</th>
-                    <th class="bg-red" colspan="2" style="width: 100px">Kasir</th>
-                    <th class="bg-red">Penerima</th>
+                    <td class="text-start" colspan="2"><u style="color: red">CATATAN :</u></td>
+                    <td class="bg-red">Pembukuan</td>
+                    <td class="bg-red">Mengetahui</td>
+                    <td class="bg-red" colspan="2" style="width: 100px">Kasir</td>
+                    <td class="bg-red">Penerima</td>
                 </tr>
             </thead>
             <tbody>
-                <tr style="border: none !important; height:60px">
+                <tr style="border: none !important; height:25px">
                     <td colspan="2"></td>
                     <td></td>
                     <td></td>
@@ -396,7 +396,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    <tr style="height:30px">
+                    <tr style="height:12px">
                         <td></td>
                         <td colspan="2"></td>
                         <td></td>
@@ -421,19 +421,19 @@
         <table class="w-100 table" style="position: relative; top:-10px">
             <thead>
                 <tr>
-                    <th class="text-start" style="color: red">TERBILANG :</th>
-                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_opt) }} RUPIAH</th>
+                    <td class="text-start" style="color: red">TERBILANG :</td>
+                    <td colspan="7" style="text-transform: uppercase; font-weight:bold">{{ terbilang($hp->nominal_bg_opt) }} RUPIAH</td>
                 </tr>
                 <tr>
-                    <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
-                    <th class="bg-red">Pembukuan</th>
-                    <th class="bg-red">Mengetahui</th>
-                    <th class="bg-red" colspan="2" style="width: 100px">Kasir</th>
-                    <th class="bg-red">Penerima</th>
+                    <td class="text-start" colspan="2"><u style="color: red">CATATAN :</u></td>
+                    <td class="bg-red">Pembukuan</td>
+                    <td class="bg-red">Mengetahui</td>
+                    <td class="bg-red" colspan="2" style="width: 100px">Kasir</td>
+                    <td class="bg-red">Penerima</td>
                 </tr>
             </thead>
             <tbody>
-                <tr style="border: none !important; height:60px">
+                <tr style="border: none !important; height:25px">
                     <td colspan="2"></td>
                     <td></td>
                     <td></td>
@@ -533,14 +533,14 @@
                             </tr>
                         @endif
                     @endforeach
-                    <tr style="height:30px">
+                    <tr style="height:12px">
                         <td></td>
                         <td colspan="2"></td>
                         <td></td>
                     </tr>
                 @endforeach
                 @if (!is_null($hp->penambahan) && $hp->penambahan_nominal > 0)
-                <tr style="height:30px">
+                <tr>
                     <td></td>
                     <td colspan="2">{{ $hp->penambahan }}</td>
                     <td class="text-end {{ $hp->penambahan_nominal < 0 ? 'text-danger' : '' }}">{{ number_format($hp->penambahan_nominal,2,',','.') }}</td>
@@ -565,19 +565,19 @@
         <table class="w-100 table" style="position: relative; top:-10px">
             <thead>
                 <tr>
-                    <th class="text-start" style="color: red">TERBILANG :</th>
-                    <th colspan="7" style="text-transform: uppercase">{{ terbilang($hp->nominal_bg_ut) }} RUPIAH</th>
+                    <td class="text-start" style="color: red">TERBILANG :</td>
+                    <td colspan="7" style="text-transform: uppercase; font-weight:bold">{{ terbilang($hp->nominal_bg_ut) }} RUPIAH</td>
                 </tr>
                 <tr>
-                    <th class="text-start" colspan="2"><u style="color: red">CATATAN :</u></th>
-                    <th class="bg-red">Pembukuan</th>
-                    <th class="bg-red">Mengetahui</th>
-                    <th class="bg-red" colspan="2" style="width: 100px">Kasir</th>
-                    <th class="bg-red">Penerima</th>
+                    <td class="text-start" colspan="2"><u style="color: red">CATATAN :</u></td>
+                    <td class="bg-red">Pembukuan</td>
+                    <td class="bg-red">Mengetahui</td>
+                    <td class="bg-red" colspan="2" style="width: 100px">Kasir</td>
+                    <td class="bg-red">Penerima</td>
                 </tr>
             </thead>
             <tbody>
-                <tr style="border: none !important; height:60px">
+                <tr style="border: none !important; height:25px">
                     <td colspan="2"></td>
                     <td></td>
                     <td></td>

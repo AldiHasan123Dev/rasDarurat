@@ -88,9 +88,9 @@ class HutangPelayaranController extends Controller
         $tgl = [$data['no_bg_opp'],$data['no_bg_opt'],$data['no_bg_ut']];
         $tgl_group = array_filter(array_unique($tgl));
         $data_nomor = array();
-        $no = Jurnal::where('tipe','TEST')->max('no') + 1;
+        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
         foreach($tgl_group as $tg){
-            $nomor = 'TS/'.date('ymd').'/'.sprintf('%02d',$no);
+            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
             $data_nomor[$tg] = ['no'=>$no,'nomor'=>$nomor];
             $no++;
         }
@@ -115,7 +115,7 @@ class HutangPelayaranController extends Controller
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_opp'])){
                     Jurnal::create([
-                        'tipe' => 'TEST',
+                        'tipe' => 'JNL',
                         'no_bg' => $item['no_bg_opp'],
                         'tgl_bg' => $item['tgl_bg_opp'],
                         'nominal_bg' => $item['nominal_bg_opp'],
@@ -140,7 +140,7 @@ class HutangPelayaranController extends Controller
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_opt'])){
                     Jurnal::create([
-                        'tipe' => 'TEST',
+                        'tipe' => 'JNL',
                         'no_bg' => $item['no_bg_opt'],
                         'tgl_bg' => $item['tgl_bg_opt'],
                         'nominal_bg' => $item['nominal_bg_opt'],
@@ -167,7 +167,7 @@ class HutangPelayaranController extends Controller
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_ut'])){
                     Jurnal::create([
-                        'tipe' => 'TEST',
+                        'tipe' => 'JNL',
                         'no_bg' => $item['no_bg_ut'],
                         'tgl_bg' => $item['tgl_bg_ut'],
                         'nominal_bg' => $item['nominal_bg_ut'],
@@ -187,7 +187,7 @@ class HutangPelayaranController extends Controller
 
         if($hp->pph>0){
             Jurnal::create([
-                'tipe' => 'TEST',
+                'tipe' => 'JNL',
                 'no_bg' => $hp->no_bg_opp,
                 'tgl_bg' => $hp->tgl_bg_opp,
                 'nominal_bg' => $hp->nominal_bg_opp,
@@ -202,7 +202,7 @@ class HutangPelayaranController extends Controller
         if($hp->pembulatan>0){
             $opp_total += $hp->pembulatan;
             Jurnal::create([
-                'tipe' => 'TEST',
+                'tipe' => 'JNL',
                 'no_bg' => $hp->no_bg_opp,
                 'tgl_bg' => $hp->tgl_bg_opp,
                 'nominal_bg' => $hp->nominal_bg_opp,
@@ -215,7 +215,7 @@ class HutangPelayaranController extends Controller
             ]);
         }
         Jurnal::create([
-            'tipe' => 'TEST',
+            'tipe' => 'JNL',
             'no_bg' => $hp->no_bg_opp,
             'tgl_bg' => $hp->tgl_bg_opp,
             'nominal_bg' => $hp->nominal_bg_opp,
@@ -228,7 +228,7 @@ class HutangPelayaranController extends Controller
         ]);
         if (!is_null($hp->no_bg_opt)) {
             Jurnal::create([
-                'tipe' => 'TEST',
+                'tipe' => 'JNL',
                 'no_bg' => $hp->no_bg_opt,
                 'tgl_bg' => $hp->tgl_bg_opt,
                 'nominal_bg' => $hp->nominal_bg_opt,
@@ -242,7 +242,7 @@ class HutangPelayaranController extends Controller
         }
         if (!is_null($hp->no_bg_ut)) {
             Jurnal::create([
-                'tipe' => 'TEST',
+                'tipe' => 'JNL',
                 'no_bg' => $hp->no_bg_ut,
                 'tgl_bg' => $hp->tgl_bg_ut,
                 'nominal_bg' => $hp->nominal_bg_ut,
@@ -258,7 +258,7 @@ class HutangPelayaranController extends Controller
                 if($hp->penambahan_nominal!=0){
                     if($hp->penambahan_nominal>0){
                         Jurnal::create([
-                            'tipe' => 'TEST',
+                            'tipe' => 'JNL',
                             'no_bg' => $hp->no_bg_ut,
                             'tgl_bg' => $hp->tgl_bg_ut,
                             'nominal_bg' => $hp->nominal_bg_ut,
@@ -271,7 +271,7 @@ class HutangPelayaranController extends Controller
                         ]);
                     }else{
                         Jurnal::create([
-                            'tipe' => 'TEST',
+                            'tipe' => 'JNL',
                             'no_bg' => $hp->no_bg_ut,
                             'tgl_bg' => $hp->tgl_bg_ut,
                             'nominal_bg' => $hp->nominal_bg_ut,
