@@ -27,7 +27,7 @@
             #print,
             #print * {
                 visibility: visible;
-                font-size: .5rem !important;
+                font-size: .6rem !important;
             }
 
             #print {
@@ -154,7 +154,7 @@
         }
 @endphp
     <div id="print">
-        <table class="w-100 table" style="font-size: .7rem">
+        <table class="w-100 table">
             <thead>
                 <tr>
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
@@ -505,19 +505,13 @@
                             </tr>
                         @endif
                     @endforeach
-                    @php
-                        $bls = 0;
-                    @endphp
-                    @foreach ($list->where('bl','>',0) as $item)
-                        @php
-                            $bls += $item->first()->bl;
-                        @endphp
-                    @endforeach
-                    <tr>
-                        <td></td>
-                        <td colspan="2">BL</td>
-                        <td class="text-end">{{ number_format($bls,2,',','.') }}</td>
-                    </tr>
+                    @if ($list->sum('bl')>0)
+                        <tr>
+                            <td></td>
+                            <td colspan="2">BL</td>
+                            <td class="text-end">{{ number_format($list->sum('bl'),2,',','.') }}</td>
+                        </tr>
+                    @endif
                     @foreach ($list->where('ut_cleaning','>',0)->groupBy('ut_cleaning') as $item)
                         @if ($item->count()>1)
                             <tr>
