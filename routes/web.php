@@ -249,6 +249,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('jurnal-kolektif', [JurnalController::class, 'store_kolektif'])->name('jurnal.kolektif.store');
     Route::post('jurnal-balik', [JurnalController::class, 'store_balik'])->name('jurnal.balik.store');
     Route::post('jurnal-trucking', [JurnalController::class, 'store_trucking'])->name('jurnal.trucking.store');
+    Route::post('jurnal-export-batch', [JurnalController::class, 'exportJurnalBatch'])->name('jurnal.exportJurnalBatch');
 
     Route::get('jqgrid-tarif-agent', [TarifAgenController::class, 'jqgrid'])->name('jqgrid.tarif.agent');
     Route::get('jqgrid-tarif-pelayaran', [TarifPelayaranController::class, 'jqgrid'])->name('jqgrid.tarif.pelayaran');

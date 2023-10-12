@@ -145,6 +145,7 @@
             {search:true, width:100, name: 'id', label : 'id', hidden:true},
             {search:true, width:100, name: 'invoice', label : 'Invoice'},
             {search:true, width:100, name: 'job', label : 'Group JOB'},
+            {search:true, width:100, name: 'no_job', label : 'ID JOB'},
             {search:true, width:100, name: 'container', label : 'Container'},
             {search:true, width:100, name: 'nopol', label : 'Nopol'},
             {search:true, width:300, name: 'nama', label : 'Keterangan'},

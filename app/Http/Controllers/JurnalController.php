@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\JurnalBatchExport;
 use App\Http\Resources\OrderResource;
+use App\Services\SyncService;
 use App\Imports\JurnalImport;
 use App\Models\COA;
 use App\Models\Jurnal;
@@ -425,6 +427,7 @@ class JurnalController extends Controller
             $jurnal_model = new JurnalTampungan();
         }
 
+        $arr_order = array();
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
@@ -458,6 +461,7 @@ class JurnalController extends Controller
                     $invoice = $order->invoice;
                     $nopol = $order->kendaraan->nopol;
                     $container = $order->container;
+                    array_push($arr_order,$order->id);
                 }
                 if($data['tipe']=='JNL'){
                     $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
@@ -526,6 +530,61 @@ class JurnalController extends Controller
                             'no' => $no
                         ]);
                     }
+                }
+            }
+        }
+
+        if($data['simpan']=='tampungan'){
+
+        }else{
+            $service = new SyncService();
+            foreach($arr_order as $id){
+                $sangu_sopir = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->first()->debit ?? 0;
+                $sangu_kuli = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->first()->debit ?? 0;
+                $uang_makan = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->first()->debit ?? 0;
+                $solar = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->first()->debit ?? 0;
+                $op = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->first()->debit ?? 0;
+                $cleaning = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->first()->debit ?? 0;
+                $tally = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->first()->debit ?? 0;
+
+                if($sangu_sopir>0){
+                    OrderTrucking::find($id)->update([
+                        'sangu' => $sangu_sopir,
+                    ]);
+                }
+                if($sangu_kuli>0){
+                    OrderTrucking::find($id)->update([
+                        'kuli' => $sangu_kuli,
+                    ]);
+                }
+                if($solar>0){
+                    OrderTrucking::find($id)->update([
+                        'tambah_solar' => $solar,
+                    ]);
+                }
+                if($tally>0){
+                    OrderTrucking::find($id)->update([
+                        'tally' => $tally,
+                    ]);
+                }
+                if($uang_makan>0){
+                    OrderTrucking::find($id)->update([
+                        'uang_makan' => $uang_makan,
+                    ]);
+                }
+                if($op>0){
+                    OrderTrucking::find($id)->update([
+                        'op' => $op,
+                    ]);
+                }
+                if($cleaning>0){
+                    OrderTrucking::find($id)->update([
+                        'cleaning' => $cleaning,
+                    ]);
+                }
+
+                if($sangu_sopir>0 || $sangu_kuli>0 || $solar>0 || $tally>0 || $uang_makan>0 || $op>0 || $cleaning>0){
+                    $service->trucking($id);
                 }
             }
         }
@@ -795,7 +854,7 @@ class JurnalController extends Controller
                     ->select('jurnal.*')
                     ->orderBy('jurnal.created_at')
                     ->get();
-        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe'));
+        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe','year'));
     }
 
     public function datatable()
@@ -827,5 +886,10 @@ class JurnalController extends Controller
             })
             ->rawColumns(['action'])
             ->make(true);
+    }
+
+    public function exportJurnalBatch()
+    {
+        return (new JurnalBatchExport(request('year'),request('month')))->download('jurnal-'.request('month').'-'.request('year').'.xlsx');
     }
 }

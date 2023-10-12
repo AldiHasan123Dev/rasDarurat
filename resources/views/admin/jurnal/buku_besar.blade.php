@@ -35,7 +35,12 @@
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-sm btn-success my-2" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            <form action="{{ route('jurnal.exportJurnalBatch') }}" method="post">
+                @csrf
+                <input type="hidden" name="month" value="{{ $month }}">
+                <input type="hidden" name="year" value="{{ $year }}">
+                <button type="submit" class="btn btn-sm btn-success my-2"><i class="fas fa-print"></i> Export Excel</button>
+            </form>
             <div id="print">
                 {{-- <livewire:buku-besar :month="request('month')"/> --}}
                 <div class="row">

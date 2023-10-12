@@ -810,6 +810,38 @@
             if (is_vendor=='true') {
                 editVendorModal.show();
             }else{
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('order-trucking.getjurnal') }}",
+                    data: {id:id},
+                    success: function (response) {
+                        let tipe = response.tipe;
+                        if (tipe=='R2') {
+                            // $('#sangu-edit').val(response.sangu_sopir);
+                            // $('#kuli').val(response.sangu_kuli);
+                            // $('#tambah_solar').val(response.solar);
+                            // $('#tally').val(response.tally);
+                            // $('#uang_makan').val(response.uang_makan);
+                            // $('#cleaning').val(response.cleaning);
+                            // $('#op').val(response.op);
+                            $('#sangu-edit').attr('readonly',true);
+                            $('#kuli').attr('readonly',true);
+                            $('#tambah_solar').attr('readonly',true);
+                            $('#tally').attr('readonly',true);
+                            $('#uang_makan').attr('readonly',true);
+                            $('#cleaning').attr('readonly',true);
+                            $('#op').attr('readonly',true);
+                        }else{
+                            $('#sangu-edit').attr('readonly',false);
+                            $('#kuli').attr('readonly',false);
+                            $('#tambah_solar').attr('readonly',false);
+                            $('#tally').attr('readonly',false);
+                            $('#uang_makan').attr('readonly',false);
+                            $('#cleaning').attr('readonly',false);
+                            $('#op').attr('readonly',false);
+                        }
+                    }
+                });
                 editModalTrucking.show();
             }
         }

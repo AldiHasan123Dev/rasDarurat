@@ -8,6 +8,7 @@ use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
 use App\Http\Resources\TransaksiSopirResource;
 use App\Http\Resources\TransaksiTruckingResource;
+use App\Services\SyncService;
 use App\Models\CustomerTrucking;
 use App\Models\Jurnal;
 use App\Models\Kendaraan;
@@ -66,6 +67,10 @@ class TruckingController extends Controller
         $order = $orders[0];
         if ($cek->count() > 1) {
             return back()->with('danger', 'Anda tidak bisa memilih ' . $cek->count() . ' Sopir sekaligus!, Harap untuk pilih satu sopir');
+        }
+        $service = new SyncService();
+        foreach($orders as $item){
+            $service->trucking($item->id);
         }
         return view('admin.trucking.totalan_sopir_invoice', compact('orders', 'order', 'order_id'));
     }

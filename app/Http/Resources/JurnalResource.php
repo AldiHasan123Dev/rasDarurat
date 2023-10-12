@@ -32,6 +32,7 @@ class JurnalResource extends JsonResource
             'order_id' => $this->order_id,
             'order' => $this->order,
             'job' => $this->order->job ?? '-',
+            'no_job' => $this->order ? $this->order->job.'-'.sprintf('%02d',$this->order->no_job): '-',
             'order_trucking_id' => $this->order_trucking_id,
             'order_trucking' => $this->order_trucking,
             'nama' => $this->nama,

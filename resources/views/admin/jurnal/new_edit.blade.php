@@ -66,12 +66,9 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px">#</th>
-                                    @if ($tipe=='xpdc')
-                                        <th>ID Job/Seal</th>
-                                    @endif
-                                    @if ($tipe=='trucking')
-                                        <th>Cont / Seal</th>
-                                    @endif
+                                    <th>Job</th>
+                                    <th>ID JOB</th>
+                                    <th>Cont</th>
                                     <th>COA</th>
                                     <th>Keterangan</th>
                                     <th>Debit</th>
@@ -352,6 +349,8 @@
                                             </div>
                                         </td>
                                         <td>${item.job}</td>
+                                        <td>${item.no_job}</td>
+                                        <td>${item.container}</td>
                                         <td>${item.coa_nama} - ${item.coa_kode}</td>
                                         <td>${item.nama}</td>
                                         <td>${item.debit}</td>

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderTruckingResource;
+use App\Services\SyncService;
+use App\Models\Jurnal;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
 
@@ -12,6 +14,39 @@ class OrderTruckingController extends Controller
     public function delete(Request $request)
     {
         OrderTrucking::find($request->id)->delete();
+    }
+
+    public function getJurnal()
+    {
+        $sangu_sopir = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->first()->debit ?? 0;
+        $sangu_kuli = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->first()->debit ?? 0;
+        $uang_makan = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->first()->debit ?? 0;
+        $solar = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->first()->debit ?? 0;
+        $op = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->first()->debit ?? 0;
+        $cleaning = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->first()->debit ?? 0;
+        $tally = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->first()->debit ?? 0;
+        $order = OrderTrucking::find(request('id'));
+        $tipe = $order->kendaraan->milik;
+        if($order->customer->r1 == 1){
+            $tipe = 'R1';
+        }
+        if($order->customer->r2 == 1){
+            $tipe = 'R2';
+        }
+        // if($sangu_sopir>0 || $sangu_kuli>0 || $solar>0 || $tally>0 || $uang_makan>0 || $op>0 || $cleaning>0){
+        // }
+        $service = new SyncService();
+        $service->trucking(request('id'));
+        return response([
+            'sangu_sopir' => $sangu_sopir,
+            'sangu_kuli' => $sangu_kuli,
+            'uang_makan' => $uang_makan,
+            'solar' => $solar,
+            'op' => $op,
+            'cleaning' => $cleaning,
+            'tally' => $tally,
+            'tipe' => $tipe
+        ]);
     }
 
     public function jqgrid()

@@ -160,13 +160,13 @@
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
                     <th style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
-                    <th style="width: 250px"></th>
+                    <th style="width: 120px"></th>
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
                     <th style="color: red; border:none">{{ $hp->jurnal_opp() }}</th>
                     <th style="color: red">Tanggal</th>
-                    <th style="width: 250px"></th>
+                    <th style="width: 120px"></th>
                 </tr>
             </thead>
             <tbody>
@@ -342,13 +342,13 @@
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
                     <th style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
-                    <th style="width: 250px"></th>
+                    <th style="width: 120px"></th>
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
                     <th style="color: red">{{ $hp->jurnal_opt() }}</th>
                     <th style="color: red">Tanggal</th>
-                    <th style="width: 250px"></th>
+                    <th style="width: 120px"></th>
                 </tr>
             </thead>
             <tbody>
@@ -451,13 +451,13 @@
                     <th style="width: 100px; color:red" colspan="2">Dibayar Kepada</th>
                     <th style="vertical-align: middle; color:red">BUKTI BANK KELUAR</th>
                     <th style="color: red">Nomor</th>
-                    <th style="width: 250px"></th>
+                    <th style="width: 120px"></th>
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
                     <th style="color: red">{{ $hp->jurnal_ut() }}</th>
                     <th style="color: red">Tanggal</th>
-                    <th style="width: 250px"></th>
+                    <th style="width: 120px"></th>
                 </tr>
             </thead>
             <tbody>
