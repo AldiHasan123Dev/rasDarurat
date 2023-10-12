@@ -6,6 +6,7 @@ use App\Models\COA;
 use App\Models\Jurnal;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -36,7 +37,16 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
         if(substr($c->kode,0,1)=='2'||substr($c->kode,0,1)=='3'||substr($c->kode,0,1)=='5'){
             $tipe = 'C';
         }
-        return view('exports.jurnal', compact('data','tipe','c'));
+
+        $ca = new Carbon($this->year.'-'.sprintf('%02d',$this->month).'-01');
+        $now = $ca->startOfMonth()->format('Y-m-d');
+        $last = $ca->subMonth()->endOfMonth()->format('Y-m-d');
+        if($tipe=='D'){
+            $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit');
+        }else{
+            $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit');
+        }
+        return view('exports.jurnal', compact('data','tipe','c','saldo','last'));
     }
 
     public function title(): string

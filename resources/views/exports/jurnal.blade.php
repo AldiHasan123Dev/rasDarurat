@@ -17,9 +17,21 @@
         </tr>
     </thead>
     <tbody>
-        @php
-            $saldo = 0;
-        @endphp
+        <tr>
+            <td>{{ date('d/m/y', strtotime($last)) }}</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>SALDO AWAL</td>
+            <td>-</td>
+            <td>-</td>
+            @if (substr($c->kode,0,1)=='1'||substr($c->kode,0,1)=='2'||substr($c->kode,0,1)=='3')
+                <td>{{ number_format($saldo,2,',','.') }}</td>
+            @endif
+            <td>-</td>
+        </tr>
         @foreach ($data as $item)
         @php
         if (substr($c->kode,0,1)=='1'||substr($c->kode,0,1)=='2'||substr($c->kode,0,1)=='3') {
