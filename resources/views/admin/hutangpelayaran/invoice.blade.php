@@ -137,27 +137,27 @@
                                                         <tr>
                                                             <td rowspan="6" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="{{ $item->opp ?? 0 }}" min="0" class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="{{ $item->opp ?? 0 }}"  class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>THC LoLo SBY</td>
-                                                            <td><input type="number" onkeyup="hitung('thc',this.value)" onclick="this.select()" value="{{ $item->thc }}" min="0" class="opp-thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('thc',this.value)" onclick="this.select()" value="{{ $item->thc }}"  class="opp-thc" name="data[{{ $item->id }}][thc]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>APBS</td>
-                                                            <td><input type="number" onkeyup="hitung('apbs',this.value)" onclick="this.select()" value="{{ $item->apbs }}" min="0" class="opp-apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('apbs',this.value)" onclick="this.select()" value="{{ $item->apbs }}"  class="opp-apbs" name="data[{{ $item->id }}][apbs]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>Cleaning</td>
-                                                            <td><input type="number" onkeyup="hitung('cleaning',this.value)" onclick="this.select()" value="{{ $item->cleaning }}" min="0" class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('cleaning',this.value)" onclick="this.select()" value="{{ $item->cleaning }}"  class="opp-cleaning" name="data[{{ $item->id }}][cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>Stamp</td>
-                                                            <td><input type="number" onkeyup="hitung('opp_stamp',this.value)" onclick="this.select()" value="{{ $item->opp_stamp }}" min="0" class="opp-stamp" name="data[{{ $item->id }}][opp_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('opp_stamp',this.value)" onclick="this.select()" value="{{ $item->opp_stamp }}"  class="opp-stamp" name="data[{{ $item->id }}][opp_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="{{ $item->lss }}" min="0" class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="{{ $item->lss }}"  class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                     @endforeach
                                                 @endforeach
@@ -169,7 +169,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end">Pembulatan</td>
-                                                    <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="{{ $hp->pembulatan }}" min="0" name="pembulatan" id="pembulatan" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                    <td><input type="number" onkeyup="hitung()" onclick="this.select()" value="{{ $hp->pembulatan }}" name="pembulatan" id="pembulatan" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
@@ -204,11 +204,11 @@
                                                         <tr>
                                                             <td rowspan="4" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPT (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
-                                                            <td><input type="number" onkeyup="hitungOpt('opt',this.value)" onclick="this.select()" value="{{ $item->opt }}" min="0" class="opt-opt" name="data[{{ $item->id }}][opt]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungOpt('opt',this.value)" onclick="this.select()" value="{{ $item->opt }}"  class="opt-opt" name="data[{{ $item->id }}][opt]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="{{ $item->opt_stamp }}" min="0" class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="{{ $item->opt_stamp }}"  class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -255,19 +255,19 @@
                                                         <tr>
                                                             <td rowspan="4" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>Uang Tambang</td>
-                                                            <td><input type="number" onkeyup="hitungUT('ut',this.value)" readonly onclick="this.select()" value="{{ $item->ut }}" min="0" class="ut-ut" name="data[{{ $item->id }}][ut]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('ut',this.value)" readonly onclick="this.select()" value="{{ $item->ut }}"  class="ut-ut" name="data[{{ $item->id }}][ut]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>BL</td>
-                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="{{ $item->bl }}" min="0" class="ut-bl {{ $item->order->job }}" name="data[{{ $item->id }}][bl]" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('bl',this.value)" onclick="this.select()" value="{{ $item->bl }}"  class="ut-bl {{ $item->order->job }}" name="data[{{ $item->id }}][bl]" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungUT('stamp',this.value)" onclick="this.select()" value="{{ $item->ut_stamp }}" min="0" class="ut-stamp" name="data[{{ $item->id }}][ut_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('stamp',this.value)" onclick="this.select()" value="{{ $item->ut_stamp }}"  class="ut-stamp" name="data[{{ $item->id }}][ut_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>CLEANING</td>
-                                                            <td><input type="number" onkeyup="hitungUT('ut_cleaning',this.value)" onclick="this.select()" value="{{ $item->ut_cleaning }}" min="0" class="ut-cleaning" name="data[{{ $item->id }}][ut_cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" onkeyup="hitungUT('ut_cleaning',this.value)" onclick="this.select()" value="{{ $item->ut_cleaning }}"  class="ut-cleaning" name="data[{{ $item->id }}][ut_cleaning]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -421,7 +421,7 @@
                         <tr>
                             <td>{{ $idx }}</td>
                             <td class="text-center">{{ $item->count() }}</td>
-                            <td><input type="number" value="0" min="0" onclick="this.select()" onkeyup="hitungBL('{{ $idx }}',{{ $item->count() }},this.value)"></td>
+                            <td><input type="number" value="0"  onclick="this.select()" onkeyup="hitungBL('{{ $idx }}',{{ $item->count() }},this.value)"></td>
                         </tr>
                         @endforeach
                     </tbody>
