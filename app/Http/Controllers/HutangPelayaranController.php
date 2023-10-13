@@ -51,7 +51,7 @@ class HutangPelayaranController extends Controller
 
     public function cetak()
     {
-        $data = HutangPelayaran::where('status',1)->whereNotNull('invoice')->get()->groupBy('invoice');
+        $data = HutangPelayaran::where('status',1)->whereNotNull('invoice')->orderBy('invoice','desc')->get()->groupBy('invoice');
         return view('admin.hutangpelayaran.cetak', compact('data'));
     }
 

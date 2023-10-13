@@ -11,6 +11,7 @@
                                 <th>No.</th>
                                 <th>Kode</th>
                                 <th>Tanggal Cetak</th>
+                                <th>Kapal</th>
                                 <th>BG OPP</th>
                                 <th>BG OPT</th>
                                 <th>BG UT</th>
@@ -24,6 +25,7 @@
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->first()->invoice }}</td>
                                     <td>{{ date('d/m/y',strtotime($item->first()->tgl_invoice)) }}</td>
+                                    <td>{{ $item->first()->order->jadwal_kapal->kapal->nama ?? '-' }}</td>
                                     <td>{{ $item->first()->no_bg_opp?date('d/m/y',strtotime($item->first()->tgl_bg_opp)):'' }} - {{ $item->first()->no_bg_opp }} - {{ number_format($item->first()->nominal_bg_opp,2,',','.') }}</td>
                                     <td>{{ $item->first()->no_bg_opt?date('d/m/y',strtotime($item->first()->tgl_bg_opt)):'' }} - {{ $item->first()->no_bg_opt }} - {{ number_format($item->first()->nominal_bg_opt,2,',','.') }}</td>
                                     <td>{{ $item->first()->no_bg_ut?date('d/m/y',strtotime($item->first()->tgl_bg_ut)):'' }} - {{ $item->first()->no_bg_ut }} - {{ number_format($item->first()->nominal_bg_ut,2,',','.') }}</td>
@@ -44,4 +46,10 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+    <script>
+        $('table').dataTable();
+    </script>
 @endsection
