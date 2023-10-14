@@ -19,19 +19,25 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex" style="gap:10px">
-                <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn btn-success">Tambah Jurnal Ekspedisi</a>
-                <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn btn-info">Tambah Jurnal Trucking</a>
-                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn btn-primary">Tambah Jurnal Group JOB</a>
-                <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn btn-warning">Tambah Jurnal Balik</a>
-                <a href="{{ route('jurnal.manual') }}" class="py-2 px-3 btn btn-light border-dark border">Jurnal Manual</a>
-                <a href="{{ route('jurnal.merge') }}" class="py-2 px-3 btn btn-secondary">Merge Jurnal</a>
-                <a href="{{ route('jurnal.tampungan') }}" class="py-2 px-3 btn btn-secondary">Jurnal Tampungan</a>
+                <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn-sm btn btn-success">Tambah Jurnal Ekspedisi</a>
+                <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn-sm btn btn-info">Tambah Jurnal Trucking</a>
+                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn-sm btn btn-primary">Tambah Jurnal Group JOB</a>
+                <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn-sm btn btn-warning">Tambah Jurnal Balik</a>
+                <a href="{{ route('jurnal.manual') }}" class="py-2 px-3 btn-sm btn btn-light border-dark border">Jurnal Manual</a>
+                <a href="{{ route('jurnal.merge') }}" class="py-2 px-3 btn-sm btn btn-secondary">Merge Jurnal</a>
+                <a href="{{ route('jurnal.tampungan') }}" class="py-2 px-3 btn-sm btn btn-secondary">Jurnal Tampungan</a>
                 @if (Auth::user()->role_id==1)
                     <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <input type="file" name="file" id="file" onchange="submit()">
                     </form>
-                @endif
+                    @endif
+                <form action="{{ route('jurnal.exportMonth') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="month" value="{{ $month }}">
+                    <input type="hidden" name="year" value="{{ $year }}">
+                    <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-download"></i></button>
+                </form>
             </div>
             <div class="card-body">
                 @if (count($unbalance)>0)

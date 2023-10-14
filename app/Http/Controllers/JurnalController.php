@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\JurnalBatchExport;
+use App\Exports\JurnalCoaExport;
+use App\Exports\JurnalMonth;
 use App\Http\Resources\OrderResource;
 use App\Services\SyncService;
 use App\Imports\JurnalImport;
@@ -26,7 +28,9 @@ class JurnalController extends Controller
         $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"),'nomor'])->groupBy('nomor')->get()->reject(function ($data) {
             return $data->debit == $data->credit;
         });
-        return view('admin.jurnal.index', compact('unbalance'));
+        $month = request('month') ?? date('m');
+        $year = request('year') ?? date('Y');
+        return view('admin.jurnal.index', compact('unbalance','month','year'));
     }
 
     public function order()
@@ -891,5 +895,10 @@ class JurnalController extends Controller
     public function exportJurnalBatch()
     {
         return (new JurnalBatchExport(request('year'),request('month')))->download('jurnal-'.request('month').'-'.request('year').'.xlsx');
+    }
+
+    public function exportMonth(Request $request)
+    {
+        return Excel::download(new JurnalMonth($request->year, $request->month), $request->month.'-'.$request->year.'.xlsx');
     }
 }
