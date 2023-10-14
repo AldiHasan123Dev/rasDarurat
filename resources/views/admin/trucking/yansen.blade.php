@@ -3,6 +3,10 @@
     <style>
         @media print {
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+            @page {
+                size: 210mm 297mm;
+                margin: .5cm 0cm 0cm 0cm;
+            }
             body * {
                 visibility: hidden;
                 font-family: 'Dot Matrix', sans-serif;
@@ -12,13 +16,14 @@
                 visibility: visible;
             }
             th, td{
-                font-size: .8rem !important;
+                font-size: .7rem !important;
             }
             #print {
                 width: 100%;
                 position: absolute;
                 left: 0;
                 top: -60px;
+                display: block;
             }
             #table td, #table th{
                 border: 1px solid black;
@@ -54,13 +59,13 @@
                         <h4 class="text-center">LAPORAN TAGIHAN TRUCKING PERIODE {{ date('d/m/Y',strtotime($start)) }} - {{ date('d/m/Y',strtotime($end)) }}</h4>
                         <div class="mt-2">
                             <b>BONGKAR : {{ $data1->count() }}</b>
-                            <table class="table table-sm table-bordered">
+                            <table class="table table-sm w-100 table-bordered" style="white-space: nowrap">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No.</th>
                                         <th class="text-center">Tgl Muat</th>
-                                        <th>Nama Cust Pembayar</th>
-                                        <th>No. Cont / Seal</th>
+                                        <th>Nopol</th>
+                                        <th>No. Cont</th>
                                         <th>Tujuan</th>
                                         <th>Tipe</th>
                                         <th>Tagihan</th>
@@ -77,31 +82,29 @@
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_muat)) }}</td>
-                                        <td>{{ $item->customer->nama }}</td>
-                                        <td>{{ $item->container }} / {{ $item->seal }}</td>
+                                        <td>{{ $item->kendaraan->nopol }}</td>
+                                        <td>{{ $item->container }}</td>
                                         <td>{{ $item->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ $item->tipe }}'</td>
                                         <td>Rp. {{ number_format($item->tarif->tarif) }}</td>
                                     </tr>
                                     @endforeach
-                                </tbody>
-                                <tfoot>
                                     <tr>
                                         <td colspan="5"><b>Total</b></td>
                                         <td><b>Rp. {{ number_format($total1) }}</b></td>
                                     </tr>
-                                </tfoot>
+                                </tbody>
                             </table>
                         </div>
                         <div class="mt-2">
                             <b>MUAT : {{ $data2->count() }}</b>
-                            <table class="table table-sm table-bordered">
+                            <table class="table table-sm w-100 table-bordered" style="white-space: nowrap">
                                 <thead>
                                     <tr>
                                         <th class="text-center">No.</th>
                                         <th class="text-center">Tgl Muat</th>
-                                        <th>Nama Cust Pembayar</th>
-                                        <th>No. Cont / Seal</th>
+                                        <th>Nopol</th>
+                                        <th>No. Cont</th>
                                         <th>Tujuan</th>
                                         <th>Tipe</th>
                                         <th>Tagihan</th>
@@ -118,20 +121,18 @@
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
                                         <td class="text-center">{{ date('d/m/y', strtotime($item->tgl_muat)) }}</td>
-                                        <td>{{ $item->customer->nama }}</td>
-                                        <td>{{ $item->container }} / {{ $item->seal }}</td>
-                                        <td>{{ $item->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
+                                        <td>{{ $item->kendaraan->nopol }}</td>
+                                        <td>{{ $item->container }}</td>
+                                        <td>{{ $item->keterangan_lain ?? '-' }}</td>
                                         <td>{{ $item->tipe }}'</td>
                                         <td>Rp. {{ number_format($item->tarif->tarif) }}</td>
                                     </tr>
                                     @endforeach
-                                </tbody>
-                                <tfoot>
                                     <tr>
                                         <td colspan="5"><b>Total</b></td>
                                         <td><b>Rp. {{ number_format($total2) }}</b></td>
                                     </tr>
-                                </tfoot>
+                                </tbody>
                             </table>
                         </div>
                     </div>

@@ -16,7 +16,7 @@ class LokasiController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         Lokasi::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -42,6 +42,7 @@ class LokasiController extends Controller
         $data = Lokasi::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
+            ->addColumn('')
             ->addColumn('action', function ($data) {
                 $view = view('admin.lokasi.form',['lokasi'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
