@@ -42,7 +42,15 @@ class LokasiController extends Controller
         $data = Lokasi::all()->sortByDesc('created_at');
 
         return Datatables::of($data)
-            ->addColumn('')
+            ->addColumn('publis_rate', function($data){
+                return number_format($data->publis_rate);
+            })
+            ->addColumn('diskon', function($data){
+                return number_format($data->diskon);
+            })
+            ->addColumn('harga', function($data){
+                return number_format($data->harga);
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.lokasi.form',['lokasi'=>$data])->render();
                 $html = '<div class="d-flex gap-1">

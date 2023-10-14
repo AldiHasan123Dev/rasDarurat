@@ -46,6 +46,9 @@
                             <tr>
                                 <th>ID.</th>
                                 <th>Nama</th>
+                                <th>Publis Rate</th>
+                                <th>Diskon</th>
+                                <th>Harga Net</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -85,23 +88,19 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'nama', name: 'nama' },
+                { data: 'publis_rate', name: 'publis_rate' },
+                { data: 'diskon', name: 'diskon' },
+                { data: 'harga', name: 'harga' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
 
-        function hitung()
+        function hitung(id)
         {
-            let rate = $('#rate_c').val();
-            let discount = $('#discount_c').val();
+            let rate = $('#publis_rate-'+id).val();
+            let discount = $('#diskon-'+id).val();
             let harga_net = rate - (rate * (discount/100));
-            $('#harga_net_c').val(harga_net);
+            $('#harga-'+id).val(harga_net);
         }
-
-        $('#rate_c').keyup(function (e) {
-            hitung();
-        });
-        $('#discount_c').keyup(function (e) {
-            hitung();
-        });
     </script>
 @endsection

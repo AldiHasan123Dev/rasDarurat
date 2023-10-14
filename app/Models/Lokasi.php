@@ -14,6 +14,9 @@ class Lokasi extends Model
     protected $table = 'lokasi';
     protected $fillable = [
         'nama',
+        'publis_rate',
+        'diskon',
+        'harga',
     ];
 
     protected static function booted()
