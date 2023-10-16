@@ -353,7 +353,7 @@
             </thead>
             <tbody>
                 <tr style="background-color: red" class="text-white">
-                    <td style="background: white" id="rowspan-opt" rowspan="{{ ($jobs->count() + $opt) + 2 }}"></td>
+                    <td style="background: white" id="rowspan-opt" rowspan="{{ $opt + 4 }}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
                     <td class="bg-red text-center">PERKIRAAN</td>
                     <td class="bg-red text-center" colspan="2">URAIAN</td>
@@ -396,11 +396,13 @@
                             </tr>
                         @endif
                     @endforeach
-                    <tr style="height:12px">
-                        <td></td>
-                        <td colspan="2"></td>
-                        <td></td>
-                    </tr>
+                    @if ($list->where('opt','>',0)->groupBy('opt')->count()>0 || $list->where('opt_stamp','>',0)->groupBy('opt_stamp')->count()>0)
+                        <tr style="height:12px">
+                            <td></td>
+                            <td colspan="2"></td>
+                            <td></td>
+                        </tr>
+                    @endif
                 @endforeach
                 {{-- @foreach ($opp as $list)
                     @foreach ($list->groupBy('order.job') as $item)
