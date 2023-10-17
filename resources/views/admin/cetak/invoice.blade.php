@@ -774,7 +774,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($invoice['ppn']) }}</span>
+                                        <span>{{ number_format((int)$invoice['ppn']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -807,7 +807,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($invoice['total'])) }}</span>
+                                        <span>{{ number_format($invoice['total']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -829,7 +829,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang(ceil($invoice['total']))) }} RUPIAH</td>
+                                        <td>: {{ strtoupper(terbilang($invoice['total'])) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>
@@ -1043,7 +1043,7 @@
                             <td class="fw-bold" style="border: 1px solid black">
                                 <div class="price d-flex justify-content-between px-2">
                                     <span>Rp</span>
-                                    <span>{{ number_format(ceil($invoice['total'])) }}</span>
+                                    <span>{{ number_format($invoice['total']) }}</span>
                                 </div>
                             </td>
                         </tr>
@@ -1065,7 +1065,7 @@
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 100px">Terbilang</td>
-                                    <td>: {{ strtoupper(terbilang(ceil($invoice['total']))) }} RUPIAH</td>
+                                    <td>: {{ strtoupper(terbilang($invoice['total'])) }} RUPIAH</td>
                                 </tr>
                                 <tr>
                                     <td>Container</td>
@@ -1248,7 +1248,7 @@
                                 <td style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format($invoice['ppn']) }}</span>
+                                        <span>{{ number_format((int)$invoice['ppn']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -1281,7 +1281,7 @@
                                 <td class="fw-bold" style="border: 1px solid black">
                                     <div class="price d-flex justify-content-between px-2">
                                         <span>Rp</span>
-                                        <span>{{ number_format(ceil($invoice['total'])) }}</span>
+                                        <span>{{ number_format($invoice['total']) }}</span>
                                     </div>
                                 </td>
                             </tr>
@@ -1303,7 +1303,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 100px">Terbilang</td>
-                                        <td>: {{ strtoupper(terbilang(ceil($invoice['total']))) }} RUPIAH</td>
+                                        <td>: {{ strtoupper(terbilang($invoice['total'])) }} RUPIAH</td>
                                     </tr>
                                     <tr>
                                         <td>Container</td>
