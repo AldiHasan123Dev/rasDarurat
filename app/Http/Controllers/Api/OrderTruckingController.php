@@ -33,6 +33,15 @@ class OrderTruckingController extends Controller
         if($order->customer->r2 == 1){
             $tipe = 'R2';
         }
+        $order->update([
+            'sangu' => $sangu_sopir,
+            'kuli' => $sangu_kuli,
+            'tambah_solar' => $solar,
+            'tally' => $tally,
+            'uang_makan' => $uang_makan,
+            'cleaning' => $cleaning,
+            'op' => $op
+        ]);
         // if($sangu_sopir>0 || $sangu_kuli>0 || $solar>0 || $tally>0 || $uang_makan>0 || $op>0 || $cleaning>0){
         // }
         $service = new SyncService();
