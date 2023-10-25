@@ -63,18 +63,18 @@ class HutangPelayaran extends Model
     public function jurnal_opp()
     {
         $jurnal = Jurnal::where('no_bg',$this->no_bg_opp)->whereIn('tipe',['JNL','TEST'])->first();
-        return $jurnal->nomor;
+        return $jurnal->nomor ?? '';
     }
 
     public function jurnal_opt()
     {
         $jurnal = Jurnal::where('no_bg',$this->no_bg_opt)->whereIn('tipe',['JNL','TEST'])->first();
-        return $jurnal->nomor;
+        return $jurnal->nomor ?? '';
     }
 
     public function jurnal_ut()
     {
         $jurnal = Jurnal::where('no_bg',$this->no_bg_ut)->whereIn('tipe',['JNL','TEST'])->first();
-        return $jurnal->nomor;
+        return $jurnal->nomor ?? '';
     }
 }

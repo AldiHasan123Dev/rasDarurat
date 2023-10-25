@@ -287,11 +287,11 @@
                     <td class="text-end text-danger">- {{ number_format($hp->pph,2,',','.') }}</td>
                 </tr>
                 @endif
-                @if ($hp->pembulatan>0)
+                @if ($hp->pembulatan!=0)
                 <tr>
                     <td></td>
                     <td colspan="2">Pembulatan</td>
-                    <td class="text-end text-primary">+ {{ number_format($hp->pembulatan,2,',','.') }}</td>
+                    <td class="text-end text-primary">{{ number_format($hp->pembulatan,2,',','.') }}</td>
                 </tr>
                 @endif
                 {{-- @foreach ($opp as $list)

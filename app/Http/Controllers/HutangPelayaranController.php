@@ -408,7 +408,7 @@ class HutangPelayaranController extends Controller
         if($hp->pph>0){
             $opp+=1;
         }
-        if($hp->pembulatan>0){
+        if($hp->pembulatan!=0){
             $opp+=1;
         }
         if($hp->penambahan_nominal!=0){

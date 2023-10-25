@@ -10,6 +10,7 @@
                             <tr>
                                 <th>No.</th>
                                 <th>Kode</th>
+                                <th>No. Jurnal</th>
                                 <th>Tanggal Cetak</th>
                                 <th>Kapal</th>
                                 <th>BG OPP</th>
@@ -24,6 +25,7 @@
                                 <tr>
                                     <td class="text-center">{{ $loop->iteration }}</td>
                                     <td>{{ $item->first()->invoice }}</td>
+                                    <td>{{ $item->first()->jurnal_opp() }}; {{ $item->first()->jurnal_opt() }}; {{ $item->first()->jurnal_ut() }}</td>
                                     <td>{{ date('d/m/y',strtotime($item->first()->tgl_invoice)) }}</td>
                                     <td>{{ $item->first()->order->jadwal_kapal->kapal->nama ?? '-' }}</td>
                                     <td>{{ $item->first()->no_bg_opp?date('d/m/y',strtotime($item->first()->tgl_bg_opp)):'' }} - {{ $item->first()->no_bg_opp }} - {{ number_format($item->first()->nominal_bg_opp,2,',','.') }}</td>
