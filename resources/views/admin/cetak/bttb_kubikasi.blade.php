@@ -95,7 +95,7 @@
                                     </tr>
                                     <tr>
                                         <td>No. Container</td>
-                                        <td>: {{ $order->container }}</td>
+                                        <td>: {{ $order->container }} - {{ $order->tarif->shipmentInfo->nama ?? '' }}</td>
                                     </tr>
                                     <tr>
                                         <td>No. Seal</td>
@@ -267,7 +267,7 @@
                                         </tr>
                                         <tr>
                                             <td>No. Container</td>
-                                            <td>: {{ $order->container }}</td>
+                                            <td>: {{ $order->container }} - {{ $order->tarif->shipmentInfo->nama ?? '' }}</td>
                                         </tr>
                                         <tr>
                                             <td>No. Seal</td>
@@ -438,7 +438,7 @@
                                         </tr>
                                         <tr>
                                             <td>No. Container</td>
-                                            <td>: {{ $order->container }}</td>
+                                            <td>: {{ $order->container }} - {{ $order->tarif->shipmentInfo->nama ?? '' }}</td>
                                         </tr>
                                         <tr>
                                             <td>No. Seal</td>
