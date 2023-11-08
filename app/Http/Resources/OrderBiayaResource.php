@@ -16,7 +16,7 @@ class OrderBiayaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'job' => $this->order->job,
+            'job' => $this->order->job ?? '-',
             'no_job' => $this->order->job.'-'.sprintf($this->order->no_job),
             'pembayar' => $this->order->tarif->customer->nama,
             'penerima' => $this->order->penerima->nama,

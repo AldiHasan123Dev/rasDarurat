@@ -18,6 +18,8 @@ class Tagihan extends Model
         'jumlah',
         'catatan',
         'status',
+        'created_by',
+        'updated_by'
     ];
 
     protected static function booted()
