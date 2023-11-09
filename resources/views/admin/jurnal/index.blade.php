@@ -18,7 +18,7 @@
 @section('content')
     <div class="container mt-3">
         <div class="card">
-            <div class="card-header p-2 d-flex" style="gap:10px">
+            <div class="card-header p-2 d-flex flex-wrap" style="gap:10px">
                 <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn-sm btn btn-success">Tambah Jurnal Ekspedisi</a>
                 <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn-sm btn btn-info">Tambah Jurnal Trucking</a>
                 <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn-sm btn btn-primary">Tambah Jurnal Group JOB</a>
@@ -26,6 +26,7 @@
                 <a href="{{ route('jurnal.manual') }}" class="py-2 px-3 btn-sm btn btn-light border-dark border">Jurnal Manual</a>
                 <a href="{{ route('jurnal.merge') }}" class="py-2 px-3 btn-sm btn btn-secondary">Merge Jurnal</a>
                 <a href="{{ route('jurnal.tampungan') }}" class="py-2 px-3 btn-sm btn btn-secondary">Jurnal Tampungan</a>
+                <a href="{{ route('jurnal.totalan_sopir') }}" class="py-2 px-3 btn-sm btn btn-secondary">Jurnal Totalan Sopir</a>
                 @if (Auth::user()->role_id==1)
                     <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
                         @csrf

@@ -105,6 +105,7 @@ class TruckingController extends Controller
         ]);
         TransaksiSopir::create([
             'tgl_invoice' => date('Y-m-d'),
+            'jurnal_status' => 0,
             'invoice' => $invoice,
             'sopir_id' => $request->sopir_id,
             'order_id' => '[' . $request->order_id . ']',

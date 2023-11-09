@@ -24,6 +24,7 @@
                         <thead style="background-color: white">
                             <tr style="background-color: white">
                                 <th>#</th>
+                                <th>ID</th>
                                 <th>Kode</th>
                                 <th>Nama</th>
                                 <th>View Cont</th>
@@ -40,6 +41,7 @@
                             @foreach ($data as $item)
                                 <tr>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_active')" {{ $item->is_active==1?'checked':'' }}></td>
+                                    <td>{{ $item->id }}</td>
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_cont')" {{ $item->is_cont==1?'checked':'' }}></td>
@@ -55,6 +57,7 @@
                                     @foreach ($item->coas as $a)
                                     <tr>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_active')" {{ $a->is_active==1?'checked':'' }}></td>
+                                        <td>{{ $a->id }}</td>
                                         <td>{{ $a->kode }}</td>
                                         <td>{{ $a->nama }}</td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_cont')" {{ $a->is_cont==1?'checked':'' }}></td>
@@ -70,6 +73,7 @@
                                             @foreach ($a->coas as $b)
                                             <tr>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_active')" {{ $b->is_active==1?'checked':'' }}></td>
+                                                <td>{{ $b->id }}</td>
                                                 <td>{{ $b->kode }}</td>
                                                 <td>{{ $b->nama }}</td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_cont')" {{ $b->is_cont==1?'checked':'' }}></td>
@@ -85,6 +89,7 @@
                                                 @foreach ($b->coas as $c)
                                                     <tr>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_active')" {{ $c->is_active==1?'checked':'' }}></td>
+                                                        <td>{{ $c->id }}</td>
                                                         <td>{{ $c->kode }}</td>
                                                         <td>{{ $c->nama }}</td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_cont')" {{ $c->is_cont==1?'checked':'' }}></td>
@@ -100,6 +105,7 @@
                                                         @foreach ($c->coas as $d)
                                                             <tr>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_active')" {{ $d->is_active==1?'checked':'' }}></td>
+                                                                <td>{{ $d->id }}</td>
                                                                 <td>{{ $d->kode }}</td>
                                                                 <td>{{ $d->nama }}</td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_cont')" {{ $d->is_cont==1?'checked':'' }}></td>
@@ -115,6 +121,7 @@
                                                                 @foreach ($d->coas as $e)
                                                                     <tr>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_active')" {{ $e->is_active==1?'checked':'' }}></td>
+                                                                        <td>{{ $e->id }}</td>
                                                                         <td>{{ $e->kode }}</td>
                                                                         <td>{{ $e->nama }}</td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_cont')" {{ $e->is_cont==1?'checked':'' }}></td>
@@ -130,6 +137,7 @@
                                                                             @foreach ($e->coas as $f)
                                                                             <tr>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_active')" {{ $f->is_active==1?'checked':'' }}></td>
+                                                                                <td>{{ $f->id }}</td>
                                                                                 <td>{{ $f->kode }}</td>
                                                                                 <td>{{ $f->nama }}</td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_cont')" {{ $f->is_cont==1?'checked':'' }}></td>
