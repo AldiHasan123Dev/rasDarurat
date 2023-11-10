@@ -26,7 +26,7 @@ class TarifPelayaranResource extends JsonResource
             'pelayaran' => $this->pelayaran->nama,
             'komoditi' => $this->komoditi,
             'tanggal' => is_null($this->tanggal) ? '-' : date('d/m/y',strtotime($this->tanggal)),
-            'dari' => $this->dariInfo->nama,
+            'dari' => $this->port->name ?? '-',
             'tujuan' => $this->tujuanInfo->nama,
             'tipe' => $this->shipment->nama,
             'tarif' => number_format($this->tarif),

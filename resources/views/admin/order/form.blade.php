@@ -1,3 +1,6 @@
+@php
+    $ports = App\Models\Port::pluck('name','id');
+@endphp
 <div class="row">
     @if (!empty($order))
         @if ($order->tarif)
@@ -46,8 +49,9 @@
     <x-input :value="$order->no_bl??old('no_bl')" :col="3" :label="'No. BL'" :type="'text'" :name="'no_bl'"></x-input>
     <x-input :value="$order->resi??old('resi')" :col="3" :label="'No. Resi'" :type="'text'" :name="'resi'"></x-input>
     <x-input :value="$order->komisi??old('komisi')" :col="3" :label="'RC Customer/fee'" :type="'number'" :name="'komisi'" :required="true"></x-input>
+    <x-input :value="$order->port_id??1" :col="3" :label="'Port'" :type="'select'" :options="$ports" :name="'port_id'"></x-input>
     <x-input :value="$order->keterangan??old('keterangan')" :col="12" :label="'Keterangan'" :type="'textarea'" :name="'keterangan'"></x-input>
-    <div class="col-6 mb-3">
+    {{-- <div class="col-6 mb-3">
         <label for="tipe">Tipe</label>
         <div class="d-flex gap-3">
             <label for="tipe1">
@@ -59,6 +63,6 @@
                 BONGKARAN
             </label>
         </div>
-    </div>
+    </div> --}}
 </div>
 

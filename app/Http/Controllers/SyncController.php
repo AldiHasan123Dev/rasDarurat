@@ -21,6 +21,7 @@ use App\Models\Tarif;
 use App\Models\TemplateJurnal;
 use App\Models\Transaksi;
 use App\Models\HutangPelayaran;
+use App\Models\TarifPelayaran;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -771,6 +772,18 @@ class SyncController extends Controller
                 'penerimabl' => $nama
             ]);
         }
+
+        return response('success');
+    }
+
+    public function port()
+    {
+        TarifPelayaran::whereIn('dari',[1,82,102])->update([
+            'port_id' => 1
+        ]);
+        TarifPelayaran::where('dari',397)->update([
+            'port_id' => 2
+        ]);
 
         return response('success');
     }

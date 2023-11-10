@@ -6,7 +6,7 @@
             <a href="{{ route('shipment.index') }}" class="btn-link p-3 text-dark">Data Shipment <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('port.index') }}" class="btn-link p-3 text-dark">Data Port <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('port.index') }}" class="btn-link p-3">Data Port <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('kapal.index') }}" class="btn-link p-3 text-dark">Data Kapal <span class="nav-link-icon"></span></span></a>
@@ -15,7 +15,7 @@
             <a href="{{ route('kondisi.index') }}" class="btn-link p-3 text-dark">Data Kondisi <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('satuan.index') }}" class="btn-link p-3">Data Satuan <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('satuan.index') }}" class="btn-link p-3 text-dark">Data Satuan <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
             <a href="{{ route('barang.index') }}" class="btn-link p-3 text-dark">Data Barang <span class="nav-link-icon"></span></span></a>
@@ -30,17 +30,17 @@
             <a href="{{ route('lss.index') }}" class="btn-link p-3 text-dark">LSS <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('thc.index') }}" class="btn-link p-3 text-dark">THC Tujuan<span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('thc.index') }}" class="btn-link p-3 text-dark">THC Tujuan <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
-            <a href="{{ route('lain.index') }}" class="btn-link p-3 text-dark">Lain <span class="nav-link-icon"></span></span></a>
+            <a href="{{ route('lain.index') }}" class="btn-link p-3 active">Lain <span class="nav-link-icon"></span></span></a>
         </div>
     </div>
 </div>
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSatuan" aria-controls="offcanvasSatuan">Tambah Satuan</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPort" aria-controls="offcanvasPort">Tambah Port</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -48,7 +48,8 @@
                         <thead>
                             <tr>
                                 <th>ID.</th>
-                                <th>Nama</th>
+                                <th>Name</th>
+                                {{-- <th>Status</th> --}}
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -61,15 +62,15 @@
     </div>
 
 
-    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasSatuan" aria-labelledby="offcanvasSatuanLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasPort" aria-labelledby="offcanvasPortLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="offcanvasSatuanLabel">Form Satuan</h5>
+            <h5 class="offcanvas-title" id="offcanvasPortLabel">Form Port</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('satuan.store') }}" method="post">
+            <form action="{{ route('port.store') }}" method="post">
                 @csrf
-                @include('admin.satuan.form')
+                @include('admin.port.form')
             </form>
         </div>
     </div>
@@ -81,13 +82,14 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('satuan.data') }}',
+                url: '{{ route('port.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
                 { data: 'id', name: 'id' },
-            { data: 'nama', name: 'nama' },
+                { data: 'name', name: 'name' },
+            // { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

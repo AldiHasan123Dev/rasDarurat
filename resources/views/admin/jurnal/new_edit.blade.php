@@ -372,7 +372,7 @@
                 debit:$('#debit').val(),
                 credit:$('#credit').val(),
                 nomor:@json($jur->nomor),
-                created_at:@json($jur->created_at),
+                created_at:@json(date('Y-m-d',strtotime($jur->created_at))),
                 no:@json($jur->no),
                 tipe:@json($jur->tipe),
             };

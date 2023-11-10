@@ -15,6 +15,7 @@ class TarifPelayaran extends Model
     protected $fillable = [
         'customer_id',
         'pelayaran_id',
+        'port_id',
         'tanggal',
         'dari',
         'tujuan',
@@ -45,6 +46,11 @@ class TarifPelayaran extends Model
     public function pelayaran()
     {
         return $this->belongsTo(Pelayaran::class,'pelayaran_id');
+    }
+
+    public function port()
+    {
+        return $this->belongsTo(Port::class,'port_id');
     }
 
     public function dariInfo()

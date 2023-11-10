@@ -55,6 +55,7 @@ use App\Http\Controllers\TruckingController;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
+use App\Http\Controllers\PortController;
 use App\Models\Jurnal;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -134,6 +135,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('hutang-agen', HutangAgenController::class);
     Route::resource('hutang-pelayaran', HutangPelayaranController::class);
     Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
+    Route::resource('port',PortController::class);
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
@@ -284,5 +286,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-hutang-pelayaran', [SyncController::class, 'hutang_pelayaran']);
     Route::get('sync-lock', [SyncController::class, 'lock']);
     Route::get('sync-penerimabl', [SyncController::class, 'penerimabl']);
+    Route::get('sync-port', [SyncController::class, 'port']);
 });
 // Route::view('test','test');

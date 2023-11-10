@@ -401,6 +401,7 @@ class JurnalController extends Controller
             'nomor' => $tujuan->nomor,
             'no' => $tujuan->no,
             'tipe' => $tujuan->tipe,
+            'created_at' => $tujuan->created_at
         ]);
 
         return back()->with('success','Merge No. Jurnal berhasil');

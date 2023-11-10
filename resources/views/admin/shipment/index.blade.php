@@ -6,6 +6,9 @@
             <a href="{{ route('shipment.index') }}" class="btn-link p-3">Data Shipment <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">
+            <a href="{{ route('port.index') }}" class="btn-link p-3 text-dark">Data Port <span class="nav-link-icon"></span></span></a>
+        </div>
+        <div class="sub-menu">
             <a href="{{ route('kapal.index') }}" class="btn-link p-3 text-dark">Data Kapal <span class="nav-link-icon"></span></span></a>
         </div>
         <div class="sub-menu">

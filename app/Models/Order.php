@@ -55,6 +55,7 @@ class Order extends Model
         'tgl_komisi',
         'created_at',
         'tipe',
+        'port_id',
         'lock_biaya',
     ];
 
@@ -144,23 +145,36 @@ class Order extends Model
         return $this->hasOne(HutangPelayaran::class,'order_id');
     }
 
-    public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan)
+    public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan,$port=null)
     {
         $type = $this->tipe;
         $arr_tujuan = explode(' ',$tujuan);
         $tujuan_via = $arr_tujuan[count($arr_tujuan)-1];
         $tujuan_id = Lokasi::where('nama',$tujuan_via)->first()->id ?? null;
         $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
-        if($type=='muatan'){
-            return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
-                    ->where('tujuan',$tujuan_id)
-                    ->where('is_active',1)
-                    ->get();
+        if ($port) {
+            TarifPelayaran::where('pelayaran_id',$pelayaran_id)
+                ->where('tujuan',$tujuan_id)
+                ->where('port_id',$port)
+                ->where('is_active',1)
+                ->get();
         }else{
-            return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
-                    ->where('dari',$dari_id)
-                    ->where('is_active',1)
-                    ->get();
+            if($type=='muatan'){
+                return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
+                        ->where('tujuan',$tujuan_id)
+                        ->where('is_active',1)
+                        ->get();
+            }else{
+                return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
+                        ->where('dari',$dari_id)
+                        ->where('is_active',1)
+                        ->get();
+            }
         }
+    }
+
+    public function port()
+    {
+        return $this->belongsTo(Port::class);
     }
 }
