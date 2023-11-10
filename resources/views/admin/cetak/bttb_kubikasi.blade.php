@@ -57,9 +57,16 @@
 @endphp
     <div class="container">
         <div class="d-flex" style="gap:5px">
-            <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
-            <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
-            <button type="button" class="btn btn-sm mb-3 btn-primary" data-bs-toggle="modal" data-bs-target="#idjob">Lihat ID JOB</button>
+            <div style="width:40%">
+                <div class="d-flex" style="gap:5px">
+                    <a href="{{ route('order.index') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                    <button onclick="window.print()" class="btn btn-sm btn-success mb-3">Print</button>
+                    <button type="button" class="btn btn-sm mb-3 btn-primary" data-bs-toggle="modal" data-bs-target="#idjob">Lihat ID JOB</button>
+                </div>
+            </div>
+            <div style="width:60%">
+                <input type="text" name="alamat" id="alamat" style="width: 100%" value="{{ $order->penerima->alamat }}">
+            </div>
         </div>
         <div class="card p-3">
             <div id="print">
