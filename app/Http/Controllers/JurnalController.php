@@ -13,6 +13,7 @@ use App\Models\Jurnal;
 use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\TransaksiSopir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -31,6 +32,111 @@ class JurnalController extends Controller
         $month = request('month') ?? date('m');
         $year = request('year') ?? date('Y');
         return view('admin.jurnal.index', compact('unbalance','month','year'));
+    }
+
+    public function totalan_sopir()
+    {
+        $data = TransaksiSopir::whereNull('jurnal')->where('jurnal_status',0)->orderBy('tgl_invoice')->get();
+        $data1 = TransaksiSopir::whereNotNull('jurnal')->where('jurnal_status',1)->orderBy('jurnal_submit','desc')->get();
+        return view('admin.jurnal.totalan_sopir', compact('data','data1'));
+    }
+
+    public function slip_totalan_sopir(Request $request)
+    {
+        $ids = explode(',',$request->ids);
+        $data = TransaksiSopir::whereIn('id',$ids)->pluck('order_id');
+        $id = '';
+        foreach($data as $order_id){
+            $id .= str_replace(['[',']'],'',$order_id).',';
+        }
+        $id = explode(',',$id);
+        $orders = OrderTrucking::with('sopir')->whereIn('id',$id)->get();
+        return view('admin.jurnal.slip_totalan_sopir', compact('orders'));
+    }
+
+    public function submit_slip_totalan_sopir(Request $request)
+    {
+        if(!$request->nomor){
+            return back()->with('danger','Harap pilih nomor jurnal terlebih dahulu!');
+        }
+        if($request->jurnal_simpanan_sopir){
+            foreach($request->jurnal_simpanan_sopir as $js){
+                $debit = $js;
+                $credit = $js;
+                $debit['created_at'] = $request->created_at;
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['credit'] = $credit['debit'];
+                $credit['debit'] = 0;
+                $credit['created_at'] = $request->created_at;
+                Jurnal::create($debit);
+                Jurnal::create($credit);
+                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                    'jurnal' => $debit['nomor'],
+                    'jurnal_status' => 1,
+                    'jurnal_tgl' => $request->created_at,
+                    'jurnal_submit' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+        if($request->jurnal_simpanan_kuli){
+            foreach($request->jurnal_simpanan_kuli as $js){
+                $debit = $js;
+                $credit = $js;
+                $debit['created_at'] = $request->created_at;
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['credit'] = $credit['debit'];
+                $credit['debit'] = 0;
+                $credit['created_at'] = $request->created_at;
+                Jurnal::create($debit);
+                Jurnal::create($credit);
+                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                    'jurnal' => $debit['nomor'],
+                    'jurnal_status' => 1,
+                    'jurnal_tgl' => $request->created_at,
+                    'jurnal_submit' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+        if($request->jurnal_tbtl){
+            foreach($request->jurnal_tbtl as $js){
+                $debit = $js;
+                $credit = $js;
+                $debit['created_at'] = $request->created_at;
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['credit'] = $credit['debit'];
+                $credit['debit'] = 0;
+                $credit['created_at'] = $request->created_at;
+                Jurnal::create($debit);
+                Jurnal::create($credit);
+                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                    'jurnal' => $debit['nomor'],
+                    'jurnal_status' => 1,
+                    'jurnal_tgl' => $request->created_at,
+                    'jurnal_submit' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+        if($request->jurnal_stappel){
+            foreach($request->jurnal_stappel as $js){
+                $debit = $js;
+                $credit = $js;
+                $debit['created_at'] = $request->created_at;
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['credit'] = $credit['debit'];
+                $credit['debit'] = 0;
+                $credit['created_at'] = $request->created_at;
+                Jurnal::create($debit);
+                Jurnal::create($credit);
+                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                    'jurnal' => $debit['nomor'],
+                    'jurnal_status' => 1,
+                    'jurnal_tgl' => $request->created_at,
+                    'jurnal_submit' => date('Y-m-d H:i:s')
+                ]);
+            }
+        }
+
+        return redirect()->route('jurnal.totalan_sopir')->with('success','Jurnal berhasil dibuat!');
     }
 
     public function order()

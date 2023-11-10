@@ -11,6 +11,10 @@ class TransaksiSopir extends Model
     use HasFactory;
     protected $table = 'transaksi_sopir';
     protected $fillable = [
+        'jurnal',
+        'jurnal_status',
+        'jurnal_submit',
+        'jurnal_tgl',
         'tgl_invoice',
         'invoice',
         'sopir_id',
@@ -40,5 +44,10 @@ class TransaksiSopir extends Model
     public function user()
     {
         return $this->belongsTo(User::class,'submited_by');
+    }
+
+    public function tgl_jurnal()
+    {
+        return date('d/m/y',strtotime(Jurnal::where('nomor',$this->jurnal)->first()->created_at));
     }
 }
