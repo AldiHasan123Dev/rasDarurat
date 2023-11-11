@@ -26,7 +26,7 @@ class OrderBiayaController extends Controller
 
     public function edit(OrderBiaya $order)
     {
-        return view('admin.biaya_edit',compact('order'));
+        return view('admin.biaya_order.edit',compact('order'));
     }
 
     public function update(Request $reqest, OrderBiaya $order)

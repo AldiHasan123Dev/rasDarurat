@@ -32,7 +32,11 @@
                         @csrf
                         <input type="file" name="file" id="file" onchange="submit()">
                     </form>
-                    @endif
+                @endif
+                <form action="{{ route('jurnal.sync.job') }}" method="post">
+                    @csrf
+                    <button class="btn btn-sm btn-info" type="submit">Sinkronisasi</button>
+                </form>
                 <form action="{{ route('jurnal.exportMonth') }}" method="post">
                     @csrf
                     <input type="hidden" name="month" value="{{ $month }}">

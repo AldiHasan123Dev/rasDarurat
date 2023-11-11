@@ -1008,4 +1008,21 @@ class JurnalController extends Controller
     {
         return Excel::download(new JurnalMonth($request->year, $request->month), $request->month.'-'.$request->year.'.xlsx');
     }
+
+    public function syncJob()
+    {
+        $data = Jurnal::whereNotNull('order_trucking_id')->whereNull('order_id')->whereBetween('created_at',['2023-07-01',date('Y-m-d')])->get();
+        // dd($data->take(10));
+        $awal = $data->count();
+        $akhir = 0;
+        foreach ($data as $item) {
+            $order = Order::where('container',$item->order_trucking->container)->where('seal',$item->order_trucking->seal)->first();
+            if($order){
+                $item->update(['order_id'=>$order->id]);
+                $akhir++;
+            }
+        }
+
+        return back()->with('success', $akhir.'/'.$awal.' data berhasil disinkronisasi!');
+    }
 }

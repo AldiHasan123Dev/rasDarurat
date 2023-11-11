@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JasaKirim;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -37,16 +38,46 @@ class JasaKirimController extends Controller
         return back()->with('success','Data berhasil dihapus');
     }
 
-    public function datatable()
+    public function syncNominal()
     {
         $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
-                ->select('jasa_kirim.*','lokasi.nama')
-                ->orderBy('lokasi.nama')
-                ->get();
+                    ->select('jasa_kirim.*','lokasi.nama')
+                    ->whereNull('nominal')
+                    ->orderBy('lokasi.nama')
+                    ->get();
+        foreach ($data as $item) {
+            $lokasi = Lokasi::find($item->lokasi_id);
+            $item->update([
+                'nominal' => $lokasi->harga
+            ]);
+        }
+
+        return back()->with('success','Sinkronisasi data berhasil');
+    }
+
+    public function datatable()
+    {
+        if(request('nominal')==1){
+            $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
+                    ->select('jasa_kirim.*','lokasi.nama')
+                    ->whereNotNull('nominal')
+                    ->where('nominal','>',0)
+                    ->orderBy('lokasi.nama')
+                    ->get();
+        }else{
+            $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
+                    ->select('jasa_kirim.*','lokasi.nama')
+                    ->whereNull('nominal')
+                    ->orderBy('lokasi.nama')
+                    ->get();
+        }
 
         return Datatables::of($data)
             ->addColumn('lokasi_id', function($data){
                 return $data->lokasi->nama;
+            })
+            ->addColumn('nominal', function($data){
+                return $data->nominal ? number_format($data->nominal) : '-';
             })
             ->addColumn('orders', function($data){
                 $name = '';

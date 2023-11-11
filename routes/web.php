@@ -162,6 +162,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('tarik-nsfp', [NSFPController::class, 'tarik'])->name('nsfp.tarik');
     Route::post('delete-all', [NSFPController::class, 'deleteAll'])->name('nsfp.delete.all');
     Route::get('trucking/order', [TruckingController::class, 'order'])->name('trucking.order');
+    Route::post('jasa-kirim-sync', [JasaKirimController::class, 'syncNominal'])->name('jasakirim.sync');
     Route::get('jurnal-order', [JurnalController::class, 'order'])->name('jurnal.order');
     Route::get('jurnal-order-trucking', [JurnalController::class, 'order_trucking'])->name('jurnal.order_trucking');
     Route::get('trucking/monitoring', [TruckingController::class, 'monitoring'])->name('trucking.monitoring');
@@ -234,6 +235,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jurnal-trucking', [JurnalController::class, 'trucking'])->name('jurnal.trucking');
     Route::get('jurnal-totalan-sopir', [JurnalController::class, 'totalan_sopir'])->name('jurnal.totalan_sopir');
     Route::post('jurnal-totalan-sopir', [JurnalController::class, 'slip_totalan_sopir'])->name('jurnal.slip_totalan_sopir');
+    Route::post('jurnal-sync-job', [JurnalController::class, 'syncJob'])->name('jurnal.sync.job');
     Route::post('submit-jurnal-totalan-sopir', [JurnalController::class, 'submit_slip_totalan_sopir'])->name('jurnal.submit_slip_totalan_sopir');
     Route::get('jurnal-merge', [JurnalController::class, 'merge'])->name('jurnal.merge');
     Route::post('jurnal-merge', [JurnalController::class, 'store_merge'])->name('jurnal.merge.store');
