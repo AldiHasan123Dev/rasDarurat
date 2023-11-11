@@ -144,6 +144,9 @@
                                         @endphp
                                         @foreach ($orders as $idx => $item)
                                             @if ($item->simpanan > 0)
+                                                @php
+                                                    $inp++;
+                                                @endphp
                                                 <tr>
                                                     <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
                                                     <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
@@ -173,11 +176,11 @@
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][container]" value="{{ $item->container }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][debit]" value="{{ $item->simpanan }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nama]" value="Simpanan Sangu Sopir - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                            @endif
+                                            @if ($item->simpanan_kuli > 0)
                                                 @php
                                                     $inp++;
                                                 @endphp
-                                            @endif
-                                            @if ($item->simpanan_kuli > 0)
                                                 <tr>
                                                     <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
                                                     <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
@@ -185,7 +188,7 @@
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>Biaya Kuli - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
-                                                    <td>{{ number_format($item->simpanan) }}</td>
+                                                    <td>{{ number_format($item->simpanan_kuli) }}</td>
                                                     <td>0</td>
                                                 </tr>
                                                 <tr>
@@ -195,7 +198,7 @@
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>Biaya Kuli - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                                     <td>0</td>
-                                                    <td>{{ number_format($item->simpanan) }}</td>
+                                                    <td>{{ number_format($item->simpanan_kuli) }}</td>
                                                 </tr>
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][coa_id]" value="61">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
@@ -207,11 +210,11 @@
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][container]" value="{{ $item->container }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][debit]" value="{{ $item->simpanan_kuli }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nama]" value="Biaya Kuli - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                            @endif
+                                            @if ($item->tb_tl > 0)
                                                 @php
                                                     $inp++;
                                                 @endphp
-                                            @endif
-                                            @if ($item->tb_tl > 0)
                                                 <tr>
                                                     <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
                                                     <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
@@ -219,7 +222,7 @@
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>TB/TL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
-                                                    <td>{{ number_format($item->simpanan) }}</td>
+                                                    <td>{{ number_format($item->tb_tl) }}</td>
                                                     <td>0</td>
                                                 </tr>
                                                 <tr>
@@ -229,7 +232,7 @@
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>TB/TL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                                     <td>0</td>
-                                                    <td>{{ number_format($item->simpanan) }}</td>
+                                                    <td>{{ number_format($item->tb_tl) }}</td>
                                                 </tr>
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][coa_id]" value="61">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
@@ -241,19 +244,19 @@
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][container]" value="{{ $item->container }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][debit]" value="{{ $item->tb_tl }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][nama]" value="TB/TL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                            @endif
+                                            @if ($item->stappel > 0)
                                                 @php
                                                     $inp++;
                                                 @endphp
-                                            @endif
-                                            @if ($item->stappel > 0)
                                                 <tr>
-                                                    <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" value="1"></td>
+                                                    <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
                                                     <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
                                                     <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>STAPPEL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
-                                                    <td>{{ number_format($item->simpanan) }}</td>
+                                                    <td>{{ number_format($item->stappel) }}</td>
                                                     <td>0</td>
                                                 </tr>
                                                 <tr>
@@ -263,7 +266,7 @@
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>STAPPEL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                                     <td>0</td>
-                                                    <td>{{ number_format($item->simpanan) }}</td>
+                                                    <td>{{ number_format($item->stappel) }}</td>
                                                 </tr>
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][coa_id]" value="61">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
@@ -273,11 +276,8 @@
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][container]" value="{{ $item->container }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][debit]" value="{{ $item->simpanan }}">
+                                                <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][debit]" value="{{ $item->stappel }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][nama]" value="STAPPEL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
-                                                @php
-                                                    $inp++;
-                                                @endphp
                                             @endif
                                         @endforeach
                                     </tbody>
