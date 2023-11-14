@@ -13,7 +13,7 @@ class JasaKirimController extends Controller
 {
     public function store(Request $request)
     {
-        $res = JasaKirim::where('jadwal_kapal_id',$request->jadwal_kapal_id)->where('lokasi_id',$request->lokasi_id)->first();
+        $res = JasaKirim::where('jadwal_kapal_id',$request->jadwal_kapal_id)->where('lokasi_id',$request->lokasi_id)->where('agen_id',$request->agen_id)->first();
         if(!$res){
             $lokasi = Lokasi::find($request->lokasi_id);
             $res = JasaKirim::create([
