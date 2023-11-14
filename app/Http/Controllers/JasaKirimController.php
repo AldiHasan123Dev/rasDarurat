@@ -12,7 +12,13 @@ class JasaKirimController extends Controller
 {
     public function index()
     {
-        return view('admin.jasakirim.index');
+        $loc_id = JasaKirim::pluck('lokasi_id')->toArray();
+        $loc_id = array_unique($loc_id);
+        $lokasi = Lokasi::whereIn('id',$loc_id)->orderBy('nama')->get(['id','nama']);
+        $start_date = request('start_date') ?? null;
+        $end_date = request('end_date') ?? null;
+        $tujuan = request('tujuan') ?? null;
+        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan'));
     }
 
     public function store(Request $request)
@@ -55,15 +61,27 @@ class JasaKirimController extends Controller
         return back()->with('success','Sinkronisasi data berhasil');
     }
 
+    public function syncData()
+    {
+        
+    }
+
     public function datatable()
     {
         if(request('nominal')==1){
-            $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
-                    ->select('jasa_kirim.*','lokasi.nama')
-                    ->whereNotNull('nominal')
-                    ->where('nominal','>',0)
-                    ->orderBy('lokasi.nama')
-                    ->get();
+            $query = JasaKirim::query();
+            $query->join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id');
+            $query->select('jasa_kirim.*','lokasi.nama');
+            $query->whereNotNull('nominal');
+            $query->where('nominal','>',0);
+            if(!is_null(request('start_date')) && !is_null(request('end_date'))){
+                $query->whereBetween('tgl_kirim',[request('start_date'),request('end_date')]);
+            }
+            if(!is_null(request('tujuan'))){
+                $query->where('lokasi_id',request('tujuan'));
+            }
+            $query->orderBy('lokasi.nama');
+            $data = $query->get();
         }else{
             $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
                     ->select('jasa_kirim.*','lokasi.nama')

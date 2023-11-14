@@ -164,7 +164,7 @@
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
-                    <th style="color: red; border:none">{{ $hp->jurnal_opp() }}</th>
+                    <th style="color: red; border:none">{{ $hp->jurnal_opp }}</th>
                     <th style="color: red">Tanggal</th>
                     <th style="width: 120px"></th>
                 </tr>
@@ -346,7 +346,7 @@
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
-                    <th style="color: red">{{ $hp->jurnal_opt() }}</th>
+                    <th style="color: red">{{ $hp->jurnal_opt }}</th>
                     <th style="color: red">Tanggal</th>
                     <th style="width: 120px"></th>
                 </tr>
@@ -457,7 +457,7 @@
                 </tr>
                 <tr>
                     <th colspan="2">{{ strtoupper($jadwal_kapal->pelayaran->nama) }}</th>
-                    <th style="color: red">{{ $hp->jurnal_ut() }}</th>
+                    <th style="color: red">{{ $hp->jurnal_ut }}</th>
                     <th style="color: red">Tanggal</th>
                     <th style="width: 120px"></th>
                 </tr>

@@ -157,6 +157,7 @@
                                                     <div class="d-flex">
                                                         <select class="form-selects" id="select-tarif-{{ $item->id }}">
                                                             <option value="">-</option>
+                                                            <option value="0">0</option>
                                                             @foreach ($item->tarifPelayaranHutang($item->pelayaran_id,$item->dari,$item->tujuan,$item->port_id) as $tarif)
                                                                 <option value="{{ $tarif->tarif }}">{{ number_format($tarif->tarif) }}</option>
                                                             @endforeach

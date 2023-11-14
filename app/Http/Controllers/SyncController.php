@@ -582,16 +582,17 @@ class SyncController extends Controller
 
     public function hutang_pelayaran()
     {
-        $ids = HutangPelayaran::pluck('order_id')->toArray();
-        $data = Order::whereNotIn('id',$ids)->whereBetween('stuffing',['2023-09-01','2023-10-01'])->orderBy('stuffing')->get();
-        foreach($data as $order){
-            HutangPelayaran::create([
-                'pelayaran_id' => $order->jadwal_kapal->pelayaran_id,
-                'order_id' => $order->id,
-                'status' => 0,
+        $data = HutangPelayaran::get();
+        foreach ($data as $item) {
+            $opp = Jurnal::where('no_bg',$item->no_bg_opp)->whereIn('tipe',['JNL','TEST'])->where('order_id',$item->order_id)->first()->nomor ?? null;
+            $opt = Jurnal::where('no_bg',$item->no_bg_opt)->whereIn('tipe',['JNL','TEST'])->where('order_id',$item->order_id)->first()->nomor ?? null;
+            $ut = Jurnal::where('no_bg',$item->no_bg_ut)->whereIn('tipe',['JNL','TEST'])->where('order_id',$item->order_id)->first()->nomor ?? null;
+            $item->update([
+                'jurnal_opp' => $opp,
+                'jurnal_opt' => $opt,
+                'jurnal_ut' => $ut,
             ]);
         }
-
         return response('success');
     }
 

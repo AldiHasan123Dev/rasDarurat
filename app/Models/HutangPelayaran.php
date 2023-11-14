@@ -14,7 +14,9 @@ class HutangPelayaran extends Model
     protected $fillable = [
         'invoice',
         'tgl_invoice',
-        'jurnal',
+        'jurnal_opp',
+        'jurnal_opt',
+        'jurnal_ut',
         'no_bg_opp',
         'tgl_bg_opp',
         'nominal_bg_opp',
