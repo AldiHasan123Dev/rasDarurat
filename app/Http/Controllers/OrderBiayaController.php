@@ -47,9 +47,10 @@ class OrderBiayaController extends Controller
             $is_search = true;
         }
         $query = OrderBiaya::query();
-        // $query->join('order','id','=','order_biaya.order_id')
-        // ->join('tarif','tarif.id','=','tarif_id')
-        // ->join('customers','customers.id','=','tarif.customer_id');
+        $query->whereHas('order');
+        $query->join('order','order.id','=','order_biaya.order_id')
+        ->join('tarif','tarif.id','=','tarif_id')
+        ->join('customers','customers.id','=','tarif.customer_id');
 
 
         $start = $limit * $page - $limit;
@@ -257,11 +258,11 @@ class OrderBiayaController extends Controller
         }
 
         if($sidx){
-            $query->select('order_biaya.*');
-            $data = $query->skip($start)->take($limit)->get();
+            $query->select('order_biaya.*','order.job','order.no_job');
+            $data = $query->orderBy('order.job')->orderBy('order.no_job')->skip($start)->take($limit)->get();
         }else{
             $query->select('order_biaya.*');
-            $data = $query->skip($start)->take($limit)->get();
+            $data = $query->orderBy('order.job')->orderBy('order.no_job')->skip($start)->take($limit)->get();
         }
 
         // if($is_search){

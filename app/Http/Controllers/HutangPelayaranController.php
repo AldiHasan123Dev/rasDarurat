@@ -475,6 +475,7 @@ class HutangPelayaranController extends Controller
                 $ut+=$l;
             }
         }
+        // dd($jobs->count());
         return view('admin.hutangpelayaran.print', compact('data','jadwal_kapal','jobs','hp','opp','opt','ut'));
     }
 
