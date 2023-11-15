@@ -22,6 +22,7 @@ use App\Models\TemplateJurnal;
 use App\Models\Transaksi;
 use App\Models\HutangPelayaran;
 use App\Models\TarifPelayaran;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -785,6 +786,25 @@ class SyncController extends Controller
         TarifPelayaran::where('dari',397)->update([
             'port_id' => 2
         ]);
+
+        return response('success');
+    }
+
+    public function lokasi_agen()
+    {
+        $data = Agen::get();
+        foreach($data as $item){
+            $kota = $item->kota;
+            $lokasi = Lokasi::where('nama','like',$kota)->first();
+            if(!$lokasi){
+                $lokasi = Lokasi::create([
+                    'nama' => strtoupper($kota)
+                ]);
+            }
+            $item->update([
+                'lokasi_id' => $lokasi->id
+            ]);
+        }
 
         return response('success');
     }

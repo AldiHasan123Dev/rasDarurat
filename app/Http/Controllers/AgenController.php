@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agen;
 use App\Models\Shipment;
+use App\Models\Lokasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -19,6 +20,14 @@ class AgenController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $kota = $request->kota;
+        $lokasi = Lokasi::where('nama','like',$kota)->first();
+        if(!$lokasi){
+            $lokasi = Lokasi::create([
+                'nama' => strtoupper($kota)
+            ]);
+        }
+        $data['lokasi_id'] = $lokasi->id;
         Agen::create($data);
 
         return back()->with('success','Data berhasil disimpan');
@@ -27,6 +36,14 @@ class AgenController extends Controller
     public function update(Agen $agen, Request $request)
     {
         $data = $request->all();
+        $kota = $request->kota;
+        $lokasi = Lokasi::where('nama','like',$kota)->first();
+        if(!$lokasi){
+            $lokasi = Lokasi::create([
+                'nama' => strtoupper($kota)
+            ]);
+        }
+        $data['lokasi_id'] = $lokasi->id;
         $agen->update($data);
 
         return back()->with('success','Data berhasil diupdate');

@@ -22,6 +22,7 @@
                                     <tr>
                                         <th>ID.</th>
                                         <th>Tujuan</th>
+                                        <th>Kota</th>
                                         <th>JOB</th>
                                         <th>Barcode</th>
                                         <th>Tgl Kirim</th>
@@ -44,6 +45,10 @@
                         {{-- <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirim" aria-controls="offcanvasJasaKirim">Tambah JasaKirim</button> --}}
                         <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Filter</button>
+                    <form action="{{ route('jasakirim.sync.data') }}" method="post">
+                        @csrf
+                        <button class="btn btn-sm btn-success" type="submit">Sinkronisasi Data</button>
+                    </form>
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -93,6 +98,7 @@
                                     <tr>
                                         <th>ID.</th>
                                         <th>Tujuan</th>
+                                        <th>Kota</th>
                                         <th>JOB</th>
                                         <th>Barcode</th>
                                         <th>Tgl Kirim</th>
@@ -143,6 +149,7 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'lokasi_id', name: 'lokasi_id' },
+                { data: 'kota', name: 'kota' },
                 { data: 'orders', name: 'orders' },
                 { data: 'barcode', name: 'barcode' },
                 { data: 'tgl_kirim', name: 'tgl_kirim' },
@@ -169,6 +176,7 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'lokasi_id', name: 'lokasi_id' },
+                { data: 'kota', name: 'kota' },
                 { data: 'orders', name: 'orders' },
                 { data: 'barcode', name: 'barcode' },
                 { data: 'tgl_kirim', name: 'tgl_kirim' },

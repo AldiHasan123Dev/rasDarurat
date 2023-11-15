@@ -163,6 +163,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('delete-all', [NSFPController::class, 'deleteAll'])->name('nsfp.delete.all');
     Route::get('trucking/order', [TruckingController::class, 'order'])->name('trucking.order');
     Route::post('jasa-kirim-sync', [JasaKirimController::class, 'syncNominal'])->name('jasakirim.sync');
+    Route::post('jasa-kirim-sync-data', [JasaKirimController::class, 'syncData'])->name('jasakirim.sync.data');
     Route::get('jurnal-order', [JurnalController::class, 'order'])->name('jurnal.order');
     Route::get('jurnal-order-trucking', [JurnalController::class, 'order_trucking'])->name('jurnal.order_trucking');
     Route::get('trucking/monitoring', [TruckingController::class, 'monitoring'])->name('trucking.monitoring');
@@ -292,5 +293,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-lock', [SyncController::class, 'lock']);
     Route::get('sync-penerimabl', [SyncController::class, 'penerimabl']);
     Route::get('sync-port', [SyncController::class, 'port']);
+    Route::get('sync-lokasi-agen', [SyncController::class, 'lokasi_agen']);
 });
 // Route::view('test','test');

@@ -13,6 +13,7 @@ class Agen extends Model
 
     protected $table = 'agen';
     protected $fillable = [
+        'lokasi_id',
         'kode',
         'nama',
         'pic',
@@ -33,5 +34,10 @@ class Agen extends Model
         static::saving(function ($model) {
             $model->updated_by = Auth::id();
         });
+    }
+
+    public function lokasi()
+    {
+        return $this->belongsTo(Lokasi::class);
     }
 }

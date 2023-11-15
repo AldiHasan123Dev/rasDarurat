@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agen;
 use App\Models\JasaKirim;
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
@@ -49,10 +50,12 @@ class JasaKirimController extends Controller
         $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
                     ->select('jasa_kirim.*','lokasi.nama')
                     ->whereNull('nominal')
+                    ->orWhere('nominal',0)
                     ->orderBy('lokasi.nama')
                     ->get();
         foreach ($data as $item) {
-            $lokasi = Lokasi::find($item->lokasi_id);
+            $agen = Agen::find($item->agen_id);
+            $lokasi = Lokasi::find($agen->lokasi_id);
             $item->update([
                 'nominal' => $lokasi->harga
             ]);
@@ -63,7 +66,18 @@ class JasaKirimController extends Controller
 
     public function syncData()
     {
-        
+        $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
+                    ->select('jasa_kirim.*','lokasi.nama')
+                    ->orderBy('lokasi.nama')
+                    ->get();
+        foreach ($data as $item) {
+            $agen = Agen::find($item->agen_id);
+            $lokasi = Lokasi::find($agen->lokasi_id);
+            $item->update([
+                'nominal' => $lokasi->harga
+            ]);
+        }
+        return back()->with('success','Sinkronisasi data berhasil');
     }
 
     public function datatable()
@@ -86,6 +100,7 @@ class JasaKirimController extends Controller
             $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
                     ->select('jasa_kirim.*','lokasi.nama')
                     ->whereNull('nominal')
+                    ->orWhere('nominal',0)
                     ->orderBy('lokasi.nama')
                     ->get();
         }
@@ -93,6 +108,9 @@ class JasaKirimController extends Controller
         return Datatables::of($data)
             ->addColumn('lokasi_id', function($data){
                 return $data->lokasi->nama;
+            })
+            ->addColumn('kota', function($data){
+                return $data->agen->lokasi->nama ?? '-';
             })
             ->addColumn('nominal', function($data){
                 return $data->nominal ? number_format($data->nominal) : '-';

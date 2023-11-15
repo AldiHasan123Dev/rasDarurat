@@ -52,4 +52,9 @@ class JasaKirim extends Model
     {
         return $this->hasMany(Order::class,'jasa_kirim_id');
     }
+
+    public function agen()
+    {
+        return $this->belongsTo(Agen::class);
+    }
 }
