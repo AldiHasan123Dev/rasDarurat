@@ -47,7 +47,12 @@
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Filter</button>
                     <form action="{{ route('jasakirim.sync.data') }}" method="post">
                         @csrf
-                        <button class="btn btn-sm btn-success" type="submit">Sinkronisasi Data</button>
+                        <div class="d-flex gap-1">
+                            {{-- <button class="btn btn-sm btn-primary" type="button">Merge</button> --}}
+                            <button class="btn btn-sm btn-info" type="button" id="unmerge">Unmerge</button>
+                            <button class="btn btn-sm btn-success" type="submit">Sinkronisasi Data</button>
+
+                        </div>
                     </form>
 
                     <!-- Modal -->
@@ -186,5 +191,29 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
+        table1.on('click', 'tbody tr', function (e) {
+            e.currentTarget.classList.toggle('selected');
+        });
+
+        document.querySelector('#unmerge').addEventListener('click', function () {
+            // alert(table1.rows('.selected').data().id + ' row(s) selected');
+            let arr = []
+            for (let i = 0; i < table1.rows('.selected').data().length; i++) {
+                arr[i] = table1.rows('.selected').data()[i].id
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('jasakirim.unmerge') }}",
+                data: {id:arr},
+                success: function (response) {
+                    table1.ajax.reload();
+                    alert('unmerge berhasil!');
+                }
+            });
+        });
+
+
+
     </script>
 @endsection

@@ -39,7 +39,7 @@ class KendaraanController extends Controller
 
     public function datatable()
     {
-        $data = Kendaraan::all()->sortByDesc('created_at');
+        $data = Kendaraan::query()->orderBy('is_active','desc')->orderBy('created_at','desc');
 
         return Datatables::of($data)
             ->addColumn('created_at', function($data){

@@ -94,7 +94,7 @@ class JasaKirimController extends Controller
             if(!is_null(request('tujuan'))){
                 $query->where('lokasi_id',request('tujuan'));
             }
-            $query->orderBy('lokasi.nama');
+            $query->orderBy('tgl_kirim','desc');
             $data = $query->get();
         }else{
             $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')

@@ -57,6 +57,7 @@ class Order extends Model
         'tipe',
         'port_id',
         'lock_biaya',
+        'jasa_kirim_id',
     ];
 
     protected static function booted()

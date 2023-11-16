@@ -39,4 +39,33 @@ class JasaKirimController extends Controller
         }
         return response($res);
     }
+
+    public function unmerge(Request $request)
+    {
+        $jasakirim = JasaKirim::whereIn('id',$request->id)->get();
+        foreach($jasakirim as $item){
+            $orders = Order::where('jasa_kirim_id',$item->id)->get();
+            foreach ($orders as $order) {
+                $agen = Agen::find($order->agen_id);
+                if($agen){
+                    $lokasi = Lokasi::find($agen->lokasi_id);
+                    $no = JasaKirim::max('no') + 1;
+                    $res = JasaKirim::create([
+                        'jadwal_kapal_id' => $order->jadwal_kapal_id,
+                        'no_dooring' => 'SD/'.date('ymd').'/'.sprintf('%03d',$no),
+                        'lokasi_id' => $agen->lokasi_id,
+                        'agen_id' => $order->agen_id,
+                        'no' => $no,
+                        'nominal' => $lokasi->harga
+                    ]);
+                    $order->update([
+                        'jasa_kirim_id' => $res->id
+                    ]);
+                }
+            }
+        }
+
+        JasaKirim::whereIn('id',$request->id)->delete();
+        return response('success');
+    }
 }
