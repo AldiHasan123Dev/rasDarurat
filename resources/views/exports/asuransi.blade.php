@@ -5,6 +5,7 @@
         <th>NO JOB</th>
         <th>NAMA ASURANSI</th>
         <th>NAMA CUSTOMER</th>
+        <th>PENERIMA</th>
         <th>PELAYARAN</th>
         <th>NAMA KAPAL</th>
         <th>VOYAGE</th>
@@ -32,6 +33,7 @@
             <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
             <td>{{ $order->asuransiInfo->nama }}</td>
             <td>{{ $order->tarif->customer->nama }}</td>
+            <td>{{ $order->penerima->nama }}</td>
             <td>{{ $order->jadwal_kapal->pelayaran->nama }}</td>
             <td>{{ $order->jadwal_kapal->kapal->nama }}</td>
             <td>{{ $order->jadwal_kapal->voyage }}</td>
