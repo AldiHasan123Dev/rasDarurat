@@ -71,7 +71,7 @@ class JasaKirimController extends Controller
 
     public function merge()
     {
-        $data = JasaKirim::whereNotNull('barcode')->whereNotNull('tgl_kirim')->whereNotNull('tgl_terima')->whereNotNull('nominal')->get()->groupBy('barcode');
+        $data = JasaKirim::whereNotNull('barcode')->whereNotNull('tgl_kirim')->whereNotNull('nominal')->get()->groupBy('barcode');
         foreach ($data as $barcode) {
             if($barcode->count()>1){
                 $jasakirim = $barcode->first();
