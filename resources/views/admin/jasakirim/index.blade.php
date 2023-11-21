@@ -2,6 +2,7 @@
 @section('content')
     <div class="container mt-3">
         <div class="row">
+            @if ($role!='cs')
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
@@ -39,16 +40,22 @@
                     </div>
                 </div>
             </div>
+            @endif
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                         {{-- <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirim" aria-controls="offcanvasJasaKirim">Tambah JasaKirim</button> --}}
                         <!-- Button trigger modal -->
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Filter</button>
+                    <b id="nominal-selected">Rp. 0</b>
                     <form action="{{ route('jasakirim.sync.data') }}" method="post">
                         @csrf
                         <div class="d-flex gap-1">
-                            {{-- <button class="btn btn-sm btn-primary" type="button">Merge</button> --}}
+                            <label for="selectAll">
+                                <input type="checkbox" name="selectAll" id="selectAll" class="selectAll">
+                                Select All Data
+                            </label>
+                            <button class="btn btn-sm btn-primary" onclick="merge()" type="button">Merge</button>
                             <button class="btn btn-sm btn-info" type="button" id="unmerge">Unmerge</button>
                             <button class="btn btn-sm btn-success" type="submit">Sinkronisasi Data</button>
 
@@ -58,6 +65,7 @@
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <form action="{{ route('jasakirim.index') }}" method="get" class="modal-dialog">
+                            <input type="hidden" name="role" value="{{ $role }}">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="exampleModalLabel">Filter Pencarian Data</h5>
@@ -139,15 +147,18 @@
 @endsection
 
 @section('script')
-    <script>
-        let table = $('#table-1').DataTable({
+    @if ($role!='cs')
+        <script>
+            let table = $('#table-1').DataTable({
             processing: true,
             serverSide: true,
+            paging: false,
             ajax:{
                 url: '{{ route('jasakirim.data') }}',
                 method:'POST',
                 data:{
                     nominal:0,
+                    role:@json($role),
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
@@ -164,14 +175,21 @@
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
+        </script>
+    @endif
+    <script>
         let table1 = $('#table-2').DataTable({
             processing: true,
             serverSide: true,
+            paging: false,
+            scrollCollapse: true,
+            scrollY: '50vh',
             ajax:{
                 url: '{{ route('jasakirim.data') }}',
                 method:'POST',
                 data:{
                     nominal:1,
+                    role:@json($role),
                     start_date:@json($start_date),
                     end_date:@json($end_date),
                     tujuan:@json($tujuan),
@@ -193,6 +211,12 @@
         });
         table1.on('click', 'tbody tr', function (e) {
             e.currentTarget.classList.toggle('selected');
+            let nominal = 0;
+            for (let i = 0; i < table1.rows('.selected').data().length; i++) {
+                var num = table1.rows('.selected').data()[i].nominal
+                nominal += parseInt(num.replace(',','').replace('.',''))
+            }
+            $('#nominal-selected').html('Rp. '+nominal.toLocaleString('id-ID'));
         });
 
         document.querySelector('#unmerge').addEventListener('click', function () {
@@ -213,7 +237,32 @@
             });
         });
 
+        $(".selectAll").on( "click", function(e) {
+            if ($(this).is( ":checked" )) {
+                $('#table-2 tbody tr').addClass('selected');
+            } else {
+                $('#table-2 tbody tr').removeClass('selected');
+            }
+            let nominal = 0;
+            for (let i = 0; i < table1.rows('.selected').data().length; i++) {
+                var num = table1.rows('.selected').data()[i].nominal
+                nominal += parseInt(num.replace(',','').replace('.',''))
+            }
+            $('#nominal-selected').html('Rp. '+nominal.toLocaleString('id-ID'));
+        });
 
 
+        function merge(){
+            if(confirm('are you sure?')){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('jasakirim.merge') }}",
+                    success: function (response) {
+                        table1.ajax.reload();
+                        alert('Merge data berhasil');
+                    }
+                });
+            }
+        }
     </script>
 @endsection

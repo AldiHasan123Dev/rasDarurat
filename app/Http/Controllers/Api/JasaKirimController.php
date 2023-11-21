@@ -68,4 +68,28 @@ class JasaKirimController extends Controller
         JasaKirim::whereIn('id',$request->id)->delete();
         return response('success');
     }
+
+    public function merge()
+    {
+        $data = JasaKirim::whereNotNull('barcode')->whereNotNull('tgl_kirim')->whereNotNull('tgl_terima')->whereNotNull('nominal')->get()->groupBy('barcode');
+        foreach ($data as $barcode) {
+            if($barcode->count()>1){
+                $jasakirim = $barcode->first();
+                $group = JasaKirim::where('barcode',$jasakirim->barcode)->where('lokasi_id',$jasakirim->lokasi_id)->where('nominal',$jasakirim->nominal)->get();
+                foreach ($group as $idx => $item) {
+                    if ($idx==0) {
+                        $jasa_kirim_id = $item->id;
+                    }
+                    Order::where('jasa_kirim_id',$item->id)->update([
+                        'jasa_kirim_id' => $jasa_kirim_id
+                    ]);
+                    if ($idx!=0) {
+                        $item->delete();
+                    }
+                }
+            }
+        }
+
+        return response('success');
+    }
 }

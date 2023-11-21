@@ -14,6 +14,7 @@ class JasaKirim extends Model
     protected $table = 'jasa_kirim';
     protected $fillable = [
         'jadwal_kapal_id',
+        'jurnal',
         'agen_id',
         'lokasi_id',
         'no_dooring',
@@ -23,6 +24,7 @@ class JasaKirim extends Model
         'nominal',
         'ekspedisi',
         'no',
+        'no_draf',
         'created_by',
         'updated_by',
     ];
