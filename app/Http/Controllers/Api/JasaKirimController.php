@@ -75,7 +75,7 @@ class JasaKirimController extends Controller
         foreach ($data as $barcode) {
             if($barcode->count()>1){
                 $jasakirim = $barcode->first();
-                $group = JasaKirim::where('barcode',$jasakirim->barcode)->where('lokasi_id',$jasakirim->lokasi_id)->where('nominal',$jasakirim->nominal)->get();
+                $group = JasaKirim::where('barcode',$jasakirim->barcode)->where('nominal',$jasakirim->nominal)->get();
                 foreach ($group as $idx => $item) {
                     if ($idx==0) {
                         $jasa_kirim_id = $item->id;
@@ -92,4 +92,18 @@ class JasaKirimController extends Controller
 
         return response('success');
     }
+
+    public function addDrafJurnal(Request $request)
+    {
+        $no = JasaKirim::max('no_draf') + 1;
+        $invoice = 'JK/'.date('ymd').'/'.sprintf('%02d',$no);
+        JasaKirim::whereIn('id',$request->id)->update([
+            'tgl_invoice' => date('Y-m-d'),
+            'invoice' => $invoice,
+            'no_draf' => $no
+        ]);
+
+        return response('success');
+    }
+
 }

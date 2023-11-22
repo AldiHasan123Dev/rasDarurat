@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Agen;
 use App\Models\JasaKirim;
+use App\Models\Jurnal;
 use App\Models\Lokasi;
+use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
@@ -20,7 +23,15 @@ class JasaKirimController extends Controller
         $end_date = request('end_date') ?? null;
         $tujuan = request('tujuan') ?? null;
         $role = request('role') ?? 'all';
-        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan','role'));
+        $last = Carbon::now();
+        $start = $last->subMonths(3);
+        $orders = Order::whereNull('jasa_kirim_id')
+                    ->whereBetween('created_at',[$start->format('Y-m-d'),$last->format('Y-m-d')])
+                    ->orderBy('job')
+                    ->orderBy('no_job')
+                    ->get(['job','no_job','id']);
+        $data = JasaKirim::whereNotNull('invoice')->orderBy('invoice')->get()->groupBy('invoice');
+        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan','role','orders','data'));
     }
 
     public function store(Request $request)
@@ -81,6 +92,52 @@ class JasaKirimController extends Controller
         return back()->with('success','Sinkronisasi data berhasil');
     }
 
+    public function jurnal()
+    {
+        $inv = request('invoice');
+        if(!$inv){
+            return back()->with('danger', 'Kode Draf tidak ditemukan!');
+        }
+
+        $data = JasaKirim::where('invoice',$inv)->get();
+        return view('admin.jasakirim.jurnal',compact('data'));
+    }
+
+    public function generateJurnal(Request $request)
+    {
+        $data = JasaKirim::where('invoice',$request->invoice)->get();
+        foreach ($data as $idx => $item) {
+            foreach($item->orders as $order){
+                Jurnal::create([
+                    'tipe' => 'JNL',
+                    'coa_id' => 31,
+                    'order_id' => $order->id,
+                    'nomor' => $request->nomor,
+                    'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
+                    'debit' => $item->nominal / $item->orders->count(),
+                    'created_at' => $request->created_at,
+                    'no' => $request->no
+                ]);
+            }
+            $item->update([
+                'status' => 1,
+                'jurnal' => $request->nomor
+            ]);
+        }
+        Jurnal::create([
+            'tipe' => 'JNL',
+            'coa_id' => 63,
+            'order_id' => $order->id,
+            'nomor' => $request->nomor,
+            'nama' => 'Hutang Agen ('.$request->invoice.')',
+            'credit' => $data->sum('nominal'),
+            'created_at' => $request->created_at,
+            'no' => $request->no
+        ]);
+
+        return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disimpan!');
+    }
+
     public function datatable()
     {
         $role = request('role');
@@ -103,6 +160,7 @@ class JasaKirimController extends Controller
                 $query->whereNotNull('barcode');
                 $query->whereNotNull('tgl_kirim');
                 $query->whereNull('jurnal');
+                $query->whereNull('invoice');
             }
             $query->orderBy('tgl_kirim','desc');
             $data = $query->get();

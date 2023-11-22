@@ -148,10 +148,8 @@ class Order extends Model
 
     public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan,$port=null)
     {
-        $type = $this->tipe;
-        $arr_tujuan = explode(' ',$tujuan);
-        $tujuan_via = $arr_tujuan[count($arr_tujuan)-1];
-        $tujuan_id = Lokasi::where('nama',$tujuan_via)->first()->id ?? null;
+        $type = $this->tipe;;
+        $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id ?? null;
         $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
         if ($port) {
             TarifPelayaran::where('pelayaran_id',$pelayaran_id)
@@ -160,6 +158,10 @@ class Order extends Model
                 ->where('is_active',1)
                 ->get();
         }else{
+            $arr_tujuan = explode(' ',$tujuan);
+            $tujuan_via = $arr_tujuan[count($arr_tujuan)-1];
+            $tujuan_id = Lokasi::where('nama',$tujuan_via)->first()->id ?? null;
+            $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
             if($type=='muatan'){
                 return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
                         ->where('tujuan',$tujuan_id)

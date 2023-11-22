@@ -164,6 +164,8 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('trucking/order', [TruckingController::class, 'order'])->name('trucking.order');
     Route::post('jasa-kirim-sync', [JasaKirimController::class, 'syncNominal'])->name('jasakirim.sync');
     Route::post('jasa-kirim-sync-data', [JasaKirimController::class, 'syncData'])->name('jasakirim.sync.data');
+    Route::get('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'jurnal'])->name('jasakirim.draf.jurnal');
+    Route::post('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'generateJurnal'])->name('jasakirim.generate.jurnal');
     Route::get('jurnal-order', [JurnalController::class, 'order'])->name('jurnal.order');
     Route::get('jurnal-order-trucking', [JurnalController::class, 'order_trucking'])->name('jurnal.order_trucking');
     Route::get('trucking/monitoring', [TruckingController::class, 'monitoring'])->name('trucking.monitoring');

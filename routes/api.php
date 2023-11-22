@@ -90,6 +90,7 @@ Route::put('api-tarif',[TarifController::class,'update'])->name('api.tarif.updat
 Route::resource('api-jasakirim',JasaKirimController::class)->only(['store']);
 Route::post('jasakirim-unmerge',[JasaKirimController::class,'unmerge'])->name('jasakirim.unmerge');
 Route::post('jasakirim-merge',[JasaKirimController::class,'merge'])->name('jasakirim.merge');
+Route::post('jasakirim-add-draf',[JasaKirimController::class,'addDrafJurnal'])->name('jasakirim.add.draf');
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');

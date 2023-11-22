@@ -14,6 +14,8 @@ class JasaKirim extends Model
     protected $table = 'jasa_kirim';
     protected $fillable = [
         'jadwal_kapal_id',
+        'invoice',
+        'tgl_invoice',
         'jurnal',
         'agen_id',
         'lokasi_id',
@@ -25,6 +27,7 @@ class JasaKirim extends Model
         'ekspedisi',
         'no',
         'no_draf',
+        'status',
         'created_by',
         'updated_by',
     ];
@@ -58,5 +61,13 @@ class JasaKirim extends Model
     public function agen()
     {
         return $this->belongsTo(Agen::class);
+    }
+
+    public function order_name(){
+        $name = '';
+        foreach ($this->orders as $item ) {
+            $name .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
+        }
+        return $name;
     }
 }
