@@ -23,15 +23,8 @@ class JasaKirimController extends Controller
         $end_date = request('end_date') ?? null;
         $tujuan = request('tujuan') ?? null;
         $role = request('role') ?? 'all';
-        $last = Carbon::now();
-        $start = $last->subMonths(3);
-        $orders = Order::whereNull('jasa_kirim_id')
-                    ->whereBetween('created_at',[$start->format('Y-m-d'),$last->format('Y-m-d')])
-                    ->orderBy('job')
-                    ->orderBy('no_job')
-                    ->get(['job','no_job','id']);
-        $data = JasaKirim::whereNotNull('invoice')->orderBy('invoice')->get()->groupBy('invoice');
-        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan','role','orders','data'));
+        $data = JasaKirim::whereNotNull('invoice')->orderBy('invoice','desc')->get()->groupBy('invoice');
+        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan','role','data'));
     }
 
     public function store(Request $request)
@@ -114,7 +107,18 @@ class JasaKirimController extends Controller
                     'order_id' => $order->id,
                     'nomor' => $request->nomor,
                     'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
-                    'debit' => $item->nominal / $item->orders->count(),
+                    'debit' => $item->split_nominal(),
+                    'created_at' => $request->created_at,
+                    'no' => $request->no
+                ]);
+            }
+            foreach($item->kirim_dokumen as $kirim){
+                Jurnal::create([
+                    'tipe' => 'JNL',
+                    'coa_id' => 31,
+                    'nomor' => $request->nomor,
+                    'nama' => $kirim->nama,
+                    'debit' => $item->split_nominal(),
                     'created_at' => $request->created_at,
                     'no' => $request->no
                 ]);
@@ -184,11 +188,11 @@ class JasaKirimController extends Controller
                 return $data->nominal ? number_format($data->nominal) : '-';
             })
             ->addColumn('orders', function($data){
-                $name = '';
-                foreach ($data->orders as $item ) {
-                    $name .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
-                }
-                return $name;
+                // $name = '';
+                // foreach ($data->orders as $item ) {
+                //     $name .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
+                // }
+                return $data->order_name();
             })
             ->addColumn('action', function ($data) use($role) {
                 $view = view('admin.jasakirim.form',['jasakirim'=>$data,'role'=>$role])->render();

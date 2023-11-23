@@ -63,11 +63,25 @@ class JasaKirim extends Model
         return $this->belongsTo(Agen::class);
     }
 
+    public function kirim_dokumen()
+    {
+        return $this->hasMany(KirimDokumen::class);
+    }
+
     public function order_name(){
         $name = '';
         foreach ($this->orders as $item ) {
             $name .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
         }
+        foreach ($this->kirim_dokumen as $item) {
+            $name .= $item->nama.'; ';
+        }
         return $name;
+    }
+
+    public function split_nominal()
+    {
+        $count = $this->orders->count() + $this->kirim_dokumen->count();
+        return $this->nominal / $count;
     }
 }

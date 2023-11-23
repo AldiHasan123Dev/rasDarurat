@@ -20,7 +20,7 @@
                                                 <th>ID.</th>
                                                 <th>Tujuan</th>
                                                 <th>Kota</th>
-                                                <th>JOB</th>
+                                                <th>JOB/ITEM</th>
                                                 <th>Barcode</th>
                                                 <th>Tgl Kirim</th>
                                                 <th>Tgl Terima</th>
@@ -111,7 +111,17 @@
                                                                     <td>Uang Muka Biaya Oprasional Ekspedisi</td>
                                                                     <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
                                                                     <td>Biaya Pengiriman Dokumen {{ $order->agent->nama ?? '-' }} ({{ $order->agent->lokasi->nama ?? '-' }})</td>
-                                                                    <td>{{ number_format($item->nominal / $item->orders->count()) }}</td>
+                                                                    <td>{{ number_format($item->split_nominal()) }}</td>
+                                                                    <td>0</td>
+                                                                </tr>
+                                                            @endforeach
+                                                            @foreach ($item->kirim_dokumen as $kirim)
+                                                                <tr>
+                                                                    <td>1.6.1</td>
+                                                                    <td>Uang Muka Biaya Oprasional Ekspedisi</td>
+                                                                    <td>-</td>
+                                                                    <td>{{ $kirim->nama }}</td>
+                                                                    <td>{{ number_format($item->split_nominal()) }}</td>
                                                                     <td>0</td>
                                                                 </tr>
                                                             @endforeach

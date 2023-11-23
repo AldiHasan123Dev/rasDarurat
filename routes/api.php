@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\HutangPelayaranController;
 use App\Http\Controllers\Api\JadwalKapalController;
 use App\Http\Controllers\Api\JasaKirimController;
 use App\Http\Controllers\Api\JurnalController;
+use App\Http\Controllers\Api\KirimDokumenController;
 use App\Http\Controllers\Api\NSFPController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderTruckingController;
@@ -92,6 +93,9 @@ Route::post('jasakirim-unmerge',[JasaKirimController::class,'unmerge'])->name('j
 Route::post('jasakirim-merge',[JasaKirimController::class,'merge'])->name('jasakirim.merge');
 Route::post('jasakirim-add-draf',[JasaKirimController::class,'addDrafJurnal'])->name('jasakirim.add.draf');
 Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pelayaran.data');
+Route::get('kirim-dokumen',[KirimDokumenController::class,'index'])->name('kirim_dokumen.index');
+Route::post('kirim-dokumen',[KirimDokumenController::class,'store'])->name('kirim_dokumen.store');
+Route::delete('kirim-dokumen/{kirim_dokumen}',[KirimDokumenController::class,'destroy'])->name('kirim_dokumen.destroy');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');

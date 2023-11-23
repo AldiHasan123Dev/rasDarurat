@@ -24,7 +24,7 @@
                                         <th>ID.</th>
                                         <th>Tujuan</th>
                                         <th>Kota</th>
-                                        <th>JOB</th>
+                                        <th>JOB/ITEM</th>
                                         <th>Barcode</th>
                                         <th>Tgl Kirim</th>
                                         <th>Tgl Terima</th>
@@ -56,16 +56,16 @@
                             @csrf
                             <div class="d-flex gap-1">
                                 @if ($role!='cs')
-                                <label for="selectAll">
-                                    <input type="checkbox" name="selectAll" id="selectAll" class="selectAll">
-                                    Select All Data
-                                </label>
-                                @endif
-                                @if ($role=='cs')
-                                    <button class="btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#addJob">Tambah Job</button>
+                                    <label for="selectAll">
+                                        <input type="checkbox" name="selectAll" id="selectAll" class="selectAll">
+                                        Select All Data
+                                    </label>
                                     <button class="btn btn-sm btn-primary" onclick="merge()" type="button">Merge</button>
+                                    @endif
+                                    @if ($role=='cs')
                                     <button class="btn btn-sm btn-info" type="button" id="unmerge">Unmerge</button>
-                                @endif
+                                    @endif
+                                    <button class="btn btn-sm btn-success" onclick="loadListKirimDokumen()" type="button">Tambah Item Resi</button>
                                 <button class="btn btn-sm btn-warning" type="submit">Sinkronisasi Data</button>
                             </div>
                         </form>
@@ -120,7 +120,7 @@
                                         <th>ID.</th>
                                         <th>Tujuan</th>
                                         <th>Kota</th>
-                                        <th>JOB</th>
+                                        <th>JOB/ITEM</th>
                                         <th>Barcode</th>
                                         <th>Tgl Kirim</th>
                                         <th>Tgl Terima</th>
@@ -145,11 +145,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-sm" id="table-2" style="font-size:.7rem">
+                            <table class="table table-sm table-list" style="font-size:.7rem">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
-                                        <th>Tanggal</th>
+                                        @if ($role=='jurnal')
+                                            <th>Nomor Jurnal</th>
+                                        @endif
+                                        <th>Tanggal Draf</th>
                                         <th>Kode Draf</th>
                                         <th>Ekspedisi</th>
                                         <th>Jumlah Resi</th>
@@ -161,6 +164,9 @@
                                     @foreach ($data as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            @if ($role=='jurnal')
+                                                <th>{{ $item->first()->jurnal ?? '-' }}</th>
+                                            @endif
                                             <td>{{ date('d/m/y',strtotime($item->first()->tgl_invoice)) }}</td>
                                             <td>{{ $item->first()->invoice }}</td>
                                             <td>{{ $item->first()->ekspedisi }}</td>
@@ -169,7 +175,11 @@
                                             <td>
                                                 <div class="d-flex gap-3">
                                                     @if ($role=='jurnal')
-                                                    <a href="{{ route('jasakirim.draf.jurnal',['invoice'=>$item->first()->invoice]) }}" class="btn btn-success py-0 px-5" style="height: 20px; font-size:.7rem">Buat Draf</a>
+                                                        @if (!$item->first()->jurnal)
+                                                            <a href="{{ route('jasakirim.draf.jurnal',['invoice'=>$item->first()->invoice]) }}" class="btn btn-success py-0 px-5" style="height: 20px; font-size:.7rem">Buat Jurnal</a>
+                                                        @else
+                                                            <a href="{{ route('jurnal.edit',['jurnal'=>$item->first()->jurnal]) }}" class="btn btn-warning py-0 px-5" style="height: 20px; font-size:.7rem">Lihat Jurnal</a>
+                                                        @endif
                                                     @endif
                                                     <button class="btn btn-info py-0 px-5" style="height: 20px; font-size:.7rem" type="button" data-bs-toggle="modal" data-bs-target="#listresi-{{ $loop->iteration }}">Detail</button>
                                                 </div>
@@ -182,7 +192,7 @@
                                                             </div>
                                                             <div class="modal-body">
                                                                 <div class="table-responsive">
-                                                                    <table class="table table-sm" id="table-2" style="font-size:.7rem">
+                                                                    <table class="table table-sm table table-list" style="font-size:.7rem">
                                                                         <thead>
                                                                             <tr>
                                                                                 <th>ID.</th>
@@ -250,22 +260,31 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addJobLabel">Input ID JOB</h5>
+                    <h5 class="modal-title" id="addJobLabel">Item tambahan</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div>
-                        <select name="order_id" id="order_id" class="form-select">
-                            <option value=""></option>
-                            @foreach ($orders as $item)
-                            <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</option>
-                            @endforeach
-                        </select>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Keterangan</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="kirim-dokumen-list"></tbody>
+                        </table>
+                    </div>
+                    <hr>
+                    <div class="d-flex gap-2">
+                        <input type="text" name="nama" id="nama" class="form-control" placeholder="Tulis keterangan" style="width: 80%">
+                        <button class="py-1 px-3 bg-success text-white" type="button" style="width: 20%" onclick="addKirimDokumen()">Simpan</button>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="btn-add-job" class="btn btn-primary">Tambahkan</button>
+                    {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" id="btn-add-job" class="btn btn-primary">Tambahkan</button> --}}
                 </div>
             </div>
         </div>
@@ -429,5 +448,69 @@
                 });
             }
         }
+
+        var addItem = new bootstrap.Modal(document.getElementById('addJob'), {
+            keyboard: false
+        })
+        var myModalEl = document.getElementById('addJob')
+        myModalEl.addEventListener('hidden.bs.modal', function (event) {
+            table1.ajax.reload();
+        })
+        function loadListKirimDokumen() {
+            if(table1.rows('.selected').data().length == 1){
+                addItem.show();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url('api/kirim-dokumen') }}"+'?jasa_kirim_id='+table1.rows('.selected').data()[0].id,
+                    success: function (response) {
+                        let html = '';
+                        $.each(response, function (idx, item) {
+                            html += `<tr>
+                                        <td>${idx+1}</td>
+                                        <td>${item.nama}</td>
+                                        <td>
+                                            <button class="py-1 px-3 bg-danger text-white" type="button" onclick="deleteKirimDokumen(${item.id})">Hapus</button>
+                                        </td>
+                                    </tr>`;
+                        });
+                        $('#kirim-dokumen-list').html(html);
+                    }
+                });
+            }else{
+                alert('Harap pilih satu data saja!');
+            }
+        }
+
+        function addKirimDokumen(){
+            var val = $('#nama').val();
+            if (val) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('kirim_dokumen.store') }}",
+                    data: {
+                        nama:val,
+                        jasa_kirim_id:table1.rows('.selected').data()[0].id
+                    },
+                    success: function (response) {
+                        $('#nama').val('');
+                        loadListKirimDokumen();
+                        alert('Data berhasil ditambahkan!');
+                    }
+                });
+            }
+        }
+
+        function deleteKirimDokumen(id){
+            $.ajax({
+                type: "DELETE",
+                url: "{{ url('api/kirim-dokumen') }}"+"/"+id,
+                success: function (response) {
+                    loadListKirimDokumen();
+                    alert('Data berhasil dihapus!');
+                }
+            });
+        }
+
+        $('.table-list').DataTable();
     </script>
 @endsection
