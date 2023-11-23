@@ -238,12 +238,16 @@ class TruckingController extends Controller
         if ($orders->count() > 1) {
             return back()->with('danger', 'Anda tidak bisa memilih ' . $orders->count() . ' Customer sekaligus!, Harap untuk pilih satu Customer');
         }
+        $order_sync = OrderTrucking::whereIn('id', $order_id)->get();
+        $service = new SyncService();
+        foreach($order_sync as $item){
+            $service->trucking($item->id);
+        }
         $order = OrderTrucking::whereIn('id', $order_id)->first();
         $null_job = OrderTrucking::whereIn('id', $order_id)->whereNull('order_id')->count();
 
         $tipe = $request->tipe;
         $data = OrderTrucking::whereIn('id', $order_id)->orderBy('tgl_muat')->get()->groupBy('tarif_id');
-
         // if(count($r1s)>0&&count($r2s)>0){
         //     return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
         // }
