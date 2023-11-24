@@ -159,9 +159,12 @@ class JasaKirimController extends Controller
             }
             if(request('role')=='cs'){
                 $query->whereNull('barcode');
-                $query->whereNull('tgl_kirim');
-                $query->whereNull('jurnal');
-                $query->whereNull('invoice');
+                $query->orWhereNull('tgl_kirim');
+                $query->whereNotNull('nominal');
+                $query->where('nominal','>',0);
+                if(!is_null(request('start_date')) && !is_null(request('end_date'))){
+                    $query->whereBetween('tgl_kirim',[request('start_date'),request('end_date')]);
+                }
             }
             if(request('role')=='kasir'){
                 $query->whereNotNull('barcode');
