@@ -369,7 +369,7 @@
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
-                                <td colspan="2">OPT
+                                <td colspan="2">OPT({{ $item->count() }}X{{ preg_replace("/[^0-9]/", "", $item->first()->order->tarif->shipmentInfo->nama ) }}) {{ $item->first()->order->tarif->customer->nama }} ({{ $item->first()->order->job }}) ({{ implode(',',$item->sortBy('order.no_job')->pluck('order.no_job')->toArray()) }})
                                 </td>
                                 <td class="text-end">{{ number_format($item->first()->opt * $item->count(),2,',','.') }}</td>
                             </tr>
