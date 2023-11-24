@@ -61,6 +61,15 @@ class LaporanController extends Controller
         $data = Sopir::where('milik','!=','vendor')->get();
         return view('admin.laporan.sopir', compact('data','year'));
     }
+    public function omset()
+    {
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $job = $year.sprintf('%02d',$month);
+        $data = Order::where('job','like',$job.'%')->get();
+        return view('admin.laporan.omset', compact('data','year','months','month'));
+    }
     public function invoice()
     {
         $year = request('year') ?? date('Y');
