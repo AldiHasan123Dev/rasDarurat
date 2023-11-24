@@ -34,13 +34,29 @@
         top: 0px;
         background: white;
     }
+    tfoot{
+        position: sticky;
+        z-index: 12;
+        bottom: 0px;
+        background: white;
+    }
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
         width: 100%;
         margin: 0 auto;
     }
-    table#table thead {
-        visibility: collapse;
+    #table th,
+    #table td {
+        vertical-align: middle;
+        height: 20px;
+        padding: 0 !important;
+        border: 1px solid black;
+        color: black;
+    }
+    .dataTables_scroll
+    {
+        overflow:auto;
+        height: 400px;
     }
 </style>
 @endsection
@@ -66,25 +82,25 @@
                             <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
                                 <thead>
                                     <tr>
-                                        <th>Bulan</th>
-                                        <th class="text-center" colspan="2">Januari</th>
-                                        <th class="text-center" colspan="2">Februari</th>
-                                        <th class="text-center" colspan="2">Maret</th>
-                                        <th class="text-center" colspan="2">April</th>
+                                        <th rowspan="2" class="text-center">Tujuan</th>
+                                        <th class="text-center" colspan="2">Jan</th>
+                                        <th class="text-center" colspan="2">Feb</th>
+                                        <th class="text-center" colspan="2">Mar</th>
+                                        <th class="text-center" colspan="2">Apr</th>
                                         <th class="text-center" colspan="2">Mei</th>
-                                        <th class="text-center" colspan="2">Juni</th>
-                                        <th class="text-center" colspan="2">July</th>
-                                        <th class="text-center" colspan="2">Agustus</th>
-                                        <th class="text-center" colspan="2">September</th>
-                                        <th class="text-center" colspan="2">Oktober</th>
-                                        <th class="text-center" colspan="2">November</th>
-                                        <th class="text-center" colspan="2">Desember</th>
+                                        <th class="text-center" colspan="2">Jun</th>
+                                        <th class="text-center" colspan="2">Jul</th>
+                                        <th class="text-center" colspan="2">Agu</th>
+                                        <th class="text-center" colspan="2">Sep</th>
+                                        <th class="text-center" colspan="2">Okt</th>
+                                        <th class="text-center" colspan="2">Nov</th>
+                                        <th class="text-center" colspan="2">Des</th>
                                         <th class="text-center" colspan="3">Total</th>
                                     </tr>
                                     <tr>
-                                        <th>Tujuan</th>
+                                        {{-- <th>Tujuan</th> --}}
                                         @for ($i = 1; $i <=26; $i++)
-                                        <th class="text-center">{{ $i%2==0?'20':40 }}</th>
+                                        <th class="text-center" style="min-width:40px !important">{{ $i%2==0?'20':40 }}</th>
                                         @endfor
                                         <th class="text-center">Sub Total</th>
                                     </tr>
@@ -166,17 +182,19 @@
                 left: 1,
                 right: 0
             },
+            autoWidth:false,
             paging: false,
             scrollCollapse: true,
             fixedHeader: true,
-            scrollX:true,
-            scrollY: 400,
+            // scrollX:true,
+            // scrollY: 400,
             dom: 'Bfrtip',
             buttons: [
                 {
                     extend:'excel'
                 },
-            ]
+            ],
         });
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     </script>
 @endsection
