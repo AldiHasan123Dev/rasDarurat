@@ -38,8 +38,20 @@
         width: 100%;
         margin: 0 auto;
     }
-    table#table thead {
+    /* table#table thead {
         visibility: collapse;
+    } */
+    #table th,
+    #table td {
+        vertical-align: middle;
+        height: 20px;
+        padding: 0 !important;
+        border: 1px solid black;
+        color: black;
+    }
+    .dataTables_scroll
+    {
+        overflow:auto;
     }
 </style>
 @endsection
@@ -65,7 +77,7 @@
                             <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
                                 <thead>
                                     <tr>
-                                        <th>Bulan</th>
+                                        <th rowspan="2" style="text-align: center; vertical-align:middle">CS</th>
                                         <th class="text-center" colspan="2">Januari</th>
                                         <th class="text-center" colspan="2">Februari</th>
                                         <th class="text-center" colspan="2">Maret</th>
@@ -81,7 +93,7 @@
                                         <th class="text-center" colspan="3">Total</th>
                                     </tr>
                                     <tr>
-                                        <th>CS</th>
+                                        {{-- <th>CS</th> --}}
                                         @for ($i = 1; $i <=26; $i++)
                                         <th class="text-center">{{ $i%2==0?'20':40 }}</th>
                                         @endfor
@@ -167,8 +179,8 @@
             paging: false,
             scrollCollapse: true,
             fixedHeader: true,
-            scrollX:true,
-            scrollY: 400,
+            // scrollX:true,
+            // scrollY: 400,
             dom: 'Bfrtip',
             buttons: [
                 {
@@ -176,5 +188,6 @@
                 },
             ]
         });
+        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
     </script>
 @endsection
