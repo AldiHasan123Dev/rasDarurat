@@ -158,7 +158,10 @@ class JasaKirimController extends Controller
                 $query->where('lokasi_id',request('tujuan'));
             }
             if(request('role')=='cs'){
-                $query->whereNull('tgl_terima');
+                $query->whereNull('barcode');
+                $query->whereNull('tgl_kirim');
+                $query->whereNull('jurnal');
+                $query->whereNull('invoice');
             }
             if(request('role')=='kasir'){
                 $query->whereNotNull('barcode');
