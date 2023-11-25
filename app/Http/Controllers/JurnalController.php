@@ -56,7 +56,6 @@ class JurnalController extends Controller
 
     public function submit_slip_totalan_sopir(Request $request)
     {
-        dd($request->all());
         if(!$request->nomor){
             return back()->with('danger','Harap pilih nomor jurnal terlebih dahulu!');
         }
