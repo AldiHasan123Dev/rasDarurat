@@ -222,7 +222,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $order)
-                                        <tr class="table-{{ $order->omset->margin <= 0.03 ? 'warning' : '' }}">
+                                        <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 ? 'warning' : '') : '' }}">
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}</td>
