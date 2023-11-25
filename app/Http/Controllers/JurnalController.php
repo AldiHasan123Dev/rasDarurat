@@ -56,6 +56,7 @@ class JurnalController extends Controller
 
     public function submit_slip_totalan_sopir(Request $request)
     {
+        dd($request->all());
         if(!$request->nomor){
             return back()->with('danger','Harap pilih nomor jurnal terlebih dahulu!');
         }
@@ -650,13 +651,13 @@ class JurnalController extends Controller
         }else{
             $service = new SyncService();
             foreach($arr_order as $id){
-                $sangu_sopir = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->first()->debit ?? 0;
-                $sangu_kuli = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->first()->debit ?? 0;
-                $uang_makan = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->first()->debit ?? 0;
-                $solar = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->first()->debit ?? 0;
-                $op = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->first()->debit ?? 0;
-                $cleaning = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->first()->debit ?? 0;
-                $tally = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->first()->debit ?? 0;
+                $sangu_sopir = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->sum('debit') ?? 0;
+                $sangu_kuli = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->sum('debit') ?? 0;
+                $uang_makan = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->sum('debit') ?? 0;
+                $solar = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->sum('debit') ?? 0;
+                $op = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->sum('debit') ?? 0;
+                $cleaning = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->sum('debit') ?? 0;
+                $tally = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->sum('debit') ?? 0;
 
                 if($sangu_sopir>0){
                     OrderTrucking::find($id)->update([

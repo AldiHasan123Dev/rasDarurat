@@ -116,6 +116,7 @@ class JasaKirimController extends Controller
                 Jurnal::create([
                     'tipe' => 'JNL',
                     'coa_id' => 31,
+                    'order_id' => $kirim->order_id,
                     'nomor' => $request->nomor,
                     'nama' => $kirim->nama,
                     'debit' => $item->split_nominal(),
@@ -158,17 +159,9 @@ class JasaKirimController extends Controller
                 $query->where('lokasi_id',request('tujuan'));
             }
             if(request('role')=='cs'){
-                $query->whereNull('barcode');
-                $query->orWhereNull('tgl_kirim');
-                $query->whereNotNull('nominal');
-                $query->where('nominal','>',0);
-                if(!is_null(request('start_date')) && !is_null(request('end_date'))){
-                    $query->whereBetween('tgl_kirim',[request('start_date'),request('end_date')]);
-                }
+                $query->whereNull('tgl_terima');
             }
             if(request('role')=='kasir'){
-                $query->whereNotNull('barcode');
-                $query->whereNotNull('tgl_kirim');
                 $query->whereNull('jurnal');
                 $query->whereNull('invoice');
             }

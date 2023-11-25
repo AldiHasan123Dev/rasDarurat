@@ -166,7 +166,7 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->simpanan) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][coa_id]" value="61">
+                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nomor]">
                                                 <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][no]">
@@ -200,7 +200,7 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->simpanan_kuli) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][coa_id]" value="61">
+                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nomor]">
                                                 <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][no]">
@@ -234,7 +234,7 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->tb_tl) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][coa_id]" value="61">
+                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_tbtl[{{ $idx }}][nomor]">
                                                 <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_tbtl[{{ $idx }}][no]">
@@ -268,7 +268,7 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->stappel) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][coa_id]" value="61">
+                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_stappel[{{ $idx }}][nomor]">
                                                 <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_stappel[{{ $idx }}][no]">

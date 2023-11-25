@@ -14,6 +14,7 @@ class KirimDokumen extends Model
     protected $table = 'kirim_dokumen';
     protected $fillable = [
         'jasa_kirim_id',
+        'order_id',
         'nama'
     ];
 
@@ -26,5 +27,10 @@ class KirimDokumen extends Model
         static::saving(function ($model) {
             $model->updated_by = Auth::id();
         });
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }

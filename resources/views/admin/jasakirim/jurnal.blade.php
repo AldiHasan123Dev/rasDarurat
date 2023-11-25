@@ -75,7 +75,7 @@
                                         </div>
                                         <div class="mb-2 mt-3">
                                             <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('are you sure?')">Generate Jurnal</button>
-                                            <a href="{{ route('jurnal.totalan_sopir') }}" class="btn btn-primary btn-sm">Kembali</a>
+                                            <a href="{{ route('jasakirim.index',['role'=>'jurnal']) }}" class="btn btn-primary btn-sm">Kembali</a>
                                         </div>
                                     </div>
                                 </div>
@@ -119,7 +119,7 @@
                                                                 <tr>
                                                                     <td>1.6.1</td>
                                                                     <td>Uang Muka Biaya Oprasional Ekspedisi</td>
-                                                                    <td>-</td>
+                                                                    <td>{{ $kirim->order->job }}-{{ sprintf('%02d',$kirim->order->no_job) }}</td>
                                                                     <td>{{ $kirim->nama }}</td>
                                                                     <td>{{ number_format($item->split_nominal()) }}</td>
                                                                     <td>0</td>
