@@ -12,7 +12,9 @@ class OrderBiayaController extends Controller
     public function index()
     {
         $order = Order::whereHas('tarif',function($q){
-            $q->where('tujuan',97);
+            $q->whereHas('tujuan_lokasi', function($a){
+                $a->where('nama','like','%banjarmasin%');
+            });
         })->pluck('id')->map(function ($id) {
             $biaya = OrderBiaya::where('order_id',$id)->first();
             if(!$biaya){

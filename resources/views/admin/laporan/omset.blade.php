@@ -64,7 +64,10 @@
             <div class="col-12">
                 <div class="card p-3">
                     <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                        <div class="d-flex gap-3">
+                            <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="sync()"><i class="fas fa-print"></i> SYNC</button>
+                        </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">
                                 <select name="year" id="year" class="form-select" style="width: 150px" onchange="submit()">
@@ -146,6 +149,7 @@
                                         <th style="min-width:40px !important">BIAYA LAIN-LAIN</th>
                                         <th style="min-width:40px !important">FLEXIBAG</th>
                                         <th style="min-width:40px !important">RC</th>
+                                        <th style="min-width:40px !important">TARIF</th>
                                         <th style="min-width:40px !important">BIAYA</th>
                                         <th style="min-width:40px !important">LABA KOTOR</th>
                                         <th style="min-width:40px !important">PROSENTASE MARGIN</th>
@@ -258,7 +262,7 @@
                                             <td>{{ is_null($order->tarif) ? '-' :  number_format($order->tarif->tarif) }}</td>
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
-                                            @for ($i = 0; $i < 23; $i++)
+                                            @for ($i = 0; $i < 24; $i++)
                                             <td>0</td>
                                             @endfor
                                         </tr>
@@ -299,27 +303,44 @@
                     extend:'excel'
                 },
             ],
-            initComplete: function () {
-                this.api()
-                    .columns()
-                    .every(function () {
-                        let column = this;
-                        let title = column.header().textContent;
 
-                        // Create input element
-                        let input = document.createElement('input');
-                        input.placeholder = title;
-                        column.header().replaceChildren(input);
-
-                        // Event listener for user input
-                        input.addEventListener('keyup', () => {
-                            if (column.search() !== this.value) {
-                                column.search(input.value).draw();
-                            }
-                        });
-                    });
-            }
         });
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+
+        function sync(){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('omset.sync') }}",
+                data: {
+                    month:@json($month),
+                    year:@json($year),
+                },
+                success: function (response) {
+                    alert("SINKRONISASI BERHASIL!");
+                    location.reload();
+                }
+            });
+        }
     </script>
 @endsection
+
+{{-- initComplete: function () {
+    this.api()
+        .columns()
+        .every(function () {
+            let column = this;
+            let title = column.header().textContent;
+
+            // Create input element
+            let input = document.createElement('input');
+            input.placeholder = title;
+            column.header().replaceChildren(input);
+
+            // Event listener for user input
+            input.addEventListener('keyup', () => {
+                if (column.search() !== this.value) {
+                    column.search(input.value).draw();
+                }
+            });
+        });
+} --}}

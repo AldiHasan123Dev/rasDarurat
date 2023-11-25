@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\JasaKirimController;
 use App\Http\Controllers\Api\JurnalController;
 use App\Http\Controllers\Api\KirimDokumenController;
 use App\Http\Controllers\Api\NSFPController;
+use App\Http\Controllers\Api\OmsetController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderTruckingController;
 use App\Http\Controllers\Api\SanguSopirController;
@@ -96,6 +97,7 @@ Route::get('pelayaran-data',[PelayaranController::class,'data'])->name('api.pela
 Route::get('kirim-dokumen',[KirimDokumenController::class,'index'])->name('kirim_dokumen.index');
 Route::post('kirim-dokumen',[KirimDokumenController::class,'store'])->name('kirim_dokumen.store');
 Route::delete('kirim-dokumen/{kirim_dokumen}',[KirimDokumenController::class,'destroy'])->name('kirim_dokumen.destroy');
+Route::post('sync-omset',[OmsetController::class,'sync'])->name('omset.sync');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
