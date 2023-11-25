@@ -222,7 +222,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $order)
-                                        <tr>
+                                        <tr class="table-{{ $order->omset->margin <= 0.03 ? 'warning' : '' }}">
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}</td>
@@ -262,9 +262,30 @@
                                             <td>{{ is_null($order->tarif) ? '-' :  number_format($order->tarif->tarif) }}</td>
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
-                                            @for ($i = 0; $i < 24; $i++)
-                                            <td>0</td>
-                                            @endfor
+                                            <td>{{ number_format(($order->omset->opp ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->opt ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->ut ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->bl ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->apbs ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->cleaning ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->lss ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->storage ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->jasa_door ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->asuransi ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->ops ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->segel ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->buruh ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->checker ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->karantina ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->demmurage ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->kirim_dokumen ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->biaya_lain ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->flexibag ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->rc ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->biaya ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->tarif ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format(($order->omset->margin ?? 0),3,',','.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

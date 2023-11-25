@@ -180,4 +180,9 @@ class Order extends Model
     {
         return $this->belongsTo(Port::class);
     }
+
+    public function omset()
+    {
+        return $this->hasOne(Omset::class);
+    }
 }
