@@ -93,13 +93,19 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
-                                                    <label for="tujuan">Tujuan</label>
-                                                    <select name="tujuan" id="tujuan" class="form-select">
-                                                        <option value=""></option>
-                                                        @foreach ($lokasi as $loc)
-                                                        <option value="{{ $loc->id }}" {{ $tujuan==$loc->id?'selected':'' }}>{{ $loc->nama }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    <div class="mb-2">
+                                                        <label for="tujuan">Tujuan</label>
+                                                        <select name="tujuan" id="tujuan" class="form-select">
+                                                            <option value=""></option>
+                                                            @foreach ($lokasi as $loc)
+                                                            <option value="{{ $loc->id }}" {{ $tujuan==$loc->id?'selected':'' }}>{{ $loc->nama }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-2">
+                                                        <label for="search">ID JOB</label>
+                                                        <input type="text" class="form-control" name="search" value="{{ $search }}">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -338,6 +344,7 @@
                     start_date:@json($start_date),
                     end_date:@json($end_date),
                     tujuan:@json($tujuan),
+                    search:@json($search),
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },

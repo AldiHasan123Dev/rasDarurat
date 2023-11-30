@@ -2,6 +2,7 @@
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
 <style>
     @media print{
         @page {
@@ -70,6 +71,11 @@
                         </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">
+                                <select name="month" id="month" class="form-select" style="width: 150px" onchange="submit()">
+                                    @foreach ($months as $idx=> $item)
+                                    <option value="{{ $idx+1 }}" {{ ($idx+1)==$month?'selected':'' }}>{{ $item }}</option>
+                                    @endforeach
+                                </select>
                                 <select name="year" id="year" class="form-select" style="width: 150px" onchange="submit()">
                                     <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
                                     <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
@@ -77,11 +83,14 @@
                                     <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
                                     <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
                                 </select>
-                                <select name="month" id="month" class="form-select" style="width: 150px" onchange="submit()">
-                                    @foreach ($months as $idx=> $item)
-                                    <option value="{{ $idx }}" {{ $idx==$month?'selected':'' }}>{{ $item }}</option>
-                                    @endforeach
-                                </select>
+                                <div>
+                                    <label for="radio1">
+                                        <input type="radio" name="tipe" id="radio1" value="inv" {{ $tipe=='inv'?'checked':'' }} onchange="submit()"> Periode Invoice
+                                    </label>
+                                    <label for="radio2">
+                                        <input type="radio" name="tipe" id="radio2" value="job" {{ $tipe=='job'?'checked':'' }} onchange="submit()"> Periode JOB
+                                    </label>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -90,6 +99,8 @@
                             <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
                                 <thead>
                                     <tr>
+                                        <th style="min-width:40px !important">ID</th>
+                                        <th style="min-width:40px !important">ORDER_ID</th>
                                         <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">Group JOB</th>
@@ -149,8 +160,8 @@
                                         <th style="min-width:40px !important">BIAYA LAIN-LAIN</th>
                                         <th style="min-width:40px !important">FLEXIBAG</th>
                                         <th style="min-width:40px !important">RC</th>
-                                        <th style="min-width:40px !important">TARIF</th>
                                         <th style="min-width:40px !important">BIAYA</th>
+                                        <th style="min-width:40px !important">TARIF</th>
                                         <th style="min-width:40px !important">LABA KOTOR</th>
                                         <th style="min-width:40px !important">PROSENTASE MARGIN</th>
                                     </tr>
@@ -223,6 +234,8 @@
                                 <tbody>
                                     @foreach ($data as $order)
                                         <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 ? 'warning' : '') : '' }}">
+                                            <td>{{ $order->omset->id ?? null }}</td>
+                                            <td>{{ $order->id }}</td>
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}</td>
@@ -262,27 +275,111 @@
                                             <td>{{ is_null($order->tarif) ? '-' :  number_format($order->tarif->tarif) }}</td>
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
-                                            <td>{{ number_format(($order->omset->opp ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->opt ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->ut ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->bl ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->apbs ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->cleaning ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->lss ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->storage ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->jasa_door ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->asuransi ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->ops ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->segel ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->buruh ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->checker ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->karantina ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->demmurage ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->kirim_dokumen ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->biaya_lain ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->flexibag ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->rc ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->biaya ?? 0),2,',','.') }}</td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_opp ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->opp ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_opt ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->opt ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ut ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->ut ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_bl ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->bl ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_apbs ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->apbs ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_cleaning ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->cleaning ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_lss ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->lss ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_storage ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->storage ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_jasa_door ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->jasa_door ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_asuransi ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->asuransi ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ops ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->ops ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_segel ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->segel ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_buruh ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->buruh ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_checker ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->checker ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_karantina ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->karantina ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_demmurage ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->demmurage ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_kirim_dokumen ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->kirim_dokumen ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_biaya_lain ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->biaya_lain ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_flexibag ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->flexibag ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_rc ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->rc ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_biaya ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->biaya ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
                                             <td>{{ number_format(($order->omset->tarif ?? 0),2,',','.') }}</td>
                                             <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
                                             <td>{{ number_format(($order->omset->margin ?? 0),3,',','.') }}</td>
@@ -297,6 +394,52 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modal-jurnal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">List Jurnal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered" style="font-size: .7rem">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tgl</th>
+                                    <th>Nomor</th>
+                                    <th>COA</th>
+                                    <th>Akun</th>
+                                    <th>JOB</th>
+                                    <th>INV</th>
+                                    <th>Cont</th>
+                                    <th>Nopol</th>
+                                    <th>Keterangan</th>
+                                    <th>Debit</th>
+                                    <th>Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="list-jurnal">
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td class="text-end" colspan="10"><b>TOTAL</b></td>
+                                    <td class="text-end"><b id="debit-total"></b></td>
+                                    <td class="text-end"><b id="credit-total"></b></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
@@ -306,8 +449,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
     <script>
-        $('#table').DataTable({
+        let table = $('#table').DataTable({
             fixedColumns: {
                 left: 4,
                 right: 0
@@ -316,6 +460,7 @@
             paging: false,
             scrollCollapse: true,
             fixedHeader: true,
+            // select: true,
             // scrollX:true,
             // scrollY: 400,
             dom: 'Bfrtip',
@@ -324,8 +469,12 @@
                     extend:'excel'
                 },
             ],
-
+            search: {
+                return: true
+            }
         });
+        table.column( 0 ).visible( false );
+        table.column( 1 ).visible( false );
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
         function sync(){
@@ -339,6 +488,51 @@
                 success: function (response) {
                     alert("SINKRONISASI BERHASIL!");
                     location.reload();
+                }
+            });
+        }
+
+        // table.on('select', function (e, dt, type, indexes) {
+        //     let rowData = table.rows(indexes).data().toArray();
+        //     console.log(rowData);
+        // })
+
+        var modal_jurnal = new bootstrap.Modal(document.getElementById('modal-jurnal'))
+
+        function showJurnal(id){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('omset.jurnal') }}",
+                data: {
+                    id:id
+                },
+                success: function (response) {
+                    let html = '';
+                    let debit = 0;
+                    let credit = 0;
+                    $.each(response, function (idx, item) {
+                        debit += item.debit_num;
+                        credit += item.credit_num;
+                        html += `<tr>
+                                    <td>${idx+1}</td>
+                                    <td>${item.created_at}</td>
+                                    <td>${item.nomor}</td>
+                                    <td>${item.coa_kode}</td>
+                                    <td>${item.coa_nama}</td>
+                                    <td>${item.no_job}</td>
+                                    <td>${item.invoice}</td>
+                                    <td>${item.container}</td>
+                                    <td>${item.nopol}</td>
+                                    <td>${item.nama}</td>
+                                    <td class="text-end">${item.debit}</td>
+                                    <td class="text-end">${item.credit}</td>
+                                </tr>`;
+                    });
+
+                    $('#list-jurnal').html(html);
+                    $('#debit-total').html(debit.toLocaleString('id-ID'));
+                    $('#credit-total').html(credit.toLocaleString('id-ID'));
+                    modal_jurnal.show();
                 }
             });
         }

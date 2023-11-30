@@ -80,8 +80,18 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $num = Jurnal::whereBetween('created_at', ['2022-12-01', '2023-01-01'])->pluck('nama');
-    dd($num);
+    $num = [1,2,3,4,1,2,3,5,6,7,8];
+    function findUniqueValue($array) {
+        $counted_values = array_count_values($array);
+        $arr = [];
+        foreach ($counted_values as $value => $count) {
+            if ($count === 1) {
+                array_push($arr,$value);
+            }
+        }
+        return $arr;
+    }
+    dd(findUniqueValue($num));
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -65,10 +65,15 @@ class LaporanController extends Controller
     {
         $year = request('year') ?? date('Y');
         $month = request('month') ?? date('m');
+        $tipe = request('tipe') ?? 'inv';
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $job = $year.sprintf('%02d',$month);
-        $data = Order::where('job','like',$job.'%')->get();
-        return view('admin.laporan.omset', compact('data','year','months','month'));
+        if($tipe=='inv'){
+            $data = Order::whereMonth('invoice_date',$month)->whereYear('invoice_date',$year)->get();
+        }else{
+            $data = Order::where('job','like',$job.'%')->get();
+        }
+        return view('admin.laporan.omset', compact('data','year','months','month','tipe'));
     }
     public function invoice()
     {
