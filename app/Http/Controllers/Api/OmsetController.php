@@ -13,17 +13,19 @@ class OmsetController extends Controller
 {
     public function sync()
     {
-        $month = request('month');
-        $year = request('year');
-        $job = $year.sprintf('%02d',$month);
-        $orders = Order::where('job','like',$job.'%')->get();
+        $id = request('id');
+        $ids = array_slice($id,request('start'),request('end'));
+        $end = request('start') + request('end');
+        $orders = Order::whereIn('id',$ids)->get();
         $data = array();
         foreach ($orders as $idx => $order) {
             $data[$idx]['order_id'] = $order->id;
+            $data[$idx]['trucking'] = $order->truckingInfo->tarif->tarif ?? 0;
+            $data[$idx]['j_trucking'] = '[]';
             $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPT %')->sum('debit');
             $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
-            $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPP %')->sum('debit');
-            $data[$idx]['j_opp'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPP %')->pluck('id')->toJson();
+            $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->where('coa_id',31)->where('order_id',$order->id)->sum('debit');
+            $data[$idx]['j_opp'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->where('coa_id',31)->where('order_id',$order->id)->pluck('id')->toJson();
             $data[$idx]['ut'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','UT %')->sum('debit');
             $data[$idx]['j_ut'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','UT %')->pluck('id')->toJson();
             $data[$idx]['bl'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','BL %')->sum('debit');
@@ -40,12 +42,16 @@ class OmsetController extends Controller
             $data[$idx]['j_jasa_door'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%dooring %')->pluck('id')->toJson();
             $data[$idx]['asuransi'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%asuransi %')->sum('debit');
             $data[$idx]['j_asuransi'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%asuransi %')->pluck('id')->toJson();
-            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%operasional %')->sum('debit');
-            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%operasional %')->pluck('id')->toJson();
-            $data[$idx]['segel'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%seal %')->sum('debit');
-            $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%seal %')->pluck('id')->toJson();
-            $data[$idx]['buruh'] = Jurnal::orWhere('nama','LIKE','%buruh %')->where('coa_id',31)->where('order_id',$order->id)->orWhere('nama','LIKE','%kuli')->where('coa_id',31)->where('order_id',$order->id)->sum('debit');
-            $data[$idx]['j_buruh'] = Jurnal::orWhere('nama','LIKE','%buruh %')->where('coa_id',31)->where('order_id',$order->id)->orWhere('nama','LIKE','%kuli')->where('coa_id',31)->where('order_id',$order->id)->pluck('id')->toJson();
+            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %'")->sum('debit');
+            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %'")->pluck('id')->toJson();
+            $data[$idx]['segel'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','pembayaran seal%')->sum('debit');
+            $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','pembayaran seal%')->pluck('id')->toJson();
+            $data[$idx]['ops_seal'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','biaya operasional %, seal')->sum('debit');
+            $data[$idx]['j_ops_seal'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','biaya operasional %, seal')->pluck('id')->toJson();
+            $data[$idx]['ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','biaya operasional %, seal%')->sum('debit');
+            $data[$idx]['j_ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','biaya operasional %, seal%')->pluck('id')->toJson();
+            $data[$idx]['buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->where('coa_id',31)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->where('coa_id',31)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->where('coa_id',31)->where('order_id',$order->id)->sum('debit');
+            $data[$idx]['j_buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->where('coa_id',31)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->where('coa_id',31)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->where('coa_id',31)->where('order_id',$order->id)->pluck('id')->toJson();
             $data[$idx]['checker'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%checker %')->sum('debit');
             $data[$idx]['j_checker'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%checker %')->pluck('id')->toJson();
             $data[$idx]['karantina'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%karantina %')->sum('debit');
@@ -58,7 +64,7 @@ class OmsetController extends Controller
             $data[$idx]['j_flexibag'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%flexibag %')->pluck('id')->toJson();
             $data[$idx]['rc'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%rc %')->sum('debit');
             $data[$idx]['j_rc'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%rc %')->pluck('id')->toJson();
-            $data[$idx]['biaya'] = $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
+            $data[$idx]['biaya'] = $data[$idx]['trucking'] + $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['ops_seal'] + $data[$idx]['ops_seal_cleaning'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
             $data[$idx]['biaya_lain'] =  Jurnal::where('order_id',$order->id)->where('coa_id',31)->sum('debit') - $data[$idx]['biaya'];
             $data[$idx]['biaya'] += $data[$idx]['biaya_lain'];
             $data[$idx]['tarif'] = $order->tarif->tarif ?? 0;
@@ -67,6 +73,7 @@ class OmsetController extends Controller
 
             $biaya_lain = json_encode(
                     array_merge(
+                        json_decode($data[$idx]['j_trucking'], true),
                         json_decode($data[$idx]['j_opp'], true),
                         json_decode($data[$idx]['j_opt'], true),
                         json_decode($data[$idx]['j_ut'], true),
@@ -79,6 +86,8 @@ class OmsetController extends Controller
                         json_decode($data[$idx]['j_asuransi'], true),
                         json_decode($data[$idx]['j_ops'], true),
                         json_decode($data[$idx]['j_segel'], true),
+                        json_decode($data[$idx]['j_ops_seal'], true),
+                        json_decode($data[$idx]['j_ops_seal_cleaning'], true),
                         json_decode($data[$idx]['j_buruh'], true),
                         json_decode($data[$idx]['j_checker'], true),
                         json_decode($data[$idx]['j_karantina'], true),
@@ -102,6 +111,7 @@ class OmsetController extends Controller
 
         // return response($data);
         Omset::upsert($data,['order_id'],[
+            'trucking',
             'opp',
             'opt',
             'ut',
@@ -114,6 +124,7 @@ class OmsetController extends Controller
             'asuransi',
             'ops',
             'segel',
+            'ops_seal',
             'buruh',
             'checker',
             'karantina',
@@ -126,6 +137,7 @@ class OmsetController extends Controller
             'tarif',
             'laba_kotor',
             'margin',
+            'j_trucking',
             'j_opp',
             'j_opt',
             'j_ut',
@@ -138,6 +150,7 @@ class OmsetController extends Controller
             'j_asuransi',
             'j_ops',
             'j_segel',
+            'j_ops_seal',
             'j_buruh',
             'j_checker',
             'j_karantina',
@@ -149,7 +162,11 @@ class OmsetController extends Controller
             'j_rc',
         ]);
 
-        return response('success');
+        if(count($id) > $end){
+            return response($end);
+        }else{
+            return response('complete');
+        }
     }
 
     public function getJurnal(Request $request)

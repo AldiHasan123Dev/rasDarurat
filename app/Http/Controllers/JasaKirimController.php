@@ -159,21 +159,21 @@ class JasaKirimController extends Controller
             if(!is_null(request('tujuan'))){
                 $query->where('lokasi_id',request('tujuan'));
             }
-            if(!is_null(request('search'))){
-                $full_job = explode('-',request('search'));
-                $query->whereHas('orders', function($q) use($full_job){
-                    $q->where('job','like','%'.$full_job[0].'%');
-                    if(!empty($full_job[1])){
-                        $q->where('no_job','like','%'.(int)$full_job[1].'%');
-                    }
-                });
-            }
             if(request('role')=='cs'){
                 $query->whereNull('tgl_terima');
             }
             if(request('role')=='kasir'){
                 $query->whereNull('jurnal');
                 $query->whereNull('invoice');
+            }
+            if(!is_null(request('search'))){
+                $full_job = explode('-',request('search'));
+                $query->orWhereHas('orders', function($q) use($full_job){
+                    $q->where('job','like','%'.$full_job[0].'%');
+                    if(!empty($full_job[1])){
+                        $q->where('no_job','like','%'.(int)$full_job[1].'%');
+                    }
+                });
             }
             $query->orderBy('tgl_kirim','desc');
             $data = $query->get();

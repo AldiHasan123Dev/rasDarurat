@@ -136,7 +136,6 @@
                                         <th style="min-width:40px !important">Berat</th>
                                         <th style="min-width:40px !important">Satuan</th>
                                         <th style="min-width:40px !important">Unit</th>
-                                        <th style="min-width:40px !important">Tarif</th>
                                         <th style="min-width:40px !important">Agen</th>
                                         <th style="min-width:40px !important">Penerima BL</th>
                                         <th style="min-width:40px !important">Trucking</th>
@@ -152,6 +151,8 @@
                                         <th style="min-width:40px !important">ASURANSI</th>
                                         <th style="min-width:40px !important">OPS</th>
                                         <th style="min-width:40px !important">SEGEL</th>
+                                        <th style="min-width:40px !important">OPS & SEGEL</th>
+                                        <th style="min-width:40px !important">OPS & SEGEL & CLEANING</th>
                                         <th style="min-width:40px !important">BURUH</th>
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
@@ -256,7 +257,6 @@
                                             <td>{{ $order->jadwal_kapal->voyage ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->etd ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->td ?? '-' }}</td>
-                                            <td>{{ $order->jadwal_kapal->td ?? '-' }}</td>
                                             <td>{{ is_null($order->ba_kirim)?'-':date('d-m-Y',strtotime($order->ba_kirim)) }}</td>
                                             <td>{{ $order->nopol }}</td>
                                             <td>{{ $order->trucking }}</td>
@@ -272,9 +272,13 @@
                                             <td>{{ $order->bttb->sum('berat') }}</td>
                                             <td>{{ $order->satuanInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->satuanInfo->nama ?? '-' }}</td>
-                                            <td>{{ is_null($order->tarif) ? '-' :  number_format($order->tarif->tarif) }}</td>
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_trucking ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->trucking ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
                                             <td>
                                                 <a href="#" onclick="showJurnal('{{ $order->omset->j_opp ?? '[]'}}')">
                                                     {{ number_format(($order->omset->opp ?? 0),2,',','.') }}
@@ -333,6 +337,16 @@
                                             <td>
                                                 <a href="#" onclick="showJurnal('{{ $order->omset->j_segel ?? '[]'}}')">
                                                     {{ number_format(($order->omset->segel ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ops_seal ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->ops_seal ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ops_seal_cleaning ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->ops_seal_cleaning ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td>
@@ -478,16 +492,25 @@
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
         function sync(){
+            syncAction(0,50);
+        }
+
+        function syncAction(start,end){
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.sync') }}",
                 data: {
-                    month:@json($month),
-                    year:@json($year),
+                    id:@json($ids),
+                    start:start,
+                    end:end,
                 },
                 success: function (response) {
-                    alert("SINKRONISASI BERHASIL!");
-                    location.reload();
+                    if(response=='complete'){
+                        alert("SINKRONISASI BERHASIL!");
+                        location.reload();
+                    }else{
+                        syncAction(response,50)
+                    }
                 }
             });
         }

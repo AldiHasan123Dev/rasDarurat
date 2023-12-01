@@ -73,7 +73,8 @@ class LaporanController extends Controller
         }else{
             $data = Order::where('job','like',$job.'%')->get();
         }
-        return view('admin.laporan.omset', compact('data','year','months','month','tipe'));
+        $ids = $data->pluck('id')->toArray();
+        return view('admin.laporan.omset', compact('data','year','months','month','tipe','ids'));
     }
     public function invoice()
     {

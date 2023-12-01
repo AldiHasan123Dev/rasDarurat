@@ -13,6 +13,7 @@ class Omset extends Model
     protected $table = 'omset';
     protected $fillable = [
         'order_id',
+        'trucking',
         'opp',
         'opt',
         'ut',
@@ -25,6 +26,8 @@ class Omset extends Model
         'asuransi',
         'ops',
         'segel',
+        'ops_seal',
+        'ops_seal_cleaning',
         'buruh',
         'checker',
         'karantina',
@@ -34,6 +37,7 @@ class Omset extends Model
         'flexibag',
         'rc',
         'biaya',
+        'j_trucking',
         'j_opp',
         'j_opt',
         'j_ut',
@@ -46,6 +50,8 @@ class Omset extends Model
         'j_asuransi',
         'j_ops',
         'j_segel',
+        'j_ops_seal',
+        'j_ops_seal_cleaning',
         'j_buruh',
         'j_checker',
         'j_karantina',
