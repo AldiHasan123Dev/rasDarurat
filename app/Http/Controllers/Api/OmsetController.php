@@ -19,6 +19,11 @@ class OmsetController extends Controller
         $orders = Order::whereIn('id',$ids)->get();
         $data = array();
         foreach ($orders as $idx => $order) {
+            $cbm = $order->tarif->satuanInfo->nama ?? '-';
+            $tarif = $order->tarif->tarif ?? 0;
+            if($cbm=='CBM'){
+                $tarif *= $order->bttb->sum('vol');
+            }
             $data[$idx]['order_id'] = $order->id;
             $data[$idx]['trucking'] = $order->truckingInfo->tarif->tarif ?? 0;
             $data[$idx]['j_trucking'] = '[]';
@@ -42,8 +47,8 @@ class OmsetController extends Controller
             $data[$idx]['j_jasa_door'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%dooring %')->pluck('id')->toJson();
             $data[$idx]['asuransi'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%asuransi %')->sum('debit');
             $data[$idx]['j_asuransi'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%asuransi %')->pluck('id')->toJson();
-            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %'")->sum('debit');
-            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %'")->pluck('id')->toJson();
+            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %'")->sum('debit');
+            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE',"biaya operasional xpdc %'")->pluck('id')->toJson();
             $data[$idx]['segel'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','pembayaran seal%')->sum('debit');
             $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','pembayaran seal%')->pluck('id')->toJson();
             $data[$idx]['ops_seal'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','biaya operasional %, seal')->sum('debit');
@@ -67,7 +72,7 @@ class OmsetController extends Controller
             $data[$idx]['biaya'] = $data[$idx]['trucking'] + $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['ops_seal'] + $data[$idx]['ops_seal_cleaning'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
             $data[$idx]['biaya_lain'] =  Jurnal::where('order_id',$order->id)->where('coa_id',31)->sum('debit') - $data[$idx]['biaya'];
             $data[$idx]['biaya'] += $data[$idx]['biaya_lain'];
-            $data[$idx]['tarif'] = $order->tarif->tarif ?? 0;
+            $data[$idx]['tarif'] = $tarif;
             $data[$idx]['laba_kotor'] = $data[$idx]['tarif'] - $data[$idx]['biaya'];
             $data[$idx]['margin'] = $data[$idx]['laba_kotor'] / $data[$idx]['tarif'];
 

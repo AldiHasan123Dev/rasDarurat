@@ -394,7 +394,16 @@
                                                     {{ number_format(($order->omset->biaya ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>{{ number_format(($order->omset->tarif ?? 0),2,',','.') }}</td>
+                                            <td>
+                                                @php
+                                                    $cbm = $order->tarif->satuanInfo->nama ?? '-';
+                                                    $tarif = $order->tarif->tarif ?? 0;
+                                                    if($cbm=='CBM'){
+                                                        $tarif *= $order->bttb->sum('vol');
+                                                    }
+                                                @endphp
+                                                {{ number_format(($tarif ?? 0),2,',','.') }}
+                                            </td>
                                             <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
                                             <td>{{ number_format(($order->omset->margin ?? 0),3,',','.') }}</td>
                                         </tr>
