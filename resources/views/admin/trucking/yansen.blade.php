@@ -77,7 +77,8 @@
                                     @endphp
                                     @foreach ($data1 as $item)
                                     @php
-                                        $total1 += $item->tarif->tarif;
+                                        $tarif = $item->tarif->tarif + $item->tagihans->sum('jumlah');
+                                        $total1 += $tarif;
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
@@ -86,11 +87,11 @@
                                         <td>{{ $item->container }}</td>
                                         <td>{{ $item->tarif->tujuan->tujuanInfo->nama ?? '-' }}</td>
                                         <td>{{ $item->tipe }}'</td>
-                                        <td>Rp. {{ number_format($item->tarif->tarif) }}</td>
+                                        <td>Rp. {{ number_format($tarif) }}</td>
                                     </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="5"><b>Total</b></td>
+                                        <td colspan="6"><b>Total</b></td>
                                         <td><b>Rp. {{ number_format($total1) }}</b></td>
                                     </tr>
                                 </tbody>
@@ -116,7 +117,8 @@
                                     @endphp
                                     @foreach ($data2 as $item)
                                     @php
-                                        $total2 += $item->tarif->tarif;
+                                        $tarif = $item->tarif->tarif + $item->tagihans->sum('jumlah');
+                                        $total2 += $tarif;
                                     @endphp
                                     <tr>
                                         <td class="text-center">{{ $loop->iteration }}</td>
@@ -125,11 +127,11 @@
                                         <td>{{ $item->container }}</td>
                                         <td>{{ $item->keterangan_lain ?? '-' }}</td>
                                         <td>{{ $item->tipe }}'</td>
-                                        <td>Rp. {{ number_format($item->tarif->tarif) }}</td>
+                                        <td>Rp. {{ number_format($tarif) }}</td>
                                     </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="5"><b>Total</b></td>
+                                        <td colspan="6"><b>Total</b></td>
                                         <td><b>Rp. {{ number_format($total2) }}</b></td>
                                     </tr>
                                 </tbody>
