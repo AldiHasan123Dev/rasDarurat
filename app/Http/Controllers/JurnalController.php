@@ -1083,4 +1083,9 @@ class JurnalController extends Controller
 
         return back()->with('success', $akhir.'/'.$awal.' data berhasil disinkronisasi!');
     }
+
+    public function filter()
+    {
+        return view('admin.jurnal.filter');
+    }
 }

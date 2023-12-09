@@ -40,6 +40,13 @@ class JasaKirimController extends Controller
     {
         $data = $request->all();
         $jasakirim->update($data);
+        if ($request->tgl_kirim) {
+            if(is_null($request->tgl_kirim)){
+                Order::where('jasa_kirim_id',$jasakirim->id)->update([
+                    'ba_kirim' => $request->tgl_kirim
+                ]);
+            }
+        }
 
         return back()->with('success','Data berhasil diupdate');
     }
@@ -166,8 +173,8 @@ class JasaKirimController extends Controller
                 $query->whereNull('jurnal');
                 $query->whereNull('invoice');
             }
-            if(!is_null(request('search'))){
-                $full_job = explode('-',request('search'));
+            if(!is_null(request('searching'))){
+                $full_job = explode('-',request('searching'));
                 $query->orWhereHas('orders', function($q) use($full_job){
                     $q->where('job','like','%'.$full_job[0].'%');
                     if(!empty($full_job[1])){

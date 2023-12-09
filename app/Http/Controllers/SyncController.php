@@ -808,4 +808,18 @@ class SyncController extends Controller
 
         return response('success');
     }
+
+    public function coa_name()
+    {
+        $data = COA::where('nama','LIKE','%opra%')->get();
+        foreach ($data as $item) {
+            $name = $item->nama;
+            $name = str_replace(['opra','Opra'],'Opera',$name);
+            $item->update([
+                'nama' => $name
+            ]);
+        }
+
+        return response('success');
+    }
 }

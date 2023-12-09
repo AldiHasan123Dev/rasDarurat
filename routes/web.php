@@ -265,6 +265,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jurnal-trucking', [JurnalController::class, 'trucking'])->name('jurnal.trucking');
     Route::get('jurnal-merge', [JurnalController::class, 'merge'])->name('jurnal.merge');
     Route::get('jurnal-manual', [JurnalController::class, 'manual'])->name('jurnal.manual');
+    Route::get('jurnal-filter', [JurnalController::class, 'filter'])->name('jurnal.filter');
     Route::post('jurnal-merge', [JurnalController::class, 'store_merge'])->name('jurnal.merge.store');
     Route::post('jurnal-manual', [JurnalController::class, 'store_manual'])->name('jurnal.manual.store');
     Route::post('jurnal-kolektif', [JurnalController::class, 'store_kolektif'])->name('jurnal.kolektif.store');
@@ -307,5 +308,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-penerimabl', [SyncController::class, 'penerimabl']);
     Route::get('sync-port', [SyncController::class, 'port']);
     Route::get('sync-lokasi-agen', [SyncController::class, 'lokasi_agen']);
+    Route::get('sync-coa-name', [SyncController::class, 'coa_name']);
 });
 // Route::view('test','test');

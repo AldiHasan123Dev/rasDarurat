@@ -10,7 +10,7 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
-                            <b>List Nominal Belum Keluar</b>
+                            <b>KOTA AGEN BELUM DI ISI TARIF</b>
                             <form action="{{ route('jasakirim.sync') }}" method="post">
                                 @csrf
                                 <button class="btn btn-sm btn-success" type="submit">Sinkronisasi Harga</button>
@@ -27,7 +27,7 @@
                                         <th>JOB/ITEM</th>
                                         <th>Barcode</th>
                                         <th>Tgl Kirim</th>
-                                        <th>Tgl Terima</th>
+                                        <th>Tgl Terima Kurir</th>
                                         <th>Nominal</th>
                                         <th>Ekspedisi</th>
                                         <th>Action</th>
@@ -49,7 +49,9 @@
                         <!-- Button trigger modal -->
                         <div class="d-flex gap-3">
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Filter</button>
+                            @if ($role!='cs')
                             <button type="button" class="btn btn-success" onclick="addDraf()">Buat Draf Jurnal</button>
+                            @endif
                         </div>
                         <b id="nominal-selected">Rp. 0</b>
                         <form action="{{ route('jasakirim.sync.data') }}" method="post">
@@ -129,7 +131,7 @@
                                         <th>JOB/ITEM</th>
                                         <th>Barcode</th>
                                         <th>Tgl Kirim</th>
-                                        <th>Tgl Terima</th>
+                                        <th>Tgl Terima Kurir</th>
                                         <th>Nominal</th>
                                         <th>Ekspedisi</th>
                                         <th>Action</th>
@@ -207,7 +209,7 @@
                                                                                 <th>JOB</th>
                                                                                 <th>Barcode</th>
                                                                                 <th>Tgl Kirim</th>
-                                                                                <th>Tgl Terima</th>
+                                                                                <th>Tgl Terima Kurir</th>
                                                                                 <th>Nominal</th>
                                                                             </tr>
                                                                         </thead>
@@ -344,7 +346,7 @@
                     start_date:@json($start_date),
                     end_date:@json($end_date),
                     tujuan:@json($tujuan),
-                    search:@json($search),
+                    searching:@json($search),
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
