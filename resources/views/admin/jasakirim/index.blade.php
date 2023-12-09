@@ -68,7 +68,7 @@
                                     <button class="btn btn-sm btn-info" type="button" id="unmerge">Unmerge</button>
                                     @endif
                                     <button class="btn btn-sm btn-success" onclick="loadListKirimDokumen()" type="button">Tambah Item Resi</button>
-                                <button class="btn btn-sm btn-warning" type="submit">Sinkronisasi Data</button>
+                                {{-- <button class="btn btn-sm btn-warning" type="submit">Sinkronisasi Data</button> --}}
                             </div>
                         </form>
 
