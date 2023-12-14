@@ -219,7 +219,7 @@ class OrderController extends Controller
 
     public function SIExport()
     {
-        return Excel::download(new SIExport(request('attn'),request('to'),request('jadwal_kapal_id'),request('tujuan')), request('title').'.xlsx');
+        return Excel::download(new SIExport(request('attn'),request('to'),request('jadwal_kapal_id'),request('tujuan')),'SI-EXPORT.xlsx');
     }
 
     public function edit(Order $order)
