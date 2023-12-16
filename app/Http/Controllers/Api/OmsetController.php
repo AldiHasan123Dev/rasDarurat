@@ -16,7 +16,7 @@ class OmsetController extends Controller
         $id = request('id');
         $ids = array_slice($id,request('start'),request('end'));
         $end = request('start') + request('end');
-        $orders = Order::whereIn('id',$ids)->get();
+        $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
         $data = array();
         foreach ($orders as $idx => $order) {
             $cbm = $order->tarif->satuanInfo->nama ?? '-';
@@ -25,8 +25,8 @@ class OmsetController extends Controller
                 $tarif *= $order->bttb->sum('vol');
             }
             $data[$idx]['order_id'] = $order->id;
-            $data[$idx]['trucking'] = $order->truckingInfo->tarif->tarif ?? 0;
-            $data[$idx]['j_trucking'] = '[]';
+            $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%trucking%')->sum('debit');
+            $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
             $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPT %')->sum('debit');
             $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
             $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->where('coa_id',31)->where('order_id',$order->id)->sum('debit');
@@ -176,7 +176,7 @@ class OmsetController extends Controller
 
     public function getJurnal(Request $request)
     {
-        $id = str_replace(['[',']'],'',$request->id);
+        $id = str_replace(['[',']','"'],'',$request->id);
         $id = explode(',',$id);
         $data = Jurnal::whereIn('id',$id)->get();
         $res = JurnalResource::collection($data);
@@ -192,5 +192,61 @@ class OmsetController extends Controller
             }
         }
         return $arr;
+    }
+
+    public function addJurnal()
+    {
+        $omset_id = request('omset_id');
+        $jurnal_id = request('jurnal_id');
+        $type = request('to');
+        $before = request('type');
+        $col_before = substr($before,2);
+        $col = substr($type,2);
+        $omset = Omset::find($omset_id);
+        if($omset){
+            $omset_arr = $omset->toArray();
+            $rm_col = str_replace(['[',']'],'',$omset_arr[$before]);
+            $arr_rm_col = explode(',',$rm_col);
+            $new_arr_col = [];
+            foreach ($arr_rm_col as $item) {
+                if($item!=$jurnal_id){
+                    array_push($new_arr_col,$item);
+                }
+            }
+            $output_col = json_encode($new_arr_col);
+
+            $rm = str_replace(['[',']'],'',$omset_arr[$type]);
+            // $rm = $omset_arr[$type];
+            $input = $rm.','.$jurnal_id;
+            $output = '['.$input.']';
+
+            $debit_before = Jurnal::whereIn('id',$new_arr_col)->sum('debit');
+            $update[$col_before] = $debit_before;
+            $update[$before] = $output_col;
+            $omset->update($update);
+            $debit = Jurnal::whereIn('id',explode(',',$input))->sum('debit');
+            $update[$col] = $debit;
+            $update[$type] = $output;
+            $omset->update($update);
+
+            return response([
+                'message' => 'Data berhasil disimpan!',
+                'jurnal' => $output_col,
+                'a_debit' => $debit,
+                'a_jurnal' => $output,
+                'b_debit' => $debit_before,
+                'b_jurnal' => $output_col,
+                'status' => true
+            ]);
+        }
+        return response([
+            'message' => 'Maaf ada yang salah!',
+            'jurnal' => "[]",
+            'a_debit' => 0,
+            'a_jurnal' => "[]",
+            'b_debit' => 0,
+            'b_jurnal' => "[]",
+            'status' => false
+        ]);
     }
 }

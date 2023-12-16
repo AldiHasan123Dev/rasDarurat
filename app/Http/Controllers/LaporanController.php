@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
+use App\Models\COA;
 use App\Models\Customer;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
@@ -74,7 +75,8 @@ class LaporanController extends Controller
             $data = Order::where('job','like',$job.'%')->get();
         }
         $ids = $data->pluck('id')->toArray();
-        return view('admin.laporan.omset', compact('data','year','months','month','tipe','ids'));
+        $coa = COA::where('is_active',1)->get();
+        return view('admin.laporan.omset', compact('data','year','months','month','tipe','ids','coa'));
     }
     public function invoice()
     {

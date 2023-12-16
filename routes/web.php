@@ -57,6 +57,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
 use App\Http\Controllers\PortController;
 use App\Models\Jurnal;
+use App\Models\Omset;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -80,18 +81,8 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $num = [1,2,3,4,1,2,3,5,6,7,8];
-    function findUniqueValue($array) {
-        $counted_values = array_count_values($array);
-        $arr = [];
-        foreach ($counted_values as $value => $count) {
-            if ($count === 1) {
-                array_push($arr,$value);
-            }
-        }
-        return $arr;
-    }
-    dd(findUniqueValue($num));
+    $data = substr('j_trucking',2);
+    dd($data);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

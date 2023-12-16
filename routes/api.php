@@ -99,6 +99,8 @@ Route::post('kirim-dokumen',[KirimDokumenController::class,'store'])->name('kiri
 Route::delete('kirim-dokumen/{kirim_dokumen}',[KirimDokumenController::class,'destroy'])->name('kirim_dokumen.destroy');
 Route::post('sync-omset',[OmsetController::class,'sync'])->name('omset.sync');
 Route::post('get-omset-jurnal',[OmsetController::class,'getJurnal'])->name('omset.jurnal');
+Route::post('add-omset-jurnal',[OmsetController::class,'addJurnal'])->name('omset.add.item');
+Route::post('jurnal-filter',[JurnalController::class,'filter'])->name('api.jurnal.filter');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');

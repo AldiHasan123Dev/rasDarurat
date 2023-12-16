@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
 <style>
     @media print{
         @page {
@@ -101,6 +104,7 @@
                                     <tr>
                                         <th style="min-width:40px !important">ID</th>
                                         <th style="min-width:40px !important">ORDER_ID</th>
+                                        <th style="min-width:40px !important">#</th>
                                         <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">Group JOB</th>
@@ -237,6 +241,11 @@
                                         <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 ? 'warning' : '') : '' }}">
                                             <td>{{ $order->omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
+                                            @if ($order->lock_omset==1)
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="unlock({{ $order->id }})"><i class="fas fa-lock"></i></button></td>
+                                            @else
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="lock({{ $order->id }})"><i class="fas fa-unlock"></i></button></td>
+                                            @endif
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}</td>
@@ -274,123 +283,123 @@
                                             <td>{{ $order->tarif->satuanInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_trucking ?? '[]'}}')">
+                                            <td id="j_trucking-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->omset->id ?? null }},'{{ $order->omset->j_trucking ?? '[]'}}')">
                                                     {{ number_format(($order->omset->trucking ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_opp ?? '[]'}}')">
+                                            <td id="j_opp-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opp',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opp ?? '[]'}}')">
                                                     {{ number_format(($order->omset->opp ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_opt ?? '[]'}}')">
+                                            <td id="j_opt-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opt',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt ?? '[]'}}')">
                                                     {{ number_format(($order->omset->opt ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ut ?? '[]'}}')">
+                                            <td id="j_ut-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ut',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ut ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ut ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_bl ?? '[]'}}')">
+                                            <td id="j_bl-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_bl',{{ $order->omset->id ?? null }},'{{ $order->omset->j_bl ?? '[]'}}')">
                                                     {{ number_format(($order->omset->bl ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_apbs ?? '[]'}}')">
+                                            <td id="j_apbs-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_apbs',{{ $order->omset->id ?? null }},'{{ $order->omset->j_apbs ?? '[]'}}')">
                                                     {{ number_format(($order->omset->apbs ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_cleaning ?? '[]'}}')">
+                                            <td id="j_cleaning-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_cleaning',{{ $order->omset->id ?? null }},'{{ $order->omset->j_cleaning ?? '[]'}}')">
                                                     {{ number_format(($order->omset->cleaning ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_lss ?? '[]'}}')">
+                                            <td id="j_lss-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_lss',{{ $order->omset->id ?? null }},'{{ $order->omset->j_lss ?? '[]'}}')">
                                                     {{ number_format(($order->omset->lss ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_storage ?? '[]'}}')">
+                                            <td id="j_storage-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_storage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_storage ?? '[]'}}')">
                                                     {{ number_format(($order->omset->storage ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_jasa_door ?? '[]'}}')">
+                                            <td id="j_jasa_door-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_jasa_door',{{ $order->omset->id ?? null }},'{{ $order->omset->j_jasa_door ?? '[]'}}')">
                                                     {{ number_format(($order->omset->jasa_door ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_asuransi ?? '[]'}}')">
+                                            <td id="j_asuransi-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_asuransi',{{ $order->omset->id ?? null }},'{{ $order->omset->j_asuransi ?? '[]'}}')">
                                                     {{ number_format(($order->omset->asuransi ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ops ?? '[]'}}')">
+                                            <td id="j_ops-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_segel ?? '[]'}}')">
+                                            <td id="j_segel-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_segel',{{ $order->omset->id ?? null }},'{{ $order->omset->j_segel ?? '[]'}}')">
                                                     {{ number_format(($order->omset->segel ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ops_seal ?? '[]'}}')">
+                                            <td id="j_ops_seal-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_seal ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_seal ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_ops_seal_cleaning ?? '[]'}}')">
+                                            <td id="j_ops_seal_cleaning-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal_cleaning',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_seal_cleaning ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_seal_cleaning ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_buruh ?? '[]'}}')">
+                                            <td id="j_buruh-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->omset->id ?? null }},'{{ $order->omset->j_buruh ?? '[]'}}')">
                                                     {{ number_format(($order->omset->buruh ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_checker ?? '[]'}}')">
+                                            <td id="j_checker-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_checker',{{ $order->omset->id ?? null }},'{{ $order->omset->j_checker ?? '[]'}}')">
                                                     {{ number_format(($order->omset->checker ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_karantina ?? '[]'}}')">
+                                            <td id="j_karantina-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_karantina',{{ $order->omset->id ?? null }},'{{ $order->omset->j_karantina ?? '[]'}}')">
                                                     {{ number_format(($order->omset->karantina ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_demmurage ?? '[]'}}')">
+                                            <td id="j_demmurage-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_demmurage ?? '[]'}}')">
                                                     {{ number_format(($order->omset->demmurage ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_kirim_dokumen ?? '[]'}}')">
+                                            <td id="j_kirim_dokumen-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_kirim_dokumen',{{ $order->omset->id ?? null }},'{{ $order->omset->j_kirim_dokumen ?? '[]'}}')">
                                                     {{ number_format(($order->omset->kirim_dokumen ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_biaya_lain ?? '[]'}}')">
+                                            <td id="j_biaya_lain-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya_lain',{{ $order->omset->id ?? null }},'{{ $order->omset->j_biaya_lain ?? '[]'}}')">
                                                     {{ number_format(($order->omset->biaya_lain ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_flexibag ?? '[]'}}')">
+                                            <td id="j_flexibag-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_flexibag',{{ $order->omset->id ?? null }},'{{ $order->omset->j_flexibag ?? '[]'}}')">
                                                     {{ number_format(($order->omset->flexibag ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_rc ?? '[]'}}')">
+                                            <td id="j_rc-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_rc',{{ $order->omset->id ?? null }},'{{ $order->omset->j_rc ?? '[]'}}')">
                                                     {{ number_format(($order->omset->rc ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
-                                            <td>
-                                                <a href="#" onclick="showJurnal('{{ $order->omset->j_biaya ?? '[]'}}')">
+                                            <td id="j_biaya-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya',{{ $order->omset->id ?? null }},'{{ $order->omset->j_biaya ?? '[]'}}')">
                                                     {{ number_format(($order->omset->biaya ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
@@ -426,6 +435,69 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    {{-- <div class="mb-2">
+                        <div class="card p-3 shadow-lg border-warning">
+                            <div class="row">
+                                <div class="col mb-2">
+                                    <label class="label-text" style="font-size: .7rem" for="coa">COA</label>
+                                    <select name="coa" id="coa" class="select2 form-select" style="width: 200px">
+                                        <option value=""></option>
+                                        @foreach ($coa as $item)
+                                            <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col mb-2">
+                                    <label class="label-text" style="font-size: .7rem" for="nomor">Nomor Jurnal</label>
+                                    <input type="text" name="nomor" class="form-control form-control-sm" id="nomor">
+                                </div>
+                                <div class="col mb-2">
+                                    <label class="label-text" style="font-size: .7rem" for="nama">Keterangan</label>
+                                    <input type="text" name="nama" class="form-control form-control-sm" id="nama">
+                                </div>
+                                <div class="col mb-2">
+                                    <label class="label-text" style="font-size: .7rem" for="tanggal">Tanggal Jurnal Awal</label>
+                                    <input type="date" name="tanggal_awal" class="form-control form-control-sm" id="tanggal_awal">
+                                </div>
+                                <div class="col mb-2">
+                                    <label class="label-text" style="font-size: .7rem" for="tanggal">Tanggal Jurnal Akhir</label>
+                                    <input type="date" name="tanggal_akhir" class="form-control form-control-sm" id="tanggal_akhir">
+                                </div>
+                                <div class="col mb-2">
+                                    <button type="button" class="btn btn-primary btn-sm mt-3" onclick="filterSearch()">Filter</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-bordered" id="filter-table" style="font-size: .7rem">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Tgl</th>
+                                                    <th>Nomor</th>
+                                                    <th>COA</th>
+                                                    <th>Akun</th>
+                                                    <th>JOB</th>
+                                                    <th>INV</th>
+                                                    <th>Cont</th>
+                                                    <th>Nopol</th>
+                                                    <th>Keterangan</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                    <th>Aksi</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="list-jurnal-filter">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr> --}}
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered" style="font-size: .7rem">
                             <thead>
@@ -442,6 +514,7 @@
                                     <th>Keterangan</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
+                                    <th>#</th>
                                 </tr>
                             </thead>
                             <tbody id="list-jurnal">
@@ -452,6 +525,7 @@
                                     <td class="text-end" colspan="10"><b>TOTAL</b></td>
                                     <td class="text-end"><b id="debit-total"></b></td>
                                     <td class="text-end"><b id="credit-total"></b></td>
+                                    <td></td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -473,10 +547,12 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('assets/js/selectize.js') }}"></script>
     <script>
         let table = $('#table').DataTable({
             fixedColumns: {
-                left: 4,
+                left: 5,
                 right: 0
             },
             autoWidth:false,
@@ -500,6 +576,9 @@
         table.column( 1 ).visible( false );
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
+        $('.select2').select2({
+            dropdownParent: $('#modal-jurnal')
+        });
         function sync(){
             syncAction(0,50);
         }
@@ -531,7 +610,19 @@
 
         var modal_jurnal = new bootstrap.Modal(document.getElementById('modal-jurnal'))
 
-        function showJurnal(id){
+        var omset_id = null;
+        var type = null;
+        var order_id = null;
+
+        function showJurnal(order_id_,type_,omset_id_,id){
+            omset_id = omset_id_;
+            type = type_;
+            order_id = order_id_;
+            getJurnal(id);
+            modal_jurnal.show();
+        }
+
+        function getJurnal(id){
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.jurnal') }}",
@@ -542,6 +633,13 @@
                     let html = '';
                     let debit = 0;
                     let credit = 0;
+                    let options = '';
+                    let arr = [
+                        'j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
+                    ];
+                    $.each(arr, function (idx, item) {
+                        options += `<option value="${item}" ${ type==item?'selected':'' }>${substr(item,2)}</option>`;
+                    });
                     $.each(response, function (idx, item) {
                         debit += item.debit_num;
                         credit += item.credit_num;
@@ -558,13 +656,126 @@
                                     <td>${item.nama}</td>
                                     <td class="text-end">${item.debit}</td>
                                     <td class="text-end">${item.credit}</td>
+                                    <td>
+                                        <select class="form-select form-select-sm" style="width: 150px" onchange="addItemJurnal(${item.id},this.value)">
+                                            ${options}
+                                        </select>
+                                    </td>
                                 </tr>`;
                     });
 
                     $('#list-jurnal').html(html);
                     $('#debit-total').html(debit.toLocaleString('id-ID'));
                     $('#credit-total').html(credit.toLocaleString('id-ID'));
-                    modal_jurnal.show();
+                }
+            });
+        }
+
+        function substr(string,num){
+            return string.substr(num);
+        }
+
+        function filterSearch(){
+            var coa = $('#coa').val();
+            var nomor = $('#nomor').val();
+            var nama = $('#nama').val();
+            var tgl_awal = $('#tanggal_awal').val();
+            var tgl_akhir = $('#tanggal_akhir').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.jurnal.filter') }}",
+                data: {
+                    coa_id:coa,
+                    nomor:nomor,
+                    nama:nama,
+                    tgl_awal:tgl_awal,
+                    tgl_akhir:tgl_akhir,
+                },
+                success: function (response) {
+                    var html = '';
+                    $.each(response, function (idx, item) {
+                        html += `<tr id="item-jurnal-${item.id}">
+                                    <td>${idx+1}</td>
+                                    <td>${item.created_at}</td>
+                                    <td>${item.nomor}</td>
+                                    <td>${item.coa_kode}</td>
+                                    <td>${item.coa_nama}</td>
+                                    <td>${item.no_job}</td>
+                                    <td>${item.invoice}</td>
+                                    <td>${item.container}</td>
+                                    <td>${item.nopol}</td>
+                                    <td>${item.nama}</td>
+                                    <td class="text-end">${item.debit}</td>
+                                    <td class="text-end">${item.credit}</td>
+                                    <td><button onclick="addItemJurnal(${item.id})" class="bg-success p-2 text-white" style="border:none" type="button">+</button></td>
+                                </tr>`;
+                    });
+
+                    $('#list-jurnal-filter').html(html);
+                }
+            });
+        }
+
+        function addItemJurnal(id, to){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('omset.add.item') }}",
+                data: {
+                    jurnal_id: id,
+                    omset_id: omset_id,
+                    type : type,
+                    to:to,
+                },
+                success: function (response) {
+                    alert(response.message);
+                    getJurnal(response.jurnal);
+                    if(response.status){
+                        $('#item-jurnal-'+id).remove();
+                        let ke = `<a href="#" onclick="showJurnal(${order_id},'${to}',${omset_id},'${response.a_jurnal}')">
+                                    ${rp(response.a_debit)}
+                                </a>`;
+                        let dari = `<a href="#" onclick="showJurnal(${order_id},'${type}',${omset_id},'${response.b_jurnal}')">
+                                    ${rp(response.b_debit)}
+                                </a>`;
+                        $('#'+to+'-'+order_id).html(ke);
+                        $('#'+type+'-'+order_id).html(dari);
+                    }
+                }
+            });
+        }
+
+        function rp (num){
+            return num.toLocaleString('id-ID');
+        }
+
+        function lock(id){
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order-request') }}",
+                data: {
+                    id:id,
+                    lock_omset:1,
+                },
+                success: function (response) {
+                    var html = `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
+                    $('#lock-'+id).html(html);
+                    alert('Lock berhasil!')
+                }
+            });
+        }
+
+        function unlock(id){
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order-request') }}",
+                data: {
+                    id:id,
+                    lock_omset:0,
+                },
+                success: function (response) {
+                    var html = `<td class="text-center" id="lock-${id}"><button class="text-danger bg-transparent" style="border: none" onclick="lock(${id})"><i class="fas fa-unlock"></i></button></td>`;
+                    $('#lock-'+id).html(html);
+                    alert('Unlock berhasil!')
                 }
             });
         }

@@ -258,4 +258,30 @@ class JurnalController extends Controller
             'continue' => $continue
         ]);
     }
+
+    public function filter()
+    {
+        $query = Jurnal::query();
+
+        if(request('coa_id')){
+            $query->where('coa_id',request('coa_id'));
+        }else{
+            return response([]);
+        }
+        if(request('nomor')){
+            $query->where('nomor',request('nomor'));
+        }
+        if(request('nama')){
+            $query->where('nama','LIKE',request('nama'));
+        }
+        if(request('tgl_awal')&&request('tgl_akhir')){
+            $query->whereBetween('created_at',[request('tgl_awal'),request('tgl_akhir')]);
+        }else{
+            return response([]);
+        }
+
+        $data = $query->orderBy('created_at')->get();
+        $data = JurnalResource::collection($data);
+        return response($data);
+    }
 }
