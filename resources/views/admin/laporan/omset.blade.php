@@ -414,7 +414,7 @@
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
                                             <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format((($order->omset->margin*100) ?? 0),3,',','.') }}</td>
+                                            <td>{{ number_format((($order->omset->margin ?? 0) * 100),3,',','.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
