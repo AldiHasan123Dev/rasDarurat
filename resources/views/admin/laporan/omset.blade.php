@@ -238,7 +238,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $order)
-                                        <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 ? 'warning' : '') : '' }}">
+                                        <tr class="bg-{{ $order->omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 ? 'warning text-white' : ($order->omset->margin < 0 ? 'danger text-white' : '')) : '' }}">
                                             <td>{{ $order->omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
                                             @if ($order->lock_omset==1)
@@ -414,7 +414,7 @@
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
                                             <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format(($order->omset->margin ?? 0),3,',','.') }}</td>
+                                            <td>{{ number_format((($order->omset->margin*100) ?? 0),3,',','.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
