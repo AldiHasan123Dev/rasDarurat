@@ -37,6 +37,8 @@ class Omset extends Model
         'flexibag',
         'rc',
         'biaya',
+        'none',
+        'j_none',
         'j_trucking',
         'j_opp',
         'j_opt',

@@ -142,6 +142,7 @@
                                         <th style="min-width:40px !important">Unit</th>
                                         <th style="min-width:40px !important">Agen</th>
                                         <th style="min-width:40px !important">Penerima BL</th>
+                                        <th style="min-width:40px !important">J-Trash</th>
                                         <th style="min-width:40px !important">Trucking</th>
                                         <th style="min-width:40px !important">THC Muat</th>
                                         <th style="min-width:40px !important">THC Tujuan</th>
@@ -283,6 +284,11 @@
                                             <td>{{ $order->tarif->satuanInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
+                                            <td id="j_none-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_none',{{ $order->omset->id ?? null }},'{{ $order->omset->j_none ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->none ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
                                             <td id="j_trucking-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->omset->id ?? null }},'{{ $order->omset->j_trucking ?? '[]'}}')">
                                                     {{ number_format(($order->omset->trucking ?? 0),2,',','.') }}
@@ -574,6 +580,7 @@
         });
         table.column( 0 ).visible( false );
         table.column( 1 ).visible( false );
+        table.column( 40 ).visible( false );
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
         $('.select2').select2({
@@ -635,7 +642,7 @@
                     let credit = 0;
                     let options = '';
                     let arr = [
-                        'j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
+                        'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
                     ];
                     $.each(arr, function (idx, item) {
                         options += `<option value="${item}" ${ type==item?'selected':'' }>${substr(item,2)}</option>`;
@@ -717,31 +724,36 @@
         }
 
         function addItemJurnal(id, to){
-            $.ajax({
-                type: "POST",
-                url: "{{ route('omset.add.item') }}",
-                data: {
-                    jurnal_id: id,
-                    omset_id: omset_id,
-                    type : type,
-                    to:to,
-                },
-                success: function (response) {
-                    alert(response.message);
-                    getJurnal(response.jurnal);
-                    if(response.status){
+            if(confirm('Apakah anda yakin?')){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('omset.add.item') }}",
+                    data: {
+                        jurnal_id: id,
+                        omset_id: omset_id,
+                        type : type,
+                        to:to,
+                    },
+                    success: function (response) {
+                        alert(response.message);
+                        getJurnal(response.jurnal);
                         $('#item-jurnal-'+id).remove();
-                        let ke = `<a href="#" onclick="showJurnal(${order_id},'${to}',${omset_id},'${response.a_jurnal}')">
-                                    ${rp(response.a_debit)}
-                                </a>`;
-                        let dari = `<a href="#" onclick="showJurnal(${order_id},'${type}',${omset_id},'${response.b_jurnal}')">
-                                    ${rp(response.b_debit)}
-                                </a>`;
-                        $('#'+to+'-'+order_id).html(ke);
-                        $('#'+type+'-'+order_id).html(dari);
+                        if(response.reload){
+                            location.reload();
+                        }
+                        if(response.status){
+                            let ke = `<a href="#" onclick="showJurnal(${order_id},'${to}',${omset_id},'${response.a_jurnal}')">
+                                        ${rp(response.a_debit)}
+                                    </a>`;
+                            let dari = `<a href="#" onclick="showJurnal(${order_id},'${type}',${omset_id},'${response.b_jurnal}')">
+                                        ${rp(response.b_debit)}
+                                    </a>`;
+                            $('#'+to+'-'+order_id).html(ke);
+                            $('#'+type+'-'+order_id).html(dari);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         function rp (num){

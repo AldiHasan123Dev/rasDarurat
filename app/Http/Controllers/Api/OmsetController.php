@@ -27,6 +27,19 @@ class OmsetController extends Controller
             $data[$idx]['order_id'] = $order->id;
             $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%trucking%')->sum('debit');
             $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
+            if($order->truckingInfo){
+                $tipe = $order->truckingInfo->kendaraan->milik;
+                if($order->truckingInfo->customer->r1 == 1){
+                    $tipe = 'R1';
+                }
+                if($order->truckingInfo->customer->r2 == 1){
+                    $tipe = 'R2';
+                }
+                if($tipe == 'R2'){
+                    $data[$idx]['trucking'] = $order->truckingInfo->tarif->tarif ?? 0;
+                    $data[$idx]['j_trucking'] = '[]';
+                }
+            }
             $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPT %')->sum('debit');
             $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
             $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->where('coa_id',31)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->where('coa_id',31)->where('order_id',$order->id)->sum('debit');
@@ -203,6 +216,7 @@ class OmsetController extends Controller
         $col_before = substr($before,2);
         $col = substr($type,2);
         $omset = Omset::find($omset_id);
+        $reload = false;
         if($omset){
             $omset_arr = $omset->toArray();
             $rm_col = str_replace(['[',']'],'',$omset_arr[$before]);
@@ -214,21 +228,34 @@ class OmsetController extends Controller
                 }
             }
             $output_col = json_encode($new_arr_col);
+            $output_col = str_replace('"','',$output_col);
 
-            $rm = str_replace(['[',']'],'',$omset_arr[$type]);
+            $rm = json_decode($omset_arr[$type],true);
+            if(is_null($rm)){
+                $rm = array();
+            }
+            array_push($rm,$jurnal_id);
+            array_unique($rm);
             // $rm = $omset_arr[$type];
-            $input = $rm.','.$jurnal_id;
-            $output = '['.$input.']';
+            $input = $rm;
+            $output = json_encode($rm);
+            $output = str_replace('"','',$output);
 
             $debit_before = Jurnal::whereIn('id',$new_arr_col)->sum('debit');
             $update[$col_before] = $debit_before;
             $update[$before] = $output_col;
             $omset->update($update);
-            $debit = Jurnal::whereIn('id',explode(',',$input))->sum('debit');
+            $debit = Jurnal::whereIn('id',$input)->sum('debit');
+            $update = [];
             $update[$col] = $debit;
             $update[$type] = $output;
+            if($col=='none'){
+                $update['biaya'] = $omset->biaya - $debit;
+                $update['laba_kotor'] = $omset->tarif - $update['biaya'];
+                $update['margin'] = $update['laba_kotor'] / $omset->tarif;
+                $reload = true;
+            }
             $omset->update($update);
-
             return response([
                 'message' => 'Data berhasil disimpan!',
                 'jurnal' => $output_col,
@@ -236,7 +263,8 @@ class OmsetController extends Controller
                 'a_jurnal' => $output,
                 'b_debit' => $debit_before,
                 'b_jurnal' => $output_col,
-                'status' => true
+                'status' => true,
+                'reload' => $reload,
             ]);
         }
         return response([
@@ -246,7 +274,8 @@ class OmsetController extends Controller
             'a_jurnal' => "[]",
             'b_debit' => 0,
             'b_jurnal' => "[]",
-            'status' => false
+            'status' => false,
+            'reload' => $reload,
         ]);
     }
 }

@@ -81,8 +81,10 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $data = substr('j_trucking',2);
-    dd($data);
+    $data = '[324,3213,321]';
+    $data = json_decode($data,true);
+    array_push($data,999999);
+    dd($data, json_encode($data));
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
