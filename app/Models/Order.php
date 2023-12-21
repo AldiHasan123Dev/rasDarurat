@@ -186,4 +186,9 @@ class Order extends Model
     {
         return $this->hasOne(Omset::class);
     }
+
+    public function jasa_kirim()
+    {
+        return $this->hasOne(JasaKirim::class);
+    }
 }

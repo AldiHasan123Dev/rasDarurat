@@ -302,5 +302,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-port', [SyncController::class, 'port']);
     Route::get('sync-lokasi-agen', [SyncController::class, 'lokasi_agen']);
     Route::get('sync-coa-name', [SyncController::class, 'coa_name']);
+    Route::get('sync-jasa-kirim', [SyncController::class, 'jasa_kirim']);
 });
 // Route::view('test','test');

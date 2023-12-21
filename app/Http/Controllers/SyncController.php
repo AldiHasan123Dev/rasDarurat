@@ -822,4 +822,18 @@ class SyncController extends Controller
 
         return response('success');
     }
+
+    public function jasa_kirim()
+    {
+        $data = Order::whereHas('jasa_kirim', function($q){
+            $q->whereNotNull('tgl_kirim');
+        })->get();
+        foreach($data as $item){
+            $item->update([
+                'ba_kirim' => $item->jasa_kirim->tgl_kirim
+            ]);
+        }
+
+        return response('success');
+    }
 }
