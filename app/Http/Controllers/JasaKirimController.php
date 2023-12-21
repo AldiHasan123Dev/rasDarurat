@@ -41,7 +41,7 @@ class JasaKirimController extends Controller
         $data = $request->all();
         $jasakirim->update($data);
         if ($request->tgl_kirim) {
-            if(is_null($request->tgl_kirim)){
+            if(!is_null($request->tgl_kirim)){
                 Order::where('jasa_kirim_id',$jasakirim->id)->update([
                     'ba_kirim' => $request->tgl_kirim
                 ]);
