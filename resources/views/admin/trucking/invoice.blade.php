@@ -1254,7 +1254,7 @@
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
-                                    <img src="{{ asset('assets/img/ttd-ifa1.png') }}" style="width: 151px; height:94px; position: relative; top:-10px"><br>
+                                    <img src="{{ asset('assets/img/pdwi.jpg') }}" style="width: 151px; height:94px; position: relative; top:-10px"><br>
                                     (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
                                 </div>
                             </div>
