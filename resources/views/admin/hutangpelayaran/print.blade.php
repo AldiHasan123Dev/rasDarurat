@@ -535,7 +535,7 @@
                         <td></td>
                     </tr>
                 @endforeach
-                @if (!is_null($hp->penambahan) && $hp->penambahan_nominal > 0)
+                @if (!is_null($hp->penambahan) && $hp->penambahan_nominal != 0)
                 <tr>
                     <td></td>
                     <td colspan="2">{{ $hp->penambahan }}</td>
