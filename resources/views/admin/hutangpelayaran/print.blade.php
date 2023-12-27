@@ -463,8 +463,14 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $a = 1;
+                    if(!is_null($hp->penambahan) && $hp->penambahan_nominal != 0){
+                        $a = 2;
+                    }
+                @endphp
                 <tr style="background-color: red" class="text-white">
-                    <td style="background: white" id="rowspan-ut" rowspan="{{ ($jobs->count() + $ut) + 1}}"></td>
+                    <td style="background: white" id="rowspan-ut" rowspan="{{ ($jobs->count() + $ut) + $a}}"></td>
                     {{-- <td rowspan="{{ ($jobs->count() * 6) + 2 }}" style="background-color:white;transform: rotate(180deg);white-space: nowrap; writing-mode: vertical-rl; ms-writing-mode: tb-rl; -webkit-writing-mode: vertical-rl; color:red">KEPERLUAN INTERN</td> --}}
                     <td class="bg-red text-center">PERKIRAAN</td>
                     <td class="bg-red text-center" colspan="2">URAIAN</td>
