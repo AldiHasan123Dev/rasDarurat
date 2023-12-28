@@ -356,6 +356,25 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-pindah-kapal" tabindex="-1"  aria-hidden="true">
+    <form action="" method="POST" class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pindah JOB <span class="nojob"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <select name="jadwal_kapal_id" class="form-select">
+                    
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('script')

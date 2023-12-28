@@ -239,7 +239,7 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $order)
-                                        <tr class="bg-{{ $order->omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 ? 'warning text-white' : ($order->omset->margin < 0 ? 'danger text-white' : '')) : '' }}">
+                                        <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 ? 'secondary' : ($order->omset->margin < 0 ? 'danger' : '')) : '' }}">
                                             <td>{{ $order->omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
                                             @if ($order->lock_omset==1)
