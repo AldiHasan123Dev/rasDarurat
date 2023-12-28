@@ -225,6 +225,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('jurnal-import', [JurnalController::class, 'import'])->name('jurnal.import');
     Route::post('customer-import', [CustomerController::class, 'import'])->name('customer.import');
     Route::post('customer-import-update', [CustomerController::class, 'importUpdate'])->name('customer.import.update');
+    Route::post('pindah-kapal', [OrderController::class, 'pindah_kapal'])->name('order.pindah_kapal');
     Route::post('order-import', [OrderController::class, 'import'])->name('order.import');
     Route::get('estimasi-biaya', [EstimasiController::class, 'biaya'])->name('estimasi.biaya');
 

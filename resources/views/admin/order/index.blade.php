@@ -43,6 +43,7 @@
                     @if (is_null($marketing))
                         <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
                         <button onclick="printPackingListKubikasi()" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</button>
+                        <button onclick="modalPindahKapal()" id="btn-pindah-kapal" class="py-2 px-3 btn btn-sm btn-info">Pindah Kapal</button>
                         <form action="" id="copy-order" method="post" enctype="multipart/form-data">
                             @csrf
                             <button class="py-2 px-3 btn btn-sm btn-secondary" type="button" id="copy-order-btn" onclick="return confirm('Are you sure?')">Copy Order</button>
@@ -358,19 +359,21 @@
 </div>
 
 <div class="modal fade" id="modal-pindah-kapal" tabindex="-1"  aria-hidden="true">
-    <form action="" method="POST" class="modal-dialog modal-xl">
+    <form action="{{ route('order.pindah_kapal') }}" method="POST" class="modal-dialog">
+        @csrf
+        <input type="hidden" name="order_id" id="order_id">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Pindah JOB <span class="nojob"></span></h5>
+                <h5 class="modal-title" id="exampleModalLabel">Pindah Kapal JOB <span class="nojob"></span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <select name="jadwal_kapal_id" class="form-select">
-                    
+                <select name="jadwal_kapal_id" class="form-select" id="pindah-kapal-select">
+
                 </select>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure?')">Simpan</button>
             </div>
         </div>
     </form>
@@ -394,6 +397,7 @@
     $('#edit-order').hide();
     $('#btn-tagihan').hide();
     $('#delete-order').hide();
+    $('#btn-pindah-kapal').hide();
 </script>
 <script>
     let customers = @json($customers);
@@ -471,6 +475,7 @@
 
     let data = [];
     let id;
+    let tarif_id = null;
     let lock_biaya;
     let iframe_bttb = '';
     let iframe_order = '';
@@ -487,6 +492,7 @@
             {search:true, width:100, name: 'asuransi', label : 'asuransi'},
             {search:true, width:100, name: 'pembayar', label : 'pembayar',sortable: false},
             {search:true, width:100, name: 'id', label : 'id', hidden:true},
+            {search:true, width:100, name: 'tarif_id', label : 'tarif_id', hidden:true},
             {search:true, width:100, name: 'lock_biaya', label : 'lock_biaya', hidden:true},
             {search:true, width:100, name: 'class', label : 'class', hidden:true},
             {search:true, width:100, name: 'marketing', label : 'marketing',sortable: false},
@@ -537,10 +543,12 @@
         caption: "Order Job",
         onCellSelect: function (rowId, iRow, iCol, e) {
             id = $(this).jqGrid('getCell', rowId, 'id');
+            tarif_id = $(this).jqGrid('getCell', rowId, 'tarif_id');
             var no_job = $(this).jqGrid('getCell', rowId, 'no');
             var koli = $(this).jqGrid('getCell', rowId, 'koli');
             var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
             lock_biaya = $(this).jqGrid('getCell', rowId, 'lock_biaya');
+            $('#btn-pindah-kapal').show();
             $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#koli-info').show();
@@ -1069,6 +1077,23 @@
         function modalAddBTTB(){
             var myModal = new bootstrap.Modal(document.getElementById('modal-add-bttb'));
             $('#iframe-bttb').attr('src',iframe_bttb);
+            myModal.show();
+        }
+        function modalPindahKapal(){
+            var myModal = new bootstrap.Modal(document.getElementById('modal-pindah-kapal'));
+            $('#order_id').val(id);
+            $.ajax({
+                type: "GET",
+                url: "/api/get-jadwal-kapal-pelayaran/"+tarif_id,
+                success: function (response) {
+                    var data = response;
+                    var html = '<option>Pilih Kapal</option>';
+                    $.each(data, function (id, name) {
+                        html += '<option value="'+id+'">'+name+'</option>'
+                    });
+                    $('#pindah-kapal-select').html(html);
+                }
+            });
             myModal.show();
         }
 </script>

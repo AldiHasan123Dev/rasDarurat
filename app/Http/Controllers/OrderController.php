@@ -301,6 +301,44 @@ class OrderController extends Controller
         return Excel::download(new BAKembaliExport(), 'laporan_ba_kembali.xlsx');
     }
 
+    public function pindah_kapal(Request $request)
+    {
+        $order = Order::find($request->order_id);
+        $order_job = $order->job;
+        $job_count = Order::where('job',$order->job)->get()->count();
+        if($job_count <= 1){
+            return back()->with('danger','Dilarang pindah kapal dikarenakan cuman ada 1 job! Gunakan Fitur edit');
+        }
+        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->where('tarif_id',$order->tarif_id)->get();
+        if(count($cek)>0){
+            $job = $cek[0]->job;
+            $no_job = count($cek) + 1;
+            $num = $cek[0]->no;
+        }else{
+            $num = Order::max('no') + 1;
+            $job = date('Ym').sprintf('%04d',$num);
+            $no_job = 1;
+        }
+        $order->update([
+            'jadwal_kapal_id' => $request->jadwal_kapal_id,
+            'job' => $job,
+            'no_job' => $no_job,
+            'no' => $num,
+        ]);
+
+        $jobs = Order::where('job',$order_job)->orderBy('no_job')->get();
+        $i = 1;
+        foreach($jobs as $idx => $ord){
+            $ord->update([
+                'no_job' => $i
+            ]);
+
+            $i++;
+        }
+
+        return back()->with('success','Kapal berhasil dipindahkan! Job berganti '. $job.'-'.sprintf('%02d',$no_job));
+    }
+
     public function datatable()
     {
         $limit = request('length');

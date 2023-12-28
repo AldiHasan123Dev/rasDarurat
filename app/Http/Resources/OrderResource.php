@@ -32,6 +32,7 @@ class OrderResource extends JsonResource
         }
         return [
             'id' => $this->id,
+            'tarif_id' => $this->tarif_id,
             'invoice' => $this->invoice ?? '-',
             'job' => $this->job ?? '-',
             'no' => $this->job.'-'.sprintf('%02d',$this->no_job) ?? '-',
