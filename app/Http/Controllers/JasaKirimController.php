@@ -174,6 +174,7 @@ class JasaKirimController extends Controller
                 $query->whereNull('invoice');
             }
             if(!is_null(request('searching'))){
+                $query = JasaKirim::query();
                 $full_job = explode('-',request('searching'));
                 $query->orWhereHas('orders', function($q) use($full_job){
                     $q->where('job','like','%'.$full_job[0].'%');
