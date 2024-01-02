@@ -109,6 +109,12 @@
                                                         <input type="text" class="form-control" name="searching" value="{{ $search }}">
                                                     </div>
                                                 </div>
+                                                <div class="col-12">
+                                                    <div class="mb-2">
+                                                        <label for="barcode">Barcode</label>
+                                                        <input type="text" class="form-control" name="barcode" value="{{ $barcode }}">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -337,6 +343,7 @@
             paging: false,
             scrollCollapse: true,
             scrollY: '50vh',
+            searching:false,
             ajax:{
                 url: '{{ route('jasakirim.data') }}',
                 method:'POST',
@@ -347,6 +354,7 @@
                     end_date:@json($end_date),
                     tujuan:@json($tujuan),
                     searching:@json($search),
+                    barcode:@json($barcode),
                 },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },

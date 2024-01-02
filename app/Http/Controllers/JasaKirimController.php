@@ -23,9 +23,10 @@ class JasaKirimController extends Controller
         $end_date = request('end_date') ?? null;
         $tujuan = request('tujuan') ?? null;
         $search = request('searching') ?? null;
+        $barcode = request('barcode') ?? null;
         $role = request('role') ?? 'all';
         $data = JasaKirim::whereNotNull('invoice')->orderBy('invoice','desc')->get()->groupBy('invoice');
-        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan','role','data','search'));
+        return view('admin.jasakirim.index',compact('lokasi','start_date','end_date','tujuan','role','data','search','barcode'));
     }
 
     public function store(Request $request)
@@ -182,6 +183,9 @@ class JasaKirimController extends Controller
                         $q->where('no_job','like','%'.(int)$full_job[1].'%');
                     }
                 });
+            }
+            if(!is_null(request('barcode'))){
+                $query->where('barcode','LIKE','%'.request('barcode').'%');
             }
             $query->orderBy('tgl_kirim','desc');
             $data = $query->get();
