@@ -106,7 +106,7 @@
                                                     </div>
                                                     <div class="mb-2">
                                                         <label for="search">ID JOB</label>
-                                                        <input type="text" class="form-control" name="search" value="{{ $search }}">
+                                                        <input type="text" class="form-control" name="searching" value="{{ $search }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -153,7 +153,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-sm table-list" style="font-size:.7rem">
+                            <table class="table table-sm table-li11795st" style="font-size:.7rem">
                                 <thead>
                                     <tr>
                                         <th>No.</th>

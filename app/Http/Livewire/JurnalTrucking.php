@@ -20,10 +20,10 @@ class JurnalTrucking extends Component
     public function mount()
     {
         $no_1 = ModelsJurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $no_2 = ModelsJurnal::where('tipe','BBK')->max('no') + 1;
-        $no_3 = ModelsJurnal::where('tipe','BBM')->max('no') + 1;
-        $no_4 = ModelsJurnal::where('tipe','BKK')->max('no') + 1;
-        $no_5 = ModelsJurnal::where('tipe','BKM')->max('no') + 1;
+        $no_2 = ModelsJurnal::where('tipe','BBK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_3 = ModelsJurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_4 = ModelsJurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_5 = ModelsJurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         if($no_2==1){
             $no_2 = 2249;
         }

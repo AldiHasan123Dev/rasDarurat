@@ -18,10 +18,10 @@ class JurnalKolektif extends Component
     public function mount()
     {
         $no_1 = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $no_2 = Jurnal::where('tipe','BBK')->max('no') + 1;
-        $no_3 = Jurnal::where('tipe','BBM')->max('no') + 1;
-        $no_4 = Jurnal::where('tipe','BKK')->max('no') + 1;
-        $no_5 = Jurnal::where('tipe','BKM')->max('no') + 1;
+        $no_2 = Jurnal::where('tipe','BBK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         if($no_2==1){
             $no_2 = 2249;
         }

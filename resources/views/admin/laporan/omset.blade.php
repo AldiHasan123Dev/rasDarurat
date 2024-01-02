@@ -128,7 +128,7 @@
                                         <th style="min-width:40px !important">BA Kirim</th>
                                         <th style="min-width:40px !important">Nopol</th>
                                         <th style="min-width:40px !important">Trucking</th>
-                                        <th style="min-width:40px !important">No Container</th>
+                                        <th style="min-width:40px !important">No Container</th>agen
                                         <th style="min-width:40px !important">No Seal</th>
                                         <th style="min-width:40px !important">Stuffing</th>
                                         <th style="min-width:40px !important">Tipe Stuffing</th>
@@ -143,6 +143,7 @@
                                         <th style="min-width:40px !important">Agen</th>
                                         <th style="min-width:40px !important">Penerima BL</th>
                                         <th style="min-width:40px !important">J-Trash</th>
+                                        <th style="min-width:40px !important">Tipe</th>
                                         <th style="min-width:40px !important">Trucking</th>
                                         <th style="min-width:40px !important">THC Muat</th>
                                         <th style="min-width:40px !important">THC Tujuan</th>
@@ -289,6 +290,7 @@
                                                     {{ number_format(($order->omset->none ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
+                                            <td>{{ $order->truckingInfo->kendaraan->milik ?? '-' }}</td>
                                             <td id="j_trucking-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->omset->id ?? null }},'{{ $order->omset->j_trucking ?? '[]'}}')">
                                                     {{ number_format(($order->omset->trucking ?? 0),2,',','.') }}
@@ -580,7 +582,7 @@
         });
         table.column( 0 ).visible( false );
         table.column( 1 ).visible( false );
-        table.column( 40 ).visible( false );
+        // table.column( 40 ).visible( false );
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
         $('.select2').select2({

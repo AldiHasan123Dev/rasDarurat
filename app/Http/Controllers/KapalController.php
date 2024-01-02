@@ -16,7 +16,7 @@ class KapalController extends Controller
 
     public function store(Request $request)
     {
-              $data = $request->all();
+        $data = $request->all();
         Kapal::create($data);
 
         return back()->with('success','Data berhasil disimpan');

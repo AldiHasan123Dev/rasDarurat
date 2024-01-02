@@ -177,10 +177,10 @@ class JurnalController extends Controller
             return response()->json(['html'=>$view]);
         }
         $no_1 = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $no_2 = Jurnal::where('tipe','BBK')->max('no') + 1;
-        $no_3 = Jurnal::where('tipe','BBM')->max('no') + 1;
-        $no_4 = Jurnal::where('tipe','BKK')->max('no') + 1;
-        $no_5 = Jurnal::where('tipe','BKM')->max('no') + 1;
+        $no_2 = Jurnal::where('tipe','BBK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $jno_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
         $jno_2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
         $jno_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
@@ -207,7 +207,7 @@ class JurnalController extends Controller
                 $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($request->created_at)))->whereYear('created_at',date('Y',strtotime($request->created_at)))->max('no') + 1;
                 $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
             }else{
-                $no = Jurnal::where('tipe',$request->tipe)->max('no') + 1;
+                $no = Jurnal::where('tipe',$request->tipe)->whereYear('created_at',date('Y'))->max('no') + 1;
                 $nomor = sprintf('%03d',$no).'/'.$request->tipe.'-RAS/'.date('y',strtotime($request->created_at));
             }
             $data = JurnalTampungan::all()->toArray();
@@ -287,19 +287,7 @@ class JurnalController extends Controller
     public function store_manual(Request $request)
     {
         $data = $request->all();
-        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
-        if($no==1 && $data['tipe']=='BBK'){
-            $no = 2249;
-        }
-        if($no==1 && $data['tipe']=='BBM'){
-            $no = 751;
-        }
-        if($no==1 && $data['tipe']=='BKK'){
-            $no = 736;
-        }
-        if($no==1 && $data['tipe']=='BKM'){
-            $no = 39;
-        }
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
@@ -377,19 +365,7 @@ class JurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
-        if($no==1 && $data['tipe']=='BBK'){
-            $no = 2249;
-        }
-        if($no==1 && $data['tipe']=='BBM'){
-            $no = 751;
-        }
-        if($no==1 && $data['tipe']=='BKK'){
-            $no = 736;
-        }
-        if($no==1 && $data['tipe']=='BKM'){
-            $no = 39;
-        }
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
@@ -516,19 +492,7 @@ class JurnalController extends Controller
     public function store_trucking(Request $request)
     {
         $data = $request->all();
-        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
-        if($no==1 && $data['tipe']=='BBK'){
-            $no = 2249;
-        }
-        if($no==1 && $data['tipe']=='BBM'){
-            $no = 751;
-        }
-        if($no==1 && $data['tipe']=='BKK'){
-            $no = 736;
-        }
-        if($no==1 && $data['tipe']=='BKM'){
-            $no = 39;
-        }
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
@@ -707,19 +671,7 @@ class JurnalController extends Controller
     {
         $data = $request->all();
         // dd($data);
-        $no = Jurnal::where('tipe',$data['tipe'])->max('no') + 1;
-        if($no==1 && $data['tipe']=='BBK'){
-            $no = 2249;
-        }
-        if($no==1 && $data['tipe']=='BBM'){
-            $no = 751;
-        }
-        if($no==1 && $data['tipe']=='BKK'){
-            $no = 736;
-        }
-        if($no==1 && $data['tipe']=='BKM'){
-            $no = 39;
-        }
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }

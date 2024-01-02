@@ -27,7 +27,7 @@ class OmsetController extends Controller
             $data[$idx]['order_id'] = $order->id;
             $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->sum('debit');
             $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
-            if($order->truckingInfo){
+            if($order->truckingInfo && $order->trucking == 'XPDC'){
                 $tipe = $order->truckingInfo->kendaraan->milik;
                 if($order->truckingInfo->customer->r1 == 1){
                     $tipe = 'R1';
@@ -39,6 +39,9 @@ class OmsetController extends Controller
                     $data[$idx]['trucking'] = $order->truckingInfo->tarif->tarif ?? 0;
                     $data[$idx]['j_trucking'] = '[]';
                 }
+            }else{
+                $data[$idx]['trucking'] = 0;
+                $data[$idx]['j_trucking'] = '[]';
             }
             $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','OPT %')->sum('debit');
             $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','OPT %')->pluck('id')->toJson();
@@ -260,6 +263,7 @@ class OmsetController extends Controller
                 $reload = true;
             }
             $omset->update($update);
+            // $this->syncBiaya($omset);
             return response([
                 'message' => 'Data berhasil disimpan!',
                 'jurnal' => $output_col,
@@ -281,5 +285,15 @@ class OmsetController extends Controller
             'status' => false,
             'reload' => $reload,
         ]);
+    }
+
+    private function syncBiaya(Omset $omset) {
+        $arr = json_decode($omset->j_biaya);
+        $total = Jurnal::wherIn('id',$arr)->sum('debit');
+        $omset->update([
+            'biaya' => $total
+        ]);
+
+        return $total;
     }
 }

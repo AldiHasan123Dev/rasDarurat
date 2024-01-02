@@ -118,7 +118,7 @@ class OrderController extends Controller
             $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
             $data['penerimabl'] = Agen::where('nama',$request->agen_id)->first()->nama ?? null;
         }
-        $num = Order::max('no');
+        $num = Order::whereYear('created_at',date('Y'))->max('no');
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
         $data['job'] = date('Ym').sprintf('%04d',$num+1);
@@ -315,7 +315,7 @@ class OrderController extends Controller
             $no_job = count($cek) + 1;
             $num = $cek[0]->no;
         }else{
-            $num = Order::max('no') + 1;
+            $num = Order::whereYear('created_at',date('Y'))->max('no') + 1;
             $job = date('Ym').sprintf('%04d',$num);
             $no_job = 1;
         }
