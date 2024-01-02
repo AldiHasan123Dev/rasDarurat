@@ -96,7 +96,7 @@ class TruckingController extends Controller
         if ($orders->count() > 1) {
             return back()->with('danger', 'Anda tidak bisa memilih ' . $orders->count() . ' Sopir sekaligus!, Harap untuk pilih satu sopir');
         }
-        $no = TransaksiSopir::max('order') + 1;
+        $no = TransaksiSopir::whereYear('created_at',date('Y'))->max('order') + 1;
         $invoice = 'RIT/' . date('ymd') . '/' . sprintf('%03d', $no);
         OrderTrucking::whereIn('id', $order_id)->update([
             'tgl_total' => date('Y-m-d'),
@@ -265,13 +265,13 @@ class TruckingController extends Controller
         $no2 = 0;
         $no3 = 0;
         if ($request->tipe == 'R1') {
-            $no1 = TransaksiTrucking::max('order_r1') + 1;
+            $no1 = TransaksiTrucking::whereYear('created_at',date('Y'))->max('order_r1') + 1;
             $invoice = sprintf('%03d', $no1) . '/' . $month_roman . '/' . date('y');
         } else if ($request->tipe == 'R2') {
-            $no2 = TransaksiTrucking::max('order_r2') + 1;
+            $no2 = TransaksiTrucking::whereYear('created_at',date('Y'))->max('order_r2') + 1;
             $invoice = sprintf('%03d', $no2) . '/RAS-LT/' . $month_roman . '/' . date('y');
         } else {
-            $no3 = TransaksiTrucking::max('order_vendor') + 1;
+            $no3 = TransaksiTrucking::whereYear('created_at',date('Y'))->max('order_vendor') + 1;
             $invoice = sprintf('%03d', $no3) . '/VENDOR-' . $month_roman . '/' . date('y');
         }
 
