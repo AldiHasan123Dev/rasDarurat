@@ -128,7 +128,7 @@
                                         <th style="min-width:40px !important">BA Kirim</th>
                                         <th style="min-width:40px !important">Nopol</th>
                                         <th style="min-width:40px !important">Trucking</th>
-                                        <th style="min-width:40px !important">No Container</th>agen
+                                        <th style="min-width:40px !important">No Container</th>
                                         <th style="min-width:40px !important">No Seal</th>
                                         <th style="min-width:40px !important">Stuffing</th>
                                         <th style="min-width:40px !important">Tipe Stuffing</th>

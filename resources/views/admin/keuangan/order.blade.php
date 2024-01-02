@@ -15,10 +15,9 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                {{-- <div class="d-flex gap-2">
-                    <button class="py-2 px-3 btn btn-success" data-bs-toggle="modal" data-bs-target="#order"><i class="fas fa-plus"></i> Tambah Order Trucking</button>
-                    <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
-                </div> --}}
+                <div class="d-flex gap-2">
+                    <button class="py-2 px-3 btn btn-success" type="button" onclick="getIds()"><i class="fas fa-excel"></i> Export Rekap</button>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsives" id="jtable">
@@ -41,7 +40,8 @@
 </script>
 <script>
     let data = [];
-    $("#jqGrid").jqGrid({
+    let ids = [];
+    var grid = $("#jqGrid").jqGrid({
         url: '{{ route('jqgrid.order') }}',
         mtype: 'GET',
         datatype: 'json',
@@ -52,7 +52,7 @@
             {search:true, name: 'created_at', label : 'Tanggal', frozen:true, width:70},
             {search:true, name: 'asuransi', label : 'asuransi', frozen:true, width:70},
             {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:70},
-            {search:true, name: 'id', label : 'id', hidden:true},
+            {search:true, name: 'id', label : 'id', hidden:false},
             {search:true, name: 'class', label : 'class', hidden:true},
             {search:true, name: 'marketing', label : 'marketing'},
             {search:true, name: 'cs', label : 'cs'},
@@ -96,6 +96,7 @@
         viewrecords: true,
         pager: "#jqGridPager",
         caption: "Order Job (read only)",
+        multiselect: true,
         onCellSelect: function (rowId, iRow, iCol, e) {
             // var id = $(this).jqGrid('getCell', rowId, 'id');
             // var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
@@ -150,6 +151,11 @@
     }
 
     // getData(0)
+
+    function getIds(){
+        var rows = grid.getGridParam('selarrrow');
+        console.log(rows);
+    }
 
     </script>
 @endsection

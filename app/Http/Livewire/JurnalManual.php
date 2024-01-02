@@ -24,18 +24,6 @@ class JurnalManual extends Component
         $no_3 = ModelsJurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = ModelsJurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = ModelsJurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
-        if($no_2==1){
-            $no_2 = 2249;
-        }
-        if($no_3==1){
-            $no_3 = 751;
-        }
-        if($no_4==1){
-            $no_4 = 736;
-        }
-        if($no_5==1){
-            $no_5 = 39;
-        }
         $this->order = null;
         $this->is_apply = false;
         $this->kendaraan = Kendaraan::get(['id','nopol']);

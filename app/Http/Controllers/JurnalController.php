@@ -287,7 +287,7 @@ class JurnalController extends Controller
     public function store_manual(Request $request)
     {
         $data = $request->all();
-        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y', strtotime($data['created_at'])))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
@@ -365,7 +365,7 @@ class JurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
@@ -492,7 +492,7 @@ class JurnalController extends Controller
     public function store_trucking(Request $request)
     {
         $data = $request->all();
-        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y', strtotime($data['created_at'])))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
@@ -671,7 +671,7 @@ class JurnalController extends Controller
     {
         $data = $request->all();
         // dd($data);
-        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y', strtotime($data['created_at'])))->max('no') + 1;
         if($data['tipe']=='JNL'){
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }

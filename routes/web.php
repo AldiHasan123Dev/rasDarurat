@@ -81,10 +81,12 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $data = '[324,3213,321]';
-    $data = json_decode($data,true);
-    array_push($data,999999);
-    dd($data, json_encode($data));
+    $data = [];
+    for($i=1;$i<=100;$i++){
+        array_push($data,$i);
+    };
+    $res = array_slice($data,95,10);
+    dd($res);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

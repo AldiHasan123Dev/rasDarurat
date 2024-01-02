@@ -22,18 +22,6 @@ class JurnalKolektif extends Component
         $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
-        if($no_2==1){
-            $no_2 = 2249;
-        }
-        if($no_3==1){
-            $no_3 = 751;
-        }
-        if($no_4==1){
-            $no_4 = 736;
-        }
-        if($no_5==1){
-            $no_5 = 39;
-        }
         $job = Order::pluck('job')->toArray();
         $job = array_unique($job);
         $this->order = null;
