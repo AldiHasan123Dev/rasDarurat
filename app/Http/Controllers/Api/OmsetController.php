@@ -69,8 +69,8 @@ class OmsetController extends Controller
             $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','pembayaran seal%')->pluck('id')->toJson();
             $data[$idx]['ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal')->sum('debit');
             $data[$idx]['j_ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal')->pluck('id')->toJson();
-            $data[$idx]['ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal%')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal%')->sum('debit');
-            $data[$idx]['j_ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal%')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal%')->pluck('id')->toJson();
+            $data[$idx]['ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal, %')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal%')->sum('debit');
+            $data[$idx]['j_ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal, %')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal%')->pluck('id')->toJson();
             $data[$idx]['buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->sum('debit');
             $data[$idx]['j_buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->pluck('id')->toJson();
             $data[$idx]['checker'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%checker %')->sum('debit');
@@ -261,6 +261,17 @@ class OmsetController extends Controller
                 $update['laba_kotor'] = $omset->tarif - $update['biaya'];
                 $update['margin'] = $update['laba_kotor'] / $omset->tarif;
                 $reload = true;
+
+                $rm_col = str_replace(['[',']'],'',$omset_arr['j_biaya']);
+                $arr_rm_col = explode(',',$rm_col);
+                $new_arr_col = [];
+                foreach ($arr_rm_col as $item) {
+                    if($item!=$jurnal_id){
+                        array_push($new_arr_col,$item);
+                    }
+                }
+                $output_col = json_encode($new_arr_col);
+                $update['j_biaya'] = str_replace('"','',$output_col);
             }
             $omset->update($update);
             // $this->syncBiaya($omset);

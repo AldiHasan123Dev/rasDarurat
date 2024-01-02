@@ -175,7 +175,7 @@ class JasaKirimController extends Controller
             }
             if(!is_null(request('searching'))){
                 $full_job = explode('-',request('searching'));
-                $query->whereHas('orders', function($q) use($full_job){
+                $query->orWhereHas('orders', function($q) use($full_job){
                     $q->where('job','like','%'.$full_job[0].'%');
                     if(!empty($full_job[1])){
                         $q->where('no_job','like','%'.(int)$full_job[1].'%');

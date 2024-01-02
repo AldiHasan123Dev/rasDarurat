@@ -582,7 +582,7 @@
         });
         table.column( 0 ).visible( false );
         table.column( 1 ).visible( false );
-        // table.column( 40 ).visible( false );
+        table.column( 40 ).visible( false );
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
         $('.select2').select2({
@@ -627,11 +627,11 @@
             omset_id = omset_id_;
             type = type_;
             order_id = order_id_;
-            getJurnal(id);
+            getJurnal(id,type);
             modal_jurnal.show();
         }
 
-        function getJurnal(id){
+        function getJurnal(id,type){
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.jurnal') }}",
@@ -646,9 +646,11 @@
                     let arr = [
                         'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
                     ];
-                    $.each(arr, function (idx, item) {
-                        options += `<option value="${item}" ${ type==item?'selected':'' }>${substr(item,2)}</option>`;
-                    });
+                    if(type!='j_biaya'){
+                        $.each(arr, function (idx, item) {
+                            options += `<option value="${item}" ${ type==item?'selected':'' }>${substr(item,2)}</option>`;
+                        });
+                    }
                     $.each(response, function (idx, item) {
                         debit += item.debit_num;
                         credit += item.credit_num;
@@ -666,7 +668,7 @@
                                     <td class="text-end">${item.debit}</td>
                                     <td class="text-end">${item.credit}</td>
                                     <td>
-                                        <select class="form-select form-select-sm" style="width: 150px" onchange="addItemJurnal(${item.id},this.value)">
+                                        <select class="form-select form-select-sm" ${type=='j_biaya'?'disabled':''} style="width: 150px" onchange="addItemJurnal(${item.id},this.value)">
                                             ${options}
                                         </select>
                                     </td>
