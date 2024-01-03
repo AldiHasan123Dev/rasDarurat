@@ -921,7 +921,7 @@ class JurnalController extends Controller
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $coa_id = request('coa_id') ?? 45;
         $coa = COA::find($coa_id);
-        $year = date('Y');
+        $year = request('year') ?? date('Y');
         $month = request('month') ?? date('m');
         $tipe = 'D';
         if(substr($coa->kode,0,1)=='2'||substr($coa->kode,0,1)=='3'||substr($coa->kode,0,1)=='5'){
@@ -933,8 +933,9 @@ class JurnalController extends Controller
             $c = new Carbon($year.'-'.sprintf('%02d',$bln).'-01');
             $now = $c->startOfMonth()->format('Y-m-d');
             $last = $c->endOfMonth()->format('Y-m-d');
-            $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
+            $start = '2022-12-01';
             $des = $c->endOfMonth()->format('Y-m-d');
+            // dd($start,$last,$des);
             if($idx==0){
                 if($tipe=='D'){
                     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('credit');
