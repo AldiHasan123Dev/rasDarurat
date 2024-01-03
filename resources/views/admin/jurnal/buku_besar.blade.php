@@ -52,8 +52,10 @@
                                         <tr>
                                             <th style="width:200px">Akun :</th>
                                             <th>
-                                                <form action="{{ url()->current() }}" method="get">
+                                                <form action="{{ route('jurnal.buku_besar') }}" method="get">
                                                     <input type="hidden" name="month" value="{{ $month }}">
+                                                    <input type="hidden" name="year" value="{{ $year }}">
+                                                    <input type="hidden" name="coa_id" value="{{ $coa_id }}">
                                                     <select class="form-control px-3 py-1" name="coa_id" onchange="submit()" style="font-size:.8rem">
                                                         @foreach ($coas as $item)
                                                             <option {{ $coa_id == $item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
@@ -71,7 +73,10 @@
                                         <tr>
                                             <th style="width:200px">Tahun :</th>
                                             <th>
-                                                <form action="{{ url()->current() }}" method="get">
+                                                <form action="{{ route('jurnal.buku_besar',['month'=>$month,'coa_id'=>$coa_id,'year'=>$year]) }}" method="get">
+                                                    <input type="hidden" name="month" value="{{ $month }}">
+                                                    <input type="hidden" name="year" value="{{ $year }}">
+                                                    <input type="hidden" name="coa_id" value="{{ $coa_id }}">
                                                     <select class="form-control px-3 py-1" name="year" onchange="submit()" style="font-size:.8rem">
                                                         <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
                                                         <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>

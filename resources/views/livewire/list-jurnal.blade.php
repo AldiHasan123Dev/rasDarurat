@@ -10,7 +10,10 @@
                 </div>
             </div>
             <div class="col-3">
-                <form action="{{ url()->current() }}" method="get">
+                <form action="{{ route('jurnal.index') }}" method="get">
+                    <input type="hidden" name="tipe" value="{{ $tipe }}">
+                    <input type="hidden" name="month" value="{{ request('month') }}">
+                    <input type="hidden" name="year" value="{{ request('year') }}">
                     <select class="form-control px-3 py-1" name="year" onchange="submit()" style="font-size:.8rem">
                         <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
                         <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
@@ -34,7 +37,7 @@
                             <label for="search">Filter Tanggal</label>
                             <form action="{{ route('jurnal.index') }}" method="get">
                                 <input type="hidden" name="tipe" value="{{ $tipe }}">
-                                <input type="hidden" name="month" value="{{ request('month') }}">
+                                <input type="hidden" name="year" value="{{ request('month') }}">
                                 <input type="date" class="form-control" name="date" onchange="submit()" value="{{ request('date') }}">
                             </form>
                         </div>
@@ -45,10 +48,10 @@
                 <div class="d-flex justify-content-between">
                     <div class="d-flex gap-2 mt-5">
                         <b class="mt-2">Tipe: </b>
-                        <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
-                        <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
-                        <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
-                        <a href="{{ route('jurnal.index',['tipe'=>'TEST','month'=>request('month')]) }}" class="{{ $tipe=='TEST'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">TEST</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'TEST','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='TEST'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">TEST</a>
                     </div>
                     <div>
                         <a href="" class="btn btn-sm btn-primary mt-5" id="edit-btn">Edit</a>
