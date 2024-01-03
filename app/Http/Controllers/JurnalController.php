@@ -933,14 +933,15 @@ class JurnalController extends Controller
             $c = new Carbon($year.'-'.sprintf('%02d',$bln).'-01');
             $now = $c->startOfMonth()->format('Y-m-d');
             $last = $c->endOfMonth()->format('Y-m-d');
-            $start = '2022-12-01';
+            $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
+            // $start = '2022-12-01';
             $des = $c->endOfMonth()->format('Y-m-d');
-            // dd($start,$last,$des);
+            // dd($start,$des,$last);
             if($idx==0){
                 if($tipe=='D'){
-                    $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$des])->sum('credit');
+                    $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',['2022-12-01',$des])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',['2022-12-01',$des])->sum('credit');
                 }else{
-                    $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+                    $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',['2022-12-01',$last])->sum('credit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',['2022-12-01',$last])->sum('debit');
                 }
             }else{
                 // if ($tipe=='D') {

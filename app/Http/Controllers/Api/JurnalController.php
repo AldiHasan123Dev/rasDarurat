@@ -134,6 +134,9 @@ class JurnalController extends Controller
             if(request('month')){
                 $query->whereMonth('created_at',request('month'));
             }
+            if(request('year')){
+                $query->whereYear('created_at',request('year'));
+            }
             if(request('tipe')){
                 $query->where('tipe','LIKE','%'.request('tipe').'%');
             }

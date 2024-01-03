@@ -10,16 +10,18 @@
                 </div>
             </div>
             <div class="col-3">
-                <select class="form-control px-3 py-1" wire:model="year" style="font-size:.8rem">
-                    <option value="2023">2023</option>
-                    <option value="2024">2024</option>
-                    <option value="2025">2025</option>
-                    <option value="2026">2026</option>
-                    <option value="2027">2027</option>
-                    <option value="2028">2028</option>
-                    <option value="2029">2029</option>
-                    <option value="2030">2030</option>
-                </select>
+                <form action="{{ url()->current() }}" method="get">
+                    <select class="form-control px-3 py-1" name="year" onchange="submit()" style="font-size:.8rem">
+                        <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
+                        <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
+                        <option {{ $year=='2025'?'selected':'' }} value="2025">2025</option>
+                        <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
+                        <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
+                        <option {{ $year=='2028'?'selected':'' }} value="2028">2028</option>
+                        <option {{ $year=='2029'?'selected':'' }} value="2029">2029</option>
+                        <option {{ $year=='2030'?'selected':'' }} value="2030">2030</option>
+                    </select>
+                </form>
             </div>
             <div class="col-8">
                 <div class="my-3">
@@ -136,7 +138,7 @@
         url: '{{ route('jqgrid.jurnal') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { month:  @json($month), tipe:@json($tipe), date:@json($date) },
+        postData: { month:  @json($month), tipe:@json($tipe), date:@json($date), year:@json($year) },
         colModel: [
             {search:true, width:50, name: 'created_at', label : 'Tanggal', frozen:true},
             {search:true, width:100, name: 'nomor', label : 'Nomor Jurnal', frozen:true, sortable: false},
