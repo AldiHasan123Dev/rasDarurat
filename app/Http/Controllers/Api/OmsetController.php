@@ -27,6 +27,7 @@ class OmsetController extends Controller
             $data[$idx]['order_id'] = $order->id;
             $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->sum('debit');
             $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
+            $tipe = '';
             if($order->truckingInfo && $order->trucking == 'XPDC'){
                 $tipe = $order->truckingInfo->kendaraan->milik;
                 if($order->truckingInfo->customer->r1 == 1){
@@ -36,7 +37,7 @@ class OmsetController extends Controller
                     $tipe = 'R2';
                 }
                 if($tipe == 'R2'){
-                    $data[$idx]['trucking'] = $order->truckingInfo->tarif->tarif ?? 0;
+                    $data[$idx]['trucking'] = ($order->truckingInfo->tarif->tarif + $order->truckingInfo->tb_tl + $order->truckingInfo->tambah_isi + $order->truckingInfo->tambah_solar + $order->truckingInfo->stappel + $order->truckingInfo->lain_lain) ?? 0;
                     $data[$idx]['j_trucking'] = '[]';
                 }
             }else{
@@ -85,9 +86,9 @@ class OmsetController extends Controller
             $data[$idx]['j_flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%flexibag %')->pluck('id')->toJson();
             $data[$idx]['rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%rc %')->sum('debit');
             $data[$idx]['j_rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%rc %')->pluck('id')->toJson();
-            $data[$idx]['biaya'] =  $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['ops_seal'] + $data[$idx]['ops_seal_cleaning'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
+            $data[$idx]['biaya'] =  $data[$idx]['trucking'] + $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['ops_seal'] + $data[$idx]['ops_seal_cleaning'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
             $data[$idx]['biaya_lain'] =  Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->sum('debit') - $data[$idx]['biaya'];
-            $data[$idx]['biaya'] += $data[$idx]['biaya_lain'] + $data[$idx]['trucking'];
+            $data[$idx]['biaya'] += $data[$idx]['biaya_lain'];
             $data[$idx]['tarif'] = $tarif;
             $data[$idx]['laba_kotor'] = $data[$idx]['tarif'] - $data[$idx]['biaya'];
             $data[$idx]['margin'] = $data[$idx]['laba_kotor'] / $data[$idx]['tarif'];
