@@ -129,7 +129,14 @@ class CetakController extends Controller
         }
 
         $data = BTTB::where('order_id',$order->id)->get();
-        return view('admin.cetak.bttb', compact('order','orders','data'));
+
+        $url = base64_encode(file_get_contents(public_path('logo.png')));
+        // dd($url);
+        // if(request('print')){
+        //     $pdf = PDF::setOptions(['isHtml5ParserEnabled' => true, 'isRemoteEnabled' => true])->loadView('admin.cetak.pdf.bttb', compact('order','orders','data','url'));
+        //     return $pdf->download('bttb.pdf');
+        // }
+        return view('admin.cetak.pdf.bttb', compact('order','orders','data','url'));
     }
 
     public function bttbKubikasi()
@@ -201,7 +208,18 @@ class CetakController extends Controller
             }
         }
 
-        return view('admin.cetak.doring', compact('agents','orders','jadwal_kapal','tujuan','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring'));
+        $url = route('cetak.dooring',
+        [
+            'jadwal_kapal_id' => request('jadwal_kapal_id'),
+            'tujuan'=>request('tujuan'),
+            'agent'=>request('agent'),
+            'print'=>1
+        ]
+        );
+        if (request('print')) {
+            return view('admin.cetak.pdf.doring1', compact('agents','orders','jadwal_kapal','tujuan','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring','url'));
+        }
+        return view('admin.cetak.doring', compact('agents','orders','jadwal_kapal','tujuan','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring','url'));
     }
 
     public function invoice()

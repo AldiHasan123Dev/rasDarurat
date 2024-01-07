@@ -2,5 +2,19 @@
     "opensans_condensed-extrabold": {
         "normal": "C:\\xampp\\htdocs\\ras\\storage\\fonts\/opensans_condensed_extrabold_normal_98c6600279f80239d73c16df8fb80cc9",
         "800": "opensans_condensed_extrabold_800_98c6600279f80239d73c16df8fb80cc9"
+    },
+    "nunito sans": {
+        "300": "\/home\/almi\/Documents\/ras\/storage\/fonts\/nunito_sans_300_aa36004e2e2488deaffe12114308649f",
+        "normal": "\/home\/almi\/Documents\/ras\/storage\/fonts\/nunito_sans_normal_0328b321c2bc04856cea72a702fd4f37",
+        "600": "\/home\/almi\/Documents\/ras\/storage\/fonts\/nunito_sans_600_2ee2f93ae3650615ce0ee9155d8a4aa0",
+        "bold": "\/home\/almi\/Documents\/ras\/storage\/fonts\/nunito_sans_bold_28ff67da00e6dc1987a71083194b317f",
+        "800": "\/home\/almi\/Documents\/ras\/storage\/fonts\/nunito_sans_800_24b4f5f976244c2f65d5f66aba685b20",
+        "900": "nunito_sans_900_2d79afa3f6b468670f4cd51637fb106c"
+    },
+    "unicons-line": {
+        "normal": "unicons_line_normal_ccb4f9e5f2143c2dcb10dbb35d20b6ea"
+    },
+    "open sans": {
+        "800": "open_sans_800_32706e64358098f2a0ad457efc8e0229"
     }
 }

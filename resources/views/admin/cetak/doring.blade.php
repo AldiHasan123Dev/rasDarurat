@@ -8,7 +8,7 @@
             @import url('https://fonts.cdnfonts.com/css/dot-matrix');
             @page {
                 size: 210mm 297mm;
-                margin: 0cm 0cm 0cm 0cm;
+                margin: 0cm .5cm 0cm .5cm;
             }
             body * {
                 visibility: hidden;
@@ -289,7 +289,9 @@
                     url: "{{ route('api-jasakirim.store') }}",
                     data: {no_dooring:@json($no_dooring),lokasi_id:@json(request('tujuan')),agen_id:@json(request('agent')),order_id:@json($order_id),jadwal_kapal_id:@json(request('jadwal_kapal_id'))},
                     success: function (response) {
-                        window.print();
+                        let url = @json($url);
+                        let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
+                        open(url, 'Cetak Doring', params_);
                     }
                 });
             }
