@@ -57,7 +57,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
 use App\Http\Controllers\PortController;
 use App\Models\Jurnal;
-use App\Models\Omset;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -81,12 +81,8 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $data = [];
-    for($i=1;$i<=100;$i++){
-        array_push($data,$i);
-    };
-    $res = array_slice($data,95,10);
-    dd($res);
+    $data = Order::where('invoice','1910/RAS/XII/23')->get();
+    return view('exports.rekap_invoice',['data'=>$data]);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -224,6 +220,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('cetak/invoice-cont', [CetakController::class, 'invoiceCont'])->name('cetak.invoice.cont');
     Route::post('copy-orders/{order}', [OrderController::class, 'copy'])->name('order.copy');
     Route::post('si-export', [OrderController::class, 'SIExport'])->name('order.export.si');
+    Route::post('rekap-invoice', [OrderController::class, 'rekap_invoice'])->name('order.rekap_invoice');
     Route::post('jurnal-import', [JurnalController::class, 'import'])->name('jurnal.import');
     Route::post('customer-import', [CustomerController::class, 'import'])->name('customer.import');
     Route::post('customer-import-update', [CustomerController::class, 'importUpdate'])->name('customer.import.update');

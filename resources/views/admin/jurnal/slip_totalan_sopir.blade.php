@@ -3,10 +3,10 @@
     <form action="{{ route('jurnal.submit_slip_totalan_sopir') }}" method="post" class="container">
         <div class="card p-3 shadow">
                 @php
-                    $no_1 = App\Models\Jurnal::where('tipe','BBK')->max('no') + 1;
-                    $no1 = sprintf('%03d',$no_1).'/BBK-RAS/23';
-                    $no_2 = App\Models\Jurnal::where('tipe','BKK')->max('no') + 1;
-                    $no2 = sprintf('%03d',$no_2).'/BKK-RAS/23';
+                    $no_1 = App\Models\Jurnal::where('tipe','BBK')->whereYear('created_at',date('Y'))->max('no') + 1;
+                    $no1 = sprintf('%03d',$no_1).'/BBK-RAS/24';
+                    $no_2 = App\Models\Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
+                    $no2 = sprintf('%03d',$no_2).'/BKK-RAS/24';
                 @endphp
                 <div>
                     @csrf

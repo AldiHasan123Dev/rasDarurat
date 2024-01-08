@@ -167,6 +167,7 @@ class OrderController extends Controller
             $is_search = true;
         }
         $query = Order::query();
+        // $query->whereBetween('created_at',[]);
         $query->join('tarif','tarif.id','=','order.tarif_id');
         $query->join('customers','customers.id','=','tarif.customer_id');
 
@@ -191,7 +192,7 @@ class OrderController extends Controller
         }
         if(request('komisi_print')){
             $query->where('order.komisi','>',0)->whereNotNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNull('order.komisi_print');
-            
+
         }
         if(request('komisi_print_done')){
             $query->where('order.komisi','>',0)->whereNotNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNotNull('order.komisi_print');

@@ -23,11 +23,13 @@
                     <p>List Semua Invoice</p>
                     <b>INVOICE (selected): <span class="invoice"></span></b>
                 </div>
-                {{-- <form action="{{ route('invoice.import') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" name="file" id="file" onchange="submit()">
-                </form> --}}
-                <a href="" class="btn btn-sm btn-success" id="cetak-invoice"><i class="fas fa-print"></i> Cetak Invoice Ulang</a>
+                <div class="d-flex gap-2">
+                    <form action="{{ route('order.rekap_invoice') }}" method="post">
+                        @csrf
+                        <button class="btn btn-info btn-sm" type="submit" name="invoice" id="invoice">Rekap Invoice Excel</button>
+                    </form>
+                    <a href="" class="btn btn-sm btn-success" id="cetak-invoice" style="font-size: .7rem"><i class="fas fa-print"></i> Cetak Invoice Ulang</a>
+                </div>
             </div>
             <div class="card-body">
                 <div class="table-responsives">
@@ -122,6 +124,7 @@
             caption: "Order Job Invoice",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 var id = $(this).jqGrid('getCell', rowId, 'id');
+                var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
                 var tipe_invoice = $(this).jqGrid('getCell', rowId, 'tipe_invoice');
                 var tanggal = $(this).jqGrid('getCell', rowId, 'tanggal_format');
@@ -134,6 +137,7 @@
                 $('#created_at').val(tanggal);
                 $('#tanggal_kirim').val(tanggal_kirim);
                 $('#invoice_id').val(id);
+                $('#invoice').val(invoice);
 
             },
             rowattr: function (item) {

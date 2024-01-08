@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BAKembaliExport;
+use App\Exports\InvoiceRekapExport;
 use App\Exports\OrderExport;
 use App\Exports\SIExport;
 use App\Http\Resources\OrderResource;
@@ -299,6 +300,11 @@ class OrderController extends Controller
     public function export_ba_kembali()
     {
         return Excel::download(new BAKembaliExport(), 'laporan_ba_kembali.xlsx');
+    }
+
+    public function rekap_invoice()
+    {
+        return Excel::download(new InvoiceRekapExport(request('invoice')), 'rekap_invoice.xlsx');
     }
 
     public function pindah_kapal(Request $request)
