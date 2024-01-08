@@ -8,7 +8,7 @@
     <thead>
         <tr>
             <th>No Invoice :</th>
-            <th></th>
+            <th>{{ $data[0]->invoice ?? '' }}</th>
         </tr>
     </thead>
 </table>
@@ -38,7 +38,7 @@
             <tr>
                 @if ($loop->first)
                 <td rowspan="{{ $order->bttb->count() }}">{{ $no }}</td>
-                <td rowspan="{{ $order->bttb->count() }}"></td>
+                <td rowspan="{{ $order->bttb->count() }}">{{ $order->stuffing ? date('d/m/Y', strtotime($order->stuffing)) : '' }}</td>
                 <td rowspan="{{ $order->bttb->count() }}"></td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->container }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->nopol }}</td>
