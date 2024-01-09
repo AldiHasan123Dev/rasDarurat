@@ -91,4 +91,9 @@ class Jurnal extends Model
                 })
         );
     }
+
+    public function jurnal_balik_data()
+    {
+        return $this->hasMany(Jurnal::class,'jurnal_balik');
+    }
 }

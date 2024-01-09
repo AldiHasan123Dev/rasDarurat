@@ -42,7 +42,7 @@
                 <td rowspan="{{ $order->bttb->count() }}"></td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->container }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->nopol }}</td>
-                <td rowspan="{{ $order->bttb->count() }}">{{ $order->tarif->tujuan_lokasi->name ?? '' }}</td>
+                <td rowspan="{{ $order->bttb->count() }}">{{ $order->tarif->tujuan_lokasi->nama ?? '' }}</td>
                 @endif
                 <td>{{ $item->qty }}</td>
                 <td></td>

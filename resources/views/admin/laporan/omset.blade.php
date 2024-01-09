@@ -70,7 +70,8 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-3">
                             <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
-                            <button type="button" class="btn btn-sm btn-primary" onclick="sync()"><i class="fas fa-print"></i> SYNC</button>
+                            <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button>
                         </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">
@@ -588,8 +589,14 @@
         $('.select2').select2({
             dropdownParent: $('#modal-jurnal')
         });
+
+
         function sync(){
             syncAction(0,50);
+        }
+
+        function syncJurnalBalik(){
+            syncJurnalBalikAction(0,50);
         }
 
         function syncAction(start,end){
@@ -607,6 +614,27 @@
                         location.reload();
                     }else{
                         syncAction(response,50)
+                    }
+                }
+            });
+        }
+
+        function syncJurnalBalikAction(start,end){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('omset.sync.jurnal_balik') }}",
+                data: {
+                    id:@json($ids),
+                    start:start,
+                    end:end,
+                    month:@json($month),
+                    year:@json($year),
+                },
+                success: function (response) {
+                    if(response=='complete'){
+                        alert("SINKRONISASI JURNAL BALIK BERHASIL!");
+                    }else{
+                        syncJurnalBalikAction(response,50)
                     }
                 }
             });

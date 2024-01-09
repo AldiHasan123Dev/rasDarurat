@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JurnalResource;
 use App\Models\Jurnal;
+use App\Models\JurnalBalik;
 use App\Models\Omset;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class OmsetController extends Controller
 {
@@ -301,13 +303,87 @@ class OmsetController extends Controller
         ]);
     }
 
-    private function syncBiaya(Omset $omset) {
-        $arr = json_decode($omset->j_biaya);
-        $total = Jurnal::wherIn('id',$arr)->sum('debit');
-        $omset->update([
-            'biaya' => $total
-        ]);
+    public function syncJurnalBalik()
+    {
+        $id = request('id');
+        $ids = array_slice($id,request('start'),request('end'));
+        $end = request('start') + request('end');
+        $orders = Order::whereIn('id',$ids)->where('lock_omset',1)->get();
+        $month = request('month');
+        $year = request('year');
+        $balik = JurnalBalik::where('bulan',$month)->where('tahun',$year)->first();
+        if(!$balik){
+            $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
+            $last = $c->endOfMonth()->format('Y-m-d');
+            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','TEST')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
+            $nomor = 'TES-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
+            $balik = JurnalBalik::create([
+                'tanggal' => $last,
+                'bulan' => $month,
+                'tahun' => $year,
+                'nomor' => $nomor,
+                'no' => $no
+            ]);
+        }
+        $res = [];
+        foreach($orders as $order){
+            $omset = $order->omset;
+            if($omset){
+                $j_biaya = json_decode($omset->j_biaya);
+                array_diff($j_biaya,json_decode($omset->j_trucking));
+                $biaya = Jurnal::whereIn('id',$j_biaya)->get();
+                foreach($biaya as $j_biaya){
+                    if($j_biaya->jurnal_balik_data()->count()>0){
+                        foreach($j_biaya->jurnal_balik_data as $item){
+                            if($item->debit==0){
+                                $item->update([
+                                    'credit' => $j_biaya->debit,
+                                    'no' => $balik->no,
+                                    'nomor' => $balik->nomor
+                                ]);
+                            }else{
+                                $item->update([
+                                    'debit' => $j_biaya->debit,
+                                    'no' => $balik->no,
+                                    'nomor' => $balik->nomor
+                                ]);
+                            }
+                        }
 
-        return $total;
+                        array_push($res,$j_biaya->id);
+                    }else{
+                        $data = $j_biaya->toArray();
+                        unset($data['id']);
+                        $data['jurnal_balik'] = $j_biaya->id;
+                        $data['coa_id'] = 93;
+                        $data['debit'] = $j_biaya->debit;
+                        $data['credit'] = 0;
+                        $data['tipe'] = 'JNL';
+                        $data['nomor'] = $balik->nomor;
+                        $data['no'] = $balik->no;
+                        $data['created_at'] = $balik->tanggal;
+                        Jurnal::create($data);
+
+                        $data['jurnal_balik'] = $j_biaya->id;
+                        $data['coa_id'] = $j_biaya->coa_id;
+                        $data['credit'] = $j_biaya->debit;
+                        $data['debit'] = 0;
+                        $data['tipe'] = 'JNL';
+                        $data['nomor'] = $balik->nomor;
+                        $data['no'] = $balik->no;
+                        $data['created_at'] = $balik->tanggal;
+                        Jurnal::create($data);
+
+                        array_push($res,$j_biaya->id);
+                    }
+                }
+            }
+        }
+
+        if(count($id) > $end){
+            return response($end);
+        }else{
+            return response('complete');
+        }
     }
 }
