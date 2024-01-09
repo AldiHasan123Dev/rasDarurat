@@ -153,7 +153,7 @@ class Order extends Model
         $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id ?? null;
         $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
         if ($port) {
-            TarifPelayaran::where('pelayaran_id',$pelayaran_id)
+            return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
                 ->where('tujuan',$tujuan_id)
                 ->where('port_id',$port)
                 ->where('is_active',1)
