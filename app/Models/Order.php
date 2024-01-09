@@ -149,12 +149,12 @@ class Order extends Model
 
     public function tarifPelayaranHutang($pelayaran_id,$dari,$tujuan,$port=null)
     {
-        $type = $this->tipe;;
+        $type = $this->tipe;
         $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id ?? null;
         $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
         if ($port) {
             return TarifPelayaran::where('pelayaran_id',$pelayaran_id)
-                ->where('tujuan',$tujuan_id)
+                ->where('tujuan',$this->tarif->tujuan)
                 ->where('port_id',$port)
                 ->where('is_active',1)
                 ->get();
