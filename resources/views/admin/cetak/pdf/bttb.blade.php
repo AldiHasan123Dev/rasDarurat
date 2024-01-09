@@ -139,7 +139,7 @@ $page = 1;
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
                                 <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                                     <thead>
                                         <tr style="border: solid 2px black">
@@ -307,7 +307,7 @@ $page = 1;
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                            <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
                                 <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                                     <thead>
                                         <tr style="border-bottom: solid 2px black">
@@ -475,7 +475,7 @@ $page = 1;
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                    <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
                         <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                             <thead>
                                 <tr style="border-bottom: solid 2px black">
@@ -645,7 +645,7 @@ $page = 1;
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:295px':'' }}">
+                    <div class="col-12 mt-2" style="{{ $loop->iteration==ceil($data->count()/15)?'height:200px':'' }}">
                         <table class="table nowrap" style="font-size: .7rem !important; border-top: solid 2px black">
                             <thead>
                                 <tr style="border-bottom: solid 2px black">
