@@ -155,7 +155,7 @@
                                             <td id="tarif-{{ $item->id }}">
                                                 @if ($item->is_lock==0)
                                                     <div class="d-flex">
-                                                        <select class="form-selects" id="select-tarif-{{ $item->id }}">
+                                                        <select data-fungsi="tarifPelayaranHutang({{ $item->pelayaran_id }},{{ $item->dari }},{{ $item->tujuan }},{{ $item->port_id }})" class="form-selects" id="select-tarif-{{ $item->id }}">
                                                             <option value="">-</option>
                                                             <option value="0">0</option>
                                                             @foreach ($item->tarifPelayaranHutang($item->pelayaran_id,$item->dari,$item->tujuan,$item->port_id) as $tarif)
