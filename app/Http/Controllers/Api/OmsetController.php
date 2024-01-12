@@ -358,7 +358,7 @@ class OmsetController extends Controller
                         $data['coa_id'] = 93;
                         $data['debit'] = $j_biaya->debit;
                         $data['credit'] = 0;
-                        $data['tipe'] = 'JNL';
+                        $data['tipe'] = 'TEST';
                         $data['nomor'] = $balik->nomor;
                         $data['no'] = $balik->no;
                         $data['created_at'] = $balik->tanggal;
@@ -368,7 +368,7 @@ class OmsetController extends Controller
                         $data['coa_id'] = $j_biaya->coa_id;
                         $data['credit'] = $j_biaya->debit;
                         $data['debit'] = 0;
-                        $data['tipe'] = 'JNL';
+                        $data['tipe'] = 'TEST';
                         $data['nomor'] = $balik->nomor;
                         $data['no'] = $balik->no;
                         $data['created_at'] = $balik->tanggal;
