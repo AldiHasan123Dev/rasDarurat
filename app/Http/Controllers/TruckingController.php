@@ -265,7 +265,6 @@ class TruckingController extends Controller
         $no3 = 0;
         if ($request->tipe == 'R1') {
             $no1 = TransaksiTrucking::whereYear('tgl_invoice',date('Y'))->max('order_r1') + 1;
-            dd($no1);
             $invoice = sprintf('%03d', $no1) . '/' . $month_roman . '/' . date('y');
         } else if ($request->tipe == 'R2') {
             $no2 = TransaksiTrucking::whereYear('tgl_invoice',date('Y'))->max('order_r2') + 1;
