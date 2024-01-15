@@ -121,7 +121,6 @@
                                 <tbody>
                                     @php
                                         $no = 1 ;
-                                        $saldo_ = 0;
                                         function monthName ($number){
                                             $bulan = ['','Januari','Februari','Maret','April','Mei','Juni','July','Agustus','September','Oktober','November','Desember'];
                                             return $bulan[$number];
@@ -187,6 +186,9 @@
                                                                             ->get()
                                                                             ->groupBy(['year','month']) as $year => $jurnal
                                                                         )
+                                                                        @php
+                                                                            $saldo_ = 0;
+                                                                        @endphp
                                                                         {{-- <tr>
                                                                             <td class="fw-bold text-center" colspan="13">{{ $year }}</td>
                                                                         </tr> --}}
