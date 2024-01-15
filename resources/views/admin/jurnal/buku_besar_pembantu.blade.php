@@ -68,7 +68,7 @@
                                 </table>
                             </div>
                             <div class="col-6">
-                                <table class="table table-sm">
+                                {{-- <table class="table table-sm">
                                     <thead>
                                         <tr>
                                             <th style="width:200px">Tahun :</th>
@@ -91,7 +91,7 @@
                                             </th>
                                         </tr>
                                     </thead>
-                                </table>
+                                </table> --}}
                             </div>
                         </div>
                     </div>
@@ -114,12 +114,18 @@
                                         <td>Customer</td>
                                         <td>Debit</td>
                                         <td>Credit</td>
+                                        <td>Saldo</td>
                                         <td>#</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
                                         $no = 1 ;
+                                        $saldo_ = 0;
+                                        function monthName ($number){
+                                            $bulan = ['','Januari','Februari','Maret','April','Mei','Juni','July','Agustus','September','Oktober','November','Desember'];
+                                            return $bulan[$number];
+                                        }
                                     @endphp
                                     @foreach ($data as $idx => $jurnals)
                                         <tr>
@@ -127,6 +133,16 @@
                                             <td>{{ $idx }}</td>
                                             <td>{{ number_format($jurnals->sum('debit')) }}</td>
                                             <td>{{ number_format($jurnals->sum('credit')) }}</td>
+                                            <td>
+                                                @php
+                                                    if ($tipe=='D') {
+                                                        $saldo = $jurnals->sum('debit') - $jurnals->sum('credit');
+                                                    } else {
+                                                        $saldo = $jurnals->sum('credit') - $jurnals->sum('debit');
+                                                    }
+                                                @endphp
+                                                {{ number_format($saldo) }}
+                                            </td>
                                             <td>
                                                 <!-- Button trigger modal -->
                                                 <button type="button" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#detail-{{ $loop->iteration }}">
@@ -149,8 +165,8 @@
                                                                             <th>No</th>
                                                                             <th>Tgl</th>
                                                                             <th>Nomor</th>
-                                                                            <th>COA</th>
-                                                                            <th>Akun</th>
+                                                                            {{-- <th>COA</th>
+                                                                            <th>Akun</th> --}}
                                                                             <th>JOB</th>
                                                                             <th>INV</th>
                                                                             <th>Cont</th>
@@ -158,34 +174,68 @@
                                                                             <th>Keterangan</th>
                                                                             <th>Debit</th>
                                                                             <th>Credit</th>
-                                                                            <th>#</th>
+                                                                            <th>Saldo</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        @foreach ($jurnals->sortBy('created_at') as $jurnal)
+                                                                        @foreach (
+                                                                            DB::table('jurnal')
+                                                                            ->whereIn('jurnal.id',$jurnals->pluck('id')->toArray())
+                                                                            ->orderBy('jurnal.created_at')
+                                                                            ->select('jurnal.*','order.job','order.no_job',DB::raw("DATE_FORMAT(jurnal.created_at, '%m-%Y') new_date"),  DB::raw('YEAR(jurnal.created_at) year, MONTH(jurnal.created_at) month'))
+                                                                            ->join('order','order.id','=','jurnal.order_id')
+                                                                            ->get()
+                                                                            ->groupBy(['year','month']) as $year => $jurnal
+                                                                        )
+                                                                        {{-- <tr>
+                                                                            <td class="fw-bold text-center" colspan="13">{{ $year }}</td>
+                                                                        </tr> --}}
+                                                                        @foreach ($jurnal as $months => $month)
+                                                                        <tr>
+                                                                            <td class="fw-bold text-center" colspan="13">{{ monthName($months) }} {{ $year }}</td>
+                                                                        </tr>
+                                                                        @foreach ($month as $item)
+                                                                        @php
+                                                                            if ($tipe=='D') {
+                                                                                $saldo_ += $item->debit - $item->credit;
+                                                                            } else {
+                                                                                $saldo_ += $item->credit - $item->debit;
+                                                                            }
+                                                                        @endphp
                                                                         <tr>
                                                                             <td>{{ $loop->iteration }}</td>
-                                                                            <td>{{ date('d/m/y',strtotime($jurnal->created_at)) }}</td>
-                                                                            <td>{{ $jurnal->nomor }}</td>
-                                                                            <td>{{ $jurnal->coa->kode }}</td>
-                                                                            <td>{{ $jurnal->coa->nama }}</td>
-                                                                            <td>{{ $jurnal->order->job }}-{{ sprintf('%02d',$jurnal->order->no_job) }}</td>
-                                                                            <td>{{ $jurnal->invoice }}</td>
-                                                                            <td>{{ $jurnal->container }}</td>
-                                                                            <td>{{ $jurnal->nopol }}</td>
-                                                                            <td>{{ $jurnal->nama }}</td>
-                                                                            <td>{{ number_format($jurnal->debit) }}</td>
-                                                                            <td>{{ number_format($jurnal->credit) }}</td>
-                                                                            <td>#</td>
+                                                                            <td>{{ date('d/m/y',strtotime($item->created_at)) }}</td>
+                                                                            <td>{{ $item->nomor }}</td>
+                                                                            {{-- <td>{{ $item->coa->kode ?? '-'}}</td>
+                                                                            <td>{{ $item->coa->nama ?? '-'}}</td> --}}
+                                                                            <td>{{ $item->job ?? '-'}}-{{ sprintf('%02d',$item->no_job ?? 0) }}</td>
+                                                                            <td>{{ $item->invoice }}</td>
+                                                                            <td>{{ $item->container }}</td>
+                                                                            <td>{{ $item->nopol }}</td>
+                                                                            <td>{{ $item->nama }}</td>
+                                                                            <td>{{ number_format($item->debit) }}</td>
+                                                                            <td>{{ number_format($item->credit) }}</td>
+                                                                            <td>{{ number_format($saldo_) }}</td>
                                                                         </tr>
+                                                                        @if ($loop->last)
+                                                                        <tr>
+                                                                            <td class="fw-bold text-center" colspan="8">Total</td>
+                                                                            <td class="fw-bold">{{ number_format($month->sum('debit')) }}</td>
+                                                                            <td class="fw-bold">{{ number_format($month->sum('credit')) }}</td>
+                                                                            <td class="fw-bold">{{ number_format($saldo_) }}</td>
+                                                                        </tr>
+                                                                        @endif
+                                                                        @endforeach
+
+                                                                        @endforeach
                                                                         @endforeach
                                                                     </tbody>
                                                                     <tfoot>
                                                                         <tr>
-                                                                            <td class="text-end" colspan="10"><b>TOTAL</b></td>
+                                                                            <td class="text-end" colspan="8"><b>TOTAL</b></td>
                                                                             <td class="text-end"><b id="debit-total">{{ number_format($jurnals->sum('debit')) }}</b></td>
                                                                             <td class="text-end"><b id="credit-total">{{ number_format($jurnals->sum('credit')) }}</b></td>
-                                                                            <td></td>
+                                                                            <td class="fw-bold">{{ number_format($saldo_) }}</td>
                                                                         </tr>
                                                                     </tfoot>
                                                                 </table>

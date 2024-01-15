@@ -985,18 +985,23 @@ class JurnalController extends Controller
         $year = request('year') ?? date('Y');
         $month = request('month') ?? date('m');
         $coa_id = request('coa_id') ?? 46;
+        $coa = COA::find($coa_id);
         $coas = COA::orderBy('kode')->get(['id','nama','kode']);
+        $tipe = 'D';
+        if(substr($coa->kode,0,1)=='2'||substr($coa->kode,0,1)=='3'||substr($coa->kode,0,1)=='5'){
+            $tipe = 'C';
+        }
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $data = Jurnal::join('order','order.id','=','jurnal.order_id')
                 ->join('tarif','tarif.id','=','order.tarif_id')
                 ->join('customers','customers.id','=','tarif.customer_id')
                 ->join('coa','coa.id','=','jurnal.coa_id')
                 ->where('jurnal.coa_id',$coa_id)
-                ->whereYear('jurnal.created_at',$year)
+                // ->whereYear('jurnal.created_at',$year)
                 ->select('jurnal.*','order.tarif_id','tarif.customer_id','customers.nama as nama_customer')
                 ->get()
                 ->groupBy('nama_customer');
-        return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id'));
+        return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe'));
     }
 
     public function datatable()
