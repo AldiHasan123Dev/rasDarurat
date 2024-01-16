@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Satuan;
 use App\Models\Tarif;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -166,10 +167,11 @@ class OrderController extends Controller
         if($search=='true'){
             $is_search = true;
         }
+        $now = Carbon::now()->format('Y-m-d');
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
         $query = Order::query();
-        // $query->whereBetween('created_at',[]);
         $query->join('tarif','tarif.id','=','order.tarif_id');
-        $query->join('customers','customers.id','=','tarif.customer_id');
+        $query->whereBetween('order.created_at',[$last,$now]);
 
 
         $start = $limit * $page - $limit;
@@ -197,6 +199,7 @@ class OrderController extends Controller
         if(request('komisi_print_done')){
             $query->where('order.komisi','>',0)->whereNotNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNotNull('order.komisi_print');
         }
+        $query->join('customers','customers.id','=','tarif.customer_id');
 
         if(request('job')){
             $query->where('order.job','LIKE','%'.request('job').'%');
@@ -356,9 +359,9 @@ class OrderController extends Controller
         //     $count = $query->count();
         // }else{
         // }
-        $count = Order::get('id')->count();
+        $count = Order::whereBetween('order.created_at',[$last,$now])->get('id')->count();
         if(request('marketing_id')){
-            $count = Order::whereHas('tarif',function($q){
+            $count = Order::whereBetween('order.created_at',[$last,$now])->whereHas('tarif',function($q){
                 $q->whereHas('customer', function($a){
                     $a->where('marketing_id',request('marketing_id'));
                 });

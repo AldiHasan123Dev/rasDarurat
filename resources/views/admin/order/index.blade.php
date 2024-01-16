@@ -29,10 +29,7 @@
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex flex-wrap" style="gap:10px;">
                     @if (Auth::user()->role_id==1 || Auth::id()==5)
-                        <form action="{{ route('order.export') }}" method="post">
-                            @csrf
-                            <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
-                        </form>
+                    <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export">Export Excel</button>
                     @endif
                     @if (!request('filter-order') && is_null($marketing))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
@@ -374,6 +371,33 @@
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure?')">Simpan</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Modal Export-->
+<div class="modal fade" id="modal-export" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="{{ route('order.export') }}" method="POST" class="modal-dialog">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Export Data Tanggal JOB</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="from" class="form-label">From</label>
+                    <input type="date" name="from" id="from" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label for="to" class="form-label">To</label>
+                    <input type="date" name="to" id="to" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Export Excel</button>
             </div>
         </div>
     </form>

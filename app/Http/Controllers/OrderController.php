@@ -294,7 +294,7 @@ class OrderController extends Controller
 
     public function export()
     {
-        return Excel::download(new OrderExport(), 'laporan_order.xlsx');
+        return Excel::download(new OrderExport(request('from'),request('to')), 'laporan_order.xlsx');
     }
 
     public function export_ba_kembali()

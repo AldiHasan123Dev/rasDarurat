@@ -1051,11 +1051,17 @@ class JurnalController extends Controller
         // dd($data->take(10));
         $awal = $data->count();
         $akhir = 0;
+        $subs = 0;
         foreach ($data as $item) {
-            $order = Order::where('container',$item->order_trucking->container)->where('seal',$item->order_trucking->seal)->first();
-            if($order){
-                $item->update(['order_id'=>$order->id]);
-                $akhir++;
+            if(!is_null($item->order_trucking->container ?? null) && !is_null($item->order_trucking->seal ?? null)){
+                $order = Order::where('container',$item->order_trucking->container)->where('seal',$item->order_trucking->seal)->first();
+
+                if($order){
+                    $item->update(['order_id'=>$order->id]);
+                    $akhir++;
+                }else{
+                    $awal--;
+                }
             }
         }
 
