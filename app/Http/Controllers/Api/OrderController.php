@@ -167,7 +167,7 @@ class OrderController extends Controller
         if($search=='true'){
             $is_search = true;
         }
-        $now = Carbon::now()->format('Y-m-d');
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(6)->format('Y-m-d');
         $query = Order::query();
         $query->join('tarif','tarif.id','=','order.tarif_id');
