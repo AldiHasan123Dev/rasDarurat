@@ -121,7 +121,10 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $no = 1 ;
+                                        $no = 1;
+                                        $total = 0;
+                                        $debit = 0;
+                                        $credit = 0;
                                         function monthName ($number){
                                             $bulan = ['','Januari','Februari','Maret','April','Mei','Juni','July','Agustus','September','Oktober','November','Desember'];
                                             return $bulan[$number];
@@ -131,15 +134,18 @@
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $idx }}</td>
-                                            <td>{{ number_format($jurnals->sum('debit')) }}</td>
-                                            <td>{{ number_format($jurnals->sum('credit')) }}</td>
-                                            <td>
+                                            <td class="text-end">{{ number_format($jurnals->sum('debit')) }}</td>
+                                            <td class="text-end">{{ number_format($jurnals->sum('credit')) }}</td>
+                                            <td class="text-end">
                                                 @php
                                                     if ($tipe=='D') {
                                                         $saldo = $jurnals->sum('debit') - $jurnals->sum('credit');
                                                     } else {
                                                         $saldo = $jurnals->sum('credit') - $jurnals->sum('debit');
                                                     }
+                                                    $total += $saldo;
+                                                    $debit += $jurnals->sum('debit');
+                                                    $credit += $jurnals->sum('credit');
                                                 @endphp
                                                 {{ number_format($saldo) }}
                                             </td>
@@ -225,20 +231,32 @@
                                     <tr>
                                         <td>{{ $no }}</td>
                                         <td><b>TANPA JOB</b></td>
-                                        <td>{{ number_format($no_data->sum('debit')) }}</td>
-                                        <td>{{ number_format($no_data->sum('credit')) }}</td>
-                                        <td>
+                                        <td class="text-end">{{ number_format($no_data->sum('debit')) }}</td>
+                                        <td class="text-end">{{ number_format($no_data->sum('credit')) }}</td>
+                                        <td class="text-end">
                                             @php
-                                                    if ($tipe=='D') {
-                                                        $saldo_no_data = $no_data->sum('debit') - $no_data->sum('credit');
-                                                    } else {
-                                                        $saldo_no_data = $no_data->sum('credit') - $no_data->sum('debit');
-                                                    }
-                                                @endphp
-                                                {{ number_format($saldo_no_data) }}
+                                                if ($tipe=='D') {
+                                                    $saldo_no_data = $no_data->sum('debit') - $no_data->sum('credit');
+                                                } else {
+                                                    $saldo_no_data = $no_data->sum('credit') - $no_data->sum('debit');
+                                                }
+                                                $total += $saldo_no_data;
+                                                $debit += $no_data->sum('debit');
+                                                $credit += $no_data->sum('credit');
+                                            @endphp
+                                            {{ number_format($saldo_no_data) }}
                                         </td>
                                         <td>-</td>
                                     </tr>
+                                    <tfoot>
+                                        <tr class="fw-bold">
+                                            <td class="text-center" colspan="2">Total</td>
+                                            <td class="text-end">{{ number_format($debit) }}</td>
+                                            <td class="text-end">{{ number_format($credit) }}</td>
+                                            <td class="text-end">{{ number_format($total) }}</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tfoot>
                                 </tbody>
                             </table>
 
