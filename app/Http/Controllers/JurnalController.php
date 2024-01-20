@@ -992,20 +992,26 @@ class JurnalController extends Controller
             $tipe = 'C';
         }
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
+        $now = $c->startOfMonth()->format('Y-m-d');
+        $last = $c->endOfMonth()->format('Y-m-d');
+        $start = '2022-12-01';
         $data = Jurnal::join('order','order.id','=','jurnal.order_id')
                 ->join('tarif','tarif.id','=','order.tarif_id')
                 ->join('customers','customers.id','=','tarif.customer_id')
                 ->join('coa','coa.id','=','jurnal.coa_id')
                 ->where('jurnal.coa_id',$coa_id)
-                ->whereYear('jurnal.created_at','<=',$year)
-                ->whereMonth('jurnal.created_at','<=',$month)
+                // ->whereYear('jurnal.created_at','<=',$year)
+                // ->whereMonth('jurnal.created_at','<=',$month)
+                ->whereBetween('jurnal.created_at',[$start,$last])
                 ->orderBy('customers.nama')
                 ->select('jurnal.*','order.tarif_id','tarif.customer_id','customers.nama as nama_customer')
                 ->get()
                 ->groupBy('nama_customer');
         $no_data = Jurnal::where('jurnal.coa_id',$coa_id)
-                ->whereYear('jurnal.created_at','<=',$year)
-                ->whereMonth('jurnal.created_at','<=',$month)
+                // ->whereYear('jurnal.created_at','<=',$year)
+                // ->whereMonth('jurnal.created_at','<=',$month)
+                ->whereBetween('created_at',[$start,$last])
                 ->whereNull('order_id')
                 ->get();
         return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe','no_data'));
