@@ -315,7 +315,7 @@ class OrderController extends Controller
         if($job_count <= 1){
             return back()->with('danger','Dilarang pindah kapal dikarenakan cuman ada 1 job! Gunakan Fitur edit');
         }
-        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->where('tarif_id',$order->tarif_id)->get();
+        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->get();
         if(count($cek)>0){
             $job = $cek[0]->job;
             $no_job = count($cek) + 1;

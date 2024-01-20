@@ -171,7 +171,9 @@ class OrderController extends Controller
         $last = Carbon::now()->subMonths(6)->format('Y-m-d');
         $query = Order::query();
         $query->join('tarif','tarif.id','=','order.tarif_id');
-        $query->whereBetween('order.created_at',[$last,$now]);
+        if (!$is_search) {
+            $query->whereBetween('order.created_at',[$last,$now]);
+        }
 
 
         $start = $limit * $page - $limit;

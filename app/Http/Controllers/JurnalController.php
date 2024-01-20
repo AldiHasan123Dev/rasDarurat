@@ -997,11 +997,18 @@ class JurnalController extends Controller
                 ->join('customers','customers.id','=','tarif.customer_id')
                 ->join('coa','coa.id','=','jurnal.coa_id')
                 ->where('jurnal.coa_id',$coa_id)
-                // ->whereYear('jurnal.created_at',$year)
+                ->whereYear('jurnal.created_at','<=',$year)
+                ->whereMonth('jurnal.created_at','<=',$month)
+                ->orderBy('customers.nama')
                 ->select('jurnal.*','order.tarif_id','tarif.customer_id','customers.nama as nama_customer')
                 ->get()
                 ->groupBy('nama_customer');
-        return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe'));
+        $no_data = Jurnal::where('jurnal.coa_id',$coa_id)
+                ->whereYear('jurnal.created_at','<=',$year)
+                ->whereMonth('jurnal.created_at','<=',$month)
+                ->whereNull('order_id')
+                ->get();
+        return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe','no_data'));
     }
 
     public function datatable()
