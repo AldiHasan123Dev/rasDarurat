@@ -185,23 +185,25 @@
                                                                     </thead>
                                                                     <tbody>
                                                                         @foreach (
-                                                                            $jurnals->groupBy('order_id') as $id => $jurnal
+                                                                            $jurnals->groupBy(['order_id','credit']) as $id => $jurnal_c
                                                                         )
-                                                                        <tr>
-                                                                            <td>{{ $loop->iteration }}</td>
-                                                                            <td>{{ $jurnal->where('debit','>',0)->first() ? date('d/m/y',strtotime($jurnal->where('debit','>',0)->first()->created_at)) : '-' }}</td>
-                                                                            <td>{{ $jurnal->where('debit','>',0)->first()->nomor ?? '-'  }}</td>
-                                                                            <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
-                                                                            <td>{{ $jurnal->first()->invoice }}</td>
-                                                                            <td>{{ $jurnal->first()->container }}</td>
-                                                                            <td>{{ $jurnal->first()->nopol }}</td>
-                                                                            <td>{{ $jurnal->where('debit','>',0)->first()->nama ?? '-' }}</td>
-                                                                            <td>{{ number_format($jurnal->where('debit','>',0)->first()->debit ?? 0) }}</td>
-                                                                            <td>{{ number_format($jurnal->where('credit','>',0)->first()->credit ?? 0) }}</td>
-                                                                            <td>{{ $jurnal->where('credit','>',0)->first() ? date('d/m/y',strtotime($jurnal->where('credit','>',0)->first()->created_at)) : '-' }}</td>
-                                                                            <td>{{ $jurnal->where('credit','>',0)->first()->nomor ?? '-'  }}</td>
-                                                                            <td>{{ $jurnal->where('credit','>',0)->first()->nama ?? '-'  }}</td>
-                                                                        </tr>
+                                                                            @foreach ($jurnal_c as $jurnal)
+                                                                                <tr>
+                                                                                    <td>{{ $loop->iteration }}</td>
+                                                                                    <td>{{ $jurnal->where('debit','>',0)->first() ? date('d/m/y',strtotime($jurnal->where('debit','>',0)->first()->created_at)) : '-' }}</td>
+                                                                                    <td>{{ $jurnal->where('debit','>',0)->first()->nomor ?? '-'  }}</td>
+                                                                                    <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
+                                                                                    <td>{{ $jurnal->first()->invoice }}</td>
+                                                                                    <td>{{ $jurnal->first()->container }}</td>
+                                                                                    <td>{{ $jurnal->first()->nopol }}</td>
+                                                                                    <td>{{ $jurnal->where('debit','>',0)->first()->nama ?? '-' }}</td>
+                                                                                    <td>{{ number_format($jurnal->where('debit','>',0)->first()->debit ?? 0) }}</td>
+                                                                                    <td>{{ number_format($jurnal->where('credit','>',0)->first()->credit ?? 0) }}</td>
+                                                                                    <td>{{ $jurnal->where('credit','>',0)->first() ? date('d/m/y',strtotime($jurnal->where('credit','>',0)->first()->created_at)) : '-' }}</td>
+                                                                                    <td>{{ $jurnal->where('credit','>',0)->first()->nomor ?? '-'  }}</td>
+                                                                                    <td>{{ $jurnal->where('credit','>',0)->first()->nama ?? '-'  }}</td>
+                                                                                </tr>
+                                                                            @endforeach
                                                                         @endforeach
                                                                     </tbody>
                                                                     {{-- <tfoot>
@@ -209,7 +211,7 @@
                                                                             <td class="text-end" colspan="8"><b>TOTAL</b></td>
                                                                             <td class="text-end"><b id="debit-total">{{ number_format($jurnals->sum('debit')) }}</b></td>
                                                                             <td class="text-end"><b id="credit-total">{{ number_format($jurnals->sum('credit')) }}</b></td>
-                                                                            <td class="fw-bold">{{ number_format($saldo_) }}</td>
+                                                                            <td colspan="3"></td>
                                                                         </tr>
                                                                     </tfoot> --}}
                                                                 </table>
