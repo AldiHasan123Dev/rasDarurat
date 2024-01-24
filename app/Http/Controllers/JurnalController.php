@@ -985,6 +985,7 @@ class JurnalController extends Controller
         $year = request('year') ?? date('Y');
         $month = request('month') ?? date('m');
         $coa_id = request('coa_id') ?? 46;
+        $subjek = request('subjek') ?? 'customer_xpdc';
         $coa = COA::find($coa_id);
         $coas = COA::orderBy('kode')->get(['id','nama','kode']);
         $tipe = 'D';
@@ -996,25 +997,50 @@ class JurnalController extends Controller
         $now = $c->startOfMonth()->format('Y-m-d');
         $last = $c->endOfMonth()->format('Y-m-d');
         $start = '2022-12-01';
-        $data = Jurnal::join('order','order.id','=','jurnal.order_id')
-                ->join('tarif','tarif.id','=','order.tarif_id')
-                ->join('customers','customers.id','=','tarif.customer_id')
-                ->join('coa','coa.id','=','jurnal.coa_id')
-                ->where('jurnal.coa_id',$coa_id)
-                // ->whereYear('jurnal.created_at','<=',$year)
-                // ->whereMonth('jurnal.created_at','<=',$month)
-                ->whereBetween('jurnal.created_at',[$start,$last])
-                ->orderBy('customers.nama')
-                ->select('jurnal.*','order.tarif_id','tarif.customer_id','customers.nama as nama_customer')
-                ->get()
-                ->groupBy('nama_customer');
-        $no_data = Jurnal::where('jurnal.coa_id',$coa_id)
-                // ->whereYear('jurnal.created_at','<=',$year)
-                // ->whereMonth('jurnal.created_at','<=',$month)
-                ->whereBetween('created_at',[$start,$last])
-                ->whereNull('order_id')
-                ->get();
-        return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe','no_data'));
+        $query = Jurnal::query();
+        $query->join('coa','coa.id','=','jurnal.coa_id');
+        if($subjek=='customer_xpdc'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('tarif','tarif.id','=','order.tarif_id');
+            $query->join('customers','customers.id','=','tarif.customer_id');
+            $query->select('jurnal.*','customers.nama as nama_');
+        }
+        if($subjek=='customer_trucking'){
+            $query->join('order_trucking','order_trucking.id','=','jurnal.order_trucking_id');
+            $query->join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id');
+            $query->select('jurnal.*','customer_trucking.nama as nama_');
+        }
+        if($subjek=='kendaraan'){
+            $query->join('order_trucking','order_trucking.id','=','jurnal.order_trucking_id');
+            $query->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id');
+            $query->select('jurnal.*','kendaraan.milik as nama_');
+        }
+        if($subjek=='pelayaran'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+            $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+            $query->select('jurnal.*','pelayaran.nama as nama_');
+        }
+        if($subjek=='agen'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('agen','agen.id','=','order.agen_id');
+            $query->select('jurnal.*','agen.nama as nama_');
+        }
+        $query->where('jurnal.coa_id',$coa_id);
+        $query->whereBetween('jurnal.created_at',[$start,$last]);
+        $query->orderBy('nama_');
+        $data = $query->get();
+        $data = $data->groupBy('nama_');
+        $q = Jurnal::query();
+        $q->where('coa_id',$coa_id);
+        $q->whereBetween('created_at',[$start,$last]);
+        if($subjek=='customer_trucking' || $subjek=='kendaraan'){
+            $q->whereNull('order_trucking_id');
+        }else{
+            $q->whereNull('order_id');
+        }
+        $no_data = $q->get();
+        return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe','no_data','subjek'));
     }
 
     public function datatable()

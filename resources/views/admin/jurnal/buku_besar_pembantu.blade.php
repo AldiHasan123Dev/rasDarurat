@@ -39,54 +39,54 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="row">
-                            <div class="col-6">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:200px">Akun :</th>
-                                            <th>
-                                                <form action="{{ route('jurnal.buku_besar_pembantu') }}" method="get">
-                                                    <input type="hidden" name="month" value="{{ $month }}">
-                                                    <input type="hidden" name="year" value="{{ $year }}">
-                                                    <input type="hidden" name="coa_id" value="{{ $coa_id }}">
-                                                    <select class="form-control px-3 py-1" name="coa_id" onchange="submit()" style="font-size:.8rem">
-                                                        @foreach ($coas as $item)
-                                                            <option {{ $coa_id == $item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </form>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                            <div class="col-12 col-md-4">
+                                <label for="subjek">Subjek</label>
+                                <form action="{{ route('jurnal.buku_besar_pembantu') }}" method="get">
+                                    <input type="hidden" name="month" value="{{ $month }}">
+                                    <input type="hidden" name="year" value="{{ $year }}">
+                                    <input type="hidden" name="coa_id" value="{{ $coa_id }}">
+                                    <select class="form-control px-3 py-1" name="subjek" onchange="submit()" style="font-size:.8rem">
+                                        <option {{ $subjek=='customer_xpdc' ? 'selected' : '' }} value="customer_xpdc">Customer XPDC</option>
+                                        <option {{ $subjek=='customer_trucking' ? 'selected' : '' }} value="customer_trucking">Customer Trucking</option>
+                                        <option {{ $subjek=='pelayaran' ? 'selected' : '' }} value="pelayaran">Pelayaran</option>
+                                        <option {{ $subjek=='agen' ? 'selected' : '' }} value="agen">Agen</option>
+                                        <option {{ $subjek=='kendaraan' ? 'selected' : '' }} value="kendaraan">Kendaraan</option>
+                                    </select>
+                                </form>
                             </div>
-                            <div class="col-6">
-                                <table class="table table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th style="width:200px">Tahun :</th>
-                                            <th>
-                                                <form action="{{ route('jurnal.buku_besar_pembantu',['month'=>$month,'coa_id'=>$coa_id,'year'=>$year]) }}" method="get">
-                                                    <input type="hidden" name="month" value="{{ $month }}">
-                                                    <input type="hidden" name="year" value="{{ $year }}">
-                                                    <input type="hidden" name="coa_id" value="{{ $coa_id }}">
-                                                    <select class="form-control px-3 py-1" name="year" onchange="submit()" style="font-size:.8rem">
-                                                        <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
-                                                        <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
-                                                        <option {{ $year=='2025'?'selected':'' }} value="2025">2025</option>
-                                                        <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
-                                                        <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
-                                                        <option {{ $year=='2028'?'selected':'' }} value="2028">2028</option>
-                                                        <option {{ $year=='2029'?'selected':'' }} value="2029">2029</option>
-                                                        <option {{ $year=='2030'?'selected':'' }} value="2030">2030</option>
-                                                    </select>
-                                                </form>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                </table>
+                            <div class="col-12 col-md-4">
+                                <label for="akun">Akun</label>
+                                <form action="{{ route('jurnal.buku_besar_pembantu') }}" method="get">
+                                    <input type="hidden" name="month" value="{{ $month }}">
+                                    <input type="hidden" name="year" value="{{ $year }}">
+                                    <input type="hidden" name="subjek" value="{{ $subjek }}">
+                                    <select class="form-control px-3 py-1" name="coa_id" onchange="submit()" style="font-size:.8rem">
+                                        @foreach ($coas as $item)
+                                            <option {{ $coa_id == $item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="tahub">Tahun</label>
+                                <form action="{{ route('jurnal.buku_besar_pembantu',['month'=>$month,'coa_id'=>$coa_id,'year'=>$year]) }}" method="get">
+                                    <input type="hidden" name="month" value="{{ $month }}">
+                                    <input type="hidden" name="coa_id" value="{{ $coa_id }}">
+                                    <input type="hidden" name="subjek" value="{{ $subjek }}">
+                                    <select class="form-control px-3 py-1" name="year" onchange="submit()" style="font-size:.8rem">
+                                        <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
+                                        <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
+                                        <option {{ $year=='2025'?'selected':'' }} value="2025">2025</option>
+                                        <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
+                                        <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
+                                        <option {{ $year=='2028'?'selected':'' }} value="2028">2028</option>
+                                        <option {{ $year=='2029'?'selected':'' }} value="2029">2029</option>
+                                        <option {{ $year=='2030'?'selected':'' }} value="2030">2030</option>
+                                    </select>
+                                </form>
                             </div>
                             <div class="col-12 mt-3">
+                                <hr>
                                 <div class="d-flex gap-2">
                                     <b class="mt-2">Bulan: </b>
                                     @foreach ($months as $idx => $item)
@@ -185,25 +185,35 @@
                                                                     </thead>
                                                                     <tbody>
                                                                         @foreach (
-                                                                            $jurnals->groupBy(['order_id','credit']) as $id => $jurnal_c
+                                                                            $jurnals->groupBy(['invoice']) as $id => $jurnal
                                                                         )
-                                                                            @foreach ($jurnal_c as $jurnal)
-                                                                                <tr>
-                                                                                    <td>{{ $loop->iteration }}</td>
-                                                                                    <td>{{ $jurnal->where('debit','>',0)->first() ? date('d/m/y',strtotime($jurnal->where('debit','>',0)->first()->created_at)) : '-' }}</td>
-                                                                                    <td>{{ $jurnal->where('debit','>',0)->first()->nomor ?? '-'  }}</td>
-                                                                                    <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
-                                                                                    <td>{{ $jurnal->first()->invoice }}</td>
-                                                                                    <td>{{ $jurnal->first()->container }}</td>
-                                                                                    <td>{{ $jurnal->first()->nopol }}</td>
-                                                                                    <td>{{ $jurnal->where('debit','>',0)->first()->nama ?? '-' }}</td>
-                                                                                    <td>{{ number_format($jurnal->where('debit','>',0)->first()->debit ?? 0) }}</td>
-                                                                                    <td>{{ number_format($jurnal->where('credit','>',0)->first()->credit ?? 0) }}</td>
-                                                                                    <td>{{ $jurnal->where('credit','>',0)->first() ? date('d/m/y',strtotime($jurnal->where('credit','>',0)->first()->created_at)) : '-' }}</td>
-                                                                                    <td>{{ $jurnal->where('credit','>',0)->first()->nomor ?? '-'  }}</td>
-                                                                                    <td>{{ $jurnal->where('credit','>',0)->first()->nama ?? '-'  }}</td>
-                                                                                </tr>
-                                                                            @endforeach
+                                                                            <tr>
+                                                                                <td>{{ $loop->iteration }}</td>
+                                                                                <td>
+                                                                                    @forelse ($jurnal->where('debit','>',0) as $tgl)
+                                                                                        <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
+                                                                                    @empty
+                                                                                    <span>-</span>
+                                                                                    @endforelse
+                                                                                </td>
+                                                                                <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nomor')->toArray()) }}</td>
+                                                                                <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
+                                                                                <td>{{ $jurnal->first()->invoice ?? '-' }}</td>
+                                                                                <td>{{ $jurnal->first()->container ?? '-' }}</td>
+                                                                                <td>{{ $jurnal->first()->nopol ?? '-' }}</td>
+                                                                                <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nama')->toArray()) }}</td>
+                                                                                <td>{{ number_format($jurnal->where('debit','>',0)->sum('debit')) }}</td>
+                                                                                <td>{{ number_format($jurnal->where('credit','>',0)->sum('credit')) }}</td>
+                                                                                <td>
+                                                                                    @forelse ($jurnal->where('credit','>',0) as $tgl)
+                                                                                        <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
+                                                                                    @empty
+                                                                                        <span>-</span>
+                                                                                    @endforelse
+                                                                                </td>
+                                                                                <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nomor')->toArray())  }}</td>
+                                                                                <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nama')->toArray())  }}</td>
+                                                                            </tr>
                                                                         @endforeach
                                                                     </tbody>
                                                                     {{-- <tfoot>
