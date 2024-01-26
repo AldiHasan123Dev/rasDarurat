@@ -26,8 +26,8 @@ class Neraca extends Component
         $this->end = $this->getLastDay();
         $this->aktiva_lancar = COA::where('kode','not like','1.2%')->where('kode','like','1%')->orderBy('kode')->get();
         $this->aktiva_tak_lancar = COA::where('kode','like','1.2%')->orderBy('kode')->get();
-        $this->kewajiban = COA::whereIn('kode',['2','2.1','2.1.1','2.1.1.1','2.1.1.2','2.1.1.3','2.1.1.4','2.1.1.5','2.1.1.6','2.1.2','2.1.2.1','2.1.2.2','2.1.2.3','2.1.2.4','2.1.2.4.1','2.1.2.4.2','2.1.2.4.3','2.1.2.5','2.1.3','2.1.3.1','2.1.3.2','2.1.3.3','2.1.3.4','2.1.3.5','2.1.3.6','2.1.3.7','2.1.3.8','2.1.4','2.1.4.1','2.1.4.2','2.1.5','2.1.5.1','2.1.5.2','2.1.5.2.1','2.1.5.2.2'])->orderBy('kode')->get();
-        $this->modal = COA::whereIn('kode',['3','3.1','3.2','3.3'])->orderBy('kode')->get();
+        $this->kewajiban = COA::where('kode','like','2.%')->orderBy('kode')->get();
+        $this->modal = COA::where('kode','like','3.%')->orderBy('kode')->get();
         $kel5 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
                 ->where('coa.kode','like','5.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
@@ -59,7 +59,7 @@ class Neraca extends Component
         //     $this->start = ((int)$this->year - 1).'-12-01';
         // }
         $this->end = $this->getLastDay();
-        $this->modal = COA::whereIn('kode',['3','3.1','3.2','3.3'])->orderBy('kode')->get();
+        $this->modal = COA::where('kode','like','3.%')->orderBy('kode')->get();
         $kel5 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
                 ->where('coa.kode','like','5.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])
@@ -84,7 +84,7 @@ class Neraca extends Component
         //     $this->start = ((int)$this->year - 1).'-12-01';
         // }
         $this->end = $this->getLastDay();
-        $this->modal = COA::whereIn('kode',['3','3.1','3.2','3.3'])->orderBy('kode')->get();
+        $this->modal = COA::where('kode','like','3.%')->orderBy('kode')->get();
         $kel5 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
                 ->where('coa.kode','like','5.%')
                 ->whereBetween('jurnal.created_at',[$this->start,$this->end])

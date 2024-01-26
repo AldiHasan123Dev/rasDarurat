@@ -1030,6 +1030,7 @@ class JurnalController extends Controller
         $query->whereBetween('jurnal.created_at',[$start,$last]);
         $query->orderBy('nama_');
         $data = $query->get();
+        // dd($data);
         $data = $data->groupBy('nama_');
         $q = Jurnal::query();
         $q->where('coa_id',$coa_id);

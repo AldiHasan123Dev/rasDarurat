@@ -223,7 +223,7 @@
                                         <td>{{ number_format($item->debit,2,',','.') }}</td>
                                         <td>{{ number_format($item->credit,2,',','.') }}</td>
                                         @if ($coa->is_nobg)
-                                        <td>-</td>
+                                        <td>{{ $item->no_bg }}</td>
                                         @endif
                                         @if ($coa->is_nobupot)
                                         <td>{{ $item->order ? ($item->order->transaksi ? $item->order->transaksi->no_bupot :'') : '-' }}</td>
