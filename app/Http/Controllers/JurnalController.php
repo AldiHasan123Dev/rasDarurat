@@ -378,6 +378,7 @@ class JurnalController extends Controller
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
+                $no_bg = $data['no_bg'][$i] ?? null;
                 $invoice = null;
                 $nopol = null;
                 $container = null;
@@ -424,6 +425,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'no_bg' => $no_bg,
                         'no' => $no
                     ]);
                     $jurnal_model->create([
@@ -437,6 +439,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'no_bg' => $no_bg,
                         'no' => $no
                     ]);
                 }else{
@@ -452,6 +455,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'no_bg' => $no_bg,
                             'no' => $no
                         ]);
                     }
@@ -467,6 +471,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'no_bg' => $no_bg,
                             'no' => $no
                         ]);
                     }
@@ -1011,15 +1016,22 @@ class JurnalController extends Controller
             $query->select('jurnal.*','customer_trucking.nama as nama_');
         }
         if($subjek=='kendaraan'){
-            $query->join('order_trucking','order_trucking.id','=','jurnal.order_trucking_id');
+            $query->join('order_trucking','order_trucking.invoice','=','jurnal.invoice');
             $query->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id');
             $query->select('jurnal.*','kendaraan.milik as nama_');
         }
         if($subjek=='pelayaran'){
-            $query->join('order','order.id','=','jurnal.order_id');
+            // $query->join('hutang_pelayaran','hutang_pelayaran.no_bg_ut','=','jurnal.no_bg');
+            $query->join('hutang_pelayaran', function ($join) {
+                $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
+                $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
+                $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
+            });
+            $query->join('order','order.id','=','hutang_pelayaran.order_id');
             $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
             $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
             $query->select('jurnal.*','pelayaran.nama as nama_');
+            // dd($query->get());
         }
         if($subjek=='agen'){
             $query->join('order','order.id','=','jurnal.order_id');
@@ -1035,8 +1047,10 @@ class JurnalController extends Controller
         $q = Jurnal::query();
         $q->where('coa_id',$coa_id);
         $q->whereBetween('created_at',[$start,$last]);
-        if($subjek=='customer_trucking' || $subjek=='kendaraan'){
+        if($subjek=='customer_trucking'){
             $q->whereNull('order_trucking_id');
+        }else if($subjek=='kendaraan'){
+            $q->whereNotNull('invoice');
         }else{
             $q->whereNull('order_id');
         }

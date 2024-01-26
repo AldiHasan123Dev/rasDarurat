@@ -105,7 +105,12 @@ class Jurnal extends Model
                 ->pluck('order_id')
                 ->toArray();
         $order_id = array_unique($data);
-        return $order_id;
+        $res = [];
+        $data = Order::whereIn('id',$order_id)->get();
+        foreach ($data as $item) {
+            array_push($res,$item->job.'-'.sprintf('%02d',$item->no_job));
+        }
+        return $res;
     }
     
     public function bg_pelayaran()

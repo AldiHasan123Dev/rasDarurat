@@ -90,7 +90,7 @@
                                 <div class="d-flex gap-2">
                                     <b class="mt-2">Bulan: </b>
                                     @foreach ($months as $idx => $item)
-                                        <a href="{{ route('jurnal.buku_besar_pembantu',['month'=>sprintf('%02d',$idx+1),'coa_id'=>$coa_id, 'year'=>$year]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
+                                        <a href="{{ route('jurnal.buku_besar_pembantu',['month'=>sprintf('%02d',$idx+1),'coa_id'=>$coa_id, 'year'=>$year, 'subjek'=>$subjek]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
                                     @endforeach
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                     @foreach ($data as $idx => $jurnals)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $idx }} {{ $subjek=='pelayaran'? $jurnals->first()->bg_pelayaran() : '-' }}</td>
+                                            <td>{{ $idx }}</td>
                                             <td class="text-end">{{ number_format($jurnals->sum('debit')) }}</td>
                                             <td class="text-end">{{ number_format($jurnals->sum('credit')) }}</td>
                                             <td class="text-end">
@@ -199,7 +199,9 @@
                                                                                         @endforelse
                                                                                     </td>
                                                                                     <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nomor')->toArray()) }}</td>
-                                                                                    <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
+                                                                                    <td>
+                                                                                        {{ implode('; ',$jurnal->first()->bg()) }}
+                                                                                    </td>
                                                                                     <td>{{ $jurnal->first()->invoice ?? '-' }}</td>
                                                                                     <td>{{ $jurnal->first()->no_bg ?? '-' }}</td>
                                                                                     <td>{{ $jurnal->first()->container ?? '-' }}</td>
@@ -279,7 +281,7 @@
                                     @endforeach
                                     <tr>
                                         <td>{{ $no }}</td>
-                                        <td><b>TANPA JOB</b></td>
+                                        <td><b>{{ $subjek=='customer_trucking'?'TANPA ID TRUCKING':($subjek=='kendaraan'?'TIDAK ADA INVOICE':'TANPA JOB') }}</b></td>
                                         <td class="text-end">{{ number_format($no_data->sum('debit')) }}</td>
                                         <td class="text-end">{{ number_format($no_data->sum('credit')) }}</td>
                                         <td class="text-end">
