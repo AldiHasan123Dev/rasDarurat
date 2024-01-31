@@ -11,7 +11,7 @@ use Livewire\Component;
 
 class Jurnal extends Component
 {
-    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count;
+    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count, $bgs;
     public $no_1, $no_2, $no_3, $no_4, $no_5;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
@@ -43,6 +43,8 @@ class Jurnal extends Component
         $this->no_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
         $this->no_4 = sprintf('%03d',$no_4).'/BKK-RAS/'.date('y');
         $this->no_5 = sprintf('%03d',$no_5).'/BKM-RAS/'.date('y');
+        $bgs = ModelsJurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
+        $this->bgs = array_unique($bgs);
     }
 
     public function render()

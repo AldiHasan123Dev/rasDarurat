@@ -96,4 +96,31 @@ class Jurnal extends Model
     {
         return $this->hasMany(Jurnal::class,'jurnal_balik');
     }
+
+    public function bg()
+    {
+        $data = HutangPelayaran::orWhere('no_bg_opp', $this->no_bg)
+                ->orWhere('no_bg_opt', $this->no_bg)
+                ->orWhere('no_bg_ut', $this->no_bg)
+                ->pluck('order_id')
+                ->toArray();
+        $order_id = array_unique($data);
+        $res = [];
+        $data = Order::whereIn('id',$order_id)->get();
+        foreach ($data as $item) {
+            array_push($res,$item->job.'-'.sprintf('%02d',$item->no_job));
+        }
+        return $res;
+    }
+    
+    public function bg_pelayaran()
+    {
+        $data = HutangPelayaran::orWhere('no_bg_opp', $this->no_bg)
+                ->orWhere('no_bg_opt', $this->no_bg)
+                ->orWhere('no_bg_ut', $this->no_bg)
+                ->first()
+                ->pelayaran
+                ->nama;
+        return $data;
+    }
 }
