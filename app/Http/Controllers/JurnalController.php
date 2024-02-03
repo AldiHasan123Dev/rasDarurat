@@ -1024,15 +1024,16 @@ class JurnalController extends Controller
         }
         if($subjek=='pelayaran'){
             // $query->join('hutang_pelayaran','hutang_pelayaran.no_bg_ut','=','jurnal.no_bg');
-            $query->join('hutang_pelayaran', function ($join) {
-                $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
-                $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
-                $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
-            });
-            $query->join('order','order.id','=','hutang_pelayaran.order_id');
-            $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
-            $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
-            $query->select('jurnal.*','pelayaran.nama as nama_');
+            // $query->join('hutang_pelayaran', function ($join) {
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
+            // });
+            // $query->join('order','order.id','=','hutang_pelayaran.order_id');
+            // $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+            // $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+            // $query->select('jurnal.*','pelayaran.nama as nama_');
+            $query->whereNotNull('jurnal.no_bg');
             // dd($query->get());
         }
         if($subjek=='agen'){
@@ -1042,10 +1043,14 @@ class JurnalController extends Controller
         }
         $query->where('jurnal.coa_id',$coa_id);
         $query->whereBetween('jurnal.created_at',[$start,$last]);
-        $query->orderBy('nama_');
+        if($subjek!='pelayaran'){
+            $query->orderBy('nama_');
+        }
         $data = $query->get();
         // dd($data);
-        $data = $data->groupBy('nama_');
+        if($subjek!='pelayaran'){
+            $data = $data->groupBy('nama_');
+        }
         $q = Jurnal::query();
         $q->where('coa_id',$coa_id);
         $q->whereBetween('created_at',[$start,$last]);
@@ -1057,6 +1062,13 @@ class JurnalController extends Controller
             $q->whereNull('order_id');
         }
         $no_data = $q->get();
+        if($subjek=='pelayaran'){
+            $data = Pelayaran::whereHas('hutang_pelayaran', function($q){
+                $q->whereNotNull('no_bg_opt');
+                $q->orWhereNotNull('no_bg_opp');
+                $q->orWhereNotNull('no_bg_ut');
+            })->orderBy('nama')->get();
+        }
         return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe','no_data','subjek'));
     }
 
@@ -1088,14 +1100,6 @@ class JurnalController extends Controller
         $start = '2022-12-01';
         $query = Jurnal::query();
         $query->join('coa','coa.id','=','jurnal.coa_id');
-        // $query->join('hutang_pelayaran', function ($join) {
-        //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
-        //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
-        //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
-        // });
-        // $query->join('order','order.id','=','hutang_pelayaran.order_id');
-        // $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
-        // $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
         $query->select('jurnal.*');
         $query->where('jurnal.coa_id',$coa_id);
         $query->whereIn('jurnal.no_bg',$bgs);

@@ -130,7 +130,44 @@
                                             return $bulan[$number];
                                         }
                                     @endphp
-                                    @foreach ($data as $idx => $jurnals)
+                                    @if ($subjek=='pelayaran')
+                                        @foreach ($data as $item)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $item->nama }}</td>
+                                                <td class="text-end">{{ number_format($item->jurnals($month,$year,$coa_id)->sum('debit')) }}</td>
+                                                <td class="text-end">{{ number_format($item->jurnals($month,$year,$coa_id)->sum('credit')) }}</td>
+                                                <td class="text-end">
+                                                    @php
+                                                        if ($tipe=='D') {
+                                                            $saldo = $item->jurnals($month,$year,$coa_id)->sum('debit') - $item->jurnals($month,$year,$coa_id)->sum('credit');
+                                                        } else {
+                                                            $saldo = $item->jurnals($month,$year,$coa_id)->sum('credit') - $item->jurnals($month,$year,$coa_id)->sum('debit');
+                                                        }
+                                                        $total += $saldo;
+                                                        $debit += $item->jurnals($month,$year,$coa_id)->sum('debit');
+                                                        $credit += $item->jurnals($month,$year,$coa_id)->sum('credit');
+                                                    @endphp
+                                                    {{ number_format($saldo) }}
+                                                </td>
+                                                <td>
+                                                    <a target="d_blank" href="{{ route('jurnal.buku_besar_pembantu_detail',['coa_id'=>$coa_id,'month'=>$month,'year'=>$year,'pelayaran'=>$item->nama]) }}" class="text-primary">
+                                                        Detail
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        <tfoot>
+                                            <tr class="fw-bold">
+                                                <td class="text-center" colspan="2">Total</td>
+                                                <td class="text-end">{{ number_format($debit) }}</td>
+                                                <td class="text-end">{{ number_format($credit) }}</td>
+                                                <td class="text-end">{{ number_format($total) }}</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tfoot>
+                                    @else
+                                        @foreach ($data as $idx => $jurnals)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $idx }}</td>
@@ -245,39 +282,39 @@
                                         @php
                                             $no++;
                                         @endphp
-                                    @endforeach
-                                    <tr>
-                                        <td>{{ $no }}</td>
-                                        <td><b>{{ $subjek=='customer_trucking'?'TANPA ID TRUCKING':($subjek=='kendaraan'?'TIDAK ADA INVOICE':'TANPA JOB') }}</b></td>
-                                        <td class="text-end">{{ number_format($no_data->sum('debit')) }}</td>
-                                        <td class="text-end">{{ number_format($no_data->sum('credit')) }}</td>
-                                        <td class="text-end">
-                                            @php
-                                                if ($tipe=='D') {
-                                                    $saldo_no_data = $no_data->sum('debit') - $no_data->sum('credit');
-                                                } else {
-                                                    $saldo_no_data = $no_data->sum('credit') - $no_data->sum('debit');
-                                                }
-                                                $total += $saldo_no_data;
-                                                $debit += $no_data->sum('debit');
-                                                $credit += $no_data->sum('credit');
-                                            @endphp
-                                            {{ number_format($saldo_no_data) }}
-                                        </td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tfoot>
-                                        <tr class="fw-bold">
-                                            <td class="text-center" colspan="2">Total</td>
-                                            <td class="text-end">{{ number_format($debit) }}</td>
-                                            <td class="text-end">{{ number_format($credit) }}</td>
-                                            <td class="text-end">{{ number_format($total) }}</td>
+                                        @endforeach
+                                        <tr>
+                                            <td>{{ $no }}</td>
+                                            <td><b>{{ $subjek=='customer_trucking'?'TANPA ID TRUCKING':($subjek=='kendaraan'?'TIDAK ADA INVOICE':'TANPA JOB') }}</b></td>
+                                            <td class="text-end">{{ number_format($no_data->sum('debit')) }}</td>
+                                            <td class="text-end">{{ number_format($no_data->sum('credit')) }}</td>
+                                            <td class="text-end">
+                                                @php
+                                                    if ($tipe=='D') {
+                                                        $saldo_no_data = $no_data->sum('debit') - $no_data->sum('credit');
+                                                    } else {
+                                                        $saldo_no_data = $no_data->sum('credit') - $no_data->sum('debit');
+                                                    }
+                                                    $total += $saldo_no_data;
+                                                    $debit += $no_data->sum('debit');
+                                                    $credit += $no_data->sum('credit');
+                                                @endphp
+                                                {{ number_format($saldo_no_data) }}
+                                            </td>
                                             <td>-</td>
                                         </tr>
-                                    </tfoot>
+                                        <tfoot>
+                                            <tr class="fw-bold">
+                                                <td class="text-center" colspan="2">Total</td>
+                                                <td class="text-end">{{ number_format($debit) }}</td>
+                                                <td class="text-end">{{ number_format($credit) }}</td>
+                                                <td class="text-end">{{ number_format($total) }}</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tfoot>
+                                    @endif
                                 </tbody>
                             </table>
-
                         </div>
                         {{-- {{ $data->links() }} --}}
                         {{-- @if($data->hasMorePages())
