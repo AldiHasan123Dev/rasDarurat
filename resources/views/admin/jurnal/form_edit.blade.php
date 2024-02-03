@@ -41,6 +41,15 @@
             </select>
         </div>
         <div class="col-12 mb-3">
+            <label for="order_id">No BG</label>
+            <select class="form-control select2" id="bg-{{ $jurnal->id }}" name="no_bg" style="font-size:.9rem !important">
+                <option value=""></option>
+                @foreach ($bgs as $item)
+                <option {{ $jurnal->no_bg==$item?'selected':'' }} value="{{ $item }}">{{ $item }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-12 mb-3">
             <label for="nama">Keterangan</label>
             <input class="form-control" onclick="this.select()" name="nama" id="nama-{{ $jurnal->id }}" value="{{ $jurnal->nama }}" type="text">
         </div>

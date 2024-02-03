@@ -813,8 +813,9 @@ class JurnalController extends Controller
             $tipe = 'trucking';
             $orders = OrderTrucking::select('container','seal','id')->orderBy('container')->get();
         }
+        $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.form_edit', compact('jurnal','orders','coa','tipe'));
+        return view('admin.jurnal.form_edit', compact('jurnal','orders','coa','tipe','bgs'));
     }
 
     public function updateOne(Request $request, Jurnal $jurnal)
