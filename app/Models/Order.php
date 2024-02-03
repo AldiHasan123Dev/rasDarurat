@@ -152,7 +152,7 @@ class Order extends Model
         $type = $this->tipe;
         $tujuan_id = Lokasi::where('nama',$tujuan)->first()->id ?? null;
         $dari_id = Lokasi::where('nama',$dari)->first()->id ?? null;
-        if(strpos($tujuan,'via') || strpos($tujuan,'VIA') || strpos($tujuan,'-')) {
+        if(strpos($tujuan,'via') || strpos($tujuan,'VIA')) {
             $arr_tujuan = explode(' ',$tujuan);
             $tujuan_via = $arr_tujuan[count($arr_tujuan)-1];
             $tujuan_id = Lokasi::where('nama',$tujuan_via)->first()->id ?? null;

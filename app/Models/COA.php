@@ -17,6 +17,7 @@ class COA extends Model
         'kode',
         'no_kode',
         'nama',
+        'kategori',
         'is_cont',
         'is_nopol',
         'is_nojob',

@@ -25,6 +25,7 @@
                             <tr style="background-color: white">
                                 <th>#</th>
                                 <th>ID</th>
+                                <th>LR</th>
                                 <th>Kode</th>
                                 <th>Nama</th>
                                 <th>View Cont</th>
@@ -35,6 +36,7 @@
                                 <th>View No BG</th>
                                 <th>View No Bupot</th>
                                 <th>View Tgl Bupot</th>
+                                <th>Edit</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,6 +44,7 @@
                                 <tr>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_active')" {{ $item->is_active==1?'checked':'' }}></td>
                                     <td>{{ $item->id }}</td>
+                                    <td>{{ $item->kategori }}</td>
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->nama }}</td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_cont')" {{ $item->is_cont==1?'checked':'' }}></td>
@@ -52,12 +55,29 @@
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nobg')" {{ $item->is_nobg==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nobupot')" {{ $item->is_nobupot==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_tglbupot')" {{ $item->is_tglbupot==1?'checked':'' }}></td>
+                                    <td>
+                                        <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $item->id }}" aria-controls="offcanvasCOA-{{ $item->id }}"><i class="fas fa-pencil"></i></button>
+                                        <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $item->id }}" aria-labelledby="offcanvasCOA-{{ $item->id }}Label">
+                                            <div class="offcanvas-header">
+                                                <h5 class="offcanvas-title" id="offcanvasCOA-{{ $item->id }}Label">Form Update COA</h5>
+                                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                            </div>
+                                            <div class="offcanvas-body">
+                                                <form action="{{ route('coa.update',$item) }}" method="post">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    @include('admin.coa.form',['coa'=>$item])
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                                 @if ($item->coas->count()>0)
                                     @foreach ($item->coas as $a)
                                     <tr>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_active')" {{ $a->is_active==1?'checked':'' }}></td>
                                         <td>{{ $a->id }}</td>
+                                        <td>{{ $a->kategori }}</td>
                                         <td>{{ $a->kode }}</td>
                                         <td>{{ $a->nama }}</td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_cont')" {{ $a->is_cont==1?'checked':'' }}></td>
@@ -68,12 +88,29 @@
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobg')" {{ $a->is_nobg==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobupot')" {{ $a->is_nobupot==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_tglbupot')" {{ $a->is_tglbupot==1?'checked':'' }}></td>
+                                        <td>
+                                            <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $a->id }}" aria-controls="offcanvasCOA-{{ $a->id }}"><i class="fas fa-pencil"></i></button>
+                                            <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $a->id }}" aria-labelledby="offcanvasCOA-{{ $a->id }}Label">
+                                                <div class="offcanvas-header">
+                                                    <h5 class="offcanvas-title" id="offcanvasCOA-{{ $a->id }}Label">Form Update COA</h5>
+                                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                </div>
+                                                <div class="offcanvas-body">
+                                                    <form action="{{ route('coa.update',$a) }}" method="post">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        @include('admin.coa.form',['coa'=>$a])
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                         @if ($a->coas->count()>0)
                                             @foreach ($a->coas as $b)
                                             <tr>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_active')" {{ $b->is_active==1?'checked':'' }}></td>
                                                 <td>{{ $b->id }}</td>
+                                                <td>{{ $b->kategori }}</td>
                                                 <td>{{ $b->kode }}</td>
                                                 <td>{{ $b->nama }}</td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_cont')" {{ $b->is_cont==1?'checked':'' }}></td>
@@ -84,12 +121,29 @@
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nobg')" {{ $b->is_nobg==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nobupot')" {{ $b->is_nobupot==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_tglbupot')" {{ $b->is_tglbupot==1?'checked':'' }}></td>
+                                                <td>
+                                                    <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $b->id }}" aria-controls="offcanvasCOA-{{ $b->id }}"><i class="fas fa-pencil"></i></button>
+                                                    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $b->id }}" aria-labelledby="offcanvasCOA-{{ $b->id }}Label">
+                                                        <div class="offcanvas-header">
+                                                            <h5 class="offcanvas-title" id="offcanvasCOA-{{ $b->id }}Label">Form Update COA</h5>
+                                                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="offcanvas-body">
+                                                            <form action="{{ route('coa.update',$b) }}" method="post">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                @include('admin.coa.form',['coa'=>$b])
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </td>
                                             </tr>
                                             @if ($b->coas->count()>0)
                                                 @foreach ($b->coas as $c)
                                                     <tr>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_active')" {{ $c->is_active==1?'checked':'' }}></td>
                                                         <td>{{ $c->id }}</td>
+                                                        <td>{{ $c->kategori }}</td>
                                                         <td>{{ $c->kode }}</td>
                                                         <td>{{ $c->nama }}</td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_cont')" {{ $c->is_cont==1?'checked':'' }}></td>
@@ -100,12 +154,29 @@
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nobg')" {{ $c->is_nobg==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nobupot')" {{ $c->is_nobupot==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_tglbupot')" {{ $c->is_tglbupot==1?'checked':'' }}></td>
+                                                        <td>
+                                                            <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $c->id }}" aria-controls="offcanvasCOA-{{ $c->id }}"><i class="fas fa-pencil"></i></button>
+                                                            <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $c->id }}" aria-labelledby="offcanvasCOA-{{ $c->id }}Label">
+                                                                <div class="offcanvas-header">
+                                                                    <h5 class="offcanvas-title" id="offcanvasCOA-{{ $c->id }}Label">Form Update COA</h5>
+                                                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="offcanvas-body">
+                                                                    <form action="{{ route('coa.update',$c) }}" method="post">
+                                                                        @csrf
+                                                                        @method('PUT')
+                                                                        @include('admin.coa.form',['coa'=>$c])
+                                                                    </form>
+                                                                </div>
+                                                            </div>
+                                                        </td>
                                                     </tr>
                                                     @if ($c->coas->count()>0)
                                                         @foreach ($c->coas as $d)
                                                             <tr>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_active')" {{ $d->is_active==1?'checked':'' }}></td>
                                                                 <td>{{ $d->id }}</td>
+                                                                <td>{{ $d->kategori }}</td>
                                                                 <td>{{ $d->kode }}</td>
                                                                 <td>{{ $d->nama }}</td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_cont')" {{ $d->is_cont==1?'checked':'' }}></td>
@@ -116,12 +187,29 @@
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nobg')" {{ $d->is_nobg==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nobupot')" {{ $d->is_nobupot==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_tglbupot')" {{ $d->is_tglbupot==1?'checked':'' }}></td>
+                                                                <td>
+                                                                    <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $d->id }}" aria-controls="offcanvasCOA-{{ $d->id }}"><i class="fas fa-pencil"></i></button>
+                                                                    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $d->id }}" aria-labelledby="offcanvasCOA-{{ $d->id }}Label">
+                                                                        <div class="offcanvas-header">
+                                                                            <h5 class="offcanvas-title" id="offcanvasCOA-{{ $d->id }}Label">Form Update COA</h5>
+                                                                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="offcanvas-body">
+                                                                            <form action="{{ route('coa.update',$d) }}" method="post">
+                                                                                @csrf
+                                                                                @method('PUT')
+                                                                                @include('admin.coa.form',['coa'=>$d])
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
                                                             </tr>
                                                             @if ($d->coas->count()>0)
                                                                 @foreach ($d->coas as $e)
                                                                     <tr>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_active')" {{ $e->is_active==1?'checked':'' }}></td>
                                                                         <td>{{ $e->id }}</td>
+                                                                        <td>{{ $e->kategori }}</td>
                                                                         <td>{{ $e->kode }}</td>
                                                                         <td>{{ $e->nama }}</td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_cont')" {{ $e->is_cont==1?'checked':'' }}></td>
@@ -132,12 +220,29 @@
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nobg')" {{ $e->is_nobg==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nobupot')" {{ $e->is_nobupot==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_tglbupot')" {{ $e->is_tglbupot==1?'checked':'' }}></td>
+                                                                        <td>
+                                                                            <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $e->id }}" aria-controls="offcanvasCOA-{{ $e->id }}"><i class="fas fa-pencil"></i></button>
+                                                                            <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $e->id }}" aria-labelledby="offcanvasCOA-{{ $e->id }}Label">
+                                                                                <div class="offcanvas-header">
+                                                                                    <h5 class="offcanvas-title" id="offcanvasCOA-{{ $e->id }}Label">Form Update COA</h5>
+                                                                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                                                </div>
+                                                                                <div class="offcanvas-body">
+                                                                                    <form action="{{ route('coa.update',$e) }}" method="post">
+                                                                                        @csrf
+                                                                                        @method('PUT')
+                                                                                        @include('admin.coa.form',['coa'=>$e])
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
                                                                     </tr>
                                                                         @if ($e->coas->count()>0)
                                                                             @foreach ($e->coas as $f)
                                                                             <tr>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_active')" {{ $f->is_active==1?'checked':'' }}></td>
                                                                                 <td>{{ $f->id }}</td>
+                                                                                <td>{{ $f->kategori }}</td>
                                                                                 <td>{{ $f->kode }}</td>
                                                                                 <td>{{ $f->nama }}</td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_cont')" {{ $f->is_cont==1?'checked':'' }}></td>
@@ -148,6 +253,22 @@
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nobg')" {{ $f->is_nobg==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nobupot')" {{ $f->is_nobupot==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_tglbupot')" {{ $f->is_tglbupot==1?'checked':'' }}></td>
+                                                                                <td>
+                                                                                    <button class="py-0 px-0 btn text-primary" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCOA-{{ $f->id }}" aria-controls="offcanvasCOA-{{ $f->id }}"><i class="fas fa-pencil"></i></button>
+                                                                                    <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasCOA-{{ $f->id }}" aria-labelledby="offcanvasCOA-{{ $f->id }}Label">
+                                                                                        <div class="offcanvas-header">
+                                                                                            <h5 class="offcanvas-title" id="offcanvasCOA-{{ $f->id }}Label">Form Update COA</h5>
+                                                                                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                                                                        </div>
+                                                                                        <div class="offcanvas-body">
+                                                                                            <form action="{{ route('coa.update',$f) }}" method="post">
+                                                                                                @csrf
+                                                                                                @method('PUT')
+                                                                                                @include('admin.coa.form',['coa'=>$f])
+                                                                                            </form>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </td>
                                                                             </tr>
                                                                             @endforeach
                                                                         @endif
@@ -232,6 +353,7 @@
             if(tipe=='is_tglbupot'){
                 data.is_tglbupot = 1;
             }
+            data.response = true;
             $.ajax({
                 type: "PUT",
                 url: "{{ url('admin/coa') }}"+"/"+id,

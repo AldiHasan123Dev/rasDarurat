@@ -150,12 +150,15 @@
                                                 {{ number_format($saldo) }}
                                             </td>
                                             <td>
-                                                <!-- Button trigger modal -->
+                                                @if ($subjek=='pelayaran')
+                                                <a target="d_blank" href="{{ route('jurnal.buku_besar_pembantu_detail',['coa_id'=>$coa_id,'month'=>$month,'year'=>$year,'pelayaran'=>$idx]) }}" class="text-primary">
+                                                    Detail
+                                                </a>
+                                                @else
                                                 <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#detail-{{ $loop->iteration }}">
                                                     Detail
                                                 </a>
 
-                                                <!-- Modal -->
                                                 <div class="modal fade" id="detail-{{ $loop->iteration }}" tabindex="-1" aria-labelledby="detail-{{ $loop->iteration }}Label" aria-hidden="true">
                                                     <div class="modal-dialog modal-xl">
                                                     <div class="modal-content">
@@ -185,75 +188,38 @@
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                        @if ($subjek=='pelayaran')
-                                                                            @foreach (
-                                                                                $jurnals->groupBy(['no_bg']) as $id => $jurnal
-                                                                            )
-                                                                                <tr>
-                                                                                    <td>{{ $loop->iteration }}</td>
-                                                                                    <td>
-                                                                                        @forelse ($jurnal->where('debit','>',0) as $tgl)
-                                                                                            <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
-                                                                                        @empty
+                                                                        @foreach (
+                                                                            $jurnals->groupBy(['invoice']) as $id => $jurnal
+                                                                        )
+                                                                            <tr>
+                                                                                <td>{{ $loop->iteration }}</td>
+                                                                                <td>
+                                                                                    @forelse ($jurnal->where('debit','>',0) as $tgl)
+                                                                                        <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
+                                                                                    @empty
+                                                                                    <span>-</span>
+                                                                                    @endforelse
+                                                                                </td>
+                                                                                <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nomor')->toArray()) }}</td>
+                                                                                <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
+                                                                                <td>{{ $jurnal->first()->invoice ?? '-' }}</td>
+                                                                                <td>{{ $jurnal->first()->no_bg ?? '-' }}</td>
+                                                                                <td>{{ $jurnal->first()->container ?? '-' }}</td>
+                                                                                <td>{{ $jurnal->first()->nopol ?? '-' }}</td>
+                                                                                <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nama')->toArray()) }}</td>
+                                                                                <td>{{ number_format($jurnal->where('debit','>',0)->sum('debit')) }}</td>
+                                                                                <td>{{ number_format($jurnal->where('credit','>',0)->sum('credit')) }}</td>
+                                                                                <td>
+                                                                                    @forelse ($jurnal->where('credit','>',0) as $tgl)
+                                                                                        <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
+                                                                                    @empty
                                                                                         <span>-</span>
-                                                                                        @endforelse
-                                                                                    </td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nomor')->toArray()) }}</td>
-                                                                                    <td>
-                                                                                        {{ implode('; ',$jurnal->first()->bg()) }}
-                                                                                    </td>
-                                                                                    <td>{{ $jurnal->first()->invoice ?? '-' }}</td>
-                                                                                    <td>{{ $jurnal->first()->no_bg ?? '-' }}</td>
-                                                                                    <td>{{ $jurnal->first()->container ?? '-' }}</td>
-                                                                                    <td>{{ $jurnal->first()->nopol ?? '-' }}</td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nama')->toArray()) }}</td>
-                                                                                    <td>{{ number_format($jurnal->where('debit','>',0)->sum('debit')) }}</td>
-                                                                                    <td>{{ number_format($jurnal->where('credit','>',0)->sum('credit')) }}</td>
-                                                                                    <td>
-                                                                                        @forelse ($jurnal->where('credit','>',0) as $tgl)
-                                                                                            <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
-                                                                                        @empty
-                                                                                            <span>-</span>
-                                                                                        @endforelse
-                                                                                    </td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nomor')->toArray())  }}</td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nama')->toArray())  }}</td>
-                                                                                </tr>
-                                                                            @endforeach
-                                                                        @else
-                                                                            @foreach (
-                                                                                $jurnals->groupBy(['invoice']) as $id => $jurnal
-                                                                            )
-                                                                                <tr>
-                                                                                    <td>{{ $loop->iteration }}</td>
-                                                                                    <td>
-                                                                                        @forelse ($jurnal->where('debit','>',0) as $tgl)
-                                                                                            <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
-                                                                                        @empty
-                                                                                        <span>-</span>
-                                                                                        @endforelse
-                                                                                    </td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nomor')->toArray()) }}</td>
-                                                                                    <td>{{ $jurnal->first()->order->job ?? '-'}}-{{ sprintf('%02d',$jurnal->first()->order->no_job ?? 0) }}</td>
-                                                                                    <td>{{ $jurnal->first()->invoice ?? '-' }}</td>
-                                                                                    <td>{{ $jurnal->first()->no_bg ?? '-' }}</td>
-                                                                                    <td>{{ $jurnal->first()->container ?? '-' }}</td>
-                                                                                    <td>{{ $jurnal->first()->nopol ?? '-' }}</td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nama')->toArray()) }}</td>
-                                                                                    <td>{{ number_format($jurnal->where('debit','>',0)->sum('debit')) }}</td>
-                                                                                    <td>{{ number_format($jurnal->where('credit','>',0)->sum('credit')) }}</td>
-                                                                                    <td>
-                                                                                        @forelse ($jurnal->where('credit','>',0) as $tgl)
-                                                                                            <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
-                                                                                        @empty
-                                                                                            <span>-</span>
-                                                                                        @endforelse
-                                                                                    </td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nomor')->toArray())  }}</td>
-                                                                                    <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nama')->toArray())  }}</td>
-                                                                                </tr>
-                                                                            @endforeach
-                                                                        @endif
+                                                                                    @endforelse
+                                                                                </td>
+                                                                                <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nomor')->toArray())  }}</td>
+                                                                                <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nama')->toArray())  }}</td>
+                                                                            </tr>
+                                                                        @endforeach
                                                                     </tbody>
                                                                     {{-- <tfoot>
                                                                         <tr>
@@ -273,6 +239,7 @@
                                                     </div>
                                                     </div>
                                                 </div>
+                                                @endif
                                             </td>
                                         </tr>
                                         @php

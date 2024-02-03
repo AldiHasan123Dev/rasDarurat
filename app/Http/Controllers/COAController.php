@@ -54,7 +54,7 @@ class COAController extends Controller
             $data['is_tglbupot'] = $coa->is_tglbupot==1?0:1;
         }
         $coa->update($data);
-        if ($request->update_status) {
+        if ($request->response) {
             return response('success');
         }
 

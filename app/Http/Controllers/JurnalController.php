@@ -13,6 +13,7 @@ use App\Models\Jurnal;
 use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\Pelayaran;
 use App\Models\TransaksiSopir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -1056,6 +1057,36 @@ class JurnalController extends Controller
         }
         $no_data = $q->get();
         return view('admin.jurnal.buku_besar_pembantu',compact('data','months','coas','year','month','coa_id','tipe','no_data','subjek'));
+    }
+
+    public function buku_besar_pembantu_detail($year,$month,$coa_id,$pelayaran)
+    {
+        dd($year,$month,$coa_id,$pelayaran);
+        $pelayaran_id = Pelayaran::where('nama','like',$pelayaran)->first()->id ?? null;
+        if(!$pelayaran_id){
+            return back()->with('danger','Mohon maaf sistem ada yang salah!');
+        }
+        $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
+        $now = $c->startOfMonth()->format('Y-m-d');
+        $last = $c->endOfMonth()->format('Y-m-d');
+        $start = '2022-12-01';
+        $query = Jurnal::query();
+        $query->join('coa','coa.id','=','jurnal.coa_id');
+        $query->join('hutang_pelayaran', function ($join) {
+            $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
+            $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
+            $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
+        });
+        $query->join('order','order.id','=','hutang_pelayaran.order_id');
+        $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+        $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+        $query->select('jurnal.*','pelayaran.nama as nama_');
+        $query->where('jurnal.coa_id',$coa_id);
+        $query->where('pelayaran.id',$pelayaran_id);
+        $query->whereBetween('jurnal.created_at',[$start,$last]);
+        $query->orderBy('nama_');
+        $jurnals = $query->get();
+        return view('admin.jurnal.buku_besar_pembantu_detail', compact('jurnals'));
     }
 
     public function datatable()

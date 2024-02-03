@@ -26,7 +26,7 @@
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">PENJUALAN USAHA</th>
+                    <th colspan="3">A. PENJUALAN USAHA</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,7 +54,7 @@
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">HARGA POKOK PENJUALAN</th>
+                    <th colspan="3">B. HARGA POKOK PENJUALAN</th>
                 </tr>
             </thead>
             <tbody>
@@ -82,7 +82,7 @@
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">BIAYA USAHA</th>
+                    <th colspan="3">C. BIAYA USAHA</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,7 +110,7 @@
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">BIAYA DEPRESIASI</th>
+                    <th colspan="3">D. BIAYA DEPRESIASI</th>
                 </tr>
             </thead>
             <tbody>
@@ -138,7 +138,7 @@
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">PENDAPATAN DAN BIAYA LAIN-LAIN</th>
+                    <th colspan="3">E. PENDAPATAN DAN BIAYA LAIN-LAIN</th>
                 </tr>
             </thead>
             <tbody>
@@ -166,7 +166,7 @@
         <table class="table table-sm" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">BIAYA KEUANGAN I</th>
+                    <th colspan="3">F. BIAYA KEUANGAN I</th>
                 </tr>
             </thead>
             <tbody>
@@ -194,7 +194,7 @@
         <table class="table table-sm mt-3" style="font-size: .7rem">
             <thead>
                 <tr>
-                    <th colspan="3">BIAYA KEUANGAN II</th>
+                    <th colspan="3">G. BIAYA KEUANGAN II</th>
                 </tr>
             </thead>
             <tbody>

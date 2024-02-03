@@ -15,13 +15,13 @@ class LabaRugi extends Component
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $this->month = date('m');
         $this->year = date('Y');
-        $this->penjualan_usaha = COA::whereIn('kode',['5.1.1','5.1.2','5.1.3','5.1.4','5.1.5'])->orderBy('kode')->get();
-        $this->hpp = COA::whereIn('kode',['6.2.2','6.2.1','6.3.1','6.1.1','6.1','6.4','6.5','6.6','6.2.1.1','6.2.2.1','6.3'])->orderBy('kode')->get();
-        $this->biaya_usaha = COA::whereIn('kode',['6.9','6.10','6.7.1','6.7.5','6.8.1','6.12.1','6.12.2','6.12.3','6.11.1','6.11.2','6.15'])->orderBy('kode')->get();
-        $this->biaya_depresiasi = COA::whereIn('kode',['6.7.4','6.7.3'])->orderBy('kode')->get();
-        $this->biaya_lain = COA::whereIn('kode',['5.2','5.3','7.1','6.13.1','6.1.2','6.8.2','6.1.3','6.7.2'])->orderBy('kode')->get();
-        $this->biaya_keuangan1 = COA::whereIn('kode',['6.13.2'])->orderBy('kode')->get();
-        $this->biaya_keuangan2 = COA::whereIn('kode',['6.14','6.3.2'])->orderBy('kode')->get();
+        $this->penjualan_usaha = COA::where('kategori','A')->orderBy('kode')->get();
+        $this->hpp = COA::where('kategori','B')->orderBy('kode')->get();
+        $this->biaya_usaha = COA::where('kategori','C')->orderBy('kode')->get();
+        $this->biaya_depresiasi = COA::where('kategori','D')->orderBy('kode')->get();
+        $this->biaya_lain = COA::where('kategori','E')->orderBy('kode')->get();
+        $this->biaya_keuangan1 = COA::where('kategori','F')->orderBy('kode')->get();
+        $this->biaya_keuangan2 = COA::where('kategori','G')->orderBy('kode')->get();
     }
 
     public function render()
