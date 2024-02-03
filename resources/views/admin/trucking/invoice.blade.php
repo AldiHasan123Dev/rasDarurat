@@ -175,21 +175,29 @@
                     <a href="{{ route('trucking.pre-invoice') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
                 </div>
                 @else
-                @if (empty($invoice))
-                <a href="{{ route('trucking.pre-invoice') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
-                <form action="{{ route('trucking.generate.invoice') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="order_id" value="{{ implode(',',$order_id) }}">
-                    <input type="hidden" name="order" value="{{ $order->id }}">
-                    <input type="hidden" name="customer_id" value="{{ $order->customer_id }}">
-                    <input type="hidden" name="tipe" value="{{ $tipe }}">
-                    <input type="hidden" name="pph" id="_pph">
-                    <input type="hidden" name="total" id="_total">
-                    <input type="hidden" name="rit" id="_rit">
-                    <input type="hidden" name="lain_lain" id="_lain_lain">
-                    <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
-                </form>
-                @endif
+                    @if (empty($invoice))
+                    <a href="{{ route('trucking.pre-invoice') }}" class="btn btn-sm btn-secondary mb-3">Kembali</a>
+                    <form action="{{ route('trucking.generate.invoice') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="order_id" value="{{ implode(',',$order_id) }}">
+                        <input type="hidden" name="order" value="{{ $order->id }}">
+                        <input type="hidden" name="customer_id" value="{{ $order->customer_id }}">
+                        <input type="hidden" name="tipe" value="{{ $tipe }}">
+                        <input type="hidden" name="pph" id="_pph">
+                        <input type="hidden" name="total" id="_total">
+                        <input type="hidden" name="rit" id="_rit">
+                        <input type="hidden" name="lain_lain" id="_lain_lain">
+                        @if ($tipe=='R1' && $order->customer_id==2)
+                            <input type="hidden" name="jurnal_otomatis" value="yes">
+                        @endif
+                        <button type="submit" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
+                        <select name="pengirim" id="pengirim">
+                            @foreach ($pengirim as $peng)
+                                <option value="{{ $peng->nama }}" selected>{{ $peng->nama }}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                    @endif
                 @endif
             </div>
             @else
@@ -396,7 +404,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
+                                    (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -596,7 +604,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
+                                    (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -809,7 +817,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
+                                    (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -1033,7 +1041,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <div style="height: 1.5cm"></div>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
+                                    (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -1255,7 +1263,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
                                     <img src="{{ asset('assets/img/pdwi.jpg') }}" style="width: 151px; height:94px; position: relative; top:-10px"><br>
-                                    (<input type="text" value="Rara" class="text-center" style="border:none; width:130px"/>)
+                                    (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
                         </div>
@@ -1280,5 +1288,15 @@
             $('#_rit').val(_rit);
             $('#_lain_lain').val(_lain_lain);
         })
+
+        $('#pengirim').change(function (e) { 
+            pengirim()
+        });
+        pengirim()
+
+        function pengirim(){
+            var val = $('#pengirim').val();
+            $('.pengirim').val(val);
+        }
     </script>
 @endsection

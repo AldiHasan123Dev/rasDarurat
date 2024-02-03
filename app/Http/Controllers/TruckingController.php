@@ -15,6 +15,7 @@ use App\Models\Kendaraan;
 use App\Models\MutasiTotalanSopir;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\Pengirim;
 use App\Models\SanguSopir;
 use App\Models\Sopir;
 use App\Models\TemplateJurnal;
@@ -251,7 +252,9 @@ class TruckingController extends Controller
         // if(count($r1s)>0&&count($r2s)>0){
         //     return back()->with('danger','Anda tidak bisa memilih 2 Tipe invoice(R1 & R2) sekaligus!');
         // }
-        return view('admin.trucking.invoice', compact('orders', 'order', 'data', 'order_id', 'tipe', 'null_job'));
+
+        $pengirim = Pengirim::orderBy('nama')->get();
+        return view('admin.trucking.invoice', compact('orders', 'order', 'data', 'order_id', 'tipe', 'null_job','pengirim'));
     }
 
     public function generate_invoice(Request $request)
@@ -289,6 +292,7 @@ class TruckingController extends Controller
             'order_r2' => $no2,
             'order_r3' => $no3,
             'tgl_invoice' => date('Y-m-d'),
+            'pengirim' => $request->pengirim
         ]);
 
         OrderTrucking::whereIn('id', $order_id)->update([
@@ -357,6 +361,7 @@ class TruckingController extends Controller
                         'tipe' => 'JNL',
                         'no' => $no,
                         'created_at' => $date,
+                        'invoice' => $invoice,
                     ]);
                 }
                 if ($item->coa_credit_id == 87) {
@@ -371,6 +376,7 @@ class TruckingController extends Controller
                             'tipe' => 'JNL',
                             'no' => $no,
                             'created_at' => $date,
+                            'invoice' => $invoice,
                         ]);
                     }
                 }
@@ -388,6 +394,7 @@ class TruckingController extends Controller
                                     'tipe' => 'JNL',
                                     'no' => $no,
                                     'created_at' => $date,
+                                    'invoice' => $invoice,
                                 ]);
                             }
                         }
@@ -399,6 +406,74 @@ class TruckingController extends Controller
             ]);
             $trx->update([
                 'jurnal_piutang' => $nomor,
+            ]);
+        }
+
+        if($request->jurnal_otomatis){
+            $order = OrderTrucking::whereIn('id', $order_id)->first();
+            $orders = OrderTrucking::whereIn('id', $order_id)->get();
+
+            $template = TemplateJurnal::find(9);
+            $month = date('m');
+            $month1 = date('m', strtotime($order->tgl_muat));
+            if ($month1 != $month) {
+                $carbon = new Carbon($order->tgl_muat);
+                $date = $carbon->endOfMonth()->toDateString();
+                $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($date)))->whereYear('created_at', date('Y', strtotime($date)))->max('no') + 1;
+                $nomor = sprintf('%02d', date('m', strtotime($date))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($date));
+            } else {
+                $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->max('no') + 1;
+                $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y');
+                $date = date('Y-m-d');
+            }
+            $total = 0;
+            foreach ($orders as $ord) {
+                $shipment = $ord->order ? $ord->order->tarif->shipmentInfo->nama : '-';
+                $pembayar = $ord->order ? $ord->order->tarif->customer->nama : '-';
+                $tujuan_trucking = $ord->tarif->tujuan->tujuanInfo->nama;
+                Jurnal::create([
+                    'coa_id' => 31,
+                    'order_trucking_id' => $ord->id,
+                    'nomor' => $nomor,
+                    'nama' => 'Biaya Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
+                    'debit' => $ord->tarif->tarif,
+                    'credit' => 0,
+                    'tipe' => 'JNL',
+                    'no' => $no,
+                    'created_at' => $date,
+                    'invoice' => $invoice,
+                ]);
+
+                foreach ($ord->tagihans as $tag) {
+                    Jurnal::create([
+                        'coa_id' => 31,
+                        'order_trucking_id' => $ord->id,
+                        'nomor' => $nomor,
+                        'nama' => $tag->nama,
+                        'debit' => $tag->jumlah,
+                        'credit' => 0,
+                        'tipe' => 'JNL',
+                        'no' => $no,
+                        'created_at' => $date,
+                        'invoice' => $invoice,
+                    ]);
+                    $total += $tag->jumlah;
+                }
+
+                $total += $ord->tarif->tarif;
+            }
+
+            Jurnal::create([
+                'coa_id' => 131,
+                // 'order_trucking_id' => $ord->id,
+                'nomor' => $nomor,
+                'nama' => 'Hutang Trucking '.$request->pengirim.' INV. '.$invoice,
+                'debit' => $total,
+                'credit' => 0,
+                'tipe' => 'JNL',
+                'no' => $no,
+                'created_at' => $date,
+                'invoice' => $invoice,
             ]);
         }
 
