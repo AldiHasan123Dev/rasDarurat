@@ -9,6 +9,7 @@ use App\Http\Resources\OrderResource;
 use App\Services\SyncService;
 use App\Imports\JurnalImport;
 use App\Models\COA;
+use App\Models\HutangPelayaran;
 use App\Models\Jurnal;
 use App\Models\JurnalTampungan;
 use App\Models\Order;
@@ -1061,32 +1062,47 @@ class JurnalController extends Controller
 
     public function buku_besar_pembantu_detail($year,$month,$coa_id,$pelayaran)
     {
-        dd($year,$month,$coa_id,$pelayaran);
-        $pelayaran_id = Pelayaran::where('nama','like',$pelayaran)->first()->id ?? null;
-        if(!$pelayaran_id){
+        // dd($year,$month,$coa_id,$pelayaran);
+        $pelayaran = Pelayaran::where('nama','like',$pelayaran)->first();
+        if(!$pelayaran){
             return back()->with('danger','Mohon maaf sistem ada yang salah!');
         }
+        $pelayaran_id = $pelayaran->id;
+        $bgs = array();
+        $data = HutangPelayaran::where('pelayaran_id',$pelayaran_id)->select('no_bg_opp','no_bg_opt','no_bg_ut')->get();
+        foreach ($data as $bg) {
+            if(!is_null($bg->no_bg_opp)){
+                array_push($bgs,$bg->no_bg_opp);
+            }
+            if(!is_null($bg->no_bg_opt)){
+                array_push($bgs,$bg->no_bg_opt);
+            }
+            if(!is_null($bg->no_bg_ut)){
+                array_push($bgs,$bg->no_bg_ut);
+            }
+        }
+        $bgs = array_unique($bgs);
         $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
         $now = $c->startOfMonth()->format('Y-m-d');
         $last = $c->endOfMonth()->format('Y-m-d');
         $start = '2022-12-01';
         $query = Jurnal::query();
         $query->join('coa','coa.id','=','jurnal.coa_id');
-        $query->join('hutang_pelayaran', function ($join) {
-            $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
-            $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
-            $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
-        });
-        $query->join('order','order.id','=','hutang_pelayaran.order_id');
-        $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
-        $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
-        $query->select('jurnal.*','pelayaran.nama as nama_');
+        // $query->join('hutang_pelayaran', function ($join) {
+        //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
+        //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
+        //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
+        // });
+        // $query->join('order','order.id','=','hutang_pelayaran.order_id');
+        // $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+        // $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+        $query->select('jurnal.*');
         $query->where('jurnal.coa_id',$coa_id);
-        $query->where('pelayaran.id',$pelayaran_id);
+        $query->whereIn('jurnal.no_bg',$bgs);
         $query->whereBetween('jurnal.created_at',[$start,$last]);
-        $query->orderBy('nama_');
+        $query->orderBy('created_at');
         $jurnals = $query->get();
-        return view('admin.jurnal.buku_besar_pembantu_detail', compact('jurnals'));
+        return view('admin.jurnal.buku_besar_pembantu_detail', compact('jurnals','pelayaran_id'));
     }
 
     public function datatable()
