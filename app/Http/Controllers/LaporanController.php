@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
 use App\Models\Order;
+use App\Models\OrderTrucking;
 use App\Models\Pelayaran;
 use App\Models\Sopir;
 use App\Models\Tarif;
@@ -84,5 +85,15 @@ class LaporanController extends Controller
         $data = Order::whereNull('invoice')->get();
         $data = OrderResource::collection($data);
         return view('admin.laporan.preinvoice', compact('data','year'));
+    }
+    public function omset_trucking()
+    {
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $tipe = request('tipe') ?? 'xpdc';
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $data = OrderTrucking::with('jurnals')->whereMonth('tgl_invoice',$month)->whereYear('tgl_invoice',$year)->get()->groupBy('seal');
+        // dd($data);
+        return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe'));
     }
 }
