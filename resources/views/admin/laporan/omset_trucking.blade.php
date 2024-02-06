@@ -70,7 +70,7 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-3">
                             {{-- <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button> --}}
-                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button>
+                            {{-- <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button> --}}
                         </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">

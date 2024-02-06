@@ -56,7 +56,10 @@ class JasaKirimController extends Controller
                         'lokasi_id' => $agen->lokasi_id,
                         'agen_id' => $order->agen_id,
                         'no' => $no,
-                        'nominal' => $lokasi->harga
+                        'nominal' => $lokasi->harga,
+                        'barcode' => $item->barcode,
+                        'tgl_kirim' => $item->tgl_kirim,
+                        'tgl_terima' => $item->tgl_terima,
                     ]);
                     $order->update([
                         'jasa_kirim_id' => $res->id

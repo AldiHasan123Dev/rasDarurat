@@ -74,4 +74,10 @@ class Transaksi extends Model
     {
         return $this->belongsTo(Order::class,'order_id');
     }
+
+    public function jurnal_piutang()
+    {
+        $arr = array_unique($this->jobs()->pluck('jurnal_piutang')->toArray());
+        return implode('; ',$arr);
+    }
 }

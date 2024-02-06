@@ -9,19 +9,18 @@ use Maatwebsite\Excel\Concerns\FromView;
 
 class JurnalMonth implements FromView
 {
-    private $month;
-    private $year;
+    private $from;
+    private $to;
 
-    public function __construct(int $year, int $month)
+    public function __construct($from, $to)
     {
-        $this->month = $month;
-        $this->year  = $year;
+        $this->from = $from;
+        $this->to  = $to;
     }
 
     public function view(): View
     {
-        $data = Jurnal::whereYear('created_at', $this->year)
-                ->whereMonth('created_at', $this->month)
+        $data = Jurnal::whereBetween('created_at',[$this->from,$this->to])
                 ->get();
 
         return view('exports.jurnal_month', compact('data'));

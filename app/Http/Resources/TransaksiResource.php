@@ -18,6 +18,7 @@ class TransaksiResource extends JsonResource
             'id' => $this->id,
             'tipe_invoice' => $this->tipe_invoice,
             'order_id' => $this->order_id,
+            'jurnal_piutang' => $this->jurnal_piutang(),
             'invoice' => $this->invoice,
             'npwp' => $this->pembayar->npwp ?? '-',
             'nik' => $this->pembayar->nik ?? '-',

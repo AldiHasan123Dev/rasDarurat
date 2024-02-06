@@ -105,6 +105,7 @@
                 {search:true, name: 'id', label : 'id', hidden:true},
                 {search:true, name: 'tanggal_format', label : 'Tanggal', hidden:true},
                 {search:true, name: 'tanggal_kirim_format', label : 'Tanggal', hidden:true},
+                {search:true, name: 'jurnal_piutang', label : 'No. Jurnal'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'tanggal', label : 'Tanggal',sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'job', label : 'Group Job'},

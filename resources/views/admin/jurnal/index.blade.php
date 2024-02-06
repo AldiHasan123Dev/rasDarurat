@@ -37,12 +37,7 @@
                     @csrf
                     <button class="btn btn-sm btn-info" type="submit">Sinkronisasi</button>
                 </form>
-                <form action="{{ route('jurnal.exportMonth') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="month" value="{{ $month }}">
-                    <input type="hidden" name="year" value="{{ $year }}">
-                    <button class="btn btn-sm btn-success" type="submit"><i class="fas fa-download"></i></button>
-                </form>
+                <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export"><i class="fas fa-download"></i></button>
             </div>
             <div class="card-body">
                 @if (count($unbalance)>0)
@@ -107,6 +102,33 @@
             </form>
         </div>
     </div> --}}
+
+    <!-- Modal Export-->
+<div class="modal fade" id="modal-export" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="{{ route('jurnal.exportMonth') }}" method="POST" class="modal-dialog">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Export Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="from" class="form-label">From</label>
+                    <input type="date" name="from" id="from" class="form-control">
+                </div>
+                <div class="mb-2">
+                    <label for="to" class="form-label">To</label>
+                    <input type="date" name="to" id="to" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Export Excel</button>
+            </div>
+        </div>
+    </form>
+</div>
 @endsection
 
 @section('script')
