@@ -236,12 +236,13 @@ class JasaKirimController extends Controller
                                 </div>
                             </div>';
                 }else{
+                    // <form action="'.route('jasakirim.destroy',$data).'" method="post">
+                    //                 <input type="hidden" name="_token" value="'.csrf_token().'" />
+                    //                 <input type="hidden" name="_method" value="delete" />
+                    //                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                    //             </form>
                     $html = '<div class="d-flex gap-1">
-                                <form action="'.route('jasakirim.destroy',$data).'" method="post">
-                                    <input type="hidden" name="_token" value="'.csrf_token().'" />
-                                    <input type="hidden" name="_method" value="delete" />
-                                    <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
-                                </form>
+
                                 <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirimUpdate'.$data->id.'" aria-controls="offcanvasJasaKirimUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
                                 <a href="'.route('cetak.dooring',['jadwal_kapal_id'=>$data->jadwal_kapal_id,'tujuan'=>$data->lokasi_id,'agent'=>$data->agen_id]).'" class="text-success"><i class="fas fa-print"></i></a>
                             </div>
