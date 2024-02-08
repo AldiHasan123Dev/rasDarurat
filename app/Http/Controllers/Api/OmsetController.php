@@ -27,8 +27,10 @@ class OmsetController extends Controller
                 $tarif *= $order->bttb->sum('vol');
             }
             $data[$idx]['order_id'] = $order->id;
-            $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->sum('debit');
-            $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
+            $data[$idx]['trucking'] = 0;
+            $data[$idx]['j_trucking'] = '[]';
+            // $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->sum('debit');
+            // $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
             $tipe = '';
             if($order->truckingInfo && $order->trucking == 'XPDC'){
                 $tipe = $order->truckingInfo->kendaraan->milik;

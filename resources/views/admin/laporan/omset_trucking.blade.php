@@ -225,10 +225,10 @@
                                                 -
                                             @endif
                                           </td>
-                                          <td>{{ $order->jurnals()->where('nama','like','pendapatan trucking%')->whereIn('coa_id',($tipe=='xpdc'?[61,81]:[98,80,87]))->where('debit','>',0)->first()->nama ?? 'Pendapatan Trucking -' }}</td>
-                                          <td>{{ number_format($order->jurnals()->where('nama','like','pendapatan trucking%')->where('coa_id',($tipe=='xpdc'?61:98))->where('debit','>',0)->first()->debit ?? 0) }}</td>
-                                          <td>{{ number_format($order->jurnals()->where('nama','like','pendapatan trucking%')->where('coa_id',($tipe=='xpdc'?81:80))->where('debit','>',0)->first()->debit ?? 0) }}</td>
-                                          <td>{{ number_format($order->jurnals()->where('nama','like','pendapatan trucking%')->where('coa_id',87)->where('debit','>',0)->first()->debit ?? 0) }}</td>
+                                          <td>{{ $order->jurnals()->where('nama','like','pendapatan trucking%')->whereIn('coa_id',($tipe=='xpdc'?[61,81]:[98,80,87]))->where('credit','>',0)->first()->nama ?? 'Pendapatan Trucking -' }}</td>
+                                          <td>{{ number_format($order->jurnals()->where('nama','like','pendapatan trucking%')->where('coa_id',($tipe=='xpdc'?61:98))->where('credit','>',0)->first()->credit ?? 0) }}</td>
+                                          <td>{{ number_format($order->jurnals()->where('nama','like','pendapatan trucking%')->where('coa_id',($tipe=='xpdc'?81:80))->where('credit','>',0)->first()->credit ?? 0) }}</td>
+                                          <td>{{ number_format($order->jurnals()->where('nama','like','pendapatan trucking%')->where('coa_id',87)->where('credit','>',0)->first()->credit ?? 0) }}</td>
                                         </tr>
                                         @endif
                                         @php
@@ -291,7 +291,7 @@
         });
 
 
-        
+
     </script>
 @endsection
 

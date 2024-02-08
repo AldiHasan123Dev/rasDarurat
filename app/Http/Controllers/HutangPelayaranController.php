@@ -199,7 +199,7 @@ class HutangPelayaranController extends Controller
                 'credit' => $hp->pph,
             ]);
         }
-        if($hp->pembulatan>0){
+        if($hp->pembulatan!=0){
             $opp_total += $hp->pembulatan;
             Jurnal::create([
                 'tipe' => 'JNL',
