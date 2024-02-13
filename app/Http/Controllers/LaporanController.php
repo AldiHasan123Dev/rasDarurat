@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrderResource;
 use App\Models\COA;
 use App\Models\Customer;
+use App\Models\Jurnal;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
 use App\Models\Order;
@@ -92,7 +93,12 @@ class LaporanController extends Controller
         $month = request('month') ?? date('m');
         $tipe = request('tipe') ?? 'xpdc';
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
-        $data = OrderTrucking::with('jurnals')->whereMonth('tgl_invoice',$month)->whereYear('tgl_invoice',$year)->get()->groupBy('seal');
+        if($tipe=='xpdc'){
+            $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[61,81])->pluck('order_trucking_id')->toArray();
+        }else{
+            $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[98,80,87])->pluck('order_trucking_id')->toArray();
+        }
+        $data = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('seal');
         // dd($data);
         return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe'));
     }

@@ -113,13 +113,57 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="mb-2">
-                    <label for="from" class="form-label">From</label>
-                    <input type="date" name="from" id="from" class="form-control">
-                </div>
-                <div class="mb-2">
-                    <label for="to" class="form-label">To</label>
-                    <input type="date" name="to" id="to" class="form-control">
+                <div class="row">
+                    <div class="mb-2 col-12">
+                        <label for="tipe" class="form-label">Tipe Jurnal</label>
+                        <select name="tipe" id="tipe" class="form-select">
+                            <option value="JNL" selected>JNL</option>
+                            <option value="BBK">BBK</option>
+                            <option value="BKK">BKK</option>
+                            <option value="BBM">BBM</option>
+                            <option value="BKM">BKM</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 col-6">
+                        <label for="month" class="form-label">Bulan <small>(khusus tipe JNL)</small></label>
+                        <select name="month" id="month" class="form-select">
+                            <option value="" selected></option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 col-6">
+                        <label for="year" class="form-label">Tahun</label>
+                        <select name="year" id="year" class="form-select">
+                            <option value="2022" {{ date('Y')=='2022' ? 'selected' : '' }}>2022</option>
+                            <option value="2023" {{ date('Y')=='2023' ? 'selected' : '' }}>2023</option>
+                            <option value="2024" {{ date('Y')=='2024' ? 'selected' : '' }}>2024</option>
+                            <option value="2025" {{ date('Y')=='2025' ? 'selected' : '' }}>2025</option>
+                            <option value="2026" {{ date('Y')=='2026' ? 'selected' : '' }}>2026</option>
+                            <option value="2027" {{ date('Y')=='2027' ? 'selected' : '' }}>2027</option>
+                            <option value="2028" {{ date('Y')=='2028' ? 'selected' : '' }}>2028</option>
+                            <option value="2029" {{ date('Y')=='2029' ? 'selected' : '' }}>2029</option>
+                            <option value="2030" {{ date('Y')=='2030' ? 'selected' : '' }}>2030</option>
+                        </select>
+                    </div>
+                    <div class="mb-2 col-6">
+                        <label for="from" class="form-label">Dari Nomor</label>
+                        <input type="number" name="from" id="from" class="form-control" min="1" value="1" onclick="this.select()">
+                    </div>
+                    <div class="mb-2 col-6">
+                        <label for="to" class="form-label">Sampai Nomor</label>
+                        <input type="number" name="to" id="to" class="form-control" min="1" value="100" onclick="this.select()">
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

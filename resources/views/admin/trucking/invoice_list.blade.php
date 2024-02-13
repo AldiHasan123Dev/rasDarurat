@@ -87,6 +87,8 @@
             data: data,
             colModel: [
                 {search:true, name: 'id', label : 'id', hidden:true},
+                {search:true, name: 'jurnal_piutang', label : 'Piutang Trucking'},
+                {search:true, name: 'jurnal_hutang', label : 'Hutang Trucking'},
                 {search:true, name: 'tgl_invoice', label : 'Tanggal Invoice', sorttype: 'date', datefmt:'d/m/y'},
                 {search:true, name: 'invoice', label : 'Invoice'},
                 {search:true, name: 'customer', label : 'Customer',},

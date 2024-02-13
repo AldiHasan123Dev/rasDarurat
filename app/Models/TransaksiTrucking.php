@@ -14,6 +14,7 @@ class TransaksiTrucking extends Model
     protected $table = 'transaksi_trucking';
     protected $fillable = [
         'jurnal_piutang',
+        'jurnal_hutang',
         'customer_id',
         'tgl_invoice',
         'invoice',

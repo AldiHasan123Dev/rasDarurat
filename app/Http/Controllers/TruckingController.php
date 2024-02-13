@@ -468,12 +468,19 @@ class TruckingController extends Controller
                 // 'order_trucking_id' => $ord->id,
                 'nomor' => $nomor,
                 'nama' => 'Hutang Trucking '.$request->pengirim.' INV. '.$invoice,
-                'debit' => $total,
-                'credit' => 0,
+                'credit' => $total,
+                'debit' => 0,
                 'tipe' => 'JNL',
                 'no' => $no,
                 'created_at' => $date,
                 'invoice' => $invoice,
+            ]);
+
+            OrderTrucking::whereIn('id', $order_id)->update([
+                'jurnal_hutang' => $nomor,
+            ]);
+            $trx->update([
+                'jurnal_hutang' => $nomor,
             ]);
         }
 

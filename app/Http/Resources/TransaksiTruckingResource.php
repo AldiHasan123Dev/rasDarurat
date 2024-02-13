@@ -16,6 +16,8 @@ class TransaksiTruckingResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'jurnal_piutang' => $this->jurnal_piutang,
+            'jurnal_hutang' => $this->jurnal_hutang,
             'customer' => $this->customer->nama,
             'invoice' => $this->invoice,
             'tgl_invoice' => date('d/m/y', strtotime($this->tgl_invoice)),
