@@ -13,6 +13,7 @@ class JasaKirim extends Model
 
     protected $table = 'jasa_kirim';
     protected $fillable = [
+        'merger',
         'jadwal_kapal_id',
         'invoice',
         'tgl_invoice',

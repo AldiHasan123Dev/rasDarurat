@@ -33,8 +33,10 @@ class JasaKirimController extends Controller
                 ]);
             }
 
+            $id = $res->merger ?? $res->id;
+
             Order::whereIn('id', json_decode($request->order_id))->update([
-                'jasa_kirim_id' => $res->id
+                'jasa_kirim_id' => $id
             ]);
         }
         return response($res);
@@ -87,7 +89,9 @@ class JasaKirimController extends Controller
                         'jasa_kirim_id' => $jasa_kirim_id
                     ]);
                     if ($idx!=0) {
-                        $item->delete();
+                        $item->update([
+                            'merger' => $jasa_kirim_id
+                        ]);
                     }
                 }
             }

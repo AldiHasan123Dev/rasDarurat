@@ -159,6 +159,7 @@ class JasaKirimController extends Controller
             $query = JasaKirim::query();
             $query->join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id');
             $query->select('jasa_kirim.*','lokasi.nama');
+            $query->whereNull('merger');
             $query->whereNotNull('nominal');
             $query->where('nominal','>',0);
             if(!is_null(request('start_date')) && !is_null(request('end_date'))){
