@@ -107,6 +107,7 @@
                                     <tr>
                                         <th style="min-width:40px !important">ID</th>
                                         <th style="min-width:40px !important">ORDER_ID</th>
+                                        <th style="min-width:40px !important">#</th>
                                         <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">Group JOB</th>
@@ -242,9 +243,14 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($data as $order)
-                                        <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 ? 'secondary' : ($order->omset->margin < 0 ? 'danger' : '')) : '' }}">
-                                            <td>{{ $order->omset->id ?? null }}</td>
+                                        <tr class="table-{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 ? 'secondary' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">
+                                            <td>{{ $order->pra_omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
+                                            @if ($order->lock_omset==1)
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="unlock({{ $order->id }})"><i class="fas fa-lock"></i></button></td>
+                                            @else
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="lock({{ $order->id }})"><i class="fas fa-unlock"></i></button></td>
+                                            @endif
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}</td>
@@ -283,129 +289,129 @@
                                             <td>{{ $order->agen }}</td>
                                             <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
                                             <td id="j_none-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_none',{{ $order->omset->id ?? null }},'{{ $order->omset->j_none ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->none ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_none',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_none ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->none ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td>{{ $order->truckingInfo->kendaraan->milik ?? '-' }}</td>
                                             <td id="j_trucking-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->omset->id ?? null }},'{{ $order->omset->j_trucking ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->trucking ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_trucking ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->trucking ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_opp-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opp',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opp ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->opp ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opp',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opp ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->opp ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_opt-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opt',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->opt ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opt',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->opt ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_ut-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ut',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ut ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->ut ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ut',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ut ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->ut ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_bl-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_bl',{{ $order->omset->id ?? null }},'{{ $order->omset->j_bl ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->bl ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_bl',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_bl ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->bl ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_apbs-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_apbs',{{ $order->omset->id ?? null }},'{{ $order->omset->j_apbs ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->apbs ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_apbs',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_apbs ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->apbs ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_cleaning-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_cleaning',{{ $order->omset->id ?? null }},'{{ $order->omset->j_cleaning ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->cleaning ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_cleaning',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_cleaning ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->cleaning ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_lss-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_lss',{{ $order->omset->id ?? null }},'{{ $order->omset->j_lss ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->lss ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_lss',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lss ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->lss ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_storage-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_storage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_storage ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->storage ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_storage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_storage ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->storage ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_jasa_door-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_jasa_door',{{ $order->omset->id ?? null }},'{{ $order->omset->j_jasa_door ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->jasa_door ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_jasa_door',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_jasa_door ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->jasa_door ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_asuransi-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_asuransi',{{ $order->omset->id ?? null }},'{{ $order->omset->j_asuransi ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->asuransi ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_asuransi',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_asuransi ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->asuransi ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_ops-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->ops ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->ops ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_segel-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_segel',{{ $order->omset->id ?? null }},'{{ $order->omset->j_segel ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->segel ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_segel',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_segel ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->segel ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_ops_seal-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_seal ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->ops_seal ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_seal ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->ops_seal ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_ops_seal_cleaning-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal_cleaning',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_seal_cleaning ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->ops_seal_cleaning ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal_cleaning',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_seal_cleaning ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->ops_seal_cleaning ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_buruh-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->omset->id ?? null }},'{{ $order->omset->j_buruh ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->buruh ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_buruh ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->buruh ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_checker-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_checker',{{ $order->omset->id ?? null }},'{{ $order->omset->j_checker ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->checker ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_checker',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_checker ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->checker ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_karantina-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_karantina',{{ $order->omset->id ?? null }},'{{ $order->omset->j_karantina ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->karantina ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_karantina',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_karantina ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->karantina ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_demmurage-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_demmurage ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->demmurage ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_demmurage ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->demmurage ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_kirim_dokumen-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_kirim_dokumen',{{ $order->omset->id ?? null }},'{{ $order->omset->j_kirim_dokumen ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->kirim_dokumen ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_kirim_dokumen',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_kirim_dokumen ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->kirim_dokumen ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_biaya_lain-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya_lain',{{ $order->omset->id ?? null }},'{{ $order->omset->j_biaya_lain ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->biaya_lain ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya_lain',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_biaya_lain ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->biaya_lain ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_flexibag-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_flexibag',{{ $order->omset->id ?? null }},'{{ $order->omset->j_flexibag ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->flexibag ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_flexibag',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_flexibag ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->flexibag ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_rc-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_rc',{{ $order->omset->id ?? null }},'{{ $order->omset->j_rc ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->rc ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_rc',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_rc ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->rc ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_biaya-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya',{{ $order->omset->id ?? null }},'{{ $order->omset->j_biaya ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->biaya ?? 0),2,',','.') }}
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_biaya ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->biaya ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td>
@@ -418,8 +424,8 @@
                                                 @endphp
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
-                                            <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format((($order->omset->margin ?? 0) * 100),3,',','.') }}</td>
+                                            <td>{{ number_format(($order->pra_omset->laba_kotor ?? 0),2,',','.') }}</td>
+                                            <td>{{ number_format((($order->pra_omset->margin ?? 0) * 100),3,',','.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -519,7 +525,7 @@
                                     <th>Keterangan</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
-                                    {{-- <th>#</th> --}}
+                                    <th>#</th>
                                 </tr>
                             </thead>
                             <tbody id="list-jurnal">
@@ -603,6 +609,7 @@
                     id:@json($ids),
                     start:start,
                     end:end,
+                    is_pra:@json($is_pra)
                 },
                 success: function (response) {
                     if(response=='complete'){
@@ -691,6 +698,11 @@
                                     <td>${item.nama}</td>
                                     <td class="text-end">${item.debit}</td>
                                     <td class="text-end">${item.credit}</td>
+                                    <td>
+                                        <select class="form-select form-select-sm" ${type=='j_biaya'?'disabled':''} style="width: 150px" onchange="addItemJurnal(${item.id},this.value)">
+                                            ${options}
+                                        </select>
+                                    </td>
                                 </tr>`;
                     });
 

@@ -186,6 +186,10 @@ class Order extends Model
     {
         return $this->hasOne(Omset::class);
     }
+    public function pra_omset()
+    {
+        return $this->hasOne(PraOmset::class);
+    }
 
     public function jasa_kirim()
     {

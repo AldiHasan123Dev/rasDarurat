@@ -8,6 +8,7 @@ use App\Models\Jurnal;
 use App\Models\JurnalBalik;
 use App\Models\Omset;
 use App\Models\Order;
+use App\Models\PraOmset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -18,8 +19,15 @@ class OmsetController extends Controller
         $id = request('id');
         $ids = array_slice($id,request('start'),request('end'));
         $end = request('start') + request('end');
-        $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
         $data = array();
+        $model = new Omset();
+        $coa_id = [93];
+        $orders = Order::whereIn('id',$ids)->where('lock_omset',1)->get();
+        if(request('is_pra')){
+            $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
+            $coa_id = [38,31,133,134,135,140,76,81];
+            $model = new PraOmset();
+        }
         foreach ($orders as $idx => $order) {
             $cbm = $order->tarif->satuanInfo->nama ?? '-';
             $tarif = $order->tarif->tarif ?? 0;
@@ -29,8 +37,8 @@ class OmsetController extends Controller
             $data[$idx]['order_id'] = $order->id;
             $data[$idx]['trucking'] = 0;
             $data[$idx]['j_trucking'] = '[]';
-            // $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->sum('debit');
-            // $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
+            // $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%trucking%')->sum('debit');
+            // $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
             $tipe = '';
             if($order->truckingInfo && $order->trucking == 'XPDC'){
                 $tipe = $order->truckingInfo->kendaraan->milik;
@@ -48,50 +56,50 @@ class OmsetController extends Controller
                 $data[$idx]['trucking'] = 0;
                 $data[$idx]['j_trucking'] = '[]';
             }
-            $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','OPT %')->sum('debit');
-            $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','OPT %')->pluck('id')->toJson();
-            $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->sum('debit');
-            $data[$idx]['j_opp'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->pluck('id')->toJson();
-            $data[$idx]['ut'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','UT %')->sum('debit');
-            $data[$idx]['j_ut'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','UT %')->pluck('id')->toJson();
-            $data[$idx]['bl'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','BL %')->sum('debit');
-            $data[$idx]['j_bl'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','BL %')->pluck('id')->toJson();
-            $data[$idx]['apbs'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','APBS %')->sum('debit');
-            $data[$idx]['j_apbs'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','APBS %')->pluck('id')->toJson();
-            $data[$idx]['cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%CLEANING %')->sum('debit');
-            $data[$idx]['j_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%CLEANING %')->pluck('id')->toJson();
-            $data[$idx]['lss'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','LSS %')->sum('debit');
-            $data[$idx]['j_lss'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','LSS %')->pluck('id')->toJson();
-            $data[$idx]['storage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%storage %')->sum('debit');
-            $data[$idx]['j_storage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%storage %')->pluck('id')->toJson();
-            $data[$idx]['jasa_door'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%dooring %')->sum('debit');
-            $data[$idx]['j_jasa_door'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%dooring %')->pluck('id')->toJson();
-            $data[$idx]['asuransi'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%asuransi %')->sum('debit');
-            $data[$idx]['j_asuransi'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%asuransi %')->pluck('id')->toJson();
-            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE',"biaya operasional xpdc %'")->sum('debit');
-            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE',"biaya operasional xpdc %'")->pluck('id')->toJson();
-            $data[$idx]['segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','pembayaran seal%')->sum('debit');
-            $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','pembayaran seal%')->pluck('id')->toJson();
-            $data[$idx]['ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal')->sum('debit');
-            $data[$idx]['j_ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal')->pluck('id')->toJson();
-            $data[$idx]['ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal, cleaning')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal , cleaning')->sum('debit');
-            $data[$idx]['j_ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional %, seal, cleaning')->orWhere('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','biaya operasional % , seal , cleaning')->pluck('id')->toJson();
-            $data[$idx]['buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->sum('debit');
-            $data[$idx]['j_buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('order_id',$order->id)->pluck('id')->toJson();
-            $data[$idx]['checker'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%checker %')->sum('debit');
-            $data[$idx]['j_checker'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%checker %')->pluck('id')->toJson();
-            $data[$idx]['karantina'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%karantina %')->sum('debit');
-            $data[$idx]['j_karantina'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%karantina %')->pluck('id')->toJson();
-            $data[$idx]['demmurage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%demmurage %')->sum('debit');
-            $data[$idx]['j_demmurage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%demmurage %')->pluck('id')->toJson();
-            $data[$idx]['kirim_dokumen'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%Pengiriman Dokumen%')->sum('debit');
-            $data[$idx]['j_kirim_dokumen'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%Pengiriman Dokumen%')->pluck('id')->toJson();
-            $data[$idx]['flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%flexibag %')->sum('debit');
-            $data[$idx]['j_flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%flexibag %')->pluck('id')->toJson();
-            $data[$idx]['rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%rc %')->sum('debit');
-            $data[$idx]['j_rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->where('nama','LIKE','%rc %')->pluck('id')->toJson();
+            $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->sum('debit');
+            $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
+            $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->sum('debit');
+            $data[$idx]['j_opp'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->pluck('id')->toJson();
+            $data[$idx]['ut'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','UT %')->sum('debit');
+            $data[$idx]['j_ut'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','UT %')->pluck('id')->toJson();
+            $data[$idx]['bl'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','BL %')->sum('debit');
+            $data[$idx]['j_bl'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','BL %')->pluck('id')->toJson();
+            $data[$idx]['apbs'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','APBS %')->sum('debit');
+            $data[$idx]['j_apbs'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','APBS %')->pluck('id')->toJson();
+            $data[$idx]['cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%CLEANING %')->sum('debit');
+            $data[$idx]['j_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%CLEANING %')->pluck('id')->toJson();
+            $data[$idx]['lss'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','LSS %')->sum('debit');
+            $data[$idx]['j_lss'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','LSS %')->pluck('id')->toJson();
+            $data[$idx]['storage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%storage %')->sum('debit');
+            $data[$idx]['j_storage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%storage %')->pluck('id')->toJson();
+            $data[$idx]['jasa_door'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%dooring %')->sum('debit');
+            $data[$idx]['j_jasa_door'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%dooring %')->pluck('id')->toJson();
+            $data[$idx]['asuransi'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%asuransi %')->sum('debit');
+            $data[$idx]['j_asuransi'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%asuransi %')->pluck('id')->toJson();
+            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %'")->sum('debit');
+            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %'")->pluck('id')->toJson();
+            $data[$idx]['segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','pembayaran seal%')->sum('debit');
+            $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','pembayaran seal%')->pluck('id')->toJson();
+            $data[$idx]['ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal')->sum('debit');
+            $data[$idx]['j_ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal')->pluck('id')->toJson();
+            $data[$idx]['ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal, cleaning')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal , cleaning')->sum('debit');
+            $data[$idx]['j_ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal, cleaning')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal , cleaning')->pluck('id')->toJson();
+            $data[$idx]['buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->sum('debit');
+            $data[$idx]['j_buruh'] = Jurnal::orWhere('nama','LIKE','Biaya TKBM%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Kuli%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->orWhere('nama','LIKE','Biaya Buruh%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->pluck('id')->toJson();
+            $data[$idx]['checker'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%checker %')->sum('debit');
+            $data[$idx]['j_checker'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%checker %')->pluck('id')->toJson();
+            $data[$idx]['karantina'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%karantina %')->sum('debit');
+            $data[$idx]['j_karantina'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%karantina %')->pluck('id')->toJson();
+            $data[$idx]['demmurage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%demmurage %')->sum('debit');
+            $data[$idx]['j_demmurage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%demmurage %')->pluck('id')->toJson();
+            $data[$idx]['kirim_dokumen'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%Pengiriman Dokumen%')->sum('debit');
+            $data[$idx]['j_kirim_dokumen'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%Pengiriman Dokumen%')->pluck('id')->toJson();
+            $data[$idx]['flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%flexibag %')->sum('debit');
+            $data[$idx]['j_flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%flexibag %')->pluck('id')->toJson();
+            $data[$idx]['rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->sum('debit');
+            $data[$idx]['j_rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->pluck('id')->toJson();
             $data[$idx]['biaya'] =  $data[$idx]['trucking'] + $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['ops_seal'] + $data[$idx]['ops_seal_cleaning'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
-            $data[$idx]['biaya_lain'] =  Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->sum('debit') - $data[$idx]['biaya'];
+            $data[$idx]['biaya_lain'] =  Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->sum('debit') - $data[$idx]['biaya'];
             $data[$idx]['biaya'] += $data[$idx]['biaya_lain'] + ($tipe=='R2'?$data[$idx]['trucking']:0);
             $data[$idx]['tarif'] = $tarif;
             $data[$idx]['laba_kotor'] = $data[$idx]['tarif'] - $data[$idx]['biaya'];
@@ -121,7 +129,7 @@ class OmsetController extends Controller
                         json_decode($data[$idx]['j_kirim_dokumen'], true),
                         json_decode($data[$idx]['j_flexibag'], true),
                         json_decode($data[$idx]['j_rc'], true),
-                        json_decode(Jurnal::where('order_id',$order->id)->whereIn('coa_id',[38,31,133,134,135,140,76,81])->pluck('id')->toJson(), true),
+                        json_decode(Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->pluck('id')->toJson(), true),
                     )
                 );
 
@@ -140,7 +148,7 @@ class OmsetController extends Controller
         }
 
         // return response($data);
-        Omset::upsert($data,['order_id'],[
+        $model->upsert($data,['order_id'],[
             'trucking',
             'opp',
             'opt',
@@ -330,7 +338,7 @@ class OmsetController extends Controller
         }
         $res = [];
         foreach($orders as $order){
-            $omset = $order->omset;
+            $omset = $order->pra_omset;
             if($omset){
                 $j_biaya = json_decode($omset->j_biaya);
                 array_diff($j_biaya,json_decode($omset->j_trucking));

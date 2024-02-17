@@ -72,13 +72,31 @@ class LaporanController extends Controller
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $job = $year.sprintf('%02d',$month);
         if($tipe=='inv'){
-            $data = Order::whereMonth('invoice_date',$month)->whereYear('invoice_date',$year)->get();
+            $data = Order::whereMonth('invoice_date',$month)->where('lock_omset',1)->whereYear('invoice_date',$year)->get()->take(5);
         }else{
             $data = Order::where('job','like',$job.'%')->get();
         }
         $ids = $data->pluck('id')->toArray();
         $coa = COA::where('is_active',1)->get();
-        return view('admin.laporan.omset', compact('data','year','months','month','tipe','ids','coa'));
+        $is_pra = false;
+        return view('admin.laporan.omset', compact('is_pra','data','year','months','month','tipe','ids','coa'));
+    }
+    public function praomset()
+    {
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $tipe = request('tipe') ?? 'inv';
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $job = $year.sprintf('%02d',$month);
+        if($tipe=='inv'){
+            $data = Order::whereMonth('invoice_date',$month)->whereYear('invoice_date',$year)->get()->take(5);
+        }else{
+            $data = Order::where('job','like',$job.'%')->get();
+        }
+        $ids = $data->pluck('id')->toArray();
+        $coa = COA::where('is_active',1)->get();
+        $is_pra = true;
+        return view('admin.laporan.pra_omset', compact('is_pra','data','year','months','month','tipe','ids','coa'));
     }
     public function invoice()
     {
