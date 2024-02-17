@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AgenController;
+use App\Http\Controllers\Api\OmsetController;
 use App\Http\Controllers\AsuransiController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BTTBController;
@@ -269,6 +270,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('jurnal-trucking', [JurnalController::class, 'store_trucking'])->name('jurnal.trucking.store');
     Route::post('jurnal-export-batch', [JurnalController::class, 'exportJurnalBatch'])->name('jurnal.exportJurnalBatch');
     Route::post('jurnal-export-month', [JurnalController::class, 'exportMonth'])->name('jurnal.exportMonth');
+    Route::post('jurnal-balik-trucking', [OmsetController::class, 'jurnalBalikTrucking'])->name('jurnal.balik.trucking');
 
     Route::get('jqgrid-tarif-agent', [TarifAgenController::class, 'jqgrid'])->name('jqgrid.tarif.agent');
     Route::get('jqgrid-tarif-pelayaran', [TarifPelayaranController::class, 'jqgrid'])->name('jqgrid.tarif.pelayaran');

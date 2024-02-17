@@ -35,14 +35,17 @@ class CustomerController extends Controller
     public function tarif()
     {
         $jadwal_kapal = JadwalKapal::whereHas('pelayaran')->where('is_active',1)->get();
-        $customer = Customer::pluck('nama','id');
+        $customer = Customer::get(['nama','id']);
         $lokasi = Lokasi::pluck('nama','id');
         $satuan = Satuan::pluck('nama','id');
         $kondisi = Kondisi::pluck('nama','id');
         $shipment = Shipment::pluck('nama','id');
         $pelayaran = Pelayaran::pluck('nama','id');
-
-        return view('admin.customer.tarif', compact('pelayaran','customer','lokasi','satuan','kondisi','shipment'));
+        $customer_options = [];
+        foreach ($customer as $cus) {
+            $customer_options[$cus->id] = $cus->nama;
+        }
+        return view('admin.customer.tarif', compact('customer_options','pelayaran','customer','lokasi','satuan','kondisi','shipment'));
     }
 
     public function create()

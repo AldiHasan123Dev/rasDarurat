@@ -1,6 +1,6 @@
 <div class="row">
     <x-input :options="$pelayaran" :value="$tarif->pelayaran_id??old('pelayaran_id')" :col="12" :label="'Pelayaran'" :type="'select'" :name="'pelayaran_id'" :required="true"></x-input>
-    <x-input :options="$customer" :value="$tarif->customer_id??old('customer_id')" :col="6" :label="'Customer'" :type="'select'" :name="'customer_id'" :required="true"></x-input>
+    <x-input :options="[]" :value="$tarif->customer_id??old('customer_id')" :col="6" :label="'Customer'" :type="'select'" :name="'customer_id'" :required="true"></x-input>
     <x-input :options="$shipment" :value="$tarif->shipment??old('shipment')" :col="6" :label="'Shipment'" :type="'select'" :name="'shipment'" :required="true"></x-input>
     <x-input :options="$lokasi" :value="$tarif->dari??old('dari')" :col="6" :label="'Dari'" :type="'select'" :name="'dari'" :required="true"></x-input>
     <x-input :options="$lokasi" :value="$tarif->tujuan??old('tujuan')" :col="6" :label="'Tujuan'" :type="'select'" :name="'tujuan'" :required="true"></x-input>

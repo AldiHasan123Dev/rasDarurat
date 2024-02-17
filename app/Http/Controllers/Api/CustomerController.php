@@ -26,11 +26,16 @@ class CustomerController extends Controller
                 $counts = $query->count();
             }
             $items = $query->limit(20)->offset($isPaging ? ($request->page - 1) * 20 : 0)->get(['id', 'nama as text']);
+            $res = [];
+            foreach ($items as $idx => $it) {
+                $res[$idx]['id'] = $it->id;
+                $res[$idx]['text'] = $it->text.' | '.$it->id ;
+            }
         } catch (\Throwable $th) {
             return response(['message' => 'Gagal mendapatkan data pengirim', 'system' => $th->getMessage()], 500);
         }
         return response([
-            'items' => $items,
+            'items' => $res,
             'counts' => $counts,
         ], 200);
     }

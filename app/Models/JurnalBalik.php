@@ -16,5 +16,6 @@ class JurnalBalik extends Model
         'tahun',
         'nomor',
         'no',
+        'tipe',
     ];
 }

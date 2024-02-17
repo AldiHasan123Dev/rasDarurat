@@ -95,11 +95,13 @@ class LaporanController extends Controller
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         if($tipe=='xpdc'){
             $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[61,81])->pluck('order_trucking_id')->toArray();
+            $jurnal_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[61,81])->pluck('id')->toArray();
         }else{
             $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[98,80,87])->pluck('order_trucking_id')->toArray();
+            $jurnal_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[98,80,87])->pluck('id')->toArray();
         }
         $data = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('seal');
         // dd($data);
-        return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe'));
+        return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id'));
     }
 }

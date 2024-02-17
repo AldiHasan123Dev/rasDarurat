@@ -70,7 +70,14 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-3">
                             {{-- <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button> --}}
-                            {{-- <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button> --}}
+                            <form action="{{ route('jurnal.balik.trucking') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="jurnal_id" value="{{ json_encode($jurnal_id) }}">
+                                <input type="hidden" name="month" value="{{ $month }}">
+                                <input type="hidden" name="year" value="{{ $year }}">
+                                <input type="hidden" name="tipe" value="{{ $tipe }}">
+                                <button type="submit" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button>
+                            </form>
                         </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">

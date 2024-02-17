@@ -27,8 +27,8 @@
                 <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
                 <td>{{ $item->invoice }}</td>
                 <td>{{ $item->nama }}</td>
-                <td>{{ number_format($item->debit,2,',','.') }}</td>
-                <td>{{ number_format($item->credit,2,',','.') }}</td>
+                <td>{{ $item->debit }}</td>
+                <td>{{ $item->credit }}</td>
                 <td>{{ $item->no_bg }}</td>
             </tr>
         @endforeach

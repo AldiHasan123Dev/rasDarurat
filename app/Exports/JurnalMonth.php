@@ -34,7 +34,7 @@ class JurnalMonth implements FromView
             $query->whereMonth('created_at',$this->month);
         }
         $query->whereYear('created_at',$this->year);
-        $data = $query->get();
+        $data = $query->orderBy('created_at')->get();
 
         return view('exports.jurnal_month', compact('data'));
     }
