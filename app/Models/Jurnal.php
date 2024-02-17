@@ -89,6 +89,9 @@ class Jurnal extends Model
                 ->orWhereHas('order', function($q) use($term){
                     $q->where('job','like','%'.$term.'%');
                 })
+                ->orWhereHas('coa', function($q) use($term){
+                    $q->where('kode','like','%'.$term.'%');
+                })
         );
     }
 
