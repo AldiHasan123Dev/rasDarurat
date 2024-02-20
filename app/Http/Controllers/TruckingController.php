@@ -377,6 +377,8 @@ class TruckingController extends Controller
                             'no' => $no,
                             'created_at' => $date,
                             'invoice' => $invoice,
+                            'container' => $ord->container,
+                            'nopol' => $ord->kendaraan->nopol ?? null,
                         ]);
                     }
                 }
@@ -395,6 +397,8 @@ class TruckingController extends Controller
                                     'no' => $no,
                                     'created_at' => $date,
                                     'invoice' => $invoice,
+                                    'container' => $ord->container,
+                                    'nopol' => $ord->kendaraan->nopol ?? null,
                                 ]);
                             }
                         }
@@ -442,6 +446,8 @@ class TruckingController extends Controller
                     'no' => $no,
                     'created_at' => $date,
                     'invoice' => $invoice,
+                    'container' => $ord->container,
+                    'nopol' => $ord->kendaraan->nopol ?? null,
                 ]);
 
                 foreach ($ord->tagihans as $tag) {
@@ -456,6 +462,8 @@ class TruckingController extends Controller
                         'no' => $no,
                         'created_at' => $date,
                         'invoice' => $invoice,
+                        'container' => $ord->container,
+                        'nopol' => $ord->kendaraan->nopol ?? null,
                     ]);
                     $total += $tag->jumlah;
                 }

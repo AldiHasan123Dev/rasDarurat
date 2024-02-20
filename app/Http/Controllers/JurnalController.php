@@ -1164,7 +1164,11 @@ class JurnalController extends Controller
                 $order = Order::where('container',$item->order_trucking->container)->where('seal',$item->order_trucking->seal)->first();
 
                 if($order){
-                    $item->update(['order_id'=>$order->id]);
+                    $item->update([
+                        'order_id'=>$order->id,
+                        'container' => $item->order_trucking->container ?? null,
+                        'nopol' => $item->order_trucking->kendaraan->nopol ?? null,
+                    ]);
                     $akhir++;
                 }else{
                     $awal--;
