@@ -109,17 +109,36 @@ class JasaKirimController extends Controller
     {
         $data = JasaKirim::where('invoice',$request->invoice)->get();
         foreach ($data as $idx => $item) {
-            foreach($item->orders as $order){
-                Jurnal::create([
-                    'tipe' => 'JNL',
-                    'coa_id' => 31,
-                    'order_id' => $order->id,
-                    'nomor' => $request->nomor,
-                    'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
-                    'debit' => $item->split_nominal(),
-                    'created_at' => $request->created_at,
-                    'no' => $request->no
-                ]);
+            $is_first = true;
+            $count = $item->orders->count() + $item->kirim_dokumen->count();
+            $price = (int)($item->nominal / $count);
+            $selisih = $item->nominal - ($price * $count);
+            foreach($item->orders as $fs => $order){
+                if($is_first){
+                    $price2 = (int)($item->nominal / $count) + $selisih;
+                    $is_first = false;
+                    Jurnal::create([
+                        'tipe' => 'JNL',
+                        'coa_id' => 31,
+                        'order_id' => $order->id,
+                        'nomor' => $request->nomor,
+                        'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
+                        'debit' => $price2,
+                        'created_at' => $request->created_at,
+                        'no' => $request->no
+                    ]);
+                }else{
+                    Jurnal::create([
+                        'tipe' => 'JNL',
+                        'coa_id' => 31,
+                        'order_id' => $order->id,
+                        'nomor' => $request->nomor,
+                        'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
+                        'debit' => $price,
+                        'created_at' => $request->created_at,
+                        'no' => $request->no
+                    ]);
+                }
             }
             foreach($item->kirim_dokumen as $kirim){
                 Jurnal::create([
@@ -128,7 +147,7 @@ class JasaKirimController extends Controller
                     'order_id' => $kirim->order_id,
                     'nomor' => $request->nomor,
                     'nama' => $kirim->nama,
-                    'debit' => $item->split_nominal(),
+                    'debit' => $price,
                     'created_at' => $request->created_at,
                     'no' => $request->no
                 ]);

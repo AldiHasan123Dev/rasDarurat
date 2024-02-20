@@ -112,9 +112,8 @@ class LaporanController extends Controller
         $tipe = request('tipe') ?? 'xpdc';
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         if($tipe=='xpdc'){
-            $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[61,81])->pluck('order_trucking_id')->toArray();
-            $jurnal_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->whereIn('coa_id',[61,81])->pluck('id')->toArray();
-            $orders = OrderTrucking::whereIn('id',$order_id)->get();
+            $order_job = Order::whereMonth('invoice_date',$month)->whereYear('invoice_date',$year)->pluck('id')->toArray();
+            $orders = OrderTrucking::whereIn('order_id',$order_job)->get();
             $get_id = array();
             foreach($orders as $order_trucking){
                 if($order_trucking->order){
@@ -130,6 +129,7 @@ class LaporanController extends Controller
                     }
                 }
             }
+            $jurnal_id = Jurnal::whereIn('order_trucking_id',$get_id)->whereIn('coa_id',[61,81])->pluck('id')->toArray();
             $data = OrderTrucking::whereIn('id',$get_id)->get()->groupBy('seal');
         }else{
             $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->where('coa_id',87)->pluck('order_trucking_id')->toArray();
