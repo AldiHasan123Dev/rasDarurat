@@ -153,7 +153,7 @@
                                                     <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
-                                                    <td>Simpanan Sangu Sopir - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                                    <td>Simpanan Sangu Sopir - {{ $item->customer->nama }} - {{ $item->order->tarif->customer->nama ?? '-' }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                                     <td>{{ number_format($item->simpanan) }}</td>
                                                     <td>0</td>
                                                 </tr>
@@ -162,7 +162,7 @@
                                                     <td class="akun">-</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
-                                                    <td>Simpanan Sangu Sopir - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
+                                                    <td>Simpanan Sangu Sopir - {{ $item->customer->nama }} - {{ $item->order->tarif->customer->nama ?? '-' }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
                                                     <td>0</td>
                                                     <td>{{ number_format($item->simpanan) }}</td>
                                                 </tr>
@@ -175,7 +175,7 @@
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][container]" value="{{ $item->container }}">
                                                 <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][debit]" value="{{ $item->simpanan }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nama]" value="Simpanan Sangu Sopir - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nama]" value="Simpanan Sangu Sopir - {{ $item->customer->nama }} - {{ $item->order->tarif->customer->nama ?? '-' }}  (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
                                             @endif
                                             @if ($item->simpanan_kuli > 0)
                                                 @php

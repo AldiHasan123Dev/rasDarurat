@@ -118,14 +118,14 @@ class LaporanController extends Controller
             $get_id = array();
             foreach($orders as $order_trucking){
                 if($order_trucking->order){
-                    $tipe = $order_trucking->kendaraan->milik;
+                    $tipe_truck = $order_trucking->kendaraan->milik;
                     if($order_trucking->customer->r2 == 1){
-                        $tipe = 'R2';
+                        $tipe_truck = 'R2';
                     }
                     if($order_trucking->customer->r1 == 1){
-                        $tipe = 'R1';
+                        $tipe_truck = 'R1';
                     }
-                    if($order_trucking->order->trucking == 'xpdc' && $tipe=='R1'){
+                    if(($order_trucking->order->trucking == 'xpdc' || $order_trucking->order->trucking == 'XPDC') && $tipe_truck == 'R2'){
                         array_push($get_id,$order_trucking->id);
                     }
                 }
@@ -136,7 +136,6 @@ class LaporanController extends Controller
             $jurnal_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->where('coa_id',87)->pluck('id')->toArray();
             $data = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('seal');
         }
-        // dd($data);
         return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id'));
     }
 }
