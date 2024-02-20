@@ -731,7 +731,7 @@ class SyncController extends Controller
     public function penjurnal()
     {
         $data1 = Jurnal::whereHas('order')->whereNull('invoice')->whereNull('nopol')->whereNull('container')->get();
-        $data2 = Jurnal::whereHas('order_trucking')->whereNull('nopol')->whereNull('container')->get();
+        $data2 = Jurnal::whereHas('order_trucking')->orWhereNull('nopol')->whereHas('order_trucking')->orWhereNull('container')->whereHas('order_trucking')->get();
         foreach($data1 as $item){
             $item->update([
                 'invoice' => $item->order->invoice ?? null,
@@ -741,8 +741,7 @@ class SyncController extends Controller
         }
         foreach($data2 as $item){
             $item->update([
-                'invoice' => $item->order_trucking->invoice ?? null,
-                'nopol' => $item->order_trucking->nopol ?? null,
+                'nopol' => $item->order_trucking->kendaraan->nopol ?? null,
                 'container' => $item->order_trucking->container ?? null,
             ]);
         }
