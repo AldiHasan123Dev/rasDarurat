@@ -85,6 +85,20 @@ class TransaksiController extends Controller
                     $name = str_replace('[9]',$shipment_trucking,$name);
                     $name = str_replace('[10]',$tujuan_trucking,$name);
                     if($item->coa_debit_id){
+                        $debit = round($transaksi->sub_total) + round($transaksi->ppn);
+                        foreach ($transaksi->jobs as $job) {
+                            if($job->asuransi=='ADA EXC'){
+                                if (!is_null($job->asuransi_id)) {
+                                    $debit += (($job->asuransiInfo->rate/100) * $job->pertanggungan);
+                                    $debit += $job->asuransiInfo->admin;
+                                }
+                            }
+                            if($job->tagihan->count()>0){
+                                foreach ($job->tagihan as $tagihan) {
+                                    $debit += round($tagihan->jumlah);
+                                }
+                            }
+                        }
                         Jurnal::create([
                             'invoice' => $order->invoice ?? null,
                             'nopol' => $order->nopol ?? null,
@@ -93,7 +107,7 @@ class TransaksiController extends Controller
                             'order_id' => $transaksi->order_id,
                             'nomor' => $nomor,
                             'nama' => $name,
-                            'debit' => round($transaksi->total),
+                            'debit' => $debit,
                             'credit' => 0,
                             'tipe' => 'JNL',
                             'no' => $no,
