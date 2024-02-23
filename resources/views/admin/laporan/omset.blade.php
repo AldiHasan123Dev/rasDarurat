@@ -37,6 +37,9 @@
         top: 0px;
         background: white;
     }
+    th {
+        text-transform: uppercase;
+    }
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
         width: 100%;
@@ -165,6 +168,13 @@
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
                                         <th style="min-width:40px !important">DEMMURAGE</th>
+                                        <th style="min-width:40px !important">job slip pod</th>
+                                        <th style="min-width:40px !important">lolo pod</th>
+                                        <th style="min-width:40px !important">cleaning pod</th>
+                                        <th style="min-width:40px !important">ops pod</th>
+                                        <th style="min-width:40px !important">opt pod</th>
+                                        <th style="min-width:40px !important">truck pod</th>
+                                        <th style="min-width:40px !important">kuli pod</th>
                                         <th style="min-width:40px !important">KRM DOK</th>
                                         <th style="min-width:40px !important">BIAYA LAIN-LAIN</th>
                                         <th style="min-width:40px !important">FLEXIBAG</th>
@@ -381,6 +391,41 @@
                                             <td id="j_demmurage-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_demmurage ?? '[]'}}')">
                                                     {{ number_format(($order->omset->demmurage ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_job_slip_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_job_slip_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->job_slip_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_lolo_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_lolo_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->lolo_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_cleaning_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_cleaning_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->cleaning_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_ops_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->ops_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_opt_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->opt_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_truck_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_truck_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->truck_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_kuli_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_kuli_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->kuli_pod ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_kirim_dokumen-{{ $order->id }}">
@@ -668,7 +713,7 @@
                     let credit = 0;
                     let options = '';
                     let arr = [
-                        'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
+                        'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
                     ];
                     if(type!='j_biaya'){
                         $.each(arr, function (idx, item) {

@@ -37,6 +37,9 @@
         top: 0px;
         background: white;
     }
+    th{
+        text-transform: uppercase;
+    }
     th, td { white-space: nowrap; }
     div.dataTables_wrapper {
         width: 100%;
@@ -166,6 +169,13 @@
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
                                         <th style="min-width:40px !important">DEMMURAGE</th>
+                                        <th style="min-width:40px !important">job slip pod</th>
+                                        <th style="min-width:40px !important">lolo pod</th>
+                                        <th style="min-width:40px !important">cleaning pod</th>
+                                        <th style="min-width:40px !important">ops pod</th>
+                                        <th style="min-width:40px !important">opt pod</th>
+                                        <th style="min-width:40px !important">truck pod</th>
+                                        <th style="min-width:40px !important">kuli pod</th>
                                         <th style="min-width:40px !important">KRM DOK</th>
                                         <th style="min-width:40px !important">BIAYA LAIN-LAIN</th>
                                         <th style="min-width:40px !important">FLEXIBAG</th>
@@ -387,6 +397,41 @@
                                             <td id="j_demmurage-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_demmurage ?? '[]'}}')">
                                                     {{ number_format(($order->pra_omset->demmurage ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_job_slip_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_job_slip_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->job_slip_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_lolo_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lolo_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->lolo_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_cleaning_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_cleaning_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->cleaning_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_ops_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->ops_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_opt_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->opt_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_truck_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_truck_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->truck_pod ?? 0),2,',','.') }}
+                                                </a>
+                                            </td>
+                                            <td id="j_kuli_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_kuli_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->kuli_pod ?? 0),2,',','.') }}
                                                 </a>
                                             </td>
                                             <td id="j_kirim_dokumen-{{ $order->id }}">
