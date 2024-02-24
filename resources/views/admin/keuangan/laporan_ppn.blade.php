@@ -282,6 +282,7 @@
                 {search:true, name: 'masa_bupot_bulan', label : 'Bupot', hidden:true},
                 {search:true, name: 'tanggal_bupot_date', label : 'Bupot', hidden:true},
                 {search:true, name: 'selisih_bupot', label : 'Selisih Bupot'},
+                {search:true, name: 'jurnal_bupot', label : 'Jurnal Bupot'},
             ],
             autowidth: true,
             shrinkToFit: false,

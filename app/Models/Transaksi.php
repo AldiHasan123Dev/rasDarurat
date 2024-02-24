@@ -14,6 +14,7 @@ class Transaksi extends Model
     protected $table = 'transaksi';
     protected $fillable = [
         'jurnal_piutang',
+        'jurnal_bupot',
         'pembayar_id',
         'order_id',
         'tipe_invoice',

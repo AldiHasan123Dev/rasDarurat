@@ -44,7 +44,7 @@
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->stuffing ? date('d/m/Y', strtotime($order->stuffing)) : '' }}</td>
                 <td rowspan="{{ $order->bttb->count() }}"></td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->container }}</td>
-                <td rowspan="{{ $order->bttb->count() }}">{{ $order->jadwal_kapal ? date('d/m/y', strtotime($order->jadwal_kapal->td) : '') }}</td>
+                <td rowspan="{{ $order->bttb->count() }}">{{ $order->jadwal_kapal ? ($order->jadwal_kapal->td ? date('d/m/y', strtotime($order->jadwal_kapal->td)) : '') : '' }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->nopol }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->tarif->tujuan_lokasi->nama ?? '' }}</td>

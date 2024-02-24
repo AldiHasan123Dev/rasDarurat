@@ -56,20 +56,22 @@ class OmsetController extends Controller
                 $data[$idx]['trucking'] = 0;
                 $data[$idx]['j_trucking'] = '[]';
             }
-            $data[$idx]['job_slip_pod'] = 0;
-            $data[$idx]['lolo_pod'] = 0;
-            $data[$idx]['cleaning_pod'] = 0;
-            $data[$idx]['ops_pod'] = 0;
-            $data[$idx]['opt_pod'] = 0;
-            $data[$idx]['truck_pod'] = 0;
-            $data[$idx]['kuli_pod'] = 0;
-            $data[$idx]['j_job_slip_pod'] = '[]';
-            $data[$idx]['j_lolo_pod'] = '[]';
-            $data[$idx]['j_cleaning_pod'] = '[]';
-            $data[$idx]['j_ops_pod'] = '[]';
-            $data[$idx]['j_opt_pod'] = '[]';
-            $data[$idx]['j_truck_pod'] = '[]';
-            $data[$idx]['j_kuli_pod'] = '[]';
+            $data[$idx]['job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya do pod %')->sum('debit');
+            $data[$idx]['lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya lolo pod %')->sum('debit');
+            $data[$idx]['cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya cleaning pod %')->sum('debit');
+            $data[$idx]['ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional pod %')->sum('debit');
+            $data[$idx]['opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya pelabuhan / job slip pod')->sum('debit');
+            $data[$idx]['truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya trucking pod %')->sum('debit');
+            $data[$idx]['kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya buruh / kuli pod %')->sum('debit');
+            $data[$idx]['storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya perpanjangan do %')->sum('debit');
+            $data[$idx]['j_job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya do pod %')->pluck('id')->toJson();
+            $data[$idx]['j_lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya lolo pod %')->pluck('id')->toJson();
+            $data[$idx]['j_cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya cleaning pod %')->pluck('id')->toJson();
+            $data[$idx]['j_ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional pod %')->pluck('id')->toJson();
+            $data[$idx]['j_opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya pelabuhan / job slip pod')->pluck('id')->toJson();
+            $data[$idx]['j_truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya trucking pod %')->pluck('id')->toJson();
+            $data[$idx]['j_kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya buruh / kuli pod %')->pluck('id')->toJson();
+            $data[$idx]['j_storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya perpanjangan do %')->pluck('id')->toJson();
 
             $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->sum('debit');
             $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
@@ -151,6 +153,7 @@ class OmsetController extends Controller
                         json_decode($data[$idx]['j_opt_pod'], true),
                         json_decode($data[$idx]['j_truck_pod'], true),
                         json_decode($data[$idx]['j_kuli_pod'], true),
+                        json_decode($data[$idx]['j_storage_pod'], true),
                         json_decode(Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->pluck('id')->toJson(), true),
                     )
                 );
@@ -197,6 +200,7 @@ class OmsetController extends Controller
             'opt_pod',
             'truck_pod',
             'kuli_pod',
+            'storage_pod',
             'kirim_dokumen',
             'biaya_lain',
             'flexibag',
@@ -231,6 +235,7 @@ class OmsetController extends Controller
             'j_opt_pod',
             'j_truck_pod',
             'j_kuli_pod',
+            'j_storage_pod',
             'j_kirim_dokumen',
             'j_biaya',
             'j_biaya_lain',

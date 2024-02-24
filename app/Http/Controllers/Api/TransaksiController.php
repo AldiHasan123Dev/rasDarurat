@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransaksiResource;
 use App\Models\Jurnal;
+use App\Models\JurnalBalik;
 use App\Models\Order;
 use App\Models\TemplateJurnal;
 use App\Models\Transaksi;
@@ -211,7 +212,61 @@ class TransaksiController extends Controller
     {
         $data = $request->all();
         $data['masa_bupot'] = $request->masa_bupot_bulan.' '.$request->masa_bupot_tahun;
-        Transaksi::find($request->id)->update($data);
+        $trx = Transaksi::find($request->id);
+
+        $balik = JurnalBalik::where('bulan',date('m'))->where('tipe','bupot')->where('tahun',date('Y'))->first();
+        if(!$balik){
+            $c = new Carbon(date('Y').'-'.sprintf('%02d',date('m')).'-01');
+            $last = $c->endOfMonth()->format('Y-m-d');
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
+            $balik = JurnalBalik::create([
+                'tanggal' => date('Y-m-d'),
+                'bulan' => date('m'),
+                'tahun' => date('Y'),
+                'nomor' => $nomor,
+                'no' => $no,
+                'tipe' => 'bupot',
+            ]);
+        }
+
+        if(is_null($trx->jurnal_bupot)){
+            Jurnal::create([
+                'coa_id' => 52,
+                'nomor' => $balik->nomor,
+                'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
+                'invoice' => $trx->invoice,
+                'debit' => $data['bupot'],
+                'credit' => 0,
+                'tipe' => 'JNL',
+                'no' => $balik->no,
+                'created_at' => date('Y-m-d'),
+            ]);
+            Jurnal::create([
+                'coa_id' => 46,
+                'nomor' => $balik->nomor,
+                'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
+                'invoice' => $trx->invoice,
+                'debit' => 0,
+                'credit' => $data['bupot'],
+                'tipe' => 'JNL',
+                'no' => $balik->no,
+                'created_at' => date('Y-m-d'),
+            ]);
+        }else{
+            Jurnal::where('nomor',$trx->jurnal_bupot)->where('debit','>',0)->first()->update([
+                'debit' => $data['bupot'],
+                'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
+            ]);
+            Jurnal::where('nomor',$trx->jurnal_bupot)->where('credit','>',0)->first()->update([
+                'credit' => $data['bupot'],
+                'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
+            ]);
+        }
+
+        $data['jurnal_bupot'] = $balik->nomor;
+        $trx->update($data);
+        
         return response('success');
     }
 }
