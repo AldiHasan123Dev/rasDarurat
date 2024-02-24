@@ -30,6 +30,10 @@ class TransaksiTrucking extends Model
         'order_vendor',
         'submited_by',
         'pengirim',
+        'bupot',
+        'no_bupot',
+        'masa_bupot',
+        'tanggal_bupot',
     ];
 
     protected static function booted()

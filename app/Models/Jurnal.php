@@ -126,4 +126,13 @@ class Jurnal extends Model
                 ->nama;
         return $data;
     }
+
+    public function transaksi()
+    {
+        $trx = Transaksi::where('invoice',$this->invoice)->first();
+        if(!$trx){
+            $trx = TransaksiTrucking::where('invoice',$this->invoice)->first();
+        }
+        return $trx;
+    }
 }

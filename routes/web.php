@@ -245,6 +245,8 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jurnal-buku-besar-pembantu', [JurnalController::class, 'buku_besar_pembantu'])->name('jurnal.buku_besar_pembantu');
     Route::get('jurnal-buku-besar-pembantu/{year}-{month}-{coa_id}-{pelayaran}', [JurnalController::class, 'buku_besar_pembantu_detail'])->name('jurnal.buku_besar_pembantu_detail');
     Route::get('jurnal-trucking', [JurnalController::class, 'trucking'])->name('jurnal.trucking');
+    Route::get('jurnal-bupot-trucking', [JurnalController::class, 'jurnal_bupot_trucking'])->name('jurnal.trucking.bupot');
+    Route::post('jurnal-bupot-trucking', [JurnalController::class, 'jurnal_bupot_trucking_store'])->name('jurnal.bupot.trucking.store');
     Route::get('jurnal-totalan-sopir', [JurnalController::class, 'totalan_sopir'])->name('jurnal.totalan_sopir');
     Route::post('jurnal-totalan-sopir', [JurnalController::class, 'slip_totalan_sopir'])->name('jurnal.slip_totalan_sopir');
     Route::post('jurnal-sync-job', [JurnalController::class, 'syncJob'])->name('jurnal.sync.job');

@@ -16,6 +16,7 @@ use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\Pelayaran;
 use App\Models\TransaksiSopir;
+use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -1182,5 +1183,91 @@ class JurnalController extends Controller
     public function filter()
     {
         return view('admin.jurnal.filter');
+    }
+
+    public function jurnal_bupot_trucking()
+    {
+        return view('admin.jurnal.bupot_trucking');
+    }
+
+    public function jurnal_bupot_trucking_store(Request $request)
+    {
+        $data = $request->all();
+        $no = Jurnal::where('tipe',$data['tipe'])->whereYear('created_at',date('Y', strtotime($data['created_at'])))->max('no') + 1;
+        if($data['tipe']=='JNL'){
+            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
+        }
+
+        $jurnal_model = new Jurnal();
+        if($data['simpan']=='tampungan'){
+            $jurnal_model = new JurnalTampungan();
+        }
+
+        for ($i=0; $i < count($data['debit_coa_id']); $i++) {
+            if ($data['name'][$i] && $data['amount'][$i]) {
+                $name = $data['name'][$i];
+                if($data['tipe']=='JNL'){
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
+                }else{
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                }
+                if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    $jurnal_model->create([
+                        'tipe' => $data['tipe'],
+                        'invoice' => $data['invoice'][$i],
+                        'coa_id' => $data['debit_coa_id'][$i],
+                        'nomor' => $nomor,
+                        'nama' => $name,
+                        'debit' => $data['amount'][$i],
+                        'created_at' => $data['created_at'],
+                        'no' => $no
+                    ]);
+                    $jurnal_model->create([
+                        'tipe' => $data['tipe'],
+                        'invoice' => $data['invoice'][$i],
+                        'coa_id' => $data['credit_coa_id'][$i],
+                        'nomor' => $nomor,
+                        'nama' => $name,
+                        'credit' => $data['amount'][$i],
+                        'created_at' => $data['created_at'],
+                        'no' => $no
+                    ]);
+                }else{
+                    if($data['debit_coa_id'][$i]){
+                        $jurnal_model->create([
+                            'tipe' => $data['tipe'],
+                            'invoice' => $data['invoice'][$i],
+                            'coa_id' => $data['debit_coa_id'][$i],
+                            'nomor' => $nomor,
+                            'nama' => $name,
+                            'debit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'],
+                            'no' => $no
+                        ]);
+                    }
+                    if($data['credit_coa_id'][$i]){
+                        $jurnal_model->create([
+                            'tipe' => $data['tipe'],
+                            'invoice' => $data['invoice'][$i],
+                            'coa_id' => $data['credit_coa_id'][$i],
+                            'nomor' => $nomor,
+                            'nama' => $name,
+                            'credit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'],
+                            'no' => $no
+                        ]);
+                    }
+                }
+
+                TransaksiTrucking::where('invoice',$data['invoice'][$i])->update([
+                    'bupot' => $data['bupot'][$i],
+                    'masa_bupot' => $data['masa_bupot'][$i],
+                    'tanggal_bupot' => $data['tanggal_bupot'][$i],
+                    'no_bupot' => $data['no_bupot'][$i],
+                ]);
+            }
+        }
+
+        return back()->with('success','Data berhasil disimpan');
     }
 }

@@ -21,7 +21,8 @@
             <div class="card-header p-2 d-flex flex-wrap" style="gap:10px">
                 <a href="{{ route('jurnal.create') }}" class="py-2 px-3 btn-sm btn btn-success">Tambah Jurnal Ekspedisi</a>
                 <a href="{{ route('jurnal.trucking') }}" class="py-2 px-3 btn-sm btn btn-info">Tambah Jurnal Trucking</a>
-                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn-sm btn btn-primary">Tambah Jurnal Group JOB</a>
+                <a href="{{ route('jurnal.trucking.bupot') }}" class="py-2 px-3 btn-sm btn btn-info">Tambah Jurnal Bupot Trucking</a>
+                <a href="{{ route('jurnal.kolektif.create') }}" class="py-2 px-3 btn-sm btn btn-warning">Tambah Jurnal Group JOB</a>
                 <a href="{{ route('jurnal.balik.create') }}" class="py-2 px-3 btn-sm btn btn-warning">Tambah Jurnal Balik</a>
                 <a href="{{ route('jurnal.manual') }}" class="py-2 px-3 btn-sm btn btn-light border-dark border">Jurnal Manual</a>
                 <a href="{{ route('jurnal.merge') }}" class="py-2 px-3 btn-sm btn btn-secondary">Merge Jurnal</a>
