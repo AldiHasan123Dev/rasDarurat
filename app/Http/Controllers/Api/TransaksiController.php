@@ -213,44 +213,30 @@ class TransaksiController extends Controller
         $data = $request->all();
         $data['masa_bupot'] = $request->masa_bupot_bulan.' '.$request->masa_bupot_tahun;
         $trx = Transaksi::find($request->id);
-
-        $balik = JurnalBalik::where('bulan',date('m'))->where('tipe','bupot')->where('tahun',date('Y'))->first();
-        if(!$balik){
-            $c = new Carbon(date('Y').'-'.sprintf('%02d',date('m')).'-01');
-            $last = $c->endOfMonth()->format('Y-m-d');
-            $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
-            $balik = JurnalBalik::create([
-                'tanggal' => date('Y-m-d'),
-                'bulan' => date('m'),
-                'tahun' => date('Y'),
-                'nomor' => $nomor,
-                'no' => $no,
-                'tipe' => 'bupot',
-            ]);
-        }
+        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
 
         if(is_null($trx->jurnal_bupot)){
             Jurnal::create([
                 'coa_id' => 52,
-                'nomor' => $balik->nomor,
+                'nomor' => $nomor,
                 'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
                 'invoice' => $trx->invoice,
                 'debit' => $data['bupot'],
                 'credit' => 0,
                 'tipe' => 'JNL',
-                'no' => $balik->no,
+                'no' => $no,
                 'created_at' => date('Y-m-d'),
             ]);
             Jurnal::create([
                 'coa_id' => 46,
-                'nomor' => $balik->nomor,
+                'nomor' => $nomor,
                 'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
                 'invoice' => $trx->invoice,
                 'debit' => 0,
                 'credit' => $data['bupot'],
                 'tipe' => 'JNL',
-                'no' => $balik->no,
+                'no' => $no,
                 'created_at' => date('Y-m-d'),
             ]);
         }else{
@@ -264,9 +250,9 @@ class TransaksiController extends Controller
             ]);
         }
 
-        $data['jurnal_bupot'] = $balik->nomor;
+        $data['jurnal_bupot'] = $nomor;
         $trx->update($data);
-        
+
         return response('success');
     }
 }
