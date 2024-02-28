@@ -185,6 +185,8 @@
                     for (let i = 0; i < debit; i++) {
                         if(debit_coa_id[i]==31){
                             check.push(order_id[i])
+                        }else{
+                            check.push(0)
                         }
                     }
                     $.ajax({
