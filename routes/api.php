@@ -75,6 +75,7 @@ Route::get('get-order', [OrderController::class,'index']);
 Route::get('get-transaksi', [TransaksiController::class,'index']);
 Route::get('get-order-ba-kembali', [OrderController::class,'ba_kembali']);
 Route::get('get-order-pre-invoice', [OrderController::class,'pre_invoice']);
+Route::post('jurnal/check-omset', [JurnalController::class,'check_omset']);
 Route::post('jurnal/id-data', [JurnalController::class,'getArrayID']);
 Route::delete('jurnal/delete', [JurnalController::class,'destroy']);
 Route::post('jurnal/add', [JurnalController::class,'store']);

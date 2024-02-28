@@ -13,6 +13,7 @@
             <th>Debit</th>
             <th>Kredit</th>
             <th>No BG</th>
+            <th>TGL BG</th>
             <th>Nomor Bupot</th>
             <th>Masa Pajak</th>
             <th>Tgl Bupot</th>
@@ -33,6 +34,7 @@
                 <td>{{ $item->debit }}</td>
                 <td>{{ $item->credit }}</td>
                 <td>{{ $item->no_bg }}</td>
+                <td>{{ $item->bg_tgl() }}</td>
                 <td>{{ $item->transaksi()->no_bupot ?? '' }}</td>
                 <td>{{ $item->transaksi()->masa_bupot ?? '' }}</td>
                 <td>{{ $item->transaksi()->tanggal_bupot ?? '' }}</td>

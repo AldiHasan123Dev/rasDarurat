@@ -287,4 +287,23 @@ class JurnalController extends Controller
         $data = JurnalResource::collection($data);
         return response($data);
     }
+
+    public function check_omset()
+    {
+        $order_id = request('order_id');
+        foreach($order_id as $id){
+            $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
+            $order = Order::find($id);
+            if($jurnals->count()>0){
+                return response([
+                    'status' => 1,
+                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' Sudah terjurnal dengan coa 6.1'
+                ]);
+            }
+        }
+        return response([
+            'status' => 0,
+            'message' => 'aman'
+        ]);
+    }
 }

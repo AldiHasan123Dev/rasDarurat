@@ -115,7 +115,7 @@ class Jurnal extends Model
         }
         return $res;
     }
-    
+
     public function bg_pelayaran()
     {
         $data = HutangPelayaran::orWhere('no_bg_opp', $this->no_bg)
@@ -125,6 +125,29 @@ class Jurnal extends Model
                 ->pelayaran
                 ->nama;
         return $data;
+    }
+
+    public function bg_tgl()
+    {
+        if($this->no_bg){
+            $hp = HutangPelayaran::where('no_bg_opp',$this->no_bg)->first();
+            if($hp){
+                return $hp->tgl_bg_opp;
+            }else{
+                $hp = HutangPelayaran::where('no_bg_opt',$this->no_bg)->first();
+                if($hp){
+                    return $hp->tgl_bg_opt;
+                }else{
+                    $hp = HutangPelayaran::where('no_bg_ut',$this->no_bg)->first();
+                    if($hp){
+                        return $hp->tgl_bg_ut;
+                    }else{
+                        return '-';
+                    }
+                }
+            }
+        }
+        return '-';
     }
 
     public function transaksi()

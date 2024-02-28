@@ -179,7 +179,29 @@
         }else{
             if($('#tipe').val()){
                 if(confirm('are you sure')){
-                    $('#form-submit').submit();
+                    var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();
+                    var debit_coa_id = $("select[name='debit_coa_id[]']").map(function(){return $(this).val();}).get();
+                    let check = [];
+                    for (let i = 0; i < debit; i++) {
+                        if(debit_coa_id[i]==31){
+                            check.push(order_id[i])
+                        }
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('api/jurnal/check-omset') }}",
+                        data: {
+                            order_id:check
+                        },
+                        success: function (response) {
+                            if (response.status==1) {
+                                alert(response.message);
+                            }else{
+                                $('#form-submit').submit();
+                            }
+                        }
+                    })
+
                 }
             }else{
                 alert('Harap pilih tipe jurnal');

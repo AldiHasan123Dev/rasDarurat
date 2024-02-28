@@ -56,22 +56,22 @@ class OmsetController extends Controller
                 $data[$idx]['trucking'] = 0;
                 $data[$idx]['j_trucking'] = '[]';
             }
-            $data[$idx]['job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya do pod %')->sum('debit');
-            $data[$idx]['lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya lolo pod %')->sum('debit');
-            $data[$idx]['cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya cleaning pod %')->sum('debit');
-            $data[$idx]['ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional pod %')->sum('debit');
-            $data[$idx]['opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya pelabuhan / job slip pod')->sum('debit');
-            $data[$idx]['truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya trucking pod %')->sum('debit');
-            $data[$idx]['kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya buruh / kuli pod %')->sum('debit');
-            $data[$idx]['storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya perpanjangan do %')->sum('debit');
-            $data[$idx]['j_job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya do pod %')->pluck('id')->toJson();
-            $data[$idx]['j_lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya lolo pod %')->pluck('id')->toJson();
-            $data[$idx]['j_cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya cleaning pod %')->pluck('id')->toJson();
-            $data[$idx]['j_ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional pod %')->pluck('id')->toJson();
-            $data[$idx]['j_opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya pelabuhan / job slip pod')->pluck('id')->toJson();
-            $data[$idx]['j_truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya trucking pod %')->pluck('id')->toJson();
-            $data[$idx]['j_kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya buruh / kuli pod %')->pluck('id')->toJson();
-            $data[$idx]['j_storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya perpanjangan do %')->pluck('id')->toJson();
+            $data[$idx]['job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% do pod %')->sum('debit');
+            $data[$idx]['lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% lolo pod %')->sum('debit');
+            $data[$idx]['cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% cleaning pod %')->sum('debit');
+            $data[$idx]['ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% operasional pod %')->sum('debit');
+            $data[$idx]['opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% pelabuhan / job slip pod')->sum('debit');
+            $data[$idx]['truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% trucking pod %')->sum('debit');
+            $data[$idx]['kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% buruh / kuli pod %')->sum('debit');
+            $data[$idx]['storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->sum('debit');
+            $data[$idx]['j_job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% do pod %')->pluck('id')->toJson();
+            $data[$idx]['j_lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% lolo pod %')->pluck('id')->toJson();
+            $data[$idx]['j_cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% cleaning pod %')->pluck('id')->toJson();
+            $data[$idx]['j_ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% operasional pod %')->pluck('id')->toJson();
+            $data[$idx]['j_opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% pelabuhan / job slip pod')->pluck('id')->toJson();
+            $data[$idx]['j_truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% trucking pod %')->pluck('id')->toJson();
+            $data[$idx]['j_kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% buruh / kuli pod %')->pluck('id')->toJson();
+            $data[$idx]['j_storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->pluck('id')->toJson();
 
             $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->sum('debit');
             $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
@@ -278,7 +278,7 @@ class OmsetController extends Controller
         $before = request('type');
         $col_before = substr($before,2);
         $col = substr($type,2);
-        $omset = Omset::find($omset_id);
+        $omset = Praomset::find($omset_id);
         $reload = false;
         if($omset){
             $omset_arr = $omset->toArray();

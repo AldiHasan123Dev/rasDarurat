@@ -56,6 +56,8 @@
                         </div>
                     </div>
                     <hr>
+                    <h5>Parameter Nama Pembayar -> [1]</h5>
+                    <hr>
                     <div class="table-responsive">
                         <table class="table table-sm" id="table-debit">
                             <tr>
@@ -65,7 +67,6 @@
                                 <th style="width: 300px">Akun Credit</th>
                                 <th>Keterangan</th>
                                 <th>Nominal</th>
-                                <th>Bupot</th>
                                 <th>Nomor Bupot</th>
                                 <th>Masa Pajak</th>
                                 <th>Tanggal Bupot</th>
@@ -99,9 +100,8 @@
                                 </td>
                                 <td style="width: 250px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
                                 <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
-                                <td><input type="number" name="bupot[]" id="bupot-{{ $i }}"></td>
                                 <td><input type="text" name="no_bupot[]" id="no_bupot-{{ $i }}"></td>
-                                <td><input type="text" name="masa_bupot[]" id="masa_bupot-{{ $i }}"></td>
+                                <td><input type="month" name="masa_bupot[]" id="masa_bupot-{{ $i }}"></td>
                                 <td><input type="date" name="tanggal_bupot[]" id="tanggal_bupot-{{ $i }}"></td>
                             </tr>
                             @endfor
@@ -187,9 +187,8 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
-                        <td><input type="number" name="bupot[]" id="bupot-${debit}"></td>
                         <td><input type="text" name="no_bupot[]" id="no_bupot-${debit}"></td>
-                        <td><input type="text" name="masa_bupot[]" id="masa_bupot-${debit}"></td>
+                        <td><input type="month" name="masa_bupot[]" id="masa_bupot-${debit}"></td>
                         <td><input type="date" name="tanggal_bupot[]" id="tanggal_bupot-${debit}"></td>
                     </tr>`;
         $('#table-debit').append(html);

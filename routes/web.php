@@ -82,8 +82,8 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $data = Order::where('invoice','1910/RAS/XII/23')->get();
-    return view('exports.rekap_invoice',['data'=>$data]);
+    $date = '2024-02';
+    dd(date('F Y',strtotime($date)));
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

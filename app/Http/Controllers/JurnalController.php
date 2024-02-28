@@ -1203,9 +1203,15 @@ class JurnalController extends Controller
             $jurnal_model = new JurnalTampungan();
         }
 
+        $month = ['JANUARI','FEBRUARI','MARET','APRIL','MEI','JUNI','JULY','AGUSTUS','SEPTEMBER','OKTOBER','NOVEMBER','DESEMBER'];
+
         for ($i=0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
+                $trx = TransaksiTrucking::where('invoice',$data['invoice'][$i])->first();
+                if($trx){
+                    $name = str_replace('[1]',$trx->customer->nama,$name);
+                }
                 if($data['tipe']=='JNL'){
                     $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
                 }else{
@@ -1260,8 +1266,8 @@ class JurnalController extends Controller
                 }
 
                 TransaksiTrucking::where('invoice',$data['invoice'][$i])->update([
-                    'bupot' => $data['bupot'][$i],
-                    'masa_bupot' => $data['masa_bupot'][$i],
+                    'bupot' => $data['amount'][$i],
+                    'masa_bupot' => date('F Y',strtotime($data['masa_bupot'][$i])),
                     'tanggal_bupot' => $data['tanggal_bupot'][$i],
                     'no_bupot' => $data['no_bupot'][$i],
                 ]);
