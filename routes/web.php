@@ -83,7 +83,7 @@ Route::get('/logs', function () {
 });
 Route::get('test', function () {
     $date = '2024-02';
-    dd(date('F Y',strtotime($date)));
+    dd(substr('j_biaya',2));
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

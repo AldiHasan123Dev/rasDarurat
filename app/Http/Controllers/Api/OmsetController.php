@@ -378,60 +378,81 @@ class OmsetController extends Controller
             ]);
         }
         $res = [];
+        $column = ['j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_flexibag','j_rc','j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod','j_storage_pod','j_biaya_lain'];
         foreach($orders as $order){
-            $omset = $order->pra_omset;
-            if($omset){
-                $j_biaya = json_decode($omset->j_biaya);
-                array_diff($j_biaya,json_decode($omset->j_trucking));
-                $biaya = Jurnal::whereIn('id',$j_biaya)->get();
-                foreach($biaya as $j_biaya){
-                    if($j_biaya->jurnal_balik_data()->count()>0){
-                        foreach($j_biaya->jurnal_balik_data as $item){
-                            if($item->debit==0){
-                                $item->update([
-                                    'credit' => $j_biaya->debit,
-                                    'no' => $balik->no,
-                                    'nomor' => $balik->nomor
-                                ]);
-                            }else{
-                                $item->update([
-                                    'debit' => $j_biaya->debit,
-                                    'no' => $balik->no,
-                                    'nomor' => $balik->nomor
-                                ]);
+            $pra_omset = $order->pra_omset;
+            $omset = $order->omset;
+            if($pra_omset){
+                for($i = 0; $i < count($column); $i++){
+                    $col_id = [];
+                    $col = $pra_omset[$column[$i]];
+                    $j_biaya = json_decode($col);
+                    $biaya = Jurnal::whereIn('id',$j_biaya)->get();
+                    foreach($biaya as $j_){
+                        if($j_->jurnal_balik_data()->count()>0){
+                            foreach($j_->jurnal_balik_data as $item){
+                                if($item->debit==0){
+                                    $item->update([
+                                        'credit' => $j_->debit,
+                                        'no' => $balik->no,
+                                        'nomor' => $balik->nomor
+                                    ]);
+                                }else{
+                                    $item->update([
+                                        'debit' => $j_->debit,
+                                        'no' => $balik->no,
+                                        'nomor' => $balik->nomor
+                                    ]);
+                                    array_push($col_id,$item->id);
+                                }
                             }
-                        }
 
-                        array_push($res,$j_biaya->id);
+                            array_push($res,$j_->id);
+                        }else{
+                            $data = $j_->toArray();
+                            unset($data['id']);
+                            if ($j_->coa_id==31) {
+                                $data['jurnal_balik'] = $j_->id;
+                                $data['coa_id'] = 93;
+                                $data['debit'] = $j_->debit;
+                                $data['credit'] = 0;
+                                $data['tipe'] = 'TEST';
+                                $data['nomor'] = $balik->nomor;
+                                $data['no'] = $balik->no;
+                                $data['created_at'] = $balik->tanggal;
+                                $jurnal = Jurnal::create($data);
+
+                                $data['jurnal_balik'] = $j_->id;
+                                $data['coa_id'] = $j_->coa_id;
+                                $data['credit'] = $j_->debit;
+                                $data['debit'] = 0;
+                                $data['tipe'] = 'TEST';
+                                $data['nomor'] = $balik->nomor;
+                                $data['no'] = $balik->no;
+                                $data['created_at'] = $balik->tanggal;
+                                Jurnal::create($data);
+
+                                array_push($col_id,$jurnal->id);
+                            }
+
+                            array_push($res,$j_->id);
+                        }
+                    }
+                    if(!$omset){
+                        $omset_data = $pra_omset->toArray();
+                        unset($omset_data['id']);
+                        $omset_data[$column[$i]] = json_encode($col_id);
+                        $omset = Omset::create($omset_data);
                     }else{
-                        $data = $j_biaya->toArray();
-                        unset($data['id']);
-                        if ($j_biaya->coa_id==31) {
-                            $data['jurnal_balik'] = $j_biaya->id;
-                            $data['coa_id'] = 93;
-                            $data['debit'] = $j_biaya->debit;
-                            $data['credit'] = 0;
-                            $data['tipe'] = 'TEST';
-                            $data['nomor'] = $balik->nomor;
-                            $data['no'] = $balik->no;
-                            $data['created_at'] = $balik->tanggal;
-                            Jurnal::create($data);
-
-                            $data['jurnal_balik'] = $j_biaya->id;
-                            $data['coa_id'] = $j_biaya->coa_id;
-                            $data['credit'] = $j_biaya->debit;
-                            $data['debit'] = 0;
-                            $data['tipe'] = 'TEST';
-                            $data['nomor'] = $balik->nomor;
-                            $data['no'] = $balik->no;
-                            $data['created_at'] = $balik->tanggal;
-                            Jurnal::create($data);
-                        }
-
-                        array_push($res,$j_biaya->id);
+                        $omset_data = array();
+                        $omset_data[$column[$i]] = json_encode($col_id);
+                        $omset->update($omset_data);
                     }
                 }
             }
+
+            $this->syncOmset($order->id);
+
         }
 
         if(count($id) > $end){
@@ -516,5 +537,28 @@ class OmsetController extends Controller
         }
 
         return back()->with('success','Data berhasil disimpan dengan nomor jurnal '.$balik->nomor);
+    }
+
+    public function syncOmset($order_id)
+    {
+        $omset =  Omset::where('order_id',$order_id)->first();
+        if($omset){
+            $data = array();
+            $column = ['j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_flexibag','j_rc','j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod','j_storage_pod','j_biaya_lain'];
+            $biaya_id = array();
+            for($i = 0; $i < count($column); $i++){
+                $data[substr($column[$i],2)] = Jurnal::whereIn('id',json_decode($omset[$column[$i]]))->sum('debit');
+                foreach(json_decode($omset[$column[$i]]) as $id){
+                    array_push($biaya_id,$id);
+                }
+            }
+            $data['biaya'] = Jurnal::whereIn('id',$biaya_id)->sum('debit');
+            $data['j_biaya'] = json_encode($biaya_id);
+            $data['laba_kotor'] = $omset['tarif'] - $data['biaya'];
+            $data['margin'] = $data['laba_kotor'] / $omset['tarif'];
+            $omset->update($data);
+        }
+
+        return true;
     }
 }
