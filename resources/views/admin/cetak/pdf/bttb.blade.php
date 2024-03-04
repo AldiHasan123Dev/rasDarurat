@@ -78,7 +78,7 @@ $page = 1;
         @if ($loop->last)
             @if ($bttb->count()>=10)
                 @foreach ($bttb->chunk(10) as $bttb)
-                    <div class="page" style="margin-top: 50px">
+                    <div class="page" style="margin-top: 20px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -246,7 +246,7 @@ $page = 1;
                 @endforeach
             @else
                 @foreach ($bttb->chunk(15) as $bttb)
-                    <div class="page" style="margin-top: 50px">
+                    <div class="page" style="margin-top: 20px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -414,7 +414,7 @@ $page = 1;
                 @endforeach
             @endif
         @else
-            <div class="page" style="margin-top: 50px">
+            <div class="page" style="margin-top: 20px">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -584,7 +584,7 @@ $page = 1;
 @else
     @if ($data->count()>=10)
         @foreach ($data->chunk(10) as $bttb)
-            <div class="page" style="margin-top: 50px">
+            <div class="page" style="margin-top: 20px">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -752,7 +752,7 @@ $page = 1;
         @endforeach
     @else
         @foreach ($data->chunk(15) as $bttb)
-        <div class="page" style="margin-top: 50px; height:100%; position: absolute;">
+        <div class="page" style="margin-top: 20px; height:100%; position: absolute;">
             <div class="headers d-flex" style="gap:5px; width:100%">
                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                 <div style="width: 40%; margin-left:35px">

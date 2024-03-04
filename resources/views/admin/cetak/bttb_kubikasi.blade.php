@@ -73,7 +73,7 @@
             <div id="print">
                 @if ($data->count()>=15)
                     @foreach ($data->chunk(15) as $bttb)
-                    <div class="page" style="margin-top: 50px">
+                    <div class="page" style="margin-top: 20px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -245,7 +245,7 @@
                 @else
                     @if ($data->count()>=10)
                         @foreach ($data->chunk(10) as $bttb)
-                        <div class="page" style="margin-top: 50px">
+                        <div class="page" style="margin-top: 20px">
                             <div class="headers d-flex" style="gap:5px; width:100%">
                                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                                 <div style="width: 40%; margin-left:35px">
@@ -416,7 +416,7 @@
                         @endforeach
                     @else
                         @foreach ($data->chunk(15) as $bttb)
-                        <div class="page" style="margin-top: 50px">
+                        <div class="page" style="margin-top: 20px">
                             <div class="headers d-flex" style="gap:5px; width:100%">
                                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                                 <div style="width: 40%; margin-left:35px">
