@@ -13,7 +13,7 @@
             }
             body * {
                 visibility: hidden;
-                font-family: 'raster';
+                font-family: 'Dot Matrix', sans-serif;
                 color: #000;
             }
             #print, #print * {

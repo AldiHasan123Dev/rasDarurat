@@ -4,7 +4,7 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
     #print *{
-        font-family: 'raster';
+        font-family: 'Open Sans', sans-serif;
     }
     @media print {
             @page {
@@ -23,15 +23,15 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-family: 'raster';
-                font-size: .6rem !important;
+                font-family: 'Open Sans', sans-serif;
+                font-size: .7rem !important;
                 color: black !important;
             }
             #print {
                 display: block;
                 height: 100%;
                 width: 100% !important;
-                font-family: 'raster';
+                font-family: 'Open Sans', sans-serif;
                 padding: 0;
                 margin: 0;
                 margin-top: -150px;
