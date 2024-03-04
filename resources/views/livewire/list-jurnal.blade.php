@@ -129,6 +129,10 @@
                 <td>Credit</td>
                 <td>: {{ number_format($total_credit,2,',','.') }}</td>
             </tr>
+            <tr>
+                <td>JNL TERAKHIR</td>
+                <td>: {{ number_format($total_jnl) }}</td>
+            </tr>
         </table>
     </div>
 </div>

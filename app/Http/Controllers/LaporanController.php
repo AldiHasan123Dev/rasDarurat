@@ -72,7 +72,7 @@ class LaporanController extends Controller
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         $job = $year.sprintf('%02d',$month);
         if($tipe=='inv'){
-            $data = Order::whereMonth('invoice_date',$month)->where('lock_omset',1)->whereYear('invoice_date',$year)->get();
+            $data = Order::whereMonth('invoice_date',$month)->where('lock_omset','!=',0)->whereYear('invoice_date',$year)->get();
         }else{
             $data = Order::where('job','like',$job.'%')->get();
         }

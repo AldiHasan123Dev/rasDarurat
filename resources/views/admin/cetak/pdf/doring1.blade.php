@@ -1,5 +1,6 @@
 @extends('layouts.iframe')
 @section('style')
+<link rel="stylesheet" href="{{ asset('assets/font/font.css') }}">
     <style>
         .select2.select2-container.select2-container--default{
             width: 100% !important;
@@ -12,7 +13,7 @@
             }
             body * {
                 visibility: hidden;
-                font-family: 'Dot Matrix', sans-serif;
+                font-family: 'raster';
                 color: #000;
             }
             #print, #print * {

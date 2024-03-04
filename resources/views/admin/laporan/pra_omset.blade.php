@@ -813,6 +813,7 @@
                         omset_id: omset_id,
                         type : type,
                         to:to,
+                        is_pra:@json($is_pra),
                     },
                     success: function (response) {
                         alert(response.message);

@@ -1,9 +1,10 @@
 @extends('layouts.admin')
 @section('style')
+<link rel="stylesheet" href="{{ asset('assets/font/font.css') }}">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
     #print *{
-        font-family: 'Open Sans', sans-serif;
+        font-family: 'raster';
     }
     @media print {
             @page {
@@ -21,7 +22,7 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-family: 'Open Sans', sans-serif;
+                font-family: 'raster';
                 font-size: 1rem !important;
                 color: black !important;
             }
@@ -29,7 +30,7 @@
                 display: block;
                 height: 100%;
                 width: 100% !important;
-                font-family: 'Open Sans', sans-serif;
+                font-family: 'raster';
                 padding: 0;
                 margin: 0;
                 margin-top: -150px;

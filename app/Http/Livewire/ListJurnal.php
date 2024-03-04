@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class ListJurnal extends Component
 {
-    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances, $date;
+    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances, $date, $jnl;
 
     public function mount($month = null, $tipe = null, $date = null)
     {
@@ -79,10 +79,12 @@ class ListJurnal extends Component
                 ->whereYear('jurnal.created_at',$this->year)
                 ->select('jurnal.*')
                 ->sum('credit');
+        $jnl = Jurnal::whereMonth('created_at',$this->month)->whereYear('created_at',$this->year)->where('tipe','JNL')->max('no');
         return view('livewire.list-jurnal',[
             'data' => $data,
             'total_debit' => $debit,
             'total_credit' => $credit,
+            'total_jnl' => $jnl,
         ]);
     }
 

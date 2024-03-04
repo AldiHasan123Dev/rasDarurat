@@ -278,7 +278,11 @@ class OmsetController extends Controller
         $before = request('type');
         $col_before = substr($before,2);
         $col = substr($type,2);
-        $omset = Praomset::find($omset_id);
+        if(request('is_pra')){
+            $omset = Praomset::find($omset_id);
+        }else{
+            $omset = Omset::find($omset_id);
+        }
         $reload = false;
         if($omset){
             $omset_arr = $omset->toArray();

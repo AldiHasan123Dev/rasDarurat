@@ -297,7 +297,7 @@ class JurnalController extends Controller
             if($jurnals->count()>0){
                 return response([
                     'status' => 1,
-                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' Sudah terjurnal dengan coa 6.1'
+                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' sudah close dari Uang Muka'
                 ]);
             }
         }

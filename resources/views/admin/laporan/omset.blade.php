@@ -110,6 +110,7 @@
                                     <tr>
                                         <th style="min-width:40px !important">ID</th>
                                         <th style="min-width:40px !important">ORDER_ID</th>
+                                        <th style="min-width:40px !important">#</th>
                                         <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">Group JOB</th>
@@ -255,6 +256,11 @@
                                         <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 ? 'secondary' : ($order->omset->margin < 0 ? 'danger' : '')) : '' }}">
                                             <td>{{ $order->omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
+                                            @if ($order->lock_omset==2)
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="unlock({{ $order->id }},1)"><i class="fas fa-lock"></i></button></td>
+                                            @else
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="lock({{ $order->id }},2)"><i class="fas fa-unlock"></i></button></td>
+                                            @endif
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}</td>
@@ -564,7 +570,7 @@
                                     <th>Keterangan</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
-                                    {{-- <th>#</th> --}}
+                                    <th>#</th>
                                 </tr>
                             </thead>
                             <tbody id="list-jurnal">
@@ -736,6 +742,11 @@
                                     <td>${item.nama}</td>
                                     <td class="text-end">${item.debit}</td>
                                     <td class="text-end">${item.credit}</td>
+                                    <td>
+                                        <select class="form-select form-select-sm" ${type=='j_biaya'?'disabled':''} style="width: 150px" onchange="addItemJurnal(${item.id},this.value)">
+                                            ${options}
+                                        </select>
+                                    </td>
                                 </tr>`;
                     });
 
@@ -801,6 +812,7 @@
                         omset_id: omset_id,
                         type : type,
                         to:to,
+
                     },
                     success: function (response) {
                         alert(response.message);
@@ -828,13 +840,13 @@
             return num.toLocaleString('id-ID');
         }
 
-        function lock(id){
+        function lock(id,val){
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-request') }}",
                 data: {
                     id:id,
-                    lock_omset:1,
+                    lock_omset:val,
                 },
                 success: function (response) {
                     var html = `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
@@ -844,13 +856,13 @@
             });
         }
 
-        function unlock(id){
+        function unlock(id,val){
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-request') }}",
                 data: {
                     id:id,
-                    lock_omset:0,
+                    lock_omset:val,
                 },
                 success: function (response) {
                     var html = `<td class="text-center" id="lock-${id}"><button class="text-danger bg-transparent" style="border: none" onclick="lock(${id})"><i class="fas fa-unlock"></i></button></td>`;
