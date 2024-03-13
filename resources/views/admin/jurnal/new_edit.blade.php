@@ -66,6 +66,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px">#</th>
+                                    <th>ID</th>
                                     <th>Job</th>
                                     <th>ID JOB</th>
                                     <th>Cont</th>
@@ -348,6 +349,7 @@
                                                 <button onclick="editModal('jurnal-edit-${item.id}')" type="button" style="border:none; background: transparent; color:rgb(41, 51, 226)"><i class="fas fa-pencil"></i></button>
                                             </div>
                                         </td>
+                                        <td>${item.id}</td>
                                         <td>${item.job}</td>
                                         <td>${item.no_job}</td>
                                         <td>${item.container}</td>

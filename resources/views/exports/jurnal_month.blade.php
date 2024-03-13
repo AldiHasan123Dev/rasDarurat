@@ -1,6 +1,7 @@
 <table>
     <thead>
         <tr>
+            <th>ID</th>
             <th>Tanggal</th>
             <th>Kode</th>
             <th>COA</th>
@@ -22,6 +23,7 @@
     <tbody>
         @foreach ($data as $item)
             <tr>
+                <td>{{ $item->id }}</td>
                 <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
                 <td>{{ $item->coa->kode }}</td>
                 <td>{{ $item->coa->nama }}</td>
