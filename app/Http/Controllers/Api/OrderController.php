@@ -409,4 +409,15 @@ class OrderController extends Controller
         $data = OrderResource::collection($orders);
         return response($data);
     }
+
+    public function updateLockAll(Request $request)
+    {
+        $id = $request->id;
+        Order::whereIn('id',$id)->update([
+            'lock_omset' => 1
+        ]);
+
+        return response('seccess');
+
+    }
 }

@@ -68,6 +68,7 @@ Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-nama-barang', [BarangController::class,'getNama']);
 Route::get('get-nama-satuan', [BarangController::class,'getNamaSatuan']);
 Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
+Route::post('update-order-lock-all', [OrderController::class,'updateLockALl']);
 Route::post('update-order', [OrderController::class,'update']);
 Route::post('update-order-request', [OrderController::class,'update_request']);
 Route::post('order/{order}', [OrderController::class,'show']);

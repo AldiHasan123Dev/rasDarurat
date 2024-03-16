@@ -29,7 +29,7 @@ class Jurnal extends Component
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $this->orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
+        $this->orders = Order::select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();

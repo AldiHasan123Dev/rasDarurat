@@ -101,7 +101,7 @@
                                     <select class="form-control select2" id="job-{{ $i }}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                         <option value=""></option>
                                         @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -190,7 +190,7 @@
                             <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
-                                <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                                <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
                                 @endforeach
                             </select>
                         </td>

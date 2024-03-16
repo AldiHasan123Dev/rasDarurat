@@ -294,7 +294,7 @@ class JurnalController extends Controller
         foreach($order_id as $id){
             $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
             $order = Order::find($id);
-            if($jurnals->count()>0){
+            if($jurnals->count()>0 && $order){
                 return response([
                     'status' => 1,
                     'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' sudah close dari Uang Muka'

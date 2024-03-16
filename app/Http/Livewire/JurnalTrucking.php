@@ -30,7 +30,7 @@ class JurnalTrucking extends Component
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $this->orders = OrderTrucking::select('id','container','seal')->orderBy('container')->get();
+        $this->orders = OrderTrucking::select('id','container','seal','invoice')->orderBy('container')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();

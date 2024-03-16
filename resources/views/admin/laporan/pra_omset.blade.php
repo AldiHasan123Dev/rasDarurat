@@ -74,6 +74,7 @@
                         <div class="d-flex gap-3">
                             <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
                             <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             @if ($is_pra)
                             <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button>
                             @endif
@@ -853,6 +854,19 @@
                     var html = `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
                     $('#lock-'+id).html(html);
                     alert('Lock berhasil!')
+                }
+            });
+        }
+
+        function lockAll(){
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order-lock-all') }}",
+                data: {
+                    id:@json($ids),
+                },
+                success: function (response) {
+                    location.reload();
                 }
             });
         }
