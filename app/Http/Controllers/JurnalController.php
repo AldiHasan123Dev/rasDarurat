@@ -263,28 +263,29 @@ class JurnalController extends Controller
                 $query->where('debit','>',0);
             }
             if(request('credit_coa_id_tujuan')){
-                $query->orWhere('coa_id',request('credit_coa_id_tujuan'));
+                $query->where('coa_id',request('credit_coa_id_tujuan'));
                 $query->where('credit','>',0);
                 $query->whereNull('jurnal_balik');
                 if (request('order_id')) {
                     $query->where('order_id',request('order_id'));
                 }
             }
+            $query->whereBetween('created_at',[request('start'),request('end')]);
             $data = $query->get();
             $new = array();
             foreach ($data as $idx => $item) {
                 if($item['debit']==0){
                     $new[$idx]['debit'] = $item;
-                    $new[$idx]['credit'] = Jurnal::where('nomor',$item['nomor'])->where('nama',$item['nama'])->where('debit',$item['credit'])->first();
+                    $new[$idx]['credit'] = [];
                 }else{
                     $new[$idx]['credit'] = $item;
-                    $new[$idx]['debit'] = Jurnal::where('nomor',$item['nomor'])->where('nama',$item['nama'])->where('credit',$item['debit'])->first();
+                    $new[$idx]['debit'] = [];
                 }
             }
             $coa_debit = COA::find(request('debit_coa_id'));
             $coa_credit = COA::find(request('credit_coa_id'));
         }
-        return view('admin.jurnal.balik', compact('coa','new','coa_debit','coa_credit','orders'));
+        return view('admin.jurnal.balik', compact('coa','new','coa_debit','coa_credit','orders','data'));
     }
 
     public function store_manual(Request $request)
@@ -772,9 +773,9 @@ class JurnalController extends Controller
             $data['is_balik'] = 1;
             $data['no'] = $no;
             $j = Jurnal::create($data);
-            Jurnal::find($item['jurnal_balik'])->update([
-                'jurnal_balik' => $j->id
-            ]);
+            // Jurnal::find($item['jurnal_balik'])->update([
+            //     'jurnal_balik' => $j->id
+            // ]);
         }
         return redirect()->route('jurnal.balik.create')->with('success','Data berhasil disimpan');
     }

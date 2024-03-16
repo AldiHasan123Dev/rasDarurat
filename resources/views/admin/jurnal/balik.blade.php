@@ -57,6 +57,20 @@
                             </table>
                             <table class="table table-sm" id="table-debit">
                                 <tr>
+                                    <td>Tanggal Awal</td>
+                                    <td>Tanggal Akhir</td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <input required type="date" name="start" id="start" class="form-control" value="{{ request('start') }}">
+                                    </td>
+                                    <td>
+                                        <input required type="date" name="end" id="end" class="form-control" value="{{ request('end') }}">
+                                    </td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
                                     <td>Akun Debet Awal</td>
                                     <td>Akun Credit Awal</td>
                                     <td>Akun Debet Tujuan</td>
@@ -120,6 +134,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($new as $item)
+                                    @if ($item['credit'])
                                     <tr>
                                         <td>{{ $item['credit']->nomor }}</td>
                                         @if ($item['credit']->order)
@@ -132,6 +147,8 @@
                                         <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
                                         <td>{{ $item['credit']->nama }}</td>
                                     </tr>
+                                    @endif
+                                    @if ($item['debit'])
                                     <tr>
                                         <td>{{ $item['debit']->nomor }}</td>
                                         @if ($item['debit']->order)
@@ -144,6 +161,7 @@
                                         <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
                                         <td>{{ $item['debit']->nama }}</td>
                                     </tr>
+                                    @endif
                                 @endforeach
                             </tbody>
                         </table>
@@ -183,6 +201,7 @@
                                         $k = 0;
                                     @endphp
                                     @foreach ($new as $idx => $item)
+                                        @if ($item['debit'])
                                         <input type="hidden" value="{{ $item['debit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                         <input type="hidden" value="{{ $item['debit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['debit']->debit }}" name="jurnal[{{ $k }}][credit]">
@@ -207,10 +226,12 @@
                                             <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
                                             <td>{{ $item['debit']->nama }}</td>
                                         </tr>
+                                        @endif
 
                                         @php
                                             $k++;
                                         @endphp
+                                        @if ($item['credit'])
                                         <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                         <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
@@ -235,10 +256,37 @@
                                             <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
                                             <td>{{ $item['credit']->nama }}</td>
                                         </tr>
+                                        @endif
                                         @php
                                             $k++;
                                         @endphp
                                     @endforeach
+                                    @if (request('credit_coa_id_tujuan'))
+                                        <input type="hidden" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
+                                        <input type="hidden" value="0" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
+                                        <tr>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
+                                            <td>-</td>
+                                            <td>{{ number_format($data->sum('credit')) }}</td>
+                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" id="" style="width: 100%" required></td>
+                                        </tr>
+                                    @else
+                                        <input type="hidden" value="{{ $data->sum('debit') }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" value="0" name="jurnal[{{ $k }}][credit]">
+                                        <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
+                                        <tr>
+                                            <td>-</td>
+                                            <td>-</td>
+                                            <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
+                                            <td>{{ number_format($data->sum('debit')) }}</td>
+                                            <td>-</td>
+                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" id="" style="width: 100%" required></td>
+                                        </tr>
+
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
@@ -275,11 +323,11 @@
         }, 2000);
 
 
-    $('#btn-save').click(function (e) {
-        if(confirm('are you sure')){
-            $('#form-submit').submit();
-        }
-    });
+    // $('#btn-save').click(function (e) {
+    //     if(confirm('are you sure')){
+    //         $('#form-submit').submit();
+    //     }
+    // });
 
     $('#debit_coa_id_tujuan').change(function (e) {
         var val = $(this).val();
