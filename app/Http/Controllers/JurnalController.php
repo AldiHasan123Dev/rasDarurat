@@ -695,10 +695,12 @@ class JurnalController extends Controller
                 $name = $data['name'][$i];
                 $jobs = Order::where('job',$data['job'][$i])->get();
                 $amount = (int)$data['amount'][$i] / $jobs->count();
+                $price = (int)((int)$data['amount'][$i] / $jobs->count());
+                $selisih = (int)$data['amount'][$i] - ($price * $jobs->count());
                 $invoice = null;
                 $nopol = null;
                 $container = null;
-                foreach ($jobs as $order) {
+                foreach ($jobs as $idx => $order) {
                     $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
                     $cont = $order->container;
                     $seal = $order->seal;
@@ -727,6 +729,12 @@ class JurnalController extends Controller
                         $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
                     }else{
                         $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                    }
+
+                    if ($idx==0) {
+                        $amount = (int)((int)$data['amount'][$i] / $jobs->count()) + $selisih;
+                    }else{
+                        $amount = $price;
                     }
 
                     $jurnal_model->create([
@@ -987,6 +995,8 @@ class JurnalController extends Controller
                     ->where('jurnal.coa_id',$coa_id)
                     ->select('jurnal.*')
                     ->orderBy('jurnal.created_at')
+                    ->orderBy('jurnal.tipe')
+                    // ->orderBy('jurnal.input')
                     ->get();
         return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe','year'));
     }
