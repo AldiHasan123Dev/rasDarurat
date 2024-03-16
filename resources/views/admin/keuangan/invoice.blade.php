@@ -54,6 +54,28 @@
                     <table id="jqGrid"></table>
                     <div id="jqGridPager"></div>
                 </div>
+
+                <div class="mt-3">
+                    <div class="table-responsive">
+                        <table data-rtc-resizable-table="table.1" class="data table table-sm mt-3 table-bordered" style="font-size: .7rem; white-space:nowrap">
+                            <thead>
+                                <tr>
+                                    <th data-rtc-resizable="tanggal">Tanggal</th>
+                                    <th data-rtc-resizable="nomor">Nomor</th>
+                                    <th data-rtc-resizable="akun">No. Akun</th>
+                                    <th data-rtc-resizable="akun_name">Nama Akun</th>
+                                    <th data-rtc-resizable="invoice">Invoice</th>
+                                    <th data-rtc-resizable="job">JOB</th>
+                                    <th data-rtc-resizable="keterangan">Keterangan</th>
+                                    <th data-rtc-resizable="debit">Debit</th>
+                                    <th data-rtc-resizable="credit">Credit</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -102,6 +124,7 @@
             colModel: [
                 {search:true, name: 'tipe_invoice', label : 'tipe_invoice', hidden:true},
                 {search:true, name: 'order_id', label : 'order_id', hidden:true},
+                {search:true, name: 'no', label : 'no', hidden:true},
                 {search:true, name: 'id', label : 'id', hidden:true},
                 {search:true, name: 'tanggal_format', label : 'Tanggal', hidden:true},
                 {search:true, name: 'tanggal_kirim_format', label : 'Tanggal', hidden:true},
@@ -139,7 +162,32 @@
                 $('#tanggal_kirim').val(tanggal_kirim);
                 $('#invoice_id').val(id);
                 $('#invoice').val(invoice);
-
+                let jurnal_piutang = $(this).jqGrid('getCell', rowId, 'jurnal_piutang');
+                let no = $(this).jqGrid('getCell', rowId, 'no');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('api/get-jurnal') }}",
+                    data:{
+                        nomor:jurnal_piutang,
+                    },
+                    success: function (response) {
+                        let html = '';
+                        $.each(response, function (idx, item) {
+                            html += `<tr>
+                                    <td>${item.created_at}</td>
+                                    <td>${item.nomor}</td>
+                                    <td>${item.coa.kode}</td>
+                                    <td>${item.coa.nama}</td>
+                                    <td>${item.order.invoice ?? '-'}</td>
+                                    <td>${no}</td>
+                                    <td>${item.nama}</td>
+                                    <td>${rp(item.debit)}</td>
+                                    <td>${rp(item.credit)}</td>
+                                </tr>`;
+                        });
+                        $('#tbody').html(html);
+                    }
+                });
             },
             rowattr: function (item) {
                 return { "class": item.class };
@@ -228,6 +276,10 @@
                     }
                 }
             });
+        }
+
+        const rp = (num)=>{
+            return num.toLocaleString('en-US');
         }
 
         getData(0)
