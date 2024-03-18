@@ -73,8 +73,8 @@
 $page = 1;
 @endphp
 <div id="print">
-@if ($data->count()>=15)
-    @foreach ($data->chunk(15) as $bttb)
+@if ($data->count()>=17)
+    @foreach ($data->chunk(17) as $bttb)
         @if ($loop->last)
             @if ($bttb->count()>=10)
                 @foreach ($bttb->chunk(10) as $bttb)
@@ -245,7 +245,7 @@ $page = 1;
                     @endif
                 @endforeach
             @else
-                @foreach ($bttb->chunk(15) as $bttb)
+                @foreach ($bttb->chunk(17) as $bttb)
                     <div class="page" style="margin-top: 30px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
@@ -751,7 +751,7 @@ $page = 1;
             @endif
         @endforeach
     @else
-        @foreach ($data->chunk(15) as $bttb)
+        @foreach ($data->chunk(17) as $bttb)
         <div class="page" style="margin-top: 30px; height:100%; position: absolute;">
             <div class="headers d-flex" style="gap:5px; width:100%">
                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
