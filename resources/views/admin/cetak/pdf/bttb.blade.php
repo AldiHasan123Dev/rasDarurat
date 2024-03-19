@@ -88,8 +88,8 @@ $page = 1;
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                                 </table>
                             </div>
-                            <div style="width:35%; text-align:right">
-                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                            <div style="width:35%; text-align:right; margin-right:30px">
+                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                 </table>
@@ -256,8 +256,8 @@ $page = 1;
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                                 </table>
                             </div>
-                            <div style="width:35%; text-align:right">
-                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                            <div style="width:35%; text-align:right; margin-right:30px">
+                                <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                 </table>
@@ -424,8 +424,8 @@ $page = 1;
                             <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                         </table>
                     </div>
-                    <div style="width:35%; text-align:right">
-                        <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                    <div style="width:35%; text-align:right; margin-right:30px">
+                        <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                         </table>
@@ -594,8 +594,8 @@ $page = 1;
                             <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                         </table>
                     </div>
-                    <div style="width:35%; text-align:right">
-                        <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                    <div style="width:35%; text-align:right; margin-right:30px">
+                        <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                         </table>
@@ -762,8 +762,8 @@ $page = 1;
                         <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                     </table>
                 </div>
-                <div style="width:35%; text-align:right">
-                    <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
+                <div style="width:35%; text-align:right; margin-right:30px">
+                    <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                         <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                         <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                     </table>
