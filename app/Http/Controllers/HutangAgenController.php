@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HutangAgen;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -11,7 +12,22 @@ class HutangAgenController extends Controller
 {
     public function index()
     {
-        return view('admin.hutangagen.index');
+        $data = Order::whereHas('agent')->whereYear('created_at',2024)->get()->groupBy('agen_id');
+        return view('admin.hutangagen.index', compact('data'));
+    }
+
+    public function draf(Request $request)
+    {
+        $ids = $request->order_id;
+        $orders = Order::whereIn('id',$ids)->get()->groupBy('agen_id');
+        if(count($ids)==0){
+            return back()->with('danger','Harus centang salah satu!');
+        }
+        if($orders->count()>1){
+            return back()->with('danger','Harus centang pada agen yang sama!');
+        }
+
+        return view('admin.hutangagen.draf', compact('orders'));
     }
 
     public function store(Request $request)
