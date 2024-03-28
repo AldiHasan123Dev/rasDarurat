@@ -405,6 +405,7 @@ class OrderController extends Controller
     public function getArrayId(Request $request)
     {
         $id = $request->id;
+        $id = array_values(array_filter($id));
         $ids_ordered = implode(',', $id);
         $orders = Order::whereIn('id',$id)->orderByRaw("FIELD(id,$ids_ordered)")->get();
         $data = OrderResource::collection($orders);

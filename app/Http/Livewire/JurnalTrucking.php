@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\TemplateJurnal;
 use App\Models\TemplateJurnalItem;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class JurnalTrucking extends Component
@@ -24,13 +25,15 @@ class JurnalTrucking extends Component
         $no_3 = ModelsJurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = ModelsJurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = ModelsJurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
         $this->order = null;
         $this->template_id = null;
         $this->template = null;
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $this->orders = OrderTrucking::select('id','container','seal','invoice')->orderBy('container')->get();
+        $this->orders = OrderTrucking::whereBetween('created_at',[$last,$now])->select('id','container','seal','invoice')->orderBy('container')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();

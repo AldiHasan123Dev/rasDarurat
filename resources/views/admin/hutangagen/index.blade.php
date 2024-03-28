@@ -3,8 +3,8 @@
     <div class="container mt-3">
         <form action="{{ route('hutang-agen.draf') }}" method="POST" class="card">
             @csrf
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" type="submit">Buat Invoice</button>
+            <div class="card-header p-3 d-flex justify-content-between" style="gap:10px">
+                <button class="py-2 px-3 btn btn-success" type="submit">Buat Draf</button>
                 <h5>List Hutang Agen</h5>
             </div>
             <div class="card-body">

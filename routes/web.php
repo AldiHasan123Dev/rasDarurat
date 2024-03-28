@@ -57,6 +57,7 @@ use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
 use App\Http\Controllers\PortController;
+use App\Http\Controllers\UpdateDataController;
 use App\Models\Jurnal;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
@@ -87,6 +88,11 @@ Route::get('test', function () {
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('bulk-update', function(){
+    return view('bulk-update');
+});
+
+Route::post('update-jurnal', [UpdateDataController::class, 'jurnal'])->name('update.jurnal');
 
 Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('user', UserController::class)->except(['create']);

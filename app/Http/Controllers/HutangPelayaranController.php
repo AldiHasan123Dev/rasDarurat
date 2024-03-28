@@ -370,7 +370,8 @@ class HutangPelayaranController extends Controller
             return back()->with('danger', 'Harap checklist terlebih dahulu!');
         }
 
-        $cek = HutangPelayaran::whereIn('order_id', $order_id)->get()->groupBy('pelayaran_id');
+        // $cek = HutangPelayaran::whereIn('order_id', $order_id)->get()->groupBy('pelayaran_id');
+        $cek = Order::join('jadwal_kapal','jadwal_kapal.id','order.jadwal_kapal_id')->whereIn('order.id', $order_id)->get()->groupBy('jadwal_kapal.pelayaran_id');
         if(count($cek)>1){
             return back()->with('danger', 'Harap checklist pelayaran yang sama!');
         }

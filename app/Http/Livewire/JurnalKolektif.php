@@ -6,6 +6,7 @@ use App\Models\COA;
 use App\Models\Jurnal;
 use App\Models\Order;
 use App\Models\TemplateJurnal;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class JurnalKolektif extends Component
@@ -22,7 +23,9 @@ class JurnalKolektif extends Component
         $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
-        $job = Order::pluck('job')->toArray();
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $job = Order::whereBetween('created_at',[$last,$now])->pluck('job')->toArray();
         $job = array_unique($job);
         $this->order = null;
         $this->template_id = null;

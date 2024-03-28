@@ -1,7 +1,8 @@
 @extends('layouts.admin')
 @section('style')
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css"> --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
     <style>
         td:hover {
@@ -189,6 +190,7 @@
             url: '{{ route('jqgrid.order') }}',
             mtype: 'GET',
             datatype: 'json',
+            rownumbers: true,
             postData: { input_invoice_bayar: true },
             colModel: [
                 {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
@@ -243,6 +245,7 @@
             url: '{{ route('jqgrid.order') }}',
             mtype: 'GET',
             datatype: 'json',
+            rownumbers: true,
             postData: { input_komisi: true },
             colModel: [
                 {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
@@ -297,6 +300,7 @@
             url: '{{ route('jqgrid.order') }}',
             mtype: 'GET',
             datatype: 'json',
+            rownumbers: true,
             postData: { komisi_print: true },
             colModel: [
                 {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
@@ -357,6 +361,7 @@
             url: '{{ route('jqgrid.order') }}',
             mtype: 'GET',
             datatype: 'json',
+            rownumbers: true,
             postData: { komisi_print_done: true },
             colModel: [
                 {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},

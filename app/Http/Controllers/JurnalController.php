@@ -803,11 +803,13 @@ class JurnalController extends Controller
         $jurnal = request('jurnal');
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
         $data = Jurnal::where('nomor',$jurnal)->get();
-        $orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $orders = Order::whereBetween('created_at',[$last,$now])->select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
         $tipe = 'xpdc';
         if($data[0]->order_trucking_id){
             $tipe = 'trucking';
-            $orders = OrderTrucking::select('container','seal','id')->orderBy('container')->get();
+            $orders = OrderTrucking::whereBetween('created_at',[$last,$now])->select('container','seal','id','invoice')->orderBy('container')->get();
         }
         $jur = $data[0];
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
@@ -817,11 +819,13 @@ class JurnalController extends Controller
     public function editOne(Jurnal $jurnal)
     {
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $orders = Order::select('id','no_job','job','seal')->orderBy('job')->orderBy('no_job')->get();
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $orders = Order::whereBetween('created_at',[$last,$now])->select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
         $tipe = 'xpdc';
         if($jurnal->order_trucking_id){
             $tipe = 'trucking';
-            $orders = OrderTrucking::select('container','seal','id')->orderBy('container')->get();
+            $orders = OrderTrucking::whereBetween('created_at',[$last,$now])->select('container','seal','id','invoice')->orderBy('container')->get();
         }
         $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
         $bgs = array_unique($bgs);

@@ -7,6 +7,7 @@ use App\Models\Jurnal as ModelsJurnal;
 use App\Models\Order;
 use App\Models\TemplateJurnal;
 use App\Models\TemplateJurnalItem;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class Jurnal extends Component
@@ -23,13 +24,15 @@ class Jurnal extends Component
         $no_3 = ModelsJurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = ModelsJurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = ModelsJurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
         $this->order = null;
         $this->template_id = null;
         $this->template = null;
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $this->orders = Order::select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
+        $this->orders = Order::whereBetween('created_at',[$last,$now])->select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();

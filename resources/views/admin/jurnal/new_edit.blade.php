@@ -128,7 +128,7 @@
                                 <select class="form-control" id="order_id" name="order_id" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @foreach ($orders as $item)
-                                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -139,7 +139,7 @@
                                 <select class="form-control" id="order_trucking_id" name="order_trucking_id" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
                                     @endforeach
                                 </select>
                             </div>

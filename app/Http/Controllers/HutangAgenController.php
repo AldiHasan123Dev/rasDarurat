@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\HutangAgen;
+use App\Models\Jurnal;
 use App\Models\Order;
+use App\Models\TarifAgen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -27,15 +29,56 @@ class HutangAgenController extends Controller
             return back()->with('danger','Harus centang pada agen yang sama!');
         }
 
-        return view('admin.hutangagen.draf', compact('orders'));
+        $orders = Order::whereIn('id',$ids)->get();
+        $tarif = TarifAgen::where('agen_id', $orders->first()->agen_id)->where('is_active',1)->orderBy('created_at')->get();
+        return view('admin.hutangagen.draf', compact('orders','tarif','ids'));
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        HutangAgen::create($data);
-
-        return back()->with('success', 'Data berhasil disimpan');
+        $no = Jurnal::where('tipe','TEST')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor = 'TEST'.sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+        for ($i=0; $i < count($request->order_id); $i++) {
+            $order = Order::find($request->order_id[$i]);
+            $cek = Jurnal::where('order_id',$request->order_id[$i])->where('coa_id',93)->where('debit','>',0)->count();
+            $jurnal = array();
+            $jurnal['order_id'] = $request->order_id[$i];
+            $jurnal['nomor'] = $nomor;
+            $jurnal['no'] = $no;
+            $jurnal['nama'] = 'Biaya Dooring '.$order->tarif->customer->nama.' '.$order->tarif->shipmentInfo->nama;
+            $jurnal['container'] = $order->container;
+            $jurnal['invoice'] = $request->invoice;
+            $jurnal['tipe'] = 'TEST';
+            if($cek>0){
+                $jurnal['coa_id'] = 134;
+                $jurnal['debit'] = $request->tarif[$i];
+                $jurnal['credit'] = 0;
+                Jurnal::create($jurnal);
+                $jurnal['coa_id'] = 63;
+                $jurnal['credit'] = $request->tarif[$i];
+                $jurnal['debit'] = 0;
+                Jurnal::create($jurnal);
+            }else{
+                $jurnal['coa_id'] = 31;
+                $jurnal['debit'] = $request->tarif[$i];
+                $jurnal['credit'] = 0;
+                Jurnal::create($jurnal);
+                $jurnal['coa_id'] = 63;
+                $jurnal['credit'] = $request->tarif[$i];
+                $jurnal['debit'] = 0;
+                Jurnal::create($jurnal);
+            }
+            Order::find($request->order_id[$i])->update(['invoice_agen' => $request->invoice]);
+            HutangAgen::create([
+                'order_id' => $request->order_id[$i],
+                'tarif' => $request->tarif[$i],
+                'invoice' => $request->invoice,
+                'jurnal' => $nomor,
+                'tanggal' => $request->tanggal
+            ]);
+        }
+        return redirect()->route('hutang-agen.index')->with('success', 'Data berhasil disimpan');
     }
 
     public function update(HutangAgen $hutangagen, Request $request)

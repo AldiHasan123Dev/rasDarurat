@@ -15,7 +15,7 @@
                 <select class="form-control select2" id="job-{{ $jurnal->id }}" name="order_id" style="font-size:.9rem !important">
                     <option value=""></option>
                     @foreach ($orders as $item)
-                    <option {{ $jurnal->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                    <option {{ $jurnal->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
                     @endforeach
                 </select>
             </div>
@@ -26,7 +26,7 @@
                 <select class="form-control select2" id="job-{{ $jurnal->id }}" name="order_trucking_id" style="font-size:.9rem !important">
                     <option value=""></option>
                     @foreach ($orders as $item)
-                        <option {{ $jurnal->order_trucking_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                        <option {{ $jurnal->order_trucking_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
                     @endforeach
                 </select>
             </div>
