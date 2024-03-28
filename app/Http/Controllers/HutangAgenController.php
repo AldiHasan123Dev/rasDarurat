@@ -38,7 +38,7 @@ class HutangAgenController extends Controller
     {
         $data = $request->all();
         $no = Jurnal::where('tipe','TEST')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $nomor = 'TEST'.sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+        $nomor = 'HUTAGEN/'.sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
         for ($i=0; $i < count($request->order_id); $i++) {
             $order = Order::find($request->order_id[$i]);
             $cek = Jurnal::where('order_id',$request->order_id[$i])->where('coa_id',93)->where('debit','>',0)->count();
