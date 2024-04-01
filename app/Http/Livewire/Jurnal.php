@@ -25,7 +25,7 @@ class Jurnal extends Component
         $no_4 = ModelsJurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = ModelsJurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
         $this->order = null;
         $this->template_id = null;
         $this->template = null;

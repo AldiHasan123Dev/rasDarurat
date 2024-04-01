@@ -24,7 +24,7 @@ class JurnalKolektif extends Component
         $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
         $job = Order::whereBetween('created_at',[$last,$now])->pluck('job')->toArray();
         $job = array_unique($job);
         $this->order = null;
