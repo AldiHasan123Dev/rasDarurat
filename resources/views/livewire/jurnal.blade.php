@@ -91,6 +91,7 @@
                                 <th style="width: 300px">Akun Credit</th>
                                 <th>Keterangan</th>
                                 <th>Nominal</th>
+                                <th style="width: 300px">Invoice External</th>
                             </tr>
                             @for ($i = 0; $i < $debit_idx; $i++)
                             <tr class="init-table">
@@ -129,6 +130,7 @@
                                 </td>
                                 <td style="width: 250px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
                                 <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
+                                <td><input type="text" name="invoice_external[]" id="invoice_external-{{ $i }}"></td>
                             </tr>
                             @endfor
                         </table>
@@ -250,6 +252,7 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                        <td><input type="text" name="invoice_external[]" id="invoice_external-${debit}"></td>
                     </tr>`;
         $('#table-debit').append(html);
         setTimeout(() => {
@@ -387,6 +390,7 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" value="${item.keterangan}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                        <td><input type="text" name="invoice_external[]" id="invoice_external-${debit}"></td>
                     </tr>`;
                     $('#table-debit').append(html);
                     $('#debit-'+debit).val(item.coa_debit_id);

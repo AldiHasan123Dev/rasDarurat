@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\HutangAgen;
 use App\Models\Jurnal;
 use App\Models\Order;
+use App\Models\TagihanAgen;
 use App\Models\TarifAgen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,8 +15,15 @@ class HutangAgenController extends Controller
 {
     public function index()
     {
-        $data = Order::whereHas('agent')->whereYear('created_at',2024)->get()->groupBy('agen_id');
+        $data = Order::whereHas('agent')->whereNull('invoice_agen')->whereYear('created_at',2024)->get()->groupBy('agen_id');
         return view('admin.hutangagen.index', compact('data'));
+    }
+
+    public function list()
+    {
+        $data = HutangAgen::all()->groupBy('jurnal');
+        // dd($data);
+        return view('admin.hutangagen.list', compact('data'));
     }
 
     public function draf(Request $request)
@@ -37,6 +45,7 @@ class HutangAgenController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        // dd($data);
         $no = Jurnal::where('tipe','TEST')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
         $nomor = 'HUTAGEN/'.sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
         for ($i=0; $i < count($request->order_id); $i++) {
@@ -77,6 +86,86 @@ class HutangAgenController extends Controller
                 'jurnal' => $nomor,
                 'tanggal' => $request->tanggal
             ]);
+        }
+        for ($i=0; $i < count($data['tagihan_order_id']); $i++) {
+            if($data['nama'][$i]!=null && $data['jumlah'][$i]!=null && $data['tagihan_order_id'][$i]!=null){
+                $order = Order::find($data['tagihan_order_id'][$i]);
+                if($data['beban'][$i]=='ras'){
+                    $cek = Jurnal::where('order_id',$data['tagihan_order_id'][$i])->where('coa_id',93)->where('debit','>',0)->count();
+                    if($cek > 0){
+                        Jurnal::create([
+                            'order_id' => $data['tagihan_order_id'][$i],
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $data['nama'][$i],
+                            'container' => $order->container,
+                            'invoice' => $request->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 134,
+                            'debit' => $data['jumlah'][$i],
+                            'credit' => 0
+                        ]);
+                    }else{
+                        Jurnal::create([
+                            'order_id' => $data['tagihan_order_id'][$i],
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $data['nama'][$i],
+                            'container' => $order->container,
+                            'invoice' => $request->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 31,
+                            'debit' => $data['jumlah'][$i],
+                            'credit' => 0
+                        ]);
+                    }
+                    Jurnal::create([
+                        'order_id' => $data['tagihan_order_id'][$i],
+                        'nomor' => $nomor,
+                        'no' => $no,
+                        'nama' => $data['nama'][$i],
+                        'container' => $order->container,
+                        'invoice' => $request->invoice,
+                        'tipe' => 'TEST',
+                        'coa_id' => 63,
+                        'credit' => $data['jumlah'][$i],
+                        'debit' => 0
+                    ]);
+                }else{
+                    Jurnal::create([
+                        'order_id' => $data['tagihan_order_id'][$i],
+                        'nomor' => $nomor,
+                        'no' => $no,
+                        'nama' => $data['nama'][$i],
+                        'container' => $order->container,
+                        'invoice' => $request->invoice,
+                        'tipe' => 'TEST',
+                        'coa_id' => 63,
+                        'debit' => $data['jumlah'][$i],
+                        'credit' => 0
+                    ]);
+                    Jurnal::create([
+                        'order_id' => $data['tagihan_order_id'][$i],
+                        'nomor' => $nomor,
+                        'no' => $no,
+                        'nama' => $data['nama'][$i],
+                        'container' => $order->container,
+                        'invoice' => $request->invoice,
+                        'tipe' => 'TEST',
+                        'coa_id' => 28,
+                        'credit' => $data['jumlah'][$i],
+                        'debit' => 0
+                    ]);
+                }
+
+                TagihanAgen::create([
+                    'invoice' => $request->invoice,
+                    'order_id' => $data['tagihan_order_id'][$i],
+                    'nama' => $data['nama'][$i],
+                    'jumlah' => $data['jumlah'][$i],
+                    'beban' => $data['beban'][$i]
+                ]);
+            }
         }
         return redirect()->route('hutang-agen.index')->with('success', 'Data berhasil disimpan');
     }

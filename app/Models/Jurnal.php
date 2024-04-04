@@ -20,6 +20,7 @@ class Jurnal extends Model
         'nomor',
         'nama',
         'invoice',
+        'invoice_external',
         'nopol',
         'container',
         'debit',

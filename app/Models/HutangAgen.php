@@ -23,4 +23,9 @@ class HutangAgen extends Model
     {
         return $this->hasMany(Order::class,'invoice_agen','invoice');
     }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class,'order_id');
+    }
 }

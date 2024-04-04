@@ -4,7 +4,10 @@
         <form action="{{ route('hutang-agen.draf') }}" method="POST" class="card">
             @csrf
             <div class="card-header p-3 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" type="submit">Buat Draf</button>
+                <div class="d-flex gap-3">
+                    <button class="py-2 px-3 btn btn-success" type="submit">Buat Draf</button>
+                    <a href="{{ route('hutang-agen.list') }}" class="py-2 px-3 btn btn-primary">List Jurnal</a>
+                </div>
                 <h5>List Hutang Agen</h5>
             </div>
             <div class="card-body">

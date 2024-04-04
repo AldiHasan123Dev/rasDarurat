@@ -45,6 +45,70 @@
                         </tbody>
                     </table>
                 </div>
+                <br>
+                <div class="d-flex justify-content-between">
+                    <h5>Add Cost</h5>
+                    <button class="btn btn-sm btn-primary" type="button" onclick="addBaris()">Tambah Baris</button>
+                </div>
+                <hr>
+                <div class="table-responsive">
+                    <table class="table table-sm" style="font-size:.7rem">
+                        <thead>
+                            <tr>
+                                <th>ID JOB</th>
+                                <th>Keterangan</th>
+                                <th>Nominal</th>
+                                <th>Beban ditanggung</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tagihan-list">
+                            <tr>
+                                <td>
+                                    <select name="tagihan_order_id[]" class="form-select form-select-sm">
+                                        <option value=""></option>
+                                        @foreach ($orders as $item)
+                                            <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="nama[]" class="form-control form-control-sm">
+                                </td>
+                                <td>
+                                    <input type="number" name="jumlah[]" class="form-control form-control-sm">
+                                </td>
+                                <td>
+                                    <select name="beban[]" class="form-select form-select-sm">
+                                        <option value="customer" selected>Customer</option>
+                                        <option value="ras">RAS</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select name="tagihan_order_id[]" class="form-select form-select-sm">
+                                        <option value=""></option>
+                                        @foreach ($orders as $item)
+                                            <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="nama[]" class="form-control form-control-sm">
+                                </td>
+                                <td>
+                                    <input type="number" name="jumlah[]" class="form-control form-control-sm">
+                                </td>
+                                <td>
+                                    <select name="beban[]" class="form-select form-select-sm">
+                                        <option value="customer" selected>Customer</option>
+                                        <option value="ras">RAS</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <div class="mt-2 row">
                     <div class="col-4">
                         <label for="Invoice" class="text-label">Invoice</label>
@@ -65,6 +129,31 @@
 
 @section('script')
     <script>
+        function addBaris(){
+            var html = `<tr>
+                                <td>
+                                    <select name="tagihan_order_id[]" class="form-select form-select-sm">
+                                        <option value=""></option>
+                                        @foreach ($orders as $item)
+                                            <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="nama[]" class="form-control form-control-sm">
+                                </td>
+                                <td>
+                                    <input type="number" name="jumlah[]" class="form-control form-control-sm">
+                                </td>
+                                <td>
+                                    <select name="beban[]" class="form-select form-select-sm">
+                                        <option value="customer" selected>Customer</option>
+                                        <option value="ras">RAS</option>
+                                    </select>
+                                </td>
+                            </tr>`;
+            $('#tagihan-list').append(html);
+        }
         // $('table').dataTable()
     </script>
 @endsection

@@ -383,6 +383,7 @@ class JurnalController extends Controller
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
                 $no_bg = $data['no_bg'][$i] ?? null;
+                $jurnal_external = $data['jurnal_external'][$i] ?? null;
                 $invoice = null;
                 $nopol = null;
                 $container = null;
@@ -430,6 +431,7 @@ class JurnalController extends Controller
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
                         'no_bg' => $no_bg,
+                        'jurnal_external' => $jurnal_external,
                         'no' => $no
                     ]);
                     $jurnal_model->create([
@@ -444,6 +446,7 @@ class JurnalController extends Controller
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
                         'no_bg' => $no_bg,
+                        'jurnal_external' => $jurnal_external,
                         'no' => $no
                     ]);
                 }else{
@@ -460,6 +463,7 @@ class JurnalController extends Controller
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
                             'no_bg' => $no_bg,
+                            'jurnal_external' => $jurnal_external,
                             'no' => $no
                         ]);
                     }
@@ -476,6 +480,7 @@ class JurnalController extends Controller
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
                             'no_bg' => $no_bg,
+                            'jurnal_external' => $jurnal_external,
                             'no' => $no
                         ]);
                     }
@@ -519,6 +524,7 @@ class JurnalController extends Controller
                 $invoice = null;
                 $nopol = null;
                 $container = null;
+                $jurnal_external = $data['jurnal_external'][$i] ?? null;
                 if($data['order_id'][$i]){
                     $order = OrderTrucking::find($data['order_id'][$i]);
                     $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
@@ -565,7 +571,8 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'no' => $no
+                        'no' => $no,
+                        'jurnal_external' => $jurnal_external,
                     ]);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
@@ -579,7 +586,8 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'no' => $no
+                        'no' => $no,
+                        'jurnal_external' => $jurnal_external,
                     ]);
                 }else{
                     if($data['debit_coa_id'][$i]){
@@ -595,7 +603,8 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'no' => $no
+                            'no' => $no,
+                            'jurnal_external' => $jurnal_external,
                         ]);
                     }
                     if($data['credit_coa_id'][$i]){
@@ -611,7 +620,8 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'no' => $no
+                            'no' => $no,
+                            'jurnal_external' => $jurnal_external,
                         ]);
                     }
                 }

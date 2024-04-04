@@ -62,6 +62,10 @@
             <input class="form-control" onclick="this.select()" type="text" onkeyup="total()" name="credit" id="credit-{{ $jurnal->id }}" value="{{ $jurnal->credit }}">
         </div>
         <div class="col-12 mb-3">
+            <label for="invoice_external">Invoice External</label>
+            <input class="form-control" onclick="this.select()" type="text" name="invoice_external" id="invoice_external-{{ $jurnal->id }}" value="{{ $jurnal->invoice_external }}">
+        </div>
+        <div class="col-12 mb-3">
             <button type="submit" class="btn btn-success w-100">Simpan</button>
         </div>
     </div>
