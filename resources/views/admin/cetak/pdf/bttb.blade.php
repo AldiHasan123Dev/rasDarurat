@@ -752,8 +752,8 @@ $page = 1;
         @endforeach
     @else
         @if ($data->count()==10)
-            @foreach ($data->chunk(7) as $bttb)
-            <div class="page" style="margin-top: 30px">
+            @foreach ($data->chunk(10) as $bttb)
+            <div class="page" style="margin-top: 30px; height:100%; position: absolute;">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -864,60 +864,43 @@ $page = 1;
                             </tbody>
                         </table>
                     </div>
-                    @if ($loop->last)
-                        {{-- <div class="col-12">
-                            <table class="w-100" style="border: 2px black solid; font-size: .7rem !important">
-                                <tr>
-                                    <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
-                                    <td style="width: 100px"></td>
-                                    <td>{{ $order->bttb->sum('qty') }}</td>
-                                    <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
-                                </tr>
-                            </table>
-                        </div> --}}
-                        <div class="col-4 px-1 mt-2">
-                            <table style="font-size: .7rem;  margin-left:20px">
-                                <tr>
-                                    <td style="width: 100px">Penerima</td>
-                                    <td>: </td>
-                                </tr>
-                                <tr>
-                                    <td>Tanggal</td>
-                                    <td>: </td>
-                                </tr>
-                            </table>
-                            <div style="margin-top: 70px; margin-left:70px" style="font-size: .7rem">
-                                <span class="text-center">(....................................................)</span><br>
-                                <span class="text-center" style="font-size: .7rem">Stampel + TTD + Nama</span>
-                            </div>
-                        </div>
-                        <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                            {{-- <p>Pengantar</p>
-                            <div style="margin-top: 95px">
-                                <span class="text-center">(....................................................)</span>
-                            </div> --}}
-                        </div>
-                        <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
-                            <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
-                            <div style="margin-top: 90px">
-                                <span class="text-left">({{ Auth::user()->name }})</span>
-                            </div>
-                        </div>
-                    @endif
-
                 </div>
-                @if (ceil($data->count()/10)!=1)
-                    <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
-                @endif
+                <div class="text-end mt-5" style="font-size: .7rem; position: relative; right:0px; bottom:0px"><i>Page 1 of <span class="off-page">2</span></i></div>
             </div>
-            @if (ceil($data->count()/10)!=1)
-                @if (!$loop->last)
-                    <p class="pagebreak"></p>
-                    @php
-                        $page++;
-                    @endphp
-                @endif
-            @endif
+            <p class="pagebreak"></p>
+            <div style="margin-top: 30px;">
+                <div class="row">
+                    <div class="col-4 px-1 mt-2">
+                        <table style="font-size: .7rem;  margin-left:20px">
+                            <tr>
+                                <td style="width: 100px">Penerima</td>
+                                <td>: </td>
+                            </tr>
+                            <tr>
+                                <td>Tanggal</td>
+                                <td>: </td>
+                            </tr>
+                        </table>
+                        <div style="margin-top: 70px; margin-left:70px" style="font-size: .7rem">
+                            <span class="text-center">(....................................................)</span><br>
+                            <span class="text-center" style="font-size: .7rem">Stampel + TTD + Nama</span>
+                        </div>
+                    </div>
+                    <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                        {{-- <p>Pengantar</p>
+                        <div style="margin-top: 95px">
+                            <span class="text-center">(....................................................)</span>
+                        </div> --}}
+                    </div>
+                    <div class="col-4 px-1 mt-2 text-center" style="font-size: .7rem">
+                        <p> Surabaya, {{ date('d F Y', strtotime($item->tgl_masuk)) }}</p>
+                        <div style="margin-top: 90px">
+                            <span class="text-left">({{ Auth::user()->name }})</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-number" style="font-size: .7rem"><i>Page 2 of <span class="off-page">2</span></i></div>
+            </div>
         @endforeach
         @else
             @foreach ($data->chunk(17) as $bttb)
