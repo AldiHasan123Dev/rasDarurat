@@ -865,7 +865,7 @@ $page = 1;
                         </table>
                     </div>
                 </div>
-                <div class="text-end mt-5" style="font-size: .7rem; position: relative; right:0px; bottom:0px"><i>Page 1 of <span class="off-page">2</span></i></div>
+                <div class="text-end mt-5" style="font-size: .7rem; position: relative; right:0px; bottom:0px"><i>Page 1 of <span>2</span></i></div>
             </div>
             <p class="pagebreak"></p>
             <div style="margin-top: 30px;">
@@ -899,7 +899,7 @@ $page = 1;
                         </div>
                     </div>
                 </div>
-                <div class="page-number" style="font-size: .7rem"><i>Page 2 of <span class="off-page">2</span></i></div>
+                <div class="page-number" style="font-size: .7rem"><i>Page 2 of <span>2</span></i></div>
             </div>
         @endforeach
         @else
