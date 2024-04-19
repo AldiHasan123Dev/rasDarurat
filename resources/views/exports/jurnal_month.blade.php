@@ -10,6 +10,7 @@
             <th>Nopol</th>
             <th>JOB</th>
             <th>Invoice</th>
+            <th>Invoice Ext</th>
             <th>Keterangan</th>
             <th>Debit</th>
             <th>Kredit</th>
@@ -32,6 +33,7 @@
                 <td>{{ $item->nopol }}</td>
                 <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
                 <td>{{ $item->invoice }}</td>
+                <td>{{ $item->invoice_external }}</td>
                 <td>{{ $item->nama }}</td>
                 <td>{{ $item->debit }}</td>
                 <td>{{ $item->credit }}</td>
