@@ -785,12 +785,14 @@ class JurnalController extends Controller
         $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
         foreach ($request->jurnal as $item) {
             $data = $item;
-            $data['created_at'] = $request->created_at;
-            $data['nomor'] = $nomor;
-            $data['jurnal_balik'] = null;
-            $data['is_balik'] = 1;
-            $data['no'] = $no;
-            $j = Jurnal::create($data);
+            if(!empty($data['nama'])){
+                $data['created_at'] = $request->created_at;
+                $data['nomor'] = $nomor;
+                $data['jurnal_balik'] = null;
+                $data['is_balik'] = 1;
+                $data['no'] = $no;
+                $j = Jurnal::create($data);
+            }
             // Jurnal::find($item['jurnal_balik'])->update([
             //     'jurnal_balik' => $j->id
             // ]);

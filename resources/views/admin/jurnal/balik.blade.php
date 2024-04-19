@@ -117,13 +117,14 @@
                 </div>
             </div>
             @if (request('draf'))
-            <div class="col-6 mt-3">
+            <div class="col-12 mt-3">
                 <div class="card p-2">
                     <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Awal</span>
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="height:500px">
                         <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>No. Jurnal</th>
                                     <th>ID Job</th>
                                     <th>Account</th>
@@ -136,6 +137,7 @@
                                 @foreach ($new as $item)
                                     @if ($item['credit'])
                                     <tr>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item['credit']->nomor }}</td>
                                         @if ($item['credit']->order)
                                             <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
@@ -150,6 +152,7 @@
                                     @endif
                                     @if ($item['debit'])
                                     <tr>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item['debit']->nomor }}</td>
                                         @if ($item['debit']->order)
                                             <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
@@ -168,7 +171,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 mt-3">
+            <div class="col-12 mt-3">
                 <div class="card p-2">
                     <form action="{{ route('jurnal.balik.store') }}" method="post">
                         @csrf
@@ -181,14 +184,15 @@
                                 {{-- <input name="nomor" placeholder="Nomor Jurnal" required style="width: 100%" type="text"> --}}
                             </div>
                             <div class="col">
-                                <input type="date" style="width: 100%" name="created_at" required value="{{ request('created_at') ?? date('Y-m-d') }}">
+                                {{-- <input type="date" style="width: 100%" name="created_at" required value="{{ request('created_at') ?? date('Y-m-d') }}"> --}}
                             </div>
                         </div>
-                        <div class="table-responsive">
+                        <div class="table-responsive" style="height:500px">
                             <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                                 <thead>
                                     <tr>
-                                        <th>No. Jurnal</th>
+                                        <th>#</th>
+                                        <th>No</th>
                                         <th>ID Job</th>
                                         <th>Account</th>
                                         <th>Debit</th>
@@ -198,7 +202,7 @@
                                 </thead>
                                 <tbody>
                                     @php
-                                        $k = 0;
+                                        $k = 1;
                                     @endphp
                                     @foreach ($new as $idx => $item)
                                         @if ($item['debit'])
@@ -206,10 +210,10 @@
                                         <input type="hidden" value="{{ $item['debit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['debit']->debit }}" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $item['debit']->credit }}" name="jurnal[{{ $k }}][debit]">
-                                        <input type="hidden" value="{{ $item['debit']->nama }}" name="jurnal[{{ $k }}][nama]">
 
                                         <tr>
-                                            <td>-</td>
+                                            <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['debit']->credit + $item['debit']->debit }}" checked></td>
+                                            <td>{{ $k }}</td>
                                             @if ($item['debit']->order)
                                                 <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
                                             @else
@@ -224,22 +228,22 @@
                                             @endif
                                             <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
-                                            <td>{{ $item['debit']->nama }}</td>
+                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%"></td>
                                         </tr>
-                                        @endif
-
                                         @php
                                             $k++;
                                         @endphp
+                                        @endif
+
                                         @if ($item['credit'])
                                         <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                         <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
-                                        <input type="hidden" value="{{ $item['credit']->nama }}" name="jurnal[{{ $k }}][nama]">
 
                                         <tr>
-                                            <td>-</td>
+                                            <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['debit']->credit + $item['debit']->debit }}"></td>
+                                            <td>{{ $k }}</td>
                                             @if ($item['credit']->order)
                                                 <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
                                             @else
@@ -254,34 +258,35 @@
                                             @endif
                                             <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
-                                            <td>{{ $item['credit']->nama }}</td>
+                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" value="{{ $item['credit']->nama }}" required id="name-{{ $k }}" class="checkbox-name" style="width: 100%"></td>
                                         </tr>
-                                        @endif
                                         @php
                                             $k++;
                                         @endphp
+                                        @endif
                                     @endforeach
                                     @if (request('credit_coa_id_tujuan'))
-                                        <input type="hidden" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
+                                        <input type="hidden" id="hidden-value" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="0" name="jurnal[{{ $k }}][debit]">
                                         <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                         <tr>
-                                            <td>-</td>
-                                            <td>-</td>
+                                            <td></td>
+                                            <td>{{ $k }}</td>
+                                            <td></td>
                                             <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
                                             <td>-</td>
-                                            <td>{{ number_format($data->sum('credit')) }}</td>
+                                            <td id="value">{{ number_format($data->sum('credit')) }}</td>
                                             <td><input type="text" name="jurnal[{{ $k }}][nama]" id="" style="width: 100%" required></td>
                                         </tr>
                                     @else
-                                        <input type="hidden" value="{{ $data->sum('debit') }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" id="hidden-value" value="{{ $data->sum('debit') }}" name="jurnal[{{ $k }}][debit]">
                                         <input type="hidden" value="0" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                         <tr>
                                             <td>-</td>
                                             <td>-</td>
                                             <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
-                                            <td>{{ number_format($data->sum('debit')) }}</td>
+                                            <td id="value">{{ number_format($data->sum('debit')) }}</td>
                                             <td>-</td>
                                             <td><input type="text" name="jurnal[{{ $k }}][nama]" id="" style="width: 100%" required></td>
                                         </tr>
@@ -346,6 +351,21 @@
             $('#debit_coa_id_tujuan').attr('disabled',true);
         }else{
             $('#debit_coa_id_tujuan').attr('disabled',false);
+        }
+    });
+
+    $(".checkbox-name").change(function() {
+        let amount = parseInt($(this).data('amount'));
+        if(this.checked) {
+            let sum = parseInt($('#hidden-value').val()) + amount;
+            $('#name-'+$(this).val()).attr('disabled',false);
+            $('#hidden-value').val(sum);
+            $('#value').html(sum.toLocaleString('en-US'));
+        }else{
+            let sum = parseInt($('#hidden-value').val()) - amount;
+            $('#name-'+$(this).val()).attr('disabled',true);
+            $('#hidden-value').val(sum);
+            $('#value').html(sum.toLocaleString('en-US'));
         }
     });
 
