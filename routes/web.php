@@ -64,6 +64,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+use Google\Client;
+use Google\Service\Drive;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -83,16 +86,43 @@ Route::get('/logs', function () {
     $logs = fopen($logPath, "r") or die("Unable to open file!");
     return response(stream_get_contents($logs));
 });
+Route::get('/upload', function () {
+    try {
+        $client = new Client();
+        $client->setAuthConfig(public_path('credentials.json'));
+        $client->addScope(Drive::DRIVE);
+        $driveService = new Drive($client);
+        $file = public_path('storage/RAS/2024-04-22-10-45-49.zip');
+        $fileName = basename($file);
+        $mimeType = mime_content_type($file);
+
+        $fileMetadata = new Drive\DriveFile(
+            array('name' => $fileName,'parents' => ['11CjKzIs8ndfv_V6jhIDFy4y99jsUuYYN'])
+            );
+        $content = file_get_contents($file);
+        $file = $driveService->files->create($fileMetadata, array(
+            'data' => $content,
+            'mimeType' => $mimeType,
+            'uploadType' => 'multipart',
+            'fields' => 'id'));
+        printf("File ID: %s\n", $file->id);
+        return $file->id;
+    } catch(Exception $e) {
+        echo "Error Message: ".$e;
+    }
+});
+
 Route::get('test', function () {
     $data = Storage::allFiles('public/RAS');
-    $input = '10-25-00';
+    $input = date('Y-m-d');
     $result = array_filter($data, function ($item) use ($input) {
         if (stripos($item, $input) !== false) {
             return true;
         }
         return false;
     });
-    dd($result);
+    $file = $result[0];
+    $file = str_replace('public/', '', $file);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
