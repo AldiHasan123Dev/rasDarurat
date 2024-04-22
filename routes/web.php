@@ -62,6 +62,7 @@ use App\Models\Jurnal;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,8 +84,15 @@ Route::get('/logs', function () {
     return response(stream_get_contents($logs));
 });
 Route::get('test', function () {
-    $data = '[123,313,213]';
-    dd(json_decode($data));
+    $data = Storage::allFiles('public/RAS');
+    $input = '10-25-00';
+    $result = array_filter($data, function ($item) use ($input) {
+        if (stripos($item, $input) !== false) {
+            return true;
+        }
+        return false;
+    });
+    dd($result);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
