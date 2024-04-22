@@ -92,7 +92,7 @@ Route::get('/upload', function () {
         $client->setAuthConfig(public_path('credentials.json'));
         $client->addScope(Drive::DRIVE);
         $driveService = new Drive($client);
-        $file = public_path('storage/RAS/2024-04-22-10-45-49.zip');
+        $file = public_path('logo.png');
         $fileName = basename($file);
         $mimeType = mime_content_type($file);
 
