@@ -326,6 +326,10 @@
                     </select>
                 </div>
                 <div class="mb-2 col-3">
+                    <label for="dari_xpdc">Dari (XPDC)</label>
+                    <input type="text" id="dari_xpdc" class="form-control" disabled>
+                </div>
+                <div class="mb-2 col-3">
                     <label for="tujuan">Tujuan</label>
                     <select name="tujuan" id="tujuan-edit" class="form-control show-total" required>
                         @foreach ($tujuan as $loc)
@@ -644,6 +648,7 @@
                 {search:true, name: 'nopol', label : 'Nopol'},
                 {search:true, name: 'container', label : 'Container'},
                 {search:true, name: 'seal', label : 'Seal'},
+                {search:true, name: 'dari_xpdc', label : 'Dari (XPDC)'},
                 {search:true, name: 'dari', label : 'Dari'},
                 {search:true, name: 'tujuan', label : 'Tujuan'},
                 {search:true, name: 'tipe', label : 'Tipe'},
@@ -688,6 +693,7 @@
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
                 is_vendor = $(this).jqGrid('getCell', rowId, 'is_vendor');
+                var dari_xpdc = $(this).jqGrid('getCell', rowId, 'dari_xpdc');
                 var tgl_total = $(this).jqGrid('getCell', rowId, 'tgl_total');
                 var order_id = $(this).jqGrid('getCell', rowId, 'order_id');
                 var job = $(this).jqGrid('getCell', rowId, 'job');
@@ -742,6 +748,7 @@
                 $('#stappel').val(stappel);
                 $('#lain_lain').val(lain_lain);
                 $('#lain').val(lain);
+                $('#dari_xpdc').val(dari_xpdc);
                 $('#keterangan_lain').val(keterangan_lain);
                 $('#sj_kembali').val(date_sj_kembali);
                 $('#sj_kembali_fa').val(date_sj_kembali_fa);

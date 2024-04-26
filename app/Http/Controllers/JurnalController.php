@@ -374,6 +374,7 @@ class JurnalController extends Controller
             $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($data['created_at'])))->whereYear('created_at',date('Y',strtotime($data['created_at'])))->max('no') + 1;
         }
 
+        $arr_order = array();
         $jurnal_model = new Jurnal();
         if($data['simpan']=='tampungan'){
             $jurnal_model = new JurnalTampungan();
@@ -388,6 +389,7 @@ class JurnalController extends Controller
                 $nopol = null;
                 $container = null;
                 if($data['order_id'][$i]){
+                    array_push($arr_order, $data['order_id'][$i]);
                     $order = Order::find($data['order_id'][$i]);
                     $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
                     $cont = $order->container;
@@ -487,6 +489,58 @@ class JurnalController extends Controller
                 }
             }
         }
+
+        $service = new SyncService();
+            foreach($arr_order as $id){
+                $sangu_sopir = Jurnal::where('order_id',$id)->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->sum('debit') ?? 0;
+                $sangu_kuli = Jurnal::where('order_id',$id)->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->sum('debit') ?? 0;
+                $uang_makan = Jurnal::where('order_id',$id)->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->sum('debit') ?? 0;
+                $solar = Jurnal::where('order_id',$id)->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->sum('debit') ?? 0;
+                $op = Jurnal::where('order_id',$id)->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->sum('debit') ?? 0;
+                $cleaning = Jurnal::where('order_id',$id)->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->sum('debit') ?? 0;
+                $tally = Jurnal::where('order_id',$id)->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->sum('debit') ?? 0;
+
+                if($sangu_sopir>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'sangu' => $sangu_sopir,
+                    ]);
+                }
+                if($sangu_kuli>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'kuli' => $sangu_kuli,
+                    ]);
+                }
+                if($solar>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'tambah_solar' => $solar,
+                    ]);
+                }
+                if($tally>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'tally' => $tally,
+                    ]);
+                }
+                if($uang_makan>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'uang_makan' => $uang_makan,
+                    ]);
+                }
+                if($op>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'op' => $op,
+                    ]);
+                }
+                if($cleaning>0){
+                    OrderTrucking::where('order_id',$id)->update([
+                        'cleaning' => $cleaning,
+                    ]);
+                }
+
+                if($sangu_sopir>0 || $sangu_kuli>0 || $solar>0 || $tally>0 || $uang_makan>0 || $op>0 || $cleaning>0){
+                    $order_trucking = OrderTrucking::where('order_id',$id)->first();
+                    $service->trucking($order_trucking->id);
+                }
+            }
 
         return back()->with('success','Data berhasil disimpan');
     }
@@ -633,6 +687,7 @@ class JurnalController extends Controller
         }else{
             $service = new SyncService();
             foreach($arr_order as $id){
+                $order = OrderTrucking::find($id);
                 $sangu_sopir = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->sum('debit') ?? 0;
                 $sangu_kuli = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->sum('debit') ?? 0;
                 $uang_makan = Jurnal::where('order_trucking_id',$id)->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->sum('debit') ?? 0;
