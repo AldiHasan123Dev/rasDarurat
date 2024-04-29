@@ -285,7 +285,17 @@ class JurnalController extends Controller
             $coa_debit = COA::find(request('debit_coa_id'));
             $coa_credit = COA::find(request('credit_coa_id'));
         }
-        return view('admin.jurnal.balik', compact('coa','new','coa_debit','coa_credit','orders','data'));
+        $no_1 = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_2 = Jurnal::where('tipe','BBK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
+        $nomor_2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
+        $nomor_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
+        $nomor_4 = sprintf('%03d',$no_4).'/BKK-RAS/'.date('y');
+        $nomor_5 = sprintf('%03d',$no_5).'/BKM-RAS/'.date('y');
+        return view('admin.jurnal.balik', compact('coa','new','coa_debit','coa_credit','orders','data','no_1','no_2','no_3','no_4','no_5','nomor_1','nomor_2','nomor_3','nomor_4','nomor_5'));
     }
 
     public function store_manual(Request $request)
@@ -836,21 +846,29 @@ class JurnalController extends Controller
     }
 
     public function store_balik(Request $request){
-        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
+        $r = 0;
         foreach ($request->jurnal as $item) {
             $data = $item;
             if(!empty($data['nama'])){
-                $data['created_at'] = $request->created_at;
-                $data['nomor'] = $nomor;
+                $data['created_at'] = date('Y-m-d');
                 $data['jurnal_balik'] = null;
                 $data['is_balik'] = 1;
-                $data['no'] = $no;
+                $data['nomor'] = $request->nomor;
+                $data['no'] = $request->no;
+                $data['tipe'] = $request->tipe;
                 $j = Jurnal::create($data);
+                if($j){
+                    if(!empty($data['jurnal_balik'])){
+                        Jurnal::find($data['jurnal_balik'])->update([
+                            'jurnal_balik' => $j->id
+                        ]);
+                    }
+                    $r++;
+                }
             }
-            // Jurnal::find($item['jurnal_balik'])->update([
-            //     'jurnal_balik' => $j->id
-            // ]);
+        }
+        if($r==0){
+            return back()->with('danger','Data gagal disimpan');
         }
         return redirect()->route('jurnal.balik.create')->with('success','Data berhasil disimpan');
     }
@@ -1237,6 +1255,13 @@ class JurnalController extends Controller
 
     public function syncJob()
     {
+        $data = Jurnal::whereNotNull('order_id')->whereNull('container')->whereBetween('created_at',['2023-07-01',date('Y-m-d')])->get();
+        foreach ($data as $item) {
+            $item->update([
+                'container' => $item->order->container ?? null,
+            ]);
+        }
+
         $data = Jurnal::whereNotNull('order_trucking_id')->whereNull('order_id')->whereBetween('created_at',['2023-07-01',date('Y-m-d')])->get();
         // dd($data->take(10));
         $awal = $data->count();

@@ -120,7 +120,7 @@
             <div class="col-12 mt-3">
                 <div class="card p-2">
                     <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Awal</span>
-                    <div class="table-responsive" style="height:500px">
+                    <div class="table-responsive" style="height:250px">
                         <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                             <thead>
                                 <tr>
@@ -178,6 +178,8 @@
                         <input type="hidden" name="order_id" value="{{ request('order_id') }}">
                         <input type="hidden" name="debit_coa_id_tujuan" value="{{ request('debit_coa_id_tujuan') }}">
                         <input type="hidden" name="credit_coa_id_tujuan" value="{{ request('credit_coa_id_tujuan') }}">
+                        <input type="hidden" name="no" id="no_jurnal">
+                        <input type="hidden" name="tipe" id="type_jurnal">
                         <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Balik</span>
                         <div class="row my-2">
                             <div class="col">
@@ -187,7 +189,7 @@
                                 {{-- <input type="date" style="width: 100%" name="created_at" required value="{{ request('created_at') ?? date('Y-m-d') }}"> --}}
                             </div>
                         </div>
-                        <div class="table-responsive" style="height:500px">
+                        <div class="table-responsive" style="height:250px">
                             <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                                 <thead>
                                     <tr>
@@ -295,7 +297,20 @@
                                 </tbody>
                             </table>
                         </div>
-                        <button type="submit" class="btn btn-success btn-sm mt-3" onclick="return confirm('Are you sure?')">Simpan Jurnal Balik</button>
+                        <div class="mt-3 d-flex gap-3">
+                            <div>
+                                <label for="" class="form-label">Nomor Jurnal</label>
+                                <select name="nomor" id="nomor_jurnal" class="form-control" required>
+                                    <option value=""></option>
+                                    <option data-no="{{ $no_1 }}" data-type="JNL" value="{{ $nomor_1 }}">{{ $nomor_1 }}</option>
+                                    <option data-no="{{ $no_2 }}" data-type="BBK" value="{{ $nomor_2 }}">{{ $nomor_2 }}</option>
+                                    {{-- <option data-no="{{ $no_3 }}" data-type="BBM" value="{{ $nomor_3 }}">{{ $nomor_3 }}</option> --}}
+                                    <option data-no="{{ $no_4 }}" data-type="BKK" value="{{ $nomor_4 }}">{{ $nomor_4 }}</option>
+                                    {{-- <option data-no="{{ $no_5 }}" data-type="BKM" value="{{ $nomor_5 }}">{{ $nomor_5 }}</option> --}}
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm mt-3" onclick="return confirm('Are you sure?')">Simpan Jurnal Balik</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -333,6 +348,13 @@
     //         $('#form-submit').submit();
     //     }
     // });
+
+    $('#nomor_jurnal').change(function (e) {
+        var no = $(this).find(':selected').data('no');
+        var type = $(this).find(':selected').data('type');
+        $('#no_jurnal').val(no);
+        $('#type_jurnal').val(type);
+    });
 
     $('#debit_coa_id_tujuan').change(function (e) {
         var val = $(this).val();
