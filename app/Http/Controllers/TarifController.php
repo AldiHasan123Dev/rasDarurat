@@ -141,7 +141,7 @@ class TarifController extends Controller
         $data = $q->limit($start)->offset($limit);
         $count =  Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->select('tarif.id')->count();
         if(request('customer_id')||!is_null(request('customer_id'))){
-            $data = Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->where('tarif.customer_id',request('customer_id'))->limit($start)->offset($limit);
+            $data = Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->where('tarif.customer_id',request('customer_id'))->select('tarif.*','lokasi.nama')->limit($start)->offset($limit);
             $count = Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->where('tarif.customer_id',request('customer_id'))->select('id')->count();
         }
 
