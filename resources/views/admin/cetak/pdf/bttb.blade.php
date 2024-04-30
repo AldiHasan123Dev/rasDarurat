@@ -163,7 +163,7 @@ $page = 1;
                                                 <td class="text-center">{{ $item->no_gudang }}</td>
                                                 <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                 <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                                <td class="text-center">{{ $item->berat ?? 0 }}</td>
+                                                <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
                                                 @if ($tgl_masuk==$item->tgl_masuk)
                                                 <td class="text-center">-</td>
                                                 @else
@@ -185,7 +185,7 @@ $page = 1;
                                         <tr style="border: 2px solid black">
                                             <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                             <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
-                                            <td class="text-center">{{ $order->bttb->sum('berat') }}</td>
+                                            <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
                                             <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                         </tr>
                                         @endif
@@ -334,7 +334,7 @@ $page = 1;
                                                 <td class="text-center">{{ $item->no_gudang }}</td>
                                                 <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                 <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                                <td class="text-center">{{ $item->berat ?? 0 }}</td>
+                                                <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
                                                 @if ($tgl_masuk==$item->tgl_masuk)
                                                 <td class="text-center">-</td>
                                                 @else
@@ -356,7 +356,7 @@ $page = 1;
                                         <tr style="border: 2px solid black">
                                             <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                             <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
-                                            <td class="text-center">{{ $order->bttb->sum('berat') }}</td>
+                                            <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
                                             <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                         </tr>
                                         @endif
@@ -505,7 +505,7 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                        <td class="text-center">{{ $item->berat ?? 0 }}</td>
+                                        <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -527,7 +527,7 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
-                                    <td class="text-center">{{ $order->bttb->sum('berat') }}</td>
+                                    <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
@@ -678,7 +678,7 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                        <td class="text-center">{{ $item->berat ?? 0 }}</td>
+                                        <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -700,7 +700,7 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
-                                    <td class="text-center">{{ $order->bttb->sum('berat') }}</td>
+                                    <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
@@ -850,7 +850,7 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                        <td class="text-center">{{ $item->berat ?? 0 }}</td>
+                                        <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -872,7 +872,7 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
-                                    <td class="text-center">{{ $order->bttb->sum('berat') }}</td>
+                                    <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
@@ -1004,7 +1004,7 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
-                                        <td class="text-center">{{ $item->berat ?? 0 }}</td>
+                                        <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -1026,7 +1026,7 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
-                                    <td class="text-center">{{ $order->bttb->sum('berat') }}</td>
+                                    <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
