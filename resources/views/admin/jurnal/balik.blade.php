@@ -183,6 +183,9 @@
                         <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Balik</span>
                         <div class="row my-2">
                             <div class="col">
+                                <label for="uncheck">
+                                    <input type="checkbox" name="uncheck" id="uncheck" checked> Check / Uncheck All
+                                </label>
                                 {{-- <input name="nomor" placeholder="Nomor Jurnal" required style="width: 100%" type="text"> --}}
                             </div>
                             <div class="col">
@@ -230,7 +233,7 @@
                                             @endif
                                             <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
-                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%"></td>
+                                            <td><input type="text" class="input-name" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%"></td>
                                         </tr>
                                         @php
                                             $k++;
@@ -260,7 +263,7 @@
                                             @endif
                                             <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
-                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" value="{{ $item['credit']->nama }}" required id="name-{{ $k }}" class="checkbox-name" style="width: 100%"></td>
+                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" value="{{ $item['credit']->nama }}" required id="name-{{ $k }}" class="input-name" style="width: 100%"></td>
                                         </tr>
                                         @php
                                             $k++;
@@ -348,6 +351,23 @@
     //         $('#form-submit').submit();
     //     }
     // });
+
+    let total_all = parseInt($('#hidden-value').val());
+
+    $('#uncheck').click(function (e) {
+        $('input:checkbox').prop('checked', this.checked);
+        if(this.checked){
+            let sum = total_all;
+            $('.input-name').attr('disabled',false);
+            $('#hidden-value').val(sum);
+            $('#value').html(sum.toLocaleString('en-US'));
+        }else{
+            let sum = 0;
+            $('.input-name').attr('disabled',true);
+            $('#hidden-value').val(sum);
+            $('#value').html(sum.toLocaleString('en-US'));
+        }
+    });
 
     $('#nomor_jurnal').change(function (e) {
         var no = $(this).find(':selected').data('no');

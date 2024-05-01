@@ -78,7 +78,7 @@ $page = 1;
         @if ($loop->last)
             @if ($bttb->count()>=10)
                 @foreach ($bttb->chunk(10) as $bttb)
-                    <div class="page" style="margin-top: 30px">
+                    <div class="page" style="margin-top: 30px; margin-right:60px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -88,7 +88,7 @@ $page = 1;
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                                 </table>
                             </div>
-                            <div style="width:35%; text-align:right; margin-right:30px">
+                            <div style="width:35%; text-align:right;">
                                 <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
@@ -147,7 +147,9 @@ $page = 1;
                                             <td class="text-center">No. Gudang</td>
                                             <td>Jenis Barang</td>
                                             <td class="text-center">Koli</td>
+                                            @if (request('berat'))
                                             <td class="text-center">Berat</td>
+                                            @endif
                                             <td class="text-center">Tgl Masuk</td>
                                             <td>Pengirim</td>
                                             <td>Keterangan</td>
@@ -163,7 +165,9 @@ $page = 1;
                                                 <td class="text-center">{{ $item->no_gudang }}</td>
                                                 <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                 <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                @if(request('berat'))
                                                 <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                                @endif
                                                 @if ($tgl_masuk==$item->tgl_masuk)
                                                 <td class="text-center">-</td>
                                                 @else
@@ -185,7 +189,9 @@ $page = 1;
                                         <tr style="border: 2px solid black">
                                             <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                             <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                            @if (request('berat'))
                                             <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                            @endif
                                             <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                         </tr>
                                         @endif
@@ -249,7 +255,7 @@ $page = 1;
                 @endforeach
             @else
                 @foreach ($bttb->chunk(17) as $bttb)
-                    <div class="page" style="margin-top: 30px">
+                    <div class="page" style="margin-top: 30px; margin-right:60px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -259,7 +265,7 @@ $page = 1;
                                     <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                                 </table>
                             </div>
-                            <div style="width:35%; text-align:right; margin-right:30px">
+                            <div style="width:35%; text-align:right;">
                                 <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
@@ -318,7 +324,9 @@ $page = 1;
                                             <td class="text-center">No. Gudang</td>
                                             <td>Jenis Barang</td>
                                             <td class="text-center">Koli</td>
+                                            @if (request('berat'))
                                             <td class="text-center">Berat</td>
+                                            @endif
                                             <td class="text-center">Tgl Masuk</td>
                                             <td>Pengirim</td>
                                             <td>Keterangan</td>
@@ -334,7 +342,9 @@ $page = 1;
                                                 <td class="text-center">{{ $item->no_gudang }}</td>
                                                 <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                 <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                @if(request('berat'))
                                                 <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                                @endif
                                                 @if ($tgl_masuk==$item->tgl_masuk)
                                                 <td class="text-center">-</td>
                                                 @else
@@ -356,7 +366,9 @@ $page = 1;
                                         <tr style="border: 2px solid black">
                                             <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                             <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                            @if (request('berat'))
                                             <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                            @endif
                                             <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                         </tr>
                                         @endif
@@ -420,7 +432,7 @@ $page = 1;
                 @endforeach
             @endif
         @else
-            <div class="page" style="margin-top: 30px">
+            <div class="page" style="margin-top: 30px; margin-right:60px">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -430,7 +442,7 @@ $page = 1;
                             <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                         </table>
                     </div>
-                    <div style="width:35%; text-align:right; margin-right:30px">
+                    <div style="width:35%; text-align:right;">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
@@ -489,7 +501,9 @@ $page = 1;
                                     <td class="text-center">No. Gudang</td>
                                     <td>Jenis Barang</td>
                                     <td class="text-center">Koli</td>
+                                    @if (request('berat'))
                                     <td class="text-center">Berat</td>
+                                    @endif
                                     <td class="text-center">Tgl Masuk</td>
                                     <td>Pengirim</td>
                                     <td>Keterangan</td>
@@ -505,7 +519,9 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                        @if(request('berat'))
                                         <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                        @endif
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -527,7 +543,9 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                    @if (request('berat'))
                                     <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                    @endif
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
@@ -593,7 +611,7 @@ $page = 1;
 @else
     @if ($data->count()>10)
         @foreach ($data->chunk(10) as $bttb)
-            <div class="page" style="margin-top: 30px">
+            <div class="page" style="margin-top: 30px; margin-right:60px">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -603,7 +621,7 @@ $page = 1;
                             <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                         </table>
                     </div>
-                    <div style="width:35%; text-align:right; margin-right:30px">
+                    <div style="width:35%; text-align:right;">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
@@ -662,7 +680,9 @@ $page = 1;
                                     <td class="text-center">No. Gudang</td>
                                     <td>Jenis Barang</td>
                                     <td class="text-center">Koli</td>
+                                    @if (request('berat'))
                                     <td class="text-center">Berat</td>
+                                    @endif
                                     <td class="text-center">Tgl Masuk</td>
                                     <td>Pengirim</td>
                                     <td>Keterangan</td>
@@ -678,7 +698,9 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                        @if(request('berat'))
                                         <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                        @endif
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -700,7 +722,9 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                    @if (request('berat'))
                                     <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                    @endif
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
@@ -765,7 +789,7 @@ $page = 1;
     @else
         @if ($data->count()==10)
             @foreach ($data->chunk(10) as $bttb)
-            <div class="page" style="margin-top: 30px; height:100%; position: absolute;">
+            <div class="page" style="margin-top: 30px; margin-right:60px; height:100%; position: absolute;">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -775,7 +799,7 @@ $page = 1;
                             <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                         </table>
                     </div>
-                    <div style="width:35%; text-align:right; margin-right:30px">
+                    <div style="width:35%; text-align:right;">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
@@ -834,7 +858,9 @@ $page = 1;
                                     <td class="text-center">No. Gudang</td>
                                     <td>Jenis Barang</td>
                                     <td class="text-center">Koli</td>
+                                    @if (request('berat'))
                                     <td class="text-center">Berat</td>
+                                    @endif
                                     <td class="text-center">Tgl Masuk</td>
                                     <td>Pengirim</td>
                                     <td>Keterangan</td>
@@ -850,7 +876,9 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                        @if(request('berat'))
                                         <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                        @endif
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -872,7 +900,9 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                    @if (request('berat'))
                                     <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                    @endif
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif
@@ -883,7 +913,7 @@ $page = 1;
                 <div class="text-end mt-5" style="font-size: .7rem; position: relative; right:0px; bottom:0px"><i>Page 1 of <span>2</span></i></div>
             </div>
             <p class="pagebreak"></p>
-            <div style="margin-top: 30px;">
+            <div style="margin-top: 30px; margin-right:60px;">
                 <div class="row">
                     <div class="col-4 px-1 mt-2">
                         <table style="font-size: .7rem;  margin-left:20px">
@@ -919,7 +949,7 @@ $page = 1;
         @endforeach
         @else
             @foreach ($data->chunk(17) as $bttb)
-            <div class="page" style="margin-top: 30px; height:100%; position: absolute;">
+            <div class="page" style="margin-top: 30px; margin-right:60px; height:100%; position: absolute;">
                 <div class="headers d-flex" style="gap:5px; width:100%">
                     <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                     <div style="width: 40%; margin-left:35px">
@@ -929,7 +959,7 @@ $page = 1;
                             <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
                         </table>
                     </div>
-                    <div style="width:35%; text-align:right; margin-right:30px">
+                    <div style="width:35%; text-align:right;">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:25px">
                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
@@ -988,7 +1018,9 @@ $page = 1;
                                     <td class="text-center">No. Gudang</td>
                                     <td>Jenis Barang</td>
                                     <td class="text-center">Koli</td>
+                                    @if (request('berat'))
                                     <td class="text-center">Berat</td>
+                                    @endif
                                     <td class="text-center">Tgl Masuk</td>
                                     <td>Pengirim</td>
                                     <td>Keterangan</td>
@@ -1004,7 +1036,9 @@ $page = 1;
                                         <td class="text-center">{{ $item->no_gudang }}</td>
                                         <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                         <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                        @if(request('berat'))
                                         <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                        @endif
                                         @if ($tgl_masuk==$item->tgl_masuk)
                                         <td class="text-center">-</td>
                                         @else
@@ -1026,7 +1060,9 @@ $page = 1;
                                 <tr style="border: 2px solid black">
                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                    @if (request('berat'))
                                     <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                    @endif
                                     <td colspan="3" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                 </tr>
                                 @endif

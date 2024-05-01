@@ -394,7 +394,7 @@ class JurnalController extends Controller
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
                 $no_bg = $data['no_bg'][$i] ?? null;
-                $jurnal_external = $data['jurnal_external'][$i] ?? null;
+                $jurnal_external = $data['invoice_external'][$i] ?? null;
                 $invoice = null;
                 $nopol = null;
                 $container = null;
@@ -588,7 +588,7 @@ class JurnalController extends Controller
                 $invoice = null;
                 $nopol = null;
                 $container = null;
-                $jurnal_external = $data['jurnal_external'][$i] ?? null;
+                $jurnal_external = $data['invoice_external'][$i] ?? null;
                 if($data['order_id'][$i]){
                     $order = OrderTrucking::find($data['order_id'][$i]);
                     $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
@@ -851,7 +851,7 @@ class JurnalController extends Controller
             $data = $item;
             if(!empty($data['nama'])){
                 $data['created_at'] = date('Y-m-d');
-                $data['jurnal_balik'] = null;
+                $data['jurnal_balik'] = empty($data['jurnal_balik']) ? null : $data['jurnal_balik'];
                 $data['is_balik'] = 1;
                 $data['nomor'] = $request->nomor;
                 $data['no'] = $request->no;
