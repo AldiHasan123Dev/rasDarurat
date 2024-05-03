@@ -124,7 +124,7 @@ class JurnalController extends Controller
         }
 
         $jurnal_model = new Jurnal();
-        if ($is_sample) {
+        if ($is_sample=='sample') {
             $jurnal_model = new JurnalSample();
         }
         $query = $jurnal_model->query();

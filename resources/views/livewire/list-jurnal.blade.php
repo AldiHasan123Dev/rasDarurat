@@ -5,15 +5,15 @@
                 <div class="d-flex gap-2">
                     <b class="mt-2">Bulan: </b>
                     @foreach ($months as $idx => $item)
-                        <a href="{{ route('jurnal.index',['month'=>sprintf('%02d',$idx+1),'tipe'=>$tipe]) }}" wire:click="changeMonth({{ $idx+1 }})" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
+                        <a href="{{ route('jurnal.index',['month'=>sprintf('%02d',$idx+1),'tipe'=>$tipe, 'year'=>$year, 'is_sample' => $is_sample]) }}" class="{{ $idx+1==(int)$month?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">{{ $item }}</a>
                     @endforeach
                 </div>
             </div>
             <div class="col-3">
                 <form action="{{ route('jurnal.index') }}" method="get">
                     <input type="hidden" name="tipe" value="{{ $tipe }}">
+                    <input type="hidden" name="is_sample" value="{{ $is_sample }}">
                     <input type="hidden" name="month" value="{{ request('month') }}">
-                    <input type="hidden" name="year" value="{{ request('year') }}">
                     <select class="form-control px-3 py-1" name="year" onchange="submit()" style="font-size:.8rem">
                         <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
                         <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
@@ -37,8 +37,9 @@
                             <label for="search">Filter Tanggal</label>
                             <form action="{{ route('jurnal.index') }}" method="get">
                                 <input type="hidden" name="tipe" value="{{ $tipe }}">
-                                <input type="hidden" name="year" value="{{ request('month') }}">
-                                <input type="hidden" name="is_sample" value="{{ request('is_sample') }}">
+                                <input type="hidden" name="month" value="{{ $month }}">
+                                <input type="hidden" name="year" value="{{ $year }}">
+                                <input type="hidden" name="is_sample" value="{{ $is_sample }}">
                                 <input type="date" class="form-control" name="date" onchange="submit()" value="{{ request('date') }}">
                             </form>
                         </div>
@@ -46,13 +47,13 @@
                             <label for="is_sample">Kategori</label>
                             <form  action="{{ route('jurnal.index') }}" method="get" class="d-flex gap-2">
                                 <input type="hidden" name="tipe" value="{{ $tipe }}">
-                                <input type="hidden" name="year" value="{{ request('month') }}">
-                                <input type="hidden" name="date" value="{{ request('date') }}">
+                                <input type="hidden" name="year" value="{{ $year }}">
+                                <input type="hidden" name="month" value="{{ $month }}">
                                 <label for="sample_false">
-                                    <input type="radio" name="is_sample" id="sample_false" value="false" {{ $is_sample ? '' : 'checked' }} onclick="submit()"> Jurnal Real
+                                    <input type="radio" name="is_sample" id="sample_false" value="real" {{ $is_sample=='real' ? 'checked' : '' }} onclick="submit()"> Jurnal Real
                                 </label>
                                 <label for="sample_true">
-                                    <input type="radio" name="is_sample" id="sample_true" value="true" {{ $is_sample ? 'checked' : '' }} onclick="submit()"> Jurnal Sample
+                                    <input type="radio" name="is_sample" id="sample_true" value="sample" {{ $is_sample=='sample' ? 'checked' : '' }} onclick="submit()"> Jurnal Sample
                                 </label>
                             </form>
                         </div>

@@ -34,7 +34,8 @@ class JurnalController extends Controller
         });
         $month = request('month') ?? date('m');
         $year = request('year') ?? date('Y');
-        return view('admin.jurnal.index', compact('unbalance','month','year'));
+        $is_sample = request('is_sample') ?? 'real';
+        return view('admin.jurnal.index', compact('unbalance','month','year','is_sample'));
     }
 
     public function totalan_sopir()

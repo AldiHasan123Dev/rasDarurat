@@ -11,7 +11,7 @@ class ListJurnal extends Component
 {
     public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances, $date, $jnl, $is_sample;
 
-    public function mount($month = null, $tipe = null, $date = null)
+    public function mount($month = null, $tipe = null, $date = null, $is_sample)
     {
         $this->perPage = 50;
         $this->months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -19,14 +19,14 @@ class ListJurnal extends Component
         $this->month = request('month') ?? date('m');
         $this->tipe = request('tipe') ?? 'BB';
         $this->date = $date;
-        $this->is_sample = request('is_sample') ?? false;
+        $this->is_sample = request('is_sample') ?? 'real';
     }
 
     public function render()
     {
         $jurnal_model = new Jurnal();
         $prefix = '';
-        if ($this->is_sample) {
+        if ($this->is_sample=='sample') {
             $jurnal_model = new JurnalSample();
             $prefix = '_sample';
         }
