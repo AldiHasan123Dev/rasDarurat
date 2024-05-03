@@ -1250,7 +1250,7 @@ class JurnalController extends Controller
 
     public function exportMonth(Request $request)
     {
-        return Excel::download(new JurnalMonth($request->from, $request->to,$request->tipe,$request->year,$request->month),'jurnal.xlsx');
+        return Excel::download(new JurnalMonth($request->from, $request->to,$request->tipe,$request->year,$request->month,$request->is_sample),'jurnal.xlsx');
     }
 
     public function syncJob()

@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -14,19 +15,25 @@ class JurnalMonth implements FromView
     private $tipe;
     private $year;
     private $month;
+    private $is_sample;
 
-    public function __construct($from, $to, $tipe, $year, $month)
+    public function __construct($from, $to, $tipe, $year, $month, $is_sample)
     {
         $this->from = $from;
         $this->to  = $to;
         $this->tipe  = $tipe;
         $this->year  = $year;
         $this->month  = $month;
+        $this->is_sample = $is_sample;
     }
 
     public function view(): View
     {
-        $query = Jurnal::query();
+        $model = new Jurnal();
+        if($this->is_sample){
+            $model = new JurnalSample();
+        }
+        $query = $model->query();
         $query->where('tipe',$this->tipe);
         $query->where('no','>=',$this->from);
         $query->where('no','<=',$this->to);

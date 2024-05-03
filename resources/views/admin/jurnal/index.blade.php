@@ -108,6 +108,7 @@
 <div class="modal fade" id="modal-export" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <form action="{{ route('jurnal.exportMonth') }}" method="POST" class="modal-dialog">
         @csrf
+        <input type="hidden" name="is_sample" value="{{ request('is_sample') }}">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Export Data</h5>
