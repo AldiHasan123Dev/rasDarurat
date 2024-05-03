@@ -30,7 +30,7 @@ class JurnalMonth implements FromView
     public function view(): View
     {
         $model = new Jurnal();
-        if($this->is_sample = 'sample'){
+        if($this->is_sample == 'sample'){
             $model = new JurnalSample();
         }
         $query = $model->query();
