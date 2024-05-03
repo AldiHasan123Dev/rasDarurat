@@ -14,35 +14,57 @@
                                 <th>#</th>
                                 <th>JOB</th>
                                 <th>Pembayar</th>
-                                <th>Container</th>
-                                <th>Seal</th>
+                                <th>Penerima</th>
+                                <th>Tipe</th>
+                                <th>Tarif</th>
+                                <th>Container / Seal</th>
                                 <th>Dari</th>
                                 <th>Tujuan</th>
-                                <th>Tarif</th>
+                                <th>Tarif Agen</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($orders as $order)
-                            <input type="hidden" name="order_id[]" value="{{ $order->id }}">
+                                <input type="hidden" name="order_id[]" value="{{ $order->id }}">
+                                <input type="hidden" name="ppn[]" value="0" id="ppn-{{ $loop->iteration }}">
+                                <input type="hidden" name="pph[]" value="0" id="pph-{{ $loop->iteration }}">
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
                                     <td>{{ $order->tarif->customer->nama }}</td>
-                                    <td>{{ $order->container }}</td>
-                                    <td>{{ $order->seal }}</td>
+                                    <td>{{ $order->penerima->nama }}</td>
+                                    <td>{{ $order->tarif->shipmentInfo->nama }}</td>
+                                    <td>{{ number_format($order->tarif->tarif) }}</td>
+                                    <td>{{ $order->container }} / {{ $order->seal }}</td>
                                     <td>{{ $order->tarif->dari_lokasi->nama }}</td>
                                     <td>{{ $order->tarif->tujuan_lokasi->nama }}</td>
                                     <td>
-                                        <select name="tarif[]" class="form-select form-select-sm" required>
-                                            <option value="0">Rp. 0</option>
+                                        <select name="tarif[]" class="form-select form-select-sm" onchange="hitung({{ $loop->iteration }})" id="tarif-{{ $loop->iteration }}" required>
+                                            <option value="0" selected>Rp. 0</option>
                                             @foreach ($tarif as $item)
                                                 <option value="{{ $item->tarif }}">Rp. {{ number_format($item->tarif) }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td colspan="8" class="table-secondary"></td>
+                                    <td>PPN (1.1%)</td>
+                                    <td id="ppn-label-{{ $loop->iteration }}">Rp. 0</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="8" class="table-secondary"></td>
+                                    <td>Pot. PPH 23 (2%)</td>
+                                    <td id="pph-label-{{ $loop->iteration }}">- Rp. 0</td>
+                                </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="9" class="font-bold text-center"><b>TOTAL</b></td>
+                                <td><b>Rp. <span id="total">0</span></b></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
                 <br>
@@ -55,7 +77,7 @@
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>
                             <tr>
-                                <th>ID JOB</th>
+                                <th>JOB ORDER</th>
                                 <th>Keterangan</th>
                                 <th>Nominal</th>
                                 <th>Beban ditanggung</th>
@@ -66,6 +88,9 @@
                                 <td>
                                     <select name="tagihan_order_id[]" class="form-select form-select-sm">
                                         <option value=""></option>
+                                        @foreach ($jobs as $job => $item)
+                                        <option value="job-{{ $job }}">{{ $job }} 01-{{ sprintf('%02d',$item->count()) }}</option>
+                                        @endforeach
                                         @foreach ($orders as $item)
                                             <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
                                         @endforeach
@@ -88,6 +113,9 @@
                                 <td>
                                     <select name="tagihan_order_id[]" class="form-select form-select-sm">
                                         <option value=""></option>
+                                        @foreach ($jobs as $job => $item)
+                                        <option value="job-{{ $job }}">{{ $job }} 01-{{ sprintf('%02d',$item->count()) }}</option>
+                                        @endforeach
                                         @foreach ($orders as $item)
                                             <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
                                         @endforeach
@@ -115,7 +143,7 @@
                         <input type="text" class="form-control" name="invoice" id="invoice" placeholder="Invoice" required autofocus autocomplete>
                     </div>
                     <div class="col-4">
-                        <label for="tanggal" class="text-label">Tanggal</label>
+                        <label for="tanggal" class="text-label">Tanggal Invoice</label>
                         <input type="date" class="form-control" name="tanggal" id="tanggal" value="{{ date('Y-m-d') }}" required>
                     </div>
                     <div class="col">
@@ -134,6 +162,9 @@
                                 <td>
                                     <select name="tagihan_order_id[]" class="form-select form-select-sm">
                                         <option value=""></option>
+                                        @foreach ($jobs as $job => $item)
+                                            <option value="job-{{ $job }}">{{ $job }} 01-{{ sprintf('%02d',$item->count()) }}</option>
+                                        @endforeach
                                         @foreach ($orders as $item)
                                             <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
                                         @endforeach
@@ -153,6 +184,23 @@
                                 </td>
                             </tr>`;
             $('#tagihan-list').append(html);
+        }
+
+        var count = parseInt(@json($count));
+        function hitung(id){
+            var total = 0;
+            for (let i = 1; i <= count; i++) {
+                var tarif = parseInt($('#tarif-'+i).val());
+                var ppn = tarif * 0.011;
+                var pph = tarif * 0.02;
+                var jumlah = tarif + ppn - pph;
+                total += jumlah
+                $('#ppn-'+i).val(ppn);
+                $('#pph-'+i).val(pph);
+                $('#ppn-label-'+i).html('Rp. '+ppn.toLocaleString('id-ID'));
+                $('#pph-label-'+i).html('- Rp. '+pph.toLocaleString('id-ID'));
+            }
+            $('#total').html(total.toLocaleString('id-ID'));
         }
         // $('table').dataTable()
     </script>

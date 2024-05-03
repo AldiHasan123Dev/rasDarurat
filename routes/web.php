@@ -185,6 +185,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::get('hutang-agen-list', [HutangAgenController::class, 'list'])->name('hutang-agen.list');
+    Route::get('hutang-agen-print', [HutangAgenController::class, 'print'])->name('hutang-agen.print');
     Route::post('hutang-agen/draf', [HutangAgenController::class, 'draf'])->name('hutang-agen.draf');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
     Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');

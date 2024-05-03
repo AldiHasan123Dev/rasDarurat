@@ -16,6 +16,8 @@ class HutangAgen extends Model
         'jurnal',
         'invoice',
         'tarif',
+        'ppn',
+        'pph',
         'tanggal',
     ];
 

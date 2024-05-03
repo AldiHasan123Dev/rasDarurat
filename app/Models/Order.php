@@ -196,4 +196,9 @@ class Order extends Model
     {
         return $this->hasOne(JasaKirim::class);
     }
+
+    public function sum_cont()
+    {
+        return Order::where('job',$this->job)->count();
+    }
 }

@@ -549,7 +549,9 @@ class JurnalController extends Controller
 
                 if($sangu_sopir>0 || $sangu_kuli>0 || $solar>0 || $tally>0 || $uang_makan>0 || $op>0 || $cleaning>0){
                     $order_trucking = OrderTrucking::where('order_id',$id)->first();
-                    $service->trucking($order_trucking->id);
+                    if($order_trucking){
+                        $service->trucking($order_trucking->id);
+                    }
                 }
             }
 
