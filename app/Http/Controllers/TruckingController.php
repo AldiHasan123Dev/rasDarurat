@@ -11,6 +11,7 @@ use App\Http\Resources\TransaksiTruckingResource;
 use App\Services\SyncService;
 use App\Models\CustomerTrucking;
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use App\Models\Kendaraan;
 use App\Models\MutasiTotalanSopir;
 use App\Models\Order;
@@ -449,6 +450,34 @@ class TruckingController extends Controller
                     'container' => $ord->container,
                     'nopol' => $ord->kendaraan->nopol ?? null,
                 ]);
+                JurnalSample::create([
+                    'coa_id' => 31,
+                    'order_trucking_id' => $ord->id,
+                    'nomor' => $nomor,
+                    'nama' => 'Biaya Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
+                    'debit' => $ord->tarif->tarif,
+                    'credit' => 0,
+                    'tipe' => 'JNL',
+                    'no' => $no,
+                    'created_at' => $date,
+                    'invoice' => $invoice,
+                    'container' => $ord->container,
+                    'nopol' => $ord->kendaraan->nopol ?? null,
+                ]);
+                JurnalSample::create([
+                    'coa_id' => 31,
+                    'order_trucking_id' => $ord->id,
+                    'nomor' => $nomor,
+                    'nama' => 'Pendapatan Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
+                    'credit' => $ord->tarif->tarif,
+                    'debit' => 0,
+                    'tipe' => 'JNL',
+                    'no' => $no,
+                    'created_at' => $date,
+                    'invoice' => $invoice,
+                    'container' => $ord->container,
+                    'nopol' => $ord->kendaraan->nopol ?? null,
+                ]);
 
                 foreach ($ord->tagihans as $tag) {
                     Jurnal::create([
@@ -458,6 +487,34 @@ class TruckingController extends Controller
                         'nama' => $tag->nama,
                         'debit' => $tag->jumlah,
                         'credit' => 0,
+                        'tipe' => 'JNL',
+                        'no' => $no,
+                        'created_at' => $date,
+                        'invoice' => $invoice,
+                        'container' => $ord->container,
+                        'nopol' => $ord->kendaraan->nopol ?? null,
+                    ]);
+                    JurnalSample::create([
+                        'coa_id' => 31,
+                        'order_trucking_id' => $ord->id,
+                        'nomor' => $nomor,
+                        'nama' => $tag->nama,
+                        'debit' => $tag->jumlah,
+                        'credit' => 0,
+                        'tipe' => 'JNL',
+                        'no' => $no,
+                        'created_at' => $date,
+                        'invoice' => $invoice,
+                        'container' => $ord->container,
+                        'nopol' => $ord->kendaraan->nopol ?? null,
+                    ]);
+                    JurnalSample::create([
+                        'coa_id' => 31,
+                        'order_trucking_id' => 'Tambahan Pendapatan '.$ord->id,
+                        'nomor' => $nomor,
+                        'nama' => $tag->nama,
+                        'credit' => $tag->jumlah,
+                        'debit' => 0,
                         'tipe' => 'JNL',
                         'no' => $no,
                         'created_at' => $date,
@@ -478,6 +535,30 @@ class TruckingController extends Controller
                 'nama' => 'Hutang Trucking '.$request->pengirim.' INV. '.$invoice,
                 'credit' => $total,
                 'debit' => 0,
+                'tipe' => 'JNL',
+                'no' => $no,
+                'created_at' => $date,
+                'invoice' => $invoice,
+            ]);
+            JurnalSample::create([
+                'coa_id' => 131,
+                // 'order_trucking_id' => $ord->id,
+                'nomor' => $nomor,
+                'nama' => 'Hutang Trucking '.$request->pengirim.' INV. '.$invoice,
+                'credit' => $total,
+                'debit' => 0,
+                'tipe' => 'JNL',
+                'no' => $no,
+                'created_at' => $date,
+                'invoice' => $invoice,
+            ]);
+            JurnalSample::create([
+                'coa_id' => 131,
+                // 'order_trucking_id' => $ord->id,
+                'nomor' => $nomor,
+                'nama' => 'Piutang Trucking '.$request->pengirim.' INV. '.$invoice,
+                'debit' => $total,
+                'credit' => 0,
                 'tipe' => 'JNL',
                 'no' => $no,
                 'created_at' => $date,

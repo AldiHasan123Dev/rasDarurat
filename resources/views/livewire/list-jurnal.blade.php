@@ -29,16 +29,31 @@
             <div class="col-8">
                 <div class="my-3">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-4">
                             <label for="search">Search</label>
                             <input type="text" id="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal/invoice/container">
                         </div>
-                        <div class="col-6">
+                        <div class="col-4">
                             <label for="search">Filter Tanggal</label>
                             <form action="{{ route('jurnal.index') }}" method="get">
                                 <input type="hidden" name="tipe" value="{{ $tipe }}">
                                 <input type="hidden" name="year" value="{{ request('month') }}">
+                                <input type="hidden" name="is_sample" value="{{ request('is_sample') }}">
                                 <input type="date" class="form-control" name="date" onchange="submit()" value="{{ request('date') }}">
+                            </form>
+                        </div>
+                        <div class="col-4">
+                            <label for="is_sample">Kategori</label>
+                            <form  action="{{ route('jurnal.index') }}" method="get" class="d-flex gap-2">
+                                <input type="hidden" name="tipe" value="{{ $tipe }}">
+                                <input type="hidden" name="year" value="{{ request('month') }}">
+                                <input type="hidden" name="date" value="{{ request('date') }}">
+                                <label for="sample_false">
+                                    <input type="radio" name="is_sample" id="sample_false" value="false" {{ $is_sample ? '' : 'checked' }} onclick="submit()"> Jurnal Real
+                                </label>
+                                <label for="sample_true">
+                                    <input type="radio" name="is_sample" id="sample_true" value="true" {{ $is_sample ? 'checked' : '' }} onclick="submit()"> Jurnal Sample
+                                </label>
                             </form>
                         </div>
                     </div>
@@ -48,10 +63,10 @@
                 <div class="d-flex justify-content-between">
                     <div class="d-flex gap-2 mt-5">
                         <b class="mt-2">Tipe: </b>
-                        <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
-                        <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
-                        <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
-                        <a href="{{ route('jurnal.index',['tipe'=>'TEST','month'=>request('month'),'year'=>request('year')]) }}" class="{{ $tipe=='TEST'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">TEST</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'BB','month'=>request('month'),'year'=>request('year'), 'is_sample' => $is_sample]) }}" class="{{ $tipe=='BB'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">BANK</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'BK','month'=>request('month'),'year'=>request('year'), 'is_sample' => $is_sample]) }}" class="{{ $tipe=='BK'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">KAS</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'JNL','month'=>request('month'),'year'=>request('year'), 'is_sample' => $is_sample]) }}" class="{{ $tipe=='JNL'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">JNL</a>
+                        <a href="{{ route('jurnal.index',['tipe'=>'TEST','month'=>request('month'),'year'=>request('year'), 'is_sample' => $is_sample]) }}" class="{{ $tipe=='TEST'?'bg-light-success':'' }} text-center text-dark" style="border: solid 1px gray; width:50px; text-decoration:none">TEST</a>
                     </div>
                     <div>
                         <a href="" class="btn btn-sm btn-primary mt-5" id="edit-btn">Edit</a>
@@ -145,7 +160,7 @@
         url: '{{ route('jqgrid.jurnal') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { month:  @json($month), tipe:@json($tipe), date:@json($date), year:@json($year) },
+        postData: { month:  @json($month), tipe:@json($tipe), date:@json($date), year:@json($year), is_sample:@json($is_sample) },
         colModel: [
             {search:true, width:50, name: 'created_at', label : 'Tanggal', frozen:true},
             {search:true, width:100, name: 'nomor', label : 'Nomor Jurnal', frozen:true, sortable: false},

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\JurnalResource;
 use App\Models\COA;
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
@@ -116,11 +117,17 @@ class JurnalController extends Controller
         $sidx = request('sidx'); // get index row - i.e. user click to sort
         $sord = request('sord'); // get the direction
         $search = request('_search'); // get the search
+        $is_sample = request('is_sample');
         $is_search = false;
         if($search=='true'){
             $is_search = true;
         }
-        $query = Jurnal::query();
+
+        $jurnal_model = new Jurnal();
+        if ($is_sample) {
+            $jurnal_model = new JurnalSample();
+        }
+        $query = $jurnal_model->query();
 
 
         $start = $limit * $page - $limit;
@@ -147,12 +154,12 @@ class JurnalController extends Controller
         }
         $data = $query->orderBy('created_at','desc')->orderBy('nomor','desc')->skip($start)->take($limit)->get();
 
-        $count = Jurnal::get('id')->count();
+        $count = $jurnal_model->get('id')->count();
         if (request('date')) {
-            $count = Jurnal::whereDate('created_at',request('date'))->get('id')->count();
+            $count = $jurnal_model->whereDate('created_at',request('date'))->get('id')->count();
         }else{
             if(request('month') && request('tipe')){
-                $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
+                $count = $jurnal_model->whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
             }
         }
 

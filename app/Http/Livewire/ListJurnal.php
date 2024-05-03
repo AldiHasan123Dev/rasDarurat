@@ -3,12 +3,13 @@
 namespace App\Http\Livewire;
 
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class ListJurnal extends Component
 {
-    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances, $date, $jnl;
+    public $months, $month, $year, $perPage, $search, $tipe, $debit, $credit, $balances, $date, $jnl, $is_sample;
 
     public function mount($month = null, $tipe = null, $date = null)
     {
@@ -18,68 +19,75 @@ class ListJurnal extends Component
         $this->month = request('month') ?? date('m');
         $this->tipe = request('tipe') ?? 'BB';
         $this->date = $date;
+        $this->is_sample = request('is_sample') ?? false;
     }
 
     public function render()
     {
-        $data =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->leftJoin('order','order.id','=','jurnal.order_id')
+        $jurnal_model = new Jurnal();
+        $prefix = '';
+        if ($this->is_sample) {
+            $jurnal_model = new JurnalSample();
+            $prefix = '_sample';
+        }
+        $data =  $jurnal_model->join('coa','coa.id','=','jurnal'.$prefix.'.coa_id')
+                ->leftJoin('order','order.id','=','jurnal'.$prefix.'.order_id')
                 ->orWhere('order.job','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
                 ->orWhere('coa.kode','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
                 ->orWhere('coa.nama','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->orWhere('jurnal.nama','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->orWhere('jurnal.nomor','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->orWhere('jurnal.created_at','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->orWhere('jurnal.invoice','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->orWhere('jurnal.container','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->orWhere('jurnal.nopol','LIKE','%'.$this->search.'%')
-                ->whereMonth('jurnal.created_at',$this->month)
-                ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->select('jurnal.*')
-                ->orderBy('jurnal.created_at')
-                ->orderBy('jurnal.tipe')
-                ->orderBy('jurnal.nomor')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->orWhere('jurnal'.$prefix.'.nama','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->orWhere('jurnal'.$prefix.'.nomor','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->orWhere('jurnal'.$prefix.'.created_at','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->orWhere('jurnal'.$prefix.'.invoice','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->orWhere('jurnal'.$prefix.'.container','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->orWhere('jurnal'.$prefix.'.nopol','LIKE','%'.$this->search.'%')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->select('jurnal'.$prefix.'.*')
+                ->orderBy('jurnal'.$prefix.'.created_at')
+                ->orderBy('jurnal'.$prefix.'.tipe')
+                ->orderBy('jurnal'.$prefix.'.nomor')
                 ->paginate($this->perPage);
-        $debit =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->leftJoin('order','order.id','=','jurnal.order_id')
-                ->whereMonth('jurnal.created_at',$this->month)
-                // ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->select('jurnal.*')
+        $debit =  $jurnal_model->join('coa','coa.id','=','jurnal'.$prefix.'.coa_id')
+                ->leftJoin('order','order.id','=','jurnal'.$prefix.'.order_id')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                // ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->select('jurnal'.$prefix.'.*')
                 ->sum('debit');
-        $credit =  Jurnal::join('coa','coa.id','=','jurnal.coa_id')
-                ->leftJoin('order','order.id','=','jurnal.order_id')
-                ->whereMonth('jurnal.created_at',$this->month)
-                // ->where('jurnal.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal.created_at',$this->year)
-                ->select('jurnal.*')
+        $credit =  $jurnal_model->join('coa','coa.id','=','jurnal'.$prefix.'.coa_id')
+                ->leftJoin('order','order.id','=','jurnal'.$prefix.'.order_id')
+                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
+                // ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
+                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
+                ->select('jurnal'.$prefix.'.*')
                 ->sum('credit');
-        $jnl = Jurnal::whereMonth('created_at',$this->month)->whereYear('created_at',$this->year)->where('tipe','JNL')->max('no');
+        $jnl = $jurnal_model->whereMonth('created_at',$this->month)->whereYear('created_at',$this->year)->where('tipe','JNL')->max('no');
         return view('livewire.list-jurnal',[
             'data' => $data,
             'total_debit' => $debit,
