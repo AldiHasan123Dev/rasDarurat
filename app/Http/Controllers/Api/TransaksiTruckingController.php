@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Jurnal;
 use App\Models\OrderTrucking;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
@@ -37,6 +38,12 @@ class TransaksiTruckingController extends Controller
             'tgl_invoice' => $request->created_at,
             'invoice' => $invoice,
         ]);
+
+        if($trucking->jurnal_piutang){
+            Jurnal::where('nomor',$trucking->jurnal_piutang)->update([
+                'invoice' => $invoice
+            ]);
+        }
 
         return response('Success');
     }

@@ -18,7 +18,8 @@ class TagihanAgen extends Model
         'tipe',
         'nama',
         'jumlah',
-        'beban'
+        'beban',
+        'status',
     ];
 
     public function order()

@@ -19,6 +19,7 @@ class HutangAgen extends Model
         'ppn',
         'pph',
         'tanggal',
+        'status',
     ];
 
     public function orders()

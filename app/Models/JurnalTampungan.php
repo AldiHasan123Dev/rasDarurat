@@ -19,6 +19,7 @@ class JurnalTampungan extends Model
         'nomor',
         'nama',
         'invoice',
+        'invoice_external',
         'nopol',
         'container',
         'debit',
@@ -27,6 +28,10 @@ class JurnalTampungan extends Model
         'no',
         'is_balik',
         'created_at',
+        'input',
+        'no_bg',
+        'tgl_bg',
+        'nominal_bg',
     ];
 
     protected $searchable = [
