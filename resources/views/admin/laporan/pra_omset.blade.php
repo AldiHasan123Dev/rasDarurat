@@ -75,6 +75,7 @@
                             <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
                             <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button>
                             @if ($is_pra)
                             <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button>
                             @endif
@@ -862,6 +863,18 @@
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-lock-all') }}",
+                data: {
+                    id:@json($ids),
+                },
+                success: function (response) {
+                    location.reload();
+                }
+            });
+        }
+        function unlockAll(){
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order-unlock-all') }}",
                 data: {
                     id:@json($ids),
                 },

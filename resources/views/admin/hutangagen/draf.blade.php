@@ -42,7 +42,7 @@
                                         <select name="tarif[]" class="form-select form-select-sm" onchange="hitung({{ $loop->iteration }})" id="tarif-{{ $loop->iteration }}" required>
                                             <option value="0" selected>Rp. 0</option>
                                             @foreach ($tarif as $item)
-                                                <option value="{{ $item->tarif }}">Rp. {{ number_format($item->tarif) }}</option>
+                                                <option value="{{ $item->tarif }}"> {{ $item->pembayar->nama }} / {{ $item->penerima->nama }} / {{ number_format($item->tarif) }} / {{ $item->shipment->nama }}</option>
                                             @endforeach
                                         </select>
                                     </td>

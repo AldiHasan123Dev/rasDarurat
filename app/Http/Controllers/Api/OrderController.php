@@ -422,4 +422,14 @@ class OrderController extends Controller
         return response('seccess');
 
     }
+    public function updateUnlockAll(Request $request)
+    {
+        $id = $request->id;
+        Order::whereIn('id',$id)->update([
+            'lock_omset' => 0
+        ]);
+
+        return response('seccess');
+
+    }
 }
