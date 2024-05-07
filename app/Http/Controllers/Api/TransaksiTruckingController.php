@@ -44,6 +44,11 @@ class TransaksiTruckingController extends Controller
                 'invoice' => $invoice
             ]);
         }
+        if($trucking->jurnal_hutang){
+            Jurnal::where('nomor',$trucking->jurnal_hutang)->update([
+                'invoice' => $invoice
+            ]);
+        }
 
         return response('Success');
     }
