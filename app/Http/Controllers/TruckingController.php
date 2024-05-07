@@ -482,7 +482,7 @@ class TruckingController extends Controller
                     ]);
                     JurnalSample::create([
                         'coa_id' => 31,
-                        'order_trucking_id' => 'Tambahan Pendapatan '.$ord->id,
+                        'order_trucking_id' => $ord->id,
                         'nomor' => $nomor,
                         'nama' => $tag->nama,
                         'credit' => $tag->jumlah,
@@ -630,7 +630,7 @@ class TruckingController extends Controller
                     ]);
                     JurnalSample::create([
                         'coa_id' => 31,
-                        'order_trucking_id' => 'Tambahan Pendapatan '.$ord->id,
+                        'order_trucking_id' => $ord->id,
                         'nomor' => $nomor,
                         'nama' => $tag->nama,
                         'credit' => $tag->jumlah,
