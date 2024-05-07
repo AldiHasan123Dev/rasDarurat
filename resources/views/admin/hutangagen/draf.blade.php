@@ -147,7 +147,7 @@
                         <input type="date" class="form-control" name="tanggal" id="tanggal" value="{{ date('Y-m-d') }}" required>
                     </div>
                     <div class="col">
-                        <button class="py-2 px-3 btn btn-success mt-4" type="submit" onclick="return confirm('Are you sure?')">Buat Jurnal</button>
+                        <button class="py-2 px-3 btn btn-success mt-4" type="submit" onclick="return confirm('Are you sure?')">Buat Voucher</button>
                     </div>
                 </div>
             </div>
@@ -191,8 +191,8 @@
             var total = 0;
             for (let i = 1; i <= count; i++) {
                 var tarif = parseInt($('#tarif-'+i).val());
-                var ppn = tarif * 0.011;
-                var pph = tarif * 0.02;
+                var ppn = Math.round(tarif * 0.011);
+                var pph = Math.round(tarif * 0.02);
                 var jumlah = tarif + ppn - pph;
                 total += jumlah
                 $('#ppn-'+i).val(ppn);

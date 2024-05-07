@@ -103,6 +103,14 @@
     </style>
 @endsection
 @section('content')
+    @if (!request('print'))
+    <div class="card p-2 shadow">
+        <form action="{{ route('hutang-agen.jurnal') }}" method="post">
+            @csrf
+            <button type="submit" class="btn btn-success" name="invoice" value="{{ request('invoice') }}" onclick="return confirm('are you sure?')">Print & Submit Jurnal</button>
+        </form>
+    </div>
+    @endif
     <div id="print">
         <table class="w-100 table">
             <thead>
@@ -131,17 +139,17 @@
                         <tr>
                             <td></td>
                             <td class="text-start" colspan="2">Biaya Dooring Job {{ $job }} ({{ implode(',',$job_group->pluck('order.no_job')->toArray()) }}) / {{ $hutang_agen->first()->order->tarif->customer->nama }}</td>
-                            <td class="text-end">{{ number_format($job_group->first()->tarif * 2,2,',','.') }}</td>
+                            <td class="text-end">{{ number_format($job_group->first()->tarif * $job_group->count(),2,',','.') }}</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td class="text-start" colspan="2">PPN (1,1%)</td>
-                            <td class="text-end">{{ number_format($job_group->first()->ppn * 2,2,',','.') }}</td>
+                            <td class="text-end">{{ number_format(round($job_group->first()->ppn) * $job_group->count(),2,',','.') }}</td>
                         </tr>
                         <tr>
                             <td></td>
                             <td class="text-start" style="color: red" colspan="2">Pot PPH (2%)</td>
-                            <td class="text-end" style="color: red">- {{ number_format($job_group->first()->pph * 2,2,',','.') }}</td>
+                            <td class="text-end" style="color: red">- {{ number_format(round($job_group->first()->pph) * $job_group->count(),2,',','.') }}</td>
                         </tr>
                     @endforeach
                 @endforeach
@@ -192,7 +200,9 @@
 @endsection
 
 @section('script')
+    @if (request('print'))
     <script>
-        // window.print();
+        window.print();
     </script>
+    @endif
 @endsection

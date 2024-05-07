@@ -187,6 +187,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('hutang-agen-list', [HutangAgenController::class, 'list'])->name('hutang-agen.list');
     Route::get('hutang-agen-print', [HutangAgenController::class, 'print'])->name('hutang-agen.print');
     Route::post('hutang-agen/draf', [HutangAgenController::class, 'draf'])->name('hutang-agen.draf');
+    Route::post('hutang-agen/jurnal', [HutangAgenController::class, 'generate_jurnal'])->name('hutang-agen.jurnal');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
     Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');
     Route::post('hutang-pelayaran/tarik', [HutangPelayaranController::class, 'tarik'])->name('hutang-pelayaran.tarik');

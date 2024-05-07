@@ -79,7 +79,6 @@ class HutangAgenController extends Controller
             //     $jurnal['debit'] = 0;
             //     Jurnal::create($jurnal);
             // }
-            Order::find($request->order_id[$i])->update(['invoice_agen' => $request->invoice]);
             HutangAgen::create([
                 'order_id' => $request->order_id[$i],
                 'tarif' => $request->tarif[$i],
@@ -312,6 +311,233 @@ class HutangAgenController extends Controller
             }
         }
         return view('admin.hutangagen.print', compact('hutang_agen', 'tagihan', 'total', 'order','terbilang','rows'));
+    }
+
+    public function generate_jurnal()
+    {
+        $hutang_agen = HutangAgen::where('invoice',request('invoice'))->get();
+        $tagihan_agen = TagihanAgen::where('invoice', request('invoice'))->get();
+        $no = Jurnal::where('tipe','TEST')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor = 'HUTAGEN/'.sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+        $pph = 0;
+        foreach($hutang_agen as $hutang) {
+            $pph += round($hutang->pph);
+            $order = $hutang->order;
+            $cek = Jurnal::where('order_id',$order->id)->where('coa_id',93)->where('debit','>',0)->count();
+            $jurnal = array();
+            $jurnal['order_id'] = $order->id;
+            $jurnal['nomor'] = $nomor;
+            $jurnal['no'] = $no;
+            $jurnal['nama'] = 'Biaya Dooring '.($order->tarif->customer->nama??'').' '.($order->tarif->shipmentInfo->nama??'').' '.($order->agent->nama??'');
+            $jurnal['container'] = $order->container;
+            $jurnal['invoice_external'] = $hutang->invoice;
+            $jurnal['tipe'] = 'TEST';
+            if($cek>0){
+                $jurnal['coa_id'] = 134;
+                $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
+                $jurnal['credit'] = 0;
+                Jurnal::create($jurnal);
+                $jurnal['coa_id'] = 63;
+                $jurnal['credit'] = $hutang->tarif + round($hutang->ppn);
+                $jurnal['debit'] = 0;
+                Jurnal::create($jurnal);
+            }else{
+                $jurnal['coa_id'] = 31;
+                $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
+                $jurnal['credit'] = 0;
+                Jurnal::create($jurnal);
+                $jurnal['coa_id'] = 63;
+                $jurnal['credit'] = $hutang->tarif + round($hutang->ppn);
+                $jurnal['debit'] = 0;
+                Jurnal::create($jurnal);
+            }
+
+            $hutang->update([
+                'status' => 1,
+                'jurnal' => $nomor
+            ]);
+            $order->update(['invoice_agen' => $hutang->invoice]);
+        }
+        foreach($tagihan_agen as $tagihan) {
+            if($tagihan->tipe=='group'){
+                $job = $tagihan->order->job;
+                $jobs = Order::where('job',$job)->get();
+                $amount = (int)$tagihan->jumlah / $jobs->count();
+                $price = (int)((int)$tagihan->jumlah / $jobs->count());
+                $selisih = (int)$tagihan->jumlah - ($price * $jobs->count());
+                foreach ($jobs as $key => $order) {
+                    if ($key==0) {
+                        $amount = (int)((int)$tagihan->jumlah / $jobs->count()) + $selisih;
+                    }else{
+                        $amount = $price;
+                    }
+                    if($tagihan->beban=='ras'){
+                        $cek = Jurnal::where('order_id',$order->id)->where('coa_id',93)->where('debit','>',0)->count();
+                        if($cek > 0){
+                            Jurnal::create([
+                                'order_id' => $order->id,
+                                'nomor' => $nomor,
+                                'no' => $no,
+                                'nama' => $tagihan->nama,
+                                'container' => $order->container,
+                                'invoice_external' => $tagihan->invoice,
+                                'tipe' => 'TEST',
+                                'coa_id' => 134,
+                                'debit' => $amount,
+                                'credit' => 0
+                            ]);
+                        }else{
+                            Jurnal::create([
+                                'order_id' => $order->id,
+                                'nomor' => $nomor,
+                                'no' => $no,
+                                'nama' => $tagihan->nama,
+                                'container' => $order->container,
+                                'invoice_external' => $tagihan->invoice,
+                                'tipe' => 'TEST',
+                                'coa_id' => 31,
+                                'debit' => $amount,
+                                'credit' => 0
+                            ]);
+                        }
+                        Jurnal::create([
+                            'order_id' => $order->id,
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $tagihan->nama,
+                            'container' => $order->container,
+                            'invoice_external' => $tagihan->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 63,
+                            'credit' => $amount,
+                            'debit' => 0
+                        ]);
+                    }else{
+                        Jurnal::create([
+                            'order_id' => $order->id,
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $tagihan->nama,
+                            'container' => $order->container,
+                            'invoice_external' => $tagihan->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 63,
+                            'debit' => $amount,
+                            'credit' => 0
+                        ]);
+                        Jurnal::create([
+                            'order_id' => $order->id,
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $tagihan->nama,
+                            'container' => $order->container,
+                            'invoice_external' => $tagihan->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 28,
+                            'credit' => $amount,
+                            'debit' => 0
+                        ]);
+                    }
+                }
+            }else{
+                $order = $tagihan->order;
+                if($tagihan->beban=='ras'){
+                    $cek = Jurnal::where('order_id',$tagihan->order_id)->where('coa_id',93)->where('debit','>',0)->count();
+                    if($cek > 0){
+                        Jurnal::create([
+                            'order_id' => $tagihan->order_id,
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $tagihan->nama,
+                            'container' => $order->container,
+                            'invoice_external' => $tagihan->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 134,
+                            'debit' => $tagihan->jumlah,
+                            'credit' => 0
+                        ]);
+                    }else{
+                        Jurnal::create([
+                            'order_id' => $tagihan->order_id,
+                            'nomor' => $nomor,
+                            'no' => $no,
+                            'nama' => $tagihan->nama,
+                            'container' => $order->container,
+                            'invoice_external' => $tagihan->invoice,
+                            'tipe' => 'TEST',
+                            'coa_id' => 31,
+                            'debit' => $tagihan->jumlah,
+                            'credit' => 0
+                        ]);
+                    }
+                    Jurnal::create([
+                        'order_id' => $tagihan->order_id,
+                        'nomor' => $nomor,
+                        'no' => $no,
+                        'nama' => $tagihan->nama,
+                        'container' => $order->container,
+                        'invoice_external' => $tagihan->invoice,
+                        'tipe' => 'TEST',
+                        'coa_id' => 63,
+                        'credit' => $tagihan->jumlah,
+                        'debit' => 0
+                    ]);
+                }else{
+                    Jurnal::create([
+                        'order_id' => $tagihan->order_id,
+                        'nomor' => $nomor,
+                        'no' => $no,
+                        'nama' => $tagihan->nama,
+                        'container' => $order->container,
+                        'invoice_external' => $tagihan->invoice,
+                        'tipe' => 'TEST',
+                        'coa_id' => 63,
+                        'debit' => $tagihan->jumlah,
+                        'credit' => 0
+                    ]);
+                    Jurnal::create([
+                        'order_id' => $tagihan->order_id,
+                        'nomor' => $nomor,
+                        'no' => $no,
+                        'nama' => $tagihan->nama,
+                        'container' => $order->container,
+                        'invoice_external' => $tagihan->invoice,
+                        'tipe' => 'TEST',
+                        'coa_id' => 28,
+                        'credit' => $tagihan->jumlah,
+                        'debit' => 0
+                    ]);
+                }
+            }
+
+            $tagihan->update([
+                'status' => 1,
+                'jurnal' => $nomor
+            ]);
+        }
+
+        Jurnal::create([
+            'nomor' => $nomor,
+            'no' => $no,
+            'nama' => 'Potongan PPH 23 Agen '.($hutang_agen->first()->order->agent->nama??''),
+            'invoice_external' => $tagihan->invoice,
+            'tipe' => 'TEST',
+            'coa_id' => 73,
+            'debit' => 0,
+            'credit' => $pph * -1
+        ]);
+        Jurnal::create([
+            'nomor' => $nomor,
+            'no' => $no,
+            'nama' => 'Potongan PPH 23 Agen '.($hutang_agen->first()->order->agent->nama??''),
+            'invoice_external' => $tagihan->invoice,
+            'tipe' => 'TEST',
+            'coa_id' => 63,
+            'credit' => 0,
+            'debit' => $pph * -1
+        ]);
+
+        return redirect()->route('hutang-agen.print',['invoice'=>request('invoice'),'print'=>1]);
     }
 
     private function terbilang($angka) {
