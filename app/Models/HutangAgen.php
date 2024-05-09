@@ -15,6 +15,7 @@ class HutangAgen extends Model
         'order_id',
         'jurnal',
         'invoice',
+        'draf',
         'tarif',
         'ppn',
         'pph',

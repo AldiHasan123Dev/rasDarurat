@@ -15,6 +15,7 @@ class TagihanAgen extends Model
     protected $fillable = [
         'order_id',
         'invoice',
+        'draf',
         'tipe',
         'nama',
         'jumlah',

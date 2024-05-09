@@ -107,7 +107,7 @@
     <div class="card p-2 shadow">
         <form action="{{ route('hutang-agen.jurnal') }}" method="post">
             @csrf
-            <button type="submit" class="btn btn-success" name="invoice" value="{{ request('invoice') }}" onclick="return confirm('are you sure?')">Print & Submit Jurnal</button>
+            <button type="submit" class="btn btn-success" name="draf" value="{{ request('draf') }}" onclick="return confirm('are you sure?')">Print & Submit Jurnal</button>
         </form>
     </div>
     @endif

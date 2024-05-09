@@ -8,7 +8,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-sm" style="font-size:.7rem">
+                    <table class="table table-sm" style="font-size:.7rem; white-space: nowrap">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -21,6 +21,7 @@
                                 <th>Dari</th>
                                 <th>Tujuan</th>
                                 <th>Tarif Agen</th>
+                                <th>Invoice</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,21 +40,24 @@
                                     <td>{{ $order->tarif->dari_lokasi->nama }}</td>
                                     <td>{{ $order->tarif->tujuan_lokasi->nama }}</td>
                                     <td>
-                                        <select name="tarif[]" class="form-select form-select-sm" onchange="hitung({{ $loop->iteration }})" id="tarif-{{ $loop->iteration }}" required>
+                                        <select name="tarif[]" style="width:200px" class="form-select form-select-sm" onchange="hitung({{ $loop->iteration }})" id="tarif-{{ $loop->iteration }}" required>
                                             <option value="0" selected>Rp. 0</option>
-                                            @foreach ($tarif as $item)
+                                            @foreach ($tarif->where('pembayar_id',$order->tarif->customer_id) as $item)
                                                 <option value="{{ $item->tarif }}"> {{ $item->pembayar->nama }} / {{ $item->penerima->nama }} / {{ number_format($item->tarif) }} / {{ $item->shipment->nama }}</option>
                                             @endforeach
                                         </select>
                                     </td>
+                                    <td>
+                                        <input type="text" class="form-control form-control-sm" name="invoice[]" id="invoice" style="width: 200px" placeholder="Invoice" required autofocus autocomplete>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="8" class="table-secondary"></td>
+                                    <td colspan="9" class="table-secondary"></td>
                                     <td>PPN (1.1%)</td>
                                     <td id="ppn-label-{{ $loop->iteration }}">Rp. 0</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="8" class="table-secondary"></td>
+                                    <td colspan="9" class="table-secondary"></td>
                                     <td>Pot. PPH 23 (2%)</td>
                                     <td id="pph-label-{{ $loop->iteration }}">- Rp. 0</td>
                                 </tr>
@@ -61,7 +65,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="9" class="font-bold text-center"><b>TOTAL</b></td>
+                                <td colspan="10" class="font-bold text-center"><b>TOTAL</b></td>
                                 <td><b>Rp. <span id="total">0</span></b></td>
                             </tr>
                         </tfoot>
@@ -74,7 +78,7 @@
                 </div>
                 <hr>
                 <div class="table-responsive">
-                    <table class="table table-sm" style="font-size:.7rem">
+                    <table class="table table-sm" style="font-size:.7rem; white-space: nowrap">
                         <thead>
                             <tr>
                                 <th>JOB ORDER</th>
@@ -138,10 +142,6 @@
                     </table>
                 </div>
                 <div class="mt-2 row">
-                    <div class="col-4">
-                        <label for="Invoice" class="text-label">Invoice</label>
-                        <input type="text" class="form-control" name="invoice" id="invoice" placeholder="Invoice" required autofocus autocomplete>
-                    </div>
                     <div class="col-4">
                         <label for="tanggal" class="text-label">Tanggal Invoice</label>
                         <input type="date" class="form-control" name="tanggal" id="tanggal" value="{{ date('Y-m-d') }}" required>
