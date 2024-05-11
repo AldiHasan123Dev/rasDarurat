@@ -57,7 +57,7 @@ class HutangAgenController extends Controller
                 'pph' => $request->pph[$i],
                 'invoice' => $request->invoice[$i],
                 'draf' => $draf,
-                'tanggal' => $request->tanggal
+                'tanggal' => $request->tanggal[$i]
             ],['order_id']);
         }
         for ($i=0; $i < count($data['tagihan_order_id']); $i++) {
@@ -65,7 +65,7 @@ class HutangAgenController extends Controller
                 $tipe = $data['tagihan_order_id'][$i];
                 if(substr($tipe,0,3)=='job'){
                     TagihanAgen::create([
-                        'invoice' => $request->invoice[$i],
+                        // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
                         'tipe' => 'group',
                         'order_id' => $order->id,
@@ -77,7 +77,7 @@ class HutangAgenController extends Controller
                     $order = Order::find($data['tagihan_order_id'][$i]);
 
                     TagihanAgen::create([
-                        'invoice' => $request->invoice[$i],
+                        // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
                         'order_id' => $data['tagihan_order_id'][$i],
                         'nama' => $data['nama'][$i],

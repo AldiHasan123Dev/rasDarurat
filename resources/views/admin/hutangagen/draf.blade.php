@@ -22,6 +22,7 @@
                                 <th>Tujuan</th>
                                 <th>Tarif Agen</th>
                                 <th>Invoice</th>
+                                <th>Tgl Invoice</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -48,16 +49,19 @@
                                         </select>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control form-control-sm" name="invoice[]" id="invoice" style="width: 200px" placeholder="Invoice" required autofocus autocomplete>
+                                        <input type="text" class="form-control form-control-sm" name="invoice[]" style="width: 200px" placeholder="Invoice" required autocomplete>
+                                    </td>
+                                    <td>
+                                        <input type="date" class="form-control form-control-sm" name="tanggal[]" style="width: 200px" required >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="9" class="table-secondary"></td>
+                                    <td colspan="10" class="table-secondary"></td>
                                     <td>PPN (1.1%)</td>
                                     <td id="ppn-label-{{ $loop->iteration }}">Rp. 0</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="9" class="table-secondary"></td>
+                                    <td colspan="10" class="table-secondary"></td>
                                     <td>Pot. PPH 23 (2%)</td>
                                     <td id="pph-label-{{ $loop->iteration }}">- Rp. 0</td>
                                 </tr>
@@ -65,7 +69,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="10" class="font-bold text-center"><b>TOTAL</b></td>
+                                <td colspan="11" class="font-bold text-center"><b>TOTAL</b></td>
                                 <td><b>Rp. <span id="total">0</span></b></td>
                             </tr>
                         </tfoot>
@@ -142,10 +146,10 @@
                     </table>
                 </div>
                 <div class="mt-2 row">
-                    <div class="col-4">
+                    {{-- <div class="col-4">
                         <label for="tanggal" class="text-label">Tanggal Invoice</label>
                         <input type="date" class="form-control" name="tanggal" id="tanggal" value="{{ date('Y-m-d') }}" required>
-                    </div>
+                    </div> --}}
                     <div class="col">
                         <button class="py-2 px-3 btn btn-success mt-4" type="submit" onclick="return confirm('Are you sure?')">Buat Voucher</button>
                     </div>
