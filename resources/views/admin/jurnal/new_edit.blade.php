@@ -70,6 +70,8 @@
                                     <th>Job</th>
                                     <th>ID JOB</th>
                                     <th>Cont</th>
+                                    <th>Inv</th>
+                                    <th>Inv Ext</th>
                                     <th>COA</th>
                                     <th>Keterangan</th>
                                     <th>Debit</th>
@@ -353,6 +355,8 @@
                                         <td>${item.job}</td>
                                         <td>${item.no_job}</td>
                                         <td>${item.container}</td>
+                                        <td>${item.invoice}</td>
+                                        <td>${item.invoice_external}</td>
                                         <td>${item.coa_nama} - ${item.coa_kode}</td>
                                         <td>${item.nama}</td>
                                         <td>${item.debit}</td>

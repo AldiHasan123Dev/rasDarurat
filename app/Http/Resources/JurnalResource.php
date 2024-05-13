@@ -37,6 +37,7 @@ class JurnalResource extends JsonResource
             'order_trucking' => $this->order_trucking,
             'nama' => $this->nama,
             'invoice' => $this->invoice ?? '-',
+            'invoice_external' => $this->invoice_external ?? '-',
             'container' => $this->container ?? '-',
             'nopol' => $this->nopol ?? '-',
             'debit' => number_format($this->debit,2,',','.'),

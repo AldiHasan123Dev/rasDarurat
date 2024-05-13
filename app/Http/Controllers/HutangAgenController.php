@@ -21,7 +21,7 @@ class HutangAgenController extends Controller
 
     public function list()
     {
-        $data = HutangAgen::all()->groupBy('jurnal');
+        $data = HutangAgen::all()->groupBy('draf');
         // dd($data);
         return view('admin.hutangagen.list', compact('data'));
     }
@@ -132,9 +132,11 @@ class HutangAgenController extends Controller
         $total = HutangAgen::where('draf', $draf)->sum('tarif') + HutangAgen::where('draf', $draf)->sum('ppn') - HutangAgen::where('draf', $draf)->sum('pph') + TagihanAgen::where('draf', $draf)->sum('jumlah');
         $terbilang = $this->terbilang($total);
         $rows = 0;
-        foreach ($hutang_agen->groupBy('tarif') as $tarif => $tarif_group) {
-            foreach ($tarif_group->groupBy('order.job') as $job => $job_grouo) {
-                $rows++;
+        foreach ($hutang_agen->groupBy('invoice') as $tarif => $tarif_group) {
+            foreach ($tarif_group->groupBy('tarif') as $job => $job_group) {
+                foreach($job_group->groupBy('order.no_job') as $inv) {
+                    $rows++;
+                }
             }
         }
         return view('admin.hutangagen.print', compact('hutang_agen', 'tagihan', 'total', 'order','terbilang','rows'));
@@ -347,15 +349,19 @@ class HutangAgenController extends Controller
             $total += $tagihan->jumlah;
         }
 
-        Jurnal::create([
-            'nomor' => $nomor,
-            'no' => $no,
-            'nama' => 'Potongan PPH 23 Agen '.($hutang_agen->first()->order->agent->nama??''),
-            'tipe' => 'TEST',
-            'coa_id' => 73,
-            'debit' => 0,
-            'credit' => $pph
-        ]);
+        foreach ($hutang_agen->groupBy('invoice') as $invoice => $invoice_group) {
+            Jurnal::create([
+                'nomor' => $nomor,
+                'no' => $no,
+                'nama' => 'Potongan PPH 23 Agen '.($hutang_agen->first()->order->agent->nama??'').' '.$invoice,
+                'tipe' => 'TEST',
+                'coa_id' => 73,
+                'debit' => 0,
+                'credit' => $invoice_group->sum('pph'),
+                'invoice_external' => $invoice
+            ]);
+        }
+
 
         Jurnal::create([
             'nomor' => $nomor,

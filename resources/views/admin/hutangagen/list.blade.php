@@ -32,7 +32,7 @@
                                             <button type="button" class="py-2 px-3 btn btn-warning btn-sm" style="font-size: .7rem" data-bs-toggle="modal" data-bs-target="#show{{ $loop->iteration }}">
                                                 <i class="fas fa-list"></i> Detail
                                             </button>
-                                            <a href="{{ route('hutang-agen.print', ['invoice' => $item->first()->invoice]) }}" class="py-2 px-3 btn btn-success btn-sm" style="font-size: .7rem">
+                                            <a href="{{ route('hutang-agen.print', ['draf' => $item->first()->draf, 'print' => 1]) }}" class="py-2 px-3 btn btn-success btn-sm" style="font-size: .7rem">
                                                 <i class="fas fa-print"></i> Print
                                             </a>
                                         </div>
