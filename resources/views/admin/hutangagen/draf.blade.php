@@ -28,8 +28,6 @@
                         <tbody>
                             @foreach ($orders as $order)
                                 <input type="hidden" name="order_id[]" value="{{ $order->id }}">
-                                <input type="hidden" name="ppn[]" value="0" id="ppn-{{ $loop->iteration }}">
-                                <input type="hidden" name="pph[]" value="0" id="pph-{{ $loop->iteration }}">
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
@@ -58,12 +56,12 @@
                                 <tr>
                                     <td colspan="10" class="table-secondary"></td>
                                     <td>PPN (1.1%)</td>
-                                    <td id="ppn-label-{{ $loop->iteration }}">Rp. 0</td>
+                                    <td id="ppn-label-{{ $loop->iteration }}"><input type="number" name="ppn[]" class="form-control form-control-sm" id="ppn-{{ $loop->iteration }}" style="width: 100px" required></td>
                                 </tr>
                                 <tr>
                                     <td colspan="10" class="table-secondary"></td>
                                     <td>Pot. PPH 23 (2%)</td>
-                                    <td id="pph-label-{{ $loop->iteration }}">- Rp. 0</td>
+                                    <td id="pph-label-{{ $loop->iteration }}"><input type="number" name="pph[]" class="form-control form-control-sm" id="pph-{{ $loop->iteration }}" style="width: 100px" required></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -201,8 +199,8 @@
                 total += jumlah
                 $('#ppn-'+i).val(ppn);
                 $('#pph-'+i).val(pph);
-                $('#ppn-label-'+i).html('Rp. '+ppn.toLocaleString('id-ID'));
-                $('#pph-label-'+i).html('- Rp. '+pph.toLocaleString('id-ID'));
+                // $('#ppn-label-'+i).html('Rp. '+ppn.toLocaleString('id-ID'));
+                // $('#pph-label-'+i).html('- Rp. '+pph.toLocaleString('id-ID'));
             }
             $('#total').html(total.toLocaleString('id-ID'));
         }

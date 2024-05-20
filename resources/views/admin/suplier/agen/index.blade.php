@@ -48,6 +48,7 @@
                             <th>HP</th>
                             <th>Fax</th>
                             <th>Email</th>
+                            <th>TOP</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -147,6 +148,7 @@
                 { data: 'hp', name: 'hp' },
                 { data: 'fax', name: 'fax' },
                 { data: 'email', name: 'email' },
+                { data: 'top', name: 'top' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ],
             select:true

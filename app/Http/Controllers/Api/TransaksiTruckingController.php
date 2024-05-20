@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use App\Models\OrderTrucking;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
@@ -43,9 +44,15 @@ class TransaksiTruckingController extends Controller
             Jurnal::where('nomor',$trucking->jurnal_piutang)->update([
                 'invoice' => $invoice
             ]);
+            JurnalSample::where('nomor',$trucking->jurnal_piutang)->update([
+                'invoice' => $invoice
+            ]);
         }
         if($trucking->jurnal_hutang){
             Jurnal::where('nomor',$trucking->jurnal_hutang)->update([
+                'invoice' => $invoice
+            ]);
+            JurnalSample::where('nomor',$trucking->jurnal_hutang)->update([
                 'invoice' => $invoice
             ]);
         }

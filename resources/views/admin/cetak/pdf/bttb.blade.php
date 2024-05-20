@@ -76,8 +76,8 @@ $page = 1;
 @if ($data->count()>=17)
     @foreach ($data->chunk(17) as $bttb)
         @if ($loop->last)
-            @if ($bttb->count()>=10)
-                @foreach ($bttb->chunk(10) as $bttb)
+            @if ($bttb->count()>=12)
+                @foreach ($bttb->chunk(12) as $bttb)
                     <div class="page" style="margin-top: 30px; margin-right:60px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
@@ -244,7 +244,7 @@ $page = 1;
                             <div class="page-number" style="font-size: .7rem"><i>Page {{ $page }} of <span class="off-page"></span></i></div>
                         @endif
                     </div>
-                    @if (ceil($data->count()/10)!=1)
+                    @if (ceil($data->count()/12)!=1)
                         @if (!$loop->last)
                             <p class="pagebreak"></p>
                             @php
