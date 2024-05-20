@@ -31,7 +31,19 @@
                 <td>{{ $item->nomor }}</td>
                 <td>{{ $item->container }}</td>
                 <td>{{ $item->nopol }}</td>
-                <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
+                @if ($item->order)
+                <td>{{ $item->order->job.'-'.sprintf('%02d',$item->order->no_job)  }}</td>
+                @else
+                    @if ($item->order_trucking)
+                        @if ($item->order_trucking->order)
+                        <td>{{ $item->order_trucking->order->job.'-'.sprintf('%02d',$item->order_trucking->order->no_job)  }}</td>
+                        @else
+                        <td>-</td>
+                        @endif
+                    @else
+                        <td>-</td>
+                    @endif
+                @endif
                 <td>{{ $item->invoice }}</td>
                 <td>{{ $item->invoice_external }}</td>
                 <td>{{ $item->nama }}</td>
