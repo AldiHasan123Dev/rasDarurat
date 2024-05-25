@@ -36,6 +36,16 @@ class JadwalKapal extends Model
         });
     }
 
+    public function hasInvoice()
+    {
+        $count = Order::where('jadwal_kapal_id', $this->id)->whereNotNull('invoice')->count();
+        if($count==0){
+            return false;
+        }
+
+        return true;
+    }
+
     public function kapal()
     {
         return $this->belongsTo(Kapal::class,'kapal_id');
