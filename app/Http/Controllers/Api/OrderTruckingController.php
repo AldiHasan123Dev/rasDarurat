@@ -173,7 +173,9 @@ class OrderTruckingController extends Controller
     public function getArrayId(Request $request)
     {
         $id = $request->id;
-        $orders = OrderTrucking::whereIn('id',$id)->get();
+        $id = array_values(array_filter($id));
+        $ids_ordered = implode(',', $id);
+        $orders = OrderTrucking::whereIn('id',$id)->orderByRaw("FIELD(id,$ids_ordered)")->get();
         $data = OrderTruckingResource::collection($orders);
         return response($data);
     }

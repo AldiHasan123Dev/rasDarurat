@@ -11,6 +11,7 @@ use App\Imports\JurnalImport;
 use App\Models\COA;
 use App\Models\HutangPelayaran;
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
@@ -55,7 +56,8 @@ class JurnalController extends Controller
         }
         $id = explode(',',$id);
         $orders = OrderTrucking::with('sopir')->whereIn('id',$id)->get();
-        return view('admin.jurnal.slip_totalan_sopir', compact('orders'));
+        $created_at = $request->created_at;
+        return view('admin.jurnal.slip_totalan_sopir', compact('orders','created_at'));
     }
 
     public function submit_slip_totalan_sopir(Request $request)
@@ -63,6 +65,7 @@ class JurnalController extends Controller
         if(!$request->nomor){
             return back()->with('danger','Harap pilih nomor jurnal terlebih dahulu!');
         }
+
         if($request->jurnal_simpanan_sopir){
             foreach($request->jurnal_simpanan_sopir as $js){
                 $debit = $js;
@@ -72,14 +75,19 @@ class JurnalController extends Controller
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
-                Jurnal::create($debit);
-                Jurnal::create($credit);
-                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
-                    'jurnal' => $debit['nomor'],
-                    'jurnal_status' => 1,
-                    'jurnal_tgl' => $request->created_at,
-                    'jurnal_submit' => date('Y-m-d H:i:s')
-                ]);
+                if (in_array($debit['order_trucking_id'], $request->active)) {
+                    Jurnal::create($debit);
+                    Jurnal::create($credit);
+                    TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                        'jurnal' => $debit['nomor'],
+                        'jurnal_status' => 1,
+                        'jurnal_tgl' => $request->created_at,
+                        'jurnal_submit' => date('Y-m-d H:i:s')
+                    ]);
+                } else {
+                    JurnalSample::create($debit);
+                    JurnalSample::create($credit);
+                }
             }
         }
         if($request->jurnal_simpanan_kuli){
@@ -91,14 +99,19 @@ class JurnalController extends Controller
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
-                Jurnal::create($debit);
-                Jurnal::create($credit);
-                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
-                    'jurnal' => $debit['nomor'],
-                    'jurnal_status' => 1,
-                    'jurnal_tgl' => $request->created_at,
-                    'jurnal_submit' => date('Y-m-d H:i:s')
-                ]);
+                if (in_array($debit['order_trucking_id'], $request->active)) {
+                    Jurnal::create($debit);
+                    Jurnal::create($credit);
+                    TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                        'jurnal' => $debit['nomor'],
+                        'jurnal_status' => 1,
+                        'jurnal_tgl' => $request->created_at,
+                        'jurnal_submit' => date('Y-m-d H:i:s')
+                    ]);
+                } else {
+                    JurnalSample::create($debit);
+                    JurnalSample::create($credit);
+                }
             }
         }
         if($request->jurnal_tbtl){
@@ -110,14 +123,19 @@ class JurnalController extends Controller
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
-                Jurnal::create($debit);
-                Jurnal::create($credit);
-                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
-                    'jurnal' => $debit['nomor'],
-                    'jurnal_status' => 1,
-                    'jurnal_tgl' => $request->created_at,
-                    'jurnal_submit' => date('Y-m-d H:i:s')
-                ]);
+                if (in_array($debit['order_trucking_id'], $request->active)) {
+                    Jurnal::create($debit);
+                    Jurnal::create($credit);
+                    TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                        'jurnal' => $debit['nomor'],
+                        'jurnal_status' => 1,
+                        'jurnal_tgl' => $request->created_at,
+                        'jurnal_submit' => date('Y-m-d H:i:s')
+                    ]);
+                } else {
+                    JurnalSample::create($debit);
+                    JurnalSample::create($credit);
+                }
             }
         }
         if($request->jurnal_stappel){
@@ -129,14 +147,19 @@ class JurnalController extends Controller
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
-                Jurnal::create($debit);
-                Jurnal::create($credit);
-                TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
-                    'jurnal' => $debit['nomor'],
-                    'jurnal_status' => 1,
-                    'jurnal_tgl' => $request->created_at,
-                    'jurnal_submit' => date('Y-m-d H:i:s')
-                ]);
+                if (in_array($debit['order_trucking_id'], $request->active)) {
+                    Jurnal::create($debit);
+                    Jurnal::create($credit);
+                    TransaksiSopir::where('order_id','LIKE','%'.$debit['order_trucking_id'].'%')->update([
+                        'jurnal' => $debit['nomor'],
+                        'jurnal_status' => 1,
+                        'jurnal_tgl' => $request->created_at,
+                        'jurnal_submit' => date('Y-m-d H:i:s')
+                    ]);
+                } else {
+                    JurnalSample::create($debit);
+                    JurnalSample::create($credit);
+                }
             }
         }
 

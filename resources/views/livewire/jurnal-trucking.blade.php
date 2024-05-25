@@ -32,6 +32,7 @@
                 <table class="table table-sm table-bordered" style="font-size:.7rem; white-space:nowrap">
                     <thead>
                         <tr>
+                            <th>TGL MUAT</th>
                             <th>[1] ID JOB</th>
                             <th>[2] Cont (XPDC)</th>
                             <th>[3] Seal (XPDC)</th>
@@ -237,6 +238,7 @@
                     html  +=
                     `
                     <tr>
+                        <td>${item.tgl_muat}</td>
                         <td>${item.job}</td>
                         <td>${item.container}</td>
                         <td>${item.seal}</td>

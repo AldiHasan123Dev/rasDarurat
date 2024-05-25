@@ -5,7 +5,11 @@
             <form action="{{ route('jurnal.slip_totalan_sopir') }}" method="post">
                 @csrf
                 <input type="hidden" name="ids" id="ids">
-                <button class="btn btn-sm btn-success" type="submit">Buat Draf Jurnal</button>
+                <div class="d-flex gap-3">
+                    <input type="date" name="created_at" id="created_at" class="form-control" style="width: 15%" required>
+                    <button class="btn btn-sm btn-success" type="submit">Buat Draf Jurnal</button>
+                    <div style="width: 70%"></div>
+                </div>
             </form>
         </div>
         <div class="card p-3 shadow my-3">
