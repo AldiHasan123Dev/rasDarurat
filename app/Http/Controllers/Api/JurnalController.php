@@ -8,8 +8,10 @@ use App\Models\COA;
 use App\Models\Jurnal;
 use App\Models\JurnalSample;
 use App\Models\Order;
+use App\Models\Pelayaran;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class JurnalController extends Controller
 {
@@ -311,6 +313,94 @@ class JurnalController extends Controller
         return response([
             'status' => 0,
             'message' => 'aman'
+        ]);
+    }
+
+    public function render_buku_pembantu()
+    {
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $coa_id = request('coa_id') ?? 46;
+        $subjek = request('subjek') ?? 'customer_xpdc';
+        $coa = COA::find($coa_id);
+        $coas = COA::orderBy('kode')->get(['id','nama','kode']);
+        $tipe = 'D';
+        if(substr($coa->kode,0,1)=='2'||substr($coa->kode,0,1)=='3'||substr($coa->kode,0,1)=='5'){
+            $tipe = 'C';
+        }
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
+        $now = $c->startOfMonth()->format('Y-m-d');
+        $last = $c->endOfMonth()->format('Y-m-d');
+        $start = '2022-12-01';
+        $query = Jurnal::query();
+        $query->join('coa','coa.id','=','jurnal.coa_id');
+        if($subjek=='customer_xpdc'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('tarif','tarif.id','=','order.tarif_id');
+            $query->join('customers','customers.id','=','tarif.customer_id');
+            $query->select('jurnal.*','customers.nama as nama_');
+        }
+        if($subjek=='customer_trucking'){
+            $query->join('order_trucking','order_trucking.id','=','jurnal.order_trucking_id');
+            $query->join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id');
+            $query->select('jurnal.*','customer_trucking.nama as nama_');
+        }
+        if($subjek=='kendaraan'){
+            $query->join('order_trucking','order_trucking.invoice','=','jurnal.invoice');
+            $query->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id');
+            $query->select('jurnal.*','kendaraan.milik as nama_');
+        }
+        if($subjek=='pelayaran'){
+            // $query->join('hutang_pelayaran','hutang_pelayaran.no_bg_ut','=','jurnal.no_bg');
+            // $query->join('hutang_pelayaran', function ($join) {
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
+            // });
+            // $query->join('order','order.id','=','hutang_pelayaran.order_id');
+            // $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+            // $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+            // $query->select('jurnal.*','pelayaran.nama as nama_');
+            $query->whereNotNull('jurnal.no_bg');
+            // dd($query->get());
+        }
+        if($subjek=='agen'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('agen','agen.id','=','order.agen_id');
+            $query->select('jurnal.*','agen.nama as nama_');
+        }
+        $query->where('jurnal.coa_id',$coa_id);
+        $query->whereBetween('jurnal.created_at',[$start,$last]);
+        if($subjek!='pelayaran'){
+            $query->orderBy('nama_');
+        }
+        $data = $query->get();
+        if($subjek!='pelayaran'){
+            $data = $data->groupBy('nama_');
+        }
+        $q = Jurnal::query();
+        $q->where('coa_id',$coa_id);
+        $q->whereBetween('created_at',[$start,$last]);
+        if($subjek=='customer_trucking'){
+            $q->whereNull('order_trucking_id');
+        }else if($subjek=='kendaraan'){
+            $q->whereNotNull('invoice');
+        }else{
+            $q->whereNull('order_id');
+        }
+        $no_data = $q->get();
+        if($subjek=='pelayaran'){
+            $data = Pelayaran::whereHas('hutang_pelayaran', function($q){
+                $q->whereNotNull('no_bg_opt');
+                $q->orWhereNotNull('no_bg_opp');
+                $q->orWhereNotNull('no_bg_ut');
+            })->orderBy('nama')->get();
+        }
+
+        $res = view('data.buku_besar_pembantu', compact('data','months','coas','year','month','coa_id','tipe','no_data','subjek'))->render();
+        return response([
+            'data' => $res
         ]);
     }
 }

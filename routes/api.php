@@ -105,6 +105,7 @@ Route::post('sync-jurnal-balik',[OmsetController::class,'syncJurnalBalik'])->nam
 Route::post('get-omset-jurnal',[OmsetController::class,'getJurnal'])->name('omset.jurnal');
 Route::post('add-omset-jurnal',[OmsetController::class,'addJurnal'])->name('omset.add.item');
 Route::post('jurnal-filter',[JurnalController::class,'filter'])->name('api.jurnal.filter');
+Route::post('render-bb-pembantu',[JurnalController::class,'render_buku_pembantu'])->name('api.render_buku_pembantu');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
