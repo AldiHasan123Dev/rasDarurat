@@ -78,7 +78,7 @@ class JasaKirimController extends Controller
     {
         $data = JasaKirim::whereNotNull('barcode')->whereNotNull('tgl_kirim')->whereNotNull('nominal')->get()->groupBy('barcode');
         foreach ($data as $barcode) {
-            if($barcode->count()>1){
+            if($barcode->count()>1){    
                 $jasakirim = $barcode->first();
                 $group = JasaKirim::where('barcode',$jasakirim->barcode)->where('nominal',$jasakirim->nominal)->get();
                 foreach ($group as $idx => $item) {

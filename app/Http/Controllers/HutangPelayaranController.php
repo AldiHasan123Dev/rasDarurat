@@ -379,10 +379,10 @@ class HutangPelayaranController extends Controller
         if(count($cek)>0){
             return back()->with('danger', 'Harap lock harga terlebih dahulu!');
         }
-        $cek = Order::whereIn('id', $order_id)->get()->groupBy('jadwal_kapal_id');
-        if(count($cek)>1){
-            return back()->with('danger', 'Data Kapal dan Voyage yang dipilih tidak sama!');
-        }
+        // $cek = Order::whereIn('id', $order_id)->get()->groupBy('jadwal_kapal_id');
+        // if(count($cek)>1){
+        //     return back()->with('danger', 'Data Kapal dan Voyage yang dipilih tidak sama!');
+        // }
         $data = HutangPelayaran::join('order','order.id','hutang_pelayaran.order_id')->whereIn('hutang_pelayaran.order_id', $order_id)->orderBy('order.job')->orderBy('order.no_job')->get()->groupBy('order.job');
         $data_bl = HutangPelayaran::join('order','order.id','hutang_pelayaran.order_id')->whereIn('hutang_pelayaran.order_id', $order_id)->orderBy('order.job')->orderBy('order.no_job')->get()->groupBy('order.penerimabl');
         $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;
