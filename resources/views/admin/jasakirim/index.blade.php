@@ -193,6 +193,13 @@
                                                             <a href="{{ route('jasakirim.draf.jurnal',['invoice'=>$item->first()->invoice]) }}" class="btn btn-success py-0 px-5" style="height: 20px; font-size:.7rem">Buat Jurnal</a>
                                                         @else
                                                             <a href="{{ route('jurnal.edit',['jurnal'=>$item->first()->jurnal]) }}" class="btn btn-warning py-0 px-5" style="height: 20px; font-size:.7rem">Lihat Jurnal</a>
+                                                            @if (Auth::user()->role_id==1)
+                                                                <form action="{{ route('jasakirim.sync.jurnal') }}" method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="invoice" value="{{ $item->first()->invoice }}">
+                                                                    <button class="btn btn-success py-0 px-5" style="height: 20px; font-size:.7rem" type="submit">Sinkronisasi</button>
+                                                                </form>
+                                                            @endif
                                                         @endif
                                                     @endif
                                                     <button class="btn btn-info py-0 px-5" style="height: 20px; font-size:.7rem" type="button" data-bs-toggle="modal" data-bs-target="#listresi-{{ $loop->iteration }}">Detail</button>

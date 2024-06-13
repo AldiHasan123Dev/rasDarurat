@@ -215,6 +215,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('tarik-nsfp', [NSFPController::class, 'tarik'])->name('nsfp.tarik');
     Route::post('delete-all', [NSFPController::class, 'deleteAll'])->name('nsfp.delete.all');
     Route::get('trucking/order', [TruckingController::class, 'order'])->name('trucking.order');
+    Route::post('jasa-kirim-sync-jurnal', [JasaKirimController::class, 'syncJurnal'])->name('jasakirim.sync.jurnal');
     Route::post('jasa-kirim-sync', [JasaKirimController::class, 'syncNominal'])->name('jasakirim.sync');
     Route::post('jasa-kirim-sync-data', [JasaKirimController::class, 'syncData'])->name('jasakirim.sync.data');
     Route::get('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'jurnal'])->name('jasakirim.draf.jurnal');
