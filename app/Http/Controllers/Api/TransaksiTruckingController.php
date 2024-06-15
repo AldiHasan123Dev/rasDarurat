@@ -49,12 +49,26 @@ class TransaksiTruckingController extends Controller
             ]);
         }
         if($trucking->jurnal_hutang){
+            $j = Jurnal::where('nomor',$trucking->jurnal_hutang)->where('credit','>',0)->first();
+            $js = JurnalSample::where('nomor',$trucking->jurnal_hutang)->where('credit','>',0)->first();
             Jurnal::where('nomor',$trucking->jurnal_hutang)->update([
                 'invoice' => $invoice
             ]);
             JurnalSample::where('nomor',$trucking->jurnal_hutang)->update([
-                'invoice' => $invoice
+                'invoice' => $invoice,
             ]);
+
+            if($j){
+                $j->update([
+                    'nama' => 'Hutang Trucking '.$trucking->pengirim.' INV. '.$invoice
+                ]);
+            }
+
+            if($js){
+                $js->update([
+                    'nama' => 'Hutang Trucking '.$trucking->pengirim.' INV. '.$invoice
+                ]);
+            }
         }
 
         return response('Success');
