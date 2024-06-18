@@ -128,9 +128,9 @@
             <div id="jqGridPager"></div>
         </div>
         {{-- {{ $data->links() }} --}}
-        @if($data->hasMorePages())
+        {{-- @if($data->hasMorePages()) --}}
         {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
-        @endif
+        {{-- @endif --}}
         <table class="table table-sm mt-2">
             {{-- @if ($total_debit!=$total_credit)
                 <tr>

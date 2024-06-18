@@ -30,13 +30,14 @@ class JurnalController extends Controller
 {
     public function index()
     {
-        $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"),'nomor'])->groupBy('nomor')->get()->reject(function ($data) {
-            return $data->debit == $data->credit;
-        });
+        // $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"),'nomor'])->groupBy('nomor')->get()->reject(function ($data) {
+        //     return $data->debit == $data->credit;
+        // });
+        $unbalance = [];
         $month = request('month') ?? date('m');
         $year = request('year') ?? date('Y');
         $is_sample = request('is_sample') ?? 'real';
-        return view('admin.jurnal.index', compact('unbalance','month','year','is_sample'));
+        return view('admin.jurnal.index', compact('month','unbalance','year','is_sample'));
     }
 
     public function totalan_sopir()
