@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\TarifTruckingController;
 use App\Http\Controllers\Api\TransaksiController;
 use App\Http\Controllers\Api\TransaksiTruckingController;
 use App\Http\Controllers\PelayaranController;
+use App\Http\Controllers\SyncController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -110,3 +111,4 @@ Route::post('render-bb-pembantu',[JurnalController::class,'render_buku_pembantu'
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
 Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
+Route::post('sync-order-trucking',[SyncController::class,'order_trucking'])->name('api.sync.ordertrucking');

@@ -84,7 +84,7 @@ class OrderResource extends JsonResource
             'tanggal' => date('d/m/y', strtotime($this->created_at)),
             'created_at' => date('d/m/y', strtotime($this->created_at)),
             'barang_detail' => $barang,
-            'koli' => $this->bttb->sum('qty'),
+            'koli' => $this->bttb->sum('qty') ?? 0,
             'm3' => $this->bttb->sum('vol'),
             'berat' => $this->bttb->sum('berat'),
             'add_cost' => number_format($this->tagihan->sum('jumlah')),

@@ -1040,5 +1040,15 @@
                 }
             });
         });
+
+        $(function(){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('api.sync.ordertrucking') }}",
+                success: function (response) {
+                    return;
+                }
+            });
+        })
     </script>
 @endsection

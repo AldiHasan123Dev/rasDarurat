@@ -835,4 +835,19 @@ class SyncController extends Controller
 
         return response('success');
     }
+
+    public function order_trucking()
+    {
+        $update = OrderTrucking::whereNull('invoice')->whereNull('order_id')->get();
+        $i = 0;
+        foreach ($update as $item ) {
+            $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
+            if($order){
+                $item->update(['order_id'=>$order->id]);
+                $i++;
+            }
+        }
+
+        return response('success data updated: '.$i);
+    }
 }

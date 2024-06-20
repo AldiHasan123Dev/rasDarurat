@@ -7,6 +7,8 @@
                     $no1 = sprintf('%03d',$no_1).'/BBK-RAS/24';
                     $no_2 = App\Models\Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
                     $no2 = sprintf('%03d',$no_2).'/BKK-RAS/24';
+                    $no_3 = App\Models\Jurnal::where('tipe','BBKT')->whereYear('created_at',date('Y'))->max('no') + 1;
+                    $no3 = sprintf('%03d',$no_3).'/BBKT-RAS/24';
                 @endphp
                 <div>
                     @csrf
@@ -17,6 +19,7 @@
                                 <option data-tipe="" data-no="0" data-coa="-" data-akun="-" value="">-</option>
                                 <option data-tipe="BBK" data-no="{{ $no_1 }}" data-coa="1.1.2.1" data-akun="Bank Mandiri 1400046005006" value="{{ $no1 }}">{{ $no1 }}</option>
                                 <option data-tipe="BKK" data-no="{{ $no_2 }}" data-coa="1.1.1" data-akun="Kas" value="{{ $no2 }}">{{ $no2 }}</option>
+                                <option data-tipe="BBKT" data-no="{{ $no_3 }}" data-coa="1.1.2.2" data-akun="Bank Mandiri 1400023927867 (Trucking)" value="{{ $no3 }}">{{ $no3 }}</option>
                             </select>
                         </div>
                         <div class="mb-2">

@@ -42,6 +42,8 @@
                                         <option value="BBM">Bank Masuk - {{ $no_3 }}</option>
                                         <option value="BKK">Kas Keluar - {{ $no_4 }}</option>
                                         <option value="BKM">Kas Masuk - {{ $no_5 }}</option>
+                                        <option value="BBKT">Bank Keluar Trucking - {{ $no_6 }}</option>
+                                        <option value="BBMT">Bank Masuk Trucking - {{ $no_7 }}</option>
                                     </select>
                                 </div>
                                 <div class="col-6">

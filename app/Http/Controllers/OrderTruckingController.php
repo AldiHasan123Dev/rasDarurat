@@ -24,13 +24,6 @@ class OrderTruckingController extends Controller
         $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
         $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->where('sangu_sopir.is_active',1)->orderBy('lokasi.nama','asc')->get();
         $customers = CustomerTrucking::all()->sortBy('nama');
-        $update = OrderTrucking::whereNull('order_id')->get();
-        // foreach ($update as $item ) {
-        //     $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
-        //     if($order){
-        //         $item->update(['order_id'=>$order->id]);
-        //     }
-        // }
         return view('admin.ordertrucking.index', compact('kendaraan','sopir','tujuan','customers'));
     }
 
