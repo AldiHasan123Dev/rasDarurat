@@ -72,7 +72,7 @@ class JurnalController extends Controller
                 $debit = $js;
                 $credit = $js;
                 $debit['created_at'] = $request->created_at;
-                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : ($credit['tipe']=='BKK' ? 16 : ($credit['tipe']=='BBKT' ? 175 : null)));
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
@@ -96,7 +96,7 @@ class JurnalController extends Controller
                 $debit = $js;
                 $credit = $js;
                 $debit['created_at'] = $request->created_at;
-                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : ($credit['tipe']=='BKK' ? 16 : ($credit['tipe']=='BBKT' ? 175 : null)));
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
@@ -120,7 +120,7 @@ class JurnalController extends Controller
                 $debit = $js;
                 $credit = $js;
                 $debit['created_at'] = $request->created_at;
-                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : ($credit['tipe']=='BKK' ? 16 : ($credit['tipe']=='BBKT' ? 175 : null)));
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
@@ -144,7 +144,7 @@ class JurnalController extends Controller
                 $debit = $js;
                 $credit = $js;
                 $debit['created_at'] = $request->created_at;
-                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : 16);
+                $credit['coa_id'] = ($credit['tipe']=='BBK' ? 45 : ($credit['tipe']=='BKK' ? 16 : ($credit['tipe']=='BBKT' ? 175 : null)));
                 $credit['credit'] = $credit['debit'];
                 $credit['debit'] = 0;
                 $credit['created_at'] = $request->created_at;
