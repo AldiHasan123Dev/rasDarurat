@@ -20,7 +20,7 @@
                 <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerTrucking" aria-controls="offcanvasCustomerTrucking">Tambah Customer Trucking</button>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsives">
                     <table class="table table-sm nowrap" style="font-size:.7rem" id="customer">
                         <thead>
                             <tr>
@@ -36,6 +36,7 @@
                                 <th>NPWP</th>
                                 <th>Nama NPWP</th>
                                 <th>Alamat NPWP</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -134,6 +135,7 @@
             serverSide: true,
             select:true,
             scrollY: '200px',
+            scrollX: true,
             ajax:{
                 url: '{{ route('customertrucking.data') }}',
                 method:'POST',
@@ -152,6 +154,7 @@
                 { data: 'npwp', name: 'npwp' },
                 { data: 'nama_npwp', name: 'nama_npwp' },
                 { data: 'alamat_npwp', name: 'alamat_npwp' },
+                { data: 'is_active', name: 'is_active' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });
@@ -301,19 +304,34 @@
             }
         });
 
-        function changeStatus(id,val){
-            $.ajax({
-                type: "POST",
-                url: "{{ route('api.tariftrucking.createorupdate') }}",
-                data: {
-                    is_active:val,
-                    tarif_id:id,
-                    updated_by:@json(Auth::id()),
-                },
-                success: function (response) {
-                    table_tarif.ajax.reload()
-                }
-            });
+        function changeStatus(id,val,type=null){
+            if(type){
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('api/customer-trucking') }}/"+id,
+                    data: {
+                        is_active:val,
+                        api:true,
+                        updated_by:@json(Auth::id()),
+                    },
+                    success: function (response) {
+                        table.ajax.reload()
+                    }
+                });
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('api.tariftrucking.createorupdate') }}",
+                    data: {
+                        is_active:val,
+                        tarif_id:id,
+                        updated_by:@json(Auth::id()),
+                    },
+                    success: function (response) {
+                        table_tarif.ajax.reload()
+                    }
+                });
+            }
         }
     </script>
 @endsection

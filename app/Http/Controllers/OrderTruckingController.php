@@ -23,7 +23,7 @@ class OrderTruckingController extends Controller
         $kendaraan = Kendaraan::all()->where('is_active',1)->sortBy('nopol');
         $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
         $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->where('sangu_sopir.is_active',1)->orderBy('lokasi.nama','asc')->get();
-        $customers = CustomerTrucking::all()->sortBy('nama');
+        $customers = CustomerTrucking::all()->where('is_active',1)->sortBy('nama');
         $update = OrderTrucking::whereNull('order_id')->get();
         foreach ($update as $item ) {
             $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
