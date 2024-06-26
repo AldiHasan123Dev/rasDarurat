@@ -33,6 +33,9 @@ class CustomerTruckingController extends Controller
     {
         $data = $request->all();
         $customertrucking->update($data);
+        if($request->api){
+            return response('success');
+        }
 
         return back()->with('success','Data berhasil diupdate');
     }
@@ -82,6 +85,16 @@ class CustomerTruckingController extends Controller
                         </form>';
                 return $html;
             })
+            ->addColumn('is_active', function($data){
+                $checked = $data->is_active == 1 ? 'checked' : '';
+                $label = $data->is_active == 1 ? 'Aktif' : 'Non Aktif';
+                $val = $data->is_active == 1 ? 0 : 1;
+                $html = '<div class="form-check form-switch">
+                            <input class="form-check-input" onchange="changeStatus('.$data->id.','.$val.',\'customer\')" type="checkbox" id="flexSwitchCheckDefault" '.$checked.'>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">'.$label.'</label>
+                        </div>';
+                return $html;
+            })
             ->addColumn('action', function ($data) {
                 $view = view('admin.customertrucking.form',['customertrucking'=>$data])->render();
                 $html = '<div class="d-flex gap-1">
@@ -108,7 +121,7 @@ class CustomerTruckingController extends Controller
                         </div>';
                 return $html;
             })
-            ->rawColumns(['action','pph_23','r1','r2'])
+            ->rawColumns(['action','pph_23','r1','r2','is_active'])
             ->make(true);
     }
 }

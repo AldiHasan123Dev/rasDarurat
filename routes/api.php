@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\TarifController;
 use App\Http\Controllers\Api\TarifTruckingController;
 use App\Http\Controllers\Api\TransaksiController;
 use App\Http\Controllers\Api\TransaksiTruckingController;
+use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\PelayaranController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -103,6 +104,7 @@ Route::post('sync-jurnal-balik',[OmsetController::class,'syncJurnalBalik'])->nam
 Route::post('get-omset-jurnal',[OmsetController::class,'getJurnal'])->name('omset.jurnal');
 Route::post('add-omset-jurnal',[OmsetController::class,'addJurnal'])->name('omset.add.item');
 Route::post('jurnal-filter',[JurnalController::class,'filter'])->name('api.jurnal.filter');
+Route::post('customer-trucking/{customertrucking}',[CustomerTruckingController::class,'update'])->name('api.customertrucking.update');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');

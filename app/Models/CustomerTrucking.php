@@ -24,6 +24,7 @@ class CustomerTrucking extends Model
         'npwp',
         'nama_npwp',
         'alamat_npwp',
+        'is_active',
     ];
 
     protected static function booted()
