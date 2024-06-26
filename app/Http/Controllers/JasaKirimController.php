@@ -9,6 +9,7 @@ use App\Models\Lokasi;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
@@ -108,6 +109,16 @@ class JasaKirimController extends Controller
     public function generateJurnal(Request $request)
     {
         $data = JasaKirim::where('invoice',$request->invoice)->get();
+        $err = [];
+        foreach ($data as $idx => $item) {
+            $count = $item->orders->count() + $item->kirim_dokumen->count();
+            if($count==0){
+                array_push($err, $item->barcode);
+            }
+        }
+        if(count($err)>0){
+            return back()->with('danger', 'Jasa Kirim '.json_encode($err).' tidak memiliki ID JOB!');
+        }
         foreach ($data as $idx => $item) {
             $is_first = true;
             $count = $item->orders->count() + $item->kirim_dokumen->count();
@@ -169,6 +180,92 @@ class JasaKirimController extends Controller
         ]);
 
         return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disimpan!');
+    }
+
+    public function syncJurnal(Request $request)
+    {
+        $invoice = $request->invoice;
+        $nomor = JasaKirim::where('invoice',$invoice)->whereNotNull('jurnal')->first();
+        $data = JasaKirim::where('invoice',$invoice)->get();
+        if(!$nomor){
+            return back()->with('danger', 'Kode Draf tidak ditemukan!');
+        }
+        $err = [];
+        foreach ($data as $idx => $item) {
+            $count = $item->orders->count() + $item->kirim_dokumen->count();
+            if($count==0){
+                array_push($err, $item->barcode);
+            }
+        }
+        if(count($err)>0){
+            return back()->with('danger', 'Jasa Kirim '.json_encode($err).' tidak memiliki ID JOB!');
+        }
+        DB::transaction(function () use($nomor, $invoice) {
+            $data = JasaKirim::where('invoice',$invoice)->get();
+            $jurnal = Jurnal::where('nomor',$nomor->jurnal)->first();
+            Jurnal::where('nomor',$nomor->jurnal)->delete();
+            foreach ($data as $idx => $item) {
+                $is_first = true;
+                $count = $item->orders->count() + $item->kirim_dokumen->count();
+                $price = (int)($item->nominal / $count);
+                $selisih = $item->nominal - ($price * $count);
+                foreach($item->orders as $fs => $order){
+                    if($is_first){
+                        $price2 = (int)($item->nominal / $count) + $selisih;
+                        $is_first = false;
+                        Jurnal::create([
+                            'tipe' => 'JNL',
+                            'coa_id' => 31,
+                            'order_id' => $order->id,
+                            'nomor' => $jurnal->nomor,
+                            'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
+                            'debit' => $price2,
+                            'created_at' => $jurnal->created_at,
+                            'no' => $jurnal->no
+                        ]);
+                    }else{
+                        Jurnal::create([
+                            'tipe' => 'JNL',
+                            'coa_id' => 31,
+                            'order_id' => $order->id,
+                            'nomor' => $jurnal->nomor,
+                            'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
+                            'debit' => $price,
+                            'created_at' => $jurnal->created_at,
+                            'no' => $jurnal->no
+                        ]);
+                    }
+                }
+                foreach($item->kirim_dokumen as $kirim){
+                    Jurnal::create([
+                        'tipe' => 'JNL',
+                        'coa_id' => 31,
+                        'order_id' => $kirim->order_id,
+                        'nomor' => $jurnal->nomor,
+                        'nama' => $kirim->nama,
+                        'debit' => $price,
+                        'created_at' => $jurnal->created_at,
+                        'no' => $jurnal->no
+                    ]);
+                }
+                $item->update([
+                    'status' => 1,
+                    'jurnal' => $jurnal->nomor
+                ]);
+            }
+            Jurnal::create([
+                'tipe' => 'JNL',
+                'coa_id' => 63,
+                'order_id' => $order->id,
+                'nomor' => $jurnal->nomor,
+                'nama' => 'Hutang Agen ('.$invoice.')',
+                'credit' => $data->sum('nominal'),
+                'created_at' => $jurnal->created_at,
+                'no' => $jurnal->no
+            ]);
+        });
+
+        return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disinkronisasi!');
     }
 
     public function datatable()

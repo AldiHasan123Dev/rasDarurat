@@ -14,6 +14,7 @@
         @endif
     </td>
     <td>{{ $temp->invoice }}</td>
+    <td>{{ $temp->invoice_external }}</td>
     <td>{{ $temp->container }}</td>
     <td>{{ $temp->nopol }}</td>
     <td>{{ $temp->nama }}</td>
@@ -22,13 +23,13 @@
 </tr>
 @if ($loop->last)
 <tr>
-    <td class="py-3" colspan="7" style="width: 300px"><b>TOTAL</b></td>
+    <td class="py-3" colspan="8" style="width: 300px"><b>TOTAL</b></td>
     <td class="py-3"><b id="total_debit">{{ number_format($data->sum('debit'),2,',','.') }}</b></td>
     <td class="py-3"><b id="total_credit">{{ number_format($data->sum('credit'),2,',','.') }}</b></td>
 </tr>
 @endif
 @empty
 <tr>
-    <td colspan="9" class="text-center">Tidak Ada Data!</td>
+    <td colspan="10" class="text-center">Tidak Ada Data!</td>
 </tr>
 @endforelse

@@ -229,11 +229,11 @@
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
-                { data: 'id', name: 'id' },
+                { data: 'id', name: 'tarif.id' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'pelayaran_id', name: 'pelayaran_id' },
                 { data: 'dari', name: 'dari' },
-                { data: 'tujuan', name: 'tujuan' },
+                { data: 'tujuan', name: 'lokasi.nama' },
                 { data: 'shipment', name: 'shipment' },
                 { data: 'kondisi', name: 'kondisi' },
                 { data: 'satuan', name: 'satuan' },

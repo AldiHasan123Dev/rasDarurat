@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\BAKembaliExport;
 use App\Exports\InvoiceRekapExport;
 use App\Exports\OrderExport;
+use App\Exports\MalindoExport;
 use App\Exports\SIExport;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
@@ -295,6 +296,12 @@ class OrderController extends Controller
     public function export()
     {
         return Excel::download(new OrderExport(request('from'),request('to')), 'laporan_order.xlsx');
+    }
+
+    public function exportMalindo(Request $request)
+    {
+        $text = str_replace('-','',$request->month);
+        return Excel::download(new MalindoExport($text), 'laporan_order_malindo.xlsx');
     }
 
     public function export_ba_kembali()

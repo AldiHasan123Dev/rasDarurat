@@ -57,10 +57,15 @@ use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
 use App\Http\Controllers\PortController;
+use App\Http\Controllers\UpdateDataController;
 use App\Models\Jurnal;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+
+use Google\Client;
+use Google\Service\Drive;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,12 +86,51 @@ Route::get('/logs', function () {
     $logs = fopen($logPath, "r") or die("Unable to open file!");
     return response(stream_get_contents($logs));
 });
+Route::get('/upload', function () {
+    try {
+        $client = new Client();
+        $client->setAuthConfig(public_path('credentials.json'));
+        $client->addScope(Drive::DRIVE);
+        $driveService = new Drive($client);
+        $file = public_path('logo.png');
+        $fileName = basename($file);
+        $mimeType = mime_content_type($file);
+
+        $fileMetadata = new Drive\DriveFile(
+            array('name' => $fileName,'parents' => ['11CjKzIs8ndfv_V6jhIDFy4y99jsUuYYN'])
+            );
+        $content = file_get_contents($file);
+        $file = $driveService->files->create($fileMetadata, array(
+            'data' => $content,
+            'mimeType' => $mimeType,
+            'uploadType' => 'multipart',
+            'fields' => 'id'));
+        printf("File ID: %s\n", $file->id);
+        return $file->id;
+    } catch(Exception $e) {
+        echo "Error Message: ".$e;
+    }
+});
+
 Route::get('test', function () {
-    $date = '2024-02';
-    dd(substr('j_biaya',2));
+    $data = Storage::allFiles('public/RAS');
+    $input = date('Y-m-d');
+    $result = array_filter($data, function ($item) use ($input) {
+        if (stripos($item, $input) !== false) {
+            return true;
+        }
+        return false;
+    });
+    $file = $result[0];
+    $file = str_replace('public/', '', $file);
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('bulk-update', function(){
+    return view('bulk-update');
+});
+
+Route::post('update-jurnal', [UpdateDataController::class, 'jurnal'])->name('update.jurnal');
 
 Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('user', UserController::class)->except(['create']);
@@ -140,6 +184,10 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('port',PortController::class);
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
+    Route::get('hutang-agen-list', [HutangAgenController::class, 'list'])->name('hutang-agen.list');
+    Route::get('hutang-agen-print', [HutangAgenController::class, 'print'])->name('hutang-agen.print');
+    Route::post('hutang-agen/draf', [HutangAgenController::class, 'draf'])->name('hutang-agen.draf');
+    Route::post('hutang-agen/jurnal', [HutangAgenController::class, 'generate_jurnal'])->name('hutang-agen.jurnal');
     Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
     Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');
     Route::post('hutang-pelayaran/tarik', [HutangPelayaranController::class, 'tarik'])->name('hutang-pelayaran.tarik');
@@ -167,6 +215,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('tarik-nsfp', [NSFPController::class, 'tarik'])->name('nsfp.tarik');
     Route::post('delete-all', [NSFPController::class, 'deleteAll'])->name('nsfp.delete.all');
     Route::get('trucking/order', [TruckingController::class, 'order'])->name('trucking.order');
+    Route::post('jasa-kirim-sync-jurnal', [JasaKirimController::class, 'syncJurnal'])->name('jasakirim.sync.jurnal');
     Route::post('jasa-kirim-sync', [JasaKirimController::class, 'syncNominal'])->name('jasakirim.sync');
     Route::post('jasa-kirim-sync-data', [JasaKirimController::class, 'syncData'])->name('jasakirim.sync.data');
     Route::get('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'jurnal'])->name('jasakirim.draf.jurnal');
@@ -200,6 +249,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('export-laporan-ppn', [KeuanganController::class, 'PPNExport'])->name('keuangan.ppn.export');
     Route::post('export-laporan-pajak', [KeuanganController::class, 'PajakExport'])->name('keuangan.pajak.export');
     Route::post('export-order', [OrderController::class, 'export'])->name('order.export');
+    Route::post('export-order-malindo', [OrderController::class, 'exportMalindo'])->name('order.export.malindo');
     Route::post('export-order/ba_kembali', [OrderController::class, 'export_ba_kembali'])->name('order.export.ba_kembali');
     Route::post('export-order-trucking', [OrderTruckingController::class, 'export'])->name('ordertrucking.export');
     Route::post('export-asuransi', [AsuransiController::class, 'export'])->name('asuransi.export');
@@ -311,5 +361,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-lokasi-agen', [SyncController::class, 'lokasi_agen']);
     Route::get('sync-coa-name', [SyncController::class, 'coa_name']);
     Route::get('sync-jasa-kirim', [SyncController::class, 'jasa_kirim']);
+
+    Route::get('sync-jurnal-hutang-trucking/{trx_id}/{no}', [TruckingController::class, 'jurnal_hutang_trucking']);
 });
 // Route::view('test','test');

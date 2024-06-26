@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('style')
+<link rel="stylesheet" href="{{ asset('assets/font/font.css') }}">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
     #print *{
@@ -23,7 +24,7 @@
             #print, #print * {
                 visibility: visible;
                 font-family: 'Open Sans', sans-serif;
-                font-size: .6rem !important;
+                font-size: .7rem !important;
                 color: black !important;
             }
             #print {

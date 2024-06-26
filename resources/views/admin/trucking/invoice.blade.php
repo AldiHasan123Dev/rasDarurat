@@ -403,7 +403,7 @@
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
-                                    <div style="height: 1.5cm"></div>
+                                    <div style="height: 2cm"></div>
                                     (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
@@ -603,7 +603,7 @@
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
-                                    <div style="height: 1.5cm"></div>
+                                    <div style="height: 2cm"></div>
                                     (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
@@ -816,7 +816,7 @@
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
-                                    <div style="height: 1.5cm"></div>
+                                    <div style="height: 2cm"></div>
                                     (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
@@ -1040,7 +1040,7 @@
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
-                                    <div style="height: 1.5cm"></div>
+                                    <div style="height: 2cm"></div>
                                     (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
@@ -1262,7 +1262,7 @@
                             <div class="col-3">
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->tgl_invoice)?'-':tanggal($order->tgl_invoice) }}</p>
-                                    <img src="{{ asset('assets/img/pdwi.jpg') }}" style="width: 151px; height:94px; position: relative; top:-10px"><br>
+                                    <img src="{{ asset('assets/img/ttd-trucking.jpg') }}" style="width: 151px; height:94px; position: relative; top:-10px"><br>
                                     (<input type="text" value="Rara" class="text-center pengirim" style="border:none; width:130px"/>)
                                 </div>
                             </div>
@@ -1289,7 +1289,7 @@
             $('#_lain_lain').val(_lain_lain);
         })
 
-        $('#pengirim').change(function (e) { 
+        $('#pengirim').change(function (e) {
             pengirim()
         });
         pengirim()

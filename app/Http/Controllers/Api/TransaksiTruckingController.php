@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use App\Models\OrderTrucking;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
@@ -37,6 +39,37 @@ class TransaksiTruckingController extends Controller
             'tgl_invoice' => $request->created_at,
             'invoice' => $invoice,
         ]);
+
+        if($trucking->jurnal_piutang){
+            Jurnal::where('nomor',$trucking->jurnal_piutang)->update([
+                'invoice' => $invoice
+            ]);
+            JurnalSample::where('nomor',$trucking->jurnal_piutang)->update([
+                'invoice' => $invoice
+            ]);
+        }
+        if($trucking->jurnal_hutang){
+            $j = Jurnal::where('nomor',$trucking->jurnal_hutang)->where('credit','>',0)->first();
+            $js = JurnalSample::where('nomor',$trucking->jurnal_hutang)->where('credit','>',0)->first();
+            Jurnal::where('nomor',$trucking->jurnal_hutang)->update([
+                'invoice' => $invoice
+            ]);
+            JurnalSample::where('nomor',$trucking->jurnal_hutang)->update([
+                'invoice' => $invoice,
+            ]);
+
+            if($j){
+                $j->update([
+                    'nama' => 'Hutang Trucking '.$trucking->pengirim.' INV. '.$invoice
+                ]);
+            }
+
+            if($js){
+                $js->update([
+                    'nama' => 'Hutang Trucking '.$trucking->pengirim.' INV. '.$invoice
+                ]);
+            }
+        }
 
         return response('Success');
     }

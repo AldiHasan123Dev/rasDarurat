@@ -34,6 +34,7 @@
                     @if (!request('filter-order') && is_null($marketing))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     @endif
+                    <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-malindo">JOB Malindo</button>
                     @if (is_null($marketing))
                     <button type="button" onclick="modalEditOrder()" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
@@ -138,7 +139,9 @@
                             @if (is_null($marketing))
                             <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBTTBCreate"><i class="fas fa-plus"></i> Tambah BTTB</button>
                             <button onclick="printBttb()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</button>
+                            <button onclick="printBttb(true)" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB Inc Berat</button>
                             <button onclick="printBttbKubikasi()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi</button>
+                            <button onclick="printBttbKubikasi(true)" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi Inc Berat</button>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
                             <button class="py-2 px-3 btn btn-sm btn-danger" style="font-size: .7rem" id="delete-bttb"><i class="fas fa-trash"></i> Hapus</button>
                             @endif
@@ -393,6 +396,28 @@
                 <div class="mb-2">
                     <label for="to" class="form-label">To</label>
                     <input type="date" name="to" id="to" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Export Excel</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="modal-export-malindo" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <form action="{{ route('order.export.malindo') }}" method="POST" class="modal-dialog">
+        @csrf
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Export Data Malindo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="month" class="form-label">Bulan</label>
+                    <input type="month" name="month" id="month" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1074,8 +1099,11 @@
             open(url, 'Cetak Packing List', params_);
         }
 
-        const printBttb = ()=>{
+        const printBttb = (berat = false)=>{
             let url = @json(url('admin/cetak/bttb'))+'?order_id='+id+'&print=1';
+            if (berat) {
+                url += '&berat=kg';
+            }
             let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
             open(url, 'Cetak BTTB', params_);
         }
@@ -1086,8 +1114,11 @@
             open(url, 'Cetak Packing List', params_);
         }
 
-        const printBttbKubikasi = ()=>{
+        const printBttbKubikasi = (berat = false)=>{
             let url = @json(url('admin/cetak/bttb-kubikasi'))+'?order_id='+id+'&print=1';
+            if (berat) {
+                url += '&berat=kg';
+            }
             let params_ = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=800,height=500,left=100,top=100`;
             open(url, 'Cetak BTTB', params_);
         }

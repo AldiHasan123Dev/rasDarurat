@@ -7,6 +7,8 @@
                     $no1 = sprintf('%03d',$no_1).'/BBK-RAS/24';
                     $no_2 = App\Models\Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
                     $no2 = sprintf('%03d',$no_2).'/BKK-RAS/24';
+                    $no_3 = App\Models\Jurnal::where('tipe','BBKT')->whereYear('created_at',date('Y'))->max('no') + 1;
+                    $no3 = sprintf('%03d',$no_3).'/BBKT-RAS/24';
                 @endphp
                 <div>
                     @csrf
@@ -17,11 +19,12 @@
                                 <option data-tipe="" data-no="0" data-coa="-" data-akun="-" value="">-</option>
                                 <option data-tipe="BBK" data-no="{{ $no_1 }}" data-coa="1.1.2.1" data-akun="Bank Mandiri 1400046005006" value="{{ $no1 }}">{{ $no1 }}</option>
                                 <option data-tipe="BKK" data-no="{{ $no_2 }}" data-coa="1.1.1" data-akun="Kas" value="{{ $no2 }}">{{ $no2 }}</option>
+                                <option data-tipe="BBKT" data-no="{{ $no_3 }}" data-coa="1.1.2.2" data-akun="Bank Mandiri 1400023927867 (Trucking)" value="{{ $no3 }}">{{ $no3 }}</option>
                             </select>
                         </div>
                         <div class="mb-2">
                             <label for="created_at">Tanggal Jurnal</label>
-                            <input type="date" name="created_at" id="created_at" required class="form-control" value="{{ date('Y-m-d') }}">
+                            <input type="date" name="created_at" id="created_at" required class="form-control" value="{{ $created_at }}" readonly>
                         </div>
                         <div class="mb-2 mt-3">
                             <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('are you sure?')">Generate Jurnal</button>
@@ -148,9 +151,9 @@
                                                     $inp++;
                                                 @endphp
                                                 <tr>
-                                                    <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
-                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
-                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
+                                                    <td rowspan="2"><input type="checkbox" name="active[]" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="{{ $item->id }}"></td>
+                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'6.2.1':'2.1.5.2.1') }}</td>
+                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>Simpanan Sangu Sopir - {{ $item->customer->nama }} - {{ $item->order->tarif->customer->nama ?? '-' }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
@@ -166,25 +169,25 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->simpanan) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nomor]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][no]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][tipe]">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][container]" value="{{ $item->container }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][debit]" value="{{ $item->simpanan }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nama]" value="Simpanan Sangu Sopir - {{ $item->customer->nama }} - {{ $item->order->tarif->customer->nama ?? '-' }}  (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?98:80) }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
+                                                <input class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nomor]">
+                                                <input class="inp-{{ $inp }} no" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][no]">
+                                                <input class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][tipe]">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][container]" value="{{ $item->container }}">
+                                                <input class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][debit]" value="{{ $item->simpanan }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_sopir[{{ $idx }}][nama]" value="Simpanan Sangu Sopir - {{ $item->customer->nama }} - {{ $item->order->tarif->customer->nama ?? '-' }}  (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
                                             @endif
                                             @if ($item->simpanan_kuli > 0)
                                                 @php
                                                     $inp++;
                                                 @endphp
                                                 <tr>
-                                                    <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
-                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
-                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
+                                                    <td rowspan="2"><input type="checkbox" name="active[]" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="{{ $item->id }}"></td>
+                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'6.2.1':'2.1.5.2.1') }}</td>
+                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>Biaya Kuli - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
@@ -200,25 +203,25 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->simpanan_kuli) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nomor]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][no]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][tipe]">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][container]" value="{{ $item->container }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][debit]" value="{{ $item->simpanan_kuli }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nama]" value="Biaya Kuli - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?98:80) }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
+                                                <input class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nomor]">
+                                                <input class="inp-{{ $inp }} no" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][no]">
+                                                <input class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][tipe]">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][container]" value="{{ $item->container }}">
+                                                <input class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][debit]" value="{{ $item->simpanan_kuli }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_simpanan_kuli[{{ $idx }}][nama]" value="Biaya Kuli - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
                                             @endif
                                             @if ($item->tb_tl > 0)
                                                 @php
                                                     $inp++;
                                                 @endphp
                                                 <tr>
-                                                    <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
-                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
-                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
+                                                    <td rowspan="2"><input type="checkbox" name="active[]" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="{{ $item->id }}"></td>
+                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'6.2.1':'2.1.5.2.1') }}</td>
+                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>TB/TL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
@@ -234,25 +237,25 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->tb_tl) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_tbtl[{{ $idx }}][nomor]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_tbtl[{{ $idx }}][no]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_tbtl[{{ $idx }}][tipe]">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][container]" value="{{ $item->container }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][debit]" value="{{ $item->tb_tl }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][nama]" value="TB/TL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?98:80) }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
+                                                <input class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_tbtl[{{ $idx }}][nomor]">
+                                                <input class="inp-{{ $inp }} no" type="hidden" name="jurnal_tbtl[{{ $idx }}][no]">
+                                                <input class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_tbtl[{{ $idx }}][tipe]">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][container]" value="{{ $item->container }}">
+                                                <input class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][debit]" value="{{ $item->tb_tl }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_tbtl[{{ $idx }}][nama]" value="TB/TL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
                                             @endif
                                             @if ($item->stappel > 0)
                                                 @php
                                                     $inp++;
                                                 @endphp
                                                 <tr>
-                                                    <td rowspan="2"><input type="checkbox" name="active_{{ $inp }}" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="1"></td>
-                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'6.2.1':'2.1.5.2.1') }}</td>
-                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
+                                                    <td rowspan="2"><input type="checkbox" name="active[]" id="active_{{ $inp }}" onchange="activeInp({{ $inp }})" value="{{ $item->id }}"></td>
+                                                    <td>{{ $item->customer_id == 2 ? '1.6.2.2' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'6.2.1':'2.1.5.2.1') }}</td>
+                                                    <td>{{ $item->customer_id == 2 ? 'Uang Muka Biaya Operasional Trucking Ekspedisi' : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?'Biaya Operasional Trucking Eksternal':'Hutang Biaya Oprasional Trucking') }}</td>
                                                     <td>{{ $item->container }}</td>
                                                     <td>{{ $item->kendaraan->nopol }}</td>
                                                     <td>STAPPEL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}</td>
@@ -268,16 +271,16 @@
                                                     <td>0</td>
                                                     <td>{{ number_format($item->stappel) }}</td>
                                                 </tr>
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y')?98:80) }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_stappel[{{ $idx }}][nomor]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} no" type="hidden" name="jurnal_stappel[{{ $idx }}][no]">
-                                                <input disabled="disabled" class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_stappel[{{ $idx }}][tipe]">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][container]" value="{{ $item->container }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][debit]" value="{{ $item->stappel }}">
-                                                <input disabled="disabled" class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][nama]" value="STAPPEL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][coa_id]" value="{{ $item->customer_id == 2 ? 61 : (date('m-y',strtotime($item->tgl_muat))==date('m-y',strtotime($created_at))?98:80) }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][order_trucking_id]" value="{{ $item->id }}">
+                                                <input class="inp-{{ $inp }} jurnal_nomor" type="hidden" name="jurnal_stappel[{{ $idx }}][nomor]">
+                                                <input class="inp-{{ $inp }} no" type="hidden" name="jurnal_stappel[{{ $idx }}][no]">
+                                                <input class="inp-{{ $inp }} tipe" type="hidden" name="jurnal_stappel[{{ $idx }}][tipe]">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][invoice]" value="{{ $item->invoice }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][nopol]" value="{{ $item->kendaraan->nopol ?? '' }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][container]" value="{{ $item->container }}">
+                                                <input class="inp-{{ $inp }}" id="debit-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][debit]" value="{{ $item->stappel }}">
+                                                <input class="inp-{{ $inp }}" type="hidden" name="jurnal_stappel[{{ $idx }}][nama]" value="STAPPEL - {{ $item->customer->nama }} (1x{{ $item->tipe }}) {{ $item->tarif->tujuan->tujuanInfo->nama }}">
                                             @endif
                                         @endforeach
                                     </tbody>
@@ -315,10 +318,10 @@
     let total = 0;
     function activeInp(id){
         if($('#active_' + id).is(":checked")){
-            $('.inp-'+id).attr('disabled',false);
+            // $('.inp-'+id).attr('disabled',false);
             total += parseInt($('#debit-'+id).val());
         }else{
-            $('.inp-'+id).attr('disabled',true);
+            // $('.inp-'+id).attr('disabled',true);
             total -= parseInt($('#debit-'+id).val());
         }
         $('.text-total').html(total.toLocaleString('id-ID'));

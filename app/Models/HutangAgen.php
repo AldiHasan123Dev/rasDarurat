@@ -12,15 +12,20 @@ class HutangAgen extends Model
 
     protected $table = 'hutang_agen';
     protected $fillable = [
-        'tarif_agen_id',
         'order_id',
-        'jumlah',
-        'status'
+        'jurnal',
+        'invoice',
+        'draf',
+        'tarif',
+        'ppn',
+        'pph',
+        'tanggal',
+        'status',
     ];
 
-    public function tarif_agen()
+    public function orders()
     {
-        return $this->belongsTo(TarifAgen::class,'tarif_agen_id');
+        return $this->hasMany(Order::class,'invoice_agen','invoice');
     }
 
     public function order()

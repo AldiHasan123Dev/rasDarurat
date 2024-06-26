@@ -24,7 +24,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $menu = Auth::user()->role->access->first();
-        return redirect($menu->sub_menu->url);
+        return view('home');
     }
 }

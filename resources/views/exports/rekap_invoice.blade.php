@@ -45,6 +45,7 @@
                 <td rowspan="{{ $order->bttb->count() }}"></td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->container }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->jadwal_kapal ? ($order->jadwal_kapal->td ? date('d/m/y', strtotime($order->jadwal_kapal->td)) : '') : '' }}</td>
+                <td rowspan="{{ $order->bttb->count() }}">{{ $order->jadwal_kapal->kapal->nama ?? '' }} / {{ $order->jadwal_kapal->voyage ?? '' }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->nopol }}</td>
                 <td rowspan="{{ $order->bttb->count() }}">{{ $order->tarif->tujuan_lokasi->nama ?? '' }}</td>

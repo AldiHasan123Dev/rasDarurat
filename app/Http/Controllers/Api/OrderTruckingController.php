@@ -18,14 +18,14 @@ class OrderTruckingController extends Controller
 
     public function getJurnal()
     {
-        $sangu_sopir = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->sum('debit') ?? 0;
-        $sangu_kuli = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->sum('debit') ?? 0;
-        $uang_makan = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->sum('debit') ?? 0;
-        $solar = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->sum('debit') ?? 0;
-        $op = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->sum('debit') ?? 0;
-        $cleaning = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->sum('debit') ?? 0;
-        $tally = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->sum('debit') ?? 0;
         $order = OrderTrucking::find(request('id'));
+        $sangu_sopir = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','SANGU SOPIR%')->where('debit','>',0)->sum('debit') ?? 0;
+        $sangu_kuli = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','SANGU KULI%')->where('debit','>',0)->sum('debit') ?? 0;
+        $uang_makan = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','UANG MAKAN%')->where('debit','>',0)->sum('debit') ?? 0;
+        $solar = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA TAMBAH SOLAR%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','TAMBAH SOLAR%')->where('debit','>',0)->sum('debit') ?? 0;
+        $op = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','BIAYA OPERASIONAL TRUCKING%')->where('debit','>',0)->sum('debit') ?? 0;
+        $cleaning = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','BIAYA CLEANING%')->where('debit','>',0)->sum('debit') ?? 0;
+        $tally = Jurnal::where('order_trucking_id',request('id'))->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->orWhere('order_id',$order->order_id)->whereNotNull('order_id')->where('nama','LIKE','BIAYA CHECKER%')->where('debit','>',0)->sum('debit') ?? 0;
         $tipe = $order->kendaraan->milik;
         if($order->customer->r1 == 1){
             $tipe = 'R1';
@@ -173,7 +173,9 @@ class OrderTruckingController extends Controller
     public function getArrayId(Request $request)
     {
         $id = $request->id;
-        $orders = OrderTrucking::whereIn('id',$id)->get();
+        $id = array_values(array_filter($id));
+        $ids_ordered = implode(',', $id);
+        $orders = OrderTrucking::whereIn('id',$id)->orderByRaw("FIELD(id,$ids_ordered)")->get();
         $data = OrderTruckingResource::collection($orders);
         return response($data);
     }

@@ -1,24 +1,46 @@
 @extends('layouts.admin')
 @section('content')
     <div class="container mt-3">
-        <div class="card">
-            <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                {{-- <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasHutangAgen" aria-controls="offcanvasHutangAgen">Tambah Hutang Agen</button> --}}
+        <form action="{{ route('hutang-agen.draf') }}" method="POST" class="card">
+            @csrf
+            <div class="card-header p-3 d-flex justify-content-between" style="gap:10px">
+                <div class="d-flex gap-3">
+                    <button class="py-2 px-3 btn btn-success" type="submit">Buat Draf</button>
+                    <a href="{{ route('hutang-agen.list') }}" class="py-2 px-3 btn btn-primary">List Jurnal</a>
+                </div>
                 <h5>List Hutang Agen</h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="height: 450px">
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>
                             <tr>
-                                <th>ID.</th>
                                 <th>Agen</th>
+                                <th>#</th>
                                 <th>JOB</th>
-                                <th>Harga</th>
+                                <th>Pembayar</th>
+                                <th>Container</th>
+                                <th>Seal</th>
+                                <th>Tujuan</th>
                                 {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($data as $agen_id)
+                                @foreach ($agen_id as $order)
+                                    <tr>
+                                        @if ($loop->first)
+                                        <td class="fw-bold" rowspan="{{ $agen_id->count() }}">{{ $agen_id->first()->agent->nama }}</td>
+                                        @endif
+                                        <td><input type="checkbox" name="order_id[]" id="{{ $order->id }}" value="{{ $order->id }}"></td>
+                                        <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
+                                        <td>{{ $order->tarif->customer->nama }}</td>
+                                        <td>{{ $order->container }}</td>
+                                        <td>{{ $order->seal }}</td>
+                                        <td>{{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -29,21 +51,6 @@
 
 @section('script')
     <script>
-        let table = $('.table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax:{
-                url: '{{ route('hutangagen.data') }}',
-                method:'POST',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'agen_id', name: 'agen_id' },
-                { data: 'order_id', name: 'order_id' },
-                { data: 'harga', name: 'harga' },
-                // { data: 'action', name: 'action', orderable: false, searchable: false },
-            ]
-        });
+        // $('table').dataTable()
     </script>
 @endsection

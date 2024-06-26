@@ -7,6 +7,7 @@
 <x-input :value="$agen->fax??old('fax')" :col="6" :label="'Fax'" :type="'text'" :name="'fax'"></x-input>
 <x-input :value="$agen->email??old('email')" :col="6" :label="'Email'" :type="'text'" :name="'email'"></x-input>
 <x-input :value="$agen->hp??old('hp')" :col="6" :label="'HP'" :type="'text'" :name="'hp'"></x-input>
+<x-input :value="$agen->top??old('top')" :col="6" :label="'top'" :type="'number'" :name="'top'"></x-input>
 <x-input :value="$agen->alamat??old('alamat')" :col="12" :label="'Alamat'" :type="'textarea'" :name="'alamat'" :required="true"></x-input>
 <div class="col-12 mb-2 px-1">
     <button type="submit" class="btn btn-success btn-sm">{{ empty($agen)?'Tambah':'Update' }} Data</button>

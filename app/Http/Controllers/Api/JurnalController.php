@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\JurnalResource;
 use App\Models\COA;
 use App\Models\Jurnal;
+use App\Models\JurnalSample;
 use App\Models\Order;
+use App\Models\Pelayaran;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class JurnalController extends Controller
 {
@@ -116,11 +119,17 @@ class JurnalController extends Controller
         $sidx = request('sidx'); // get index row - i.e. user click to sort
         $sord = request('sord'); // get the direction
         $search = request('_search'); // get the search
+        $is_sample = request('is_sample');
         $is_search = false;
         if($search=='true'){
             $is_search = true;
         }
-        $query = Jurnal::query();
+
+        $jurnal_model = new Jurnal();
+        if ($is_sample=='sample') {
+            $jurnal_model = new JurnalSample();
+        }
+        $query = $jurnal_model->query();
 
 
         $start = $limit * $page - $limit;
@@ -147,12 +156,12 @@ class JurnalController extends Controller
         }
         $data = $query->orderBy('created_at','desc')->orderBy('nomor','desc')->skip($start)->take($limit)->get();
 
-        $count = Jurnal::get('id')->count();
+        $count = $jurnal_model->get('id')->count();
         if (request('date')) {
-            $count = Jurnal::whereDate('created_at',request('date'))->get('id')->count();
+            $count = $jurnal_model->whereDate('created_at',request('date'))->get('id')->count();
         }else{
             if(request('month') && request('tipe')){
-                $count = Jurnal::whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
+                $count = $jurnal_model->whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
             }
         }
 
@@ -294,16 +303,104 @@ class JurnalController extends Controller
         foreach($order_id as $id){
             $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
             $order = Order::find($id);
-            if($jurnals->count()>0){
+            if($jurnals->count()>0 && $order){
                 return response([
                     'status' => 1,
-                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' Sudah terjurnal dengan coa 6.1'
+                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' sudah close dari Uang Muka'
                 ]);
             }
         }
         return response([
             'status' => 0,
             'message' => 'aman'
+        ]);
+    }
+
+    public function render_buku_pembantu()
+    {
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $coa_id = request('coa_id') ?? 46;
+        $subjek = request('subjek') ?? 'customer_xpdc';
+        $coa = COA::find($coa_id);
+        $coas = COA::orderBy('kode')->get(['id','nama','kode']);
+        $tipe = 'D';
+        if(substr($coa->kode,0,1)=='2'||substr($coa->kode,0,1)=='3'||substr($coa->kode,0,1)=='5'){
+            $tipe = 'C';
+        }
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
+        $now = $c->startOfMonth()->format('Y-m-d');
+        $last = $c->endOfMonth()->format('Y-m-d');
+        $start = '2022-12-01';
+        $query = Jurnal::query();
+        $query->join('coa','coa.id','=','jurnal.coa_id');
+        if($subjek=='customer_xpdc'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('tarif','tarif.id','=','order.tarif_id');
+            $query->join('customers','customers.id','=','tarif.customer_id');
+            $query->select('jurnal.*','customers.nama as nama_');
+        }
+        if($subjek=='customer_trucking'){
+            $query->join('order_trucking','order_trucking.id','=','jurnal.order_trucking_id');
+            $query->join('customer_trucking','customer_trucking.id','=','order_trucking.customer_id');
+            $query->select('jurnal.*','customer_trucking.nama as nama_');
+        }
+        if($subjek=='kendaraan'){
+            $query->join('order_trucking','order_trucking.invoice','=','jurnal.invoice');
+            $query->join('kendaraan','kendaraan.id','=','order_trucking.kendaraan_id');
+            $query->select('jurnal.*','kendaraan.milik as nama_');
+        }
+        if($subjek=='pelayaran'){
+            // $query->join('hutang_pelayaran','hutang_pelayaran.no_bg_ut','=','jurnal.no_bg');
+            // $query->join('hutang_pelayaran', function ($join) {
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opp');
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.ut');
+            //     $join->orOn('jurnal.no_bg', '=', 'hutang_pelayaran.no_bg_opt');
+            // });
+            // $query->join('order','order.id','=','hutang_pelayaran.order_id');
+            // $query->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
+            // $query->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
+            // $query->select('jurnal.*','pelayaran.nama as nama_');
+            $query->whereNotNull('jurnal.no_bg');
+            // dd($query->get());
+        }
+        if($subjek=='agen'){
+            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('agen','agen.id','=','order.agen_id');
+            $query->select('jurnal.*','agen.nama as nama_');
+        }
+        $query->where('jurnal.coa_id',$coa_id);
+        $query->whereBetween('jurnal.created_at',[$start,$last]);
+        if($subjek!='pelayaran'){
+            $query->orderBy('nama_');
+        }
+        $data = $query->get();
+        if($subjek!='pelayaran'){
+            $data = $data->groupBy('nama_');
+        }
+        $q = Jurnal::query();
+        $q->where('coa_id',$coa_id);
+        $q->whereBetween('created_at',[$start,$last]);
+        if($subjek=='customer_trucking'){
+            $q->whereNull('order_trucking_id');
+        }else if($subjek=='kendaraan'){
+            $q->whereNotNull('invoice');
+        }else{
+            $q->whereNull('order_id');
+        }
+        $no_data = $q->get();
+        if($subjek=='pelayaran'){
+            $data = Pelayaran::whereHas('hutang_pelayaran', function($q){
+                $q->whereNotNull('no_bg_opt');
+                $q->orWhereNotNull('no_bg_opp');
+                $q->orWhereNotNull('no_bg_ut');
+            })->orderBy('nama')->get();
+        }
+
+        $res = view('data.buku_besar_pembantu', compact('data','months','coas','year','month','coa_id','tipe','no_data','subjek'))->render();
+        return response([
+            'data' => $res
         ]);
     }
 }

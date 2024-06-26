@@ -20,6 +20,7 @@ class Jurnal extends Model
         'nomor',
         'nama',
         'invoice',
+        'invoice_external',
         'nopol',
         'container',
         'debit',
@@ -28,6 +29,7 @@ class Jurnal extends Model
         'no',
         'is_balik',
         'created_at',
+        'input',
         'no_bg',
         'tgl_bg',
         'nominal_bg',
@@ -45,6 +47,7 @@ class Jurnal extends Model
     {
         static::creating(function ($model) {
             $model->created_by = Auth::id();
+            $model->input = date('Y-m-d H:i:s');
             $model->updated_by = Auth::id();
         });
         static::saving(function ($model) {

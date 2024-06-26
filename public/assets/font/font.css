@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'raster';
+    src: url('./raster.ttf');
+}
+@font-face {
+    font-family: 'raster-bold';
+    src: url('./raster-bold.ttf');
+}
+
+

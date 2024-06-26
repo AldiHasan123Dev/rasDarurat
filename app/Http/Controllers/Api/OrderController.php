@@ -405,8 +405,31 @@ class OrderController extends Controller
     public function getArrayId(Request $request)
     {
         $id = $request->id;
-        $orders = Order::whereIn('id',$id)->get();
+        $id = array_values(array_filter($id));
+        $ids_ordered = implode(',', $id);
+        $orders = Order::whereIn('id',$id)->orderByRaw("FIELD(id,$ids_ordered)")->get();
         $data = OrderResource::collection($orders);
         return response($data);
+    }
+
+    public function updateLockAll(Request $request)
+    {
+        $id = $request->id;
+        Order::whereIn('id',$id)->update([
+            'lock_omset' => 1
+        ]);
+
+        return response('seccess');
+
+    }
+    public function updateUnlockAll(Request $request)
+    {
+        $id = $request->id;
+        Order::whereIn('id',$id)->update([
+            'lock_omset' => 0
+        ]);
+
+        return response('seccess');
+
     }
 }

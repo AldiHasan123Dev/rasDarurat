@@ -18,6 +18,7 @@ class Order extends Model
         'no',
         'job',
         'invoice',
+        'invoice_agen',
         'invoice_bayar',
         'invoice_date',
         'nsfp',
@@ -194,5 +195,10 @@ class Order extends Model
     public function jasa_kirim()
     {
         return $this->hasOne(JasaKirim::class);
+    }
+
+    public function sum_cont()
+    {
+        return Order::where('job',$this->job)->count();
     }
 }

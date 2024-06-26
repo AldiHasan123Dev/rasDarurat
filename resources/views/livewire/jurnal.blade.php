@@ -67,6 +67,8 @@
                                         <option value="BBM">Bank Masuk - {{ $no_3 }}</option>
                                         <option value="BKK">Kas Keluar - {{ $no_4 }}</option>
                                         <option value="BKM">Kas Masuk - {{ $no_5 }}</option>
+                                        <option value="BBKT">Bank Keluar Trucking - {{ $no_6 }}</option>
+                                        <option value="BBMT">Bank Masuk Trucking - {{ $no_7 }}</option>
                                     </select>
                                 </div>
                                 <div class="col-6">
@@ -91,6 +93,7 @@
                                 <th style="width: 300px">Akun Credit</th>
                                 <th>Keterangan</th>
                                 <th>Nominal</th>
+                                <th style="width: 300px">Invoice External</th>
                             </tr>
                             @for ($i = 0; $i < $debit_idx; $i++)
                             <tr class="init-table">
@@ -99,7 +102,7 @@
                                     <select class="form-control select2" id="job-{{ $i }}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                         <option value=""></option>
                                         @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -129,6 +132,7 @@
                                 </td>
                                 <td style="width: 250px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
                                 <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
+                                <td><input type="text" name="invoice_external[]" id="invoice_external-{{ $i }}"></td>
                             </tr>
                             @endfor
                         </table>
@@ -220,7 +224,7 @@
                             <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
-                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -250,6 +254,7 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                        <td><input type="text" name="invoice_external[]" id="invoice_external-${debit}"></td>
                     </tr>`;
         $('#table-debit').append(html);
         setTimeout(() => {
@@ -387,6 +392,7 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" value="${item.keterangan}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                        <td><input type="text" name="invoice_external[]" id="invoice_external-${debit}"></td>
                     </tr>`;
                     $('#table-debit').append(html);
                     $('#debit-'+debit).val(item.coa_debit_id);

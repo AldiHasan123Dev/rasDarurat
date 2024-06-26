@@ -37,9 +37,9 @@
                 <td>{{ $item->tujuan }}</td>
                 <td>{{ $item->keterangan }}</td>
                 <td>{{ $item->nsfp }}</td>
-                <td>{{ number_format(ceil($item->sub_total)) }}</td>
+                <td>{{ number_format(round($item->sub_total)) }}</td>
                 <td>{{ number_format(round($item->ppn)) }}</td>
-                <td>{{ number_format(round($item->ppn)+ceil($item->sub_total)) }}</td>
+                <td>{{ number_format(round($item->ppn)+round($item->sub_total)) }}</td>
                 <td>{{ number_format($item->pph) }}</td>
                 <td>{{ $item->no_job() }}</td>
                 <td>{{ $item->no_bupot }}</td>
@@ -50,9 +50,9 @@
         @endforeach
         <tr>
             <td colspan="11">JUMLAH</td>
-            <td>{{ number_format(ceil($transaksi->sum('sub_total'))) }}</td>
-            <td>{{ number_format(ceil($transaksi->sum('ppn'))) }}</td>
-            <td>{{ number_format(round($transaksi->sum('ppn')) + ceil($transaksi->sum('sub_total'))) }}</td>
+            <td>{{ number_format(round($transaksi->sum('sub_total'))) }}</td>
+            <td>{{ number_format(round($transaksi->sum('ppn'))) }}</td>
+            <td>{{ number_format(round($transaksi->sum('ppn')) + round($transaksi->sum('sub_total'))) }}</td>
             <td>{{ number_format(round($transaksi->sum('pph'))) }}</td>
         </tr>
     </tbody>

@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('style')
+<link rel="stylesheet" href="{{ asset('assets/font/font.css') }}">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@800&display=swap');
     #print *{
@@ -72,7 +73,7 @@
             <div id="print">
                 @if ($data->count()>=15)
                     @foreach ($data->chunk(15) as $bttb)
-                    <div class="page" style="margin-top: 50px">
+                    <div class="page" style="margin-top: 20px; margin-right:40px">
                         <div class="headers d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -137,6 +138,9 @@
                                             <th class="text-center">No. Gudang</th>
                                             <th>Jenis Barang</th>
                                             <th class="text-center">Koli</th>
+                                            @if (request('berat'))
+                                            <th class="text-center">Berat</th>
+                                            @endif
                                             <th class="text-center">P</th>
                                             <th class="text-center">L</th>
                                             <th class="text-center">T</th>
@@ -156,6 +160,9 @@
                                                 <td class="text-center">{{ $item->no_gudang }}</td>
                                                 <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                 <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                @if (request('berat'))
+                                                <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                                @endif
                                                 <td class="text-center">{{ $item->p }}</td>
                                                 <td class="text-center">{{ $item->l }}</td>
                                                 <td class="text-center">{{ $item->t }}</td>
@@ -181,6 +188,9 @@
                                             <tr style="border: 2px solid black">
                                                 <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                                 <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                                @if (request('berat'))
+                                                    <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                                @endif
                                                 <td colspan="7" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                             </tr>
                                         @endif
@@ -194,6 +204,7 @@
                                             <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                             <td style="width: 30px"></td>
                                             <td>{{ $order->bttb->sum('qty') }}</td>
+                                            <td>{{ number_format($order->bttb->sum('berat')) }}</td>
                                             <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                         </tr>
                                     </table>
@@ -244,7 +255,7 @@
                 @else
                     @if ($data->count()>=10)
                         @foreach ($data->chunk(10) as $bttb)
-                        <div class="page" style="margin-top: 50px">
+                        <div class="page" style="margin-top: 20px; margin-right:40px">
                             <div class="headers d-flex" style="gap:5px; width:100%">
                                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                                 <div style="width: 40%; margin-left:35px">
@@ -309,6 +320,9 @@
                                                 <th class="text-center">No. Gudang</th>
                                                 <th>Jenis Barang</th>
                                                 <th class="text-center">Koli</th>
+                                                @if (request('berat'))
+                                                <th class="text-center">Berat</th>
+                                                @endif
                                                 <th class="text-center">P</th>
                                                 <th class="text-center">L</th>
                                                 <th class="text-center">T</th>
@@ -328,6 +342,9 @@
                                                     <td class="text-center">{{ $item->no_gudang }}</td>
                                                     <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                     <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                    @if (request('berat'))
+                                                    <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                                    @endif
                                                     <td class="text-center">{{ $item->p }}</td>
                                                     <td class="text-center">{{ $item->l }}</td>
                                                     <td class="text-center">{{ $item->t }}</td>
@@ -353,6 +370,9 @@
                                                 <tr style="border: 2px solid black">
                                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                                    @if (request('berat'))
+                                                        <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                                    @endif
                                                     <td colspan="7" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                                 </tr>
                                             @endif
@@ -366,6 +386,7 @@
                                                 <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                                 <td style="width: 30px"></td>
                                                 <td>{{ $order->bttb->sum('qty') }}</td>
+                                                <td>{{ number_format($order->bttb->sum('berat')) }}</td>
                                                 <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                             </tr>
                                         </table>
@@ -415,7 +436,7 @@
                         @endforeach
                     @else
                         @foreach ($data->chunk(15) as $bttb)
-                        <div class="page" style="margin-top: 50px">
+                        <div class="page" style="margin-top: 20px; margin-right:40px">
                             <div class="headers d-flex" style="gap:5px; width:100%">
                                 <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
                                 <div style="width: 40%; margin-left:35px">
@@ -480,6 +501,9 @@
                                                 <th class="text-center">No. Gudang</th>
                                                 <th>Jenis Barang</th>
                                                 <th class="text-center">Koli</th>
+                                                @if (request('berat'))
+                                                <th class="text-center">Berat</th>
+                                                @endif
                                                 <th class="text-center">P</th>
                                                 <th class="text-center">L</th>
                                                 <th class="text-center">T</th>
@@ -499,6 +523,9 @@
                                                     <td class="text-center">{{ $item->no_gudang }}</td>
                                                     <td>{{ ucwords(strtolower($item->barang->nama)) }}</td>
                                                     <td class="text-center">{{ $item->qty }} {{ $item->satuan->nama }}</td>
+                                                    @if (request('berat'))
+                                                    <td class="text-center">{{ number_format($item->berat ?? 0) }} Kg</td>
+                                                    @endif
                                                     <td class="text-center">{{ $item->p }}</td>
                                                     <td class="text-center">{{ $item->l }}</td>
                                                     <td class="text-center">{{ $item->t }}</td>
@@ -524,6 +551,9 @@
                                                 <tr style="border: 2px solid black">
                                                     <td colspan="2">Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                                     <td class="text-center">{{ $order->bttb->sum('qty') }}</td>
+                                                    @if (request('berat'))
+                                                        <td class="text-center">{{ number_format($order->bttb->sum('berat')) }}</td>
+                                                    @endif
                                                     <td colspan="7" class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                                 </tr>
                                             @endif
@@ -537,6 +567,7 @@
                                                 <td>Kondisi: {{ $order->tarif->kondisiInfo->nama }}</td>
                                                 <td style="width: 30px"></td>
                                                 <td>{{ $order->bttb->sum('qty') }}</td>
+                                                <td>{{ number_format($order->bttb->sum('berat')) }}</td>
                                                 <td class="text-center">Pembayar: {{ $order->tarif->customer->nama }}</td>
                                             </tr>
                                         </table>

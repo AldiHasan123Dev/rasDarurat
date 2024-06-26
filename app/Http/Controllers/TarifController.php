@@ -136,11 +136,13 @@ class TarifController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
-        $data = Tarif::query()->limit($start)->offset($limit);
-        $count =  Tarif::select('id')->count();
+        $q = Tarif::query();
+        $q->join('lokasi','lokasi.id','=','tarif.tujuan')->select('tarif.*','lokasi.nama');
+        $data = $q->limit($start)->offset($limit);
+        $count =  Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->select('tarif.id')->count();
         if(request('customer_id')||!is_null(request('customer_id'))){
-            $data = Tarif::query()->where('customer_id',request('customer_id'))->limit($start)->offset($limit);
-            $count = Tarif::query()->where('customer_id',request('customer_id'))->select('id')->count();
+            $data = Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->where('tarif.customer_id',request('customer_id'))->select('tarif.*','lokasi.nama')->limit($start)->offset($limit);
+            $count = Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->where('tarif.customer_id',request('customer_id'))->select('id')->count();
         }
 
         return Datatables::of($data)
@@ -148,7 +150,7 @@ class TarifController extends Controller
             //     return  $data->jadwal_kapal->kapal->nama.'('.$data->jadwal_kapal->voyage.') || '.$data->jadwal_kapal->pelayaran->nama.' || ETD '.date('d/m/y',strtotime($data->jadwal_kapal->etd)).' || '.$data->jadwal_kapal->rute ?? '-';
             // })
             ->order(function ($data){
-                $data->orderBy('created_at','desc');
+                $data->orderBy('tarif.created_at','desc');
             })
             ->addColumn('updated_at', function($data){
                 return  date('d/m/y', strtotime($data->updated_at));

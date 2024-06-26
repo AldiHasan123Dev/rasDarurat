@@ -23,6 +23,7 @@ class Agen extends Model
         'fax',
         'email',
         'hp',
+        'top',
     ];
 
     protected static function booted()

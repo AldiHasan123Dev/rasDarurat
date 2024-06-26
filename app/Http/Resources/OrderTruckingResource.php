@@ -75,6 +75,7 @@ class OrderTruckingResource extends JsonResource
             'container' => $this->container ?? '-',
             'seal' => $this->seal ?? '-',
             'dari' => 'PERAK',
+            'dari_xpdc' => $this->order ? $this->order->tarif->dari_lokasi->nama : '-',
             'tujuan' => $this->tarif->tujuan->tujuanInfo->nama ?? '-',
             'tipe' => $this->tipe,
             'tarif' => $this->tarif ? number_format($this->tarif->tarif) : '-',

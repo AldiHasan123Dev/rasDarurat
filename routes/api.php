@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\TransaksiController;
 use App\Http\Controllers\Api\TransaksiTruckingController;
 use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\PelayaranController;
+use App\Http\Controllers\SyncController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,8 @@ Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-nama-barang', [BarangController::class,'getNama']);
 Route::get('get-nama-satuan', [BarangController::class,'getNamaSatuan']);
 Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
+Route::post('update-order-lock-all', [OrderController::class,'updateLockAll']);
+Route::post('update-order-unlock-all', [OrderController::class,'updateUnlockAll']);
 Route::post('update-order', [OrderController::class,'update']);
 Route::post('update-order-request', [OrderController::class,'update_request']);
 Route::post('order/{order}', [OrderController::class,'show']);
@@ -105,7 +108,9 @@ Route::post('get-omset-jurnal',[OmsetController::class,'getJurnal'])->name('omse
 Route::post('add-omset-jurnal',[OmsetController::class,'addJurnal'])->name('omset.add.item');
 Route::post('jurnal-filter',[JurnalController::class,'filter'])->name('api.jurnal.filter');
 Route::post('customer-trucking/{customertrucking}',[CustomerTruckingController::class,'update'])->name('api.customertrucking.update');
+Route::post('render-bb-pembantu',[JurnalController::class,'render_buku_pembantu'])->name('api.render_buku_pembantu');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
 Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
+Route::post('sync-order-trucking',[SyncController::class,'order_trucking'])->name('api.sync.ordertrucking');

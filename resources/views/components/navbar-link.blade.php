@@ -12,7 +12,7 @@
 @endphp
 
 <div class="nav-item-wrapper my-2">
-    <a class="nav-link label-1" href="#" role="button" aria-expanded="false">
+    <a class="nav-link label-1" href="/home" role="button" aria-expanded="false">
         <div class="d-flex align-items-center">
             <span class="nav-link-icon"><span class="fas fa-home"></span></span>
             <span class="nav-link-text-wrapper"><span class="nav-link-text">Dashboard</span></span>

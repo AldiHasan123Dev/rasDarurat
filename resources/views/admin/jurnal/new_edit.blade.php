@@ -66,9 +66,12 @@
                             <thead>
                                 <tr>
                                     <th style="width: 50px">#</th>
+                                    <th>ID</th>
                                     <th>Job</th>
                                     <th>ID JOB</th>
                                     <th>Cont</th>
+                                    <th>Inv</th>
+                                    <th>Inv Ext</th>
                                     <th>COA</th>
                                     <th>Keterangan</th>
                                     <th>Debit</th>
@@ -127,7 +130,7 @@
                                 <select class="form-control" id="order_id" name="order_id" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @foreach ($orders as $item)
-                                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
+                                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -138,7 +141,7 @@
                                 <select class="form-control" id="order_trucking_id" name="order_trucking_id" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -348,9 +351,12 @@
                                                 <button onclick="editModal('jurnal-edit-${item.id}')" type="button" style="border:none; background: transparent; color:rgb(41, 51, 226)"><i class="fas fa-pencil"></i></button>
                                             </div>
                                         </td>
+                                        <td>${item.id}</td>
                                         <td>${item.job}</td>
                                         <td>${item.no_job}</td>
                                         <td>${item.container}</td>
+                                        <td>${item.invoice}</td>
+                                        <td>${item.invoice_external}</td>
                                         <td>${item.coa_nama} - ${item.coa_kode}</td>
                                         <td>${item.nama}</td>
                                         <td>${item.debit}</td>

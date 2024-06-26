@@ -222,7 +222,7 @@ class HutangPelayaranController extends Controller
             'coa_id' => 62,
             'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
             'no' => $data_nomor[$hp->no_bg_opp]['no'],
-            'nama' => 'Hutang OPP '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
+            'nama' => 'Hutang OPP '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
             'debit' => 0,
             'credit' => $opp_total - $hp->pph,
         ]);
@@ -235,7 +235,7 @@ class HutangPelayaranController extends Controller
                 'coa_id' => 62,
                 'nomor' => $data_nomor[$hp->no_bg_opt]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_opt]['no'],
-                'nama' => 'Hutang OPT '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
+                'nama' => 'Hutang OPT '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
                 'debit' => 0,
                 'credit' => $opt_total,
             ]);
@@ -249,7 +249,7 @@ class HutangPelayaranController extends Controller
                 'coa_id' => 62,
                 'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                'nama' => 'Hutang UT '.$hp->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_ut.' ('.date('d/m/y',strtotime($hp->tgl_bg_ut)).')',
+                'nama' => 'Hutang UT '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_ut.' ('.date('d/m/y',strtotime($hp->tgl_bg_ut)).')',
                 'debit' => 0,
                 'credit' => $ut_total + $hp->penambahan_nominal,
             ]);
@@ -370,7 +370,8 @@ class HutangPelayaranController extends Controller
             return back()->with('danger', 'Harap checklist terlebih dahulu!');
         }
 
-        $cek = HutangPelayaran::whereIn('order_id', $order_id)->get()->groupBy('pelayaran_id');
+        // $cek = HutangPelayaran::whereIn('order_id', $order_id)->get()->groupBy('pelayaran_id');
+        $cek = Order::join('jadwal_kapal','jadwal_kapal.id','order.jadwal_kapal_id')->whereIn('order.id', $order_id)->get()->groupBy('jadwal_kapal.pelayaran_id');
         if(count($cek)>1){
             return back()->with('danger', 'Harap checklist pelayaran yang sama!');
         }
@@ -378,10 +379,10 @@ class HutangPelayaranController extends Controller
         if(count($cek)>0){
             return back()->with('danger', 'Harap lock harga terlebih dahulu!');
         }
-        $cek = Order::whereIn('id', $order_id)->get()->groupBy('jadwal_kapal_id');
-        if(count($cek)>1){
-            return back()->with('danger', 'Data Kapal dan Voyage yang dipilih tidak sama!');
-        }
+        // $cek = Order::whereIn('id', $order_id)->get()->groupBy('jadwal_kapal_id');
+        // if(count($cek)>1){
+        //     return back()->with('danger', 'Data Kapal dan Voyage yang dipilih tidak sama!');
+        // }
         $data = HutangPelayaran::join('order','order.id','hutang_pelayaran.order_id')->whereIn('hutang_pelayaran.order_id', $order_id)->orderBy('order.job')->orderBy('order.no_job')->get()->groupBy('order.job');
         $data_bl = HutangPelayaran::join('order','order.id','hutang_pelayaran.order_id')->whereIn('hutang_pelayaran.order_id', $order_id)->orderBy('order.job')->orderBy('order.no_job')->get()->groupBy('order.penerimabl');
         $pelayaran = HutangPelayaran::whereIn('order_id', $order_id)->first()->pelayaran;

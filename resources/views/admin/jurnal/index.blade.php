@@ -67,7 +67,7 @@
                     </table>
                 </div>
                 @endif
-                <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')" :date="request('date')"/>
+                <livewire:list-jurnal :month="request('month')" :tipe="request('tipe')" :date="request('date')" :is_sample="$is_sample"/>
                 {{-- <div class="table-responsive">
                     <table class="table table-sm" style="font-size:.7rem">
                         <thead>
@@ -108,6 +108,7 @@
 <div class="modal fade" id="modal-export" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <form action="{{ route('jurnal.exportMonth') }}" method="POST" class="modal-dialog">
         @csrf
+        <input type="hidden" name="is_sample" value="{{ $is_sample }}">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Export Data</h5>
