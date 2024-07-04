@@ -850,4 +850,18 @@ class SyncController extends Controller
 
         return response('success data updated: '.$i);
     }
+
+    public function jurnal_invoice()
+    {
+        $data = Jurnal::whereNotNull('order_id')->whereNull('order_trucking_id')->whereNull('invoice')->where('coa_id',46)->get();
+        $i = 0;
+        foreach($data as $item){
+            $item->update([
+                'invoice' => $item->order->invoice ?? null
+            ]);
+            $i++;
+        }
+
+        return response('success data updated: '.$i);
+    }
 }

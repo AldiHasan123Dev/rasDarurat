@@ -361,6 +361,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-lokasi-agen', [SyncController::class, 'lokasi_agen']);
     Route::get('sync-coa-name', [SyncController::class, 'coa_name']);
     Route::get('sync-jasa-kirim', [SyncController::class, 'jasa_kirim']);
+    Route::get('sync-jurnal-invoice', [SyncController::class, 'jurnal_invoice']);
 
     Route::get('sync-jurnal-hutang-trucking/{trx_id}/{no}', [TruckingController::class, 'jurnal_hutang_trucking']);
 });
