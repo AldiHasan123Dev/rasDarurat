@@ -336,7 +336,7 @@ class JurnalController extends Controller
         $query = Jurnal::query();
         $query->join('coa','coa.id','=','jurnal.coa_id');
         if($subjek=='customer_xpdc'){
-            $query->join('order','order.id','=','jurnal.order_id');
+            $query->join('order','order.invoice','=','jurnal.invoice');
             $query->join('tarif','tarif.id','=','order.tarif_id');
             $query->join('customers','customers.id','=','tarif.customer_id');
             $query->select('jurnal.*','customers.nama as nama_');
@@ -387,7 +387,7 @@ class JurnalController extends Controller
         }else if($subjek=='kendaraan'){
             $q->whereNotNull('invoice');
         }else{
-            $q->whereNull('order_id');
+            $q->whereNull('invoice');
         }
         $no_data = $q->get();
         if($subjek=='pelayaran'){
