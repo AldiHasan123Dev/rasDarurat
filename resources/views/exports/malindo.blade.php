@@ -8,6 +8,7 @@
             <th>No. Cont</th>
             <th>Nopol Truck</th>
             <th>Kapal</th>
+            <th>Voyage</th>
             <th>TD</th>
             <th>RC Cust</th>
         </tr>
@@ -22,6 +23,7 @@
                 <td>{{ $item['container'] }}</td>
                 <td>{{ $item['nopol'] }}</td>
                 <td>{{ $item['kapal'] }}</td>
+                <td>{{ $item['voyage'] }}</td>
                 <td>{{ $item['td'] }}</td>
                 <td>{{ $item['komisi'] }}</td>
             </tr>
