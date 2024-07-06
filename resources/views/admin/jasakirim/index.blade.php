@@ -230,8 +230,8 @@
                                                                             @foreach ($item as $rs)
                                                                                 <tr>
                                                                                     <td>{{ $loop->iteration }}</td>
-                                                                                    <td>{{ $rs->lokasi->nama }}</td>
-                                                                                    <td>{{ $rs->agen->lokasi->nama }}</td>
+                                                                                    <td>{{ $rs->lokasi->nama ?? '-' }}</td>
+                                                                                    <td>{{ $rs->agen->lokasi->nama ?? '-' }}</td>
                                                                                     <td>{{ $rs->order_name() }}</td>
                                                                                     <td>{{ $rs->barcode }}</td>
                                                                                     <td>{{ date('d/m/y', strtotime($rs->tgl_kirim)) }}</td>
