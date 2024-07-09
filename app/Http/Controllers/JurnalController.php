@@ -932,7 +932,7 @@ class JurnalController extends Controller
     {
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
         $orders = Order::whereBetween('created_at',[$last,$now])->select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
         $tipe = 'xpdc';
         if($jurnal->order_trucking_id){
