@@ -174,7 +174,7 @@
                 @endforeach
                 <tr style="border: 2px solid red">
                     <td style="color:red">TOTAL</td>
-                    <td class="fw-bold" colspan="2"></td>
+                    <td class="fw-bold" colspan="3"></td>
                     <td class="text-end fw-bold">{{ number_format($total,2,',','.') }}</td>
                 </tr>
             </tbody>

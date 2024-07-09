@@ -149,8 +149,8 @@ class HutangAgenController extends Controller
     {
         $hutang_agen = HutangAgen::where('draf',request('draf'))->get();
         $tagihan_agen = TagihanAgen::where('draf', request('draf'))->get();
-        $no = Jurnal::where('tipe','TEST')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $nomor = 'HUTAGEN/'.sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+        $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
         $pph = 0;
         $total = 0;
         foreach($hutang_agen as $hutang) {
@@ -164,7 +164,7 @@ class HutangAgenController extends Controller
             $jurnal['nama'] = 'Biaya Dooring '.($order->tarif->customer->nama??'').' '.($order->tarif->shipmentInfo->nama??'').' '.($order->agent->nama??'');
             $jurnal['container'] = $order->container;
             $jurnal['invoice_external'] = $hutang->invoice;
-            $jurnal['tipe'] = 'TEST';
+            $jurnal['tipe'] = 'JNL';
             if($cek>0){
                 $jurnal['coa_id'] = 134;
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
@@ -215,7 +215,7 @@ class HutangAgenController extends Controller
                                 'nama' => $tagihan->nama,
                                 'container' => $order->container,
                                 'invoice_external' => $tagihan->invoice,
-                                'tipe' => 'TEST',
+                                'tipe' => 'JNL',
                                 'coa_id' => 134,
                                 'debit' => $amount,
                                 'credit' => 0
@@ -228,7 +228,7 @@ class HutangAgenController extends Controller
                                 'nama' => $tagihan->nama,
                                 'container' => $order->container,
                                 'invoice_external' => $tagihan->invoice,
-                                'tipe' => 'TEST',
+                                'tipe' => 'JNL',
                                 'coa_id' => 31,
                                 'debit' => $amount,
                                 'credit' => 0
@@ -254,7 +254,7 @@ class HutangAgenController extends Controller
                             'nama' => $tagihan->nama,
                             'container' => $order->container,
                             'invoice_external' => $tagihan->invoice,
-                            'tipe' => 'TEST',
+                            'tipe' => 'JNL',
                             'coa_id' => 63,
                             'debit' => $amount,
                             'credit' => 0
@@ -285,7 +285,7 @@ class HutangAgenController extends Controller
                             'nama' => $tagihan->nama,
                             'container' => $order->container,
                             'invoice_external' => $tagihan->invoice,
-                            'tipe' => 'TEST',
+                            'tipe' => 'JNL',
                             'coa_id' => 134,
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
@@ -298,7 +298,7 @@ class HutangAgenController extends Controller
                             'nama' => $tagihan->nama,
                             'container' => $order->container,
                             'invoice_external' => $tagihan->invoice,
-                            'tipe' => 'TEST',
+                            'tipe' => 'JNL',
                             'coa_id' => 31,
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
@@ -324,7 +324,7 @@ class HutangAgenController extends Controller
                         'nama' => $tagihan->nama,
                         'container' => $order->container,
                         'invoice_external' => $tagihan->invoice,
-                        'tipe' => 'TEST',
+                        'tipe' => 'JNL',
                         'coa_id' => 63,
                         'debit' => $tagihan->jumlah,
                         'credit' => 0
@@ -357,7 +357,7 @@ class HutangAgenController extends Controller
                 'nomor' => $nomor,
                 'no' => $no,
                 'nama' => 'Potongan PPH 23 Agen '.($hutang_agen->first()->order->agent->nama??'').' '.$invoice,
-                'tipe' => 'TEST',
+                'tipe' => 'JNL',
                 'coa_id' => 73,
                 'debit' => 0,
                 'credit' => $invoice_group->sum('pph'),
@@ -370,7 +370,7 @@ class HutangAgenController extends Controller
             'nomor' => $nomor,
             'no' => $no,
             'nama' => 'Hutang Agen '.($hutang_agen->first()->order->agent->nama??''),
-            'tipe' => 'TEST',
+            'tipe' => 'JNL',
             'coa_id' => 63,
             'credit' => $total - $pph,
             'debit' => 0

@@ -146,9 +146,13 @@
                             <td style="width: 300px"><b>TOTAL CREDIT</b></td>
                             <td><b id="total_credit"></b></td>
                         </tr>
+                        <tr class="border border-top-md">
+                            <td class="text-secondary" style="width: 300px"><span>CHECK VOUCHER</span></td>
+                            <td class="text-secondary"><span id="total_voucher"></span></td>
+                        </tr>
                     </table>
                 </div>
-                <div class="btn-group">
+                <div class="btn-group mt-3">
                     <input type="hidden" name="simpan" id="simpan">
                     <button type="button" class="btn btn-success btn-sm w-50 mx-2 btn-save" onclick="simpan_jurnal('jurnal')">Simpan Jurnal</button>
                     <button type="button" class="btn btn-warning btn-sm w-50 mx-2 btn-save" onclick="simpan_jurnal('tampungan')">Simpan Tampungan</button>
@@ -314,19 +318,29 @@
         total();
     }
 
+    var is_prev = false;
     function total(){
         var check = $("input[name='id[]']").map(function(){
             if($(this).is(":checked")){
                 return $(this).val();
             }
         }).get();
+
         total_credit = 0;
         total_debit = 0;
+        let total_debit_prev = 0;
+        let total_credit_prev = 0;
         for (let i = 0; i < check.length; i++) {
             const item = check[i];
             var d = $('#debit-'+item).val();
             var c = $('#credit-'+item).val();
             var a = parseInt($('#amount-'+item).val());
+            if(d==16 || d==45 || d==175){
+                total_debit_prev+=a;
+            }
+            if(c==16 ||c==45 || c==175){
+                total_credit_prev+=a;
+            }
             if(d!=""){
                 total_debit+=a;
             }
@@ -334,6 +348,11 @@
                 total_credit+=a;
             }
         }
+        let voucher = total_debit_prev - total_credit_prev;
+        if(voucher<0){
+            voucher = voucher * -1;
+        }
+        $('#total_voucher').html('Rp. '+voucher.toLocaleString('en-US'));
         $('#total_debit').html('Rp. '+total_debit.toLocaleString('en-US'));
         $('#total_credit').html('Rp. '+total_credit.toLocaleString('en-US'));
     }
