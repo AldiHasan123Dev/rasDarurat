@@ -116,6 +116,7 @@ class OrderTruckingController extends Controller
         $data['pph_21'] = 0;
         $data['pph_23'] = 0;
         $price = $tarif->tarif;
+        $data['tarif'] = $price;
         $kendaraan = Kendaraan::find($data['kendaraan_id']);
         $cus = CustomerTrucking::find($data['customer_id']);
         if($data['customer_id']!=2){
@@ -181,6 +182,7 @@ class OrderTruckingController extends Controller
                 }
                 $data['tujuan'] = $sangu->tujuanInfo->nama;
                 $data['tarif_id'] = $tarif->id;
+                $data['tarif'] = $tarif->tarif;
             }
         }
         if($request->borongan){
@@ -287,7 +289,7 @@ class OrderTruckingController extends Controller
         $ordertrucking->update($data);
         $order = OrderTrucking::find($ordertrucking->id);
         $totalan = $order->simpanan + $order->simpanan_kuli + $order->tb_tl + $order->lain_lain + $order->stappel;
-        $margin = $order->tarif->tarif - $order->borongan - $order->borongan_kuli - $order->uang_makan - $order->op - $order->cleaning;
+        $margin = $order->tarif - $order->borongan - $order->borongan_kuli - $order->uang_makan - $order->op - $order->cleaning;
         $order->update([
             'total_sopir' => $totalan,
             'margin' => $margin

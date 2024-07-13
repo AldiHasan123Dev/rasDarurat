@@ -92,6 +92,10 @@
                             <td style="width: 300px"><b>TOTAL CREDIT</b></td>
                             <td><b id="total_credit">{{ number_format($data->sum('credit'),2,',','.') }}</b></td>
                         </tr>
+                        <tr class="border border-top-md">
+                            <td class="text-secondary" style="width: 300px"><span>CHECK VOUCHER</span></td>
+                            <td class="text-secondary">{{ number_format($voucher,2,',','.') }}</td>
+                        </tr>
                     </table>
                 </div>
             </div>

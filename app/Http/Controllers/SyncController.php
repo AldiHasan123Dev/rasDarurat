@@ -864,4 +864,18 @@ class SyncController extends Controller
 
         return response('success data updated: '.$i);
     }
+
+    public function tarif_trucking()
+    {
+        $data = OrderTrucking::where('tarif_nominal',0)->get();
+        $i = 0;
+        foreach ($data as $item) {
+            $item->update([
+                'tarif_nominal' => $item->tarif->tarif
+            ]);
+            $i++;
+        }
+
+        return response('success data updated: '.$i);
+    }
 }

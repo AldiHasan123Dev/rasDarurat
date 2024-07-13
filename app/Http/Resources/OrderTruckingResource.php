@@ -78,7 +78,7 @@ class OrderTruckingResource extends JsonResource
             'dari_xpdc' => $this->order ? $this->order->tarif->dari_lokasi->nama : '-',
             'tujuan' => $this->tarif->tujuan->tujuanInfo->nama ?? '-',
             'tipe' => $this->tipe,
-            'tarif' => $this->tarif ? number_format($this->tarif->tarif) : '-',
+            'tarif' => number_format($this->tarif_nominal),
             'tarif_vendor' => $this->tarif_vendor ? number_format($this->tarif_vendor) : '-',
             'sangu' => number_format($this->sangu),
             'simpanan' => number_format($this->simpanan),

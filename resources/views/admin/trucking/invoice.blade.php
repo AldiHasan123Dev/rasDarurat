@@ -280,7 +280,7 @@
                             @endphp
                             @foreach ($data as $item)
                             @php
-                                $total += $item->first()->tarif->tarif * $item->count();
+                                $total += $item->first()->tarif_nominal * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
                                 $pph += round($item->sum('pph_21'));
@@ -294,13 +294,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif * $item->count()) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal * $item->count()) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -479,7 +479,7 @@
                             @endphp
                             @foreach ($data as $item)
                             @php
-                                $total += round(($item->first()->tarif->tarif/0.97)) * $item->count();
+                                $total += round(($item->first()->tarif_nominal/0.97)) * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
                                 $pph += round($item->sum('pph_21'));
@@ -493,13 +493,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(round(($item->first()->tarif->tarif/0.97))) }}</span>
+                                            <span>{{ number_format(round(($item->first()->tarif_nominal/0.97))) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format(round(($item->first()->tarif->tarif/0.97)) * $item->count()) }}</span>
+                                            <span>{{ number_format(round(($item->first()->tarif_nominal/0.97)) * $item->count()) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -686,7 +686,7 @@
                             @endphp
                             @foreach ($data as $item)
                             @php
-                                $total += $item->first()->tarif->tarif * $item->count();
+                                $total += $item->first()->tarif_nominal * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
                                 $pph += round($item->sum('pph_23'));
@@ -700,13 +700,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif * $item->count()) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal * $item->count()) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -894,7 +894,7 @@
                             @endphp
                             @foreach ($data as $item)
                             @php
-                                $total += $item->first()->tarif->tarif * $item->count();
+                                $total += $item->first()->tarif_nominal * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
                                 $pph += round($item->sum('pph_23'));
@@ -908,13 +908,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif * $item->count()) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal * $item->count()) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -1116,7 +1116,7 @@
                             @endphp
                             @foreach ($data as $item)
                             @php
-                                $total += $item->first()->tarif->tarif * $item->count();
+                                $total += $item->first()->tarif_nominal * $item->count();
                                 $lain_lain += $item->sum('lain_lain');
                                 $rit += $item->count();
                                 $pph += round($item->sum('pph_23'));
@@ -1130,13 +1130,13 @@
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal) }}</span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($item->first()->tarif->tarif * $item->count()) }}</span>
+                                            <span>{{ number_format($item->first()->tarif_nominal * $item->count()) }}</span>
                                         </div>
                                     </td>
                                 </tr>

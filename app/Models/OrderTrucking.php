@@ -21,6 +21,7 @@ class OrderTrucking extends Model
         'customer_id',
         'sopir_id',
         'tarif_id',
+        'tarif_nominal',
         'kendaraan_id',
         'dari',
         'tujuan',

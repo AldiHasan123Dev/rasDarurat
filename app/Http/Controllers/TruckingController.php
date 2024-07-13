@@ -345,7 +345,7 @@ class TruckingController extends Controller
                 if ($item->coa_debit_id) {
                     $deb = 0;
                     foreach ($orders as $ord) {
-                        $deb += $ord->tarif->tarif;
+                        $deb += $ord->tarif_nominal;
                         if ($ord->tagihans->count() > 0) {
                             foreach ($ord->tagihans as $tag) {
                                 $deb += $tag->jumlah;
@@ -372,7 +372,7 @@ class TruckingController extends Controller
                             'order_trucking_id' => $ord->id,
                             'nomor' => $nomor,
                             'nama' => $name,
-                            'credit' => $ord->tarif->tarif,
+                            'credit' => $ord->tarif_nominal,
                             'debit' => 0,
                             'tipe' => 'JNL',
                             'no' => $no,
@@ -441,7 +441,7 @@ class TruckingController extends Controller
                     'order_trucking_id' => $ord->id,
                     'nomor' => $nomor,
                     'nama' => 'Biaya Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
-                    'debit' => $ord->tarif->tarif,
+                    'debit' => $ord->tarif_nominal,
                     'credit' => 0,
                     'tipe' => 'JNL',
                     'no' => $no,
@@ -455,7 +455,7 @@ class TruckingController extends Controller
                     'order_trucking_id' => $ord->id,
                     'nomor' => $nomor,
                     'nama' => 'Pendapatan Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
-                    'credit' => $ord->tarif->tarif,
+                    'credit' => $ord->tarif_nominal,
                     'debit' => 0,
                     'tipe' => 'JNL',
                     'no' => $no,
@@ -497,7 +497,7 @@ class TruckingController extends Controller
                     $total += $tag->jumlah;
                 }
 
-                $total += $ord->tarif->tarif;
+                $total += $ord->tarif_nominal;
             }
 
             Jurnal::create([
@@ -589,7 +589,7 @@ class TruckingController extends Controller
                     'order_trucking_id' => $ord->id,
                     'nomor' => $nomor,
                     'nama' => 'Biaya Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
-                    'debit' => $ord->tarif->tarif,
+                    'debit' => $ord->tarif_nominal,
                     'credit' => 0,
                     'tipe' => 'JNL',
                     'no' => $no,
@@ -603,7 +603,7 @@ class TruckingController extends Controller
                     'order_trucking_id' => $ord->id,
                     'nomor' => $nomor,
                     'nama' => 'Pendapatan Trucking '.$pembayar.' '.$shipment.' '.$tujuan_trucking,
-                    'credit' => $ord->tarif->tarif,
+                    'credit' => $ord->tarif_nominal,
                     'debit' => 0,
                     'tipe' => 'JNL',
                     'no' => $no,
@@ -645,7 +645,7 @@ class TruckingController extends Controller
                     $total += $tag->jumlah;
                 }
 
-                $total += $ord->tarif->tarif;
+                $total += $ord->tarif_nominal;
             }
 
             Jurnal::create([

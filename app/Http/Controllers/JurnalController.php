@@ -924,8 +924,14 @@ class JurnalController extends Controller
             $orders = OrderTrucking::whereBetween('created_at',[$last,$now])->select('container','seal','id','invoice')->orderBy('container')->get();
         }
         $jur = $data[0];
+        $debit = Jurnal::where('nomor',$jurnal)->whereIn('coa_id',[16,45,175])->where('credit',0)->sum('debit');
+        $credit = Jurnal::where('nomor',$jurnal)->whereIn('coa_id',[16,45,175])->where('debit',0)->sum('credit');
+        $voucher  = $debit - $credit;
+        if($voucher<0){
+            $voucher = $voucher*-1;
+        }
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.new_edit', compact('data','orders','coa','tipe','jur'));
+        return view('admin.jurnal.new_edit', compact('data','orders','coa','tipe','jur','voucher'));
     }
 
     public function editOne(Jurnal $jurnal)
