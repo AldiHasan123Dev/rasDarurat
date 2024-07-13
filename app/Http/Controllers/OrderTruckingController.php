@@ -116,7 +116,7 @@ class OrderTruckingController extends Controller
         $data['pph_21'] = 0;
         $data['pph_23'] = 0;
         $price = $tarif->tarif;
-        $data['tarif'] = $price;
+        $data['tarif_nominal'] = $price;
         $kendaraan = Kendaraan::find($data['kendaraan_id']);
         $cus = CustomerTrucking::find($data['customer_id']);
         if($data['customer_id']!=2){
@@ -182,7 +182,7 @@ class OrderTruckingController extends Controller
                 }
                 $data['tujuan'] = $sangu->tujuanInfo->nama;
                 $data['tarif_id'] = $tarif->id;
-                $data['tarif'] = $tarif->tarif;
+                $data['tarif_nominal'] = $tarif->tarif;
             }
         }
         if($request->borongan){
