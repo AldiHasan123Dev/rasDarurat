@@ -205,6 +205,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('laporan/sopir', [LaporanController::class, 'sopir'])->name('laporan.sopir');
     Route::get('laporan/invoice', [LaporanController::class, 'invoice'])->name('laporan.invoice');
     Route::get('laporan/omset', [LaporanController::class, 'omset'])->name('laporan.omset');
+    Route::get('laporan/omset-customer', [LaporanController::class, 'omset_customer'])->name('laporan.omset_customer');
     Route::get('laporan/pra-omset', [LaporanController::class, 'praomset'])->name('laporan.praomset');
     Route::get('laporan/omset-trucking', [LaporanController::class, 'omset_trucking'])->name('laporan.omset_trucking');
 

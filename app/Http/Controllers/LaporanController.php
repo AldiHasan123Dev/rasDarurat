@@ -22,7 +22,8 @@ class LaporanController extends Controller
     {
         $year = request('year') ?? date('Y');
         $data = Pelayaran::all();
-        return view('admin.laporan.pelayaran', compact('data','year'));
+        $count = Order::where('job','LIKE',$year.'%')->count();
+        return view('admin.laporan.pelayaran', compact('data','year','count'));
     }
     public function tujuan()
     {
@@ -30,7 +31,8 @@ class LaporanController extends Controller
         $id = array_unique($tarif);
         $year = request('year') ?? date('Y');
         $data = Lokasi::whereIn('id',$id)->get();
-        return view('admin.laporan.tujuan', compact('data','year'));
+        $count = Order::where('job','LIKE',$year.'%')->count();
+        return view('admin.laporan.tujuan', compact('data','year','count'));
     }
     public function customer()
     {
@@ -38,7 +40,16 @@ class LaporanController extends Controller
         $id = array_unique($tarif);
         $year = request('year') ?? date('Y');
         $data = Customer::whereIn('id',$id)->get();
-        return view('admin.laporan.customer', compact('data','year'));
+        $count = Order::where('job','LIKE',$year.'%')->count();
+        return view('admin.laporan.customer', compact('data','year','count'));
+    }
+    public function omset_customer()
+    {
+        $tarif = Tarif::pluck('customer_id')->toArray();
+        $id = array_unique($tarif);
+        $year = request('year') ?? date('Y');
+        $data = Customer::whereIn('id',$id)->get();
+        return view('admin.laporan.omset_customer', compact('data','year'));
     }
     public function marketing()
     {

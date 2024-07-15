@@ -53,6 +53,18 @@ class Customer extends Model
         return $this->belongsTo(User::class,'cs_id');
     }
 
+    public function laporanOmset($bulan, $thn = 2023)
+    {
+        $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
+                    ->join('tarif','tarif.id','=','order.tarif_id')
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->where('shipments.nama','LIKE','%2%')
+                    ->where('tarif.customer_id',$this->id)
+                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
+                    ->select('tarif.tarif')
+                    ->first();
+        return $order->tarif ?? 0;
+    }
     public function laporan20Fit($bulan, $thn = 2023)
     {
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')

@@ -95,7 +95,7 @@
                                         <th class="text-center" colspan="2">Okt</th>
                                         <th class="text-center" colspan="2">Nov</th>
                                         <th class="text-center" colspan="2">Des</th>
-                                        <th class="text-center" colspan="3">Total</th>
+                                        <th class="text-center" colspan="4">Total</th>
                                     </tr>
                                     <tr>
                                         {{-- <th>Tujuan</th> --}}
@@ -103,6 +103,7 @@
                                         <th class="text-center" style="min-width:40px !important">{{ $i%2==0?'20':40 }}</th>
                                         @endfor
                                         <th class="text-center">Sub Total</th>
+                                        <th class="text-center">Persentase</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,6 +138,7 @@
                                             <th class="text-center text-warning">{{ $fit40 }}</th>
                                             <th class="text-center text-warning">{{ $fit20 }}</th>
                                             <th class="text-center text-warning">{{ $fit20 + $fit40 }}</th>
+                                            <th class="text-center text-warning">{{ number_format(($fit20 + $fit40)/$count * 100,2,'.',',') }} %</th>
                                             @php
                                                 $sub[25] = ($sub[25]??0) + $fit40;
                                                 $sub[26] = ($sub[26]??0) + $fit20;
@@ -152,6 +154,7 @@
                                         <th class="text-center text-primary">{{ $sub[$i] }}</th>
                                         @endfor
                                         <th rowspan="2" class="align-middle text-center text-primary">{{ $total }}</th>
+                                        <th rowspan="2" class="align-middle text-center text-primary">100%</th>
                                     </tr>
                                     <tr>
                                         @for ($i = 1; $i <= 26; $i+=2)

@@ -81,84 +81,54 @@
                             <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
                                 <thead>
                                     <tr>
-                                        <th rowspan="2" class="text-center">Customer</th>
-                                        <th class="text-center" colspan="2">Jan</th>
-                                        <th class="text-center" colspan="2">Feb</th>
-                                        <th class="text-center" colspan="2">Mar</th>
-                                        <th class="text-center" colspan="2">Apr</th>
-                                        <th class="text-center" colspan="2">Mei</th>
-                                        <th class="text-center" colspan="2">Jun</th>
-                                        <th class="text-center" colspan="2">Jul</th>
-                                        <th class="text-center" colspan="2">Agu</th>
-                                        <th class="text-center" colspan="2">Sep</th>
-                                        <th class="text-center" colspan="2">Okt</th>
-                                        <th class="text-center" colspan="2">Nov</th>
-                                        <th class="text-center" colspan="2">Des</th>
-                                        <th class="text-center" colspan="4">Total</th>
-                                    </tr>
-                                    <tr>
-                                        {{-- <th>Customer</th> --}}
-                                        @for ($i = 1; $i <=26; $i++)
-                                        <th class="text-center" style="min-width:40px !important">{{ $i%2==0?'20':40 }}</th>
-                                        @endfor
-                                        <th class="text-center">Sub Total</th>
-                                        <th class="text-center">Persentase</th>
+                                        <th class="text-center">Customer</th>
+                                        <th class="text-center">Jan</th>
+                                        <th class="text-center">Feb</th>
+                                        <th class="text-center">Mar</th>
+                                        <th class="text-center">Apr</th>
+                                        <th class="text-center">Mei</th>
+                                        <th class="text-center">Jun</th>
+                                        <th class="text-center">Jul</th>
+                                        <th class="text-center">Agu</th>
+                                        <th class="text-center">Sep</th>
+                                        <th class="text-center">Okt</th>
+                                        <th class="text-center">Nov</th>
+                                        <th class="text-center">Des</th>
+                                        <th class="text-center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @php
-                                        $sub = array();
-                                        $total = 0;
+                                        $grand_total = 0;
+                                        $sub = [0,0,0,0,0,0,0,0,0,0,0,0];
                                     @endphp
                                     @foreach ($data as $idx => $item)
+                                    @php
+                                        $total = 0;
+                                    @endphp
                                         <tr>
                                             <td>{{ $item->nama }}</td>
+                                            @for ($i = 1; $i <=12; $i++)
+                                            <th class="text-end">{{ number_format($item->laporanOmset($i,$year),2,'.',',') }}</th>
                                             @php
-                                                $month = 1;
-                                                $fit20 = 0;
-                                                $fit40 = 0;
+                                                $total += $item->laporanOmset($i,$year);
+                                                $sub[$i-1] += $item->laporanOmset($i,$year);
                                             @endphp
-                                            @for ($i = 1; $i <=24; $i++)
-                                                @if ($i%2==0)
-                                                    <th class="text-center">{{ $item->laporan20Fit($month,$year) }}</th>
-                                                    @php
-                                                        $fit20 += $item->laporan20Fit($month,$year);
-                                                        $sub[$i] = ($sub[$i]??0) + $item->laporan20Fit($month,$year);
-                                                        $month++;
-                                                    @endphp
-                                                @else
-                                                    <th class="text-center">{{ $item->laporan40Fit($month,$year) }}</th>
-                                                    @php
-                                                        $fit40 += $item->laporan40Fit($month,$year);
-                                                        $sub[$i] = ($sub[$i]??0) + $item->laporan40Fit($month,$year);
-                                                    @endphp
-                                                @endif
                                             @endfor
-                                            <th class="text-center text-warning">{{ $fit40 }}</th>
-                                            <th class="text-center text-warning">{{ $fit20 }}</th>
-                                            <th class="text-center text-warning">{{ $fit20 + $fit40 }}</th>
-                                            <th class="text-center text-warning">{{ number_format(($fit20 + $fit40)/$count * 100,2,'.',',') }} %</th>
-                                            @php
-                                                $sub[25] = ($sub[25]??0) + $fit40;
-                                                $sub[26] = ($sub[26]??0) + $fit20;
-                                                $total += $fit20 + $fit40;
-                                            @endphp
+                                            <th class="text-end text-warning">{{ number_format($total,2,'.',',') }}</th>
                                         </tr>
+                                        @php
+                                            $grand_total += $total;
+                                        @endphp
                                     @endforeach
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th rowspan="2" class="align-middle text-center text-primary">Total</th>
-                                        @for ($i = 1; $i <=26; $i++)
-                                        <th class="text-center text-primary">{{ $sub[$i] }}</th>
+                                        <th class="align-middle text-center text-primary">Total</th>
+                                        @for ($i = 1; $i <=12; $i++)
+                                        <th class="text-center text-primary">{{ number_format($sub[$i-1],2,'.',',') }}</th>
                                         @endfor
-                                        <th rowspan="2" class="align-middle text-center text-primary">{{ $total }}</th>
-                                        <th rowspan="2" class="align-middle text-center text-primary">100%</th>
-                                    </tr>
-                                    <tr>
-                                        @for ($i = 1; $i <= 26; $i+=2)
-                                        <th class="text-center text-primary" colspan="2">{{ $sub[$i] + $sub[$i+1] }}</th>
-                                        @endfor
+                                        <th class="align-middle text-center text-primary">{{ number_format($grand_total,2,'.',',') }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -179,10 +149,6 @@
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     <script>
         $('#table').DataTable({
-            fixedColumns: {
-                left: 1,
-                right: 0
-            },
             autoWidth:false,
             paging: false,
             scrollCollapse: true,
