@@ -12,6 +12,7 @@ use App\Models\Pelayaran;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class JurnalController extends Controller
 {
@@ -402,5 +403,46 @@ class JurnalController extends Controller
         return response([
             'data' => $res
         ]);
+    }
+
+    public function neraca()
+    {
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $month = request('month') ?? date('m');
+        $year = request('year') ?? date('Y');
+        $m = sprintf('%02d',(int)$month -1);
+        $start = $year.'-'.$m.'-01';
+        if($month=='01'){
+            $start = ((int)$year - 1).'-12-01';
+        }
+        $start = '2022-12-01';
+        $end = $this->getLastDay($year, $month);
+        $aktiva_lancar = COA::where('kode','not like','1.2%')->where('kode','like','1%')->orderBy('kode')->get();
+        $aktiva_tak_lancar = COA::where('kode','like','1.2%')->orderBy('kode')->get();
+        $kewajiban = COA::where('kode','like','2.%')->orderBy('kode')->get();
+        $modal = COA::where('kode','like','3.%')->orderBy('kode')->get();
+        $kel5 = Jurnal::join('coa', 'coa.id', '=', 'jurnal.coa_id')
+        ->where('coa.kode', 'like', '5.%')
+        ->whereBetween('jurnal.created_at', [$start, $end])
+        ->select(DB::raw('SUM(jurnal.debit) AS debit'), DB::raw('SUM(jurnal.credit) AS credit'))->first();
+        $kel6 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+        ->where('coa.kode','like','6.%')
+        ->whereBetween('jurnal.created_at',[$start,$end])
+        ->select(DB::raw('SUM(jurnal.debit) AS debit'), DB::raw('SUM(jurnal.credit) AS credit'))->first();
+        $kel7 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
+        ->where('coa.kode','like','7.%')
+        ->whereBetween('jurnal.created_at',[$start,$end])
+        ->select(DB::raw('SUM(jurnal.debit) AS debit'), DB::raw('SUM(jurnal.credit) AS credit'))->first();
+        $lr = ($kel5->credit - $kel5->debit) - (($kel6->debit - $kel6->credit) + ($kel7->debit - $kel7->credit));
+
+        $res = view('data.neraca', compact('months','year','month','start','end','aktiva_lancar','aktiva_tak_lancar','kewajiban','modal','lr'))->render();
+        return response($res);
+    }
+
+    public function getLastDay($year, $month)
+    {
+        $carbon = new Carbon($year.'-'.$month.'-01');
+        $last = $carbon->endOfMonth()->toDateString();
+        return $last;
     }
 }

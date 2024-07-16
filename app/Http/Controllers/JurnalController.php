@@ -30,10 +30,12 @@ class JurnalController extends Controller
 {
     public function index()
     {
-        // $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"),'nomor'])->groupBy('nomor')->get()->reject(function ($data) {
-        //     return $data->debit == $data->credit;
-        // });
-        $unbalance = [];
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"),'nomor'])->whereBetween('created_at',[$last,$now])->groupBy('nomor')->get()->reject(function ($data) {
+            return $data->debit == $data->credit;
+        });
+        // $unbalance = [];
         $month = request('month') ?? date('m');
         $year = request('year') ?? date('Y');
         $is_sample = request('is_sample') ?? 'real';
@@ -1048,7 +1050,9 @@ class JurnalController extends Controller
 
     public function neraca()
     {
-        return view('admin.jurnal.neraca');
+        $month = request('month') ?? date('m');
+        $year = request('year') ?? date('Y');
+        return view('admin.jurnal.neraca',compact('month','year'));
     }
 
     public function laba_rugi()

@@ -111,6 +111,7 @@ Route::post('customer-trucking/{customertrucking}',[CustomerTruckingController::
 Route::post('render-bb-pembantu',[JurnalController::class,'render_buku_pembantu'])->name('api.render_buku_pembantu');
 
 Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jurnal');
+Route::post('jurnal-neraca',[JurnalController::class,'neraca'])->name('api.neraca.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
 Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
 Route::post('sync-order-trucking',[SyncController::class,'order_trucking'])->name('api.sync.ordertrucking');

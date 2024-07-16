@@ -33,9 +33,28 @@
         <div class="card-body">
             <button class="btn btn-sm btn-success my-2" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
             <div id="print">
-                <livewire:neraca/>
+                <div id="response">LOADING. . .</div>
             </div>
         </div>
     </div>
 </div>
+@endsection
+@section('script')
+    <script>
+        $.ajax({
+            type: "POST",
+            url: "{{ route('api.neraca.jurnal') }}",
+            data: {
+                month:@json($month),
+                year:@json($year),
+            },
+            success: function (response) {
+                console.log(response);
+                $('#response').html(response);
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    </script>
 @endsection
