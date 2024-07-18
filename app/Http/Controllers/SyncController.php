@@ -253,6 +253,19 @@ class SyncController extends Controller
         return response('success');
     }
 
+    public function menu_link_alb()
+    {
+        $menu = SubMenu::all();
+        foreach ($menu as $item ) {
+            $url = str_replace('http://127.0.0.1:8000/','https://amelia.id/',$item->url);
+            $item->update([
+                'url' => $url
+            ]);
+        }
+
+        return response('success');
+    }
+
     public function menu_link_backup()
     {
         $menu = SubMenu::all();

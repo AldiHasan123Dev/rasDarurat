@@ -346,6 +346,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-menu', [SyncController::class, 'menu_link']);
     Route::get('sync-menu-backup', [SyncController::class, 'menu_link_backup']);
     Route::get('sync-menu-ras', [SyncController::class, 'menu_link_ras']);
+    Route::get('sync-menu-alb', [SyncController::class, 'menu_link_alb']);
     Route::get('sync-order-menu', [SyncController::class, 'orderMenu']);
     Route::get('sync-transaksi', [SyncController::class, 'transaksi']);
     Route::get('sync-trucking', [SyncController::class, 'trucking']);
