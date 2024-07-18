@@ -3,8 +3,10 @@
 @section('content')
 <form method="post" action="{{ route('login') }}" class="row flex-center h-100 g-0 px-4 px-sm-0">
     @csrf
-    <div class="col col-sm-6 col-lg-7 col-xl-6"><a class="d-flex flex-center text-decoration-none mb-4" href="../../../index.html">
-    </a>
+    <div class="col col-sm-6 col-lg-7 col-xl-6">
+        <a class="d-flex flex-center text-decoration-none mb-4" href="#">
+        <img src="{{ asset('logo.png') }}" class="img-fluid" alt="logo" style="height: 120px">
+        </a>
     <div class="text-center mb-2">
         <h3 class="text-1000">Sign In</h3>
     </div>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <link rel="stylesheet" href="{{ asset('assets/css/theme.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('logo.png') }}">
     @yield('style')
     <title>LOGIN</title>
 </head>
