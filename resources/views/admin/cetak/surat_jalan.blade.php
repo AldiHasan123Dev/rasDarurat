@@ -106,17 +106,9 @@
             </div>
             <div class="col-md-8 col-12 mt-3 p-2 bg-white">
                 <div id="print">
-                    <div class="header d-flex" style="gap:5px; width:100%;">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
-                        <div style="width: 40%; margin-left:35px">
-                            <table style="font-size:.7rem">
-                                <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                            </table>
-                        </div>
+                    <x-header-cop>
                         <p class="fw-bold mt-3" style="width:30%; font-size:.7rem">SURAT JALAN / PENGANTAR</p>
-                    </div>
+                    </x-header-cop>
                     <div class="d-flex justify-content-between mt-3" style="font-size: .7rem">
                         <div style="width: 70%">
                             <table style="width:100%">

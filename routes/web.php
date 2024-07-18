@@ -366,5 +366,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-jurnal-invoice', [SyncController::class, 'jurnal_invoice']);
 
     Route::get('sync-jurnal-hutang-trucking/{trx_id}/{no}', [TruckingController::class, 'jurnal_hutang_trucking']);
+    Route::resource('setting',App\Http\Controllers\SettingController::class);
 });
 // Route::view('test','test');

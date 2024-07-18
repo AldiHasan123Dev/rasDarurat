@@ -20,7 +20,7 @@ use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\Satuan;
 use App\Models\Tarif;
-use App\Models\TarifPelayaran;
+use App\Models\Setting;
 use App\Models\HutangPelayaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -121,13 +121,17 @@ class OrderController extends Controller
             $data['penerimabl'] = Agen::where('nama',$request->agen_id)->first()->nama ?? null;
         }
         $num = Order::whereYear('created_at',date('Y'))->max('no');
+        $setting = Setting::find(1);
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
-        $data['job'] = date('Ym').sprintf('%04d',$num+1);
+        if($setting->type_job_year=='y'){
+            $data['job'] = date('ym').sprintf('%04d',$num+1);
+        }else{
+            $data['job'] = date('Ym').sprintf('%04d',$num+1);
+        }
         $data['no_job'] = 1;
 
         $tarif = Tarif::find($request->tarif_id);
-
         $ceks = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->whereHas('tarif', function($q) use($tarif){
             $q->where('customer_id',$tarif->customer_id);
             $q->where('tujuan',$tarif->tujuan);
@@ -319,6 +323,7 @@ class OrderController extends Controller
         $order = Order::find($request->order_id);
         $order_job = $order->job;
         $job_count = Order::where('job',$order->job)->get()->count();
+        $setting = Setting::find(1);
         if($job_count <= 1){
             return back()->with('danger','Dilarang pindah kapal dikarenakan cuman ada 1 job! Gunakan Fitur edit');
         }
@@ -329,7 +334,11 @@ class OrderController extends Controller
             $num = $cek[0]->no;
         }else{
             $num = Order::whereYear('created_at',date('Y'))->max('no') + 1;
-            $job = date('Ym').sprintf('%04d',$num);
+            if($setting->type_job_year=='y'){
+                $job = date('ym').sprintf('%04d',$num);
+            }else{
+                $job = date('Ym').sprintf('%04d',$num);
+            }
             $no_job = 1;
         }
         $order->update([

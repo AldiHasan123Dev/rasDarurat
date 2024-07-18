@@ -873,22 +873,13 @@
                     </div>
                 @else
                 <div class="invoice-box first-page">
-                    <div class="header d-flex" style="gap:5px; width:100%">
-                        <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
-                        <div style="width: 40%; margin-left:35px">
-                            <table style="font-size:.7rem">
-                                <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                <tr><td>Email : info@ptras.id</td></tr>
-                            </table>
-                        </div>
+                    <x-header-cop>
                         <div style="width:30%; ">
                             <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                 <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
                             </table>
                         </div>
-                    </div>
+                    </x-header-cop>
                     <div class="row mt-3">
                         <div class="col-6">
                             <table style="font-size: .7rem">
@@ -1111,22 +1102,13 @@
                     <p class="page-break"></p>
 
                     <div class="invoice-box">
-                        <div class="header d-flex" style="gap:5px; width:100%">
-                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
-                            <div style="width: 40%; margin-left:35px">
-                                <table style="font-size:.7rem">
-                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                    <tr><td>Email : info@ptras.id</td></tr>
-                                </table>
-                            </div>
+                        <x-header-cop>
                             <div style="width:30%; ">
                                 <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                     <tr><td class="text-center" style="line-spacing: 1rem">INVOICE</td></tr>
                                 </table>
                             </div>
-                        </div>
+                        </x-header-cop>
                         <div class="row mt-3">
                             <div class="col-6">
                                 <table style="font-size: .7rem">

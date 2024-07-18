@@ -13,6 +13,7 @@ use App\Models\Lokasi;
 use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Transaksi;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Yajra\Datatables\Datatables;
@@ -113,6 +114,7 @@ class KeuanganController extends Controller
 
     public function generateInvoice(Request $request, Order $order)
     {
+        $setting = Setting::find(1);
         $data = $request->all();
         $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
         if (!$nsfp) {
@@ -122,7 +124,7 @@ class KeuanganController extends Controller
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
         $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
-        $invoice = sprintf('%04d',$no).'/RAS/'.$month_roman.'/'.date('y');
+        $invoice = sprintf('%04d',$no).'/'.$setting->short_name.'/'.$month_roman.'/'.date('y');
         $data['invoice'] = $invoice;
         $data['nsfp'] = $nsfp->nomor;
         $data['order'] = $no;

@@ -77,6 +77,8 @@ class User extends Authenticatable
 
     public function laporanCs20Fit($bulan, $thn = 2023)
     {
+        $thn = substr($thn,-2);
+        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -86,13 +88,15 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%2%')
                     // ->orWhere('customers.marketing_id',$this->id)
                     ->where('customers.cs_id',$this->id)
-                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
+                    ->where('order.job','LIKE',$job)
                     ->select('order.id')
                     ->count();
         return $order;
     }
     public function laporanCs40Fit($bulan, $thn = 2023)
     {
+        $thn = substr($thn,-2);
+        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -102,13 +106,15 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%4%')
                     // ->orWhere('customers.marketing_id',$this->id)
                     ->where('customers.cs_id',$this->id)
-                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
+                    ->where('order.job','LIKE',$job)
                     ->select('order.id')
                     ->count();
         return $order;
     }
     public function laporanMarketing20Fit($bulan, $thn = 2023)
     {
+        $thn = substr($thn,-2);
+        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -118,13 +124,15 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%2%')
                     ->where('customers.marketing_id',$this->id)
                     // ->where('customers.cs_id',$this->id)
-                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
+                    ->where('order.job','LIKE',$job)
                     ->select('order.id')
                     ->count();
         return $order;
     }
     public function laporanMarketing40Fit($bulan, $thn = 2023)
     {
+        $thn = substr($thn,-2);
+        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -134,7 +142,7 @@ class User extends Authenticatable
                     ->where('shipments.nama','LIKE','%4%')
                     ->where('customers.marketing_id',$this->id)
                     // ->where('customers.cs_id',$this->id)
-                    ->where('order.job','LIKE',$thn.sprintf('%02d',$bulan).'%')
+                    ->where('order.job','LIKE',$job)
                     ->select('order.id')
                     ->count();
         return $order;

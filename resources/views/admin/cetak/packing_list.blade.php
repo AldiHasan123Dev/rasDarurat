@@ -78,22 +78,14 @@
         <div class="card p-3">
             @if ($order)
             <div id="print">
-                <div class="header d-flex" style="gap:5px; width:100%">
-                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                    <div style="width: 40%; margin-left:35px">
-                        <table style="font-size:.7rem">
-                            <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                            <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                            <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                        </table>
-                    </div>
+                <x-header-cop>
                     <div style="width:30%; ">
                         <table style="font-size: .7rem; font-weight:bold">
                             <tr><td>PACKING LIST</td></tr>
                             <tr class="border-top border-dark"><td>{{ $order->job }}</td></tr>
                         </table>
                     </div>
-                </div>
+                </x-header-cop>
                 <div class="row mt-2">
                     <div class="col-7">
                         <table style="font-size: .7rem">

@@ -93,22 +93,14 @@
                             @if ($bttb->count()>=10)
                                 @foreach ($bttb->chunk(10) as $bttb)
                                     <div class="page" style="margin-top: 50px">
-                                        <div class="headers d-flex" style="gap:5px; width:100%">
-                                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                                            <div style="width: 40%; margin-left:35px">
-                                                <table style="font-size:.7rem">
-                                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                                </table>
-                                            </div>
+                                        <x-header-cop>
                                             <div style="width:22%; text-align:right">
                                                 <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
                                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                                 </table>
                                             </div>
-                                        </div>
+                                        </x-header-cop>
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex justify-content-between">
@@ -261,22 +253,14 @@
                             @else
                                 @foreach ($bttb->chunk(15) as $bttb)
                                     <div class="page" style="margin-top: 50px">
-                                        <div class="headers d-flex" style="gap:5px; width:100%">
-                                            <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                                            <div style="width: 40%; margin-left:35px">
-                                                <table style="font-size:.7rem">
-                                                    <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                                    <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                                    <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                                </table>
-                                            </div>
+                                        <x-header-cop>
                                             <div style="width:22%; text-align:right">
                                                 <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
                                                     <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                                     <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                                 </table>
                                             </div>
-                                        </div>
+                                        </x-header-cop>
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="d-flex justify-content-between">
@@ -429,22 +413,14 @@
                             @endif
                         @else
                             <div class="page" style="margin-top: 50px">
-                                <div class="headers d-flex" style="gap:5px; width:100%">
-                                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                                    <div style="width: 40%; margin-left:35px">
-                                        <table style="font-size:.7rem">
-                                            <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                            <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                            <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                        </table>
-                                    </div>
+                                <x-header-cop>
                                     <div style="width:22%; text-align:right">
                                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
                                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                         </table>
                                     </div>
-                                </div>
+                                </x-header-cop>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-between">
@@ -599,22 +575,14 @@
                     @if ($data->count()>=10)
                         @foreach ($data->chunk(10) as $bttb)
                             <div class="page" style="margin-top: 50px">
-                                <div class="headers d-flex" style="gap:5px; width:100%">
-                                    <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                                    <div style="width: 40%; margin-left:35px">
-                                        <table style="font-size:.7rem">
-                                            <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                            <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                            <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                        </table>
-                                    </div>
+                                <x-header-cop>
                                     <div style="width:22%; text-align:right">
                                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
                                             <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                             <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                         </table>
                                     </div>
-                                </div>
+                                </x-header-cop>
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-between">
@@ -767,22 +735,14 @@
                     @else
                         @foreach ($data->chunk(15) as $bttb)
                         <div class="page" style="margin-top: 50px; height:100%; position: absolute;">
-                            <div class="headers d-flex" style="gap:5px; width:100%">
-                                <img src="{{ asset('logo.png') }}" alt="logo" style="height: 50px; width: 30%" class="img-fluid">
-                                <div style="width: 40%; margin-left:35px">
-                                    <table style="font-size:.7rem">
-                                        <tr><td class="fw-bold">PT. RAHMAT ALAM SAMUDERA</td></tr>
-                                        <tr><td>Jl. Kalianak 55G, Surabaya</td></tr>
-                                        <tr><td>Telp & Fax 031.7495507 / 081.230.162.999</td></tr>
-                                    </table>
-                                </div>
+                            <x-header-cop>
                                 <div style="width:22%; text-align:right">
                                     <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
                                         <tr><td class="text-right" style="text-align: right">BTTB</td></tr>
                                         <tr class="border-top border-dark"><td>BUKTI TANDA TERIMA BARANG</td></tr>
                                     </table>
                                 </div>
-                            </div>
+                            </x-header-cop>
                             <div class="row">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-between">

@@ -8,13 +8,17 @@
     @if ($jadwalkapal)
         @if ($jadwalkapal->hasInvoice())
             @if (Auth::user()->role_id==1)
-                <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>    
+                <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>
+            @else
+                @if (is_null($jadwalkapal->td) && Auth::id()==5)
+                    <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>
+                @endif
             @endif
         @else
-            <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>    
+            <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>
         @endif
     @else
-    <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input> 
+    <x-input :value="$jadwalkapal->td??old('td')" :col="6" :label="'TD'" :type="'date'" :name="'td'"></x-input>
     @endif
     {{-- @if (!empty($jadwalkapal->td))
         @if (Auth::user()->role_id==1)
