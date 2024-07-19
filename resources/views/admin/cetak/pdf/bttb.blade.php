@@ -19,7 +19,7 @@
                 width: 100%;
             }
             #print .header{
-                margin-top: 20px;
+                margin-top: 30px;
             }
             #print, #print * {
                 visibility: visible;
