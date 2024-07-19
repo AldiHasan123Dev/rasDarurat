@@ -22,7 +22,7 @@
         <div class="container-fluid px-0" data-layout="container">
             <div class="row vh-100 flex-cente g-0">
                 <div class="col-lg-6 position-relative d-none d-lg-block">
-                    <div class="bg-holder" style="background-image:url({{ asset('assets/img/container.webp') }});"></div>
+                    <div class="bg-holder" style="background-image:url({{ asset('login.jpg') }});"></div>
                 </div>
                 <div class="col-lg-6">
                     @yield('content')

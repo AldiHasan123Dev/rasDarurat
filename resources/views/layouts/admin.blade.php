@@ -23,7 +23,7 @@
     <main class="main" id="top">
         <div class="container-fluid px-0" data-layout="container">
             <x-navbar/>
-            <div class="content">
+            <div class="content" style="background: url('{{ asset('background.jpg') }}') rgb(131 114 124 / 60%); background-size: cover; background-position: center; background-repeat: no-repeat;  background-blend-mode: multiply;" >
                 @if (session('success'))
                     <div class="container">
                         <div class="my-3">

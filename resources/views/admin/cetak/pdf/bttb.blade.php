@@ -19,7 +19,7 @@
                 width: 100%;
             }
             #print .header{
-                margin-top: 40px;
+                margin-top: 20px;
             }
             #print, #print * {
                 visibility: visible;
@@ -78,7 +78,7 @@ $page = 1;
         @if ($loop->last)
             @if ($bttb->count()>=12)
                 @foreach ($bttb->chunk(12) as $bttb)
-                    <div class="page" style="margin-top: 30px; margin-right:60px">
+                    <div class="page" style="margin-top: 0px; margin-right:60px">
                         <x-header-cop>
                             <div style="width:22%; text-align:right">
                                 <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
@@ -247,7 +247,7 @@ $page = 1;
                 @endforeach
             @else
                 @foreach ($bttb->chunk(17) as $bttb)
-                    <div class="page" style="margin-top: 30px; margin-right:60px">
+                    <div class="page" style="margin-top: 0px; margin-right:60px">
                         <x-header-cop>
                             <div style="width:22%; text-align:right">
                                 <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
@@ -416,7 +416,7 @@ $page = 1;
                 @endforeach
             @endif
         @else
-            <div class="page" style="margin-top: 30px; margin-right:60px">
+            <div class="page" style="margin-top: 0px; margin-right:60px">
                 <x-header-cop>
                     <div style="width:22%; text-align:right">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
@@ -587,7 +587,7 @@ $page = 1;
 @else
     @if ($data->count()>10)
         @foreach ($data->chunk(10) as $bttb)
-            <div class="page" style="margin-top: 30px; margin-right:60px">
+            <div class="page" style="margin-top: 0px; margin-right:60px">
                 <x-header-cop>
                     <div style="width:22%; text-align:right">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
@@ -757,7 +757,7 @@ $page = 1;
     @else
         @if ($data->count()==10)
             @foreach ($data->chunk(10) as $bttb)
-            <div class="page" style="margin-top: 30px; margin-right:60px; height:100%; position: absolute;">
+            <div class="page" style="margin-top: 0px; margin-right:60px; height:100%; position: absolute;">
                 <x-header-cop>
                     <div style="width:22%; text-align:right">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
@@ -909,7 +909,7 @@ $page = 1;
         @endforeach
         @else
             @foreach ($data->chunk(17) as $bttb)
-            <div class="page" style="margin-top: 30px; margin-right:60px; height:100%; position: absolute;">
+            <div class="page" style="margin-top: 0px; margin-right:60px; height:100%; position: absolute;">
                 <x-header-cop>
                     <div style="width:22%; text-align:right">
                         <table style="font-size: .7rem; font-weight:bold; width:100%; margin-right:5px">
