@@ -4,7 +4,9 @@
         <table style="font-size:.7rem">
             <tr><td class="fw-bold">{{ $setting->name }}</td></tr>
             <tr><td>{{ $setting->address }}</td></tr>
-            <tr><td>Telp & Fax {{ $setting->phone }} / {{ $setting->fax }}</td></tr>
+            @if (($setting->phone) || ($setting->fax))
+                <tr><td>Telp & Fax {{ $setting->phone }} / {{ $setting->fax }}</td></tr>
+            @endif
             <tr><td>Email : {{ $setting->email }}</td></tr>
         </table>
     </div>
