@@ -17,13 +17,21 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('logo.png') }}">
     @yield('style')
     @livewireStyles
+    <style>
+        .bg-content{
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat;  
+            background-blend-mode: multiply;
+        }
+    </style>
     <title>APP</title>
 </head>
 <body>
     <main class="main" id="top">
         <div class="container-fluid px-0" data-layout="container">
             <x-navbar/>
-            <div class="content" style="background: url('{{ asset('background.jpg') }}') rgb(131 114 124 / 60%); background-size: cover; background-position: center; background-repeat: no-repeat;  background-blend-mode: multiply;" >
+            <div class="content" style="{{ str_contains(url('/'), 'amelia.id') ? " background: url('".asset('background.jpg')."') rgb(131 114 124 / 60%); " : '' }}">
                 @if (session('success'))
                     <div class="container">
                         <div class="my-3">

@@ -20,7 +20,7 @@ class JadwalKapalController extends Controller
     public function getByPelayaran($id)
     {
         $tarif = Tarif::find($id);
-        $jadwal_kapal = JadwalKapal::all()->where('is_active',1)->where('pelayaran_id',$tarif->pelayaran_id);
+        $jadwal_kapal = JadwalKapal::all()->whereNull('td')->where('pelayaran_id',$tarif->pelayaran_id);
         $jadwal = array();
         foreach ($jadwal_kapal as $kapl ) {
             $jadwal[$kapl->id] = $kapl->kapal->nama.' || Voy. '.$kapl->voyage.'  || '.$kapl->rute;
