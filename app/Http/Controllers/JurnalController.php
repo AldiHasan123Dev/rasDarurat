@@ -1126,11 +1126,12 @@ class JurnalController extends Controller
                     // ->orderBy('jurnal.input')
                     ->get();
         $dateExport = null;
+        $job_sync = DB::table('jobs')->count();
         if (Storage::disk('public')->exists('buku-besar.xlsx')) {
             $lastModif = Storage::disk('public')->lastModified('buku-besar.xlsx');
             $dateExport = date('d/m/Y H:i:s', $lastModif);
         }
-        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe','year','dateExport'));
+        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe','year','dateExport','job_sync'));
     }
 
     public function buku_besar_pembantu()

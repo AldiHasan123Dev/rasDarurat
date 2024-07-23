@@ -36,12 +36,14 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between">
-                <form action="{{ route('jurnal.exportJurnalBatch') }}" method="post">
-                    @csrf
-                    <input type="hidden" name="month" value="{{ $month }}">
-                    <input type="hidden" name="year" value="{{ $year }}">
-                    <button type="submit" class="btn btn-warning btn-success my-2"><i class="fas fa-print"></i> Request Export</button>
-                </form>
+                @if ($job_sync==0)
+                    <form action="{{ route('jurnal.exportJurnalBatch') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="month" value="{{ $month }}">
+                        <input type="hidden" name="year" value="{{ $year }}">
+                        <button type="submit" class="btn btn-warning btn-success my-2"><i class="fas fa-print"></i> Request Export</button>
+                    </form>
+                @endif
                 @if (!is_null($dateExport))
                     <pre>Last Export : {{ $dateExport }}</pre>
                     <a href="{{ asset('storage/buku-besar.xlsx') }}" download="{{ asset('storage/buku-besar.xlsx') }}" class="btn btn-sm btn-success my-2"><i class="fas fa-download"></i> Download Excel</a>
