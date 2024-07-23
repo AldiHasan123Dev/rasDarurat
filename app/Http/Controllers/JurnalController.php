@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Storage;
 
 class JurnalController extends Controller
 {
@@ -1124,7 +1125,12 @@ class JurnalController extends Controller
                     ->orderBy('jurnal.tipe')
                     // ->orderBy('jurnal.input')
                     ->get();
-        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe','year'));
+        $dateExport = null;
+        if (Storage::disk('public')->exists('buku-besar.xlsx')) {
+            $lastModif = Storage::disk('public')->lastModified('buku-besar.xlsx');
+            $dateExport = date('d/m/Y H:i:s', $lastModif);
+        }
+        return view('admin.jurnal.buku_besar', compact('coas','months','month','saldo','saldo_awal','coa','coa_id','data','tipe','year','dateExport'));
     }
 
     public function buku_besar_pembantu()
@@ -1214,7 +1220,8 @@ class JurnalController extends Controller
 
     public function exportJurnalBatch()
     {
-        return (new JurnalBatchExport(request('year'),request('month')))->download('jurnal-'.request('month').'-'.request('year').'.xlsx');
+        (new JurnalBatchExport(request('year'),request('month')))->queue('buku-besar.xlsx','public');
+        return back()->with('success','Request Export telah dibuat, silahkan tunggu beberapa saat hingga proses export selesai. refresh halaman secara berkala untuk melihat proses export. Process kurang lebih 3-5 menit.');
     }
 
     public function exportMonth(Request $request)

@@ -35,12 +35,18 @@
 <div class="container">
     <div class="card">
         <div class="card-body">
-            <form action="{{ route('jurnal.exportJurnalBatch') }}" method="post">
-                @csrf
-                <input type="hidden" name="month" value="{{ $month }}">
-                <input type="hidden" name="year" value="{{ $year }}">
-                <button type="submit" class="btn btn-sm btn-success my-2"><i class="fas fa-print"></i> Export Excel</button>
-            </form>
+            <div class="d-flex justify-content-between">
+                <form action="{{ route('jurnal.exportJurnalBatch') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="month" value="{{ $month }}">
+                    <input type="hidden" name="year" value="{{ $year }}">
+                    <button type="submit" class="btn btn-warning btn-success my-2"><i class="fas fa-print"></i> Request Export</button>
+                </form>
+                @if (!is_null($dateExport))
+                    <pre>Last Export : {{ $dateExport }}</pre>
+                    <a href="{{ asset('storage/buku-besar.xlsx') }}" download="{{ asset('storage/buku-besar.xlsx') }}" class="btn btn-sm btn-success my-2"><i class="fas fa-download"></i> Download Excel</a>
+                @endif
+            </div>
             <div id="print">
                 {{-- <livewire:buku-besar :month="request('month')"/> --}}
                 <div class="row">

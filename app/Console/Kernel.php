@@ -14,9 +14,12 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('test:test')->everyMinute();
-        $schedule->command('backup:clean')->dailyAt('01:00');
-        $schedule->command('backup:run')->dailyAt('01:30');
-        $schedule->command('backup:send')->dailyAt('02:00');
+        // $schedule->command('backup:clean')->dailyAt('01:00');
+        // $schedule->command('backup:run')->dailyAt('01:30');
+        // $schedule->command('backup:send')->dailyAt('02:00');
+        $schedule->command('queue:work --stop-when-empty')
+            ->everyMinute()
+            ->withoutOverlapping();
     }
 
     /**
