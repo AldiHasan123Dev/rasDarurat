@@ -253,7 +253,7 @@ class OrderController extends Controller
         $tarif = array();
         $agent = Agen::pluck('nama')->toArray();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
+            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing ;
         }
         $pembayar = ($order->customer->nama??'-').' || '.($order->dari_lokasi->nama??'-').' || '.($order->tujuan_lokasi->nama??'-').' || '.($order->kondisiInfo->nama??'-').' || '.($order->pelayaran->nama??'-').' || '.($order->shipmentInfo->nama??'-').' || '.($order->tarif??'-');
         return view('admin.order.edit', compact('order','agent','tarif','customers','barang'));
