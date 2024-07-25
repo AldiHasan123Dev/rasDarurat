@@ -56,7 +56,7 @@ class OrderController extends Controller
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         $customers = Customer::pluck('nama')->toArray();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = ($item->customer->nama??'-') .' | '.($item->customer->id??'-').' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-') ;
+            $tarif[$item->id] = ($item->customer->nama??'-') .' | '.($item->customer->id??'-').' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing ;
         }
         return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers','marketing'));
     }
