@@ -1123,7 +1123,7 @@ class JurnalController extends Controller
                     ->select('jurnal.*')
                     ->orderBy('jurnal.created_at')
                     ->orderBy('jurnal.tipe')
-                    // ->orderBy('jurnal.input')
+                    ->orderBy('jurnal.nomor','asc')
                     ->get();
         $dateExport = null;
         $job_sync = DB::table('jobs')->count();
