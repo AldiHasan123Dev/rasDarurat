@@ -46,7 +46,7 @@
                 @endif
                 @if (!is_null($dateExport))
                     <pre>Last Export : {{ $dateExport }}</pre>
-                    <a href="{{ asset('storage/buku-besar.xlsx') }}" download="{{ asset('storage/buku-besar.xlsx') }}" class="btn btn-sm btn-success my-2"><i class="fas fa-download"></i> Download Excel</a>
+                    <a href="{{ route('download.buku-besar') }}" class="btn btn-sm btn-success my-2"><i class="fas fa-download"></i> Download Excel</a>
                 @endif
             </div>
             <div id="print">

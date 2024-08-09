@@ -129,6 +129,10 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('bulk-update', function(){
     return view('bulk-update');
 });
+Route::get('buku-besar', function(){
+    $file = Storage::path('public/buku-besar.xlsx');
+    return response()->download($file);
+})->name('download.buku-besar');
 
 Route::post('update-jurnal', [UpdateDataController::class, 'jurnal'])->name('update.jurnal');
 
