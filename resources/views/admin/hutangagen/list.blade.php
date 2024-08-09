@@ -15,6 +15,7 @@
                                 <th>Tanggal</th>
                                 <th>Jurnal</th>
                                 <th>Invoice</th>
+                                <th>Agent</th>
                                 <th>#</th>
                                 {{-- <th>Action</th> --}}
                             </tr>
@@ -26,6 +27,7 @@
                                     <td>{{ date('d/m/y', strtotime($item->first()->created_at)) }}</td>
                                     <td>{{ $item->first()->jurnal }}</td>
                                     <td>{{ $item->first()->invoice }}</td>
+                                    <td>{{ $item->first()->agen() }}</td>
                                     <td>
                                         {{-- bootstrap 5 modal --}}
                                         <div class="d-flex gap-2">

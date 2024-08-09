@@ -32,4 +32,10 @@ class HutangAgen extends Model
     {
         return $this->belongsTo(Order::class,'order_id');
     }
+
+    public function agen()
+    {
+        $order = $this->order;
+        return $order->agent->nama ?? '-';
+    }
 }
