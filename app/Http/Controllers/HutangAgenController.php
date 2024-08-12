@@ -161,6 +161,7 @@ class HutangAgenController extends Controller
             $jurnal['order_id'] = $order->id;
             $jurnal['nomor'] = $nomor;
             $jurnal['no'] = $no;
+            $jurnal['invoice'] = $order->invoice ?? null;
             $jurnal['nama'] = 'Biaya Dooring '.($order->tarif->customer->nama??'').' '.($order->tarif->shipmentInfo->nama??'').' '.($order->agent->nama??'');
             $jurnal['container'] = $order->container;
             $jurnal['invoice_external'] = $hutang->invoice;
@@ -227,6 +228,7 @@ class HutangAgenController extends Controller
                                 'no' => $no,
                                 'nama' => $tagihan->nama,
                                 'container' => $order->container,
+                                'invoice' => $order->invoice,
                                 'invoice_external' => $tagihan->invoice,
                                 'tipe' => 'JNL',
                                 'coa_id' => 31,
@@ -297,6 +299,7 @@ class HutangAgenController extends Controller
                             'no' => $no,
                             'nama' => $tagihan->nama,
                             'container' => $order->container,
+                            'invoice' => $order->invoice ?? null,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
                             'coa_id' => 31,
