@@ -13,7 +13,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Tanggal</th>
-                                <th>Jurnal</th>
+                                <th style="width: 90px">Jurnal</th>
                                 <th>Invoice</th>
                                 <th>Agent</th>
                                 <th>#</th>
@@ -26,7 +26,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ date('d/m/y', strtotime($item->first()->created_at)) }}</td>
                                     <td>{{ $item->first()->jurnal }}</td>
-                                    <td>{{ $item->first()->invoice }}</td>
+                                    <td>{{ implode(', ',$item->pluck('invoice')->toArray()) }}</td>
                                     <td>{{ $item->first()->agen() }}</td>
                                     <td>
                                         {{-- bootstrap 5 modal --}}

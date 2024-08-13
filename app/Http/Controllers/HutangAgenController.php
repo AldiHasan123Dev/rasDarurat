@@ -366,18 +366,19 @@ class HutangAgenController extends Controller
                 'credit' => $invoice_group->sum('pph'),
                 'invoice_external' => $invoice
             ]);
+
+            Jurnal::create([
+                'nomor' => $nomor,
+                'no' => $no,
+                'nama' => 'Hutang Agen '.$invoice.' '.($hutang_agen->first()->order->agent->nama??''),
+                'tipe' => 'JNL',
+                'coa_id' => 63,
+                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph'),
+                'debit' => 0
+            ]);
         }
 
 
-        Jurnal::create([
-            'nomor' => $nomor,
-            'no' => $no,
-            'nama' => 'Hutang Agen '.($hutang_agen->first()->order->agent->nama??''),
-            'tipe' => 'JNL',
-            'coa_id' => 63,
-            'credit' => $total - $pph,
-            'debit' => 0
-        ]);
 
         return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);
     }

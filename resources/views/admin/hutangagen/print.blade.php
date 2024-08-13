@@ -134,17 +134,20 @@
                     <td class="bg-red text-center" colspan="2" style="width: 65%">URAIAN</td>
                     <td class="bg-red text-center">JUMLAH</td>
                 </tr>
-                @foreach ($hutang_agen->groupBy('invoice') as $invoice_group)
+                @foreach ($hutang_agen->groupBy('invoice') as $inv => $invoice_group)
                     @foreach ($invoice_group->groupBy('tarif') as $tarif_group)
                         @foreach ($tarif_group->groupBy('order.job') as $job => $job_group)
+                        @php
+                            $nominal = ($job_group->first()->tarif * $job_group->count()) + round($invoice_group->sum('ppn')) - round($invoice_group->sum('pph'));
+                        @endphp
                             <tr>
                                 <td></td>
-                                <td class="text-start" colspan="2">Biaya Dooring Job {{ $job }} ({{ implode(',',$job_group->pluck('order.no_job')->toArray()) }}) / {{ $hutang_agen->first()->order->tarif->customer->nama }}</td>
-                                <td class="text-end">{{ number_format($job_group->first()->tarif * $job_group->count(),2,',','.') }}</td>
+                                <td class="text-start" colspan="2">Pelunasan Hutang Agen No Inv  {{ $inv }} / {{ $hutang_agen->first()->order->tarif->customer->nama }}</td>
+                                <td class="text-end">{{ number_format($nominal,2,',','.') }}</td>
                             </tr>
                         @endforeach
                     @endforeach
-                    <tr>
+                    {{-- <tr>
                         <td></td>
                         <td class="text-start" colspan="2">PPN (1,1%)</td>
                         <td class="text-end">{{ number_format(round($invoice_group->sum('ppn')),2,',','.') }}</td>
@@ -153,7 +156,7 @@
                         <td></td>
                         <td class="text-start" style="color: red" colspan="2">Pot PPH (2%)</td>
                         <td class="text-end" style="color: red">- {{ number_format(round($invoice_group->sum('pph')),2,',','.') }}</td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <td></td>
                         <td colspan="2" style="color: white">BLANK AREA</td>
