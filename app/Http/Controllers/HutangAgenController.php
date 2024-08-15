@@ -374,7 +374,8 @@ class HutangAgenController extends Controller
                 'tipe' => 'JNL',
                 'coa_id' => 63,
                 'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph'),
-                'debit' => 0
+                'debit' => 0,
+                'invoice_external' => $invoice
             ]);
         }
 

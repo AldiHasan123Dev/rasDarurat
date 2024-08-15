@@ -79,7 +79,7 @@ use Google\Service\Drive;
 */
 
 Route::get('/', function () {
-    return redirect('login');
+    return view('landingpage.index');
 });
 Route::get('/logs', function () {
     $logPath = storage_path('/logs/laravel.log');

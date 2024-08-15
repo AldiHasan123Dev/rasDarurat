@@ -142,7 +142,7 @@
                         @endphp
                             <tr>
                                 <td></td>
-                                <td class="text-start" colspan="2">Pelunasan Hutang Agen No Inv  {{ $inv }} / {{ $hutang_agen->first()->order->tarif->customer->nama }}</td>
+                                <td class="text-start" colspan="2">Pelunasan Hutang Agen No Inv  {{ $inv }}</td>
                                 <td class="text-end">{{ number_format($nominal,2,',','.') }}</td>
                             </tr>
                         @endforeach
