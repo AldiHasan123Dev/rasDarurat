@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Sona Template">
-    <meta name="keywords" content="Sona, unica, creative, html">
+    <meta name="description" content="Perusahaan Logistik yang Aman dan Tepercaya. Memberikan Layanan Terbaik pada Pelanggan dan telah teruji selama lebih dari 18 tahun">
+    <meta name="keywords" content="Logistic, Exkspedisi, Expedition, Kapal Laut">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PT RAS | Rahmat Alam Samudera </title>   
+    <title>PT RAS | Rahmat Alam Samudera </title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Lora:400,700&display=swap" rel="stylesheet">
@@ -213,7 +213,7 @@
                                     <li><a href="#about">About Us</a></li>
                                     <li><a href="#mission">Mission</a></li>
                                     <li><a href="#gallery">Gallery</a></li>
-                                    <li class="active"><a href="http://ptras.id/login">Login</a></li>
+                                    <li class="active"><a href="{{ route('login') }}">Login</a></li>
 
                                 </ul>
                             </nav>
