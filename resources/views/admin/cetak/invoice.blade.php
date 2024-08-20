@@ -623,7 +623,7 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                         @if ($allin['total']>=5000000)
-                                            <img src="{{ asset('assets/img/ttd-ifa1.png') }}" style="width: 151px; height:94px">
+                                            <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                         @else
                                             <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                         @endif
@@ -821,6 +821,18 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if ($order->tarif->customer->id==318)
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($invoice['total'] - $invoice['pph']) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
 
                         </table>
 
@@ -1048,6 +1060,18 @@
                                 </div>
                             </td>
                         </tr>
+                       @if ($order->tarif->customer->id==318)
+                       <tr>
+                            <td colspan="4"></td>
+                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                            <td style="border: 1px solid black">
+                                <div class="price d-flex justify-content-between px-2">
+                                    <span>Rp</span>
+                                    <span>{{ number_format($invoice['total'] - $invoice['pph']) }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                       @endif
 
                     </table>
 
@@ -1277,6 +1301,18 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if ($order->tarif->customer->id==318)
+                            <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($invoice['total'] - $invoice['pph']) }}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endif
 
                         </table>
 
@@ -1322,7 +1358,7 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                     @if ($invoice['total']>=5000000)
-                                        <img src="{{ asset('assets/img/ttd-ifa1.png') }}" style="width: 151px; height:94px">
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                     @else
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                     @endif

@@ -20,6 +20,41 @@
 @endsection
 @section('content')
     <div class="container mt-3">
+        <div class="card mb-5 shadow">
+            <div class="card-header">
+                List Job Belum ada data order trucking
+            </div>
+            <div class="card-body">
+                <table class="table table-sm" style="font-size: .7rem">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>ID JOB</th>
+                            <th>Customer</th>
+                            <th>Dari</th>
+                            <th>Tujuan</th>
+                            <th>Container</th>
+                            <th>Seal</th>
+                            <th>Nopol</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($no_order as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</td>
+                                <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
+                                <td>{{ $item->tarif->dari_lokasi->nama }}</td>
+                                <td>{{ $item->tarif->tujuan_lokasi->nama }}</td>
+                                <td>{{ $item->container }}</td>
+                                <td>{{ $item->seal }}</td>
+                                <td>{{ $item->nopol }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <div class="card-12">
             <div class="card">
                 <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">

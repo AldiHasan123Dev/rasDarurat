@@ -108,7 +108,31 @@ class JasaKirimController extends Controller
 
     public function generateJurnal(Request $request)
     {
-        $data = JasaKirim::where('invoice',$request->invoice)->get();
+        $jasa_kirim_id = JasaKirim::where('invoice',$request->invoice)->pluck('id')->toArray();
+        $order_id = Order::whereIn('jasa_kirim_id',$jasa_kirim_id)->pluck('id')->toArray();
+        $generate_jurnal = $this->check_omset($order_id);
+        if($generate_jurnal){
+            $this->jurnalTemplate($request->invoice, $request->nomor, $request->no, $request->created_at);
+        }
+        return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disimpan!');
+    }
+
+    private function check_omset($order_id)
+    {
+        foreach($order_id as $id){
+            $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
+            $order = Order::find($id);
+            if($jurnals->count()>0 && $order){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public function jurnalTemplate($invoice, $nomor, $no, $created_at)
+    {
+        $data = JasaKirim::where('invoice',$invoice)->get();
         $err = [];
         foreach ($data as $idx => $item) {
             $count = $item->orders->count() + $item->kirim_dokumen->count();
@@ -132,22 +156,22 @@ class JasaKirimController extends Controller
                         'tipe' => 'JNL',
                         'coa_id' => 31,
                         'order_id' => $order->id,
-                        'nomor' => $request->nomor,
+                        'nomor' => $nomor,
                         'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
                         'debit' => $price2,
-                        'created_at' => $request->created_at,
-                        'no' => $request->no
+                        'created_at' => $created_at,
+                        'no' => $no
                     ]);
                 }else{
                     Jurnal::create([
                         'tipe' => 'JNL',
                         'coa_id' => 31,
                         'order_id' => $order->id,
-                        'nomor' => $request->nomor,
+                        'nomor' => $nomor,
                         'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
                         'debit' => $price,
-                        'created_at' => $request->created_at,
-                        'no' => $request->no
+                        'created_at' => $created_at,
+                        'no' => $no
                     ]);
                 }
             }
@@ -156,30 +180,30 @@ class JasaKirimController extends Controller
                     'tipe' => 'JNL',
                     'coa_id' => 31,
                     'order_id' => $kirim->order_id,
-                    'nomor' => $request->nomor,
+                    'nomor' => $nomor,
                     'nama' => $kirim->nama,
                     'debit' => $price,
-                    'created_at' => $request->created_at,
-                    'no' => $request->no
+                    'created_at' => $created_at,
+                    'no' => $no
                 ]);
             }
             $item->update([
                 'status' => 1,
-                'jurnal' => $request->nomor
+                'jurnal' => $nomor
             ]);
         }
         Jurnal::create([
             'tipe' => 'JNL',
             'coa_id' => 63,
             'order_id' => $order->id,
-            'nomor' => $request->nomor,
-            'nama' => 'Hutang Agen ('.$request->invoice.')',
+            'nomor' => $nomor,
+            'nama' => 'Hutang Agen ('.$invoice.')',
             'credit' => $data->sum('nominal'),
-            'created_at' => $request->created_at,
-            'no' => $request->no
+            'created_at' => $created_at,
+            'no' => $no
         ]);
 
-        return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disimpan!');
+        return true;
     }
 
     public function syncJurnal(Request $request)

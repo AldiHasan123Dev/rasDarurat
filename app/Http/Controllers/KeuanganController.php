@@ -116,9 +116,13 @@ class KeuanganController extends Controller
     {
         $setting = Setting::find(1);
         $data = $request->all();
-        $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
-        if (!$nsfp) {
-            return back()->with('danger','Tidak ada NSFP yang tersedia! Harap input NSFP terlebih dahulu');
+        $customer_id = $order->tarif->customer->id;
+        $nsfp = null;
+        if($customer_id!=318){
+            $nsfp = NSFP::where('available',1)->orderBy('nomor','asc')->first();
+            if (!$nsfp) {
+                return back()->with('danger','Tidak ada NSFP yang tersedia! Harap input NSFP terlebih dahulu');
+            }
         }
         $no = Transaksi::whereYear('created_at',date('Y'))->max('order') + 1;
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
@@ -126,21 +130,23 @@ class KeuanganController extends Controller
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d',$no).'/'.$setting->short_name.'/'.$month_roman.'/'.date('y');
         $data['invoice'] = $invoice;
-        $data['nsfp'] = $nsfp->nomor;
+        $data['nsfp'] = $nsfp->nomor ?? null;
         $data['order'] = $no;
         $data['order_id'] = $order->id;
         $data['created_at'] = date('Y-m-d');
         Transaksi::create($data);
         Order::where('job',$order->job)->update([
             'invoice' => $invoice,
-            'nsfp' => $nsfp->nomor,
+            'nsfp' => $nsfp->nomor ?? null,
             'invoice_date' => date('Y-m-d'),
             'lock_biaya' => 1
         ]);
-        $nsfp->update([
-            'available' => 0,
-            'invoice' => $invoice
-        ]);
+        if($nsfp){
+            $nsfp->update([
+                'available' => 0,
+                'invoice' => $invoice
+            ]);
+        }
 
         return back()->with('success','Invoice berhasil dibuat');
     }

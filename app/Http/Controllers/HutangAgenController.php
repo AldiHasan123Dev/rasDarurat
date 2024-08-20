@@ -147,8 +147,19 @@ class HutangAgenController extends Controller
 
     public function generate_jurnal()
     {
-        $hutang_agen = HutangAgen::where('draf',request('draf'))->get();
-        $tagihan_agen = TagihanAgen::where('draf', request('draf'))->get();
+        $order_id = HutangAgen::where('draf',request('draf'))->pluck('order_id')->toArray();
+        $generate_jurnal = $this->check_omset($order_id);
+        if($generate_jurnal){
+            $this->jurnal(request('draf'));
+        }
+
+        return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);
+    }
+
+    private function jurnal($draf)
+    {
+        $hutang_agen = HutangAgen::where('draf',$draf)->get();
+        $tagihan_agen = TagihanAgen::where('draf', $draf)->get();
         $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
         $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
         $pph = 0;
@@ -379,9 +390,19 @@ class HutangAgenController extends Controller
             ]);
         }
 
+        return true;
+    }
 
-
-        return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);
+    private function check_omset($order_id)
+    {
+        foreach($order_id as $id){
+            $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
+            $order = Order::find($id);
+            if($jurnals->count()>0 && $order){
+                return false;
+            }
+        }
+        return true;
     }
 
     private function terbilang($angka) {

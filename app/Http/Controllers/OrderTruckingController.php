@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exports\OrderTruckingExport;
-use App\Http\Resources\OrderTruckingResource;
 use App\Models\CustomerTrucking;
 use App\Models\Kendaraan;
 use App\Models\Order;
@@ -12,9 +11,9 @@ use App\Models\SanguSopir;
 use App\Models\Sopir;
 use App\Models\TarifTrucking;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
 
 class OrderTruckingController extends Controller
 {
@@ -24,7 +23,18 @@ class OrderTruckingController extends Controller
         $sopir = Sopir::where('is_active',1)->orderBy('nama','asc')->get();
         $tujuan = SanguSopir::join('lokasi','lokasi.id','=','sangu_sopir.tujuan')->select('sangu_sopir.*')->where('sangu_sopir.is_active',1)->orderBy('lokasi.nama','asc')->get();
         $customers = CustomerTrucking::all()->sortBy('nama');
-        return view('admin.ordertrucking.index', compact('kendaraan','sopir','tujuan','customers'));
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
+        $nopol = Kendaraan::whereIn('milik',['R1','R2'])->pluck('nopol')->toArray();
+        $query = Order::query();
+        $query->whereBetween('order.created_at',[$last,$now]);
+        $query->where('order.trucking','XPDC');
+        $query->whereIn('order.nopol',$nopol);
+        $query->whereDoesntHave('truckingInfo');
+        $query->orderBy('order.job');
+        $query->orderBy('order.no_job');
+        $no_order = $query->get();
+        return view('admin.ordertrucking.index', compact('kendaraan','sopir','tujuan','customers','no_order'));
     }
 
     public function store(Request $request)
