@@ -113,6 +113,8 @@ class JasaKirimController extends Controller
         $generate_jurnal = $this->check_omset($order_id);
         if($generate_jurnal){
             $this->jurnalTemplate($request->invoice, $request->nomor, $request->no, $request->created_at);
+        }else{
+            $this->jurnalTemplate($request->invoice, $request->nomor, $request->no, $request->created_at,76);
         }
         return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disimpan!');
     }
@@ -130,7 +132,7 @@ class JasaKirimController extends Controller
     }
 
 
-    public function jurnalTemplate($invoice, $nomor, $no, $created_at)
+    public function jurnalTemplate($invoice, $nomor, $no, $created_at, $coa_id = 31)
     {
         $data = JasaKirim::where('invoice',$invoice)->get();
         $err = [];
@@ -154,7 +156,7 @@ class JasaKirimController extends Controller
                     $is_first = false;
                     Jurnal::create([
                         'tipe' => 'JNL',
-                        'coa_id' => 31,
+                        'coa_id' => $coa_id,
                         'order_id' => $order->id,
                         'nomor' => $nomor,
                         'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
@@ -165,7 +167,7 @@ class JasaKirimController extends Controller
                 }else{
                     Jurnal::create([
                         'tipe' => 'JNL',
-                        'coa_id' => 31,
+                        'coa_id' => $coa_id,
                         'order_id' => $order->id,
                         'nomor' => $nomor,
                         'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
@@ -178,7 +180,7 @@ class JasaKirimController extends Controller
             foreach($item->kirim_dokumen as $kirim){
                 Jurnal::create([
                     'tipe' => 'JNL',
-                    'coa_id' => 31,
+                    'coa_id' => $coa_id,
                     'order_id' => $kirim->order_id,
                     'nomor' => $nomor,
                     'nama' => $kirim->nama,
@@ -407,4 +409,5 @@ class JasaKirimController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
+
 }

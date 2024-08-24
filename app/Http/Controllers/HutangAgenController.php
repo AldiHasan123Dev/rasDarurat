@@ -151,12 +151,14 @@ class HutangAgenController extends Controller
         $generate_jurnal = $this->check_omset($order_id);
         if($generate_jurnal){
             $this->jurnal(request('draf'));
+        }else{
+            $this->jurnal(request('draf'),76);
         }
 
         return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);
     }
 
-    private function jurnal($draf)
+    private function jurnal($draf, $coa_id = 31)
     {
         $hutang_agen = HutangAgen::where('draf',$draf)->get();
         $tagihan_agen = TagihanAgen::where('draf', $draf)->get();
@@ -164,6 +166,7 @@ class HutangAgenController extends Controller
         $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
         $pph = 0;
         $total = 0;
+        $total_tagihan_agen = 0;
         foreach($hutang_agen as $hutang) {
             $pph += round($hutang->pph);
             $order = $hutang->order;
@@ -182,19 +185,11 @@ class HutangAgenController extends Controller
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
-                // $jurnal['coa_id'] = 63;
-                // $jurnal['credit'] = $hutang->tarif + round($hutang->ppn);
-                // $jurnal['debit'] = 0;
-                // Jurnal::create($jurnal);
             }else{
-                $jurnal['coa_id'] = 31;
+                $jurnal['coa_id'] = $coa_id;
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
-                // $jurnal['coa_id'] = 63;
-                // $jurnal['credit'] = $hutang->tarif + round($hutang->ppn);
-                // $jurnal['debit'] = 0;
-                // Jurnal::create($jurnal);
             }
 
             $hutang->update([
@@ -242,23 +237,11 @@ class HutangAgenController extends Controller
                                 'invoice' => $order->invoice,
                                 'invoice_external' => $tagihan->invoice,
                                 'tipe' => 'JNL',
-                                'coa_id' => 31,
+                                'coa_id' => $coa_id,
                                 'debit' => $amount,
                                 'credit' => 0
                             ]);
                         }
-                        // Jurnal::create([
-                        //     'order_id' => $order->id,
-                        //     'nomor' => $nomor,
-                        //     'no' => $no,
-                        //     'nama' => $tagihan->nama,
-                        //     'container' => $order->container,
-                        //     'invoice_external' => $tagihan->invoice,
-                        //     'tipe' => 'TEST',
-                        //     'coa_id' => 63,
-                        //     'credit' => $amount,
-                        //     'debit' => 0
-                        // ]);
                     }else{
                         Jurnal::create([
                             'order_id' => $order->id,
@@ -272,18 +255,6 @@ class HutangAgenController extends Controller
                             'debit' => $amount,
                             'credit' => 0
                         ]);
-                        // Jurnal::create([
-                        //     'order_id' => $order->id,
-                        //     'nomor' => $nomor,
-                        //     'no' => $no,
-                        //     'nama' => $tagihan->nama,
-                        //     'container' => $order->container,
-                        //     'invoice_external' => $tagihan->invoice,
-                        //     'tipe' => 'TEST',
-                        //     'coa_id' => 28,
-                        //     'credit' => $amount,
-                        //     'debit' => 0
-                        // ]);
                     }
                 }
             }else{
@@ -313,23 +284,11 @@ class HutangAgenController extends Controller
                             'invoice' => $order->invoice ?? null,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => 31,
+                            'coa_id' => $coa_id,
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
                         ]);
                     }
-                    // Jurnal::create([
-                    //     'order_id' => $tagihan->order_id,
-                    //     'nomor' => $nomor,
-                    //     'no' => $no,
-                    //     'nama' => $tagihan->nama,
-                    //     'container' => $order->container,
-                    //     'invoice_external' => $tagihan->invoice,
-                    //     'tipe' => 'TEST',
-                    //     'coa_id' => 63,
-                    //     'credit' => $tagihan->jumlah,
-                    //     'debit' => 0
-                    // ]);
                 }else{
                     Jurnal::create([
                         'order_id' => $tagihan->order_id,
@@ -343,18 +302,6 @@ class HutangAgenController extends Controller
                         'debit' => $tagihan->jumlah,
                         'credit' => 0
                     ]);
-                    // Jurnal::create([
-                    //     'order_id' => $tagihan->order_id,
-                    //     'nomor' => $nomor,
-                    //     'no' => $no,
-                    //     'nama' => $tagihan->nama,
-                    //     'container' => $order->container,
-                    //     'invoice_external' => $tagihan->invoice,
-                    //     'tipe' => 'TEST',
-                    //     'coa_id' => 28,
-                    //     'credit' => $tagihan->jumlah,
-                    //     'debit' => 0
-                    // ]);
                 }
             }
 
@@ -364,6 +311,7 @@ class HutangAgenController extends Controller
             ]);
 
             $total += $tagihan->jumlah;
+            $total_tagihan_agen += $tagihan->jumlah;
         }
 
         foreach ($hutang_agen->groupBy('invoice') as $invoice => $invoice_group) {
@@ -384,7 +332,7 @@ class HutangAgenController extends Controller
                 'nama' => 'Hutang Agen '.$invoice.' '.($hutang_agen->first()->order->agent->nama??''),
                 'tipe' => 'JNL',
                 'coa_id' => 63,
-                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph'),
+                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $total_tagihan_agen,
                 'debit' => 0,
                 'invoice_external' => $invoice
             ]);

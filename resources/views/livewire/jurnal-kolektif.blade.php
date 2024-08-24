@@ -149,6 +149,8 @@
     let debit = 2;
     let total_debit = 0;
     let total_credit = 0;
+    let check_order_id = [];
+
     $('.select2').select2();
     $('#reset').click(function (e) {
         location.reload();
@@ -166,7 +168,20 @@
         }else{
             if($('#tipe').val()){
                 if(confirm('are you sure')){
-                    $('#form-submit').submit();
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url('api/jurnal/check-omset') }}",
+                        data: {
+                            order_id:check_order_id
+                        },
+                        success: function (response) {
+                            if (response.status==1) {
+                                alert(response.message);
+                            }else{
+                                $('#form-submit').submit();
+                            }
+                        }
+                    })
                 }
             }else{
                 alert('Harap pilih tipe jurnal');
@@ -216,6 +231,7 @@
 
     function getOrder(){
         var order_id = $("select[name='job[]']").map(function(){return $(this).val();}).get();
+        check_order_id = [];
         $.ajax({
             type: "POST",
             url: "{{ url('api/get-array-id') }}",
@@ -225,6 +241,7 @@
             success: function (response) {
                 let html = '';
                 $.each(response, function (idx, item) {
+                    check_order_id.push(item.id ?? 0);
                     html  +=
                     `
                     <tr>
