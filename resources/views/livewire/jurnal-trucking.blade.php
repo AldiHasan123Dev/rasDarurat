@@ -183,6 +183,9 @@
         }else{
             if($('#tipe').val()){
                 if(confirm('are you sure')){
+                    if(check_order_id.length==0){
+                        check_order_id = [0];
+                    }
                     $.ajax({
                         type: "POST",
                         url: "{{ url('api/jurnal/check-omset') }}",
@@ -246,7 +249,7 @@
 
     function getOrder(){
         var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();
-        check_order_id = [];
+        check_order_id = [0];
         $.ajax({
             type: "POST",
             url: "{{ url('api/get-array-id-trucking') }}",
@@ -256,7 +259,7 @@
             success: function (response) {
                 let html = '';
                 $.each(response, function (idx, item) {
-                    check_order_id.push(item.order_id ?? 0);
+                    check_order_id.push(item.order_id ?? '0');
                     html  +=
                     `
                     <tr>

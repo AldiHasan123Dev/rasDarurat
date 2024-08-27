@@ -152,7 +152,7 @@ class HutangAgenController extends Controller
         if($generate_jurnal){
             $this->jurnal(request('draf'));
         }else{
-            $this->jurnal(request('draf'),76);
+            $this->jurnal(request('draf'),134);
         }
 
         return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);

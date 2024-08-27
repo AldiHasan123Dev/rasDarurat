@@ -168,6 +168,9 @@
         }else{
             if($('#tipe').val()){
                 if(confirm('are you sure')){
+                    if(check_order_id.length==0){
+                        check_order_id = [0];
+                    }
                     $.ajax({
                         type: "POST",
                         url: "{{ url('api/jurnal/check-omset') }}",
