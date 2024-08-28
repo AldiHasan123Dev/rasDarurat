@@ -317,6 +317,26 @@ class JurnalController extends Controller
         ]);
     }
 
+    public function check_omset_trucking()
+    {
+        $order_id = request('order_id');
+        $truckid = OrderTrucking::whereIn('id',$order_id)->whereNotNull('order_id')->pluck('order_id')->toArray();
+        foreach($truckid as $id){
+            $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
+            $order = Order::find($id);
+            if($jurnals->count()>0 && $order){
+                return response([
+                    'status' => 1,
+                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' sudah close dari Uang Muka'
+                ]);
+            }
+        }
+        return response([
+            'status' => 0,
+            'message' => 'aman'
+        ]);
+    }
+
     public function render_buku_pembantu()
     {
         $year = request('year') ?? date('Y');

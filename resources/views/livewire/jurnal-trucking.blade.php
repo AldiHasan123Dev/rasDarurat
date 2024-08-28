@@ -166,6 +166,7 @@
     let credit = 2;
     let debit = 2;
     let check_order_id = [];
+    let arr_id = [];
     $('.select2').select2();
     $('#reset').click(function (e) {
         location.reload();
@@ -183,14 +184,11 @@
         }else{
             if($('#tipe').val()){
                 if(confirm('are you sure')){
-                    if(check_order_id.length==0){
-                        check_order_id = [0];
-                    }
                     $.ajax({
                         type: "POST",
-                        url: "{{ url('api/jurnal/check-omset') }}",
+                        url: "{{ url('api/jurnal/check-omset-trucking') }}",
                         data: {
-                            order_id:check_order_id
+                            order_id:arr_id
                         },
                         success: function (response) {
                             if (response.status==1) {
@@ -248,8 +246,15 @@
     }
 
     function getOrder(){
-        var order_id = $("select[name='order_id[]']").map(function(){return $(this).val();}).get();
-        check_order_id = [0];
+        var order_id = $("select[name='order_id[]']").map(function(){
+            let val = $(this).val();
+            if(val==""){
+                val='0';
+            }
+            return val;
+        }).get();        
+        console.log(order_id);
+        
         $.ajax({
             type: "POST",
             url: "{{ url('api/get-array-id-trucking') }}",
@@ -259,7 +264,6 @@
             success: function (response) {
                 let html = '';
                 $.each(response, function (idx, item) {
-                    check_order_id.push(item.order_id ?? '0');
                     html  +=
                     `
                     <tr>
@@ -310,11 +314,20 @@
         total_debit = 0;
         let total_debit_prev = 0;
         let total_credit_prev = 0;
+        arr_id = [];
         for (let i = 0; i < check.length; i++) {
             const item = check[i];
             var d = $('#debit-'+item).val();
             var c = $('#credit-'+item).val();
             var a = parseInt($('#amount-'+item).val());
+            var or_id = $('#job-'+item).val();
+            if(or_id==""){
+                or_id = 0;
+            }else if(d==31){
+                arr_id.push(or_id);
+            }else{
+                arr_id.push(0);
+            }
             if(d==16 || d==45 || d==175){
                 total_debit_prev+=a;
             }
@@ -328,6 +341,7 @@
                 total_credit+=a;
             }
         }
+        
         let voucher = total_debit_prev - total_credit_prev;
         if(voucher<0){
             voucher = voucher * -1;
