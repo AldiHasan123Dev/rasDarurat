@@ -300,7 +300,7 @@ class JurnalController extends Controller
 
     public function check_omset()
     {
-        $order_id = request('order_id');
+        $order_id = request('order_id') ?? [];
         foreach($order_id as $id){
             $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
             $order = Order::find($id);
@@ -319,7 +319,7 @@ class JurnalController extends Controller
 
     public function check_omset_trucking()
     {
-        $order_id = request('order_id');
+        $order_id = request('order_id') ?? [];
         $truckid = OrderTrucking::whereIn('id',$order_id)->whereNotNull('order_id')->pluck('order_id')->toArray();
         foreach($truckid as $id){
             $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
