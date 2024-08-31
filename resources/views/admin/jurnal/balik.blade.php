@@ -59,7 +59,7 @@
                                 <tr>
                                     <td>Tanggal Awal</td>
                                     <td>Tanggal Akhir</td>
-                                    <td colspan="2"></td>
+                                    <td colspan="2">Kriteria Keterangan (bisa pakai %)</td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -68,7 +68,9 @@
                                     <td>
                                         <input required type="date" name="end" id="end" class="form-control" value="{{ request('end') }}">
                                     </td>
-                                    <td colspan="2"></td>
+                                    <td colspan="2">
+                                        <input type="text" name="name" id="name" class="form-control" value="{{ request('name') }}">
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Akun Debet Awal</td>

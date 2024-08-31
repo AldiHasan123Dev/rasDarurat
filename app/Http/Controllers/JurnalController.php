@@ -286,6 +286,9 @@ class JurnalController extends Controller
                     $query->where('order_id',request('order_id'));
                 }
             }
+            if(request('name')){
+                $query->where('nama','LIKE',request('name'));
+            }
             if(request('debit_coa_id_tujuan')){
                 $query->where('coa_id',request('debit_coa_id_tujuan'));
                 $query->where('debit','>',0);
