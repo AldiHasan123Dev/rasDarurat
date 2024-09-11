@@ -21,7 +21,7 @@ class OmsetController extends Controller
         $end = request('start') + request('end');
         $data = array();
         $model = new Omset();
-        $coa_id = [93];
+        $coa_id = [93,38,133,134,135,140,76,81];
         $orders = Order::whereIn('id',$ids)->where('lock_omset',1)->get();
         if(request('is_pra')){
             $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();

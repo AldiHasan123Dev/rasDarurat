@@ -251,7 +251,7 @@ class HutangAgenController extends Controller
                             'container' => $order->container,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => 63,
+                            'coa_id' => 28,
                             'debit' => $amount,
                             'credit' => 0
                         ]);
@@ -298,7 +298,7 @@ class HutangAgenController extends Controller
                         'container' => $order->container,
                         'invoice_external' => $tagihan->invoice,
                         'tipe' => 'JNL',
-                        'coa_id' => 63,
+                        'coa_id' => 28,
                         'debit' => $tagihan->jumlah,
                         'credit' => 0
                     ]);
