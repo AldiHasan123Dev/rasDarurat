@@ -181,8 +181,8 @@
                             if (response.status==1) {
                                 alert(response.message);
                             }else{
-                                alert('submit');
-                                // $('#form-submit').submit();
+                                // alert('submit');
+                                $('#form-submit').submit();
                             }
                         }
                     })
