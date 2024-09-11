@@ -47,6 +47,9 @@ class TransaksiController extends Controller
             'created_at' => $request->created_at
         ]);
 
+        $is_asuransi_cont = true;
+        $is_asuransi_cont_fill = true;
+
         if(request('tanggal_kirim')){
             if(is_null($transaksi->jurnal_piutang)){
                 $month = date('m');
@@ -90,8 +93,16 @@ class TransaksiController extends Controller
                         foreach ($transaksi->jobs as $job) {
                             if($job->asuransi=='ADA EXC'){
                                 if (!is_null($job->asuransi_id)) {
-                                    $debit += (($job->asuransiInfo->rate/100) * $job->pertanggungan);
-                                    $debit += $job->asuransiInfo->admin;
+                                    if($job->tipe_asuransi=='cont'){
+                                        $debit += (($job->asuransiInfo->rate/100) * $job->pertanggungan);
+                                        $debit += $job->asuransiInfo->admin;
+                                    }else{
+                                        if($is_asuransi_cont){
+                                            $debit += (($job->asuransiInfo->rate/100) * $job->pertanggungan);
+                                            $debit += $job->asuransiInfo->admin;
+                                            $is_asuransi_cont = false;
+                                        }
+                                    }
                                 }
                             }
                             if($job->tagihan->count()>0){
@@ -151,22 +162,44 @@ class TransaksiController extends Controller
                         foreach ($transaksi->jobs as $job) {
                             if($job->asuransi=='ADA EXC'){
                                 if (!is_null($job->asuransi_id)) {
-                                    $asuransi = ($job->asuransiInfo->rate/100) * $job->pertanggungan;
-                                    $admin = $job->asuransiInfo->admin;
-                                    Jurnal::create([
-                                        'invoice' => $order->invoice ?? null,
-                                        'nopol' => $order->nopol ?? null,
-                                        'container' => $order->container ?? null,
-                                        'coa_id' => $item->coa_credit_id,
-                                        'order_id' => $job->id,
-                                        'nomor' => $nomor,
-                                        'nama' => 'Asuransi '.$job->asuransiInfo->nama,
-                                        'credit' => round($asuransi + $admin),
-                                        'debit' => 0,
-                                        'tipe' => 'JNL',
-                                        'no' => $no,
-                                        'created_at' => $date,
-                                    ]);
+                                    if($job->tipe_asuransi=='cont'){
+                                        $asuransi = ($job->asuransiInfo->rate/100) * $job->pertanggungan;
+                                        $admin = $job->asuransiInfo->admin;
+                                        Jurnal::create([
+                                            'invoice' => $order->invoice ?? null,
+                                            'nopol' => $order->nopol ?? null,
+                                            'container' => $order->container ?? null,
+                                            'coa_id' => $item->coa_credit_id,
+                                            'order_id' => $job->id,
+                                            'nomor' => $nomor,
+                                            'nama' => 'Asuransi '.$job->asuransiInfo->nama,
+                                            'credit' => round($asuransi + $admin),
+                                            'debit' => 0,
+                                            'tipe' => 'JNL',
+                                            'no' => $no,
+                                            'created_at' => $date,
+                                        ]);
+                                    }else{
+                                        if($is_asuransi_cont_fill){
+                                            $asuransi = ($job->asuransiInfo->rate/100) * $job->pertanggungan;
+                                            $admin = $job->asuransiInfo->admin;
+                                            $is_asuransi_cont_fill = false;
+                                            Jurnal::create([
+                                                'invoice' => $order->invoice ?? null,
+                                                'nopol' => $order->nopol ?? null,
+                                                'container' => $order->container ?? null,
+                                                'coa_id' => $item->coa_credit_id,
+                                                'order_id' => $job->id,
+                                                'nomor' => $nomor,
+                                                'nama' => 'Asuransi '.$job->asuransiInfo->nama,
+                                                'credit' => round($asuransi + $admin),
+                                                'debit' => 0,
+                                                'tipe' => 'JNL',
+                                                'no' => $no,
+                                                'created_at' => $date,
+                                            ]);
+                                        }
+                                    }
                                 }
                             }
                         }

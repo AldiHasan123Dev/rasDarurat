@@ -88,7 +88,7 @@
                         <tr class="init-table">
                             <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $i }})" checked id="{{ $i }}" value="{{ $i }}"></td>
                             <td style="width: 200px">
-                                <select class="form-control select2" id="job-{{ $i }}" name="job[]" style="font-size:.9rem !important">
+                                <select class="form-control select2" id="job-{{ $i }}" onchange="getOrder()" name="job[]" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @foreach ($orders as $item)
                                     <option value="{{ $item }}">{{ $item }}</option>
@@ -181,7 +181,8 @@
                             if (response.status==1) {
                                 alert(response.message);
                             }else{
-                                $('#form-submit').submit();
+                                alert('submit');
+                                // $('#form-submit').submit();
                             }
                         }
                     })
@@ -198,7 +199,7 @@
         let html = `<tr>
                         <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
                         <td style="width: 200px">
-                            <select class="form-control select2" id="job-${debit}" name="job[]" style="font-size:.9rem !important">
+                            <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="job[]" style="font-size:.9rem !important">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
                                 <option value="{{ $item }}">{{ $item }}</option>
@@ -239,7 +240,8 @@
             type: "POST",
             url: "{{ url('api/get-array-id') }}",
             data: {
-                id:order_id
+                id:order_id,
+                type:'job'
             },
             success: function (response) {
                 let html = '';
