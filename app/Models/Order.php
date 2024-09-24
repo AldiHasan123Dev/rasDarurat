@@ -201,4 +201,13 @@ class Order extends Model
     {
         return Order::where('job',$this->job)->count();
     }
+
+    public function checkOmset()
+    {
+        $jurnals = Jurnal::where('order_id',$this->id)->where('coa_id',93)->where('debit','>',0)->get();
+        if($jurnals->count()>0){
+            return true;
+        }
+        return false;
+    }
 }

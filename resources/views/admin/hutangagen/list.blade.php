@@ -100,7 +100,7 @@
                                                             <h5>Add Cost</h5>
                                                             <hr>
                                                             @php
-                                                                $tagihan = \App\Models\TagihanAgen::where('invoice',$item->first()->invoice)->get();
+                                                                $tagihan = \App\Models\TagihanAgen::whereIn('order_id',$item->pluck('order_id')->toArray())->get();
                                                             @endphp
                                                             <div class="table-responsive">
                                                                 <table class="table table-sm">

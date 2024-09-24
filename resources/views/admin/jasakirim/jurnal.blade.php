@@ -107,8 +107,8 @@
                                                         @foreach ($data as $idx => $item)
                                                             @foreach ($item->orders as $order)
                                                                 <tr>
-                                                                    <td>1.6.1</td>
-                                                                    <td>Uang Muka Biaya Oprasional Ekspedisi</td>
+                                                                    <td>{{ $order->checkOmset() ? '2.1.5.1' : '1.6.1' }}</td>
+                                                                    <td>{{ $order->checkOmset() ? 'Hutang Biaya Operasional Ekspedisi' : 'Uang Muka Biaya Oprasional Ekspedisi' }}</td>
                                                                     <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
                                                                     <td>Biaya Pengiriman Dokumen {{ $order->agent->nama ?? '-' }} ({{ $order->agent->lokasi->nama ?? '-' }})</td>
                                                                     <td>{{ number_format($item->split_nominal()) }}</td>
@@ -117,8 +117,8 @@
                                                             @endforeach
                                                             @foreach ($item->kirim_dokumen as $kirim)
                                                                 <tr>
-                                                                    <td>1.6.1</td>
-                                                                    <td>Uang Muka Biaya Oprasional Ekspedisi</td>
+                                                                    <td>{{ $kirim->order->checkOmset() ? '2.1.5.1' : '1.6.1' }}</td>
+                                                                    <td>{{ $kirim->order->checkOmset() ? 'Hutang Biaya Operasional Ekspedisi' : 'Uang Muka Biaya Oprasional Ekspedisi' }}</td>
                                                                     <td>{{ $kirim->order->job }}-{{ sprintf('%02d',$kirim->order->no_job) }}</td>
                                                                     <td>{{ $kirim->nama }}</td>
                                                                     <td>{{ number_format($item->split_nominal()) }}</td>

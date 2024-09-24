@@ -95,7 +95,7 @@
                                     <select name="tagihan_order_id[]" class="form-select form-select-sm">
                                         <option value=""></option>
                                         @foreach ($jobs as $job => $item)
-                                        <option value="job-{{ $job }}">{{ $job }} 01-{{ sprintf('%02d',$item->count()) }}</option>
+                                        <option value="job-{{ $job }}">GROUP JOB {{ $job }}</option>
                                         @endforeach
                                         @foreach ($orders as $item)
                                             <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
@@ -120,7 +120,7 @@
                                     <select name="tagihan_order_id[]" class="form-select form-select-sm">
                                         <option value=""></option>
                                         @foreach ($jobs as $job => $item)
-                                        <option value="job-{{ $job }}">{{ $job }} 01-{{ sprintf('%02d',$item->count()) }}</option>
+                                        <option value="job-{{ $job }}">GROUP JOB {{ $job }}</option>
                                         @endforeach
                                         @foreach ($orders as $item)
                                             <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>
@@ -165,7 +165,7 @@
                                     <select name="tagihan_order_id[]" class="form-select form-select-sm">
                                         <option value=""></option>
                                         @foreach ($jobs as $job => $item)
-                                            <option value="job-{{ $job }}">{{ $job }} 01-{{ sprintf('%02d',$item->count()) }}</option>
+                                            <option value="job-{{ $job }}">GROUP JOB {{ $job }}</option>
                                         @endforeach
                                         @foreach ($orders as $item)
                                             <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->container }}</option>

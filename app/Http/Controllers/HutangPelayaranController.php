@@ -119,7 +119,7 @@ class HutangPelayaranController extends Controller
                         'no_bg' => $item['no_bg_opp'],
                         'tgl_bg' => $item['tgl_bg_opp'],
                         'nominal_bg' => $item['nominal_bg_opp'],
-                        'coa_id' => 31,
+                        'coa_id' => ($hp->order->tarif->customer_id==318?28:31),
                         'order_id' => $item['order_id'],
                         'nomor' => $data_nomor[$item['no_bg_opp']]['nomor'],
                         'no' => $data_nomor[$item['no_bg_opp']]['no'],

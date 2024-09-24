@@ -36,8 +36,12 @@ class JurnalController extends Controller
         if(request('order_trucking_id')){
             $query->where('order_trucking_id',request('order_trucking_id'));
         }
+        if(request('page')){
+            $data = $query->paginate(10,['*'],'page',request('page'));
+        }else{
+            $data = $query->get();
+        }
         // $query->orderBy('nama');
-        $data = $query->get();
         $data = JurnalResource::collection($data);
         return response($data);
     }

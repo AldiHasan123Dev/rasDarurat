@@ -920,16 +920,19 @@ class JurnalController extends Controller
     {
         $jurnal = request('jurnal');
         $coa = COA::where('is_active',1)->orderBy('kode')->get();
-        $data = Jurnal::where('nomor',$jurnal)->get();
+        $count = Jurnal::where('nomor',$jurnal)->count();
+        $data = Jurnal::where('nomor',$jurnal)->first();
+        $deb = Jurnal::where('nomor',$jurnal)->sum('debit');
+        $cre = Jurnal::where('nomor',$jurnal)->sum('credit');
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(3)->format('Y-m-d');
         $orders = Order::whereBetween('created_at',[$last,$now])->select('id','no_job','job','seal','invoice')->orderBy('job')->orderBy('no_job')->get();
         $tipe = 'xpdc';
-        if($data[0]->order_trucking_id){
+        if($data->order_trucking_id){
             $tipe = 'trucking';
             $orders = OrderTrucking::whereBetween('created_at',[$last,$now])->select('container','seal','id','invoice')->orderBy('container')->get();
         }
-        $jur = $data[0];
+        $jur = $data;
         $debit = Jurnal::where('nomor',$jurnal)->whereIn('coa_id',[16,45,175])->where('credit',0)->sum('debit');
         $credit = Jurnal::where('nomor',$jurnal)->whereIn('coa_id',[16,45,175])->where('debit',0)->sum('credit');
         $voucher  = $debit - $credit;
@@ -937,7 +940,7 @@ class JurnalController extends Controller
             $voucher = $voucher*-1;
         }
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.new_edit', compact('data','orders','coa','tipe','jur','voucher'));
+        return view('admin.jurnal.new_edit', compact('data','orders','coa','tipe','jur','voucher','deb','cre','count'));
     }
 
     public function editOne(Jurnal $jurnal)

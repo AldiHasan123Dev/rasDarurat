@@ -38,7 +38,7 @@
             </div>
             <div class="col-12 mt-2">
                 <div class="card p-3" id="form-jurnal">
-                    <form action="{{ route('jurnal.update', $data[0]) }}" method="POST">
+                    <form action="{{ route('jurnal.update', $data) }}" method="POST">
                         @csrf
                         @method('PUT')
 
@@ -47,11 +47,11 @@
                         <div class="row">
                             <div class="col-4">
                                 <label for="tipe_jurnal">Nomor Jurnal</label>
-                                <input type="text" name="nomor" id="nomor" class="form-control" disabled value="{{ $data[0]->nomor }}">
+                                <input type="text" name="nomor" id="nomor" class="form-control" disabled value="{{ $data->nomor }}">
                             </div>
                             <div class="col-4">
                                 <label for="created_at">Tanggal Jurnal</label>
-                                <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d',strtotime($data[0]->created_at)) }}" class="form-control">
+                                <input type="date" name="created_at" id="created_at" value="{{ date('Y-m-d',strtotime($data->created_at)) }}" class="form-control">
                             </div>
                             <div class="col-2">
                                 <button class="btn btn-success btn-sm mx-2 mt-3" type="submit" onclick="return confirm('are you sure?')">Simpan Tanggal</button>
@@ -79,18 +79,30 @@
                                 </tr>
                             </thead>
                             <tbody id="data-body">
-
+                                <tr>
+                                    <td colspan="11" class="text-center">Loading</td>
+                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <div class="d-flex my-3 justify-content-between">
+                        <div>
+                            Total Baris : {{ $count }}
+                        </div>
+                        <div class="d-flex">
+                            @for ($i = 1; $i <= ((int)$count/10) + 1; $i++)
+                                <button type="button" class="btn btn-sm mx-1 btn-{{$i==1?'primary':'secondary'}}" id="page-{{ $i }}" onclick="changePage({{ $i }})">{{$i}}</button>
+                            @endfor
+                        </div>
                     </div>
                     <table>
                         <tr>
                             <td style="width: 300px"><b>TOTAL DEBET</b></td>
-                            <td><b id="total_debit">{{ number_format($data->sum('debit'),2,',','.') }}</b></td>
+                            <td><b id="total_debit">{{ number_format($deb,2,',','.') }}</b></td>
                         </tr>
                         <tr>
                             <td style="width: 300px"><b>TOTAL CREDIT</b></td>
-                            <td><b id="total_credit">{{ number_format($data->sum('credit'),2,',','.') }}</b></td>
+                            <td><b id="total_credit">{{ number_format($cre,2,',','.') }}</b></td>
                         </tr>
                         <tr class="border border-top-md">
                             <td class="text-secondary" style="width: 300px"><span>CHECK VOUCHER</span></td>
@@ -198,6 +210,7 @@
         });
         var total_credit = 0;
         var total_debit = 0;
+        var page = 1;
         function uncheck (e,id) {
             if($('#' + id).is(":checked")){
                 $('#job-'+id).attr('disabled',false);
@@ -215,6 +228,16 @@
                 $('#credit-'+id).attr('disabled',true)
             }
             total();
+        }
+
+        function changePage(no){
+            $('#page-'+page).removeClass('btn-primary').addClass('btn-secondary');
+            $('#page-'+no).removeClass('btn-secondary').addClass('btn-primary');
+            page = no;
+            $('#data-body').html(`<tr>
+                                    <td colspan="11" class="text-center">Loading</td>
+                                </tr>`);
+            getData();
         }
 
         function addColumnDebit(){
@@ -344,7 +367,7 @@
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/get-jurnal') }}",
-                data: {nomor:@json($jur->nomor)},
+                data: {nomor:@json($jur->nomor), page:page},
                 success: function (response) {
                     let html = '';
                     $.each(response, function (idx, item) {

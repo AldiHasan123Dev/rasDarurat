@@ -67,6 +67,7 @@ class HutangAgenController extends Controller
             if($data['nama'][$i]!=null && $data['jumlah'][$i]!=null && $data['tagihan_order_id'][$i]!=null){
                 $tipe = $data['tagihan_order_id'][$i];
                 if(substr($tipe,0,3)=='job'){
+                    $order = Order::where('job',str_replace('job-','',$tipe))->first();
                     TagihanAgen::create([
                         // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
@@ -149,11 +150,11 @@ class HutangAgenController extends Controller
     {
         $order_id = HutangAgen::where('draf',request('draf'))->pluck('order_id')->toArray();
         $generate_jurnal = $this->check_omset($order_id);
-        if($generate_jurnal){
-            $this->jurnal(request('draf'));
-        }else{
-            $this->jurnal(request('draf'),134);
-        }
+        $this->jurnal(request('draf'));
+        // if($generate_jurnal){
+        // }else{
+        //     $this->jurnal(request('draf'),134);
+        // }
 
         return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);
     }
@@ -167,6 +168,7 @@ class HutangAgenController extends Controller
         $pph = 0;
         $total = 0;
         $total_tagihan_agen = 0;
+        // dd($tagihan_agen);
         foreach($hutang_agen as $hutang) {
             $pph += round($hutang->pph);
             $order = $hutang->order;
@@ -186,7 +188,7 @@ class HutangAgenController extends Controller
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
             }else{
-                $jurnal['coa_id'] = $coa_id;
+                $jurnal['coa_id'] = ($order->checkOmset()?134:31);
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
@@ -237,7 +239,7 @@ class HutangAgenController extends Controller
                                 'invoice' => $order->invoice,
                                 'invoice_external' => $tagihan->invoice,
                                 'tipe' => 'JNL',
-                                'coa_id' => $coa_id,
+                                'coa_id' => ($order->checkOmset()?134:31),
                                 'debit' => $amount,
                                 'credit' => 0
                             ]);
@@ -284,7 +286,7 @@ class HutangAgenController extends Controller
                             'invoice' => $order->invoice ?? null,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => $coa_id,
+                            'coa_id' => ($order->checkOmset()?134:31),
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
                         ]);
