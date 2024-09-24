@@ -210,4 +210,9 @@ class Order extends Model
         }
         return false;
     }
+
+    public function tagihanAgenTotal()
+    {
+        
+    }
 }

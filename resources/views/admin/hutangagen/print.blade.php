@@ -135,18 +135,15 @@
                     <td class="bg-red text-center">JUMLAH</td>
                 </tr>
                 @foreach ($hutang_agen->groupBy('invoice') as $inv => $invoice_group)
-                    @foreach ($invoice_group->groupBy('tarif') as $tarif_group)
-                        @foreach ($tarif_group->groupBy('order.job') as $job => $job_group)
-                        @php
-                            $nominal = ($job_group->first()->tarif * $job_group->count()) + round($invoice_group->sum('ppn')) - round($invoice_group->sum('pph'));
-                        @endphp
-                            <tr>
-                                <td></td>
-                                <td class="text-start" colspan="2">Pelunasan Hutang Agen No Inv  {{ $inv }}</td>
-                                <td class="text-end">{{ number_format($nominal,2,',','.') }}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach
+                    @php
+                        $t = App\Models\TagihanAgen::whereIn('order_id', $invoice_group->pluck('order_id'))->sum('jumlah');
+                        $nominal = round($invoice_group->sum('tarif')) + round($invoice_group->sum('ppn')) - round($invoice_group->sum('pph')) + round($t);
+                    @endphp
+                        <tr>
+                            <td></td>
+                            <td class="text-start" colspan="2">Pelunasan Hutang Agen No Inv  {{ $inv }}</td>
+                            <td class="text-end">{{ number_format($nominal,2,',','.') }}</td>
+                        </tr>
                     {{-- <tr>
                         <td></td>
                         <td class="text-start" colspan="2">PPN (1,1%)</td>
@@ -163,7 +160,7 @@
                         <td></td>
                     </tr>
                 @endforeach
-                <tr>
+                {{-- <tr>
                     <td></td>
                     <td colspan="2" style="color: white">BLANK AREA</td>
                     <td></td>
@@ -174,7 +171,7 @@
                     <td class="text-start" colspan="2">{{ $item->nama }}</td>
                     <td class="text-end">{{ number_format($item->jumlah,2,',','.') }}</td>
                 </tr>
-                @endforeach
+                @endforeach --}}
                 <tr style="border: 2px solid red">
                     <td style="color:red">TOTAL</td>
                     <td class="fw-bold" colspan="2"></td>

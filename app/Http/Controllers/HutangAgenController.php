@@ -137,11 +137,12 @@ class HutangAgenController extends Controller
         $terbilang = $this->terbilang($total);
         $rows = 0;
         foreach ($hutang_agen->groupBy('invoice') as $tarif => $tarif_group) {
-            foreach ($tarif_group->groupBy('tarif') as $job => $job_group) {
-                foreach($job_group->groupBy('order.no_job') as $inv) {
-                    $rows++;
-                }
-            }
+            // foreach ($tarif_group->groupBy('tarif') as $job => $job_group) {
+            //     foreach($job_group->groupBy('order.no_job') as $inv) {
+            //     }
+            // }
+
+            $rows++;
         }
         return view('admin.hutangagen.print', compact('hutang_agen', 'tagihan', 'total', 'order','terbilang','rows'));
     }

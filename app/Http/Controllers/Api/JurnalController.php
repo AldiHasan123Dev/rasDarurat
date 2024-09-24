@@ -36,7 +36,7 @@ class JurnalController extends Controller
         if(request('order_trucking_id')){
             $query->where('order_trucking_id',request('order_trucking_id'));
         }
-        if(request('page')){
+        if(request('page') && request('page')>0){
             $data = $query->paginate(10,['*'],'page',request('page'));
         }else{
             $data = $query->get();

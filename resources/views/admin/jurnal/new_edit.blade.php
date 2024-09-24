@@ -86,12 +86,12 @@
                         </table>
                     </div>
                     <div class="d-flex my-3 justify-content-between">
-                        <div>
+                        <div style="width: 200px">
                             Total Baris : {{ $count }}
                         </div>
-                        <div class="d-flex">
-                            @for ($i = 1; $i <= ((int)$count/10) + 1; $i++)
-                                <button type="button" class="btn btn-sm mx-1 btn-{{$i==1?'primary':'secondary'}}" id="page-{{ $i }}" onclick="changePage({{ $i }})">{{$i}}</button>
+                        <div class="d-flex flex-wrap">
+                            @for ($i = 0; $i <= ((int)$count/10) + 1; $i++)
+                                <button type="button" class="btn btn-sm mt-2 mx-1 btn-{{$i==1?'primary':'secondary'}}" id="page-{{ $i }}" onclick="changePage({{ $i }})">{{$i==0?'All':$i}}</button>
                             @endfor
                         </div>
                     </div>
@@ -211,6 +211,7 @@
         var total_credit = 0;
         var total_debit = 0;
         var page = 1;
+        var xhr;
         function uncheck (e,id) {
             if($('#' + id).is(":checked")){
                 $('#job-'+id).attr('disabled',false);
@@ -237,6 +238,7 @@
             $('#data-body').html(`<tr>
                                     <td colspan="11" class="text-center">Loading</td>
                                 </tr>`);
+            xhr.abort()
             getData();
         }
 
@@ -364,7 +366,7 @@
         }
 
         function getData(){
-            $.ajax({
+            xhr = $.ajax({
                 type: "POST",
                 url: "{{ url('api/get-jurnal') }}",
                 data: {nomor:@json($jur->nomor), page:page},
