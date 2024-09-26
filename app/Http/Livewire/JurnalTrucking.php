@@ -6,6 +6,7 @@ use App\Models\COA;
 use App\Models\Jurnal as ModelsJurnal;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\Setting;
 use App\Models\TemplateJurnal;
 use App\Models\TemplateJurnalItem;
 use Illuminate\Support\Carbon;
@@ -29,6 +30,7 @@ class JurnalTrucking extends Component
         $no_7 = ModelsJurnal::where('tipe','BBMT')->whereYear('created_at',date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(14)->format('Y-m-d');
+        $setting = Setting::find(1);
         $this->order = null;
         $this->template_id = null;
         $this->template = null;
@@ -45,12 +47,12 @@ class JurnalTrucking extends Component
         $this->tipe = null;
         $this->template_count = 0;
         $this->no_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
-        $this->no_2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
-        $this->no_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
-        $this->no_4 = sprintf('%03d',$no_4).'/BKK-RAS/'.date('y');
-        $this->no_5 = sprintf('%03d',$no_5).'/BKM-RAS/'.date('y');
-        $this->no_6 = sprintf('%03d',$no_6).'/BBKT-RAS/'.date('y');
-        $this->no_7 = sprintf('%03d',$no_7).'/BBMT-RAS/'.date('y');
+        $this->no_2 = sprintf('%03d',$no_2).'/BBK-'.$setting->short_name.'/'.date('y');
+        $this->no_3 = sprintf('%03d',$no_3).'/BBM-'.$setting->short_name.'/'.date('y');
+        $this->no_4 = sprintf('%03d',$no_4).'/BKK-'.$setting->short_name.'/'.date('y');
+        $this->no_5 = sprintf('%03d',$no_5).'/BKM-'.$setting->short_name.'/'.date('y');
+        $this->no_6 = sprintf('%03d',$no_6).'/BBKT-'.$setting->short_name.'/'.date('y');
+        $this->no_7 = sprintf('%03d',$no_7).'/BBMT-'.$setting->short_name.'/'.date('y');
     }
 
     public function render()
