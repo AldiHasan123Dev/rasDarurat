@@ -585,10 +585,15 @@ class SyncController extends Controller
     public function coa()
     {
         $data = COA::all();
+        $i = 1;
         foreach ($data as $item ) {
             $item->update([
-                'no_kode' => str_replace('.','',$item->kode),
+                'id' => $i
             ]);
+            Jurnal::where('coa_id',$item->id)->update([
+                'coa_id' => $i
+            ]);
+            $i++;
         }
 
         return 'success';
