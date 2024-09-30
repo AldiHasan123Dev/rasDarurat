@@ -16,6 +16,7 @@ use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\Pelayaran;
+use App\Models\Setting;
 use App\Models\TransaksiSopir;
 use App\Models\TransaksiTrucking;
 use Illuminate\Http\Request;
@@ -29,6 +30,12 @@ use Illuminate\Support\Facades\Storage;
 
 class JurnalController extends Controller
 {
+    protected $sno;
+    public function __construct()
+    {
+        $setting = Setting::find(1);
+        $this->sno = $setting->short_name;
+    }
     public function index()
     {
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
@@ -212,11 +219,11 @@ class JurnalController extends Controller
         $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
-        $jno_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
-        $jno_2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
-        $jno_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
-        $jno_4 = sprintf('%03d',$no_4).'/BKK-RAS/'.date('y');
-        $jno_5 = sprintf('%03d',$no_5).'/BKM-RAS/'.date('y');
+        $jno_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.($this->sno=='ALB'?'ALB/':'').date('y');
+        $jno_2 = sprintf('%03d',$no_2).'/BBK-'.$this->sno.'/'.date('y');
+        $jno_3 = sprintf('%03d',$no_3).'/BBM-'.$this->sno.'/'.date('y');
+        $jno_4 = sprintf('%03d',$no_4).'/BKK-'.$this->sno.'/'.date('y');
+        $jno_5 = sprintf('%03d',$no_5).'/BKM-'.$this->sno.'/'.date('y');
         $data = [];
         return view('admin.jurnal.tampungan', compact('no_1','no_2','no_3','no_4','no_5','jno_1','jno_2','jno_3','jno_4','jno_5','data'));
     }
@@ -236,10 +243,10 @@ class JurnalController extends Controller
         }else{
             if($request->tipe=='JNL'){
                 $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($request->created_at)))->whereYear('created_at',date('Y',strtotime($request->created_at)))->max('no') + 1;
-                $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
+                $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($request->created_at));
             }else{
                 $no = Jurnal::where('tipe',$request->tipe)->whereYear('created_at',date('Y'))->max('no') + 1;
-                $nomor = sprintf('%03d',$no).'/'.$request->tipe.'-RAS/'.date('y',strtotime($request->created_at));
+                $nomor = sprintf('%03d',$no).'/'.$request->tipe.'-'.$this->sno.'/'.date('y',strtotime($request->created_at));
             }
             $data = JurnalTampungan::all()->toArray();
             foreach ($data as $item) {
@@ -321,11 +328,11 @@ class JurnalController extends Controller
         $no_3 = Jurnal::where('tipe','BBM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_4 = Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
-        $nomor_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
-        $nomor_2 = sprintf('%03d',$no_2).'/BBK-RAS/'.date('y');
-        $nomor_3 = sprintf('%03d',$no_3).'/BBM-RAS/'.date('y');
-        $nomor_4 = sprintf('%03d',$no_4).'/BKK-RAS/'.date('y');
-        $nomor_5 = sprintf('%03d',$no_5).'/BKM-RAS/'.date('y');
+        $nomor_1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.($this->sno=='ALB'?'ALB/':'').date('y');
+        $nomor_2 = sprintf('%03d',$no_2).'/BBK-'.$this->sno.'/'.date('y');
+        $nomor_3 = sprintf('%03d',$no_3).'/BBM-'.$this->sno.'/'.date('y');
+        $nomor_4 = sprintf('%03d',$no_4).'/BKK-'.$this->sno.'/'.date('y');
+        $nomor_5 = sprintf('%03d',$no_5).'/BKM-'.$this->sno.'/'.date('y');
         return view('admin.jurnal.balik', compact('coa','new','coa_debit','coa_credit','orders','data','no_1','no_2','no_3','no_4','no_5','nomor_1','nomor_2','nomor_3','nomor_4','nomor_5'));
     }
 
@@ -346,9 +353,9 @@ class JurnalController extends Controller
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($data['created_at']));
                 }else{
-                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-'.$this->sno.'/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     $jurnal_model->create([
@@ -457,9 +464,9 @@ class JurnalController extends Controller
                     $container = $order->container;
                 }
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($data['created_at']));
                 }else{
-                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-'.$this->sno.'/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     $jurnal_model->create([
@@ -651,9 +658,9 @@ class JurnalController extends Controller
                     array_push($arr_order,$order->id);
                 }
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($data['created_at']));
                 }else{
-                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-'.$this->sno.'/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     $jurnal_model->create([
@@ -834,9 +841,9 @@ class JurnalController extends Controller
                     $container = $order->container;
 
                     if($data['tipe']=='JNL'){
-                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
+                        $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($data['created_at']));
                     }else{
-                        $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                        $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-'.$this->sno.'/'.date('y',strtotime($data['created_at']));
                     }
 
                     if ($idx==0) {
@@ -1029,9 +1036,9 @@ class JurnalController extends Controller
         $tipe = Jurnal::where('nomor',$jurnal->nomor)->first()->tipe;
         $no = Jurnal::where('nomor',$jurnal->nomor)->first()->no;
         if($tipe=='JNL'){
-            $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($request->created_at));
+            $nomor = sprintf('%02d',date('m',strtotime($request->created_at))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($request->created_at));
         }else{
-            $nomor = sprintf('%03d',$no).'/'.$tipe.'-RAS/'.date('y',strtotime($request->created_at));
+            $nomor = sprintf('%03d',$no).'/'.$tipe.'-'.$this->sno.'/'.date('y',strtotime($request->created_at));
         }
         Jurnal::where('nomor',$jurnal->nomor)->update([
             'created_at' => $request->created_at,
@@ -1303,9 +1310,9 @@ class JurnalController extends Controller
                     $name = str_replace('[1]',$trx->customer->nama,$name);
                 }
                 if($data['tipe']=='JNL'){
-                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%02d',date('m',strtotime($data['created_at']))).'-'.sprintf('%03d',$no).'/'.($this->sno=='ALB'?'ALB/':'').date('y',strtotime($data['created_at']));
                 }else{
-                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-RAS/'.date('y',strtotime($data['created_at']));
+                    $nomor = sprintf('%03d',$no).'/'.$data['tipe'].'-'.$this->sno.'/'.date('y',strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     $jurnal_model->create([
