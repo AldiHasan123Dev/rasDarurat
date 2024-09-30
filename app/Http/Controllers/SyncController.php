@@ -24,6 +24,7 @@ use App\Models\HutangPelayaran;
 use App\Models\TarifPelayaran;
 use App\Models\Lokasi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class SyncController extends Controller
 {
@@ -586,6 +587,7 @@ class SyncController extends Controller
     {
         $data = COA::all();
         $i = 1;
+        Schema::disableForeignKeyConstraints();
         foreach ($data as $item ) {
             $item->update([
                 'id' => $i
@@ -595,6 +597,8 @@ class SyncController extends Controller
             ]);
             $i++;
         }
+
+        Schema::enableForeignKeyConstraints();
 
         return 'success';
     }
