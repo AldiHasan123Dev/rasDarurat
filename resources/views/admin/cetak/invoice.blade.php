@@ -406,7 +406,7 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                     <div style="height: 2.3cm"></div>
-                                    (LATIFAH)
+                                    ({{ $invoice_name }})
                                 </div>
                             </div>
                         </div>
@@ -628,7 +628,7 @@
                                             <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                         @endif
                                         <br>
-                                    (LATIFAH)
+                                    ({{ $invoice_name }})
                                 </div>
                             </div>
                         </div>
@@ -768,6 +768,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if ($ppn>0)
                             <tr>
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
@@ -778,6 +779,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                             @if ($invoice['asuransi_total']>0)
                             <tr>
                                 <td colspan="4"></td>
@@ -811,6 +813,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if ($pph>0)
                             <tr>
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
@@ -821,6 +824,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                             @if ($order->tarif->customer->id==318)
                             <tr>
                                 <td colspan="4"></td>
@@ -878,7 +882,7 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                     <div style="height: 2.3cm"></div>
-                                    (LATIFAH)
+                                    ({{ $invoice_name }})
                                 </div>
                             </div>
                         </div>
@@ -1007,6 +1011,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @if ($ppn>0)
                         <tr>
                             <td colspan="4"></td>
                             <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
@@ -1017,6 +1022,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @endif
                         @if ($invoice['asuransi_total']>0)
                         <tr>
                             <td colspan="4"></td>
@@ -1050,6 +1056,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @if ($pph>0)
                         <tr>
                             <td colspan="4"></td>
                             <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
@@ -1060,6 +1067,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @endif
                        @if ($order->tarif->customer->id==318)
                        <tr>
                             <td colspan="4"></td>
@@ -1117,7 +1125,7 @@
                             <div class="text-center mt-3" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                 <div style="height: 2.3cm"></div>
-                                (LATIFAH)
+                                ({{ $invoice_name }})
                             </div>
                         </div>
                     </div>
@@ -1248,6 +1256,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if ($ppn>0)
                             <tr>
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
@@ -1258,6 +1267,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                             @if ($invoice['asuransi_total']>0)
                             <tr>
                                 <td colspan="4"></td>
@@ -1291,6 +1301,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @if ($pph>0)
                             <tr>
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
@@ -1301,6 +1312,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @endif
                             @if ($order->tarif->customer->id==318)
                             <tr>
                                 <td colspan="4"></td>
@@ -1363,7 +1375,7 @@
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}" style="width: 151px; height:94px">
                                     @endif
                                     <br>
-                                    (LATIFAH)
+                                    ({{ $invoice_name }})
                                 </div>
                             </div>
                         </div>

@@ -12,6 +12,7 @@ use App\Models\NSFP;
 use App\Models\Order;
 use App\Models\Kapal;
 use App\Models\Pengirim;
+use App\Models\Setting;
 use App\Models\Tagihan;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
@@ -20,6 +21,15 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class CetakController extends Controller
 {
+
+    protected $ppn, $pph, $invoice_name;
+    public function __construct()
+    {
+        $setting = Setting::find(1);
+        $this->ppn = $setting->ppn;
+        $this->pph = $setting->pph;
+        $this->invoice_name = $setting->invoice_name;
+    }
     public function suratJalan()
     {
         $penerima = Customer::get();
@@ -264,7 +274,10 @@ class CetakController extends Controller
         $br = Order::with('barang')->where('job',$order->job)->get()->pluck('barang.nama')->toArray();
         $br = array_unique($br);
         $nama_barang = implode(',',$br);
-        return view('admin.cetak.invoice',compact('order','orders','cas','validate','nama_barang','allin','invoice','is_allin'));
+        $ppn = $this->ppn;
+        $pph = $this->pph;
+        $invoice_name = $this->invoice_name;
+        return view('admin.cetak.invoice',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin'));
     }
 
     public function invoiceCont()
@@ -300,8 +313,10 @@ class CetakController extends Controller
         $br = Order::with('barang')->where('job',$order->job)->get()->pluck('barang.nama')->toArray();
         $br = array_unique($br);
         $nama_barang = implode(',',$br);
-        // dd($allin);
-        return view('admin.cetak.invoice_cont',compact('order','orders','cas','validate','nama_barang','allin','invoice','is_allin'));
+        $ppn = $this->ppn;
+        $pph = $this->pph;
+        $invoice_name = $this->invoice_name;
+        return view('admin.cetak.invoice_cont',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin'));
     }
 
     public function allinFCL(Order $order)
@@ -335,7 +350,7 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = $tar->count();
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['sub_total'] = round(((($tar->first()->tarif->tarif * $tar->count())) * 0.011)+ ($tar->first()->tarif->tarif*$tar->count()));
+            $items[$idx]['sub_total'] = round(((($tar->first()->tarif->tarif * $tar->count())) * $this->ppn)+ ($tar->first()->tarif->tarif*$tar->count()));
             $items[$idx]['tarif'] = $items[$idx]['sub_total'] / $tar->count();
             $sub_total += $items[$idx]['sub_total'];
         }
@@ -384,7 +399,7 @@ class CetakController extends Controller
             $items[$idx]['container'] = $tar->container;
             $items[$idx]['job'] = $tar->job.'-'.sprintf('%02d',$tar->no_job);
             $items[$idx]['si'] = 'Cont '.$tar->tarif->shipmentInfo->nama;
-            $items[$idx]['tarif'] = (round($tar->tarif->tarif * 0.011))+ $tar->tarif->tarif;
+            $items[$idx]['tarif'] = (round($tar->tarif->tarif * $this->ppn))+ $tar->tarif->tarif;
             $items[$idx]['asuransi'] = $asuransi_name;
             $items[$idx]['asuransi_total'] = $asuransi + $admin;
             $items[$idx]['sub_total'] = $items[$idx]['tarif'];
@@ -423,7 +438,7 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = round($jumlah,2);
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * round($jumlah,2))) * 0.011) + ($tar->first()->tarif->tarif * round($jumlah,2));
+            $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * round($jumlah,2))) * $this->ppn) + ($tar->first()->tarif->tarif * round($jumlah,2));
             $items[$idx]['tarif'] = $items[$idx]['sub_total'] / round($jumlah,2);
             $sub_total += $items[$idx]['sub_total'];
         }
@@ -499,11 +514,11 @@ class CetakController extends Controller
             $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
         if($doc_total>0){
-            $pph = $doc_total * 0.02;
+            $pph = $doc_total * $this->pph;
         }else{
-            $pph = $sub_total * 0.02;
+            $pph = $sub_total * $this->pph;
         }
-        $ppn = round($sub_total * 0.011);
+        $ppn = round($sub_total * $this->ppn);
 
         $total = (int)$sub_total + $asuransi + $ppn + $cas->sum('jumlah');
 
@@ -582,11 +597,11 @@ class CetakController extends Controller
             $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
         }
         if($doc_total>0){
-            $pph = $doc_total * 0.02;
+            $pph = $doc_total * $this->pph;
         }else{
-            $pph = $sub_total * 0.02;
+            $pph = $sub_total * $this->pph;
         }
-        $ppn = round($sub_total * 0.011);
+        $ppn = round($sub_total * $this->ppn);
         $total = round($sub_total )+ $asuransi + $ppn + $cas->sum('jumlah');
         return [
             'items' => $items,

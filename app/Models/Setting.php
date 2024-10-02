@@ -20,5 +20,8 @@ class Setting extends Model
         'logo',
         'type_job_year',
         'short_name',
+        'ppn',
+        'pph',
+        'invoice_name',
     ];
 }

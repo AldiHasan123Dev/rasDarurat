@@ -327,6 +327,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @if ($ppn>0)
                         <tr>
                             <td colspan="4"></td>
                             <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
@@ -337,6 +338,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @endif
                         @if ($invoice['asuransi_total']>0)
                         <tr>
                             <td colspan="4"></td>
@@ -370,6 +372,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @if ($pph>0)
                         <tr>
                             <td colspan="4"></td>
                             <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
@@ -380,6 +383,7 @@
                                 </div>
                             </td>
                         </tr>
+                        @endif
 
                     </table>
 
@@ -427,7 +431,7 @@
                             <div class="text-center" style="font-size: .7rem">
                                 <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                 <div style="height: 2.3cm"></div>
-                                (LATIFAH)
+                                ({{$invoice_name}})
                             </div>
                         </div>
                     </div>
@@ -623,7 +627,7 @@
                                 <div class="text-center" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date)?'-':tanggal($order->invoice_date) }}</p>
                                     <div style="height: 2.3cm"></div>
-                                    (LATIFAH)
+                                    ({{$invoice_name}})
                                 </div>
                             </div>
                         </div>
