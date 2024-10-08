@@ -183,7 +183,7 @@
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
-                    @foreach ($list->where('opp','>',0)->groupBy('opp') as $item)
+                    @foreach ($list->where('opp','!=',0)->groupBy('opp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -199,7 +199,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('thc','>',0)->groupBy('thc') as $item)
+                    @foreach ($list->where('thc','!=',0)->groupBy('thc') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -214,7 +214,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('apbs','>',0)->groupBy('apbs') as $item)
+                    @foreach ($list->where('apbs','!=',0)->groupBy('apbs') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -229,7 +229,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('cleaning','>',0)->groupBy('cleaning') as $item)
+                    @foreach ($list->where('cleaning','!=',0)->groupBy('cleaning') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -244,7 +244,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('opp_stamp','>',0)->groupBy('opp_stamp') as $item)
+                    @foreach ($list->where('opp_stamp','!=',0)->groupBy('opp_stamp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -259,7 +259,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('lss','>',0)->groupBy('lss') as $item)
+                    @foreach ($list->where('lss','!=',0)->groupBy('lss') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -365,7 +365,7 @@
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
-                    @foreach ($list->where('opt','>',0)->groupBy('opt') as $item)
+                    @foreach ($list->where('opt','!=',0)->groupBy('opt') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -381,7 +381,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('opt_stamp','>',0)->groupBy('opt_stamp') as $item)
+                    @foreach ($list->where('opt_stamp','!=',0)->groupBy('opt_stamp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -396,7 +396,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @if ($list->where('opt','>',0)->groupBy('opt')->count()>0 || $list->where('opt_stamp','>',0)->groupBy('opt_stamp')->count()>0)
+                    @if ($list->where('opt','!=',0)->groupBy('opt')->count()>0 || $list->where('opt_stamp','!=',0)->groupBy('opt_stamp')->count()>0)
                         <tr style="height:12px">
                             <td></td>
                             <td colspan="2"></td>
@@ -482,7 +482,7 @@
                     <td></td>
                 </tr>
                 @foreach ($jobs as $list)
-                    @foreach ($list->where('ut','>',0)->groupBy('ut') as $item)
+                    @foreach ($list->where('ut','!=',0)->groupBy('ut') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -498,7 +498,7 @@
                             </tr>
                         @endif
                     @endforeach
-                    @foreach ($list->where('ut_stamp','>',0)->groupBy('ut_stamp') as $item)
+                    @foreach ($list->where('ut_stamp','!=',0)->groupBy('ut_stamp') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
@@ -520,7 +520,7 @@
                             <td class="text-end">{{ number_format($list->sum('bl'),2,',','.') }}</td>
                         </tr>
                     @endif
-                    @foreach ($list->where('ut_cleaning','>',0)->groupBy('ut_cleaning') as $item)
+                    @foreach ($list->where('ut_cleaning','!=',0)->groupBy('ut_cleaning') as $item)
                         @if ($item->count()>1)
                             <tr>
                                 <td></td>
