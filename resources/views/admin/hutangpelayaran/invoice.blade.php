@@ -208,7 +208,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>STAMP</td>
-                                                            <td><input type="number" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="{{ $item->opt_stamp }}"  class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                            <td><input type="number" step="any" onkeyup="hitungOpt('stamp',this.value)" onclick="this.select()" value="{{ $item->opt_stamp }}"  class="opt-stamp" name="data[{{ $item->id }}][opt_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>-</td>
@@ -509,14 +509,18 @@
     function hitungOpt(tipe,val){
         if ($('#kolektif').is(':checked')) {
             if(tipe=='opt'){
-                $('input[type="number"].opt-opt').each(function () {
-                    $(this).val(val);
+                if(val.length>0){
+                    $('input[type="number"].opt-opt').each(function () {
+                    $(this).val(parseFloat(val));
                 });
+                }
             }
             if(tipe=='stamp'){
-                $('input[type="number"].opt-stamp').each(function () {
-                    $(this).val(val);
-                });
+                if(val.length>0){
+                    $('input[type="number"].opt-stamp').each(function () {
+                        $(this).val(parseFloat(val));
+                    });
+                }
             }
         }
         let opt = 0;
