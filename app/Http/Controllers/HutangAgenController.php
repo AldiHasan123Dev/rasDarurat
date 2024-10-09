@@ -7,18 +7,25 @@ use App\Models\Jurnal;
 use App\Models\Order;
 use App\Models\TagihanAgen;
 use App\Models\TarifAgen;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
 class HutangAgenController extends Controller
 {
+    protected $sno;
+    public function __construct()
+    {
+        $setting = Setting::find(1);
+        $this->sno = $setting->short_name;
+    }
     public function index()
     {
-        $data = Order::whereHas('agent', function($q){
+        $data = Order::whereHas('agent', function ($q) {
             $q->whereNotNull('top');
-            $q->where('top','>',0);
-        })->whereNull('invoice_agen')->whereYear('created_at',2024)->get()->groupBy('agen_id');
+            $q->where('top', '>', 0);
+        })->whereNull('invoice_agen')->whereYear('created_at', 2024)->get()->groupBy('agen_id');
         return view('admin.hutangagen.index', compact('data'));
     }
 
@@ -32,26 +39,26 @@ class HutangAgenController extends Controller
     public function draf(Request $request)
     {
         $ids = $request->order_id;
-        $orders = Order::whereIn('id',$ids)->get()->groupBy('agen_id');
-        if(count($ids)==0){
-            return back()->with('danger','Harus centang salah satu!');
+        $orders = Order::whereIn('id', $ids)->get()->groupBy('agen_id');
+        if (count($ids) == 0) {
+            return back()->with('danger', 'Harus centang salah satu!');
         }
-        if($orders->count()>1){
-            return back()->with('danger','Harus centang pada agen yang sama!');
+        if ($orders->count() > 1) {
+            return back()->with('danger', 'Harus centang pada agen yang sama!');
         }
 
-        $orders = Order::whereIn('id',$ids)->get();
+        $orders = Order::whereIn('id', $ids)->get();
         $jobs = $orders->groupBy('job');
-        $tarif = TarifAgen::where('agen_id', $orders->first()->agen_id)->where('is_active',1)->orderBy('created_at')->get();
-        $count = Order::whereIn('id',$ids)->count();
-        return view('admin.hutangagen.draf', compact('orders','tarif','ids','count','jobs'));
+        $tarif = TarifAgen::where('agen_id', $orders->first()->agen_id)->where('is_active', 1)->orderBy('created_at')->get();
+        $count = Order::whereIn('id', $ids)->count();
+        return view('admin.hutangagen.draf', compact('orders', 'tarif', 'ids', 'count', 'jobs'));
     }
 
     public function store(Request $request)
     {
         $data = $request->all();
-        $draf = 'HA'.date('ymdhis');
-        for ($i=0; $i < count($request->order_id); $i++) {
+        $draf = 'HA' . date('ymdhis');
+        for ($i = 0; $i < count($request->order_id); $i++) {
             $order = Order::find($request->order_id[$i]);
             HutangAgen::upsert([
                 'order_id' => $request->order_id[$i],
@@ -61,13 +68,13 @@ class HutangAgenController extends Controller
                 'invoice' => $request->invoice[$i],
                 'draf' => $draf,
                 'tanggal' => $request->tanggal[$i]
-            ],['order_id']);
+            ], ['order_id']);
         }
-        for ($i=0; $i < count($data['tagihan_order_id']); $i++) {
-            if($data['nama'][$i]!=null && $data['jumlah'][$i]!=null && $data['tagihan_order_id'][$i]!=null){
+        for ($i = 0; $i < count($data['tagihan_order_id']); $i++) {
+            if ($data['nama'][$i] != null && $data['jumlah'][$i] != null && $data['tagihan_order_id'][$i] != null) {
                 $tipe = $data['tagihan_order_id'][$i];
-                if(substr($tipe,0,3)=='job'){
-                    $order = Order::where('job',str_replace('job-','',$tipe))->first();
+                if (substr($tipe, 0, 3) == 'job') {
+                    $order = Order::where('job', str_replace('job-', '', $tipe))->first();
                     TagihanAgen::create([
                         // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
@@ -77,7 +84,7 @@ class HutangAgenController extends Controller
                         'jumlah' => $data['jumlah'][$i],
                         'beban' => $data['beban'][$i]
                     ]);
-                }else{
+                } else {
                     $order = Order::find($data['tagihan_order_id'][$i]);
 
                     TagihanAgen::create([
@@ -91,7 +98,7 @@ class HutangAgenController extends Controller
                 }
             }
         }
-        return redirect()->route('hutang-agen.print',['draf' => $draf])->with('success', 'Data berhasil disimpan');
+        return redirect()->route('hutang-agen.print', ['draf' => $draf])->with('success', 'Data berhasil disimpan');
     }
 
     public function update(HutangAgen $hutangagen, Request $request)
@@ -128,7 +135,7 @@ class HutangAgenController extends Controller
     {
         $draf = request('draf');
         $hutang_agen = HutangAgen::where('draf', $draf)->get();
-        if($hutang_agen->count() == 0){
+        if ($hutang_agen->count() == 0) {
             return back()->with('danger', 'Data tidak ditemukan');
         }
         $order = $hutang_agen->first()->order;
@@ -144,12 +151,12 @@ class HutangAgenController extends Controller
 
             $rows++;
         }
-        return view('admin.hutangagen.print', compact('hutang_agen', 'tagihan', 'total', 'order','terbilang','rows'));
+        return view('admin.hutangagen.print', compact('hutang_agen', 'tagihan', 'total', 'order', 'terbilang', 'rows'));
     }
 
     public function generate_jurnal()
     {
-        $order_id = HutangAgen::where('draf',request('draf'))->pluck('order_id')->toArray();
+        $order_id = HutangAgen::where('draf', request('draf'))->pluck('order_id')->toArray();
         $generate_jurnal = $this->check_omset($order_id);
         $this->jurnal(request('draf'));
         // if($generate_jurnal){
@@ -157,39 +164,39 @@ class HutangAgenController extends Controller
         //     $this->jurnal(request('draf'),134);
         // }
 
-        return redirect()->route('hutang-agen.print',['draf'=>request('draf'),'print'=>1]);
+        return redirect()->route('hutang-agen.print', ['draf' => request('draf'), 'print' => 1]);
     }
 
     private function jurnal($draf, $coa_id = 31)
     {
-        $hutang_agen = HutangAgen::where('draf',$draf)->get();
+        $hutang_agen = HutangAgen::where('draf', $draf)->get();
         $tagihan_agen = TagihanAgen::where('draf', $draf)->get();
-        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+        $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->max('no') + 1;
+        $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . ($this->sno == 'ALB' ? 'ALB/' : '') . date('y');
         $pph = 0;
         $total = 0;
         $total_tagihan_agen = 0;
         // dd($tagihan_agen);
-        foreach($hutang_agen as $hutang) {
+        foreach ($hutang_agen as $hutang) {
             $pph += round($hutang->pph);
             $order = $hutang->order;
-            $cek = Jurnal::where('order_id',$order->id)->where('coa_id',93)->where('debit','>',0)->count();
+            $cek = Jurnal::where('order_id', $order->id)->where('coa_id', 93)->where('debit', '>', 0)->count();
             $jurnal = array();
             $jurnal['order_id'] = $order->id;
             $jurnal['nomor'] = $nomor;
             $jurnal['no'] = $no;
             $jurnal['invoice'] = $order->invoice ?? null;
-            $jurnal['nama'] = 'Biaya Dooring '.($order->tarif->customer->nama??'').' '.($order->tarif->shipmentInfo->nama??'').' '.($order->agent->nama??'');
+            $jurnal['nama'] = 'Biaya Dooring ' . ($order->tarif->customer->nama ?? '') . ' ' . ($order->tarif->shipmentInfo->nama ?? '') . ' ' . ($order->agent->nama ?? '');
             $jurnal['container'] = $order->container;
             $jurnal['invoice_external'] = $hutang->invoice;
             $jurnal['tipe'] = 'JNL';
-            if($cek>0){
+            if ($cek > 0) {
                 $jurnal['coa_id'] = 134;
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
-            }else{
-                $jurnal['coa_id'] = ($order->checkOmset()?134:31);
+            } else {
+                $jurnal['coa_id'] = ($order->checkOmset() ? 134 : 31);
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
@@ -202,22 +209,22 @@ class HutangAgenController extends Controller
             $order->update(['invoice_agen' => $hutang->invoice]);
             $total += $hutang->tarif + round($hutang->ppn);
         }
-        foreach($tagihan_agen as $tagihan) {
-            if($tagihan->tipe=='group'){
+        foreach ($tagihan_agen as $tagihan) {
+            if ($tagihan->tipe == 'group') {
                 $job = $tagihan->order->job;
-                $jobs = Order::where('job',$job)->get();
+                $jobs = Order::where('job', $job)->get();
                 $amount = (int)$tagihan->jumlah / $jobs->count();
                 $price = (int)((int)$tagihan->jumlah / $jobs->count());
                 $selisih = (int)$tagihan->jumlah - ($price * $jobs->count());
                 foreach ($jobs as $key => $order) {
-                    if ($key==0) {
+                    if ($key == 0) {
                         $amount = (int)((int)$tagihan->jumlah / $jobs->count()) + $selisih;
-                    }else{
+                    } else {
                         $amount = $price;
                     }
-                    if($tagihan->beban=='ras'){
-                        $cek = Jurnal::where('order_id',$order->id)->where('coa_id',93)->where('debit','>',0)->count();
-                        if($cek > 0){
+                    if ($tagihan->beban == 'ras') {
+                        $cek = Jurnal::where('order_id', $order->id)->where('coa_id', 93)->where('debit', '>', 0)->count();
+                        if ($cek > 0) {
                             Jurnal::create([
                                 'order_id' => $order->id,
                                 'nomor' => $nomor,
@@ -230,7 +237,7 @@ class HutangAgenController extends Controller
                                 'debit' => $amount,
                                 'credit' => 0
                             ]);
-                        }else{
+                        } else {
                             Jurnal::create([
                                 'order_id' => $order->id,
                                 'nomor' => $nomor,
@@ -240,12 +247,12 @@ class HutangAgenController extends Controller
                                 'invoice' => $order->invoice,
                                 'invoice_external' => $tagihan->invoice,
                                 'tipe' => 'JNL',
-                                'coa_id' => ($order->checkOmset()?134:31),
+                                'coa_id' => ($order->checkOmset() ? 134 : 31),
                                 'debit' => $amount,
                                 'credit' => 0
                             ]);
                         }
-                    }else{
+                    } else {
                         Jurnal::create([
                             'order_id' => $order->id,
                             'nomor' => $nomor,
@@ -260,11 +267,11 @@ class HutangAgenController extends Controller
                         ]);
                     }
                 }
-            }else{
+            } else {
                 $order = $tagihan->order;
-                if($tagihan->beban=='ras'){
-                    $cek = Jurnal::where('order_id',$tagihan->order_id)->where('coa_id',93)->where('debit','>',0)->count();
-                    if($cek > 0){
+                if ($tagihan->beban == 'ras') {
+                    $cek = Jurnal::where('order_id', $tagihan->order_id)->where('coa_id', 93)->where('debit', '>', 0)->count();
+                    if ($cek > 0) {
                         Jurnal::create([
                             'order_id' => $tagihan->order_id,
                             'nomor' => $nomor,
@@ -277,7 +284,7 @@ class HutangAgenController extends Controller
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
                         ]);
-                    }else{
+                    } else {
                         Jurnal::create([
                             'order_id' => $tagihan->order_id,
                             'nomor' => $nomor,
@@ -287,12 +294,12 @@ class HutangAgenController extends Controller
                             'invoice' => $order->invoice ?? null,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => ($order->checkOmset()?134:31),
+                            'coa_id' => ($order->checkOmset() ? 134 : 31),
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
                         ]);
                     }
-                }else{
+                } else {
                     Jurnal::create([
                         'order_id' => $tagihan->order_id,
                         'nomor' => $nomor,
@@ -321,7 +328,7 @@ class HutangAgenController extends Controller
             Jurnal::create([
                 'nomor' => $nomor,
                 'no' => $no,
-                'nama' => 'Potongan PPH 23 Agen '.($hutang_agen->first()->order->agent->nama??'').' '.$invoice,
+                'nama' => 'Potongan PPH 23 Agen ' . ($hutang_agen->first()->order->agent->nama ?? '') . ' ' . $invoice,
                 'tipe' => 'JNL',
                 'coa_id' => 73,
                 'debit' => 0,
@@ -332,7 +339,7 @@ class HutangAgenController extends Controller
             Jurnal::create([
                 'nomor' => $nomor,
                 'no' => $no,
-                'nama' => 'Hutang Agen '.$invoice.' '.($hutang_agen->first()->order->agent->nama??''),
+                'nama' => 'Hutang Agen ' . $invoice . ' ' . ($hutang_agen->first()->order->agent->nama ?? ''),
                 'tipe' => 'JNL',
                 'coa_id' => 63,
                 'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $total_tagihan_agen,
@@ -346,62 +353,63 @@ class HutangAgenController extends Controller
 
     private function check_omset($order_id)
     {
-        foreach($order_id as $id){
-            $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
+        foreach ($order_id as $id) {
+            $jurnals = Jurnal::where('order_id', $id)->where('coa_id', 93)->where('debit', '>', 0)->get();
             $order = Order::find($id);
-            if($jurnals->count()>0 && $order){
+            if ($jurnals->count() > 0 && $order) {
                 return false;
             }
         }
         return true;
     }
 
-    private function terbilang($angka) {
+    private function terbilang($angka)
+    {
         $angka = (float)$angka;
         $bilangan = array(
-                '',
-                'satu',
-                'dua',
-                'tiga',
-                'empat',
-                'lima',
-                'enam',
-                'tujuh',
-                'delapan',
-                'sembilan',
-                'sepuluh',
-                'sebelas'
-            );
-            if ($angka < 12) {
-                return $bilangan[$angka];
-            } else if ($angka < 20) {
-                return $bilangan[$angka - 10] . ' belas';
-            } else if ($angka < 100) {
-                $hasil_bagi = (int)($angka / 10);
-                $hasil_mod = $angka % 10;
-                return trim(sprintf('%s puluh %s', $bilangan[$hasil_bagi], $bilangan[$hasil_mod]));
-            } else if ($angka < 200) {
-                return 'seratus ' . $this->terbilang($angka - 100);
-            } else if ($angka < 1000) {
-                $hasil_bagi = (int)($angka / 100);
-                $hasil_mod = $angka % 100;
-                return trim(sprintf('%s ratus %s', $bilangan[$hasil_bagi], $this->terbilang($hasil_mod)));
-            } else if ($angka < 2000) {
-                return 'seribu ' . $this->terbilang($angka - 1000);
-            } else if ($angka < 1000000) {
-                $hasil_bagi = (int)($angka / 1000);
-                $hasil_mod = $angka % 1000;
-                return trim(sprintf('%s ribu %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
-            } else if ($angka < 1000000000) {
-                $hasil_bagi = (int)($angka / 1000000);
-                $hasil_mod = $angka % 1000000;
-                return trim(sprintf('%s juta %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
-            } else if ($angka < 1000000000000) {
-                $hasil_bagi = (int)($angka / 1000000000);
-                $hasil_mod = fmod($angka, 1000000000);
-                return trim(sprintf('%s miliar %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
-            } else {
-                return 'Angka terlalu besar';
-            }
+            '',
+            'satu',
+            'dua',
+            'tiga',
+            'empat',
+            'lima',
+            'enam',
+            'tujuh',
+            'delapan',
+            'sembilan',
+            'sepuluh',
+            'sebelas'
+        );
+        if ($angka < 12) {
+            return $bilangan[$angka];
+        } else if ($angka < 20) {
+            return $bilangan[$angka - 10] . ' belas';
+        } else if ($angka < 100) {
+            $hasil_bagi = (int)($angka / 10);
+            $hasil_mod = $angka % 10;
+            return trim(sprintf('%s puluh %s', $bilangan[$hasil_bagi], $bilangan[$hasil_mod]));
+        } else if ($angka < 200) {
+            return 'seratus ' . $this->terbilang($angka - 100);
+        } else if ($angka < 1000) {
+            $hasil_bagi = (int)($angka / 100);
+            $hasil_mod = $angka % 100;
+            return trim(sprintf('%s ratus %s', $bilangan[$hasil_bagi], $this->terbilang($hasil_mod)));
+        } else if ($angka < 2000) {
+            return 'seribu ' . $this->terbilang($angka - 1000);
+        } else if ($angka < 1000000) {
+            $hasil_bagi = (int)($angka / 1000);
+            $hasil_mod = $angka % 1000;
+            return trim(sprintf('%s ribu %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
+        } else if ($angka < 1000000000) {
+            $hasil_bagi = (int)($angka / 1000000);
+            $hasil_mod = $angka % 1000000;
+            return trim(sprintf('%s juta %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
+        } else if ($angka < 1000000000000) {
+            $hasil_bagi = (int)($angka / 1000000000);
+            $hasil_mod = fmod($angka, 1000000000);
+            return trim(sprintf('%s miliar %s', $this->terbilang($hasil_bagi), $this->terbilang($hasil_mod)));
+        } else {
+            return 'Angka terlalu besar';
         }
+    }
 }

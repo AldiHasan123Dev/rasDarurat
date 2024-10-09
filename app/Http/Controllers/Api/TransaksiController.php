@@ -9,11 +9,19 @@ use App\Models\JurnalBalik;
 use App\Models\Order;
 use App\Models\TemplateJurnal;
 use App\Models\Transaksi;
+use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TransaksiController extends Controller
 {
+
+    protected $sno;
+    public function __construct()
+    {
+        $setting = Setting::find(1);
+        $this->sno = $setting->short_name;
+    }
     public function index()
     {
         $start = request('start');
@@ -58,10 +66,10 @@ class TransaksiController extends Controller
                     $carbon = new Carbon($transaksi->created_at);
                     $date = $carbon->endOfMonth()->toDateString();
                     $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m',strtotime($date)))->whereYear('created_at',date('Y',strtotime($date)))->max('no') + 1;
-                    $nomor = sprintf('%02d',date('m',strtotime($date))).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($date));
+                    $nomor = sprintf('%02d',date('m',strtotime($date))).'-'.sprintf('%03d',$no).'/'.($this->sno == 'ALB' ? 'ALB/' : '').date('y',strtotime($date));
                 }else{
                     $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-                    $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+                    $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.($this->sno == 'ALB' ? 'ALB/' : '').date('y');
                     $date = date('Y-m-d');
                 }
                 $template = TemplateJurnal::find(8);
@@ -247,7 +255,7 @@ class TransaksiController extends Controller
         $data['masa_bupot'] = $request->masa_bupot_bulan.' '.$request->masa_bupot_tahun;
         $trx = Transaksi::find($request->id);
         $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
+        $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'. ($this->sno == 'ALB' ? 'ALB/' : '').date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
 
         if(is_null($trx->jurnal_bupot)){
             Jurnal::create([

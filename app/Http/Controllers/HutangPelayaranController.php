@@ -11,10 +11,18 @@ use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
 use App\Models\JadwalKapal;
 use App\Models\Jurnal;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Hash;
 
 class HutangPelayaranController extends Controller
 {
+    protected $sno;
+    public function __construct()
+    {
+        $setting = Setting::find(1);
+        $this->sno = $setting->short_name;
+    }
+
     public function index()
     {
         $lists = HutangPelayaran::where('status',0)->pluck('order_id')->toArray();
@@ -90,7 +98,7 @@ class HutangPelayaranController extends Controller
         $data_nomor = array();
         $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
         foreach($tgl_group as $tg){
-            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.date('y');
+            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.($this->sno == 'ALB' ? 'ALB/' : '').date('y');
             $data_nomor[$tg] = ['no'=>$no,'nomor'=>$nomor];
             $no++;
         }
