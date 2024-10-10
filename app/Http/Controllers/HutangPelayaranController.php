@@ -113,12 +113,16 @@ class HutangPelayaranController extends Controller
             $opt = ['opt','opt_stamp'];
             $ut = ['ut','ut_stamp','bl','ut_cleaning'];
             foreach($opp as $a){
+                $coa_id = 31;
                 if($a=='thc'){
                     $title = 'THC LOLO';
                 }else if($a=='opp_stamp'){
                     $title = 'STAMP OPP';
                 }else{
                     $title = strtoupper($a);
+                }
+                if($a=='lss' && $hp->order->tarif->customer_id==318){
+                    $coa_id = 28;
                 }
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_opp'])){
@@ -127,7 +131,7 @@ class HutangPelayaranController extends Controller
                         'no_bg' => $item['no_bg_opp'],
                         'tgl_bg' => $item['tgl_bg_opp'],
                         'nominal_bg' => $item['nominal_bg_opp'],
-                        'coa_id' => ($hp->order->tarif->customer_id==318?28:31),
+                        'coa_id' => $coa_id,
                         'order_id' => $item['order_id'],
                         'nomor' => $data_nomor[$item['no_bg_opp']]['nomor'],
                         'no' => $data_nomor[$item['no_bg_opp']]['no'],
