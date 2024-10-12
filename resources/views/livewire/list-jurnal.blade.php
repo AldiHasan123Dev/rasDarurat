@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-12 mt-3">
-        <div class="row">
+        {{-- <div class="row">
             <div class="col-9">
                 <div class="d-flex gap-2">
                     <b class="mt-2">Bulan: </b>
@@ -76,74 +76,46 @@
             </div>
         </div>
         <div class="table-responsives">
-            {{-- <table data-rtc-resizable-table="table.{{ $month }}" class="data table table-sm mt-3 table-bordered" style="font-size: .7rem; white-space:nowrap">
-                <thead>
-                    <tr>
-                        <th data-rtc-resizable="tanggal">Tanggal</th>
-                        <th data-rtc-resizable="nomor">Nomor</th>
-                        <th data-rtc-resizable="akun">No. Akun</th>
-                        <th data-rtc-resizable="akun_name">Nama Akun</th>
-                        <th data-rtc-resizable="container">Cont</th>
-                        <th data-rtc-resizable="nopol">Nopol</th>
-                        <th data-rtc-resizable="invoice">Invoice</th>
-                        <th data-rtc-resizable="job">JOB</th>
-                        <th data-rtc-resizable="keterangan">Keterangan</th>
-                        <th data-rtc-resizable="credit">Debit</th>
-                        <th data-rtc-resizable="credit">Credit</th>
-                        <th>#</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($data as $item)
-                        <tr class="{{ $item->is_balance()?'':'bg-danger text-white' }}">
-                            <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                            <td>{{ $item->nomor }}</td>
-                            <td>{{ $item->coa->kode }}</td>
-                            <td>{{ $item->coa->nama }}</td>
-                            @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
-                                <td></td>
-                            @else
-                                <td>{{ $item->container ?? '-' }}</td>
-                            @endif
-                            <td>{{ $item->nopol ?? '-' }}</td>
-                            <td>{{ $item->invoice ?? '-' }}</td>
-                            @if ($item->order)
-                                @if ($item->coa->kode=='1.1.3.1'||$item->coa->kode=='5.1.1'||$item->coa->kode=='1.1.6.2')
-                                    <td>{{ $item->order->job }}</td>
-                                @else
-                                    <td>{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
-                                @endif
-                            @else
-                                <td>-</td>
-                            @endif
-                            <td>{{ $item->nama }}</td>
-                            <td>{{ number_format($item->debit,2,',','.') }}</td>
-                            <td>{{ number_format($item->credit,2,',','.') }}</td>
-                            <td><a href="{{ route('jurnal.edit',$item->nomor,['jurnal'=>$item->nomor]) }}" class="text-primary"><i class="fas fa-pencil"></i></a></td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table> --}}
+            <table id="jqGrid"></table>
+            <div id="jqGridPager"></div>
+        </div> --}}
+        {{-- {{ $data->links() }} --}}
+        {{-- @if ($data->hasMorePages()) --}}
+        {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
+        {{-- @endif --}}
+        <div class="row">
+            <div class="col-12 mb-2 col-md-6">
+                <label for="" class="form-label">Keterangan</label>
+                <input type="text" name="keterangan" id="keterangan" class="form-control">
+            </div>
+            <div class="col-12 mb-2 col-md-3">
+                <label for="" class="form-label">Container</label>
+                <input type="text" name="container" id="container" class="form-control">
+            </div>
+            <div class="col-12 mb-2 col-md-3">
+                <div class="d-flex gap-3">
+                    <button class="btn btn-success btn-sm mt-3" type="button" onclick="searchJurnal()">Search</button>
+                    <a href="#" class="btn btn-sm btn-primary mt-3" id="edit-btn">Edit</a>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsives">
             <table id="jqGrid"></table>
             <div id="jqGridPager"></div>
         </div>
-        {{-- {{ $data->links() }} --}}
-        {{-- @if($data->hasMorePages()) --}}
-        {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
-        {{-- @endif --}}
         <table class="table table-sm mt-2">
-            {{-- @if ($total_debit!=$total_credit)
+            {{-- @if ($total_debit != $total_credit)
                 <tr>
                     <td colspan="2" class="text-center text-danger"><div class="alert alert-danger">JURNAL TIDAK BALANCE</div></td>
                 </tr>
             @endif --}}
             <tr>
                 <td>Debit</td>
-                <td>: {{ number_format($total_debit,2,',','.') }}</td>
+                <td>: {{ number_format($total_debit, 2, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>Credit</td>
-                <td>: {{ number_format($total_credit,2,',','.') }}</td>
+                <td>: {{ number_format($total_credit, 2, ',', '.') }}</td>
             </tr>
             <tr>
                 <td>JNL TERAKHIR</td>
@@ -154,62 +126,157 @@
 </div>
 
 @push('scripts')
-<script src="{{ asset('assets/js/resize-column.js') }}"></script>
-<script>
-    let id;
-    $("#jqGrid").jqGrid({
-        url: '{{ route('jqgrid.jurnal') }}',
-        mtype: 'GET',
-        datatype: 'json',
-        postData: { month:  @json($month), tipe:@json($tipe), date:@json($date), year:@json($year), is_sample:@json($is_sample) },
-        colModel: [
-            {search:true, width:50, name: 'created_at', label : 'Tanggal', frozen:true},
-            {search:true, width:100, name: 'nomor', label : 'Nomor Jurnal', frozen:true, sortable: false},
-            {search:true, width:50, name: 'coa_kode', label : 'Kode', frozen:true,},
-            {search:true, width:100, name: 'coa_nama', label : 'Akun', frozen:true,},
-            {search:true, width:100, name: 'id', label : 'id', hidden:true},
-            {search:true, width:100, name: 'invoice', label : 'Invoice'},
-            {search:true, width:100, name: 'job', label : 'Group JOB'},
-            {search:true, width:100, name: 'no_job', label : 'ID JOB'},
-            {search:true, width:100, name: 'container', label : 'Container'},
-            {search:true, width:100, name: 'nopol', label : 'Nopol'},
-            {search:true, width:300, name: 'nama', label : 'Keterangan'},
-            {search:true, width:100, name: 'debit', label : 'Debit'},
-            {search:true, width:100, name: 'credit', label : 'Credit'},
-        ],
-        autowidth: true,
-        shrinkToFit: false,
-        height: 250,
-        oadonce: true,
-        rowNum: 25,
-        rowList:[10,25,50,100,250,500,1000],
-        viewrecords: true,
-        pager: "#jqGridPager",
-        caption: "Jurnal List",
-        onCellSelect: function (rowId, iRow, iCol, e) {
-            id = $(this).jqGrid('getCell', rowId, 'id');
-            let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
-            $('#edit-btn').attr('href',@json(url('admin/jurnal-edit'))+'?jurnal='+nomor);
-        },
-        rowattr: function (item) {
-            return { "class": item.class };
+    <script src="{{ asset('assets/js/resize-column.js') }}"></script>
+    <script>
+        let id;
+        let kategori = @json($is_sample);
+        $("#jqGrid").jqGrid({
+            url: '{{ route('jqgrid.jurnal') }}',
+            mtype: 'GET',
+            datatype: 'json',
+            postData: {
+                kategori: kategori
+            },
+            colModel: [{
+                    search: true,
+                    width: 50,
+                    name: 'created_at',
+                    label: 'Tanggal',
+                    frozen: true
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'nomor',
+                    label: 'Nomor Jurnal',
+                    frozen: true,
+                    sortable: false
+                },
+                {
+                    search: true,
+                    width: 50,
+                    name: 'coa_kode',
+                    label: 'Kode',
+                    frozen: true,
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'coa_nama',
+                    label: 'Akun',
+                    frozen: true,
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'id',
+                    label: 'id',
+                    hidden: true
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'invoice',
+                    label: 'Invoice'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'job',
+                    label: 'Group JOB'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'no_job',
+                    label: 'ID JOB'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'container',
+                    label: 'Container'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'nopol',
+                    label: 'Nopol'
+                },
+                {
+                    search: true,
+                    width: 300,
+                    name: 'nama',
+                    label: 'Keterangan'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'debit',
+                    label: 'Debit'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'credit',
+                    label: 'Credit'
+                },
+            ],
+            autowidth: true,
+            shrinkToFit: false,
+            height: 250,
+            oadonce: true,
+            rowNum: 25,
+            rowList: [10, 25, 50, 100, 250, 500, 1000],
+            viewrecords: true,
+            pager: "#jqGridPager",
+            caption: "Jurnal List",
+            onCellSelect: function(rowId, iRow, iCol, e) {
+                id = $(this).jqGrid('getCell', rowId, 'id');
+                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+                $('#edit-btn').attr('href', @json(url('admin/jurnal-edit')) + '?jurnal=' + nomor);
+            },
+            rowattr: function(item) {
+                return {
+                    "class": item.class
+                };
+            }
+        });
+
+        $('#jqGrid').jqGrid('navGrid', "#jqGridPager", {
+            search: false,
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+        $("#jqGrid").jqGrid('setFrozenColumns');
+
+        $('#search').keyup(function(e) {
+            let val = $(this).val();
+            $("#jqGrid").jqGrid('setGridParam', {
+                postData: {
+                    month: @json($month),
+                    tipe: @json($tipe),
+                    search: val
+                }
+            }).trigger('reloadGrid');
+        });
+
+        function changeKategori(type) {
+            kategori = type;
         }
-    });
 
-    $('#jqGrid').jqGrid('navGrid',"#jqGridPager", {
-        search: false,
-        add: false,
-        edit: false,
-        del: false,
-        refresh: true
-    });
-    $("#jqGrid").jqGrid('setFrozenColumns');
-
-    $('#search').keyup(function (e) {
-        let val = $(this).val();
-        $("#jqGrid").jqGrid('setGridParam', {
-                postData: { month:  @json($month), tipe:@json($tipe), search:val }
-        }).trigger('reloadGrid');
-    });
-</script>
+        function searchJurnal() {
+            let keterangan = $('#keterangan').val();
+            let container = $('#container').val();
+            $("#jqGrid").jqGrid('setGridParam', {
+                postData: {
+                    kategori: "real",
+                    keterangan: keterangan,
+                    container: container
+                }
+            }).trigger('reloadGrid');
+        }
+    </script>
 @endpush

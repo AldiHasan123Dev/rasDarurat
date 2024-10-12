@@ -117,6 +117,14 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="mb-2 col-12">
+                        <label for="sample_false">
+                            <input type="radio" name="is_sample" id="sample_false" value="real" {{ $is_sample=='real' ? 'checked' : '' }}> Jurnal Real
+                        </label>
+                        <label for="sample_true">
+                            <input type="radio" name="is_sample" id="sample_true" value="sample" {{ $is_sample=='sample' ? 'checked' : '' }}> Jurnal Sample
+                        </label>
+                    </div>
+                    <div class="mb-2 col-12">
                         <label for="tipe" class="form-label">Tipe Jurnal</label>
                         <select name="tipe" id="tipe" class="form-select">
                             <option value="JNL" selected>JNL</option>

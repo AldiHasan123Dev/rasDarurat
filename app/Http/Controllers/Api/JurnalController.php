@@ -120,18 +120,21 @@ class JurnalController extends Controller
     public function jqgrid()
     {
         $page = request('page'); // get the requested page
-        $limit = request('rows'); // get how many rows we want to have into the grid
+        $limit = request('rows') ?? 0; // get how many rows we want to have into the grid
         $sidx = request('sidx'); // get index row - i.e. user click to sort
         $sord = request('sord'); // get the direction
         $search = request('_search'); // get the search
         $is_sample = request('is_sample');
+        $kategori = request('kategori');
+        $keterangan = request('keterangan');
+        $container = request('container');
         $is_search = false;
         if($search=='true'){
             $is_search = true;
         }
 
         $jurnal_model = new Jurnal();
-        if ($is_sample=='sample') {
+        if ($kategori=='sample') {
             $jurnal_model = new JurnalSample();
         }
         $query = $jurnal_model->query();
@@ -142,33 +145,42 @@ class JurnalController extends Controller
             $start = 0;
         }
 
-        if(request('date')){
-            $query->whereDate('created_at',request('date'));
-        }else{
-            if(request('month')){
-                $query->whereMonth('created_at',request('month'));
-            }
-            if(request('year')){
-                $query->whereYear('created_at',request('year'));
-            }
-            if(request('tipe')){
-                $query->where('tipe','LIKE','%'.request('tipe').'%');
-            }
+        if($keterangan && strlen($keterangan)>3){
+            $query->where('nama','like',$keterangan);
+        }
+        if($container && strlen($container)>3){
+            $query->where('container','like',$container);
         }
 
-        if(request('search')){
-            $query->search(request('search'));
-        }
+        // if(request('date')){
+        //     $query->whereDate('created_at',request('date'));
+        // }else{
+        //     if(request('month')){
+        //         $query->whereMonth('created_at',request('month'));
+        //     }
+        //     if(request('year')){
+        //         $query->whereYear('created_at',request('year'));
+        //     }
+        //     if(request('tipe')){
+        //         $query->where('tipe','LIKE','%'.request('tipe').'%');
+        //     }
+        // }
+
+        // if(request('search')){
+        //     $query->search(request('search'));
+        // }
         $data = $query->orderBy('created_at','desc')->orderBy('nomor','desc')->skip($start)->take($limit)->get();
-
-        $count = $jurnal_model->get('id')->count();
-        if (request('date')) {
-            $count = $jurnal_model->whereDate('created_at',request('date'))->get('id')->count();
-        }else{
-            if(request('month') && request('tipe')){
-                $count = $jurnal_model->whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
-            }
-        }
+        
+        // $count = $jurnal_model->get('id')->count();
+        $count = $data->count();
+        // dd($data->count());
+        // if (request('date')) {
+        //     $count = $jurnal_model->whereDate('created_at',request('date'))->get('id')->count();
+        // }else{
+        //     if(request('month') && request('tipe')){
+        //         $count = $jurnal_model->whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
+        //     }
+        // }
 
 
         if ($count > 0 && $limit > 0) {
