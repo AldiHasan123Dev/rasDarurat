@@ -46,6 +46,12 @@ class JurnalController extends Controller
         return response($data);
     }
 
+    public function coa_ras()
+    {
+        $data = COA::all()->whereNull('coa_id')->sortBy('kode');
+        return response($data);
+    }
+
     public function store(Request $request)
     {
         $data = $request->all();

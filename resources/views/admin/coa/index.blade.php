@@ -25,6 +25,9 @@
                             <tr style="background-color: white">
                                 <th>#</th>
                                 <th>ID</th>
+                                @if (!$is_ras)
+                                    <th>ID RAS</th>
+                                @endif
                                 <th>LR</th>
                                 <th>Kode</th>
                                 <th>Nama</th>
@@ -44,6 +47,11 @@
                                 <tr>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_active')" {{ $item->is_active==1?'checked':'' }}></td>
                                     <td>{{ $item->id }}</td>
+                                    @if (!$is_ras)
+                                        <td>
+                                            <input type="text" value="{{ $item->coa_ras }}" pattern="\d{1,5}" onkeyup="updateRas(this,{{ $item->id }})" style="width: 50px">
+                                        </td>
+                                    @endif
                                     <td>{{ $item->kategori }}</td>
                                     <td>{{ $item->kode }}</td>
                                     <td>{{ $item->nama }}</td>
@@ -77,6 +85,11 @@
                                     <tr>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_active')" {{ $a->is_active==1?'checked':'' }}></td>
                                         <td>{{ $a->id }}</td>
+                                        @if (!$is_ras)
+                                            <td>
+                                                <input type="text" value="{{ $a->coa_ras }}" pattern="\d{1,5}" onkeyup="updateRas(this,{{ $a->id }})" style="width: 50px">
+                                            </td>
+                                        @endif
                                         <td>{{ $a->kategori }}</td>
                                         <td>{{ $a->kode }}</td>
                                         <td>{{ $a->nama }}</td>
@@ -110,6 +123,11 @@
                                             <tr>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_active')" {{ $b->is_active==1?'checked':'' }}></td>
                                                 <td>{{ $b->id }}</td>
+                                                @if (!$is_ras)
+                                                    <td>
+                                                        <input type="text" value="{{ $b->coa_ras }}" pattern="\d{1,5}" onkeyup="updateRas(this,{{ $b->id }})" style="width: 50px">
+                                                    </td>
+                                                @endif
                                                 <td>{{ $b->kategori }}</td>
                                                 <td>{{ $b->kode }}</td>
                                                 <td>{{ $b->nama }}</td>
@@ -143,6 +161,11 @@
                                                     <tr>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_active')" {{ $c->is_active==1?'checked':'' }}></td>
                                                         <td>{{ $c->id }}</td>
+                                                        @if (!$is_ras)
+                                                            <td>
+                                                                <input type="text" value="{{ $c->coa_ras }}" pattern="\d{1,5}" onkeyup="updateRas(this,{{ $c->id }})" style="width: 50px">
+                                                            </td>
+                                                        @endif
                                                         <td>{{ $c->kategori }}</td>
                                                         <td>{{ $c->kode }}</td>
                                                         <td>{{ $c->nama }}</td>
@@ -176,6 +199,11 @@
                                                             <tr>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_active')" {{ $d->is_active==1?'checked':'' }}></td>
                                                                 <td>{{ $d->id }}</td>
+                                                                @if (!$is_ras)
+                                                                    <td>
+                                                                        <input type="text" value="{{ $d->coa_ras }}" pattern="\d{1,5}" onkeyup="updateRas(this,{{ $d->id }})" style="width: 50px">
+                                                                    </td>
+                                                                @endif
                                                                 <td>{{ $d->kategori }}</td>
                                                                 <td>{{ $d->kode }}</td>
                                                                 <td>{{ $d->nama }}</td>
@@ -363,6 +391,33 @@
                     alert('Data Berhasil disimpan!');
                 }
             });
+        }
+
+        function isNumber(value) {
+            return typeof value == 'number';
+        }
+
+        let time;
+        function updateRas(e,id){
+            let value = e.value;
+            value = parseInt(value);
+            if(isNumber(value)){
+                clearTimeout(time);
+                time = setTimeout(() => {
+                    let data = {coa_ras:value};
+                    $.ajax({
+                        type: "PUT",
+                        url: "{{ url('admin/coa') }}"+"/"+id,
+                        data: data,
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        success: function (response) {
+                            alert('Data Berhasil disimpan!');
+                        }
+                    });
+                }, 2000);
+            }else{
+                alert('Harap input angka');
+            }
         }
     </script>
 @endsection

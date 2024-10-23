@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\COA;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Yajra\Datatables\Datatables;
 
 class COAController extends Controller
@@ -12,7 +14,13 @@ class COAController extends Controller
     public function index()
     {
         $data = COA::all()->whereNull('coa_id')->sortBy('kode');
-        return view('admin.coa.index',compact('data'));
+        $setting = Setting::first();
+        $coa_ras = [];
+        $is_ras = true;
+        if($setting->short_name=='ALB'){
+            $is_ras = false;
+        }
+        return view('admin.coa.index',compact('data','coa_ras','is_ras'));
     }
 
     public function store(Request $request)

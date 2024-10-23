@@ -14,6 +14,7 @@ class COA extends Model
     protected $fillable = [
         'id',
         'coa_id',
+        'coa_ras',
         'kode',
         'no_kode',
         'nama',
