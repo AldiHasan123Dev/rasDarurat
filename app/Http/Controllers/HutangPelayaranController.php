@@ -9,9 +9,12 @@ use App\Models\TarifPelayaran;
 use App\Models\HutangPelayaran;
 use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
+use App\Models\COA;
 use App\Models\JadwalKapal;
 use App\Models\Jurnal;
 use App\Models\Setting;
+use App\Models\TemplateJurnal;
+use App\Models\TemplateJurnalItem;
 use Illuminate\Support\Facades\Hash;
 
 class HutangPelayaranController extends Controller
@@ -69,6 +72,9 @@ class HutangPelayaranController extends Controller
         $ids = array();
         $n = HutangPelayaran::max('no') + 1;
         $code = 'HP/'.date('ymd').'/'.sprintf('%02d',$n);
+        $c31 = COA::where('nama','Uang Muka Biaya Operasional Ekspedisi')->first();
+        $c28 = COA::where('nama','Biaya Talangan Ditagihkan Customer')->first();
+        $c73 = COA::where('nama','Hutang PPh 23 Vendor Potongan PPh 23 Vendor')->first();
         foreach ($data['data'] as $id => $item) {
             $prop = $item;
             $prop['no'] = $n;

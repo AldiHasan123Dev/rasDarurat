@@ -23,5 +23,8 @@ class Setting extends Model
         'ppn',
         'pph',
         'invoice_name',
+        'bank',
+        'bank_name',
+        'no_rek',
     ];
 }

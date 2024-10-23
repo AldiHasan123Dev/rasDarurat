@@ -129,6 +129,7 @@
                                     <th>No</th>
                                     <th>No. Jurnal</th>
                                     <th>ID Job</th>
+                                    <th>Inv. External</th>
                                     <th>Account</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
@@ -142,10 +143,11 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item['credit']->nomor }}</td>
                                         @if ($item['credit']->order)
-                                            <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
+                                        <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
                                         @else
-                                            <td>-</td>
+                                        <td>-</td>
                                         @endif
+                                        <td>{{ $item['credit']->invoice_external ?? '-' }}</td>
                                         <td>{{ $item['credit']->coa->kode }} - {{ $item['credit']->coa->nama }}</td>
                                         <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
                                         <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
@@ -157,10 +159,11 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item['debit']->nomor }}</td>
                                         @if ($item['debit']->order)
-                                            <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
+                                        <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
                                         @else
-                                            <td>-</td>
+                                        <td>-</td>
                                         @endif
+                                        <td>{{ $item['debit']->invoice_external ?? '-' }}</td>
                                         <td>{{ $item['debit']->coa->kode }} - {{ $item['debit']->coa->nama }}</td>
                                         <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
                                         <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
@@ -201,6 +204,7 @@
                                         <th>#</th>
                                         <th>No</th>
                                         <th>ID Job</th>
+                                        <th>Inv. External</th>
                                         <th>Account</th>
                                         <th>Debit</th>
                                         <th>Credit</th>
@@ -226,6 +230,7 @@
                                             @else
                                                 <td>-</td>
                                             @endif
+                                            <td>{{ $item['debit']->invoice_external ?? '-' }}</td>
                                             @if ($item['debit']->debit==0)
                                                 <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                                 <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
@@ -256,6 +261,7 @@
                                             @else
                                                 <td>-</td>
                                             @endif
+                                            <td>{{ $item['credit']->invoice_external ?? '-' }}</td>
                                             @if ($item['credit']->debit==0)
                                                 <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                                 <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
@@ -280,6 +286,7 @@
                                             <td></td>
                                             <td>{{ $k }}</td>
                                             <td></td>
+                                            <td>-</td>
                                             <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
                                             <td>-</td>
                                             <td id="value">{{ number_format($data->sum('credit')) }}</td>
@@ -290,6 +297,7 @@
                                         <input type="hidden" value="0" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                         <tr>
+                                            <td>-</td>
                                             <td>-</td>
                                             <td>-</td>
                                             <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
@@ -306,8 +314,7 @@
                             <div>
                                 <label for="" class="form-label">Nomor Jurnal</label>
                                 <select name="nomor" id="nomor_jurnal" class="form-control" required>
-                                    <option value=""></option>
-                                    <option data-no="{{ $no_1 }}" data-type="JNL" value="{{ $nomor_1 }}">{{ $nomor_1 }}</option>
+                                    <option data-no="{{ $no_1 }}" selected data-type="JNL" value="{{ $nomor_1 }}">{{ $nomor_1 }}</option>
                                     <option data-no="{{ $no_2 }}" data-type="BBK" value="{{ $nomor_2 }}">{{ $nomor_2 }}</option>
                                     {{-- <option data-no="{{ $no_3 }}" data-type="BBM" value="{{ $nomor_3 }}">{{ $nomor_3 }}</option> --}}
                                     <option data-no="{{ $no_4 }}" data-type="BKK" value="{{ $nomor_4 }}">{{ $nomor_4 }}</option>

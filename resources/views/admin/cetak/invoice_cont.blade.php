@@ -415,15 +415,15 @@
                             <table style="font-size: .7rem">
                                 <tr>
                                     <td style="width: 150px">Rekening No.</td>
-                                    <td>: 1400 046 005 006</td>
+                                    <td>: {{ $no_rek }}</td>
                                 </tr>
                                 <tr>
                                     <td>Atas Nama</td>
-                                    <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                    <td>: {{ $bank_name }}</td>
                                 </tr>
                                 <tr>
                                     <td>Bank</td>
-                                    <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                    <td>: {{ $bank }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -611,15 +611,15 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 150px">Rekening No.</td>
-                                        <td>: 1400 046 005 006</td>
+                                        <td>: {{ $no_rek }}</td>
                                     </tr>
                                     <tr>
                                         <td>Atas Nama</td>
-                                        <td>: PT. RAHMAT ALAM SAMUDERA</td>
+                                        <td>: {{ $bank_name }}</td>
                                     </tr>
                                     <tr>
                                         <td>Bank</td>
-                                        <td>: Mandiri Cabang Indrapura Surabaya</td>
+                                        <td>: {{ $bank }}</td>
                                     </tr>
                                 </table>
                             </div>

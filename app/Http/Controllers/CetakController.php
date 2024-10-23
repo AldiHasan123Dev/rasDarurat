@@ -22,13 +22,16 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class CetakController extends Controller
 {
 
-    protected $ppn, $pph, $invoice_name;
+    protected $ppn, $pph, $invoice_name, $bank, $no_rek, $bank_name;
     public function __construct()
     {
         $setting = Setting::find(1);
         $this->ppn = $setting->ppn;
         $this->pph = $setting->pph;
         $this->invoice_name = $setting->invoice_name;
+        $this->bank = $setting->bank;
+        $this->no_rek = $setting->no_rek;
+        $this->bank_name = $setting->bank_name;
     }
     public function suratJalan()
     {
@@ -277,7 +280,10 @@ class CetakController extends Controller
         $ppn = $this->ppn;
         $pph = $this->pph;
         $invoice_name = $this->invoice_name;
-        return view('admin.cetak.invoice',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin'));
+        $bank = $this->bank;
+        $no_rek = $this->no_rek;
+        $bank_name = $this->bank_name;
+        return view('admin.cetak.invoice',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin','bank','no_rek','bank_name'));
     }
 
     public function invoiceCont()
@@ -316,7 +322,10 @@ class CetakController extends Controller
         $ppn = $this->ppn;
         $pph = $this->pph;
         $invoice_name = $this->invoice_name;
-        return view('admin.cetak.invoice_cont',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin'));
+        $bank = $this->bank;
+        $no_rek = $this->no_rek;
+        $bank_name = $this->bank_name;
+        return view('admin.cetak.invoice_cont',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin','bank','no_rek','bank_name'));
     }
 
     public function allinFCL(Order $order)
