@@ -58,8 +58,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
 use App\Http\Controllers\PortController;
 use App\Http\Controllers\UpdateDataController;
-use App\Models\Jurnal;
-use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -79,6 +78,10 @@ use Google\Service\Drive;
 */
 
 Route::get('/', function () {
+    $setting = Setting::first();
+    if ($setting->short_name == 'ALB') {
+        return redirect('login');
+    }
     return view('landingpage.index');
 });
 Route::get('/logs', function () {
@@ -97,18 +100,19 @@ Route::get('/upload', function () {
         $mimeType = mime_content_type($file);
 
         $fileMetadata = new Drive\DriveFile(
-            array('name' => $fileName,'parents' => ['11CjKzIs8ndfv_V6jhIDFy4y99jsUuYYN'])
-            );
+            array('name' => $fileName, 'parents' => ['11CjKzIs8ndfv_V6jhIDFy4y99jsUuYYN'])
+        );
         $content = file_get_contents($file);
         $file = $driveService->files->create($fileMetadata, array(
             'data' => $content,
             'mimeType' => $mimeType,
             'uploadType' => 'multipart',
-            'fields' => 'id'));
+            'fields' => 'id'
+        ));
         printf("File ID: %s\n", $file->id);
         return $file->id;
-    } catch(Exception $e) {
-        echo "Error Message: ".$e;
+    } catch (Exception $e) {
+        echo "Error Message: " . $e;
     }
 });
 
@@ -126,10 +130,10 @@ Route::get('test', function () {
 });
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('bulk-update', function(){
+Route::get('bulk-update', function () {
     return view('bulk-update');
 });
-Route::get('buku-besar', function(){
+Route::get('buku-besar', function () {
     $file = Storage::path('public/buku-besar.xlsx');
     return response()->download($file);
 })->name('download.buku-besar');
@@ -185,7 +189,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('hutang-agen', HutangAgenController::class);
     Route::resource('hutang-pelayaran', HutangPelayaranController::class);
     Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
-    Route::resource('port',PortController::class);
+    Route::resource('port', PortController::class);
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::get('hutang-agen-list', [HutangAgenController::class, 'list'])->name('hutang-agen.list');
@@ -372,6 +376,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('sync-jurnal-invoice', [SyncController::class, 'jurnal_invoice']);
 
     Route::get('sync-jurnal-hutang-trucking/{trx_id}/{no}', [TruckingController::class, 'jurnal_hutang_trucking']);
-    Route::resource('setting',App\Http\Controllers\SettingController::class);
+    Route::resource('setting', App\Http\Controllers\SettingController::class);
 });
 // Route::view('test','test');
