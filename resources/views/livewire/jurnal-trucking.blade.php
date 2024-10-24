@@ -252,9 +252,9 @@
                 val='0';
             }
             return val;
-        }).get();        
+        }).get();
         console.log(order_id);
-        
+
         $.ajax({
             type: "POST",
             url: "{{ url('api/get-array-id-trucking') }}",
@@ -314,6 +314,10 @@
         total_debit = 0;
         let total_debit_prev = 0;
         let total_credit_prev = 0;
+        let c16 = @json($c16);
+        let c45 = @json($c45);
+        let c175 = @json($c175);
+        let c31 = @json($c31);
         arr_id = [];
         for (let i = 0; i < check.length; i++) {
             const item = check[i];
@@ -323,15 +327,15 @@
             var or_id = $('#job-'+item).val();
             if(or_id==""){
                 or_id = 0;
-            }else if(d==31){
+            }else if(d==c31){
                 arr_id.push(or_id);
             }else{
                 arr_id.push(0);
             }
-            if(d==16 || d==45 || d==175){
+            if(d==c16 || d==c45 || d==c175){
                 total_debit_prev+=a;
             }
-            if(c==16 ||c==45 || c==175){
+            if(c==c16 ||c==c45 || c==c175){
                 total_credit_prev+=a;
             }
             if(d!=""){
@@ -341,7 +345,7 @@
                 total_credit+=a;
             }
         }
-        
+
         let voucher = total_debit_prev - total_credit_prev;
         if(voucher<0){
             voucher = voucher * -1;

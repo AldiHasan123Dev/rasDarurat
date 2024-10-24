@@ -296,15 +296,18 @@
         total_debit = 0;
         let total_debit_prev = 0;
         let total_credit_prev = 0;
+        let c16 = @json($c16);
+        let c45 = @json($c45);
+        let c175 = @json($c175);
         for (let i = 0; i < check.length; i++) {
             const item = check[i];
             var d = $('#debit-'+item).val();
             var c = $('#credit-'+item).val();
             var a = parseInt($('#amount-'+item).val());
-            if(d==16 || d==45 || d==175){
+            if(d==c16 || d==c45 || d==c175){
                 total_debit_prev+=a;
             }
-            if(c==16 ||c==45 || c==175){
+            if(c==c16 ||c==c45 || c==c175){
                 total_credit_prev+=a;
             }
             if(d!=""){

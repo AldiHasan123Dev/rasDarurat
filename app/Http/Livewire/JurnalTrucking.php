@@ -18,6 +18,7 @@ class JurnalTrucking extends Component
     public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
+    public $c16, $c45, $c175, $c31;
 
     public function mount()
     {
@@ -53,6 +54,10 @@ class JurnalTrucking extends Component
         $this->no_5 = sprintf('%03d',$no_5).'/BKM-'.$setting->short_name.'/'.date('y');
         $this->no_6 = sprintf('%03d',$no_6).'/BBKT-'.$setting->short_name.'/'.date('y');
         $this->no_7 = sprintf('%03d',$no_7).'/BBMT-'.$setting->short_name.'/'.date('y');
+        $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
+        $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
+        $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
+        $this->c31 = COA::where('coa_ras', 31)->first()->id ?? 31;
     }
 
     public function render()
