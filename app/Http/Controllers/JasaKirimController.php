@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agen;
+use App\Models\COA;
 use App\Models\JasaKirim;
 use App\Models\Jurnal;
 use App\Models\Lokasi;
@@ -141,6 +142,9 @@ class JasaKirimController extends Controller
         if(count($err)>0){
             return back()->with('danger', 'Jasa Kirim '.json_encode($err).' tidak memiliki ID JOB!');
         }
+        $c76 = COA::where('coa_ras', 76)->first()->id ?? 76;
+        $c31 = COA::where('coa_ras', 31)->first()->id ?? 31;
+        $c63 = COA::where('coa_ras', 63)->first()->id ?? 63;
         foreach ($data as $idx => $item) {
             $is_first = true;
             $count = $item->orders->count() + $item->kirim_dokumen->count();
@@ -152,7 +156,7 @@ class JasaKirimController extends Controller
                     $is_first = false;
                     Jurnal::create([
                         'tipe' => 'JNL',
-                        'coa_id' => ($order->checkOmset() ? 76 : 31),
+                        'coa_id' => ($order->checkOmset() ? $c76 : $c31),
                         'order_id' => $order->id,
                         'nomor' => $nomor,
                         'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
@@ -163,7 +167,7 @@ class JasaKirimController extends Controller
                 }else{
                     Jurnal::create([
                         'tipe' => 'JNL',
-                        'coa_id' => ($order->checkOmset() ? 76 : 31),
+                        'coa_id' => ($order->checkOmset() ? $c76 : $c31),
                         'order_id' => $order->id,
                         'nomor' => $nomor,
                         'nama' => 'Biaya Pengiriman Dokumen '. ($order->agent->nama ?? '-') .' ('.($order->agent->lokasi->nama ?? '-').')',
@@ -176,7 +180,7 @@ class JasaKirimController extends Controller
             foreach($item->kirim_dokumen as $kirim){
                 Jurnal::create([
                     'tipe' => 'JNL',
-                    'coa_id' => ($kirim->order->checkOmset() ? 76 : 31),
+                    'coa_id' => ($kirim->order->checkOmset() ? $c76 : $c31),
                     'order_id' => $kirim->order_id,
                     'nomor' => $nomor,
                     'nama' => $kirim->nama,
@@ -192,7 +196,7 @@ class JasaKirimController extends Controller
         }
         Jurnal::create([
             'tipe' => 'JNL',
-            'coa_id' => 63,
+            'coa_id' => $c63,
             'order_id' => $order->id,
             'nomor' => $nomor,
             'nama' => 'Hutang Agen ('.$invoice.')',

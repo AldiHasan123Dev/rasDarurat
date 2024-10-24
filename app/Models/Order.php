@@ -54,6 +54,7 @@ class Order extends Model
         'asuransi_date',
         'asuransi_cetak',
         'tgl_komisi',
+        'tgl_potong',
         'created_at',
         'tipe',
         'port_id',
@@ -204,7 +205,8 @@ class Order extends Model
 
     public function checkOmset()
     {
-        $jurnals = Jurnal::where('order_id',$this->id)->where('coa_id',93)->where('debit','>',0)->get();
+        $c93 = COA::where('coa_ras', 93)->first()->id ?? 93;
+        $jurnals = Jurnal::where('order_id',$this->id)->where('coa_id',$c93)->where('debit','>',0)->get();
         if($jurnals->count()>0){
             return true;
         }
@@ -213,6 +215,6 @@ class Order extends Model
 
     public function tagihanAgenTotal()
     {
-        
+
     }
 }

@@ -361,6 +361,11 @@ class OrderController extends Controller
         return back()->with('success','Kapal berhasil dipindahkan! Job berganti '. $job.'-'.sprintf('%02d',$no_job));
     }
 
+    public function monitoring_pembayar()
+    {
+        return view('admin.keuangan.monitoring_pembayar');
+    }
+
     public function datatable()
     {
         $limit = request('length');

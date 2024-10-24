@@ -333,6 +333,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jqgrid-tarif-agent', [TarifAgenController::class, 'jqgrid'])->name('jqgrid.tarif.agent');
     Route::get('jqgrid-tarif-pelayaran', [TarifPelayaranController::class, 'jqgrid'])->name('jqgrid.tarif.pelayaran');
     Route::get('jqgrid-order-biaya', [OrderBiayaController::class, 'jqgrid'])->name('order_biaya.jqgrid');
+    Route::get('monitoring-pembayar', [OrderController::class, 'monitoring_pembayar'])->name('order.monitoring_pembayar');
     Route::get('monitoring-shipment', [OrderBiayaController::class, 'index'])->name('order_biaya.index');
     Route::get('monitoring-shipment/{order}', [OrderBiayaController::class, 'edit'])->name('order_biaya.edit');
     Route::put('monitoring-shipment/{order}', [OrderBiayaController::class, 'update'])->name('order_biaya.update');

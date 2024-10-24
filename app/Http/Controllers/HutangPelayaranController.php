@@ -72,9 +72,12 @@ class HutangPelayaranController extends Controller
         $ids = array();
         $n = HutangPelayaran::max('no') + 1;
         $code = 'HP/'.date('ymd').'/'.sprintf('%02d',$n);
-        $c31 = COA::where('nama','Uang Muka Biaya Operasional Ekspedisi')->first();
-        $c28 = COA::where('nama','Biaya Talangan Ditagihkan Customer')->first();
-        $c73 = COA::where('nama','Hutang PPh 23 Vendor Potongan PPh 23 Vendor')->first();
+        $c31 = COA::where('coa_ras',31)->first()->id ?? 31;
+        $c28 = COA::where('coa_ras',28)->first()->id ?? 28;
+        $c73 = COA::where('coa_ras',73)->first()->id ?? 73;
+        $c130 = COA::where('coa_ras',130)->first()->id ?? 130;
+        $c62 = COA::where('coa_ras',62)->first()->id ?? 62;
+        $c23 = COA::where('coa_ras',23)->first()->id ?? 23;
         foreach ($data['data'] as $id => $item) {
             $prop = $item;
             $prop['no'] = $n;
@@ -119,7 +122,7 @@ class HutangPelayaranController extends Controller
             $opt = ['opt','opt_stamp'];
             $ut = ['ut','ut_stamp','bl','ut_cleaning'];
             foreach($opp as $a){
-                $coa_id = 31;
+                $coa_id = $c31;
                 if($a=='thc'){
                     $title = 'THC LOLO';
                 }else if($a=='opp_stamp'){
@@ -128,10 +131,14 @@ class HutangPelayaranController extends Controller
                     $title = strtoupper($a);
                 }
                 if($a=='lss' && $hp->order->tarif->customer_id==318){
-                    $coa_id = 28;
+                    $coa_id = $c28;
                 }
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_opp'])){
+                    $check_double = Jurnal::where('tipe','JNL')->where('coa_id',$coa_id)->where('nama',$name)->first();
+                    if(!is_null($check_double)){
+                        return back()->with('danger', 'Gagal, hutang pelayaran sudah dijurnal');
+                    }
                     Jurnal::create([
                         'tipe' => 'JNL',
                         'no_bg' => $item['no_bg_opp'],
@@ -162,7 +169,7 @@ class HutangPelayaranController extends Controller
                         'no_bg' => $item['no_bg_opt'],
                         'tgl_bg' => $item['tgl_bg_opt'],
                         'nominal_bg' => $item['nominal_bg_opt'],
-                        'coa_id' => 31,
+                        'coa_id' => $c31,
                         'order_id' => $item['order_id'],
                         'nomor' => $data_nomor[$item['no_bg_opt']]['nomor'],
                         'no' => $data_nomor[$item['no_bg_opt']]['no'],
@@ -189,7 +196,7 @@ class HutangPelayaranController extends Controller
                         'no_bg' => $item['no_bg_ut'],
                         'tgl_bg' => $item['tgl_bg_ut'],
                         'nominal_bg' => $item['nominal_bg_ut'],
-                        'coa_id' => 31,
+                        'coa_id' => $c31,
                         'order_id' => $item['order_id'],
                         'nomor' => $data_nomor[$item['no_bg_ut']]['nomor'],
                         'no' => $data_nomor[$item['no_bg_ut']]['no'],
@@ -209,7 +216,7 @@ class HutangPelayaranController extends Controller
                 'no_bg' => $hp->no_bg_opp,
                 'tgl_bg' => $hp->tgl_bg_opp,
                 'nominal_bg' => $hp->nominal_bg_opp,
-                'coa_id' => 73,
+                'coa_id' => $c73,
                 'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_opp]['no'],
                 'nama' => 'Potongan PPH 23 '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage,
@@ -224,7 +231,7 @@ class HutangPelayaranController extends Controller
                 'no_bg' => $hp->no_bg_opp,
                 'tgl_bg' => $hp->tgl_bg_opp,
                 'nominal_bg' => $hp->nominal_bg_opp,
-                'coa_id' => 130,
+                'coa_id' => $c130,
                 'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_opp]['no'],
                 'nama' => 'Pembulatan OPP '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage,
@@ -237,7 +244,7 @@ class HutangPelayaranController extends Controller
             'no_bg' => $hp->no_bg_opp,
             'tgl_bg' => $hp->tgl_bg_opp,
             'nominal_bg' => $hp->nominal_bg_opp,
-            'coa_id' => 62,
+            'coa_id' => $c62,
             'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
             'no' => $data_nomor[$hp->no_bg_opp]['no'],
             'nama' => 'Hutang OPP '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
@@ -250,7 +257,7 @@ class HutangPelayaranController extends Controller
                 'no_bg' => $hp->no_bg_opt,
                 'tgl_bg' => $hp->tgl_bg_opt,
                 'nominal_bg' => $hp->nominal_bg_opt,
-                'coa_id' => 62,
+                'coa_id' => $c62,
                 'nomor' => $data_nomor[$hp->no_bg_opt]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_opt]['no'],
                 'nama' => 'Hutang OPT '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
@@ -264,7 +271,7 @@ class HutangPelayaranController extends Controller
                 'no_bg' => $hp->no_bg_ut,
                 'tgl_bg' => $hp->tgl_bg_ut,
                 'nominal_bg' => $hp->nominal_bg_ut,
-                'coa_id' => 62,
+                'coa_id' => $c62,
                 'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
                 'no' => $data_nomor[$hp->no_bg_ut]['no'],
                 'nama' => 'Hutang UT '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_ut.' ('.date('d/m/y',strtotime($hp->tgl_bg_ut)).')',
@@ -280,7 +287,7 @@ class HutangPelayaranController extends Controller
                             'no_bg' => $hp->no_bg_ut,
                             'tgl_bg' => $hp->tgl_bg_ut,
                             'nominal_bg' => $hp->nominal_bg_ut,
-                            'coa_id' => 23,
+                            'coa_id' => $c23,
                             'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
                             'no' => $data_nomor[$hp->no_bg_ut]['no'],
                             'nama' => $hp->penambahan,
@@ -293,7 +300,7 @@ class HutangPelayaranController extends Controller
                             'no_bg' => $hp->no_bg_ut,
                             'tgl_bg' => $hp->tgl_bg_ut,
                             'nominal_bg' => $hp->nominal_bg_ut,
-                            'coa_id' => 23,
+                            'coa_id' => $c23,
                             'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
                             'no' => $data_nomor[$hp->no_bg_ut]['no'],
                             'nama' => $hp->penambahan,
@@ -307,9 +314,9 @@ class HutangPelayaranController extends Controller
 
         $data = HutangPelayaran::whereIn('id',$ids)->get();
         foreach ($data as $item) {
-            $opp = Jurnal::where('no_bg',$item->no_bg_opp)->whereIn('tipe',['JNL','TEST'])->where('order_id',$item->order_id)->first()->nomor ?? null;
-            $opt = Jurnal::where('no_bg',$item->no_bg_opt)->whereIn('tipe',['JNL','TEST'])->where('order_id',$item->order_id)->first()->nomor ?? null;
-            $ut = Jurnal::where('no_bg',$item->no_bg_ut)->whereIn('tipe',['JNL','TEST'])->where('order_id',$item->order_id)->first()->nomor ?? null;
+            $opp = Jurnal::where('no_bg',$item->no_bg_opp)->whereIn('tipe',['JNL'])->where('order_id',$item->order_id)->first()->nomor ?? null;
+            $opt = Jurnal::where('no_bg',$item->no_bg_opt)->whereIn('tipe',['JNL'])->where('order_id',$item->order_id)->first()->nomor ?? null;
+            $ut = Jurnal::where('no_bg',$item->no_bg_ut)->whereIn('tipe',['JNL'])->where('order_id',$item->order_id)->first()->nomor ?? null;
             $item->update([
                 'jurnal_opp' => $opp,
                 'jurnal_opt' => $opt,

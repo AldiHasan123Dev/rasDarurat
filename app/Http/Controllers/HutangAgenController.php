@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\TagihanAgen;
 use App\Models\TarifAgen;
 use App\Models\Setting;
+use App\Models\COA;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -176,11 +177,16 @@ class HutangAgenController extends Controller
         $pph = 0;
         $total = 0;
         $total_tagihan_agen = 0;
-        // dd($tagihan_agen);
+        $c93 = COA::where('coa_ras', 93)->first()->id ?? 93;
+        $c134 = COA::where('coa_ras', 134)->first()->id ?? 134;
+        $c31 = COA::where('coa_ras', 31)->first()->id ?? 31;
+        $c28 = COA::where('coa_ras', 28)->first()->id ?? 28;
+        $c73 = COA::where('coa_ras', 73)->first()->id ?? 73;
+        $c63 = COA::where('coa_ras', 63)->first()->id ?? 63;
         foreach ($hutang_agen as $hutang) {
             $pph += round($hutang->pph);
             $order = $hutang->order;
-            $cek = Jurnal::where('order_id', $order->id)->where('coa_id', 93)->where('debit', '>', 0)->count();
+            $cek = Jurnal::where('order_id', $order->id)->where('coa_id', $c93)->where('debit', '>', 0)->count();
             $jurnal = array();
             $jurnal['order_id'] = $order->id;
             $jurnal['nomor'] = $nomor;
@@ -191,12 +197,12 @@ class HutangAgenController extends Controller
             $jurnal['invoice_external'] = $hutang->invoice;
             $jurnal['tipe'] = 'JNL';
             if ($cek > 0) {
-                $jurnal['coa_id'] = 134;
+                $jurnal['coa_id'] = $c134;
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
             } else {
-                $jurnal['coa_id'] = ($order->checkOmset() ? 134 : 31);
+                $jurnal['coa_id'] = ($order->checkOmset() ? $c134 : $c31);
                 $jurnal['debit'] = $hutang->tarif + round($hutang->ppn);
                 $jurnal['credit'] = 0;
                 Jurnal::create($jurnal);
@@ -223,7 +229,7 @@ class HutangAgenController extends Controller
                         $amount = $price;
                     }
                     if ($tagihan->beban == 'ras') {
-                        $cek = Jurnal::where('order_id', $order->id)->where('coa_id', 93)->where('debit', '>', 0)->count();
+                        $cek = Jurnal::where('order_id', $order->id)->where('coa_id', $c93)->where('debit', '>', 0)->count();
                         if ($cek > 0) {
                             Jurnal::create([
                                 'order_id' => $order->id,
@@ -233,7 +239,7 @@ class HutangAgenController extends Controller
                                 'container' => $order->container,
                                 'invoice_external' => $tagihan->invoice,
                                 'tipe' => 'JNL',
-                                'coa_id' => 134,
+                                'coa_id' => $c134,
                                 'debit' => $amount,
                                 'credit' => 0
                             ]);
@@ -247,7 +253,7 @@ class HutangAgenController extends Controller
                                 'invoice' => $order->invoice,
                                 'invoice_external' => $tagihan->invoice,
                                 'tipe' => 'JNL',
-                                'coa_id' => ($order->checkOmset() ? 134 : 31),
+                                'coa_id' => ($order->checkOmset() ? $c134 : $c31),
                                 'debit' => $amount,
                                 'credit' => 0
                             ]);
@@ -261,7 +267,7 @@ class HutangAgenController extends Controller
                             'container' => $order->container,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => 28,
+                            'coa_id' => $c28,
                             'debit' => $amount,
                             'credit' => 0
                         ]);
@@ -270,7 +276,7 @@ class HutangAgenController extends Controller
             } else {
                 $order = $tagihan->order;
                 if ($tagihan->beban == 'ras') {
-                    $cek = Jurnal::where('order_id', $tagihan->order_id)->where('coa_id', 93)->where('debit', '>', 0)->count();
+                    $cek = Jurnal::where('order_id', $tagihan->order_id)->where('coa_id', $c93)->where('debit', '>', 0)->count();
                     if ($cek > 0) {
                         Jurnal::create([
                             'order_id' => $tagihan->order_id,
@@ -280,7 +286,7 @@ class HutangAgenController extends Controller
                             'container' => $order->container,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => 134,
+                            'coa_id' => $c134,
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
                         ]);
@@ -294,7 +300,7 @@ class HutangAgenController extends Controller
                             'invoice' => $order->invoice ?? null,
                             'invoice_external' => $tagihan->invoice,
                             'tipe' => 'JNL',
-                            'coa_id' => ($order->checkOmset() ? 134 : 31),
+                            'coa_id' => ($order->checkOmset() ? $c134 : $c31),
                             'debit' => $tagihan->jumlah,
                             'credit' => 0
                         ]);
@@ -308,7 +314,7 @@ class HutangAgenController extends Controller
                         'container' => $order->container,
                         'invoice_external' => $tagihan->invoice,
                         'tipe' => 'JNL',
-                        'coa_id' => 28,
+                        'coa_id' => $c28,
                         'debit' => $tagihan->jumlah,
                         'credit' => 0
                     ]);
@@ -330,7 +336,7 @@ class HutangAgenController extends Controller
                 'no' => $no,
                 'nama' => 'Potongan PPH 23 Agen ' . ($hutang_agen->first()->order->agent->nama ?? '') . ' ' . $invoice,
                 'tipe' => 'JNL',
-                'coa_id' => 73,
+                'coa_id' => $c73,
                 'debit' => 0,
                 'credit' => $invoice_group->sum('pph'),
                 'invoice_external' => $invoice
@@ -341,7 +347,7 @@ class HutangAgenController extends Controller
                 'no' => $no,
                 'nama' => 'Hutang Agen ' . $invoice . ' ' . ($hutang_agen->first()->order->agent->nama ?? ''),
                 'tipe' => 'JNL',
-                'coa_id' => 63,
+                'coa_id' => $c63,
                 'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $total_tagihan_agen,
                 'debit' => 0,
                 'invoice_external' => $invoice
@@ -353,8 +359,9 @@ class HutangAgenController extends Controller
 
     private function check_omset($order_id)
     {
+        $c93 = COA::where('coa_ras', 93)->first()->id ?? 93;
         foreach ($order_id as $id) {
-            $jurnals = Jurnal::where('order_id', $id)->where('coa_id', 93)->where('debit', '>', 0)->get();
+            $jurnals = Jurnal::where('order_id', $id)->where('coa_id', $c93)->where('debit', '>', 0)->get();
             $order = Order::find($id);
             if ($jurnals->count() > 0 && $order) {
                 return false;

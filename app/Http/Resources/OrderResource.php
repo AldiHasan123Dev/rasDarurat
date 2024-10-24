@@ -71,6 +71,7 @@ class OrderResource extends JsonResource
             'stuffing' => is_null($this->stuffing)?'-':date('d-m-Y',strtotime($this->stuffing)),
             'stuffing_type' => $this->tarif->stuffing ?? '-',
             'full' => is_null($this->full)?'-':date('d-m-Y',strtotime($this->full)),
+            'tgl_potong' => is_null($this->tgl_potong)?'-':date('d-m-Y',strtotime($this->tgl_potong)),
             'barang_diantar' => is_null($this->barang_diantar)?'-':date('d-m-Y',strtotime($this->barang_diantar)),
             'ba_kembali' => is_null($this->ba_kembali)?'-':date('d-m-Y',strtotime($this->ba_kembali)),
             'satuan' => $this->satuanInfo->nama ?? '-',

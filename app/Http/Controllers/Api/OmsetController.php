@@ -8,6 +8,7 @@ use App\Models\Jurnal;
 use App\Models\JurnalBalik;
 use App\Models\Omset;
 use App\Models\Order;
+use App\Models\COA;
 use App\Models\PraOmset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -21,11 +22,17 @@ class OmsetController extends Controller
         $end = request('start') + request('end');
         $data = array();
         $model = new Omset();
-        $coa_id = [93,38,133,134,135,140,76,81];
+        $coa_id = COA::whereIn('coa_ras', [93, 38, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
+        if(count($coa_id) != 8){
+            $coa_id = [93,38,133,134,135,140,76,81];
+        }
         $orders = Order::whereIn('id',$ids)->where('lock_omset',1)->get();
         if(request('is_pra')){
             $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
-            $coa_id = [38,31,133,134,135,140,76,81];
+            $coa_id = COA::whereIn('coa_ras', [38, 31, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
+            if(count($coa_id) != 8){
+                $coa_id = [38,31,133,134,135,140,76,81];
+            }
             $model = new PraOmset();
         }
         foreach ($orders as $idx => $order) {
