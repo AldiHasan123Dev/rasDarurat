@@ -33,6 +33,7 @@ class Jurnal extends Model
         'no_bg',
         'tgl_bg',
         'nominal_bg',
+        'relasi',
     ];
 
     protected $searchable = [

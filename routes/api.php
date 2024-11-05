@@ -69,6 +69,7 @@ Route::get('get-pengirim', [CustomerController::class,'getPengirim']);
 Route::get('get-barang', [BarangController::class,'getBarang']);
 Route::get('get-nama-barang', [BarangController::class,'getNama']);
 Route::get('get-nama-satuan', [BarangController::class,'getNamaSatuan']);
+Route::get('get-nomor-jurnal', [JurnalController::class,'getNomor']);
 Route::get('get-order-nopol/{nopol}', [OrderController::class,'getOrderwithNopol']);
 Route::post('update-order-lock-all', [OrderController::class,'updateLockAll']);
 Route::post('update-order-unlock-all', [OrderController::class,'updateUnlockAll']);

@@ -367,6 +367,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'relasi' => $data['relasi'][$i],
                         'no' => $no
                     ]);
                     $jurnal_model->create([
@@ -378,6 +379,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'relasi' => $data['relasi'][$i],
                         'no' => $no
                     ]);
                 } else {
@@ -391,6 +393,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'relasi' => $data['relasi'][$i],
                             'no' => $no
                         ]);
                     }
@@ -404,6 +407,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'relasi' => $data['relasi'][$i],
                             'no' => $no
                         ]);
                     }
@@ -480,6 +484,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'relasi' => $data['relasi'][$i],
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
                         'no' => $no
@@ -495,6 +500,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'relasi' => $data['relasi'][$i],
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
                         'no' => $no
@@ -512,6 +518,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'relasi' => $data['relasi'][$i],
                             'no_bg' => $no_bg,
                             'invoice_external' => $jurnal_external,
                             'no' => $no
@@ -529,6 +536,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'relasi' => $data['relasi'][$i],
                             'no_bg' => $no_bg,
                             'invoice_external' => $jurnal_external,
                             'no' => $no
@@ -676,6 +684,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'relasi' => $data['relasi'][$i],
                         'no' => $no,
                         'invoice_external' => $jurnal_external,
                     ]);
@@ -691,6 +700,7 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
+                        'relasi' => $data['relasi'][$i],
                         'no' => $no,
                         'invoice_external' => $jurnal_external,
                     ]);
@@ -708,6 +718,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'relasi' => $data['relasi'][$i],
                             'no' => $no,
                             'invoice_external' => $jurnal_external,
                         ]);
@@ -725,6 +736,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
+                            'relasi' => $data['relasi'][$i],
                             'no' => $no,
                             'invoice_external' => $jurnal_external,
                         ]);

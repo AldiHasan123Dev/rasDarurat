@@ -10,10 +10,10 @@
             @else
             @endif --}}
             <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
-            <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+            <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true" :disabled="true"></x-input>
         @else
             <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>
-            <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true"></x-input>
+            <x-input :value="$order->jadwal_kapal_id??old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]" :name="'jadwal_kapal_id'" :required="true" :disabled="true"></x-input>
         @endif
     @else
         <x-input :value="$order->tarif_id??old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif" :name="'tarif_id'" :required="true"></x-input>

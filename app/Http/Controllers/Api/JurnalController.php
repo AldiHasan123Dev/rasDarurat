@@ -176,7 +176,7 @@ class JurnalController extends Controller
         //     $query->search(request('search'));
         // }
         $data = $query->orderBy('created_at','desc')->orderBy('nomor','desc')->skip($start)->take($limit)->get();
-        
+
         // $count = $jurnal_model->get('id')->count();
         $count = $data->count();
         // dd($data->count());
@@ -486,5 +486,16 @@ class JurnalController extends Controller
         $carbon = new Carbon($year.'-'.$month.'-01');
         $last = $carbon->endOfMonth()->toDateString();
         return $last;
+    }
+
+    public function getNomor(Request $request)
+    {
+        $data = Jurnal::where('nomor','like','%'.$request->q.'%')->select('nomor as text')->distinct()->orderBy('nomor', 'desc')->take(10)->get()->map(function ($item) {
+            return [
+                'id' => $item->text,
+                'text' => $item->text
+            ];
+        });
+        return response($data);
     }
 }

@@ -17,7 +17,7 @@ class Jurnal extends Component
     public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
-    public $c16, $c45, $c175;
+    public $c16, $c45, $c175, $relasi;
 
     public function mount()
     {
@@ -30,6 +30,7 @@ class Jurnal extends Component
         $no_7 = ModelsJurnal::where('tipe','BBMT')->whereYear('created_at',date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(14)->format('Y-m-d');
+        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
         $setting = Setting::find(1);
         $this->order = null;
         $this->template_id = null;
@@ -58,6 +59,7 @@ class Jurnal extends Component
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
+        $this->relasi = ModelsJurnal::where('created_at','>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
     }
 
     public function render()

@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Setting;
 use App\Models\TemplateJurnal;
 use App\Models\TemplateJurnalItem;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class JurnalManual extends Component
@@ -17,7 +18,7 @@ class JurnalManual extends Component
     public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
-    public $c16, $c45, $c175;
+    public $c16, $c45, $c175, $relasi;
 
     public function mount()
     {
@@ -51,6 +52,8 @@ class JurnalManual extends Component
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
+        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $this->relasi = ModelsJurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
     }
 
     public function render()

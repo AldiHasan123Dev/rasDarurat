@@ -68,6 +68,7 @@
                                 <th style="width: 300px">Akun Credit</th>
                                 <th>Keterangan</th>
                                 <th>Nominal</th>
+                                <th>Relasi</th>
                             </tr>
                             @for ($i = 0; $i < $debit_idx; $i++)
                             <tr class="init-table">
@@ -99,6 +100,16 @@
                                 </td>
                                 <td style="width: 250px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
                                 <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
+                                <td>
+                                    <select class="form-control select2" onchange="total()"
+                                        id="relasi-{{ $i }}" name="relasi[]"
+                                        style="font-size:.9rem !important; width:170px">
+                                        <option value=""></option>
+                                        @foreach ($relasi as $item)
+                                            <option value="{{ $item }}">{{ $item }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
                             </tr>
                             @endfor
                         </table>
@@ -188,6 +199,16 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                        <td>
+                            <select class="form-control select2" onchange="total()"
+                                id="relasi-${debit}" name="relasi[]"
+                                style="font-size:.9rem !important; width:170px">
+                                <option value=""></option>
+                                @foreach ($relasi as $item)
+                                    <option value="{{ $item }}">{{ $item }}</option>
+                                @endforeach
+                            </select>
+                        </td>
                     </tr>`;
         $('#table-debit').append(html);
         setTimeout(() => {
@@ -301,6 +322,16 @@
                             </td>
                             <td style="width: 250px"><input name="name[]" value="${item.keterangan}" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                             <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
+                            <td>
+                                <select class="form-control select2" onchange="total()"
+                                    id="relasi-${debit}" name="relasi[]"
+                                    style="font-size:.9rem !important; width:170px">
+                                    <option value=""></option>
+                                    @foreach ($relasi as $item)
+                                        <option value="{{ $item }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </td>
                         </tr>`;
                     $('#table-debit').append(html);
                     $('#debit-'+debit).val(item.coa_debit_id);
