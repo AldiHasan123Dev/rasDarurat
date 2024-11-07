@@ -91,7 +91,7 @@
                         <table class="table table-sm" id="table-debit">
                             <tr>
                                 <th>#</th>
-                                <th style="width: 300px">ID Job/Seal</th>
+                                <th style="width: 300px">ID Job/Cont - Seal</th>
                                 <th style="width: 300px">No BG</th>
                                 <th style="width: 300px">Akun Debet</th>
                                 <th style="width: 300px">Akun Credit</th>
@@ -112,7 +112,7 @@
                                             <option value=""></option>
                                             @foreach ($orders as $item)
                                                 <option value="{{ $item->id }}">
-                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} /
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->container }} -
                                                     {{ $item->seal }} / {{ $item->invoice }}</option>
                                             @endforeach
                                         </select>
@@ -268,7 +268,7 @@
                             <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
-                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
+                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->container }} - {{ $item->seal }} / {{ $item->invoice }}</option>
                                 @endforeach
                             </select>
                         </td>
@@ -439,7 +439,7 @@
                             <select class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]" style="font-size:.9rem !important; width:170px">
                                 <option value=""></option>
                                 @foreach ($orders as $item)
-                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }}</option>
+                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->container }} - {{ $item->seal }}</option>
                                 @endforeach
                             </select>
                         </td>
