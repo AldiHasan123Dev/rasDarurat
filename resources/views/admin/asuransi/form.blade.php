@@ -7,6 +7,7 @@
         'BHAYANGKARA' => 'BHAYANGKARA',
         'BHAYANGKARA + ADMIN' => 'BHAYANGKARA + ADMIN',
         'MARINE CARGO HARTA' => 'MARINE CARGO HARTA',
+        'Marine Cargo Harta + Admin' => 'Marine Cargo Harta + Admin'
     ];
 @endphp
 
