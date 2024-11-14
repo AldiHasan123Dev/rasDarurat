@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BAKembaliExport;
+use App\Exports\CheiljedangExport;
 use App\Exports\InvoiceRekapExport;
 use App\Exports\OrderExport;
 use App\Exports\MalindoExport;
@@ -306,6 +307,12 @@ class OrderController extends Controller
     {
         $text = str_replace('-','',$request->month);
         return Excel::download(new MalindoExport($text), 'laporan_order_malindo.xlsx');
+    }
+
+    public function exportCheiljedang(Request $request)
+    {
+        $text = str_replace('-','',$request->month);
+        return Excel::download(new CheiljedangExport($text), 'laporan_order_cheiljedang.xlsx');
     }
 
     public function export_ba_kembali()
