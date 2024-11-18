@@ -976,8 +976,10 @@ class JurnalController extends Controller
         }
         $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
         $bgs = array_unique($bgs);
+        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $relasi = Jurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.form_edit', compact('jurnal', 'orders', 'coa', 'tipe', 'bgs'));
+        return view('admin.jurnal.form_edit', compact('jurnal', 'orders', 'coa', 'tipe', 'bgs','relasi'));
     }
 
     public function updateOne(Request $request, Jurnal $jurnal)
