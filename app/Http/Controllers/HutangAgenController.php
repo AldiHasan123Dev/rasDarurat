@@ -32,7 +32,7 @@ class HutangAgenController extends Controller
 
     public function list()
     {
-        $data = HutangAgen::all()->groupBy('draf');
+        $data = HutangAgen::all()->whereNotNull('jurnal')->groupBy('draf');
         // dd($data);
         return view('admin.hutangagen.list', compact('data'));
     }
@@ -76,6 +76,7 @@ class HutangAgenController extends Controller
                 $tipe = $data['tagihan_order_id'][$i];
                 if (substr($tipe, 0, 3) == 'job') {
                     $order = Order::where('job', str_replace('job-', '', $tipe))->first();
+                    TagihanAgen::where('order_id', $order->id)->delete();
                     TagihanAgen::create([
                         // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
@@ -87,7 +88,7 @@ class HutangAgenController extends Controller
                     ]);
                 } else {
                     $order = Order::find($data['tagihan_order_id'][$i]);
-
+                    TagihanAgen::where('order_id', $order->id)->delete();
                     TagihanAgen::create([
                         // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
