@@ -76,11 +76,12 @@
                                     <th>Keterangan</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
+                                    <th>Relasi</th>
                                 </tr>
                             </thead>
                             <tbody id="data-body">
                                 <tr>
-                                    <td colspan="11" class="text-center">Loading</td>
+                                    <td colspan="12" class="text-center">Loading</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -390,6 +391,7 @@
                                         <td>${item.nama}</td>
                                         <td>${item.debit}</td>
                                         <td>${item.credit}</td>
+                                        <td>${item.relasi}</td>
                                     </tr>`;
                     });
 

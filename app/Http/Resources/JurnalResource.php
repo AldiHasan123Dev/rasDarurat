@@ -16,9 +16,9 @@ class JurnalResource extends JsonResource
     public function toArray(Request $request): array
     {
         $class = '';
-        $debit = Jurnal::where('nomor',$this->nomor)->sum('debit');
-        $credit = Jurnal::where('nomor',$this->nomor)->sum('credit');
-        if($debit!=$credit){
+        $debit = Jurnal::where('nomor', $this->nomor)->sum('debit');
+        $credit = Jurnal::where('nomor', $this->nomor)->sum('credit');
+        if ($debit != $credit) {
             $class = 'bg-light-danger';
         }
         return [
@@ -31,9 +31,9 @@ class JurnalResource extends JsonResource
             'coa_kode' => $this->coa->kode,
             'order_id' => $this->order_id,
             'order' => $this->order,
-            'job' => $this->order ? $this->order->job: ($this->order_trucking ? ($this->order_trucking->order ? $this->order_trucking->order->job: '-') : '-'),
+            'job' => $this->order ? $this->order->job : ($this->order_trucking ? ($this->order_trucking->order ? $this->order_trucking->order->job : '-') : '-'),
             'order_trucking_id' => $this->order_trucking_id,
-            'no_job' => $this->order ? $this->order->job.'-'.sprintf('%02d',$this->order->no_job): ($this->order_trucking ? ($this->order_trucking->order ? $this->order_trucking->order->job.'-'.sprintf('%02d',$this->order_trucking->no_job): '-') : '-'),
+            'no_job' => $this->order ? $this->order->job . '-' . sprintf('%02d', $this->order->no_job) : ($this->order_trucking ? ($this->order_trucking->order ? $this->order_trucking->order->job . '-' . sprintf('%02d', $this->order_trucking->no_job) : '-') : '-'),
             'order_trucking_id' => $this->order_trucking_id,
             'order_trucking' => $this->order_trucking,
             'nama' => $this->nama,
@@ -41,11 +41,12 @@ class JurnalResource extends JsonResource
             'invoice_external' => $this->invoice_external ?? '-',
             'container' => $this->container ?? '-',
             'nopol' => $this->nopol ?? '-',
-            'debit' => number_format($this->debit,2,',','.'),
-            'credit' => number_format($this->credit,2,',','.'),
-            'created_at' => date('d/m/y',strtotime($this->created_at)),
+            'debit' => number_format($this->debit, 2, ',', '.'),
+            'credit' => number_format($this->credit, 2, ',', '.'),
+            'created_at' => date('d/m/y', strtotime($this->created_at)),
             'debit_num' => $this->debit,
             'credit_num' => $this->credit,
+            'relasi' => $this->relasi ?? '-',
         ];
     }
 }
