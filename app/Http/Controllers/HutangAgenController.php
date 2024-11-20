@@ -77,6 +77,16 @@ class HutangAgenController extends Controller
                 if (substr($tipe, 0, 3) == 'job') {
                     $order = Order::where('job', str_replace('job-', '', $tipe))->first();
                     TagihanAgen::where('order_id', $order->id)->delete();
+                } else {
+                    TagihanAgen::where('order_id', $data['tagihan_order_id'][$i])->delete();
+                }
+            }
+        }
+        for ($i = 0; $i < count($data['tagihan_order_id']); $i++) {
+            if ($data['nama'][$i] != null && $data['jumlah'][$i] != null && $data['tagihan_order_id'][$i] != null) {
+                $tipe = $data['tagihan_order_id'][$i];
+                if (substr($tipe, 0, 3) == 'job') {
+                    $order = Order::where('job', str_replace('job-', '', $tipe))->first();
                     TagihanAgen::create([
                         // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
@@ -88,7 +98,6 @@ class HutangAgenController extends Controller
                     ]);
                 } else {
                     $order = Order::find($data['tagihan_order_id'][$i]);
-                    TagihanAgen::where('order_id', $order->id)->delete();
                     TagihanAgen::create([
                         // 'invoice' => $request->invoice[$i],
                         'draf' => $draf,
