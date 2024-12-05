@@ -26,8 +26,13 @@ class TransaksiController extends Controller
     {
         $start = request('start');
         $limit = request('limit');
-        $data = Transaksi::all()->sortBy('invoice')->sortBy('no')->skip($start)->take($limit);
+        $query = Transaksi::query();
         $count = Transaksi::select('id')->count();
+        if(request('start_date') && request('end_date')){
+            $query->whereBetween('created_at', [request('start_date'), request('end_date')]);
+            $count = Transaksi::whereBetween('created_at', [request('start_date'), request('end_date')])->select('id')->count();
+        }
+        $data = $query->orderBy('invoice')->skip($start)->take($limit)->get();
         $data = TransaksiResource::collection($data);
         return response([
             'start' => $start + $limit,

@@ -24,14 +24,20 @@
                     <b>INVOICE (selected): <span class="invoice"></span></b>
                 </div>
                 <div class="d-flex gap-2">
+                    <input type="date" name="start_date" id="start_date" value="{{ $start_date }}">
+                    <input type="date" name="end_date" id="end_date" value="{{ $end_date }}">
+                    <button class="btn btn-sm btn-primary" id="filter">Filter</button>
                     <form action="{{ route('order.rekap_invoice') }}" method="post">
                         @csrf
-                        <button class="btn btn-info btn-sm" type="submit" name="invoice" id="invoice">Rekap Invoice Excel</button>
+                        <div class="btn-group">
+                            <button class="btn btn-info btn-sm" type="submit" name="invoice" id="invoice">Rekap Invoice Excel</button>
+                            <a href="" class="btn btn-sm btn-success" id="cetak-invoice" style="font-size: .7rem"><i class="fas fa-print"></i> Cetak Invoice Ulang</a>
+                        </div>
                     </form>
-                    <a href="" class="btn btn-sm btn-success" id="cetak-invoice" style="font-size: .7rem"><i class="fas fa-print"></i> Cetak Invoice Ulang</a>
                 </div>
             </div>
             <div class="card-body">
+                <pre id="loading">Loading...</pre>
                 <div class="table-responsives">
                     {{-- <table class="table table-sm nowrap" id="table-order" style="font-size:.7rem">
                         <thead>
@@ -263,7 +269,12 @@
             $.ajax({
                 type: "GET",
                 url: "{{ url('api/get-transaksi') }}",
-                data:{start:start,limit:250},
+                data:{
+                    start:start,
+                    limit:250,
+                    start_date:$('#start_date').val(),
+                    end_date:$('#end_date').val(),
+                },
                 success: function (response) {
                     $.each(response.data, function (idx, item) {
                         data.push(item)
@@ -272,11 +283,18 @@
                     if(response.start<response.count){
                         getData(response.start)
                     }else{
-                        $('#loading').remove();
+                        $('#loading').hide();
                     }
                 }
             });
         }
+
+        $('#filter').click(function (e) {
+            e.preventDefault();
+             $('#loading').show();
+            data = [];
+            getData(0);
+        });
 
         const rp = (num)=>{
             return num.toLocaleString('en-US');

@@ -109,7 +109,9 @@ class KeuanganController extends Controller
 
     public function invoice()
     {
-        return view('admin.keuangan.invoice');
+        $start_date = request('start_date') ?? date('Y-m').'-01';
+        $end_date = request('end_date') ?? Carbon::now()->endOfMonth()->format('Y-m-d');
+        return view('admin.keuangan.invoice', compact('start_date', 'end_date'));
     }
 
     public function generateInvoice(Request $request, Order $order)
