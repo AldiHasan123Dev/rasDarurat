@@ -9,12 +9,16 @@ use App\Http\Resources\OrderResource;
 use App\Services\SyncService;
 use App\Imports\JurnalImport;
 use App\Models\COA;
+use App\Models\Agen;
 use App\Models\HutangPelayaran;
 use App\Models\Jurnal;
+use App\Models\Customer;
+use App\Models\CustomerTrucking;
 use App\Models\JurnalSample;
 use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\Tarif;
 use App\Models\Pelayaran;
 use App\Models\Setting;
 use App\Models\TransaksiSopir;
@@ -1178,6 +1182,229 @@ class JurnalController extends Controller
 
         return view('admin.jurnal.buku_besar_pembantu', compact('months', 'coas', 'year', 'month', 'coa_id', 'tipe', 'subjek'));
     }
+
+    public function bb_pembantu()
+    {
+        // Ambil parameter dari request atau set default jika tidak ada
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $coa_id = request('coa_id') ?? 46;
+        $subjek = request('subjek') ?? 'customer_xpdc';
+    
+        // Cek apakah COA ditemukan
+        $coa = COA::find($coa_id);
+        if (!$coa) {
+            return back()->with('error', 'COA tidak ditemukan');
+        }
+    
+        // Ambil semua COA yang tersedia
+        $coas = COA::orderBy('kode')->get(['id', 'nama', 'kode']);
+    
+        // Tentukan tipe berdasarkan kode COA
+        $tipe = in_array(substr($coa->kode, 0, 1), ['2', '3', '5']) ? 'C' : 'D';
+        if ($subjek == 'customer_xpdc') {
+            // Cache daftar customer
+            $customer = Cache::remember('customer_list', 60, function () {
+                return Customer::pluck('nama', 'id');
+            });
+            // Cache daftar tarif
+            $tarif = Cache::remember("tarif_list_{$customer->keys()->implode('_')}", 60, function () use ($customer) {
+                return Tarif::whereIn('customer_id', $customer->keys())->pluck('id');
+            });
+            // Cache daftar order
+            $order = Cache::remember("order_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
+                return Order::whereIn('tarif_id', $tarif)->pluck('id');
+            });
+            // Cache jurnal berdasarkan kriteria
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$year}_{$month}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $year, $month) {
+                return Jurnal::where('coa_id', $coa_id)
+                    ->whereIn('order_id', $order)
+                    ->whereNotNull('invoice')
+                    ->whereYear('input', $year)
+                    ->whereMonth('input', $month)
+                    ->get(['order_id', 'debit', 'credit']);
+            });
+            // Proses data untuk hasil akhir
+            $finalData = $jurnal->map(function ($item) use ($customer) {
+                return [
+                    'customer_name' => $customer[$item->order->tarif->customer_id] ?? 'Unknown',
+                    'debit' => $item->debit,
+                    'credit' => $item->credit,
+                ];
+            });
+            // Kelompokkan dan hitung total
+            $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
+                $customerName = $group->first()['customer_name'];
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+                $saldo = $tipe == 'D' 
+                    ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+                    : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+                return [
+                    'customer_name' => $customerName,
+                    'total_debit' => $group->sum('debit'),
+                    'total_credit' => $group->sum('credit'),
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('saldo');
+        }
+        if ($subjek == 'pelayaran') {
+            // Gunakan cache untuk jurnal berdasarkan filter
+            $customer = Cache::remember('pelayaran_list', 60, function () {
+                return Pelayaran::pluck('nama', 'id');
+            });
+            $tarif = Cache::remember("hutang_pelayaran_list_{$customer->keys()->implode('_')}", 60, function () use ($customer){
+                return HutangPelayaran::whereNotNull('no_bg_opt')
+                    ->whereIn('pelayaran_id', $customer->keys())
+                    ->orWhereNotNull('no_bg_opp')
+                    ->orWhereNotNull('no_bg_ut')
+                    ->pluck('id');
+            });            
+            $order = Cache::remember("order_pelayaran_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
+                return Order::whereIn('tarif_id', $tarif)->pluck('id');
+            });
+            $jurnal = Cache::remember("jurnal_pelayaran_{$coa_id}_{$year}_{$month}", 60, function () use ($coa_id, $year, $month) {
+                return Jurnal::with(['order.hutang_pelayaran.pelayaran' => function($query) {
+                        $query->select('id', 'nama'); // Pilih kolom 'id' dan 'nama' dari tabel 'pelayaran'
+                    }])
+                    ->where('coa_id', $coa_id)
+                    ->whereNotNull('no_bg')
+                    ->whereYear('input', $year)
+                    ->whereMonth('input', $month)
+                    ->get();
+            });
+             
+
+            // Gunakan cache untuk proses mapping dan pengelompokan
+            $groupedData = Cache::remember("grouped_pelayaran_{$coa_id}_{$year}_{$month}", 60, function () use ($jurnal,$tipe) {
+                // Mapping data jurnal untuk menyesuaikan format yang diinginkan
+                $finalData = $jurnal->map(function ($item) {
+                    // Mengambil nama pelayaran dari relasi yang sudah dimuat
+                    $pelayaranName = $item->order->hutang_pelayaran->pelayaran->nama ?? $item->bg_pelayaran();
+                
+                    return [
+                        'pelayaran' => $pelayaranName,  // Ambil nama pelayaran
+                        'debit' => $item->debit,
+                        'credit' => $item->credit,
+                    ];
+                });                
+                // Kelompokkan data berdasarkan nama pelayaran dan hitung total debit, kredit, dan saldo
+                return $finalData->groupBy('pelayaran')->map(function ($group) use ($tipe){
+                    $totalDebit = $group->sum('debit');
+                    $totalCredit = $group->sum('credit');
+                    $saldo = $tipe == 'D' 
+                        ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+                        : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+                    return [
+                        'pelayaran' => $group->first()['pelayaran'], // Nama pelayaran (satu saja karena sudah dikelompokkan)
+                        'total_debit' => $group->sum('debit'),
+                        'total_credit' => $group->sum('credit'),
+                        'saldo' => $saldo, // Hitung saldo
+                    ];
+                })->sortByDesc('saldo');
+            });
+        }
+        if ($subjek== 'agen'){
+            $customer = Cache::remember('agen_list', 60, function () {
+                return Agen::pluck('nama', 'id');
+            });
+            $order = Cache::remember("order_agen_list_{$customer->keys()->implode('_')}", 60, function () use ($customer) {
+                return Order::whereIn('agen_id', $customer->keys())->pluck('id');
+            });
+            $jurnal = Cache::remember("jurnal_agen_{$coa_id}_{$year}_{$month}_{$order}", 60, function () use ($coa_id, $year, $month,$order) {
+                return Jurnal::where('coa_id', $coa_id)
+                    ->whereIn('order_id',$order)
+                    ->whereYear('input', $year)
+                    ->whereMonth('input', $month)
+                    ->get();
+            });
+            $finalData = $jurnal->map(function ($item) use ($customer) {
+                // Ambil nama customer berdasarkan ID dari relasi order_trucking
+                $customerName = optional($item->order)->agent->nama ?? 'Unknown'; // Cegah error dengan optional()
+                return [
+                    'customer_name' => $customerName,
+                    'debit' => $item->debit,
+                    'credit' => $item->credit,
+                ];
+            });
+            // Kelompokkan berdasarkan nama customer dan hitung sum debit dan kredit
+            $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
+                // Ambil nama customer (satu karena sudah dikelompokkan)
+                $customerName = $group->first()['customer_name'];
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+                $saldo = $tipe == 'D' 
+                    ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+                    : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+                
+                return [
+                    'customer_name' => $customerName,
+                    'total_debit' => $group->sum('debit'),
+                    'total_credit' => $group->sum('credit'),
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('saldo');
+        }
+         // Urutkan berdasarkan saldo secara descending
+
+    // Debugging untuk memastikan hasil data
+
+
+    if($subjek=='customer_trucking'){
+            // Ambil data customer trucking
+            $customer = CustomerTrucking::pluck('nama', 'id'); // Pastikan key adalah ID, value adalah nama
+            
+            // Ambil order trucking berdasarkan customer_id
+            $order = OrderTrucking::whereIn('customer_id', $customer->keys()) // Menggunakan keys() untuk ID
+                ->whereNotNull('invoice')
+                ->pluck('id');
+            
+            // Ambil jurnal berdasarkan order_trucking_id dan coa_id
+            $jurnal = Jurnal::where('coa_id', $coa_id)
+                ->whereNotNull('order_trucking_id') // Pastikan order_trucking_id tidak null
+                ->whereIn('order_trucking_id', $order)
+                ->whereYear('input', $year)
+                ->whereMonth('input', $month)
+                ->get(['order_trucking_id', 'debit', 'credit']);
+            
+            // Gabungkan hasil customer trucking dan jurnal
+            $finalData = $jurnal->map(function ($item) use ($customer) {
+                // Ambil nama customer berdasarkan ID dari relasi order_trucking
+                $customerName = optional($item->order_trucking)->customer->nama ?? 'Unknown'; // Cegah error dengan optional()
+                
+                return [
+                    'customer_name' => $customerName,
+                    'debit' => $item->debit,
+                    'credit' => $item->credit,
+                ];
+            });
+            // Kelompokkan berdasarkan nama customer dan hitung sum debit dan kredit
+            $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe){
+                // Ambil nama customer (satu karena sudah dikelompokkan)
+                $customerName = $group->first()['customer_name'];
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+                $saldo = $tipe == 'D' 
+                    ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+                    : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+                return [
+                    'customer_name' => $customerName,
+                    'total_debit' => $group->sum('debit'),
+                    'total_credit' => $group->sum('credit'),
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
+    }
+    
+        // Daftar bulan
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    
+        // Mengembalikan tampilan dengan data yang sudah dihitung dan diproses
+        return view('admin.jurnal.bb_pembantu', compact(
+            'groupedData', 'months', 'coas', 'year', 'month', 'coa_id', 'tipe', 'subjek'
+        ));
+    }
+    
 
     public function buku_besar_pembantu_detail($year, $month, $coa_id, $pelayaran)
     {

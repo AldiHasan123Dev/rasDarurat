@@ -15,11 +15,12 @@
         "laravel/ui": "^4.2",
         "livewire/livewire": "^2.12",
         "maatwebsite/excel": "^3.1",
+        "maennchen/zipstream-php": "3.0.*",
         "mpdf/mpdf": "^8.1",
         "myclabs/php-enum": "^1.8",
+        "predis/predis": "^2.3",
         "spatie/laravel-backup": "^8.6",
-        "yajra/laravel-datatables-oracle": "^10.0",
-        "maennchen/zipstream-php": "3.0.*"
+        "yajra/laravel-datatables-oracle": "^10.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

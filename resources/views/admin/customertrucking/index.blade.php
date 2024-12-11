@@ -5,9 +5,6 @@
     td:hover {
         cursor: pointer;
     }
-    table.dataTable tbody th, table.dataTable tbody td{
-        padding: 0px 10px !important;
-    }
     .select2.select2-container.select2-container--default{
         width: 100% !important;
     }
@@ -36,6 +33,7 @@
                                 <th>NPWP</th>
                                 <th>Nama NPWP</th>
                                 <th>Alamat NPWP</th>
+                                <th>Keterangan</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -154,6 +152,7 @@
                 { data: 'npwp', name: 'npwp' },
                 { data: 'nama_npwp', name: 'nama_npwp' },
                 { data: 'alamat_npwp', name: 'alamat_npwp' },
+                { data: 'keterangan', name: 'keterangan' },
                 { data: 'is_active', name: 'is_active' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
