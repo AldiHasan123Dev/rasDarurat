@@ -2,73 +2,10 @@
 @section('style')
 <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css">
 <style>
-/* Mengurangi padding dan ukuran font untuk tabel kecil */
-table.table {
-    font-size: 0.5rem; /* Menyesuaikan ukuran font lebih kecil */
-    border-collapse: collapse; /* Agar border antar sel lebih rapat */
-    width: 100%; /* Agar tabel memenuhi lebar kontainer */
-}
-
-/* Menyesuaikan padding pada header dan sel */
-table.table th,
-table.table td {
-    padding: 1px 1px; /* Padding lebih kecil dan lebih rapat */
-    border: 1px solid #dee2e6; /* Border lebih tipis */
-}
-
-/* Styling untuk header tabel */
-table.table th {
-    background-color: #f8f9fa; /* Memberi latar belakang terang pada header */
-    color: #495057; /* Warna teks pada header */
-    font-weight: bold; /* Menebalkan teks header */
-}
-
-/* Styling untuk baris tabel */
-table.table tr:nth-child(odd) {
-    background-color: #f9f9f9; /* Warna latar belakang baris ganjil */
-}
-
-table.table tr:nth-child(even) {
-    background-color: #ffffff; /* Warna latar belakang baris genap */
-}
-
-/* Menyembunyikan border untuk tabel lebih rapat */
-table.table td,
-table.table th {
-    border-width: 1px; /* Mengurangi ketebalan border */
-    border-color: #e9ecef; /* Warna abu-abu terang */
-}
-
-/* Menyembunyikan border luar */
-table.table {
-    border: none;
-}
-
-/* Mengatur scrollable untuk tabel responsif */
-.table-responsives {
-    overflow-x: auto;
-    max-height: 400px; /* Atur tinggi maksimal sesuai kebutuhan */
-    width: 100%;
-}
-
-/* Styling untuk paginator dan info tabel */
-.dataTables_wrapper .dataTables_paginate,
-.dataTables_wrapper .dataTables_info {
-    font-size: 0.75rem; /* Menyesuaikan ukuran font lebih kecil */
-    margin-top: 5px;
-    margin-bottom: 5px;
-}
-
-/* Menghilangkan margin antara elemen tabel */
-.dataTables_wrapper .dataTables_paginate {
-    margin-left: 0;
-}
-
-.dataTables_wrapper .dataTables_info {
-    margin-right: 0;
-}
-
-    </style>
+table.dataTable tbody th, table.dataTable tbody td{
+        padding: 0px 10px !important;
+    }
+</style>
 @endsection
 @section('content')
     <div class="container mt-3">
@@ -77,8 +14,7 @@ table.table {
                 <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCustomerTrucking" aria-controls="offcanvasCustomerTrucking">Tambah Customer Trucking</button>
             </div>
             <div class="card-body">
-                <div class="table-responsives">
-                    <table class="table table-sm" style="font-size:.7rem" id="customer">
+                    <table class="table" style="font-size:.7rem" id="customer">
                         <thead>
                             <tr>
                                 <th>ID.</th>
@@ -101,7 +37,6 @@ table.table {
                         <tbody>
                         </tbody>
                     </table>
-                </div>
             </div>
         </div>
     </div>
@@ -192,8 +127,9 @@ table.table {
             processing: true,
             serverSide: true,
             select:true,
-            scrollY: '200px',
+            scrollY: '80vh',
             scrollX: true,
+            scrollCollapse: true,
             ajax:{
                 url: '{{ route('customertrucking.data') }}',
                 method:'POST',
@@ -222,7 +158,6 @@ table.table {
             processing: true,
             serverSide: true,
             select: true,
-            scrollY: '200px',
             ajax:{
                 url: '{{ route('tariftrucking.data') }}',
                 method:'POST',
