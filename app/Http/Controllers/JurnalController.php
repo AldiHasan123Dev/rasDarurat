@@ -362,6 +362,10 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    // Tentukan nilai relasi untuk debit
+                    $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                    // Buat entri untuk debit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $data['invoice'][$i],
@@ -371,9 +375,14 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $data['relasi'][$i],
-                        'no' => $no
+                        'relasi' => $relasiDebit,
+                        'no' => $no,
                     ]);
+                
+                    // Tentukan nilai relasi untuk kredit
+                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                
+                    // Buat entri untuk kredit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $data['invoice'][$i],
@@ -383,11 +392,15 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $data['relasi'][$i],
-                        'no' => $no
+                        'relasi' => $relasiCredit,
+                        'no' => $no,
                     ]);
                 } else {
                     if ($data['debit_coa_id'][$i]) {
+                        // Tentukan nilai relasi untuk debit
+                        $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                
+                        // Buat entri untuk debit
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $data['invoice'][$i],
@@ -397,11 +410,15 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'relasi' => $data['relasi'][$i],
-                            'no' => $no
+                            'relasi' => $relasiDebit,
+                            'no' => $no,
                         ]);
                     }
+                
                     if ($data['credit_coa_id'][$i]) {
+                        // Tentukan nilai relasi untuk kredit
+                        $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                        // Buat entri untuk kredit
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $data['invoice'][$i],
@@ -411,11 +428,11 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'relasi' => $data['relasi'][$i],
-                            'no' => $no
+                            'relasi' => $relasiCredit,
+                            'no' => $no,
                         ]);
                     }
-                }
+                }                
             }
         }
 
@@ -425,11 +442,11 @@ class JurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        // dd($data);
         $no = Jurnal::where('tipe', $data['tipe'])->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
         if ($data['tipe'] == 'JNL') {
             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($data['created_at'])))->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
         }
-
         $arr_order = array();
         $jurnal_model = new Jurnal();
         if ($data['simpan'] == 'tampungan') {
@@ -477,6 +494,7 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $invoice,
@@ -488,11 +506,12 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $data['relasi'][$i],
+                        'relasi' => $relasiDebit,
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
                         'no' => $no
                     ]);
+                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'invoice' => $invoice,
@@ -504,13 +523,14 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $data['relasi'][$i],
+                        'relasi' => $relasiCredit,
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
                         'no' => $no
                     ]);
                 } else {
                     if ($data['debit_coa_id'][$i]) {
+                        $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $invoice,
@@ -522,13 +542,14 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'relasi' => $data['relasi'][$i],
+                            'relasi' => $relasiDebit,
                             'no_bg' => $no_bg,
                             'invoice_external' => $jurnal_external,
                             'no' => $no
                         ]);
                     }
                     if ($data['credit_coa_id'][$i]) {
+                        $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'invoice' => $invoice,
@@ -540,7 +561,7 @@ class JurnalController extends Controller
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'relasi' => $data['relasi'][$i],
+                            'relasi' => $relasiCredit,
                             'no_bg' => $no_bg,
                             'invoice_external' => $jurnal_external,
                             'no' => $no
@@ -675,7 +696,52 @@ class JurnalController extends Controller
                 } else {
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
-                if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                            if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                // Tentukan nilai relasi untuk debit dan kredit
+                $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+                $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+
+                // Buat entri untuk debit
+                $jurnal_model->create([
+                    'tipe' => $data['tipe'],
+                    'coa_id' => $data['debit_coa_id'][$i],
+                    'invoice' => $invoice,
+                    'nopol' => $nopol,
+                    'container' => $container,
+                    'order_id' => $order_id,
+                    'order_trucking_id' => $data['order_id'][$i],
+                    'nomor' => $nomor,
+                    'nama' => $name,
+                    'debit' => $data['amount'][$i],
+                    'created_at' => $data['created_at'],
+                    'relasi' => $relasiDebit,
+                    'no' => $no,
+                    'invoice_external' => $jurnal_external,
+                ]);
+
+                // Buat entri untuk kredit
+                $jurnal_model->create([
+                    'tipe' => $data['tipe'],
+                    'coa_id' => $data['credit_coa_id'][$i],
+                    'invoice' => $invoice,
+                    'nopol' => $nopol,
+                    'container' => $container,
+                    'order_id' => $order_id,
+                    'order_trucking_id' => $data['order_id'][$i],
+                    'nomor' => $nomor,
+                    'nama' => $name,
+                    'credit' => $data['amount'][$i],
+                    'created_at' => $data['created_at'],
+                    'relasi' => $relasiCredit,
+                    'no' => $no,
+                    'invoice_external' => $jurnal_external,
+                ]);
+            } else {
+                if ($data['debit_coa_id'][$i]) {
+                    // Tentukan nilai relasi untuk debit
+                    $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+
+                    // Buat entri untuk debit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
@@ -688,10 +754,17 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $data['relasi'][$i],
+                        'relasi' => $relasiDebit,
                         'no' => $no,
                         'invoice_external' => $jurnal_external,
                     ]);
+                }
+
+                if ($data['credit_coa_id'][$i]) {
+                    // Tentukan nilai relasi untuk kredit
+                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+
+                    // Buat entri untuk kredit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
@@ -704,47 +777,11 @@ class JurnalController extends Controller
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $data['relasi'][$i],
+                        'relasi' => $relasiCredit,
                         'no' => $no,
                         'invoice_external' => $jurnal_external,
                     ]);
-                } else {
-                    if ($data['debit_coa_id'][$i]) {
-                        $jurnal_model->create([
-                            'tipe' => $data['tipe'],
-                            'coa_id' => $data['debit_coa_id'][$i],
-                            'invoice' => $invoice,
-                            'nopol' => $nopol,
-                            'container' => $container,
-                            'order_id' => $order_id,
-                            'order_trucking_id' => $data['order_id'][$i],
-                            'nomor' => $nomor,
-                            'nama' => $name,
-                            'debit' => $data['amount'][$i],
-                            'created_at' => $data['created_at'],
-                            'relasi' => $data['relasi'][$i],
-                            'no' => $no,
-                            'invoice_external' => $jurnal_external,
-                        ]);
-                    }
-                    if ($data['credit_coa_id'][$i]) {
-                        $jurnal_model->create([
-                            'tipe' => $data['tipe'],
-                            'coa_id' => $data['credit_coa_id'][$i],
-                            'invoice' => $invoice,
-                            'nopol' => $nopol,
-                            'container' => $container,
-                            'order_id' => $order_id,
-                            'order_trucking_id' => $data['order_id'][$i],
-                            'nomor' => $nomor,
-                            'nama' => $name,
-                            'credit' => $data['amount'][$i],
-                            'created_at' => $data['created_at'],
-                            'relasi' => $data['relasi'][$i],
-                            'no' => $no,
-                            'invoice_external' => $jurnal_external,
-                        ]);
-                    }
+                  }
                 }
             }
         }
@@ -1202,6 +1239,7 @@ class JurnalController extends Controller
     
         // Tentukan tipe berdasarkan kode COA
         $tipe = in_array(substr($coa->kode, 0, 1), ['2', '3', '5']) ? 'C' : 'D';
+        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         if ($subjek == 'customer_xpdc') {
             // Cache daftar customer
             $customer = Cache::remember('customer_list', 60, function () {
@@ -1395,53 +1433,98 @@ class JurnalController extends Controller
                 ];
             })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
     }
-    
         // Daftar bulan
-        $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     
         // Mengembalikan tampilan dengan data yang sudah dihitung dan diproses
         return view('admin.jurnal.bb_pembantu', compact(
             'groupedData', 'months', 'coas', 'year', 'month', 'coa_id', 'tipe', 'subjek'
         ));
     }
+    public function buku_besar_pembantu_rincian($year, $month, $coa_id, $customer, $subjek)
+{
+    $details = [];
+    $totalDebit = 0;
+    $totalCredit = 0;
+
+    if ($subjek == 'customer_xpdc') {
+        // Ambil data terkait customer
+        $customers = Customer::where('nama', $customer)->pluck('nama', 'id');
+        $tarif = Tarif::whereIn('customer_id', $customers->keys())->pluck('id');
+        $order = Order::whereIn('tarif_id', $tarif)->pluck('id');
+
+        // Query jurnal
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->whereIn('order_id', $order)
+            ->whereNotNull('invoice')
+            ->whereYear('input', $year)
+            ->whereMonth('input', $month)
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice']);
+
+        // Kelompokkan jurnal berdasarkan invoice
+        $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) {
+            return [
+                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
+                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
+                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->first(),
+                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->first(),
+                'invoice' => $items->first()->invoice,
+                'debit' => $items->sum('debit'),
+                'credit' => $items->sum('credit'),
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+            ];
+        });        
+
+        // Hitung total debit dan credit
+        foreach ($groupedJurnal as $detail) {
+            $totalDebit += $detail['debit'];
+            $totalCredit += $detail['credit'];
+        }
+
+        // Saldo total
+        $totalSaldo = $totalDebit - $totalCredit;
+    }
+
+    return view('admin.jurnal.buku_besar_pembantu_detail', compact('customer', 'subjek', 'totalSaldo', 'groupedJurnal', 'totalDebit', 'totalCredit'));
+}
+
     
 
-    public function buku_besar_pembantu_detail($year, $month, $coa_id, $pelayaran)
-    {
-        // dd($year,$month,$coa_id,$pelayaran);
-        $pelayaran = Pelayaran::where('nama', 'like', $pelayaran)->first();
-        if (!$pelayaran) {
-            return back()->with('danger', 'Mohon maaf sistem ada yang salah!');
-        }
-        $pelayaran_id = $pelayaran->id;
-        $bgs = array();
-        $data = HutangPelayaran::where('pelayaran_id', $pelayaran_id)->select('no_bg_opp', 'no_bg_opt', 'no_bg_ut')->get();
-        foreach ($data as $bg) {
-            if (!is_null($bg->no_bg_opp)) {
-                array_push($bgs, $bg->no_bg_opp);
-            }
-            if (!is_null($bg->no_bg_opt)) {
-                array_push($bgs, $bg->no_bg_opt);
-            }
-            if (!is_null($bg->no_bg_ut)) {
-                array_push($bgs, $bg->no_bg_ut);
-            }
-        }
-        $bgs = array_unique($bgs);
-        $c = new Carbon($year . '-' . sprintf('%02d', $month) . '-01');
-        $now = $c->startOfMonth()->format('Y-m-d');
-        $last = $c->endOfMonth()->format('Y-m-d');
-        $start = '2022-12-01';
-        $query = Jurnal::query();
-        $query->join('coa', 'coa.id', '=', 'jurnal.coa_id');
-        $query->select('jurnal.*');
-        $query->where('jurnal.coa_id', $coa_id);
-        $query->whereIn('jurnal.no_bg', $bgs);
-        $query->whereBetween('jurnal.created_at', [$start, $last]);
-        $query->orderBy('created_at');
-        $jurnals = $query->get();
-        return view('admin.jurnal.buku_besar_pembantu_detail', compact('jurnals', 'pelayaran_id'));
-    }
+    // public function buku_besar_pembantu_detail($year, $month, $coa_id, $pelayaran)
+    // {
+    //     // dd($year,$month,$coa_id,$pelayaran);
+    //     $pelayaran = Pelayaran::where('nama', 'like', $pelayaran)->first();
+    //     if (!$pelayaran) {
+    //         return back()->with('danger', 'Mohon maaf sistem ada yang salah!');
+    //     }
+    //     $pelayaran_id = $pelayaran->id;
+    //     $bgs = array();
+    //     $data = HutangPelayaran::where('pelayaran_id', $pelayaran_id)->select('no_bg_opp', 'no_bg_opt', 'no_bg_ut')->get();
+    //     foreach ($data as $bg) {
+    //         if (!is_null($bg->no_bg_opp)) {
+    //             array_push($bgs, $bg->no_bg_opp);
+    //         }
+    //         if (!is_null($bg->no_bg_opt)) {
+    //             array_push($bgs, $bg->no_bg_opt);
+    //         }
+    //         if (!is_null($bg->no_bg_ut)) {
+    //             array_push($bgs, $bg->no_bg_ut);
+    //         }
+    //     }
+    //     $bgs = array_unique($bgs);
+    //     $c = new Carbon($year . '-' . sprintf('%02d', $month) . '-01');
+    //     $now = $c->startOfMonth()->format('Y-m-d');
+    //     $last = $c->endOfMonth()->format('Y-m-d');
+    //     $start = '2022-12-01';
+    //     $query = Jurnal::query();
+    //     $query->join('coa', 'coa.id', '=', 'jurnal.coa_id');
+    //     $query->select('jurnal.*');
+    //     $query->where('jurnal.coa_id', $coa_id);
+    //     $query->whereIn('jurnal.no_bg', $bgs);
+    //     $query->whereBetween('jurnal.created_at', [$start, $last]);
+    //     $query->orderBy('created_at');
+    //     $jurnals = $query->get();
+    //     return view('admin.jurnal.buku_besar_pembantu_detail', compact('jurnals', 'pelayaran_id'));
+    // }
 
     public function datatable()
     {

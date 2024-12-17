@@ -181,24 +181,21 @@
                                 <td class="text-end">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
                                 <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>
                                 <td class="text-center">
-                                    @if($subjek === 'pelayaran')
                                         @php
-                                            $pelayaranName = $data['pelayaran'] ?? 'Unknown';
+                                            $pelayaranName = $data['pelayaran'] ?? $data['customer_name'];
                                         @endphp
                                         <a 
                                             target="_blank" 
-                                            href="{{ route('jurnal.buku_besar_pembantu_detail', [
+                                            href="{{ route('jurnal.buku_besar_pembantu_rincian', [
+                                                'subjek' => $subjek,
                                                 'coa_id' => $coa_id, 
                                                 'month' => $month, 
                                                 'year' => $year, 
-                                                'pelayaran' => $pelayaranName
+                                                'customer' => $pelayaranName
                                             ]) }}" 
                                             class="btn btn-success btn-custom">
-                                            Detail
+                                            Rincian
                                         </a>
-                                    @else
-                                        -
-                                    @endif
                                 </td>                                                          
                             </tr>
                             @endforeach

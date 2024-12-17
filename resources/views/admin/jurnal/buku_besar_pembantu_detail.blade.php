@@ -3,33 +3,56 @@
 <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css">
-    <style>
-        @media print {
-            @import url('https://fonts.cdnfonts.com/css/dot-matrix');
-            body * {
-                visibility: hidden;
-                font-family: 'Dot Matrix', sans-serif;
-                color: #000;
-            }
-            #print, #print * {
-                visibility: visible;
-                font-size: .7rem !important;
-            }
-            #print {
-                width: 100%;
-                position: absolute;
-                left: 0;
-                top: -70px;
-            }
-            #table td, #table th{
-                border: 1px solid black;
-            }
-            #print {
-                color: #000;
-            }
+<style>
+    .dataTables_filter {
+    margin-bottom: 10px;  /* Jarak bawah pada elemen searching */
+}
+
+.dataTables_info {
+    margin-top: 10px;     /* Jarak atas pada elemen info */
+}
+    /* Tabel lebih rapi */
+    .table.data th, .table.data td {
+        padding: 8px;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #ddd;
+    }
+
+    .table.data th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .table.data tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .table.data tr:hover {
+        background-color: #e6e6e6;
+    }
+
+    /* Elemen form lebih proporsional */
+    input[type="text"], select {
+        border: 1px solid #ddd;
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        border-radius: 4px;
+    }
+
+    /* Elemen untuk print */
+    @media print {
+        body * {
+            visibility: hidden;
         }
-        table.data th, td { white-space: nowrap; }
-    </style>
+        #print, #print * {
+            visibility: visible;
+            font-family: 'Dot Matrix', sans-serif;
+        }
+    }
+</style>
+
 @endsection
 @section('content')
 <div class="container">
@@ -48,72 +71,81 @@
                             <label for="search">Search</label>
                             <input type="text" wire:model="search" class="form-control" placeholder="Cari berdasarkan nomor jurnal/keterangan/akun/job/tanggal">
                         </div> --}}
+                        <div class="container">
+                            <div class="card mt-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h3 class="mb-0">Rincian Buku Besar Pembantu</h3>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="mt-3 text-muted">Subjek: <span class="font-weight-bold">{{ $subjek }}</span></h5>
+                                    <h5 class="mt-3">
+                                        @if($subjek === 'pelayaran')
+                                            <span class="badge bg-info text-dark">Pelayaran</span>
+                                        @else
+                                            <span class="badge bg-success text-white">Customer: {{ $customer }}</span>
+                                        @endif
+                                    </h5>
+                        
                         <div class="table-responsive mt-3">
-                          <table class="table table-sm table-bordered table-detail" style="font-size: .7rem">
+                          <table class="table data table-sm table-bordered table-detail" style="font-size: .7rem">
                               <thead>
                                   <tr>
-                                      <th>No</th>
-                                      <th>Tgl</th>
-                                      <th>Nomor</th>
-                                      <th>JOB</th>
-                                      <th>INV</th>
-                                      <th>NO BG</th>
-                                      <th>Cont</th>
-                                      <th>Nopol</th>
-                                      <th>Keterangan</th>
-                                      <th>Debit</th>
-                                      <th>Credit</th>
-                                      <th>Tanggal</th>
-                                      <th>Nomor</th>
-                                      <th>Keterangan</th>
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">Tgl (D)</th>
+                                    <th class="text-center">Nomor (D)</th>
+                                    <th class="text-center">Tgl (K)</th>
+                                    <th class="text-center">Nomor (K)</th>
+                                    <th class="text-center">Invoice</th>
+                                    <th class="text-center">Debit</th>
+                                    <th class="text-center">Credit</th>
+                                    <th class="text-center">Keterangan</th>
                                   </tr>
                               </thead>
                               <tbody>
-                                @foreach (
-                                  $jurnals->groupBy(['no_bg']) as $id => $jurnal
-                                )
+                                @foreach ($groupedJurnal as $index => $j)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>
-                                            @forelse ($jurnal->where('debit','>',0) as $tgl)
-                                                <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
-                                            @empty
-                                            <span>-</span>
-                                            @endforelse
-                                        </td>
-                                        <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nomor')->toArray()) }}</td>
-                                        <td>
-                                            {{ implode('; ',$jurnal->first()->bg()) }}
-                                        </td>
-                                        <td>{{ $jurnal->first()->invoice ?? '-' }}</td>
-                                        <td>{{ $jurnal->first()->no_bg ?? '-' }}</td>
-                                        <td>{{ $jurnal->first()->container ?? '-' }}</td>
-                                        <td>{{ $jurnal->first()->nopol ?? '-' }}</td>
-                                        <td>{{ implode('; ',$jurnal->where('debit','>',0)->pluck('nama')->toArray()) }}</td>
-                                        <td>{{ number_format($jurnal->where('debit','>',0)->sum('debit')) }}</td>
-                                        <td>{{ number_format($jurnal->where('credit','>',0)->sum('credit')) }}</td>
-                                        <td>
-                                            @forelse ($jurnal->where('credit','>',0) as $tgl)
-                                                <span>{{ date('d/m/y',strtotime($tgl->created_at)) }}; </span>
-                                            @empty
-                                                <span>-</span>
-                                            @endforelse
-                                        </td>
-                                        <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nomor')->toArray())  }}</td>
-                                        <td>{{ implode('; ',$jurnal->where('credit','>',0)->pluck('nama')->toArray())  }}</td>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td class="text-center">{{ $j['tgl_d'] ?: '-' }}</td>
+                                        <td class="text-center">{{ $j['nomor_d'] ?: '-' }}</td>
+                                        <td class="text-center">{{ $j['tgl_k'] ?: '-' }}</td>
+                                        <td class="text-center">{{ $j['nomor_k'] ?: '-' }}</td>
+                                        <td class="text-center">{{ $j['invoice'] ?: '-' }}</td>
+                                        <td class="text-end 
+                                        @if($j['debit'] != $j['credit']) 
+                                            bg-danger text-white 
+                                        @endif">
+                                        {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : '-' }}
+                                    </td>
+                                    <td class="text-end 
+                                        @if($j['debit'] != $j['credit']) 
+                                            bg-danger text-white 
+                                        @endif">
+                                        {{ $j['credit'] ? number_format($j['credit'], 2, ',', '.') : '-' }}
+                                    </td>
+                                        <td class="text-start">
+                                            {!! $j['keterangan'] ?: '-' !!}
+                                        </td>                                        
                                     </tr>
                                 @endforeach
-                              </tbody>
-                              {{-- <tfoot>
+                            </tbody>                            
+                              <tfoot>
                                   <tr>
-                                      <td class="text-end" colspan="8"><b>TOTAL</b></td>
-                                      <td class="text-end"><b id="debit-total">{{ number_format($jurnals->sum('debit')) }}</b></td>
-                                      <td class="text-end"><b id="credit-total">{{ number_format($jurnals->sum('credit')) }}</b></td>
-                                      <td colspan="3"></td>
+                                      <td class="text-end" colspan="6"><b>TOTAL</b></td>
+                                      <td class="text-end"><b id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b></td>
+                                      <td class="text-end"><b id="credit-total">{{ number_format($totalCredit, 2, ',', '.') }}</b></td>
+                                      <td class="text-end">
+                                        <div class="d-flex justify-content-between">
+                                            <b class="text-start">SALDO : </b>
+                                            <b id="credit-total">{{ number_format($totalSaldo, 2, ',', '.') }}</b>
+                                        </div>
+                                    </td>                                                                     
                                   </tr>
-                              </tfoot> --}}
+                              </tfoot>
                           </table>
                       </div>
+                    </div>
+                </div>
+            </div>
                         {{-- {{ $data->links() }} --}}
                         {{-- @if($data->hasMorePages())
                             <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button>
@@ -155,7 +187,7 @@
     }
 
     // load();
-    $('.table-detail').dataTable()
+
     // $('table.data').dataTable({
     //     aLengthMenu: [
     //         [25, 50, 100, 200, -1],
@@ -168,5 +200,21 @@
     //     },
     // });
 </script>
+<script>
+    $(document).ready(function () {
+        $('table.data').DataTable({
+            paging: true,
+            searching: true,
+            lengthMenu: [10, 25, 50, 100],
+            columnDefs: [
+                { targets: [0], orderable: false }, // Kolom "No" tidak dapat diurutkan
+            ],
+            language: {
+                search: "Cari:",
+            },
+        });
+    });
+</script>
+
 @endpush
 @endsection
