@@ -57,7 +57,7 @@ class OrderController extends Controller
         $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
         $customers = Customer::pluck('nama')->toArray();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = ($item->customer->nama??'-') .' | '.($item->customer->id??'-').' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing ;
+            $tarif[$item->id] = ($item->customer->nama??'-') .' | '.($item->customer->id??'-').' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing . ' || ' .($item->shipmentInfo->nama??'-');
         }
         return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers','marketing'));
     }
@@ -254,7 +254,7 @@ class OrderController extends Controller
         $tarif = array();
         $agent = Agen::pluck('nama')->toArray();
         foreach ($tarifs as $id => $item ) {
-            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing ;
+            $tarif[$item->id] = ($item->customer->nama??'-') .' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing .' || '.($item->id??'-') ;
         }
         $pembayar = ($order->customer->nama??'-').' || '.($order->dari_lokasi->nama??'-').' || '.($order->tujuan_lokasi->nama??'-').' || '.($order->kondisiInfo->nama??'-').' || '.($order->pelayaran->nama??'-').' || '.($order->shipmentInfo->nama??'-').' || '.($order->tarif??'-');
         return view('admin.order.edit', compact('order','agent','tarif','customers','barang'));
