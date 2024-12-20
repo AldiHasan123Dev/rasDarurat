@@ -665,6 +665,8 @@ class JurnalController extends Controller
                 $jurnal_external = $data['invoice_external'][$i] ?? null;
                 if ($data['order_id'][$i]) {
                     $order = OrderTrucking::find($data['order_id'][$i]);
+                    $order_job = Order::find($data['order_id'][$i]);
+                    $invoice_job = $order_job->invoice;
                     $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
                     $cont = $order->container;
                     $seal = $order->seal;
@@ -705,7 +707,8 @@ class JurnalController extends Controller
                 $jurnal_model->create([
                     'tipe' => $data['tipe'],
                     'coa_id' => $data['debit_coa_id'][$i],
-                    'invoice' => $invoice,
+                    'invoice' => $invoice_job ?? null,
+                    'invoice_trucking' => $invoice,
                     'nopol' => $nopol,
                     'container' => $container,
                     'order_id' => $order_id,
@@ -723,7 +726,8 @@ class JurnalController extends Controller
                 $jurnal_model->create([
                     'tipe' => $data['tipe'],
                     'coa_id' => $data['credit_coa_id'][$i],
-                    'invoice' => $invoice,
+                    'invoice' => $invoice_job ?? null,
+                    'invoice_trucking' => $invoice,
                     'nopol' => $nopol,
                     'container' => $container,
                     'order_id' => $order_id,
@@ -745,7 +749,8 @@ class JurnalController extends Controller
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
-                        'invoice' => $invoice,
+                        'invoice' => $invoice_job,
+                        'invoice_trucking' => $invoice,
                         'nopol' => $nopol,
                         'container' => $container,
                         'order_id' => $order_id,
@@ -768,7 +773,8 @@ class JurnalController extends Controller
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
-                        'invoice' => $invoice,
+                        'invoice' => $invoice_job ?? null,
+                        'invoice_trucking' => $invoice,
                         'nopol' => $nopol,
                         'container' => $container,
                         'order_id' => $order_id,
