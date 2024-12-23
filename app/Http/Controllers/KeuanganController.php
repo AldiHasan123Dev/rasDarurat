@@ -198,7 +198,7 @@ class KeuanganController extends Controller
         $data = $request->all();
         $customer_id = $order->tarif->customer->id;
         $nsfp = null;
-        if ($customer_id != 318) {
+        if ($customer_id != 318 && $customer_id != 3134) {
             $nsfp = NSFP::where('available', 1)->orderBy('nomor', 'asc')->first();
             if (!$nsfp) {
                 return back()->with('danger', 'Tidak ada NSFP yang tersedia! Harap input NSFP terlebih dahulu');
