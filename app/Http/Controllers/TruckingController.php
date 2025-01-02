@@ -274,14 +274,14 @@ class TruckingController extends Controller
                     $no2 = 0;
                     $no3 = 0;
                     if ($request->tipe == 'R1') {
-                        $no1 = TransaksiTrucking::whereYear('tgl_invoice', date('Y'))->max('order_r1') + 1;
-                        $invoice = sprintf('%03d', $no1) . '/' . $month_roman . '/' . date('y');
+                        $no1 = TransaksiTrucking::whereYear('tgl_invoice', date('Y', strtotime('2024-12-31')))->max('order_r1') + 1;
+                        $invoice = sprintf('%03d', $no1) . '/' . $month_roman . '/' . date('y', strtotime('2024-12-31'));
                     } else if ($request->tipe == 'R2') {
-                        $no2 = TransaksiTrucking::whereYear('tgl_invoice', date('Y'))->max('order_r2') + 1;
-                        $invoice = sprintf('%03d', $no2) . '/RAS-LT/' . $month_roman . '/' . date('y');
+                        $no2 = TransaksiTrucking::whereYear('tgl_invoice', date('Y', strtotime('2024-12-31')))->max('order_r2') + 1;
+                        $invoice = sprintf('%03d', $no2) . '/RAS-LT/' . $month_roman . '/' . date('y', strtotime('2024-12-31'));
                     } else {
-                        $no3 = TransaksiTrucking::whereYear('tgl_invoice', date('Y'))->max('order_vendor') + 1;
-                        $invoice = sprintf('%03d', $no3) . '/VENDOR-' . $month_roman . '/' . date('y');
+                        $no3 = TransaksiTrucking::whereYear('tgl_invoice', date('Y', strtotime('2024-12-31')))->max('order_vendor') + 1;
+                        $invoice = sprintf('%03d', $no3) . '/VENDOR-' . $month_roman . '/' . date('y', strtotime('2024-12-31'));
                     }
 
                     $trx = TransaksiTrucking::create([
@@ -321,8 +321,8 @@ class TruckingController extends Controller
                             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($date)))->whereYear('created_at', date('Y', strtotime($date)))->max('no') + 1;
                             $nomor = sprintf('%02d', date('m', strtotime($date))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($date));
                         } else {
-                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->max('no') + 1;
-                            $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y');
+                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y', strtotime('2024-12-31')))->max('no') + 1;
+                            $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime('2024-12-31'));
                             $date = date('Y-m-d');
                         }
                         foreach ($template->template_items as $key => $item) {
@@ -433,8 +433,8 @@ class TruckingController extends Controller
                             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($date)))->whereYear('created_at', date('Y', strtotime($date)))->max('no') + 1;
                             $nomor = sprintf('%02d', date('m', strtotime($date))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($date));
                         } else {
-                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y'))->max('no') + 1;
-                            $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y');
+                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y', strtotime('2024-12-31')))->max('no') + 1;
+                            $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime('2024-12-31'));
                             $date = date('Y-m-d');
                         }
                         $total = 0;
