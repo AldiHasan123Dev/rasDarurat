@@ -166,9 +166,9 @@
         <div class="card p-3 shadow">
             @if (request('mutasi'))
                 @php
-                    $no_1 = App\Models\Jurnal::where('tipe','BBK')->max('no') + 1;
+                    $no_1 = App\Models\Jurnal::where('tipe','BBK')->whereYear('created_at', date('Y'))->max('no') + 1;
                     $no1 = sprintf('%03d',$no_1).'/BBK-RAS/'.date('y');
-                    $no_2 = App\Models\Jurnal::where('tipe','BKK')->max('no') + 1;
+                    $no_2 = App\Models\Jurnal::where('tipe','BKK')->whereYear('created_at', date('Y'))->max('no') + 1;
                     $no2 = sprintf('%03d',$no_2).'/BKK-RAS/'.date('y');
                 @endphp
                 <form action="{{ route('mutasi-totalan-sopir.store') }}" method="post">
