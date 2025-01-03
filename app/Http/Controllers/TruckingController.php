@@ -267,7 +267,7 @@ class TruckingController extends Controller
             try {
                 $invoice = DB::transaction(function () use ($request) {
                     $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
-                    $month_number = date("n"); // mengambil nomor bulan dari tanggal
+                    $month_number = date("n", strtotime('2024-12-31')); // mengambil nomor bulan dari tanggal
                     $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
                     $order_id = explode(',', $request->order_id);
                     $no1 = 0;
@@ -298,12 +298,12 @@ class TruckingController extends Controller
                         'order_r1' => $no1,
                         'order_r2' => $no2,
                         'order_r3' => $no3,
-                        'tgl_invoice' => date('Y-m-d'),
+                        'tgl_invoice' => date('Y-m-d', strtotime('2024-12-31')),
                         'pengirim' => $request->pengirim
                     ]);
 
                     OrderTrucking::whereIn('id', $order_id)->update([
-                        'tgl_invoice' => date('Y-m-d'),
+                        'tgl_invoice' => date('Y-m-d', strtotime('2024-12-31')),
                         'invoice' => $invoice,
                         'total_invoice' => $request->total,
                     ]);
@@ -313,7 +313,7 @@ class TruckingController extends Controller
                         $orders = OrderTrucking::whereIn('id', $order_id)->get();
 
                         $template = TemplateJurnal::find(9);
-                        $month = date('m');
+                        $month = date('m', strtotime('2024-12-31'));
                         $month1 = date('m', strtotime($order->tgl_muat));
                         if ($month1 != $month) {
                             $carbon = new Carbon($order->tgl_muat);
@@ -425,7 +425,7 @@ class TruckingController extends Controller
                         $orders = OrderTrucking::whereIn('id', $order_id)->get();
 
                         $template = TemplateJurnal::find(9);
-                        $month = date('m');
+                        $month = date('m', strtotime('2024-12-31'));
                         $month1 = date('m', strtotime($order->tgl_muat));
                         if ($month1 != $month) {
                             $carbon = new Carbon($order->tgl_muat);

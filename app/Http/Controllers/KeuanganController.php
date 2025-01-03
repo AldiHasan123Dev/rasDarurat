@@ -50,10 +50,10 @@ class KeuanganController extends Controller
             'jadwal_kapal.kapal',
             'tarif.shipmentInfo'
         ]);
-    
+
         // Tambahkan pencarian berdasarkan parameter filter yang diterima
         $searchFilters = $request->input('_search') ? $request->only('searchField', 'searchString', 'searchOper') : [];
-    
+
         if (!empty($searchFilters)) {
             foreach ($searchFilters as $field => $value) {
                 if ($value) {
@@ -61,19 +61,19 @@ class KeuanganController extends Controller
                 }
             }
         }
-    
+
         // Paginasi
         $totalRecords = $orders->count();
         $page = (int)$request->input('page', 1);
         $limit = (int)$request->input('rows', 10);
         $start = ($page - 1) * $limit;
-    
+
         // Pastikan page tidak lebih besar dari total halaman
         $totalPages = ceil($totalRecords / $limit);
         $page = min($page, $totalPages);  // Pastikan page tidak lebih besar dari totalPages
-    
+
         $paginatedOrders = $orders->skip($start)->take($limit)->get();
-    
+
         // Format data untuk jqGrid
         $rows = $paginatedOrders->map(function ($order) {
             return [
@@ -96,17 +96,17 @@ class KeuanganController extends Controller
                 'shipment_info' => $order->tarif->shipmentInfo->nama ?? '-',
             ];
         });
-    
+
         $response = [
             'page' => $page,
             'total' => $totalPages,  // Total halaman yang benar
             'records' => $totalRecords,
             'rows' => $rows, // Konversi ke array
         ];
-    
+
         return response()->json($response);
-    }    
-    
+    }
+
 
 
     public function customer()
@@ -206,19 +206,19 @@ class KeuanganController extends Controller
         }
         $no = Transaksi::whereYear('created_at', date('Y',strtotime('2024-12-31')))->max('order') + 1;
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
-        $month_number = date("n"); // mengambil nomor bulan dari tanggal
+        $month_number = date("n", strtotime('2024-12-31')); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d', $no) . '/' . $setting->short_name . '/' . $month_roman . '/' . date('y',strtotime('2024-12-31'));
         $data['invoice'] = $invoice;
         $data['nsfp'] = $nsfp->nomor ?? null;
         $data['order'] = $no;
         $data['order_id'] = $order->id;
-        $data['created_at'] = date('Y-m-d');
+        $data['created_at'] = date('Y-m-d', strtotime('2024-12-31'));
         Transaksi::create($data);
         Order::where('job', $order->job)->update([
             'invoice' => $invoice,
             'nsfp' => $nsfp->nomor ?? null,
-            'invoice_date' => date('Y-m-d'),
+            'invoice_date' => date('Y-m-d', strtotime('2024-12-31')),
             'lock_biaya' => 1
         ]);
         if ($nsfp) {
