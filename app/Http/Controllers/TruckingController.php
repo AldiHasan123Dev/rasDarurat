@@ -321,9 +321,9 @@ class TruckingController extends Controller
                             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($date)))->whereYear('created_at', date('Y', strtotime($date)))->max('no') + 1;
                             $nomor = sprintf('%02d', date('m', strtotime($date))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($date));
                         } else {
-                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y', strtotime('2024-12-31')))->max('no') + 1;
+                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime('2024-12-31')))->whereYear('created_at', date('Y', strtotime('2024-12-31')))->max('no') + 1;
                             $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime('2024-12-31'));
-                            $date = date('Y-m-d');
+                            $date = date('Y-m-d', strtotime('2024-12-31'));
                         }
                         foreach ($template->template_items as $key => $item) {
                             $name = $item->keterangan;
@@ -433,9 +433,9 @@ class TruckingController extends Controller
                             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($date)))->whereYear('created_at', date('Y', strtotime($date)))->max('no') + 1;
                             $nomor = sprintf('%02d', date('m', strtotime($date))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($date));
                         } else {
-                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m'))->whereYear('created_at', date('Y', strtotime('2024-12-31')))->max('no') + 1;
-                            $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime('2024-12-31'));
-                            $date = date('Y-m-d');
+                            $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime('2024-12-31')))->whereYear('created_at', date('Y', strtotime('2024-12-31')))->max('no') + 1;
+                            $nomor = sprintf('%02d', date('m', strtotime('2024-12-31'))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime('2024-12-31'));
+                            $date = date('Y-m-d', strtotime('2024-12-31'));
                         }
                         $total = 0;
                         foreach ($orders as $ord) {
