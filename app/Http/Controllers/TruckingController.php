@@ -317,7 +317,8 @@ class TruckingController extends Controller
                         $month1 = date('m', strtotime($order->tgl_muat));
                         if ($month1 != $month) {
                             $carbon = new Carbon($order->tgl_muat);
-                            $date = $carbon->endOfMonth()->toDateString();
+                            $date = '2024-12-31';
+                            // $date = $carbon->endOfMonth()->toDateString();
                             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($date)))->whereYear('created_at', date('Y', strtotime($date)))->max('no') + 1;
                             $nomor = sprintf('%02d', date('m', strtotime($date))) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($date));
                         } else {
