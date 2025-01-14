@@ -32,6 +32,10 @@ class JurnalTampungan extends Model
         'no_bg',
         'tgl_bg',
         'nominal_bg',
+        'invoice_trucking',
+        'invoice_agen',
+        'relasi',
+        'invoice_vendor',
     ];
 
     protected $searchable = [

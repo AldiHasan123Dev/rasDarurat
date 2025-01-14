@@ -234,7 +234,6 @@ class TruckingController extends Controller
     public function cetak_invoice(Request $request)
     {
         $order_id = explode(',', $request->order_id);
-        // dd($order_id);
         if (count($order_id) <= 1 && $order_id[0] == "") {
             return back()->with('danger', 'Harap checklist terlebih dahulu!');
         }
@@ -369,7 +368,9 @@ class TruckingController extends Controller
                                     'tipe' => 'JNL',
                                     'no' => $no,
                                     'created_at' => $date,
-                                    'invoice' => $invoice,
+                                    'relasi' => $nomor,
+                                    'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                    'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                 ]);
                             }
                             if ($item->coa_credit_id == 87) {
@@ -384,7 +385,9 @@ class TruckingController extends Controller
                                         'tipe' => 'JNL',
                                         'no' => $no,
                                         'created_at' => $date,
-                                        'invoice' => $invoice,
+                                        'relasi' => $nomor,
+                                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                        'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                         'container' => $ord->container,
                                         'nopol' => $ord->kendaraan->nopol ?? null,
                                     ]);
@@ -404,7 +407,9 @@ class TruckingController extends Controller
                                                 'tipe' => 'JNL',
                                                 'no' => $no,
                                                 'created_at' => $date,
-                                                'invoice' => $invoice,
+                                                'relasi' => $nomor,
+                                                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                                 'container' => $ord->container,
                                                 'nopol' => $ord->kendaraan->nopol ?? null,
                                             ]);
@@ -453,7 +458,9 @@ class TruckingController extends Controller
                                 'tipe' => 'JNL',
                                 'no' => $no,
                                 'created_at' => $date,
-                                'invoice' => $invoice,
+                                'relasi' => $nomor,
+                                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                 'container' => $ord->container,
                                 'nopol' => $ord->kendaraan->nopol ?? null,
                             ]);
@@ -467,7 +474,9 @@ class TruckingController extends Controller
                                 'tipe' => 'JNL',
                                 'no' => $no,
                                 'created_at' => $date,
-                                'invoice' => $invoice,
+                                'relasi' => $nomor,
+                                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                 'container' => $ord->container,
                                 'nopol' => $ord->kendaraan->nopol ?? null,
                             ]);
@@ -483,7 +492,9 @@ class TruckingController extends Controller
                                     'tipe' => 'JNL',
                                     'no' => $no,
                                     'created_at' => $date,
-                                    'invoice' => $invoice,
+                                    'relasi' => $nomor,
+                                    'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                    'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                     'container' => $ord->container,
                                     'nopol' => $ord->kendaraan->nopol ?? null,
                                 ]);
@@ -497,7 +508,9 @@ class TruckingController extends Controller
                                     'tipe' => 'JNL',
                                     'no' => $no,
                                     'created_at' => $date,
-                                    'invoice' => $invoice,
+                                    'relasi' => $nomor,
+                                    'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                                    'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                                     'container' => $ord->container,
                                     'nopol' => $ord->kendaraan->nopol ?? null,
                                 ]);
@@ -509,7 +522,7 @@ class TruckingController extends Controller
 
                         Jurnal::create([
                             'coa_id' => 131,
-                            // 'order_trucking_id' => $ord->id,
+                            'order_trucking_id' => $ord->id,
                             'nomor' => $nomor,
                             'nama' => 'Hutang Trucking ' . $request->pengirim . ' INV. ' . $invoice,
                             'credit' => $total,
@@ -517,11 +530,13 @@ class TruckingController extends Controller
                             'tipe' => 'JNL',
                             'no' => $no,
                             'created_at' => $date,
-                            'invoice' => $invoice,
+                            'relasi' => $nomor,
+                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                         ]);
                         JurnalSample::create([
                             'coa_id' => 131,
-                            // 'order_trucking_id' => $ord->id,
+                            'order_trucking_id' => $ord->id,
                             'nomor' => $nomor,
                             'nama' => 'Piutang Trucking ' . $request->pengirim . ' INV. ' . $invoice,
                             'debit' => $total,
@@ -529,7 +544,9 @@ class TruckingController extends Controller
                             'tipe' => 'JNL',
                             'no' => $no,
                             'created_at' => $date,
-                            'invoice' => $invoice,
+                            'relasi' => $nomor,
+                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                         ]);
 
                         OrderTrucking::whereIn('id', $order_id)->update([
@@ -613,7 +630,9 @@ class TruckingController extends Controller
                 'tipe' => 'JNL',
                 'no' => $no,
                 'created_at' => $date,
-                'invoice' => $trx->invoice,
+                'relasi' => $nomor,
+                'invoice_vendor' => !str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
+                'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
                 'container' => $ord->container,
                 'nopol' => $ord->kendaraan->nopol ?? null,
             ]);
@@ -627,7 +646,9 @@ class TruckingController extends Controller
                 'tipe' => 'JNL',
                 'no' => $no,
                 'created_at' => $date,
-                'invoice' => $trx->invoice,
+                'relasi' => $nomor,
+                'invoice_vendor' => !str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
+                'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
                 'container' => $ord->container,
                 'nopol' => $ord->kendaraan->nopol ?? null,
             ]);
@@ -643,7 +664,9 @@ class TruckingController extends Controller
                     'tipe' => 'JNL',
                     'no' => $no,
                     'created_at' => $date,
-                    'invoice' => $trx->invoice,
+                    'relasi' => $nomor,
+                    'invoice_vendor' => !str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
+                    'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
                     'container' => $ord->container,
                     'nopol' => $ord->kendaraan->nopol ?? null,
                 ]);
@@ -657,7 +680,9 @@ class TruckingController extends Controller
                     'tipe' => 'JNL',
                     'no' => $no,
                     'created_at' => $date,
-                    'invoice' => $trx->invoice,
+                    'relasi' => $nomor,
+                    'invoice_vendor' => !str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
+                    'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
                     'container' => $ord->container,
                     'nopol' => $ord->kendaraan->nopol ?? null,
                 ]);
@@ -669,7 +694,7 @@ class TruckingController extends Controller
 
         Jurnal::create([
             'coa_id' => 131,
-            // 'order_trucking_id' => $ord->id,
+            'order_trucking_id' => $ord->id,
             'nomor' => $nomor,
             'nama' => 'Hutang Trucking ' . $trx->pengirim . ' INV. ' . $trx->invoice,
             'credit' => $total,
@@ -677,11 +702,13 @@ class TruckingController extends Controller
             'tipe' => 'JNL',
             'no' => $no,
             'created_at' => $date,
-            'invoice' => $trx->invoice,
+            'relasi' => $nomor,
+            'invoice_vendor' => !str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
+            'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
         ]);
         JurnalSample::create([
             'coa_id' => 131,
-            // 'order_trucking_id' => $ord->id,
+            'order_trucking_id' => $ord->id,
             'nomor' => $nomor,
             'nama' => 'Piutang Trucking ' . $trx->pengirim . ' INV. ' . $trx->invoice,
             'debit' => $total,
@@ -689,7 +716,9 @@ class TruckingController extends Controller
             'tipe' => 'JNL',
             'no' => $no,
             'created_at' => $date,
-            'invoice' => $trx->invoice,
+            'relasi' => $nomor,
+            'invoice_vendor' => !str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
+            'invoice_trucking' => str_contains($trx->invoice, 'RAS-LT') ? $trx->invoice : null,
         ]);
 
         OrderTrucking::where('invoice', $trx->invoice)->update([

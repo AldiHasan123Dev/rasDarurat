@@ -483,6 +483,7 @@ class CetakController extends Controller
             $koli = 0;
             $doc = 0;
             if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
+                $tars = $tar->first()->tarif->kondisi;
                 $doc = 500000;
                 $doc_total += $tar->count() * 500000;
                 $doc_count += $tar->count();
@@ -528,8 +529,9 @@ class CetakController extends Controller
             $pph = $sub_total * $this->pph;
         }
         $ppn = round($sub_total * $this->ppn);
-
+        
         $total = (int)$sub_total + $asuransi + $ppn + $cas->sum('jumlah');
+       
 
         return [
             'items' => $items,

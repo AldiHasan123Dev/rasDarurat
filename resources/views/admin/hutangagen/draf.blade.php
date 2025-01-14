@@ -56,12 +56,12 @@
                                 <tr>
                                     <td colspan="10" class="table-secondary"></td>
                                     <td>PPN (1.1%)</td>
-                                    <td id="ppn-label-{{ $loop->iteration }}"><input type="number" name="ppn[]" class="form-control form-control-sm" id="ppn-{{ $loop->iteration }}" style="width: 100px" required></td>
+                                    <td id="ppn-label-{{ $loop->iteration }}"><input type="number" name="ppn[]" class="form-control form-control-sm" id="ppn-{{ $loop->iteration }}" style="width: 200px" required></td>
                                 </tr>
                                 <tr>
                                     <td colspan="10" class="table-secondary"></td>
                                     <td>Pot. PPH 23 (2%)</td>
-                                    <td id="pph-label-{{ $loop->iteration }}"><input type="number" name="pph[]" class="form-control form-control-sm" id="pph-{{ $loop->iteration }}" style="width: 100px" required></td>
+                                    <td id="pph-label-{{ $loop->iteration }}"><input type="number" name="pph[]" class="form-control form-control-sm" id="pph-{{ $loop->iteration }}" style="width: 200px" required></td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -70,8 +70,12 @@
                                     <th>Job</th>
                                     <th>ID JOB</th>
                                     <th>Cont</th>
+                                    <th>No BG</th>
                                     <th>Inv</th>
                                     <th>Inv Ext</th>
+                                    <th>Inv Vendor</th>
+                                    <th>Inv Trucking</th>
+                                    <th>Inv Agen</th>
                                     <th>COA</th>
                                     <th>Keterangan</th>
                                     <th>Debit</th>
@@ -81,7 +85,7 @@
                             </thead>
                             <tbody id="data-body">
                                 <tr>
-                                    <td colspan="12" class="text-center">Loading</td>
+                                    <td colspan="15" class="text-center">Loading</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -141,28 +145,28 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        @if ($tipe=='xpdc')
                             <div class="col-12 mb-3">
-                                <label for="order_id">JOB</label><br>
-                                <select class="form-control" id="order_id" name="order_id" style="font-size:.9rem !important">
+                                <label>Pilih Doc</label><br>
+                                <select class="form-control" id="doc" onchange="updateList()" name="order_id" style="font-size:.9rem !important">
                                     <option value=""></option>
-                                    @foreach ($orders as $item)
-                                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
-                                    @endforeach
+                                    @if ($tipe == 'xpdc')
+                                        <option value="inv_expdc">Inv Expdc</option>
+                                        <option value="inv_agen">Inv Agen</option>
+                                        <option value="pelayaran">BG Pelayaran</option>
+                                    @elseif ($tipe == 'trucking')
+                                        <option value="inv_trucking">Inv Trucking</option>
+                                        <option value="inv_vendor">Inv Vendor</option>
+                                     @else    
+                                     <option value="inv_expdc">Inv Expdc</option>
+                                     <option value="inv_agen">Inv Agen</option>
+                                     <option value="inv_trucking">Inv Trucking</option>
+                                    <option value="inv_vendor">Inv Vendor</option>
+                                    @endif
+                                    <option value="lain-lain">Lain-lain</option>
+                                    <option value="relasi">Relasi</option>
                                 </select>
                             </div>
-                        @endif
-                        @if ($tipe=='trucking')
-                            <div class="col-12 mb-3">
-                                <label for="order_id">Trucking</label><br>
-                                <select class="form-control" id="order_trucking_id" name="order_trucking_id" style="font-size:.9rem !important">
-                                    <option value=""></option>
-                                    @foreach ($orders as $item)
-                                        <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        @endif
+                            <div id="dynamic-container"></div>
                         <div class="col-12 mb-3">
                             <label for="coa_id">COA</label><br>
                             <select class="form-control" id="coa_id" name="coa_id" style="font-size:.9rem !important">
@@ -199,11 +203,146 @@
 
 @section('script')
     <script>
+        function updateList() {
+    const newValue = document.getElementById("doc").value; // Ambil nilai dari select doc
+    const container = document.getElementById("dynamic-container"); // Container untuk elemen dinamis
+
+    // Kosongkan elemen sebelumnya
+    container.innerHTML = "";
+
+    if (newValue === "inv_expdc") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="order_id">JOB Expdc</label><br>
+                <select class="form-control select2" id="invoice_expdc" name="inv_expdc" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders_expdc as $item)
+                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "inv_agen") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="order_id1">JOB Agen</label><br>
+                <select class="form-control select2" id="invoice_agen" name="invoice_agen" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders_agen as $item)
+                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} / {{ $item->invoice_agen }}</option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "pelayaran") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="order_id">No BG</label>
+                <select class="form-control select2" id="bg" name="no_bg"
+                    style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($bgs as $item)
+                        <option value="{{ $item }}">{{ $item }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "relasi") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="relasi">Relasi</label>
+                <select class="form-control select2" id="relasi" name="relasi">
+                    <option value=""></option>
+                    @foreach ($relasi as $item)
+                        <option value="{{ $item }}">{{ $item }}</option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    }  else if (newValue === "inv_trucking") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="relasi">Trucking</label>
+                <select class="form-control select2" id="invoice_trucking" name="inv_trucking">
+                    <option value=""></option>
+                    @foreach ($orders_trucking as $item)
+                    <option value="{{ $item->id }}">
+                                {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "inv_vendor") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="relasi">Vendor Trucking</label>
+                <select class="form-control select2" id="invoice_vendor" name="inv_vendor">
+                    <option value=""></option>
+                    @foreach ($orders_vendor as $item)
+                    <option value="{{ $item->id }}">
+                                {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}</option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "lain-lain") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="relasi">Invoice Eksternal</label>
+                <select class="form-control select2" onchange="handleLainLainChange(this)">
+                    <option value="">Pilih Opsi</option>
+                    <option value="buat-baru">Buat Baru</option>
+                    <option value="pilih-invoice-external">Pilih Invoice External</option>
+                </select>
+            </div>
+        `;
+    } 
+    // Inisialisasi ulang Select2 untuk elemen yang baru ditambahkan
+    $(container).find(".select2").select2({
+        dropdownParent: $('#modal-add'),
+    });
+}
+
+function handleLainLainChange(select, rowId) {
+            const newValue = select.value;
+            const dynamicColumn = document.getElementById(`dynamic-container`);
+            dynamicColumn.innerHTML = ""; // Kosongkan kolom dinamis sebelumnya
+
+            if (newValue === "buat-baru") {
+                dynamicColumn.innerHTML = `
+               <div class="col-12 mb-3">
+                <label for="invoice_external">Invoice External</label>
+                <input class="form-control" onclick="this.select()" name="invoice_external" id="invoice_external"
+                    value="" type="text">
+            </div>
+                                
+        `;
+            } else if (newValue === "pilih-invoice-external") {
+                dynamicColumn.innerHTML = `
+                  <div class="col-12 mb-3">
+                <label for="relasi">Invoice Eksternal</label>
+                <select class="form-control select3" name="invoice_external" id="invoice_external">
+                    <option value="">Pilih Invoice External</option>
+                     @foreach ($invx as $item)
+                        <option value="{{ $item }}">{{ $item }}</option>
+                    @endforeach
+                </select>
+                 </div>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2({
+                    dropdownParent: $('#modal-add'),
+                }); // Inisialisasi Select2
+            }
+        }
         $('.select2').select2();
         $('#coa_id').select2({
             dropdownParent: $('#modal-add'),
         });
         $('#order_id').select2({
+            dropdownParent: $('#modal-add'),
+        });
+        $('#doc').select2({
             dropdownParent: $('#modal-add'),
         });
         $('#order_trcuking_id').select2({
@@ -254,7 +393,7 @@
                                 <td style="width: 200px">
                                     <select class="form-control select2" id="add-job-id-${debit}" name="jurnal_create[${debit}][order_trucking_id]" style="font-size:.9rem !important">
                                             <option value=""></option>
-                                            @foreach ($orders as $item)
+                                            @foreach ($orders_trucking as $item)
                                                 <option value="{{ $item->id }}">{{ $item->container }} - {{ $item->seal }}</option>
                                             @endforeach
                                     </select>
@@ -277,7 +416,7 @@
                                 <td style="width: 200px">
                                     <select class="form-control select2" id="add-job-${debit}" name="jurnal_create[${debit}][order_id]" style="font-size:.9rem !important">
                                         <option value=""></option>
-                                        @foreach ($orders as $item)
+                                        @foreach ($orders_expdc as $item)
                                         <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }}</option>
                                         @endforeach
                                     </select>
@@ -385,8 +524,12 @@
                                         <td>${item.job}</td>
                                         <td>${item.no_job}</td>
                                         <td>${item.container}</td>
+                                        <td>${item.no_bg}</td>
                                         <td>${item.invoice}</td>
                                         <td>${item.invoice_external}</td>
+                                        <td>${item.invoice_vendor}</td>
+                                        <td>${item.invoice_trucking}</td>
+                                        <td>${item.invoice_agen}</td>
                                         <td>${item.coa_nama} - ${item.coa_kode}</td>
                                         <td>${item.nama}</td>
                                         <td>${item.debit}</td>
@@ -402,17 +545,24 @@
 
         function save(){
             var data = {
-                order_id:$('#order_id').val(),
-                order_trucking_id:$('#order_trucking_id').val(),
-                coa_id:$('#coa_id').val(),
-                nama:$('#nama').val(),
-                debit:$('#debit').val(),
-                credit:$('#credit').val(),
+                invoice_expdc:$('#invoice_expdc').val() || null,
+                invoice_agen:$('#invoice_agen').val() || null,
+                invoice_vendor:$('#invoice_vendor').val() || null,
+                invoice_trucking:$('#invoice_trucking').val() || null,
+                coa_id:$('#coa_id').val() || null,
+                nama:$('#nama').val() || null,
+                debit:$('#debit').val() || null,
+                credit:$('#credit').val() || null,
                 nomor:@json($jur->nomor),
                 created_at:@json(date('Y-m-d',strtotime($jur->created_at))),
                 no:@json($jur->no),
                 tipe:@json($jur->tipe),
+                invoice_external:$('#invoice_external').val() || null,
+                relasi: $('#relasi').val() || @json($jur->nomor),
+                relasi: $('#relasi').val() || @json($jur->nomor),
+                no_bg:$('#bg').val() || null,
             };
+            console.log(data);
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/jurnal/add') }}",

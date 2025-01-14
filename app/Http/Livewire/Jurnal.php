@@ -13,7 +13,7 @@ use Livewire\Component;
 
 class Jurnal extends Component
 {
-    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count, $bgs;
+    public $coa, $coa_id, $tipe, $orders, $jurnals, $agen, $invx, $invoices, $jurnal_id, $template_id, $templates, $template, $template_count, $bgs;
     public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
@@ -32,7 +32,22 @@ class Jurnal extends Component
         $last = Carbon::now()->subMonths(14)->format('Y-m-d');
         $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
         $setting = Setting::find(1);
-        $this->order = null;
+        $this->invx = ModelsJurnal::whereNotNull('invoice_external')
+        ->orderBy('invoice_external')
+        ->distinct()
+        ->pluck('invoice_external');    
+        $this->invoices = Order::whereBetween('created_at', [$last, $now])
+        ->whereNotNull('invoice')
+        ->select('invoice', 'id', 'container') // Pilih hanya kolom invoice
+        ->distinct() // Tambahkan distinct untuk menghapus duplikat
+        ->orderBy('invoice') // Urutkan berdasarkan invoice (opsional)
+        ->get();
+        $this->agens = Order::whereBetween('created_at', [$last, $now])
+        ->whereNotNull('invoice_agen')
+        ->select('invoice_agen', 'id', 'container') // Pilih hanya kolom invoice
+        ->distinct() // Tambahkan distinct untuk menghapus duplikat
+        ->orderBy('invoice_agen') // Urutkan berdasarkan invoice (opsional)
+        ->get();
         $this->template_id = null;
         $this->template = null;
         $this->is_apply = false;

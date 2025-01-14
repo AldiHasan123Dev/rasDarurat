@@ -14,7 +14,7 @@ use Livewire\Component;
 
 class JurnalTrucking extends Component
 {
-    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count;
+    public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $inv_trucking, $inv_vendor, $template, $template_count;
     public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
@@ -32,6 +32,25 @@ class JurnalTrucking extends Component
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(14)->format('Y-m-d');
         $setting = Setting::find(1);
+        $this->invx = ModelsJurnal::whereNotNull('invoice_external')
+        ->orderBy('invoice_external')
+        ->distinct()
+        ->pluck('invoice_external');   
+        $this->inv_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
+        ->whereNotNull('invoice')
+        ->where('invoice', 'like', '%RAS-LT%') // Kondisi NOT LIKE untuk mengecualikan 'RAS-LT'
+        ->select('invoice', 'id', 'container') // Pilih hanya kolom tertentu
+        ->distinct() // Hapus duplikat berdasarkan kolom terpilih
+        ->orderBy('invoice') // Urutkan berdasarkan kolom invoice
+        ->get();    
+        $this->inv_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
+        ->whereNotNull('invoice')
+        ->where('invoice', 'not like', '%RAS-LT%') // Tambahkan kondisi LIKE
+        ->select('invoice', 'id', 'container') // Pilih hanya kolom tertentu
+        ->distinct() // Hapus duplikat berdasarkan kolom terpilih
+        ->orderBy('invoice') // Urutkan berdasarkan kolom invoice
+        ->get();
+    
         $this->order = null;
         $this->template_id = null;
         $this->template = null;

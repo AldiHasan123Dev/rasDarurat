@@ -197,6 +197,8 @@ class KeuanganController extends Controller
         $setting = Setting::find(1);
         $data = $request->all();
         $customer_id = $order->tarif->customer->id;
+       // $job = $data['job'];
+        // $year = substr($job, 0, 4);
         $nsfp = null;
         if ($customer_id != 318 && $customer_id != 3134) {
             $nsfp = NSFP::where('available', 1)->orderBy('nomor', 'asc')->first();

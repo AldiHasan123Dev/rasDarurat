@@ -218,9 +218,16 @@
                                     @foreach ($new as $idx => $item)
                                         @if ($item['debit'])
                                         <input type="hidden" value="{{ $item['debit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
+                                        <input type="hidden" value="{{ $item['debit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
                                         <input type="hidden" value="{{ $item['debit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['debit']->debit }}" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $item['debit']->credit }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" value="{{ $item['debit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
+                                        <input type="hidden" value="{{ $item['debit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
+                                        <input type="hidden" value="{{ $item['debit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
+                                        <input type="hidden" value="{{ $item['debit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
+                                        <input type="hidden" value="{{ $item['debit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
+                                        <input type="hidden" value="{{ $item['debit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
 
                                         <tr>
                                             <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['debit']->credit + $item['debit']->debit }}" checked></td>
@@ -249,12 +256,19 @@
 
                                         @if ($item['credit'])
                                         <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
+                                        <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
                                         <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
+                                        <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
+                                        <input type="hidden" value="{{ $item['credit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
+                                        <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
+                                        <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
+                                        <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
 
                                         <tr>
-                                            <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['debit']->credit + $item['debit']->debit }}"></td>
+                                            <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['credit']->credit + $item['credit']->debit }}"></td>
                                             <td>{{ $k }}</td>
                                             @if ($item['credit']->order)
                                                 <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
@@ -279,9 +293,17 @@
                                         @endif
                                     @endforeach
                                     @if (request('credit_coa_id_tujuan'))
-                                        <input type="hidden" id="hidden-value" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
-                                        <input type="hidden" value="0" name="jurnal[{{ $k }}][debit]">
-                                        <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
+                                    <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
+                                    <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
+                                    <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
+                                    <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
+                                    <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
+                                    <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
+                                    <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
+                                    <input type="hidden" value="{{ $item['credit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
+                                    <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
+                                    <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
+                                    <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
                                         <tr>
                                             <td></td>
                                             <td>{{ $k }}</td>
