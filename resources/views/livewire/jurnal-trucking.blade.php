@@ -157,7 +157,7 @@
                                             <option value=""></option>
                                             <option value="truck">Inv Truck</option>
                                             <option value="vendor_truck">Inv Vendor Truck</option>
-                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="lain-lain">Inv Lainnya</option>
                                             <option value="relasi">Relasi</option>
                                         </select>
                                     </td>

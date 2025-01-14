@@ -11,6 +11,10 @@
             <th>JOB</th>
             <th>Invoice</th>
             <th>Invoice Ext</th>
+            <th>Invoice Agen</th>
+            <th>Invoice Vendor</th>
+            <th>Invoice Trucking</th>
+            <th>Relasi</th>
             <th>Keterangan</th>
             <th>Debit</th>
             <th>Kredit</th>
@@ -46,6 +50,10 @@
                 @endif
                 <td>{{ $item->invoice }}</td>
                 <td>{{ $item->invoice_external }}</td>
+                <td>{{ $item->invoice_agen }}</td>
+                <td>{{ $item->invoice_vendor }}</td>
+                <td>{{ $item->invoice_trucking }}</td>
+                <td>{{ $item->relasi }}</td>
                 <td>{{ $item->nama }}</td>
                 <td>{{ $item->debit }}</td>
                 <td>{{ $item->credit }}</td>

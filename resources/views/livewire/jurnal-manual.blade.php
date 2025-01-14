@@ -113,10 +113,10 @@
                                             <option value=""></option>
                                             <option value="truck">Inv Truck</option>
                                             <option value="vendor_truck">Inv Vendor Truck</option>
-                                            <option value="expdc">Inv Expdc</option>
+                                            <option value="expdc">Inv Xpdc</option>
                                             <option value="agen">Inv Agen</option>
                                             <option value="pelayaran">BG Pelayaran</option>
-                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="lain-lain">Inv Lainnya</option>
                                             <option value="relasi">Relasi</option>
                                         </select>
                                     </td>
