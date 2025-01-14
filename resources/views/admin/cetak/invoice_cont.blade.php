@@ -64,6 +64,8 @@
 @endsection
 @section('content')
 @php
+ $dpp = $invoice['sub_total'] * (11 / 12) * 0.10;
+ $pph = $dpp * 0.2;
     function terbilang($angka) {
         $angka = (float)$angka;
         $bilangan = array(
@@ -184,7 +186,7 @@
                         <input type="hidden" name="tujuan" value="{{ $order->tarif->tujuan_lokasi->nama }}">
                         <input type="hidden" name="tagihan" value="{{ $cas->sum('jumlah') }}">
                         <input type="hidden" name="admin" value="{{ $invoice['admin'] }}">
-                        <input type="hidden" name="pph" value="{{ $invoice['pph'] }}">
+                        <input type="hidden" name="pph" value="{{ $pph }}">
                         <button type="submit" name="tipe_invoice" value="cont" onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit Invoice</button>
                     </form>
                 </div>
@@ -330,11 +332,17 @@
                         @if ($ppn>0)
                         <tr>
                             <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">PPn 1,1%</td>
-                            <td style="border: 1px solid black">
-                                <div class="price d-flex justify-content-between px-2">
+                            <td colspan="3" style="border: 1px solid black;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>PPN 12%:</span>
+                                    <span class="ml-1"> ( DPP :</span>
+                                    <span>Rp {{ number_format((int) $dpp) }}</span>
+                                </div>
+                            </td>
+                            <td colspan="1" style="border: 1px solid black;">
+                                <div  class="price d-flex justify-content-between px-2"> 
                                     <span>Rp</span>
-                                    <span>{{ number_format($invoice['ppn']) }}</span>
+                                    <span>{{ number_format((int) $invoice['ppn']) }}</span>
                                 </div>
                             </td>
                         </tr>
@@ -375,11 +383,12 @@
                         @if ($pph>0)
                         <tr>
                             <td colspan="4"></td>
-                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak
+                                24-104-56)</td>
                             <td style="border: 1px solid black">
                                 <div class="price d-flex justify-content-between px-2">
                                     <span>Rp</span>
-                                    <span>{{ number_format($invoice['pph']) }}</span>
+                                    <span>{{ number_format($pph) }}</span>
                                 </div>
                             </td>
                         </tr>

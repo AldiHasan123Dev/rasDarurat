@@ -35,6 +35,8 @@ class Jurnal extends Model
         'nominal_bg',
         'relasi',
         'invoice_trucking',
+        'invoice_agen',
+        'invoice_vendor',
     ];
 
     protected $searchable = [

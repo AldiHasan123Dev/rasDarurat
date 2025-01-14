@@ -60,60 +60,72 @@
                     <hr>
                     <div class="table-responsive">
                         <table class="table table-sm" id="table-debit">
-                            <tr>
-                                <th>#</th>
-                                <th style="width: 300px">Invoice</th>
-                                <th style="width: 300px">Nopol</th>
-                                <th style="width: 300px">Akun Debet</th>
-                                <th style="width: 300px">Akun Credit</th>
-                                <th>Keterangan</th>
-                                <th>Nominal</th>
-                                <th>Relasi</th>
-                            </tr>
-                            @for ($i = 0; $i < $debit_idx; $i++)
-                            <tr class="init-table">
-                                <td><input type="checkbox" name="id[]" onchange="uncheck(this,{{ $i }})" checked id="{{ $i }}" value="{{ $i }}"></td>
-                                <td style="width: 150px"><input name="invoice[]" id="invoice-{{ $i }}" style="width: 150px" type="text"></td>
-                                <td style="width: 150px">
-                                    <select class="form-control select2" id="nopol-{{ $i }}" name="nopol[]" style="font-size:.9rem !important; width:150px">
-                                        <option value=""></option>
-                                        @foreach ($kendaraan as $item)
-                                            <option value="{{ $item->nopol }}">{{ $item->nopol }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control select2" onchange="total()" id="debit-{{ $i }}" name="debit_coa_id[]" style="font-size:.9rem !important; width:170px">
-                                        <option value=""></option>
-                                        @foreach ($coa as $item)
-                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class="form-control select2" onchange="total()" id="credit-{{ $i }}" name="credit_coa_id[]" style="font-size:.9rem !important; width:170px">
-                                        <option value=""></option>
-                                        @foreach ($coa as $item)
-                                        <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td style="width: 250px"><input name="name[]" id="keterangan-{{ $i }}" style="width: 300px" type="text"></td>
-                                <td><input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}"></td>
-                                <td>
-                                    <select class="form-control select2" onchange="total()"
-                                        id="relasi-{{ $i }}" name="relasi[]"
-                                        style="font-size:.9rem !important; width:170px">
-                                        <option value=""></option>
-                                        @foreach ($relasi as $item)
-                                            <option value="{{ $item }}">{{ $item }}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                            </tr>
-                            @endfor
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nopol</th>
+                                    <th>Akun Debet</th>
+                                    <th>Akun Credit</th>
+                                    <th>Keterangan</th>
+                                    <th>Nominal</th>
+                                    <th style="width: 300px">Pilih Doc</th>
+                                    <th hidden id="dynamic-th" style="width: 300px">Nomor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for ($i = 0; $i < $debit_idx; $i++)
+                                <tr class="init-table">
+                                    <td>
+                                        <input type="checkbox" name="id[]" onchange="uncheck(this, {{ $i }})" checked id="{{ $i }}" value="{{ $i }}">
+                                    </td>
+                                    <td>
+                                        <select class="form-control select2" id="nopol-{{ $i }}" name="nopol[]" style="font-size: 0.9rem !important; width: 150px;">
+                                            <option value=""></option>
+                                            @foreach ($kendaraan as $item)
+                                                <option value="{{ $item->nopol }}">{{ $item->nopol }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control select2" onchange="total()" id="debit-{{ $i }}" name="debit_coa_id[]" style="font-size: 0.9rem !important; width: 170px;">
+                                            <option value=""></option>
+                                            @foreach ($coa as $item)
+                                                <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control select2" onchange="total()" id="credit-{{ $i }}" name="credit_coa_id[]" style="font-size: 0.9rem !important; width: 170px;">
+                                            <option value=""></option>
+                                            @foreach ($coa as $item)
+                                                <option value="{{ $item->id }}">{{ $item->kode }} - {{ $item->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td style="width: 250px;">
+                                        <input name="name[]" id="keterangan-{{ $i }}" style="width: 300px;" type="text">
+                                    </td>
+                                    <td>
+                                        <input type="number" name="amount[]" onkeyup="total()" id="amount-{{ $i }}">
+                                    </td>
+                                    <td>
+                                        <select class="form-control select2 tipe" id="doc-{{ $i }}" style="font-size: 0.9rem !important; width: 170px;" onchange="updateDynamicColumn(this, {{ $i }})">
+                                            <option value=""></option>
+                                            <option value="truck">Inv Truck</option>
+                                            <option value="vendor_truck">Inv Vendor Truck</option>
+                                            <option value="expdc">Inv Expdc</option>
+                                            <option value="agen">Inv Agen</option>
+                                            <option value="pelayaran">BG Pelayaran</option>
+                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="relasi">Relasi</option>
+                                        </select>
+                                    </td>
+                                    <td class="dynamic-column" hidden id="dynamic-column-{{ $i }}"></td>
+                                </tr>
+                                @endfor
+                            </tbody>
                         </table>
-                    </div>
+                    </div>                    
                     <table>
                         <tr>
                             <td style="width: 300px"><b>TOTAL DEBET</b></td>
@@ -143,6 +155,172 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('assets/js/selectize.js') }}"></script>
 <script>
+    function updateDynamicColumn(select, rowId) {
+            const selectedValue = select.value; // Ambil nilai yang dipilih
+            const dynamicColumn = document.getElementById(`dynamic-column-${rowId}`);
+            const dynamicTh = document.getElementById("dynamic-th");
+            dynamicColumn.innerHTML = ""; // Kosongkan kolom dinamis sebelumnya
+
+            if (selectedValue === "truck") {
+                dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
+                dynamicColumn.innerHTML = `
+        <td>
+            <select class="form-control select3" onchange="total()"
+                id="invoice-${rowId}" name="invoice_trucking[]"
+                style="font-size:.9rem !important; width:170px">
+                <option value="" selected>Pilih Inv Trucking</option>
+                @foreach ($order_trucking as $item)
+                    <option value="{{ $item->id }}">
+    {{ $item->invoice }} | {{ $item->container }}
+</option>
+
+                @endforeach
+            </select>
+        </td>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2();
+
+
+
+            } else if (selectedValue === "vendor_truck") {
+                dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
+                dynamicColumn.innerHTML = `
+        <td>
+             <select class="form-control select3" onchange="total()"
+                id="invoice-${rowId}" name="invoice_vendor[]"
+                style="font-size:.9rem !important; width:170px">
+                <option value="" selected>Pilih Inv Vendor Trucking</option>
+                 @foreach ($inv_vendor as $item)
+                    <option value="{{ $item->id }}">
+    {{ $item->invoice }} | {{ $item->container }}
+</option>
+
+                @endforeach
+            </select>
+        </td>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2();
+
+            } else if (selectedValue === "lain-lain") {
+        dynamicTh.removeAttribute('hidden');
+        dynamicColumn.removeAttribute('hidden');
+        dynamicColumn.innerHTML = `
+            <td style="width: 170px">
+                <select class="form-control select3" id="lain-${rowId}" style="width: 170px" onchange="handleLainLainChange(this, ${rowId})">
+                    <option value="">Pilih Opsi</option>
+                    <option value="buat-baru">Buat Baru</option>
+                    <option value="pilih-invoice-external">Pilih Invoice External</option>
+                </select>
+            </td>
+        `;
+        $(dynamicColumn.querySelector('.select3')).select2();
+
+    } else if (selectedValue === "expdc") {
+                dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
+                dynamicColumn.innerHTML = `
+        <td>
+            <select class="form-control select3" onchange="total()"
+                id="invoice-${rowId}" name="invoice[]"
+                style="font-size:.9rem !important; width:170px">
+                <option value="" selected>Pilih Inv Expdc</option>
+                @foreach ($orders as $item)
+                    <option value="{{ $item->id }}">
+    {{ $item->invoice }} | {{ $item->container }}
+</option>
+
+                @endforeach
+            </select>
+        </td>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2();
+
+
+
+            } else if (selectedValue === "agen") {
+                dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
+                dynamicColumn.innerHTML = `
+        <td>
+            <select class="form-control select3" onchange="total()"
+                id="invoice-${rowId}" name="invoice_agen[]"
+                style="font-size:.9rem !important; width:170px">
+                <option value="" selected>Pilih Inv Agen</option>
+                @foreach ($agens as $item)
+                    <option value="{{ $item->id }}">
+    {{ $item->invoice_agen }} | {{ $item->container }}
+</option>
+
+                @endforeach
+            </select>
+        </td>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2();
+
+            } else if (selectedValue === "pelayaran") {
+                dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
+                dynamicColumn.innerHTML = `
+        <td>
+                                        <select class="form-control select3" id="bg-{{ $i }}" name="no_bg[]"
+                                            style="font-size:.9rem !important; width:170px">
+                                            <option value="">Pilih No BG</option>
+                                            @foreach ($bgs as $bg)
+                                                <option value="{{ $bg }}">{{ $bg }}</option>
+                                            @endforeach
+                                        </select>
+        </td>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2();
+
+            } else if (selectedValue === "relasi") {
+                dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
+                dynamicColumn.innerHTML = `
+        <td>
+            <select class="form-control select3" onchange="total()"
+                id="relasi-${rowId}" name="relasi[]"
+                style="font-size:.9rem !important; width:170px">
+                <option value="" selected>Pilih No Relasi</option>
+                @foreach ($relasi as $item)
+                    <option value="{{ $item }}">{{ $item }}</option>
+                @endforeach
+            </select>
+        </td>
+        `;
+                $(dynamicColumn.querySelector('.select3')).select2();
+            } else {
+                dynamicColumn.setAttribute('hidden', true);
+            }
+        }
+
+        function handleLainLainChange(select, rowId) {
+    const newValue = select.value;
+    const dynamicColumn = document.getElementById(`dynamic-column-${rowId}`);
+    dynamicColumn.innerHTML = ""; // Kosongkan kolom dinamis sebelumnya
+
+    if (newValue === "buat-baru") {
+        dynamicColumn.innerHTML = `
+ <td><input name="invoice_external[]"
+                                            id="invoice_external-{{ $i }}" style="width: 170px" type="text">
+                                    </td>
+        `;
+    } else if (newValue === "pilih-invoice-external") {
+        dynamicColumn.innerHTML = `
+            <td>
+                <select class="form-control select3" name="invoice_external[]" id="invoice_external-${rowId}" style="width: 170px">
+                    <option value="">Pilih Invoice External</option>
+                     @foreach ($invx as $item)
+                        <option value="{{ $item }}">{{ $item }}</option>
+                    @endforeach
+                </select>
+            </td>
+        `;
+        $(dynamicColumn.querySelector('.select3')).select2(); // Inisialisasi Select2
+    }
+}
     let total_debit = 0;
     let total_credit = 0;
     let credit = 2;
@@ -172,7 +350,6 @@
         debit = amounts.length + 1;
         let html = `<tr>
                         <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
-                        <td style="width: 150px"><input name="invoice[]" id="invoice-${debit}" style="width: 150px" type="text"></td>
                         <td style="width: 150px">
                                 <select class="form-control select2" id="nopol-${debit}" name="nopol[]" style="font-size:.9rem !important; width:150px">
                                     <option value=""></option>
@@ -199,16 +376,19 @@
                         </td>
                         <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
-                        <td>
-                            <select class="form-control select2" onchange="total()"
-                                id="relasi-${debit}" name="relasi[]"
-                                style="font-size:.9rem !important; width:170px">
-                                <option value=""></option>
-                                @foreach ($relasi as $item)
-                                    <option value="{{ $item }}">{{ $item }}</option>
-                                @endforeach
-                            </select>
-                        </td>
+                         <td>
+                                        <select class="form-control select2 tipe" id="doc-${debit}" style="font-size: 0.9rem !important; width: 170px;" onchange="updateDynamicColumn(this, ${debit})">
+                                            <option value=""></option>
+                                            <option value="truck">Inv Truck</option>
+                                            <option value="vendor_truck">Inv Vendor Truck</option>
+                                            <option value="expdc">Inv Expdc</option>
+                                            <option value="agen">Inv Agen</option>
+                                            <option value="pelayaran">BG Pelayaran</option>
+                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="relasi">Relasi</option>
+                                        </select>
+                                    </td>
+                                    <td class="dynamic-column" hidden id="dynamic-column-${debit}"></td>
                     </tr>`;
         $('#table-debit').append(html);
         setTimeout(() => {
@@ -295,7 +475,6 @@
                     let html = '';
                     html += `<tr class="init-table">
                             <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
-                            <td style="width: 150px"><input name="invoice[]" id="invoice-${debit}" style="width: 150px" type="text"></td>
                             <td style="width: 150px">
                                 <select class="form-control select2" id="nopol-${debit}" name="nopol[]" style="font-size:.9rem !important; width:150px">
                                     <option value=""></option>
@@ -322,16 +501,19 @@
                             </td>
                             <td style="width: 250px"><input name="name[]" value="${item.keterangan}" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                             <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
-                            <td>
-                                <select class="form-control select2" onchange="total()"
-                                    id="relasi-${debit}" name="relasi[]"
-                                    style="font-size:.9rem !important; width:170px">
-                                    <option value=""></option>
-                                    @foreach ($relasi as $item)
-                                        <option value="{{ $item }}">{{ $item }}</option>
-                                    @endforeach
-                                </select>
-                            </td>
+                         <td>
+                                        <select class="form-control select2 tipe" id="doc-${debit}" style="font-size: 0.9rem !important; width: 170px;" onchange="updateDynamicColumn(this, ${debit})">
+                                            <option value=""></option>
+                                            <option value="truck">Inv Truck</option>
+                                            <option value="vendor_truck">Inv Vendor Truck</option>
+                                            <option value="expdc">Inv Expdc</option>
+                                            <option value="agen">Inv Agen</option>
+                                            <option value="pelayaran">BG Pelayaran</option>
+                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="relasi">Relasi</option>
+                                        </select>
+                                    </td>
+                                    <td class="dynamic-column" hidden id="dynamic-column-${debit}"></td>
                         </tr>`;
                     $('#table-debit').append(html);
                     $('#debit-'+debit).val(item.coa_debit_id);

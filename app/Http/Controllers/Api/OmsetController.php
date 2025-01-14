@@ -428,6 +428,7 @@ class OmsetController extends Controller
                                 $data['debit'] = $j_->debit;
                                 $data['credit'] = 0;
                                 $data['tipe'] = 'TEST';
+                                $data['relasi'] = $balik->nomor;
                                 $data['nomor'] = $balik->nomor;
                                 $data['no'] = $balik->no;
                                 $data['created_at'] = $balik->tanggal;
@@ -439,6 +440,7 @@ class OmsetController extends Controller
                                 $data['debit'] = 0;
                                 $data['tipe'] = 'TEST';
                                 $data['nomor'] = $balik->nomor;
+                                $data['relasi'] = $balik->nomor;
                                 $data['no'] = $balik->no;
                                 $data['created_at'] = $balik->tanggal;
                                 Jurnal::create($data);
@@ -526,6 +528,7 @@ class OmsetController extends Controller
                         $data['credit'] = 0;
                         $data['tipe'] = 'TEST';
                         $data['nomor'] = $balik->nomor;
+                        $data['relasi'] = $balik->nomor;
                         $data['no'] = $balik->no;
                         $data['created_at'] = $balik->tanggal;
                         Jurnal::create($data);
@@ -535,6 +538,7 @@ class OmsetController extends Controller
                         $data['credit'] = $j_biaya->debit;
                         $data['debit'] = 0;
                         $data['tipe'] = 'TEST';
+                        $data['relasi'] = $balik->nomor;
                         $data['nomor'] = $balik->nomor;
                         $data['no'] = $balik->no;
                         $data['created_at'] = $balik->tanggal;

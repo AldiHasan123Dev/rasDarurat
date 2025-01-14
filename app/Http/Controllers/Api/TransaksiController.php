@@ -49,6 +49,7 @@ class TransaksiController extends Controller
         $month_number = date("n", strtotime($request->created_at)); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d',$no).'/RAS/'.$month_roman.'/'.date('y', strtotime($request->created_at));
+        dd($invoice);
 
         Order::where('job',$transaksi->job)->update([
             'invoice' => $invoice,

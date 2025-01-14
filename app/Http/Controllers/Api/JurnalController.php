@@ -55,9 +55,9 @@ class JurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        if(!empty($data['order_id'])){
+        if(!empty($data['invoice_expdc'])){
             $name = $data['nama'];
-            $order = Order::find($data['order_id']);
+            $order = Order::find($data['invoice_expdc']);
             $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
             $cont = $order->container;
             $seal = $order->seal;
@@ -83,9 +83,37 @@ class JurnalController extends Controller
             $data['container'] = $order->container;
             $data['nama'] = $name;
         }
-        if(!empty($data['order_trucking_id'])){
+        if(!empty($data['invoice_agen'])){
             $name = $data['nama'];
-            $order = OrderTrucking::find($data['order_trucking_id']);
+            $order = Order::find($data['invoice_agen']);
+            $id_job = $order->job.'-'.sprintf('%02d',$order->no_job);
+            $cont = $order->container;
+            $seal = $order->seal;
+            $shipment = $order->tarif->shipmentInfo->nama;
+            $pembayar = $order->tarif->customer->nama ?? '-';
+            $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+            $voyage = $order->jadwal_kapal->voyage ?? '-';
+            $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+            $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
+            $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]',$id_job,$name);
+            $name = str_replace('[2]',$cont,$name);
+            $name = str_replace('[3]',$seal,$name);
+            $name = str_replace('[4]',$kapal,$name);
+            $name = str_replace('[5]',$voyage,$name);
+            $name = str_replace('[6]',$shipment,$name);
+            $name = str_replace('[7]',$pembayar,$name);
+            $name = str_replace('[8]',$customer,$name);
+            $name = str_replace('[9]',$shipment_trucking,$name);
+            $name = str_replace('[10]',$tujuan_trucking,$name);
+            $data['invoice_agen'] = $order->invoice_agen;
+            $data['nopol'] = $order->nopol;
+            $data['container'] = $order->container;
+            $data['nama'] = $name;
+        }
+        if(!empty($data['invoice_vendor'])){
+            $name = $data['nama'];
+            $order = OrderTrucking::find($data['invoice_vendor']);
             $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
             $cont = $order->container;
             $seal = $order->seal;
@@ -107,7 +135,36 @@ class JurnalController extends Controller
             $name = str_replace('[8]',$customer,$name);
             $name = str_replace('[9]',$shipment_trucking,$name);
             $name = str_replace('[10]',$tujuan_trucking,$name);
-            $data['invoice'] = $order->invoice;
+            $data['invoice_vendor'] = $order->invoice;
+            $data['nopol'] = $order->kendaraan->nopol;
+            $data['container'] = $order->container;
+            $data['nama'] = $name;
+        }
+         if(!empty($data['invoice_trucking'])){
+            $name = $data['nama'];
+            $order = OrderTrucking::find($data['invoice_trucking']);
+            $id_job = $order->order ? $order->order->job.'-'.sprintf('%02d',$order->order->no_job) : '-';
+            $cont = $order->container;
+            $seal = $order->seal;
+            $order_id = $order->order ? $order->order->id : null;
+            $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+            $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+            $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+            $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+            $customer = $order->customer->nama;
+            $shipment_trucking = $order->tipe;
+            $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]',$id_job,$name);
+            $name = str_replace('[2]',$cont,$name);
+            $name = str_replace('[3]',$seal,$name);
+            $name = str_replace('[4]',$kapal,$name);
+            $name = str_replace('[5]',$voyage,$name);
+            $name = str_replace('[6]',$shipment,$name);
+            $name = str_replace('[7]',$pembayar,$name);
+            $name = str_replace('[8]',$customer,$name);
+            $name = str_replace('[9]',$shipment_trucking,$name);
+            $name = str_replace('[10]',$tujuan_trucking,$name);
+            $data['invoice_trucking'] = $order->invoice;
             $data['nopol'] = $order->kendaraan->nopol;
             $data['container'] = $order->container;
             $data['nama'] = $name;

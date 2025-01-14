@@ -84,7 +84,7 @@ class JurnalController extends Controller
         if ($request->jurnal_simpanan_sopir) {
             foreach ($request->jurnal_simpanan_sopir as $js) {
                 $debit = $js;
-                $credit = $js;
+                $credit = $js;         
                 $debit['created_at'] = $request->created_at;
                 $credit['coa_id'] = ($credit['tipe'] == 'BBK' ? 45 : ($credit['tipe'] == 'BKK' ? 16 : ($credit['tipe'] == 'BBKT' ? 175 : null)));
                 $credit['credit'] = $credit['debit'];
@@ -288,7 +288,7 @@ class JurnalController extends Controller
             $query->whereNull('jurnal_balik');
             if (request('order_id')) {
                 if (request('tipe') == 'job') {
-                    $order = Order::find(request('order'));
+                    $order = Order::find(request('order_id'));
                     $job = $order->job;
                     $query->whereHas('order', function ($q) use ($job) {
                         $q->where('job', $job);
@@ -356,6 +356,20 @@ class JurnalController extends Controller
         for ($i = 0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
+                $no_bg = $data['no_bg'][$i] ?? null;
+                $order_trucking = $data['invoice_trucking'][$i] ?? null;
+                $order_vendor = $data['invoice_vendor'][$i] ?? null;
+                $order_expdc = $data['invoice'][$i] ?? null;
+                $order_agen = $data['invoice_agen'][$i] ?? null;
+                $agen =  Order::find($order_agen);
+                $jurnal_external = $data['invoice_external'][$i] ?? null;
+                $expdc = Order::find($order_expdc);
+                $trucking = OrderTrucking::find($order_trucking);
+                $vendor = OrderTrucking::find($order_vendor);
+                $invoice_vendor = $vendor->invoice ?? null;
+                $invoice_trucking = $trucking->invoice ?? null;
+                $invoice_expdc = $expdc->invoice ?? null;
+                $invoice_agen = $agen->invoice_agen ?? null;
                 if ($data['tipe'] == 'JNL') {
                     $nomor = sprintf('%02d', date('m', strtotime($data['created_at']))) . '-' . sprintf('%03d', $no) . '/' . ($this->sno == 'ALB' ? 'ALB/' : '') . date('y', strtotime($data['created_at']));
                 } else {
@@ -363,15 +377,22 @@ class JurnalController extends Controller
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     // Tentukan nilai relasi untuk debit
-                    $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
-                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                    $relasiDebit = $data['relasi'][$i] ?? ($invoice_vendor === null && $invoice_trucking === null && $invoice_expdc === null && $invoice_agen === null ? $nomor : $nomor);
+                    $relasiCredit = $data['relasi'][$i] ?? ($invoice_vendor === null && $invoice_trucking === null && $invoice_expdc === null && $invoice_agen === null  ? $nomor : $nomor);
                     // Buat entri untuk debit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'invoice' => $data['invoice'][$i],
+                        'invoice_external' => $jurnal_external?? null,
+                        'invoice_agen' => $invoice_agen ?? null,
+                        'invoice_vendor' => $invoice_vendor ?? null,
+                        'order_trucking_id' => $order_trucking ?? $order_vendor ?? null,
+                        'invoice' => $invoice_expdc ?? null,
+                        'order_id' => $order_expdc ?? $order_agen ?? null,
+                        'invoice_trucking' => $invoice_trucking ?? null,
                         'nopol' => $data['nopol'][$i],
                         'coa_id' => $data['debit_coa_id'][$i],
                         'nomor' => $nomor,
+                        'no_bg' => $no_bg,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
@@ -380,16 +401,22 @@ class JurnalController extends Controller
                     ]);
                 
                     // Tentukan nilai relasi untuk kredit
-                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
-                
+                    $relasiCredit = $data['relasi'][$i] ?? ($invoice_vendor === null && $invoice_trucking === null && $invoice_expdc === null && $invoice_agen === null  ? $nomor : $nomor);
                     // Buat entri untuk kredit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'invoice' => $data['invoice'][$i],
+                        'invoice' => $invoice_expdc ?? null,
+                        'invoice_external' => $jurnal_external?? null,
+                        'invoice_agen' => $invoice_agen ?? null,
+                        'order_id' => $order_expdc ?? $order_agen ?? null,
+                        'invoice_vendor' => $invoice_vendor ?? null,
+                        'order_trucking_id' => $order_trucking ?? $order_vendor ?? null,
+                        'invoice_trucking' => $invoice_trucking ?? null,
                         'nopol' => $data['nopol'][$i],
                         'coa_id' => $data['credit_coa_id'][$i],
                         'nomor' => $nomor,
                         'nama' => $name,
+                        'no_bg' => $no_bg,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
                         'relasi' => $relasiCredit,
@@ -398,15 +425,22 @@ class JurnalController extends Controller
                 } else {
                     if ($data['debit_coa_id'][$i]) {
                         // Tentukan nilai relasi untuk debit
-                        $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                        $relasiDebit = $data['relasi'][$i] ?? ($invoice_vendor === null && $invoice_trucking === null && $invoice_expdc === null && $invoice_agen === null ? $nomor : $nomor);
                 
                         // Buat entri untuk debit
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'invoice' => $data['invoice'][$i],
+                            'invoice' => $invoice_expdc ?? null,
+                            'invoice_external' => $jurnal_external?? null,
+                            'invoice_agen' => $invoice_agen ?? null,
+                            'order_id' => $order_expdc ?? $order_agen ?? null,
+                            'invoice_vendor' => $invoice_vendor ?? null,
+                            'order_trucking_id' => $order_trucking ?? $order_vendor ?? null,
+                            'invoice_trucking' => $invoice_trucking ?? null,
                             'nopol' => $data['nopol'][$i],
                             'coa_id' => $data['debit_coa_id'][$i],
                             'nomor' => $nomor,
+                            'no_bg' => $no_bg,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
@@ -417,14 +451,21 @@ class JurnalController extends Controller
                 
                     if ($data['credit_coa_id'][$i]) {
                         // Tentukan nilai relasi untuk kredit
-                        $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($data['invoice'][$i] == null ? $nomor : $data['relasi'][$i]);
+                        $relasiCredit = $data['relasi'][$i] ?? ($invoice_vendor === null && $invoice_trucking === null && $invoice_expdc === null && $invoice_agen === null  ? $nomor : $nomor);
                         // Buat entri untuk kredit
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'invoice' => $data['invoice'][$i],
+                            'invoice' => $invoice_expdc ?? null,
+                            'invoice_agen' => $invoice_agen ?? null,
+                            'invoice_external' => $jurnal_external?? null,
+                            'order_id' => $order_expdc ?? $order_agen ?? null,
+                            'invoice_vendor' => $invoice_vendor ?? null,
+                            'order_trucking_id' => $order_trucking ?? $order_vendor ?? null,
+                            'invoice_trucking' => $invoice_trucking ?? null,
                             'nopol' => $data['nopol'][$i],
                             'coa_id' => $data['credit_coa_id'][$i],
                             'nomor' => $nomor,
+                            'no_bg' => $no_bg,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
@@ -442,7 +483,6 @@ class JurnalController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        // dd($data);
         $no = Jurnal::where('tipe', $data['tipe'])->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
         if ($data['tipe'] == 'JNL') {
             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($data['created_at'])))->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
@@ -458,12 +498,19 @@ class JurnalController extends Controller
                 $name = $data['name'][$i];
                 $no_bg = $data['no_bg'][$i] ?? null;
                 $jurnal_external = $data['invoice_external'][$i] ?? null;
-                $invoice = null;
+                $order_id = $data['invoice'][$i] ?? null;
+                $order_id1 = $data['invoice_agen'][$i] ?? null;
+                $orders = Order::find($order_id);
+                $orders1 = Order::find($order_id1);
+                $invoice = $orders->invoice ?? null;
+                $invoice_agen = $orders1->invoice_agen ?? null; 
+                // dd($invoice_agen, $invoice,$order_id,$order_id1);               
                 $nopol = null;
                 $container = null;
                 if ($data['order_id'][$i]) {
                     array_push($arr_order, $data['order_id'][$i]);
-                    $order = Order::find($data['order_id'][$i]);
+                    $order_id = $data['order_id'][$i];
+                    $order = Order::find($order_id);
                     $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
                     $cont = $order->container;
                     $seal = $order->seal;
@@ -484,8 +531,8 @@ class JurnalController extends Controller
                     $name = str_replace('[8]', $customer, $name);
                     $name = str_replace('[9]', $shipment_trucking, $name);
                     $name = str_replace('[10]', $tujuan_trucking, $name);
-                    $invoice = $order->invoice;
                     $nopol = $order->nopol;
+                    $invoice = $order->invoice ?? null;
                     $container = $order->container;
                 }
                 if ($data['tipe'] == 'JNL') {
@@ -494,74 +541,79 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
-                    $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+                    $relasiDebit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null ? $nomor : $nomor);
+                    $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'invoice' => $invoice,
+                        'invoice' => $invoice ?? null,
+                        'invoice_agen' => $invoice_agen ?? null,
                         'nopol' => $nopol,
                         'container' => $container,
                         'coa_id' => $data['debit_coa_id'][$i],
-                        'order_id' => $data['order_id'][$i],
+                        'order_id' => $order_id ?? ($order_id1 ?? null),
                         'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $relasiDebit,
+                        'relasi' => $relasiDebit ?? $nomor,
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
                         'no' => $no
                     ]);
-                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+                    $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'invoice' => $invoice,
+                        'invoice' => $invoice ?? null,
+                        'invoice_agen' => $invoice_agen ?? null,
                         'nopol' => $nopol,
                         'container' => $container,
                         'coa_id' => $data['credit_coa_id'][$i],
-                        'order_id' => $data['order_id'][$i],
+                        'order_id' => $order_id ?? ($order_id1 ?? null),
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
-                        'relasi' => $relasiCredit,
+                        'relasi' => $relasiCredit ?? $nomor,
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
                         'no' => $no
                     ]);
                 } else {
                     if ($data['debit_coa_id'][$i]) {
-                        $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+                        $relasiDebit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null ? $nomor : $nomor);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'invoice' => $invoice,
+                            'invoice' => $invoice ?? null,
+                            'invoice_agen' => $invoice_agen ?? null,
                             'nopol' => $nopol,
                             'container' => $container,
                             'coa_id' => $data['debit_coa_id'][$i],
-                            'order_id' => $data['order_id'][$i],
+                            'order_id' => $order_id ?? ($order_id1 ?? null),
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'relasi' => $relasiDebit,
+                            'relasi' => $relasiDebit ?? $nomor,
                             'no_bg' => $no_bg,
                             'invoice_external' => $jurnal_external,
                             'no' => $no
                         ]);
                     }
                     if ($data['credit_coa_id'][$i]) {
-                        $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
+                        $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'invoice' => $invoice,
+                            'invoice' => $invoice ?? null,
+                            'invoice_agen' => $invoice_agen ?? null,
                             'nopol' => $nopol,
                             'container' => $container,
                             'coa_id' => $data['credit_coa_id'][$i],
-                            'order_id' => $data['order_id'][$i],
+                            'order_id' => $order_id ?? ($order_id1 ?? null),
                             'nomor' => $nomor,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
-                            'relasi' => $relasiCredit,
+                            'relasi' => $relasiCredit ?? $nomor,
                             'no_bg' => $no_bg,
                             'invoice_external' => $jurnal_external,
                             'no' => $no
@@ -632,6 +684,7 @@ class JurnalController extends Controller
     {
         $tujuan = Jurnal::where('nomor', $request->tujuan)->first();
         Jurnal::where('nomor', $request->awal)->update([
+            'relasi' => $tujuan->nomor ?? $tujuan->relasi,
             'nomor' => $tujuan->nomor,
             'no' => $tujuan->no,
             'tipe' => $tujuan->tipe,
@@ -648,7 +701,6 @@ class JurnalController extends Controller
         if ($data['tipe'] == 'JNL') {
             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($data['created_at'])))->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
         }
-
         $jurnal_model = new Jurnal();
         if ($data['simpan'] == 'tampungan') {
             $jurnal_model = new JurnalTampungan();
@@ -659,14 +711,20 @@ class JurnalController extends Controller
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
                 $order_id = null;
-                $invoice = null;
+                $order_trucking = $data['invoice_trucking'][$i] ?? null;
+                $order_vendor = $data['invoice_vendor'][$i] ?? null;
+                $trucking = OrderTrucking::find($order_trucking);
+                $vendor = OrderTrucking::find($order_vendor);
+                $invoice = $trucking->invoice ?? null;
+                $invoice_vendor = $vendor->invoice?? null;
+                // dd($invoice_vendor,$vendor);
+                 // Mengambil ID saja
                 $nopol = null;
                 $container = null;
                 $jurnal_external = $data['invoice_external'][$i] ?? null;
                 if ($data['order_id'][$i]) {
+                    $order_trucking = $data['order_id'][$i];
                     $order = OrderTrucking::find($data['order_id'][$i]);
-                    $order_job = Order::find($data['order_id'][$i]);
-                    $invoice_job = $order_job->invoice;
                     $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
                     $cont = $order->container;
                     $seal = $order->seal;
@@ -688,9 +746,9 @@ class JurnalController extends Controller
                     $name = str_replace('[8]', $customer, $name);
                     $name = str_replace('[9]', $shipment_trucking, $name);
                     $name = str_replace('[10]', $tujuan_trucking, $name);
-                    $invoice = $order->invoice;
                     $nopol = $order->kendaraan->nopol;
                     $container = $order->container;
+                    $invoice = $order->invoice ?? null;
                     array_push($arr_order, $order->id);
                 }
                 if ($data['tipe'] == 'JNL') {
@@ -698,63 +756,20 @@ class JurnalController extends Controller
                 } else {
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
-                            if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
-                // Tentukan nilai relasi untuk debit dan kredit
-                $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
-                $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
-
-                // Buat entri untuk debit
-                $jurnal_model->create([
-                    'tipe' => $data['tipe'],
-                    'coa_id' => $data['debit_coa_id'][$i],
-                    'invoice' => $invoice_job ?? null,
-                    'invoice_trucking' => $invoice,
-                    'nopol' => $nopol,
-                    'container' => $container,
-                    'order_id' => $order_id,
-                    'order_trucking_id' => $data['order_id'][$i],
-                    'nomor' => $nomor,
-                    'nama' => $name,
-                    'debit' => $data['amount'][$i],
-                    'created_at' => $data['created_at'],
-                    'relasi' => $relasiDebit,
-                    'no' => $no,
-                    'invoice_external' => $jurnal_external,
-                ]);
-
-                // Buat entri untuk kredit
-                $jurnal_model->create([
-                    'tipe' => $data['tipe'],
-                    'coa_id' => $data['credit_coa_id'][$i],
-                    'invoice' => $invoice_job ?? null,
-                    'invoice_trucking' => $invoice,
-                    'nopol' => $nopol,
-                    'container' => $container,
-                    'order_id' => $order_id,
-                    'order_trucking_id' => $data['order_id'][$i],
-                    'nomor' => $nomor,
-                    'nama' => $name,
-                    'credit' => $data['amount'][$i],
-                    'created_at' => $data['created_at'],
-                    'relasi' => $relasiCredit,
-                    'no' => $no,
-                    'invoice_external' => $jurnal_external,
-                ]);
-            } else {
-                if ($data['debit_coa_id'][$i]) {
-                    // Tentukan nilai relasi untuk debit
-                    $relasiDebit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
-
-                    // Buat entri untuk debit
+                if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    // Tentukan nilai relasi untuk debit dan kredit
+                    $relasiDebit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null ? $nomor : $nomor);
+                    $relasiCredit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null  ? $nomor : $nomor);
+                
+                    // Buat entri untuk debit terlebih dahulu
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
-                        'invoice' => $invoice_job,
-                        'invoice_trucking' => $invoice,
+                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                        'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                         'nopol' => $nopol,
                         'container' => $container,
-                        'order_id' => $order_id,
-                        'order_trucking_id' => $data['order_id'][$i],
+                        'order_trucking_id' => $order_trucking,
                         'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
@@ -763,22 +778,16 @@ class JurnalController extends Controller
                         'no' => $no,
                         'invoice_external' => $jurnal_external,
                     ]);
-                }
-
-                if ($data['credit_coa_id'][$i]) {
-                    // Tentukan nilai relasi untuk kredit
-                    $relasiCredit = !empty($data['relasi'][$i]) ? $data['relasi'][$i] : ($jurnal_external == null ? $nomor : $data['relasi'][$i]);
-
-                    // Buat entri untuk kredit
+                
+                    // Buat entri untuk kredit setelah debit
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
-                        'invoice' => $invoice_job ?? null,
-                        'invoice_trucking' => $invoice,
+                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                        'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                         'nopol' => $nopol,
                         'container' => $container,
-                        'order_id' => $order_id,
-                        'order_trucking_id' => $data['order_id'][$i],
+                        'order_trucking_id' => $order_trucking,
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
@@ -787,8 +796,54 @@ class JurnalController extends Controller
                         'no' => $no,
                         'invoice_external' => $jurnal_external,
                     ]);
-                  }
-                }
+                } else {
+                    if ($data['debit_coa_id'][$i]) {
+                        // Tentukan nilai relasi untuk debit
+                        $relasiDebit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null ? $nomor : $nomor);
+                
+                        // Buat entri untuk debit
+                        $jurnal_model->create([
+                            'tipe' => $data['tipe'],
+                            'coa_id' => $data['debit_coa_id'][$i],
+                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'nopol' => $nopol,
+                            'container' => $container,
+                            'order_trucking_id' => $order_trucking,
+                            'nomor' => $nomor,
+                            'nama' => $name,
+                            'debit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'],
+                            'relasi' => $relasiDebit,
+                            'no' => $no,
+                            'invoice_external' => $jurnal_external,
+                        ]);
+                    }
+                
+                    if ($data['credit_coa_id'][$i]) {
+                        // Tentukan nilai relasi untuk kredit
+                        $relasiCredit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null ? $nomor : $nomor);
+                
+                        // Buat entri untuk kredit
+                        $jurnal_model->create([
+                            'tipe' => $data['tipe'],
+                            'coa_id' => $data['credit_coa_id'][$i],
+                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'nopol' => $nopol,
+                            'container' => $container,
+                            'order_id' => $order_id,
+                            'order_trucking_id' => $order_trucking,
+                            'nomor' => $nomor,
+                            'nama' => $name,
+                            'credit' => $data['amount'][$i],
+                            'created_at' => $data['created_at'],
+                            'relasi' => $relasiCredit,
+                            'no' => $no,
+                            'invoice_external' => $jurnal_external,
+                        ]);
+                    }
+                }                
             }
         }
 
@@ -853,7 +908,6 @@ class JurnalController extends Controller
     public function store_kolektif(Request $request)
     {
         $data = $request->all();
-        // dd($data);
         $no = Jurnal::where('tipe', $data['tipe'])->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
         if ($data['tipe'] == 'JNL') {
             $no = Jurnal::where('tipe', 'JNL')->whereMonth('created_at', date('m', strtotime($data['created_at'])))->whereYear('created_at', date('Y', strtotime($data['created_at'])))->max('no') + 1;
@@ -895,7 +949,6 @@ class JurnalController extends Controller
                     $name = str_replace('[8]', $customer, $name);
                     $name = str_replace('[9]', $shipment_trucking, $name);
                     $name = str_replace('[10]', $tujuan_trucking, $name);
-                    $invoice = $order->invoice;
                     $nopol = $order->nopol;
                     $container = $order->container;
 
@@ -993,13 +1046,73 @@ class JurnalController extends Controller
         $cre = Jurnal::where('nomor', $jurnal)->sum('credit');
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(3)->format('Y-m-d');
-        $orders = Order::whereBetween('created_at', [$last, $now])->select('id', 'no_job', 'job', 'seal', 'invoice')->orderBy('job')->orderBy('no_job')->get();
-        $tipe = 'xpdc';
-        if ($data->order_trucking_id) {
-            $tipe = 'trucking';
-            $orders = OrderTrucking::whereBetween('created_at', [$last, $now])->select('container', 'seal', 'id', 'invoice')->orderBy('container')->get();
-        }
+        $orders_expdc = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice', 'invoice_agen')
+        ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
+
+    $orders_agen = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
+        ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
+
+    $orders_trucking = collect(); // Default empty collection
+    $orders_vendor = collect(); // Default empty collection
+
+    $tipe = 'xpdc';
+
+    $invx = Jurnal::whereNotNull('invoice_external')
+        ->distinct('invoice_external')
+        ->orderBy('invoice_external')
+        ->pluck('invoice_external')
+        ->toArray();
+
+    if ($data->order_trucking_id) {
+        $tipe = 'trucking';
+        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+
+        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'not like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+    } elseif ($data->order_trucking_id === null && $data->order_id === null) {
+        $tipe = 'lain-lain';
+        $orders_expdc = Order::whereBetween('created_at', [$last, $now])
+            ->select('id', 'no_job', 'job', 'seal', 'invoice')
+            ->orderBy('job')
+            ->orderBy('no_job')
+            ->get();
+
+        $orders_agen = Order::whereBetween('created_at', [$last, $now])
+            ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
+            ->orderBy('job')
+            ->orderBy('no_job')
+            ->get();
+
+        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+
+        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'not like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+    }
         $jur = $data;
+        $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
+        $bgs = array_unique($bgs);
+        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $relasi = Jurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
         $debit = Jurnal::where('nomor', $jurnal)->whereIn('coa_id', [16, 45, 175])->where('credit', 0)->sum('debit');
         $credit = Jurnal::where('nomor', $jurnal)->whereIn('coa_id', [16, 45, 175])->where('debit', 0)->sum('credit');
         $voucher  = $debit - $credit;
@@ -1007,34 +1120,103 @@ class JurnalController extends Controller
             $voucher = $voucher * -1;
         }
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.new_edit', compact('data', 'orders', 'coa', 'tipe', 'jur', 'voucher', 'deb', 'cre', 'count'));
+        return view('admin.jurnal.new_edit', compact('orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor',  'invx','bgs','data', 'relasi', 'coa', 'tipe', 'jur', 'voucher', 'deb', 'cre', 'count'));
     }
 
     public function editOne(Jurnal $jurnal)
-    {
-        $coa = COA::where('is_active', 1)->orderBy('kode')->get();
-        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
-        $orders = Order::whereBetween('created_at', [$last, $now])->select('id', 'no_job', 'job', 'seal', 'invoice')->orderBy('job')->orderBy('no_job')->get();
-        $tipe = 'xpdc';
-        if ($jurnal->order_trucking_id) {
-            $tipe = 'trucking';
-            $orders = OrderTrucking::whereBetween('created_at', [$last, $now])->select('container', 'seal', 'id', 'invoice')->orderBy('container')->get();
-        }
-        $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
-        $bgs = array_unique($bgs);
-        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
-        $relasi = Jurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
-        // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.form_edit', compact('jurnal', 'orders', 'coa', 'tipe', 'bgs','relasi'));
+{
+    $coa = COA::where('is_active', 1)->orderBy('kode')->get();
+    $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+    $last = Carbon::now()->subMonths(6)->format('Y-m-d');
+
+    // Default orders and other variables
+    $orders_expdc = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice', 'invoice_agen')
+        ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
+
+    $orders_agen = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
+        ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
+
+    $orders_trucking = collect(); // Default empty collection
+    $orders_vendor = collect(); // Default empty collection
+
+    $tipe = 'xpdc';
+
+    $invx = Jurnal::whereNotNull('invoice_external')
+        ->distinct('invoice_external')
+        ->orderBy('invoice_external')
+        ->pluck('invoice_external')
+        ->toArray();
+
+    if ($jurnal->order_trucking_id) {
+        $tipe = 'trucking';
+        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+
+        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'not like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+    } elseif ($jurnal->order_trucking_id === null && $jurnal->order_id === null) {
+        $tipe = 'lain-lain';
+        $orders_expdc = Order::whereBetween('created_at', [$last, $now])
+            ->select('id', 'no_job', 'job', 'seal', 'invoice')
+            ->orderBy('job')
+            ->orderBy('no_job')
+            ->get();
+
+        $orders_agen = Order::whereBetween('created_at', [$last, $now])
+            ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
+            ->orderBy('job')
+            ->orderBy('no_job')
+            ->get();
+
+        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+
+        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->where('invoice', 'not like', '%RAS-LT%')
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
     }
+
+    $bgs = Jurnal::whereNotNull('no_bg')
+        ->orderBy('no_bg')
+        ->pluck('no_bg')
+        ->toArray();
+    $bgs = array_unique($bgs);
+
+    $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+    $relasi = Jurnal::where('created_at', '>=', $last_relasi)
+        ->distinct('nomor')
+        ->orderBy('nomor')
+        ->pluck('nomor')
+        ->toArray();
+
+    return view('admin.jurnal.form_edit', compact('invx', 'jurnal', 'orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor', 'coa', 'tipe', 'bgs', 'relasi'));
+}
+
 
     public function updateOne(Request $request, Jurnal $jurnal)
     {
         $data = $request->all();
-        if (!empty($data['order_id'])) {
+        if (!empty($data['inv_expdc']) || !empty($data['invoice_agen'])) {
             $name = $data['nama'];
-            $order = Order::find($data['order_id']);
+            $order_expdc = $data['inv_expdc'] ?? $data['invoice_agen'] ?? null;
+            $order = Order::find($order_expdc);
             $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
             $cont = $order->container;
             $seal = $order->seal;
@@ -1055,14 +1237,20 @@ class JurnalController extends Controller
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = $order->invoice;
+            $data['invoice'] = $order->invoice ?? null;
+            $data['invoice_agen'] = $order->invoice_agen ?? null;
+            $data['invoice_trucking'] = null;
+            $data['invoice_vendor'] = null;
+            $data['order_trucking_id'] = null;
+            $data['order_id'] =$order_expdc;
             $data['nopol'] = $order->nopol;
             $data['container'] = $order->container;
             $data['nama'] = $name;
         }
-        if (!empty($data['order_trucking_id'])) {
+        if (!empty($data['inv_trucking'])) {
             $name = $data['nama'];
-            $order = OrderTrucking::find($data['order_trucking_id']);
+            $order_expdc = $data['inv_trucking'] ?? null;
+            $order = OrderTrucking::find($order_expdc);
             $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
             $cont = $order->container;
             $seal = $order->seal;
@@ -1084,7 +1272,47 @@ class JurnalController extends Controller
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = $order->invoice;
+            $data['invoice_trucking'] = $order->invoice ?? null;
+            $data['order_id'] = null;
+            $data['nopol'] = $order->kendaraan->nopol;
+            $data['invoice'] = null;
+            $data['invoice_vendor'] = null;
+            $data['invoice_agen'] = null;
+            $data['order_trucking_id'] = $order_expdc;
+            $data['container'] = $order->container;
+            $data['nama'] = $name;
+        }
+        if(!empty($data['inv_vendor'])) {
+            $name = $data['nama'];
+            $order_expdc = $data['inv_vendor'] ?? null;
+            $order = OrderTrucking::find($order_expdc);
+            $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
+            $cont = $order->container;
+            $seal = $order->seal;
+            $order_id = $order->order ? $order->order->id : null;
+            $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+            $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+            $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+            $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+            $customer = $order->customer->nama;
+            $shipment_trucking = $order->tipe;
+            $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]', $id_job, $name);
+            $name = str_replace('[2]', $cont, $name);
+            $name = str_replace('[3]', $seal, $name);
+            $name = str_replace('[4]', $kapal, $name);
+            $name = str_replace('[5]', $voyage, $name);
+            $name = str_replace('[6]', $shipment, $name);
+            $name = str_replace('[7]', $pembayar, $name);
+            $name = str_replace('[8]', $customer, $name);
+            $name = str_replace('[9]', $shipment_trucking, $name);
+            $name = str_replace('[10]', $tujuan_trucking, $name);
+            $data['invoice_vendor'] = $order->invoice ?? null;
+            $data['order_trucking_id'] = $order_expdc;
+            $data['order_id'] = null;
+            $data['invoice'] = null;
+            $data['invoice_trucking'] = null;
+            $data['invoice_agen'] = null;
             $data['nopol'] = $order->kendaraan->nopol;
             $data['container'] = $order->container;
             $data['nama'] = $name;
@@ -1584,7 +1812,6 @@ class JurnalController extends Controller
         }
 
         $data = Jurnal::whereNotNull('order_trucking_id')->whereNull('order_id')->whereBetween('created_at', ['2023-07-01', date('Y-m-d')])->get();
-        // dd($data->take(10));
         $awal = $data->count();
         $akhir = 0;
         $subs = 0;
@@ -1630,6 +1857,11 @@ class JurnalController extends Controller
         if ($data['simpan'] == 'tampungan') {
             $jurnal_model = new JurnalTampungan();
         }
+        $orders = OrderTrucking::where('invoice', $data['invoice'])->get();
+        foreach ($orders as $order) {
+            $order_trucking = $order->id;
+            # code...
+        }
 
         $month = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULY', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
 
@@ -1648,9 +1880,12 @@ class JurnalController extends Controller
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'invoice' => $data['invoice'][$i],
+                        'order_trucking_id' => $order_trucking,
+                        'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                        'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                         'coa_id' => $data['debit_coa_id'][$i],
                         'nomor' => $nomor,
+                        'relasi' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
@@ -1658,9 +1893,12 @@ class JurnalController extends Controller
                     ]);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'invoice' => $data['invoice'][$i],
+                        'order_trucking_id' => $order_trucking,
+                        'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                        'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                         'coa_id' => $data['credit_coa_id'][$i],
                         'nomor' => $nomor,
+                        'relasi' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
@@ -1670,9 +1908,12 @@ class JurnalController extends Controller
                     if ($data['debit_coa_id'][$i]) {
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'invoice' => $data['invoice'][$i],
+                            'order_trucking_id' => $order_trucking,
+                            'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                            'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                             'coa_id' => $data['debit_coa_id'][$i],
                             'nomor' => $nomor,
+                            'relasi' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
@@ -1682,16 +1923,19 @@ class JurnalController extends Controller
                     if ($data['credit_coa_id'][$i]) {
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'invoice' => $data['invoice'][$i],
+                            'order_trucking_id' => $order_trucking,
+                            'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                            'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                             'coa_id' => $data['credit_coa_id'][$i],
                             'nomor' => $nomor,
+                            'relasi' => $nomor,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
                             'no' => $no
                         ]);
                     }
-                }
+                }                
 
                 TransaksiTrucking::where('invoice', $data['invoice'][$i])->update([
                     'bupot' => $data['amount'][$i],

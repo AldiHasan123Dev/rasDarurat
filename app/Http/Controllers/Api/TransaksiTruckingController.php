@@ -28,7 +28,7 @@ class TransaksiTruckingController extends Controller
             $no3= $trucking->order_vendor;
             $invoice = sprintf('%03d',$no3).'/VENDOR-'.$month_roman.'/'.date('y', strtotime($request->created_at));
         }
-
+ 
         $trucking->update([
             'tgl_invoice' => $request->created_at,
             'invoice' => $invoice,
@@ -42,20 +42,24 @@ class TransaksiTruckingController extends Controller
 
         if($trucking->jurnal_piutang){
             Jurnal::where('nomor',$trucking->jurnal_piutang)->update([
-                'invoice' => $invoice
+                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
             ]);
             JurnalSample::where('nomor',$trucking->jurnal_piutang)->update([
-                'invoice' => $invoice
+                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
             ]);
         }
         if($trucking->jurnal_hutang){
             $j = Jurnal::where('nomor',$trucking->jurnal_hutang)->where('credit','>',0)->first();
             $js = JurnalSample::where('nomor',$trucking->jurnal_hutang)->where('credit','>',0)->first();
             Jurnal::where('nomor',$trucking->jurnal_hutang)->update([
-                'invoice' => $invoice
+                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
             ]);
             JurnalSample::where('nomor',$trucking->jurnal_hutang)->update([
-                'invoice' => $invoice,
+                'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
             ]);
 
             if($j){

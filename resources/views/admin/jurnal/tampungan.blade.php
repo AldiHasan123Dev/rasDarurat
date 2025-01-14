@@ -39,7 +39,10 @@
                                     <th>COA</th>
                                     <th>ID Job</th>
                                     <th>Invoice</th>
+                                    <th>Invoice Agen</th>
+                                    <th>Invoice Vendor</th>
                                     <th>Invoice External</th>
+                                    <th>No BG</th>
                                     <th>Cont</th>
                                     <th>Nopol</th>
                                     <th>Keterangan</th>
