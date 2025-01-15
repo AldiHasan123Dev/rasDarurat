@@ -1212,6 +1212,10 @@ class JurnalController extends Controller
             ->get();
     } elseif ($jurnal->order_trucking_id === null && $jurnal->order_id === null) {
         $tipe = 'lain-lain';
+        $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
+        ->select('container', 'seal', 'id', 'invoice')
+        ->orderBy('container')
+        ->get();
         $orders_expdc = Order::whereBetween('created_at', [$last, $now])
             ->select('id', 'no_job', 'job', 'seal', 'invoice')
             ->whereNotNull('invoice')
