@@ -145,22 +145,60 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        @if ($tipe == 'xpdc')
+                        <div class="col-12 mb-3">
+                            <label for="order_id1">Job</label><br>
+                            <select class="form-control" id="job" name="job" style="font-size:.9rem !important">
+                                <option value=""></option>
+                                @foreach ($orders as $item)
+                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @elseif ($tipe == 'trucking')
+                        <div class="col-12 mb-3">
+                            <label for="order_id1">Trucking</label><br>
+                            <select class="form-control" id="trucking12" name="trucking" style="font-size:.9rem !important">
+                                <option value=""></option>
+                                @foreach ($orders_trucking1 as $item)
+                                <option value="{{ $item->id }}">
+                                            {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @else
+                        <div class="col-12 mb-3">
+                            <label for="order_id1">Job</label><br>
+                            <select class="form-control" id="job" name="job" style="font-size:.9rem !important">
+                                <option value=""></option>
+                                @foreach ($orders as $item)
+                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="order_id1">Trucking</label><br>
+                            <select class="form-control" id="trucking12" name="trucking" style="font-size:.9rem !important">
+                                <option value=""></option>
+                                @foreach ($orders_trucking1 as $item)
+                                <option value="{{ $item->id }}">
+                                            {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
                             <div class="col-12 mb-3">
                                 <label>Pilih Doc</label><br>
                                 <select class="form-control" id="doc" onchange="updateList()" name="order_id" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @if ($tipe == 'xpdc')
-                                        <option value="job">Job</option>
                                         <option value="inv_expdc">Inv Expdc</option>
                                         <option value="inv_agen">Inv Agen</option>
                                         <option value="pelayaran">BG Pelayaran</option>
                                     @elseif ($tipe == 'trucking')
-                                        <option value="trucking">Trucking</option>
                                         <option value="inv_trucking">Inv Trucking</option>
                                         <option value="inv_vendor">Inv Vendor</option>
                                      @else    
-                                     <option value="job">Job</option>
-                                     <option value="trucking">Trucking</option>
                                      <option value="inv_expdc">Inv Expdc</option>
                                      <option value="inv_agen">Inv Agen</option>
                                      <option value="inv_trucking">Inv Trucking</option>
@@ -264,31 +302,6 @@
                 </select>
             </div>
         `;
-    }  else if (newValue === "job") {
-        container.innerHTML = `
-            <div class="col-12 mb-3">
-                <label for="order_id1">Job</label><br>
-                <select class="form-control select2" id="job" name="job" style="font-size:.9rem !important">
-                    <option value=""></option>
-                    @foreach ($orders as $item)
-                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} </option>
-                    @endforeach
-                </select>
-            </div>
-        `;
-    } else if (newValue === "trucking") {
-        container.innerHTML = `
-            <div class="col-12 mb-3">
-                <label for="order_id1">Trucking</label><br>
-                <select class="form-control select2" id="trucking" name="trucking" style="font-size:.9rem !important">
-                    <option value=""></option>
-                    @foreach ($orders_trucking1 as $item)
-                    <option value="{{ $item->id }}">
-                                {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }} </option>
-                    @endforeach
-                </select>
-            </div>
-        `;
     } else if (newValue === "inv_trucking") {
         container.innerHTML = `
             <div class="col-12 mb-3">
@@ -365,6 +378,12 @@ function handleLainLainChange(select, rowId) {
             }
         }
         $('.select2').select2();
+        $('#job').select2({
+            dropdownParent: $('#modal-add'),
+        });
+        $('#trucking12').select2({
+            dropdownParent: $('#modal-add'),
+        });
         $('#coa_id').select2({
             dropdownParent: $('#modal-add'),
         });
@@ -574,10 +593,10 @@ function handleLainLainChange(select, rowId) {
 
         function save(){
             var data = {
-                invoice_expdc:$('#invoice_expdc').val() || null,
-                invoice_agen:$('#invoice_agen').val() || null,
-                invoice_vendor:$('#invoice_vendor').val() || null,
-                invoice_trucking:$('#invoice_trucking').val() || null,
+                invoice_expdc:$('#invoice_expdc').val() || $('#job').val() || null,
+                invoice_agen:$('#invoice_agen').val() || $('#job').val() || null,
+                invoice_vendor:$('#invoice_vendor').val() || $('#trucking').val() || null,
+                invoice_trucking:$('#invoice_trucking').val() ||$('#trucking').val() || null,
                 coa_id:$('#coa_id').val() || null,
                 nama:$('#nama').val() || null,
                 debit:$('#debit').val() || null,
@@ -587,7 +606,6 @@ function handleLainLainChange(select, rowId) {
                 no:@json($jur->no),
                 tipe:@json($jur->tipe),
                 invoice_external:$('#invoice_external').val() || null,
-                relasi: $('#relasi').val() || @json($jur->nomor),
                 relasi: $('#relasi').val() || @json($jur->nomor),
                 no_bg:$('#bg').val() || null,
             };
