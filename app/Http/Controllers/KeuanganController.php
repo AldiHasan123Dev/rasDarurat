@@ -211,7 +211,7 @@ class KeuanganController extends Controller
         $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d', $no) . '/' . $setting->short_name . '/' . $month_roman . '/' . date('y');
-        $data['invoice'] = $invoice;
+        $data['invoice'] = $invoice; 
         $data['nsfp'] = $nsfp->nomor ?? null;
         $data['order'] = $no;
         $data['order_id'] = $order->id;
