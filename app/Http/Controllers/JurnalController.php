@@ -532,7 +532,6 @@ class JurnalController extends Controller
                     $name = str_replace('[9]', $shipment_trucking, $name);
                     $name = str_replace('[10]', $tujuan_trucking, $name);
                     $nopol = $order->nopol;
-                    $invoice = $order->invoice ?? null;
                     $container = $order->container;
                 }
                 if ($data['tipe'] == 'JNL') {
@@ -748,7 +747,6 @@ class JurnalController extends Controller
                     $name = str_replace('[10]', $tujuan_trucking, $name);
                     $nopol = $order->kendaraan->nopol;
                     $container = $order->container;
-                    $invoice = $order->invoice ?? null;
                     array_push($arr_order, $order->id);
                 }
                 if ($data['tipe'] == 'JNL') {
@@ -1264,6 +1262,14 @@ class JurnalController extends Controller
     {
         $data = $request->all();
         $data['relasi'] = $data['relasi'] ?? $request->relasi1;
+        $data['invoice'] = null;
+        $data['invoice_agen'] = null;
+        $data['invoice_trucking'] = null;
+        $data['invoice_vendor'] = null;
+        $data['order_trucking_id'] = null;
+        $data['order_id'] = null;
+        $data['nopol'] = null;
+        $data['container'] = null;
         if (!empty($data['invoice_external']) || !empty($data['no_bg'])) {
             $data['no_bg'] = $data['no_bg'] ?? null;
             $data['invoice_external'] = $data['invoice_external'] ?? null;
