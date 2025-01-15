@@ -187,7 +187,7 @@ class KeuanganController extends Controller
 
     public function invoice()
     {
-        $start_date = request('start_date') ?? date('Y-m').'-01';
+        $start_date = request('start_date') ?? date('Y-m') . '-01';
         $end_date = request('end_date') ?? Carbon::now()->endOfMonth()->format('Y-m-d');
         return view('admin.keuangan.invoice', compact('start_date', 'end_date'));
     }
@@ -197,7 +197,7 @@ class KeuanganController extends Controller
         $setting = Setting::find(1);
         $data = $request->all();
         $customer_id = $order->tarif->customer->id;
-       // $job = $data['job'];
+        // $job = $data['job'];
         // $year = substr($job, 0, 4);
         $nsfp = null;
         if ($customer_id != 318 && $customer_id != 3134) {
@@ -206,21 +206,21 @@ class KeuanganController extends Controller
                 return back()->with('danger', 'Tidak ada NSFP yang tersedia! Harap input NSFP terlebih dahulu');
             }
         }
-        $no = Transaksi::whereYear('created_at', date('Y',strtotime('2024-12-31')))->max('order') + 1;
+        $no = Transaksi::whereYear('created_at')->max('order') + 1;
         $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
-        $month_number = date("n", strtotime('2024-12-31')); // mengambil nomor bulan dari tanggal
+        $month_number = date("n"); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
-        $invoice = sprintf('%04d', $no) . '/' . $setting->short_name . '/' . $month_roman . '/' . date('y',strtotime('2024-12-31'));
+        $invoice = sprintf('%04d', $no) . '/' . $setting->short_name . '/' . $month_roman . '/' . date('y');
         $data['invoice'] = $invoice;
         $data['nsfp'] = $nsfp->nomor ?? null;
         $data['order'] = $no;
         $data['order_id'] = $order->id;
-        $data['created_at'] = date('Y-m-d', strtotime('2024-12-31'));
+        $data['created_at'] = date('Y-m-d');
         Transaksi::create($data);
         Order::where('job', $order->job)->update([
             'invoice' => $invoice,
             'nsfp' => $nsfp->nomor ?? null,
-            'invoice_date' => date('Y-m-d', strtotime('2024-12-31')),
+            'invoice_date' => date('Y-m-d'),
             'lock_biaya' => 1
         ]);
         if ($nsfp) {
