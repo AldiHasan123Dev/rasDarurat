@@ -1298,8 +1298,8 @@ class JurnalController extends Controller
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
             $data['order_id'] =$order_expdc;
-            $data['nopol'] = $order->nopol;
-            $data['container'] = $order->container;
+            $data['nopol'] = $order->nopol ?? null;
+            $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
         if (!empty($data['inv_trucking'])) {
@@ -1368,8 +1368,8 @@ class JurnalController extends Controller
             $data['invoice'] = null;
             $data['invoice_trucking'] = null;
             $data['invoice_agen'] = null;
-            $data['nopol'] = $order->kendaraan->nopol;
-            $data['container'] = $order->container;
+            $data['nopol'] = $order->kendaraan->nopol ?? null;
+            $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
         if (!empty($data['trucking'])) {
@@ -1404,8 +1404,8 @@ class JurnalController extends Controller
             $data['order_id'] = null;
             $data['invoice'] = null;
             $data['invoice_agen'] = null;
-            $data['nopol'] = $order->kendaraan->nopol;
-            $data['container'] = $order->container;
+            $data['nopol'] = $order->kendaraan->nopol ?? null;
+            $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
 
@@ -1439,8 +1439,8 @@ class JurnalController extends Controller
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
             $data['order_id'] =$order_expdc;
-            $data['nopol'] = $order->kendaraan->nopol;
-            $data['container'] = $order->container;
+            $data['nopol'] = $order->nopol ?? null;
+            $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
         
