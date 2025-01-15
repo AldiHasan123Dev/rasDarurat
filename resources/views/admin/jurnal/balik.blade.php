@@ -268,7 +268,7 @@
                                         <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
 
                                         <tr>
-                                            <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['credit']->credit + $item['credit']->debit }}"></td>
+                                            <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['credit']->debit + $item['credit']->credit }}" checked></td>
                                             <td>{{ $k }}</td>
                                             @if ($item['credit']->order)
                                                 <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
@@ -314,8 +314,9 @@
                                             <td id="value">{{ number_format($data->sum('credit')) }}</td>
                                             <td><input type="text" name="jurnal[{{ $k }}][nama]" id="" style="width: 100%" required></td>
                                         </tr>
+                                        <input type="hidden" id="hidden-value" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
                                     @else
-                                        <input type="hidden" id="hidden-value" value="{{ $data->sum('debit') }}" name="jurnal[{{ $k }}][debit]">
+                                        <input type="hidden" id="hidden-value" value="{{ $data->sum('debit')  }}" name="jurnal[{{ $k }}][debit]">
                                         <input type="hidden" value="0" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                         <tr>
@@ -428,19 +429,37 @@
     });
 
     $(".checkbox-name").change(function() {
-        let amount = parseInt($(this).data('amount'));
-        if(this.checked) {
-            let sum = parseInt($('#hidden-value').val()) + amount;
-            $('#name-'+$(this).val()).attr('disabled',false);
-            $('#hidden-value').val(sum);
-            $('#value').html(sum.toLocaleString('en-US'));
-        }else{
-            let sum = parseInt($('#hidden-value').val()) - amount;
-            $('#name-'+$(this).val()).attr('disabled',true);
-            $('#hidden-value').val(sum);
-            $('#value').html(sum.toLocaleString('en-US'));
-        }
-    });
+    let amount = parseInt($(this).data('amount'));
+    console.log("Checkbox changed:", this.checked, "Amount:", amount);
+
+    if (this.checked) {
+        let currentValue = parseInt($('#hidden-value').val());
+        let sum = currentValue + amount;
+
+        console.log("Checkbox checked. Previous value:", currentValue, "New value:", sum);
+
+        $('#name-' + $(this).val()).attr('disabled', false);
+        $('#hidden-value').val(sum);
+        $('#value').html(sum.toLocaleString('en-US'));
+
+        console.log("Element enabled: #name-" + $(this).val());
+    } else {
+        let currentValue = parseInt($('#hidden-value').val());
+        let sum = currentValue - amount;
+
+        console.log("Checkbox unchecked. Previous value:", currentValue, "New value:", sum);
+
+        $('#name-' + $(this).val()).attr('disabled', true);
+        $('#hidden-value').val(sum);
+        $('#value').html(sum.toLocaleString('en-US'));
+
+        console.log("Element disabled: #name-" + $(this).val());
+    }
+
+    console.log("Current hidden value:", $('#hidden-value').val());
+    console.log("Displayed value:", $('#value').text());
+});
+
 
 </script>
 @endpush

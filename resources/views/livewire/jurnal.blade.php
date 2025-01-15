@@ -153,7 +153,7 @@
                                             style="font-size:.9rem !important; width:170px"
                                             onchange="updateDynamicColumn(this, {{ $i }})">
                                             <option value=""></option>
-                                            <option value="expdc">Inv Expdc</option>
+                                            <option value="expdc">Inv Xpdc</option>
                                             <option value="agen">Inv Agen</option>
                                             <option value="pelayaran">BG Pelayaran</option>
                                             <option value="lain-lain">Inv Lainnya</option>

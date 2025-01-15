@@ -6,6 +6,7 @@
 @endsection
 @section('content')
     <form action="{{ route('jurnal.update.one', $jurnal) }}" method="post">
+        <input type="text" hidden name="relasi1" id="relasi1" value="{{ $jurnal->relasi }}">
         @csrf
         @method('PUT')
         <div class="row">
@@ -15,7 +16,8 @@
                 <select class="form-control select2 tipe" id="doc"
                 style="font-size:.9rem !important"
                     onchange="updateList()">
-                    <option value="">Pilih Document</option>
+                    <option value=""></option>
+                    <option value="job">Job</option>
                     <option value="inv_expdc">Inv Expdc</option>
                     <option value="inv_agen">Inv Agen</option>
                     <option value="pelayaran">BG Pelayaran</option>
@@ -31,6 +33,7 @@
                     style="font-size:.9rem !important"
                     onchange="updateList()">
                     <option value=""></option>
+                    <option value="trucking">Trucking</option>
                     <option value="inv_trucking">Inv Trucking</option>
                     <option value="inv_vendor">Inv Vendor</option>
                     <option value="lain-lain">Lain-lain</option>
@@ -45,6 +48,8 @@
                     style="font-size:.9rem !important"
                     onchange="updateList()">
                     <option value=""></option>
+                    <option value="job">Job</option>
+                    <option value="trucking">Trucking</option>
                     <option value="inv_expdc">Inv Expdc</option>
                     <option value="inv_agen">Inv Agen</option>
                     <option value="pelayaran">BG Pelayaran</option>
@@ -102,7 +107,7 @@
     if (newValue === "inv_expdc") {
         container.innerHTML = `
             <div class="col-12 mb-3">
-                <label for="order_id">JOB Expdc</label><br>
+                <label for="order_id">Inv Expdc</label><br>
                 <select class="form-control select2" id="invoice_expdc" name="inv_expdc" style="font-size:.9rem !important">
                     <option value=""></option>
                     @foreach ($orders_expdc as $item)
@@ -114,11 +119,36 @@
     } else if (newValue === "inv_agen") {
         container.innerHTML = `
             <div class="col-12 mb-3">
-                <label for="order_id1">JOB Agen</label><br>
+                <label for="order_id1">Inv Agen</label><br>
                 <select class="form-control select2" id="invoice_agen" name="invoice_agen" style="font-size:.9rem !important">
                     <option value=""></option>
                     @foreach ($orders_agen as $item)
                     <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} / {{ $item->invoice_agen }}</option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "job") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="order_id1">Job</label><br>
+                <select class="form-control select2" id="job" name="job" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders as $item)
+                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} </option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "trucking") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="order_id1">Trucking</label><br>
+                <select class="form-control select2" id="trucking" name="trucking" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders_trucking as $item)
+                    <option {{ $jurnal->order_trucking_id == $item->id ? 'selected' : '' }} value="{{ $item->id }}">
+                                {{ $item->container }} - {{ $item->seal }} </option>
                     @endforeach
                 </select>
             </div>

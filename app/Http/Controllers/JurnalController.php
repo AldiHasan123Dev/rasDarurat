@@ -316,7 +316,7 @@ class JurnalController extends Controller
             $data = $query->get();
             $new = array();
             foreach ($data as $idx => $item) {
-                if ($item['debit'] == 0) {
+                if ($item['debit'] > 0) {
                     $new[$idx]['debit'] = $item;
                     $new[$idx]['credit'] = [];
                 } else {
@@ -1000,12 +1000,22 @@ class JurnalController extends Controller
     public function store_balik(Request $request)
     {
         $r = 0;
+        // dd($request->all());
         foreach ($request->jurnal as $item) {
             $data = $item;
             if (!empty($data['nama'])) {
                 $data['created_at'] = date('Y-m-d');
+                $data['order_id'] = $data['order_id'] ?? null;
+                $data['order_trucking_id'] = $data['order_trucking_id'] ?? null;
                 $data['jurnal_balik'] = empty($data['jurnal_balik']) ? null : $data['jurnal_balik'];
                 $data['is_balik'] = 1;
+                $data['coa_id'] = $request->credit_coa_id_tujuan ?? $request->debit_coa_id_tujuan;
+                $data['relasi'] = $request->nomor;
+                $data['invoice'] = $data['invoice'] ?? null;
+                $data['invoice_external'] = $data['invoice_external'] ?? null;
+                $data['invoice_vendor'] = $data['invoice_vendor'] ?? null;
+                $data['invoice_agen'] = $data['invoice_agen'] ?? null;
+                $data['invoice_trucking'] = $data['invoice_trucking'] ?? null;
                 $data['nomor'] = $request->nomor;
                 $data['no'] = $request->no;
                 $data['tipe'] = $request->tipe;
@@ -1046,8 +1056,14 @@ class JurnalController extends Controller
         $cre = Jurnal::where('nomor', $jurnal)->sum('credit');
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $orders = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice')
+        ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
         $orders_expdc = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice', 'invoice_agen')
+        ->select('id', 'no_job', 'job', 'seal', 'invoice')
+        ->whereNotNull('invoice')
         ->orderBy('job')
         ->orderBy('no_job')
         ->get();
@@ -1055,10 +1071,12 @@ class JurnalController extends Controller
     $orders_agen = Order::whereBetween('created_at', [$last, $now])
         ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
         ->orderBy('job')
+        ->whereNotNull('invoice_agen')
         ->orderBy('no_job')
         ->get();
 
-    $orders_trucking = collect(); // Default empty collection
+    $orders_trucking = collect();
+    $orders_trucking1 = collect(); // Default empty collection
     $orders_vendor = collect(); // Default empty collection
 
     $tipe = 'xpdc';
@@ -1082,8 +1100,17 @@ class JurnalController extends Controller
             ->select('container', 'seal', 'id', 'invoice')
             ->orderBy('container')
             ->get();
+            $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
     } elseif ($data->order_trucking_id === null && $data->order_id === null) {
         $tipe = 'lain-lain';
+        $orders = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice')
+        ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
         $orders_expdc = Order::whereBetween('created_at', [$last, $now])
             ->select('id', 'no_job', 'job', 'seal', 'invoice')
             ->orderBy('job')
@@ -1096,6 +1123,10 @@ class JurnalController extends Controller
             ->orderBy('no_job')
             ->get();
 
+            $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
         $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
             ->where('invoice', 'like', '%RAS-LT%')
             ->select('container', 'seal', 'id', 'invoice')
@@ -1120,7 +1151,7 @@ class JurnalController extends Controller
             $voucher = $voucher * -1;
         }
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.new_edit', compact('orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor',  'invx','bgs','data', 'relasi', 'coa', 'tipe', 'jur', 'voucher', 'deb', 'cre', 'count'));
+        return view('admin.jurnal.new_edit', compact('orders','orders_expdc', 'orders_agen', 'orders_trucking', 'orders_trucking1', 'orders_vendor',  'invx','bgs','data', 'relasi', 'coa', 'tipe', 'jur', 'voucher', 'deb', 'cre', 'count'));
     }
 
     public function editOne(Jurnal $jurnal)
@@ -1130,19 +1161,28 @@ class JurnalController extends Controller
     $last = Carbon::now()->subMonths(6)->format('Y-m-d');
 
     // Default orders and other variables
-    $orders_expdc = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice', 'invoice_agen')
+    $orders = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice')
         ->orderBy('job')
+        ->orderBy('no_job')
+        ->get();
+    
+    $orders_expdc = Order::whereBetween('created_at', [$last, $now])
+        ->select('id', 'no_job', 'job', 'seal', 'invoice')
+        ->orderBy('job')
+        ->whereNotNull('invoice')
         ->orderBy('no_job')
         ->get();
 
     $orders_agen = Order::whereBetween('created_at', [$last, $now])
         ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
         ->orderBy('job')
+        ->whereNotNull('invoice_agen')
         ->orderBy('no_job')
         ->get();
 
-    $orders_trucking = collect(); // Default empty collection
+    $orders_trucking = collect();
+    $orders_trucking1 = collect(); // Default empty collection
     $orders_vendor = collect(); // Default empty collection
 
     $tipe = 'xpdc';
@@ -1155,6 +1195,10 @@ class JurnalController extends Controller
 
     if ($jurnal->order_trucking_id) {
         $tipe = 'trucking';
+        $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
+        ->select('container', 'seal', 'id', 'invoice')
+        ->orderBy('container')
+        ->get();
         $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
             ->where('invoice', 'like', '%RAS-LT%')
             ->select('container', 'seal', 'id', 'invoice')
@@ -1170,6 +1214,7 @@ class JurnalController extends Controller
         $tipe = 'lain-lain';
         $orders_expdc = Order::whereBetween('created_at', [$last, $now])
             ->select('id', 'no_job', 'job', 'seal', 'invoice')
+            ->whereNotNull('invoice')
             ->orderBy('job')
             ->orderBy('no_job')
             ->get();
@@ -1177,6 +1222,7 @@ class JurnalController extends Controller
         $orders_agen = Order::whereBetween('created_at', [$last, $now])
             ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
             ->orderBy('job')
+            ->whereNotNull('invoice_agen')
             ->orderBy('no_job')
             ->get();
 
@@ -1206,13 +1252,18 @@ class JurnalController extends Controller
         ->pluck('nomor')
         ->toArray();
 
-    return view('admin.jurnal.form_edit', compact('invx', 'jurnal', 'orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor', 'coa', 'tipe', 'bgs', 'relasi'));
+    return view('admin.jurnal.form_edit', compact('orders','invx', 'jurnal', 'orders_trucking1', 'orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor', 'coa', 'tipe', 'bgs', 'relasi'));
 }
 
 
     public function updateOne(Request $request, Jurnal $jurnal)
     {
         $data = $request->all();
+        $data['relasi'] = $data['relasi'] ?? $request->relasi1;
+        if (!empty($data['invoice_external']) || !empty($data['no_bg'])) {
+            $data['no_bg'] = $data['no_bg'] ?? null;
+            $data['invoice_external'] = $data['invoice_external'] ?? null;
+        }
         if (!empty($data['inv_expdc']) || !empty($data['invoice_agen'])) {
             $name = $data['nama'];
             $order_expdc = $data['inv_expdc'] ?? $data['invoice_agen'] ?? null;
@@ -1317,6 +1368,78 @@ class JurnalController extends Controller
             $data['container'] = $order->container;
             $data['nama'] = $name;
         }
+        if (!empty($data['trucking'])) {
+            $name = $data['nama'];
+            $order_expdc = $data['trucking'] ?? null;
+            $order = OrderTrucking::find($order_expdc);
+            $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
+            $cont = $order->container;
+            $seal = $order->seal;
+            $order_id = $order->order ? $order->order->id : null;
+            $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
+            $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
+            $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
+            $voyage = $order->order ? $order->order->jadwal_kapal->voyage : '-';
+            $customer = $order->customer->nama;
+            $shipment_trucking = $order->tipe;
+            $invoice = $order->invoice;
+            $tujuan_trucking = $order->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]', $id_job, $name);
+            $name = str_replace('[2]', $cont, $name);
+            $name = str_replace('[3]', $seal, $name);
+            $name = str_replace('[4]', $kapal, $name);
+            $name = str_replace('[5]', $voyage, $name);
+            $name = str_replace('[6]', $shipment, $name);
+            $name = str_replace('[7]', $pembayar, $name);
+            $name = str_replace('[8]', $customer, $name);
+            $name = str_replace('[9]', $shipment_trucking, $name);
+            $name = str_replace('[10]', $tujuan_trucking, $name);
+            $data['invoice_vendor'] = !str_contains($invoice, 'RAS-LT') ? $invoice : null;
+            $data['invoice_trucking'] = str_contains($invoice, 'RAS-LT') ? $invoice : null;
+            $data['order_trucking_id'] = $order_expdc;
+            $data['order_id'] = null;
+            $data['invoice'] = null;
+            $data['invoice_agen'] = null;
+            $data['nopol'] = $order->kendaraan->nopol;
+            $data['container'] = $order->container;
+            $data['nama'] = $name;
+        }
+
+        if (!empty($data['job'])) {
+            $name = $data['nama'];
+            $order_expdc = $data['job'] ?? null;
+            $order = Order::find($order_expdc);
+            $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
+            $cont = $order->container;
+            $seal = $order->seal;
+            $shipment = $order->tarif->shipmentInfo->nama;
+            $pembayar = $order->tarif->customer->nama ?? '-';
+            $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+            $voyage = $order->jadwal_kapal->voyage ?? '-';
+            $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
+            $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
+            $tujuan_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]', $id_job, $name);
+            $name = str_replace('[2]', $cont, $name);
+            $name = str_replace('[3]', $seal, $name);
+            $name = str_replace('[4]', $kapal, $name);
+            $name = str_replace('[5]', $voyage, $name);
+            $name = str_replace('[6]', $shipment, $name);
+            $name = str_replace('[7]', $pembayar, $name);
+            $name = str_replace('[8]', $customer, $name);
+            $name = str_replace('[9]', $shipment_trucking, $name);
+            $name = str_replace('[10]', $tujuan_trucking, $name);
+            $data['invoice'] = $order->invoice ?? null;
+            $data['invoice_agen'] = $order->invoice_agen ?? null;
+            $data['invoice_trucking'] = null;
+            $data['invoice_vendor'] = null;
+            $data['order_trucking_id'] = null;
+            $data['order_id'] =$order_expdc;
+            $data['nopol'] = $order->kendaraan->nopol;
+            $data['container'] = $order->container;
+            $data['nama'] = $name;
+        }
+        
         $jurnal->update($data);
         return back()->with('success', 'Data berhasil disimpan!');
     }

@@ -150,13 +150,17 @@
                                 <select class="form-control" id="doc" onchange="updateList()" name="order_id" style="font-size:.9rem !important">
                                     <option value=""></option>
                                     @if ($tipe == 'xpdc')
+                                        <option value="job">Job</option>
                                         <option value="inv_expdc">Inv Expdc</option>
                                         <option value="inv_agen">Inv Agen</option>
                                         <option value="pelayaran">BG Pelayaran</option>
                                     @elseif ($tipe == 'trucking')
+                                        <option value="trucking">Trucking</option>
                                         <option value="inv_trucking">Inv Trucking</option>
                                         <option value="inv_vendor">Inv Vendor</option>
                                      @else    
+                                     <option value="job">Job</option>
+                                     <option value="trucking">Trucking</option>
                                      <option value="inv_expdc">Inv Expdc</option>
                                      <option value="inv_agen">Inv Agen</option>
                                      <option value="inv_trucking">Inv Trucking</option>
@@ -213,7 +217,7 @@
     if (newValue === "inv_expdc") {
         container.innerHTML = `
             <div class="col-12 mb-3">
-                <label for="order_id">JOB Expdc</label><br>
+                <label for="order_id">Job Expdc</label><br>
                 <select class="form-control select2" id="invoice_expdc" name="inv_expdc" style="font-size:.9rem !important">
                     <option value=""></option>
                     @foreach ($orders_expdc as $item)
@@ -260,10 +264,35 @@
                 </select>
             </div>
         `;
-    }  else if (newValue === "inv_trucking") {
+    }  else if (newValue === "job") {
         container.innerHTML = `
             <div class="col-12 mb-3">
-                <label for="relasi">Trucking</label>
+                <label for="order_id1">Job</label><br>
+                <select class="form-control select2" id="job" name="job" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders as $item)
+                    <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} </option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "trucking") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="order_id1">Trucking</label><br>
+                <select class="form-control select2" id="trucking" name="trucking" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders_trucking1 as $item)
+                    <option value="{{ $item->id }}">
+                                {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }} </option>
+                    @endforeach
+                </select>
+            </div>
+        `;
+    } else if (newValue === "inv_trucking") {
+        container.innerHTML = `
+            <div class="col-12 mb-3">
+                <label for="relasi">Inv Trucking</label>
                 <select class="form-control select2" id="invoice_trucking" name="inv_trucking">
                     <option value=""></option>
                     @foreach ($orders_trucking as $item)
