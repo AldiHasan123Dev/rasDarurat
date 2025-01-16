@@ -49,7 +49,7 @@ class TransaksiController extends Controller
         $month_number = date("n", strtotime($request->created_at)); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d',$no).'/RAS/'.$month_roman.'/'.date('y', strtotime($request->created_at));
-        dd($invoice);
+        
 
         Order::where('job',$transaksi->job)->update([
             'invoice' => $invoice,
@@ -128,6 +128,7 @@ class TransaksiController extends Controller
                         Jurnal::create([
                             'invoice' => $order->invoice ?? null,
                             'nopol' => $order->nopol ?? null,
+                            'relasi' => $nomor,
                             'container' => $order->container ?? null,
                             'coa_id' => $item->coa_debit_id,
                             'order_id' => $transaksi->order_id,
@@ -144,6 +145,7 @@ class TransaksiController extends Controller
                         Jurnal::create([
                             'invoice' => $order->invoice ?? null,
                             'nopol' => $order->nopol ?? null,
+                            'relasi' => $nomor,
                             'container' => $order->container ?? null,
                             'coa_id' => $item->coa_credit_id,
                             'order_id' => $transaksi->order_id,
@@ -159,6 +161,7 @@ class TransaksiController extends Controller
                     if($item->coa_credit_id==56){
                         Jurnal::create([
                             'invoice' => $order->invoice ?? null,
+                            'relasi' => $nomor,
                             'nopol' => $order->nopol ?? null,
                             'container' => $order->container ?? null,
                             'coa_id' => $item->coa_credit_id,
@@ -182,6 +185,7 @@ class TransaksiController extends Controller
                                         Jurnal::create([
                                             'invoice' => $order->invoice ?? null,
                                             'nopol' => $order->nopol ?? null,
+                                            'relasi' => $nomor,
                                             'container' => $order->container ?? null,
                                             'coa_id' => $item->coa_credit_id,
                                             'order_id' => $job->id,
@@ -201,6 +205,7 @@ class TransaksiController extends Controller
                                             Jurnal::create([
                                                 'invoice' => $order->invoice ?? null,
                                                 'nopol' => $order->nopol ?? null,
+                                                'relasi' => $nomor,
                                                 'container' => $order->container ?? null,
                                                 'coa_id' => $item->coa_credit_id,
                                                 'order_id' => $job->id,
@@ -229,6 +234,7 @@ class TransaksiController extends Controller
                                         'coa_id' => $item->coa_credit_id,
                                         'order_id' => $tagihan->order_id,
                                         'nomor' => $nomor,
+                                        'relasi' => $nomor,
                                         'nama' => $tagihan->nama,
                                         'credit' => round($tagihan->jumlah),
                                         'debit' => 0,
@@ -267,6 +273,7 @@ class TransaksiController extends Controller
             Jurnal::create([
                 'coa_id' => 52,
                 'nomor' => $nomor,
+                'relasi' => $nomor,
                 'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
                 'invoice' => $trx->invoice,
                 'debit' => $data['bupot'],
@@ -278,6 +285,7 @@ class TransaksiController extends Controller
             Jurnal::create([
                 'coa_id' => 46,
                 'nomor' => $nomor,
+                'relasi' => $nomor,
                 'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
                 'invoice' => $trx->invoice,
                 'debit' => 0,
