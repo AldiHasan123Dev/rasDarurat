@@ -36,9 +36,7 @@ class Jurnal extends Component
         ->orderBy('invoice_external')
         ->distinct()
         ->pluck('invoice_external');    
-        $this->invoices = Order::whereBetween('created_at', [$last, $now])
-        ->whereNotNull('invoice')
-        ->select('invoice', 'id', 'container') // Pilih hanya kolom invoice
+        $this->invoices = Order::select('invoice', 'id', 'container') // Pilih hanya kolom invoice
         ->distinct() // Tambahkan distinct untuk menghapus duplikat
         ->orderBy('invoice') // Urutkan berdasarkan invoice (opsional)
         ->get();
