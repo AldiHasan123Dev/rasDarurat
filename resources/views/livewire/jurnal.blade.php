@@ -436,7 +436,7 @@ function handleLainLainChange(select, rowId) {
                                 <option value="expdc">Inv Expdc</option>
                                 <option value="agen">Inv Agen</option>
                                 <option value="pelayaran">BG Pelayaran</option>
-                                <option value="lain-lain">Lain-lain</option>
+                                <option value="lain-lain">Inv Lainnya</option>
                                 <option value="relasi">Relasi</option>
                             </select>
                             <input type="text" hidden name="invoice_external[]"
@@ -626,7 +626,7 @@ $('#doc-' + debit).select2();
                                 <option value="expdc">Inv Expdc</option>
                                 <option value="agen">Inv Agen</option>
                                 <option value="pelayaran">BG Pelayaran</option>
-                                <option value="lain-lain">Lain-lain</option>
+                                <option value="lain-lain">Inv Lainnya</option>
                                 <option value="relasi">Relasi</option>
                             </select>
                             <input type="text" hidden name="invoice_external[]"

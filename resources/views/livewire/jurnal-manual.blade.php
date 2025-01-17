@@ -119,6 +119,20 @@
                                             <option value="lain-lain">Inv Lainnya</option>
                                             <option value="relasi">Relasi</option>
                                         </select>
+                                        <input type="text" hidden name="invoice_external[]"
+                                        value="" id="invoice_external1-{{ $i }}">
+                                    <input type="text" hidden name="invoice[]"
+                                        value="" id="invoice1-{{ $i }}">
+                                        <input type="text" hidden name="invoice_agen[]"
+                                        value="" id="invoice_agen1-{{ $i }}">
+                                    <input type="text" hidden name="no_bg[]"
+                                        value="" id="no_bg1-{{ $i }}">
+                                        <input type="text" hidden name="relasi[]"
+                                        value="" id="relasi1-{{ $i }}">
+                                        <input type="text" hidden name="invoice_trcuking[]"
+                                        value="" id="invoice_trucking1-{{ $i }}">
+                                        <input type="text" hidden name="invoice_vendor[]"
+                                        value="" id="invoice_vendor1-{{ $i }}">
                                     </td>
                                     <td class="dynamic-column" hidden id="dynamic-column-{{ $i }}"></td>
                                 </tr>
@@ -156,13 +170,21 @@
 <script src="{{ asset('assets/js/selectize.js') }}"></script>
 <script>
     function updateDynamicColumn(select, rowId) {
-            const selectedValue = select.value; // Ambil nilai yang dipilih
+            const selectedValue = select.value; 
+            const invVendor = document.getElementById(`invoice_vendor1-${rowId}`);
+            const invTruck = document.getElementById(`invoice_trucking1-${rowId}`);
+            const invx = document.getElementById(`invoice_external1-${rowId}`);
+            const inv = document.getElementById(`invoice1-${rowId}`);
+            const inv_agen = document.getElementById(`invoice_agen1-${rowId}`);
+            const noBg = document.getElementById(`no_bg1-${rowId}`);
+            const relasi = document.getElementById(`relasi1-${rowId}`);
             const dynamicColumn = document.getElementById(`dynamic-column-${rowId}`);
             const dynamicTh = document.getElementById("dynamic-th");
             dynamicColumn.innerHTML = ""; // Kosongkan kolom dinamis sebelumnya
 
             if (selectedValue === "truck") {
                 dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                invTruck.remove();
                 dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
                 dynamicColumn.innerHTML = `
         <td>
@@ -185,6 +207,7 @@
 
             } else if (selectedValue === "vendor_truck") {
                 dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                invVendor.remove();
                 dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
                 dynamicColumn.innerHTML = `
         <td>
@@ -205,6 +228,7 @@
 
             } else if (selectedValue === "lain-lain") {
         dynamicTh.removeAttribute('hidden');
+        invx.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
             <td style="width: 170px">
@@ -219,6 +243,7 @@
 
     } else if (selectedValue === "expdc") {
                 dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                inv.remove();
                 dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
                 dynamicColumn.innerHTML = `
         <td>
@@ -241,6 +266,7 @@
 
             } else if (selectedValue === "agen") {
                 dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+                inv_agen.remove();
                 dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
                 dynamicColumn.innerHTML = `
         <td>
@@ -260,6 +286,7 @@
                 $(dynamicColumn.querySelector('.select3')).select2();
 
             } else if (selectedValue === "pelayaran") {
+                noBg.remove();
                 dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
                 dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
                 dynamicColumn.innerHTML = `
@@ -276,6 +303,7 @@
                 $(dynamicColumn.querySelector('.select3')).select2();
 
             } else if (selectedValue === "relasi") {
+                relasi.remove();
                 dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
                 dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
                 dynamicColumn.innerHTML = `
@@ -304,7 +332,7 @@
     if (newValue === "buat-baru") {
         dynamicColumn.innerHTML = `
  <td><input name="invoice_external[]"
-                                            id="invoice_external-{{ $i }}" style="width: 170px" type="text">
+                                            id="invoice_external-${rowId}" style="width: 170px" type="text">
                                     </td>
         `;
     } else if (newValue === "pilih-invoice-external") {
@@ -384,9 +412,23 @@
                                             <option value="expdc">Inv Expdc</option>
                                             <option value="agen">Inv Agen</option>
                                             <option value="pelayaran">BG Pelayaran</option>
-                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="lain-lain">Inv Lainnya</option>
                                             <option value="relasi">Relasi</option>
                                         </select>
+                                        <input type="text" hidden name="invoice_external[]"
+                                            value="" id="invoice_external1-${debit}">
+                            <input type="text" hidden name="invoice[]"
+                                            value="" id="invoice1-${debit}">
+                                             <input type="text" hidden name="invoice_agen[]"
+                                            value="" id="invoice_agen1-${debit}">
+                                        <input type="text" hidden name="no_bg[]"
+                                            value="" id="no_bg1-${debit}">
+                                            <input type="text" hidden name="relasi[]"
+                                            value="" id="relasi1-${debit}">
+                                             <input type="text" hidden name="invoice_trucking[]"
+                                            value="" id="invoice_trucking1-${debit}">
+                                             <input type="text" hidden name="invoice_vendor[]"
+                                            value="" id="invoice_vendor1-${debit}">
                                     </td>
                                     <td class="dynamic-column" hidden id="dynamic-column-${debit}"></td>
                     </tr>`;
@@ -509,9 +551,23 @@
                                             <option value="expdc">Inv Expdc</option>
                                             <option value="agen">Inv Agen</option>
                                             <option value="pelayaran">BG Pelayaran</option>
-                                            <option value="lain-lain">Lain-lain</option>
+                                            <option value="lain-lain">Inv Lainnya</option>
                                             <option value="relasi">Relasi</option>
                                         </select>
+                                         <input type="text" hidden name="invoice_external[]"
+                                            value="" id="invoice_external1-${debit}">
+                            <input type="text" hidden name="invoice[]"
+                                            value="" id="invoice1-${debit}">
+                                             <input type="text" hidden name="invoice_agen[]"
+                                            value="" id="invoice_agen1-${debit}">
+                                        <input type="text" hidden name="no_bg[]"
+                                            value="" id="no_bg1-${debit}">
+                                            <input type="text" hidden name="relasi[]"
+                                            value="" id="relasi1-${debit}">
+                                             <input type="text" hidden name="invoice_trucking[]"
+                                            value="" id="invoice_trucking1-${debit}">
+                                             <input type="text" hidden name="invoice_vendor[]"
+                                            value="" id="invoice_vendor1-${debit}">
                                     </td>
                                     <td class="dynamic-column" hidden id="dynamic-column-${debit}"></td>
                         </tr>`;
