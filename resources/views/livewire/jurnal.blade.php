@@ -159,6 +159,16 @@
                                             <option value="lain-lain">Inv Lainnya</option>
                                             <option value="relasi">Relasi</option>
                                         </select>
+                                        <input type="text" hidden name="invoice_external[]"
+                                            value="" id="invoice_external1-{{ $i }}">
+                                        <input type="text" hidden name="invoice[]"
+                                            value="" id="invoice1-{{ $i }}">
+                                            <input type="text" hidden name="invoice_agen[]"
+                                            value="" id="invoice_agen1-{{ $i }}">
+                                        <input type="text" hidden name="no_bg[]"
+                                            value="" id="no_bg1-{{ $i }}">
+                                            <input type="text" hidden name="relasi[]"
+                                            value="" id="relasi1-{{ $i }}">
                                     </td>
                                     <td class="dynamic-column" hidden id="dynamic-column-{{ $i }}"></td>
                                 </td>
@@ -200,11 +210,17 @@
         function updateDynamicColumn(select, rowId) {
     const selectedValue = select.value; // Ambil nilai yang dipilih
     const dynamicColumn = document.getElementById(`dynamic-column-${rowId}`);
+    const invx = document.getElementById(`invoice_external1-${rowId}`);
+    const inv = document.getElementById(`invoice1-${rowId}`);
+    const inv_agen = document.getElementById(`invoice_agen1-${rowId}`);
+    const noBg = document.getElementById(`no_bg1-${rowId}`);
+    const relasi = document.getElementById(`relasi1-${rowId}`);
     const dynamicTh = document.getElementById("dynamic-th");
     dynamicColumn.innerHTML = ""; // Kosongkan kolom dinamis sebelumnya
 
     if (selectedValue === "expdc") {
         dynamicTh.removeAttribute('hidden');
+        inv.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
             <td>
@@ -224,6 +240,7 @@
 
     } else if (selectedValue === "agen") {
         dynamicTh.removeAttribute('hidden');
+        inv_agen.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
             <td>
@@ -243,6 +260,7 @@
 
     }  else if (selectedValue === "pelayaran") {
         dynamicTh.removeAttribute('hidden'); // Tampilkan <th>
+        noBg.remove();
         dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
         dynamicColumn.innerHTML = `
         <td>
@@ -258,6 +276,7 @@
         $(dynamicColumn.querySelector('.select3')).select2();
     } else if (selectedValue === "lain-lain") {
         dynamicTh.removeAttribute('hidden');
+        invx.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
             <td style="width: 170px">
@@ -272,6 +291,7 @@
 
     } else if (selectedValue === "relasi") {
         dynamicTh.removeAttribute('hidden');
+        relasi.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
             <td>
@@ -301,7 +321,7 @@ function handleLainLainChange(select, rowId) {
     if (newValue === "buat-baru") {
         dynamicColumn.innerHTML = `
  <td><input name="invoice_external[]"
-                                            id="invoice_external-{{ $i }}" style="width: 170px" type="text">
+                                            id="invoice_external-${rowId}" style="width: 170px" type="text">
                                     </td>
         `;
     } else if (newValue === "pilih-invoice-external") {
@@ -419,6 +439,16 @@ function handleLainLainChange(select, rowId) {
                                 <option value="lain-lain">Lain-lain</option>
                                 <option value="relasi">Relasi</option>
                             </select>
+                            <input type="text" hidden name="invoice_external[]"
+                                            value="" id="invoice_external1-${debit}">
+                            <input type="text" hidden name="invoice[]"
+                                            value="" id="invoice1-${debit}">
+                                             <input type="text" hidden name="invoice_agen[]"
+                                            value="" id="invoice_agen1-${debit}">
+                                        <input type="text" hidden name="no_bg[]"
+                                            value="" id="no_bg1-${debit}">
+                                            <input type="text" hidden name="relasi[]"
+                                            value="" id="relasi1-${debit}">
                         </td>
                         <td class="dynamic-column" hidden id="dynamic-column-${debit}"></td>
                     </tr>`;
@@ -474,7 +504,11 @@ $('#doc-' + debit).select2();
                 $('#amount-' + id).attr('disabled', false)
                 $('#doc-' + id).attr('disabled', false)
                 $('#dynamic-column' + id).attr('disabled', false)
-                $('#invoice_external-' + id).attr('disabled', false)
+                $('#invoice_external1-' + id).attr('disabled', false)
+                $('#invoice1-' + id).attr('disabled', false)
+                $('#invoice_agen1-' + id).attr('disabled', false)
+                $('#relasi1-' + id).attr('disabled', false)
+                $('#no_bg1-' + id).attr('disabled', false)
             } else {
                 $('#job-' + id).attr('disabled', true);
                 $('#debit-' + id).attr('disabled', true);
@@ -483,7 +517,11 @@ $('#doc-' + debit).select2();
                 $('#amount-' + id).attr('disabled', true)
                 $('#doc-' + id).attr('disabled', true)
                 $('#dynamic-column-' + id).attr('disabled', true)
-                $('#invoice_external-' + id).attr('disabled', true)
+                $('#invoice_external1-' + id).attr('disabled', true)
+                $('#invoice1-' + id).attr('disabled', true)
+                $('#invoice_agen1-' + id).attr('disabled', true)
+                $('#relasi1-' + id).attr('disabled', true)
+                $('#no_bg1-' + id).attr('disabled', true)
             }
             total();
         }
@@ -591,6 +629,16 @@ $('#doc-' + debit).select2();
                                 <option value="lain-lain">Lain-lain</option>
                                 <option value="relasi">Relasi</option>
                             </select>
+                            <input type="text" hidden name="invoice_external[]"
+                                            value="" id="invoice_external1-${debit}">
+                            <input type="text" hidden name="invoice[]"
+                                            value="" id="invoice1-${debit}">
+                                             <input type="text" hidden name="invoice_agen[]"
+                                            value="" id="invoice_agen1-${debit}">
+                                        <input type="text" hidden name="no_bg[]"
+                                            value="" id="no_bg1-${debit}">
+                                             <input type="text" hidden name="relasi[]"
+                                            value="" id="relasi1-${debit}">
                         </td>
                         <td class="dynamic-column" hidden id="dynamic-column-${debit}"></td>
                     </tr>`;
