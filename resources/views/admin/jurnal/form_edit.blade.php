@@ -230,6 +230,7 @@
                 <select class="form-control select2" onchange="handleLainLainChange(this)">
                     <option value="">Pilih Opsi</option>
                     <option value="buat-baru">Buat Baru</option>
+                    <option value="kosongkan">Kosongkan</option>
                     <option value="pilih-invoice-external">Pilih Invoice External</option>
                 </select>
             </div>
@@ -264,6 +265,16 @@ function handleLainLainChange(select, rowId) {
                 </select>
         `;
                 $(dynamicColumn.querySelector('.select3')).select2(); // Inisialisasi Select2
+            } else if (newValue === "kosongkan") {
+                dynamicColumn.innerHTML = `
+                    <div class="col-12 mb-3">
+                        <label for="invoice_external">Invoice External</label>
+                        <input class="form-control" onclick="this.select()" placeholder="Inv lain-lain terhapus" 
+                            name="invoice_external" id="invoice_external-{{ $jurnal->id }}" 
+                            value="" disabled type="text">
+                        <input type="hidden" name="invoice_external" value="">
+                    </div>
+                `;
             }
         }
 

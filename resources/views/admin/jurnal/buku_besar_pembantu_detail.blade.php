@@ -82,16 +82,22 @@
                             <div class="container">
                                 <div class="card mt-4">
                                     <div class="card-header bg-primary text-white">
-                                        <h3 class="mb-0">Rincian Buku Besar Pembantu</h3>
+                                        <h3 class="mb-0 text-white">Rincian Buku Besar Pembantu</h3>
                                     </div>
                                     <div class="card-body">
                                         <h5 class="mt-3 text-muted">Subjek: <span
                                                 class="font-weight-bold">{{ $subjek }}</span></h5>
                                         <h5 class="mt-3">
                                             @if ($subjek === 'pelayaran')
-                                                <span class="badge bg-info text-dark">Pelayaran</span>
+                                                <span class="badge bg-info text-white">Pelayaran : {{ $customerPelayaran }}</span>
+                                            @elseif ($subjek == 'customer_trucking')
+                                            <span class="badge bg-warning text-white">Customer Trucking :
+                                                {{ $customer }}</span>
+                                            @elseif ($subjek == 'agen')
+                                            <span class="badge bg-danger text-white">Agen :
+                                                    {{ $customer }}</span>
                                             @else
-                                                <span class="badge bg-success text-white">Customer:
+                                                <span class="badge bg-success text-white">Customer :
                                                     {{ $customer }}</span>
                                             @endif
                                         </h5>
@@ -106,7 +112,17 @@
                                                         <th class="text-center">Nomor (D)</th>
                                                         <th class="text-center">Tgl (K)</th>
                                                         <th class="text-center">Nomor (K)</th>
-                                                        <th class="text-center">Invoice</th>
+                                                        <th class="text-center">
+                                                            @if ($subjek == 'pelayaran')
+                                                            No BG
+                                                            @elseif ($subjek == 'customer_trucking')
+                                                            Invoice Trucking
+                                                            @elseif ($subjek == 'agen')
+                                                            Agen
+                                                            @else
+                                                            Invoice Xpdc
+                                                            @endif
+                                                        </th>
                                                         <th class="text-center">Debit</th>
                                                         <th class="text-center">Credit</th>
                                                         <th class="text-center">Keterangan</th>
@@ -118,9 +134,20 @@
                                                             <td class="text-center">{{ $loop->iteration }}</td>
                                                             <td class="text-center">{{ $j['tgl_d'] ?: '-' }}</td>
                                                             <td class="text-center">{{ $j['nomor_d'] ?: '-' }}</td>
-                                                            <td class="text-center">{{ $j['tgl_k'] ?: '-' }}</td>
-                                                            <td class="text-center">{{ $j['nomor_k'] ?: '-' }}</td>
-                                                            <td class="text-center">{{ $j['invoice'] ?: '-' }}</td>
+                                                            <td class="text-center"> {!! $j['tgl_k'] ?: '-' !!}</td>
+                                                            <td class="text-center"> {!! $j['nomor_k'] ?: '-' !!}</td>
+                                                            <td class="text-center">
+                                                                @if($subjek == 'pelayaran')
+                                                                {{ $j['no_bg'] ?: '-' }}
+                                                                @elseif ($subjek == 'customer_trucking')
+                                                                {{ $j['invoice_trucking'] ?: '-' }}
+                                                                @elseif ($subjek == 'agen')
+                                                                {{ $j['invoice_agen'] ?: '-' }}
+                                                                @else
+                                                                {{ $j['invoice'] ?: '-' }}
+                                                                @endif
+                                                            </td>
+
                                                             <td
                                                                 class="text-end 
                                         @if ($j['debit'] != $j['credit']) bg-danger text-white @endif">

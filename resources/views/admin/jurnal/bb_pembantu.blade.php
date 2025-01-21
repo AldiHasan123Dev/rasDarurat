@@ -92,10 +92,10 @@
                                     <input type="hidden" name="coa_id" value="{{ $coa_id }}">
                                     <select class="form-control px-3 py-1" name="subjek" onchange="submit()">
                                         <option value="customer_xpdc" {{ $subjek == 'customer_xpdc' ? 'selected' : '' }}>Customer XPDC</option>
-                                        {{-- <option value="customer_trucking" {{ $subjek == 'customer_trucking' ? 'selected' : '' }}>Customer Trucking</option> --}}
+                                        <option value="customer_trucking" {{ $subjek == 'customer_trucking' ? 'selected' : '' }}>Customer Trucking</option>
                                         <option value="pelayaran" {{ $subjek == 'pelayaran' ? 'selected' : '' }}>Pelayaran</option>
-                                        {{-- <option value="agen" {{ $subjek == 'agen' ? 'selected' : '' }}>Agen</option>
-                                        <option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
+                                        <option value="agen" {{ $subjek == 'agen' ? 'selected' : '' }}>Agen</option>
+                                        {{--<option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                     </select>
                                 </form>
                             </div>
@@ -162,6 +162,8 @@
                                     Agen
                                     @elseif ($subjek == 'customer_trucking')
                                     Customer Trucking
+                                    @elseif ($subjek == 'customer_trucking')
+                                    Agen
                                     @else
                                     Customer XPDC
                                     @endif 
@@ -182,7 +184,7 @@
                                 <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>
                                 <td class="text-center">
                                         @php
-                                            $pelayaranName = $data['pelayaran'] ?? $data['customer_name'];
+                                            $pelayaranName = $data['no_bg_list'] ?? $data['customer_name'];
                                         @endphp
                                         <a 
                                             target="_blank" 

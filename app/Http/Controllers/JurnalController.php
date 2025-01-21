@@ -1624,6 +1624,10 @@ class JurnalController extends Controller
             $jurnal = Cache::remember("jurnal_{$coa_id}_{$year}_{$month}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $year, $month) {
                 return Jurnal::where('coa_id', $coa_id)
                     ->whereIn('order_id', $order)
+                    ->whereNull('order_trucking_id')
+                    ->whereNull('invoice_trucking')
+                    ->whereNull('invoice_vendor')
+                    ->whereNull('invoice_agen')
                     ->whereNotNull('invoice')
                     ->whereYear('input', $year)
                     ->whereMonth('input', $month)
@@ -1681,33 +1685,37 @@ class JurnalController extends Controller
 
 
             // Gunakan cache untuk proses mapping dan pengelompokan
-            $groupedData = Cache::remember("grouped_pelayaran_{$coa_id}_{$year}_{$month}", 60, function () use ($jurnal,$tipe) {
+            $groupedData = Cache::remember("grouped_pelayaran_{$coa_id}_{$year}_{$month}", 60, function () use ($jurnal, $tipe) {
                 // Mapping data jurnal untuk menyesuaikan format yang diinginkan
                 $finalData = $jurnal->map(function ($item) {
                     // Mengambil nama pelayaran dari relasi yang sudah dimuat
                     $pelayaranName = $item->order->hutang_pelayaran->pelayaran->nama ?? $item->bg_pelayaran();
-
+            
                     return [
                         'pelayaran' => $pelayaranName,  // Ambil nama pelayaran
                         'debit' => $item->debit,
                         'credit' => $item->credit,
+                        'no_bg' => $item->no_bg,
                     ];
                 });
+            
                 // Kelompokkan data berdasarkan nama pelayaran dan hitung total debit, kredit, dan saldo
-                return $finalData->groupBy('pelayaran')->map(function ($group) use ($tipe){
+                return $finalData->groupBy('pelayaran')->map(function ($group) use ($tipe) {
                     $totalDebit = $group->sum('debit');
                     $totalCredit = $group->sum('credit');
                     $saldo = $tipe == 'D'
                         ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
                         : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+            
                     return [
                         'pelayaran' => $group->first()['pelayaran'], // Nama pelayaran (satu saja karena sudah dikelompokkan)
-                        'total_debit' => $group->sum('debit'),
-                        'total_credit' => $group->sum('credit'),
+                        'total_debit' => $totalDebit,
+                        'total_credit' => $totalCredit,
+                        'no_bg_list' => $group->pluck('no_bg'), // Nilai no_bg yang unik sebagai koleksi
                         'saldo' => $saldo, // Hitung saldo
                     ];
                 })->sortByDesc('saldo');
-            });
+            });            
         }
         if ($subjek== 'agen'){
             $customer = Cache::remember('agen_list', 60, function () {
@@ -1718,7 +1726,13 @@ class JurnalController extends Controller
             });
             $jurnal = Cache::remember("jurnal_agen_{$coa_id}_{$year}_{$month}_{$order}", 60, function () use ($coa_id, $year, $month,$order) {
                 return Jurnal::where('coa_id', $coa_id)
+
                     ->whereIn('order_id',$order)
+                    ->whereNull('order_trucking_id')
+                    ->whereNull('invoice_trucking')
+                    ->whereNull('invoice_vendor')
+                    ->whereNull('invoice')
+                    ->whereNotNull('invoice_agen')
                     ->whereYear('input', $year)
                     ->whereMonth('input', $month)
                     ->get();
@@ -1766,7 +1780,9 @@ class JurnalController extends Controller
 
             // Ambil jurnal berdasarkan order_trucking_id dan coa_id
             $jurnal = Jurnal::where('coa_id', $coa_id)
-                ->whereNotNull('order_trucking_id') // Pastikan order_trucking_id tidak null
+                ->whereNull('order_id')
+                ->whereNotNull('invoice_trucking')
+                ->whereNull('invoice_vendor') // Pastikan order_trucking_id tidak null
                 ->whereIn('order_trucking_id', $order)
                 ->whereYear('input', $year)
                 ->whereMonth('input', $month)
@@ -1812,6 +1828,9 @@ class JurnalController extends Controller
     $details = [];
     $totalDebit = 0;
     $totalCredit = 0;
+    $totalSaldo =0;
+    $groupedJurnal=[];
+    $customerPelayaran = null;
 
     if ($subjek == 'customer_xpdc') {
         // Ambil data terkait customer
@@ -1822,6 +1841,10 @@ class JurnalController extends Controller
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
             ->whereIn('order_id', $order)
+            ->whereNull('order_trucking_id')
+            ->whereNull('invoice_trucking')
+            ->whereNull('invoice_vendor')
+            ->whereNull('invoice_agen')
             ->whereNotNull('invoice')
             ->whereYear('input', $year)
             ->whereMonth('input', $month)
@@ -1832,9 +1855,136 @@ class JurnalController extends Controller
             return [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
                 'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
-                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->first(),
-                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->first(),
+                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
+                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
                 'invoice' => $items->first()->invoice,
+                'debit' => $items->sum('debit'),
+                'credit' => $items->sum('credit'),
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+            ];
+        });
+        
+
+        // Hitung total debit dan credit
+        foreach ($groupedJurnal as $detail) {
+            $totalDebit += $detail['debit'];
+            $totalCredit += $detail['credit'];
+        }
+
+        // Saldo total
+        $totalSaldo = $totalDebit - $totalCredit;
+    }
+
+    if ($subjek == 'agen') {
+        // Ambil data terkait customer
+        $customers = Agen::where('nama', $customer)->pluck('nama', 'id');
+        $order = Order::whereNotNull('invoice_agen')->whereIn('agen_id', $customers->keys())->pluck('id');
+        // Query jurnal
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->whereIn('order_id', $order)
+            ->whereNull('order_trucking_id')
+            ->whereNull('invoice_trucking')
+            ->whereNull('invoice_vendor')
+            ->whereNull('invoice')
+            ->whereNotNull('invoice_agen')
+            ->whereYear('input', $year)
+            ->whereMonth('input', $month)
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice_agen']);
+
+        // Kelompokkan jurnal berdasarkan invoice
+        $groupedJurnal = $jurnal->groupBy('invoice_agen')->map(function ($items) {
+            return [
+                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
+                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
+                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
+                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
+                'invoice_agen' => $items->first()->invoice_agen,
+                'debit' => $items->sum('debit'),
+                'credit' => $items->sum('credit'),
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+            ];
+        });
+        
+
+        // Hitung total debit dan credit
+        foreach ($groupedJurnal as $detail) {
+            $totalDebit += $detail['debit'];
+            $totalCredit += $detail['credit'];
+        }
+
+        // Saldo total
+        $totalSaldo = $totalDebit - $totalCredit;
+    }
+
+    if ($subjek == 'customer_trucking') {
+        // Ambil data terkait customer
+        $customers = CustomerTrucking::where('nama', $customer)->pluck('nama', 'id');
+        $order = OrderTrucking::whereIn('customer_id', $customers->keys())->whereNotNull('invoice')->pluck('id');
+
+        // Query jurnal
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->whereNull('order_id')
+            ->whereIn('order_trucking_id', $order)
+            ->whereNull('invoice_vendor')
+            ->whereNotNull('invoice_trucking')
+            ->whereYear('input', $year)
+            ->whereMonth('input', $month)
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice_trucking','invoice_vendor']);
+        // Kelompokkan jurnal berdasarkan invoice
+        $groupedJurnal = $jurnal->groupBy('invoice_trucking')->map(function ($items) {
+            return [
+                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
+                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
+                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
+                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
+                'invoice_trucking' => $items->first()->invoice_trucking,
+                'debit' => $items->sum('debit'),
+                'credit' => $items->sum('credit'),
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+            ];
+        });
+        
+
+        // Hitung total debit dan credit
+        foreach ($groupedJurnal as $detail) {
+            $totalDebit += $detail['debit'];
+            $totalCredit += $detail['credit'];
+        }
+
+        // Saldo total
+        $totalSaldo = $totalDebit - $totalCredit;
+    }
+
+
+    if ($subjek == 'pelayaran') {
+        // Ambil data terkait 
+        $customer1 = json_decode($customer, true); // Dekode JSON menjadi array
+        $customers = HutangPelayaran::where('no_bg_opp', $customer1)
+        ->orWhere('no_bg_opt', $customer1)
+        ->orWhere('no_bg_ut', $customer1) // Tambahkan kondisi orWhere untuk no_bg lainnya
+        ->pluck('pelayaran_id');
+        $customerPelayaran = Pelayaran::whereIn('id', $customers)->pluck('nama')->first();
+
+    
+        // $tarif = Tarif::whereIn('pelayaran_id', $customers->keys())->pluck('id');
+        // $order = Order::whereIn('tarif_id', $tarif)->pluck('id','no_bg');
+        // dd($order);
+
+        // Query jurnal
+
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->whereIn('no_bg', $customer1) // Menggunakan array $customer
+            ->whereYear('input', $year)
+            ->whereMonth('input', $month)
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'no_bg']);
+        // Kelompokkan jurnal berdasarkan invoice
+        $groupedJurnal = $jurnal->groupBy('no_bg')->map(function ($items) {
+            return [
+                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
+                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
+                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
+                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
+                'no_bg' => $items->first()->no_bg,
                 'debit' => $items->sum('debit'),
                 'credit' => $items->sum('credit'),
                 'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
@@ -1851,7 +2001,7 @@ class JurnalController extends Controller
         $totalSaldo = $totalDebit - $totalCredit;
     }
 
-    return view('admin.jurnal.buku_besar_pembantu_detail', compact('customer', 'subjek', 'totalSaldo', 'groupedJurnal', 'totalDebit', 'totalCredit'));
+    return view('admin.jurnal.buku_besar_pembantu_detail', compact('customerPelayaran','customer', 'subjek', 'totalSaldo', 'groupedJurnal', 'totalDebit', 'totalCredit'));
 }
 
 
