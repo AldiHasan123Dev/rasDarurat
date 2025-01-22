@@ -466,7 +466,7 @@
                 @php
                     $a = 1;
                     if(!is_null($hp->penambahan) && $hp->penambahan_nominal != 0){
-                        $a = 2;
+                        $a = $jobs->count() + 2;
                     }
                 @endphp
                 <tr style="background-color: red" class="text-white">

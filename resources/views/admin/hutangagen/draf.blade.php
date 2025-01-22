@@ -55,7 +55,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="10" class="table-secondary"></td>
-                                    <td>PPN (1.1%)</td>
+                                    <td>PPN (1.2%)</td>
                                     <td id="ppn-label-{{ $loop->iteration }}"><input type="number" name="ppn[]" class="form-control form-control-sm" id="ppn-{{ $loop->iteration }}" style="width: 200px" required></td>
                                 </tr>
                                 <tr>
@@ -193,7 +193,7 @@
             var total = 0;
             for (let i = 1; i <= count; i++) {
                 var tarif = parseInt($('#tarif-'+i).val());
-                var ppn = Math.round(tarif * 0.011);
+                var ppn = Math.round(tarif * 0.012);
                 var pph = Math.round(tarif * 0.02);
                 var jumlah = tarif + ppn - pph;
                 total += jumlah

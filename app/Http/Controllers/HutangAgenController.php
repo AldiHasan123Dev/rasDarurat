@@ -242,6 +242,7 @@ class HutangAgenController extends Controller
                     }
                     if ($tagihan->beban == 'ras') {
                         $cek = Jurnal::where('order_id', $order->id)->where('coa_id', $c93)->where('debit', '>', 0)->count();
+                        
                         if ($cek > 0) {
                             Jurnal::create([
                                 'order_id' => $order->id,
