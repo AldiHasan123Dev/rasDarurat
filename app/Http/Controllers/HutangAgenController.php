@@ -178,6 +178,7 @@ class HutangAgenController extends Controller
 
         return redirect()->route('hutang-agen.print', ['draf' => request('draf'), 'print' => 1]);
     }
+    
     private function jurnal($draf, $coa_id = 31)
     {
         $hutang_agen = HutangAgen::where('draf', $draf)->get();
