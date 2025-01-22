@@ -349,7 +349,7 @@ class HutangAgenController extends Controller
 
         foreach ($hutang_agen->groupBy('invoice') as $invoice => $invoice_group) {
             Jurnal::create([
-                'order_id' => $hutang_agen->first()->order_id,
+                'order_id' => null,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'no' => $no,
@@ -362,7 +362,7 @@ class HutangAgenController extends Controller
             ]);
 
             Jurnal::create([
-                'order_id' => $hutang_agen->first()->order_id,
+                'order_id' => null,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'no' => $no,
