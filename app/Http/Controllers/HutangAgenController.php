@@ -26,7 +26,7 @@ class HutangAgenController extends Controller
         $data = Order::whereHas('agent', function ($q) {
             $q->whereNotNull('top');
             $q->where('top', '>', 0);
-        })->whereNull('invoice_agen')->whereYear('created_at', 2024)->get()->groupBy('agen_id');
+        })->whereNull('invoice_agen')->whereYear('created_at', '>=', 2024)->get()->groupBy('agen_id');
         return view('admin.hutangagen.index', compact('data'));
     }
 
