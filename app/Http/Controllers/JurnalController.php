@@ -206,18 +206,33 @@ class JurnalController extends Controller
     
     public function merge()
     {
+        // Mengambil tipe jurnal yang unik dan menyimpannya dalam cache selama 600 detik
         $tipe = Cache::remember('jurnal_tipe', 600, function () {
             return Jurnal::pluck('tipe')->unique()->toArray();
         });
+    
+        // Inisialisasi array untuk data
+        $data1 = [];
         $data = [];
-        if (request()->has('tipe') && request('tipe')) {
-            $tipeDipilih = request('tipe');
-            $data = Cache::remember("jurnal_data_{$tipeDipilih}", 600, function () use ($tipeDipilih) {
-                return Jurnal::where('tipe', $tipeDipilih)->pluck('nomor')->unique()->toArray();
+    
+        // Menampilkan data berdasarkan tipe awal jika ada yang dipilih
+        if ($tipeAwal = request('tipe_awal')) {
+            $data = Cache::remember("jurnal_data_{$tipeAwal}", 600, function () use ($tipeAwal) {
+                return Jurnal::where('tipe', $tipeAwal)->pluck('nomor')->unique()->toArray();
             });
         }
-        return view('admin.jurnal.merge', compact('data', 'tipe'));
+    
+        // Menampilkan data berdasarkan tipe tujuan jika ada yang dipilih
+        if ($tipeTujuan = request('tipe_tujuan')) {
+            $data1 = Cache::remember("jurnal_data_{$tipeTujuan}", 600, function () use ($tipeTujuan) {
+                return Jurnal::where('tipe', $tipeTujuan)->pluck('nomor')->unique()->toArray();
+            });
+        }
+    
+        // Mengirim data ke view
+        return view('admin.jurnal.merge', compact('data', 'data1', 'tipe'));
     }
+    
     public function tampungan()
     {
         $data = JurnalTampungan::get();
