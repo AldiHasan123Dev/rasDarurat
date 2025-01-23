@@ -56,17 +56,24 @@
                         <div class="card p-3 shadow">
                                 @php
                                     $no_1 = App\Models\Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-                                    $no1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y')
+                                    $no1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
+                                    $no_2 = App\Models\Jurnal::where('tipe','BBK')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+                                    $no2 = sprintf('%03d',$no_2) . '/' . 'BBK' . '-RAS/' . date('y');
+                                    $no_3 = App\Models\Jurnal::where('tipe','BKK')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+                                    $no3 = sprintf('%03d',$no_3) . '/' . 'BKK' . '-RAS/' . date('y');
                                 @endphp
                                 <div>
                                     @csrf
-                                    <input type="hidden" name="no" value="{{ $no_1 }}">
+                                    <input type="hidden" name="no" id="no" value="{{ old('no', '') }}">
                                     <input type="hidden" name="invoice" value="{{ request('invoice') }}">
                                     <div class="d-flex gap-3">
                                         <div class="mb-2">
                                             <label for="nomor">Nomor Jurnal</label>
                                             <select name="nomor" id="nomor" class="form-select" required>
-                                                <option value="{{ $no1 }}" selected>{{ $no1 }}</option>
+                                                <option value="" selected>Pilih Nomor Jurnal</option>
+                                                <option value="{{ $no1 }}">{{ $no1 }}</option>
+                                                <option value="{{ $no2 }}">{{ $no2 }}</option>
+                                                <option value="{{ $no3 }}">{{ $no3 }}</option>
                                             </select>
                                         </div>
                                         <div class="mb-2">
@@ -154,4 +161,21 @@
         </div>
     </div>
 </div>
+<script>
+   $(document).ready(function () {
+        // Pastikan untuk menangani event 'change' pada dropdown #nomor
+        $('#nomor').on('change', function () {
+            var selectedNomor = $(this).val();  // Ambil nilai yang dipilih
+            console.log('Selected Nomor:', selectedNomor);  // Untuk debugging
+            $('#no').val(selectedNomor);  // Update nilai hidden input 'no' sesuai pilihan
+        });
+
+        // Untuk memastikan nilai input hidden 'no' tetap sesuai ketika halaman dimuat
+        var selectedValue = $('#nomor').val();
+        if (selectedValue) {
+            $('#no').val(selectedValue);
+        }
+    });
+</script>
+
 @endsection

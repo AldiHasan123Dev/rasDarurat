@@ -203,14 +203,21 @@ class JurnalController extends Controller
     {
         return view('admin.jurnal.manual');
     }
-
+    
     public function merge()
     {
-        $data = Jurnal::pluck('nomor')->toArray();
-        $data = array_unique($data);
-        return view('admin.jurnal.merge', compact('data'));
+        $tipe = Cache::remember('jurnal_tipe', 600, function () {
+            return Jurnal::pluck('tipe')->unique()->toArray();
+        });
+        $data = [];
+        if (request()->has('tipe') && request('tipe')) {
+            $tipeDipilih = request('tipe');
+            $data = Cache::remember("jurnal_data_{$tipeDipilih}", 600, function () use ($tipeDipilih) {
+                return Jurnal::where('tipe', $tipeDipilih)->pluck('nomor')->unique()->toArray();
+            });
+        }
+        return view('admin.jurnal.merge', compact('data', 'tipe'));
     }
-
     public function tampungan()
     {
         $data = JurnalTampungan::get();

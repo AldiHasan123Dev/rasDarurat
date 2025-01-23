@@ -11,6 +11,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
 
@@ -109,10 +110,12 @@ class JasaKirimController extends Controller
 
     public function generateJurnal(Request $request)
     {
+        $no1 = $request->nomor;
+        $no = explode('/', $no1)[0];
         $jasa_kirim_id = JasaKirim::where('invoice',$request->invoice)->pluck('id')->toArray();
         $order_id = Order::whereIn('jasa_kirim_id',$jasa_kirim_id)->pluck('id')->toArray();
         $generate_jurnal = $this->check_omset($order_id);
-        $this->jurnalTemplate($request->invoice, $request->nomor, $request->no, $request->created_at);
+        $this->jurnalTemplate($request->invoice, $request->nomor, $no, $request->created_at);
         return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disimpan!');
     }
 
@@ -131,6 +134,11 @@ class JasaKirimController extends Controller
 
     public function jurnalTemplate($invoice, $nomor, $no, $created_at)
     {
+        $tipe = Str::between($nomor, '/', '-'); // Mengambil nilai antara "/" dan "-"
+        // Cek jika tipe adalah bilangan atau integer
+        if (is_numeric($tipe)) {
+            $tipe = 'JNL';
+        }
         $data = JasaKirim::where('invoice',$invoice)->get();
         $err = [];
         foreach ($data as $idx => $item) {
@@ -155,7 +163,7 @@ class JasaKirimController extends Controller
                     $price2 = (int)($item->nominal / $count) + $selisih;
                     $is_first = false;
                     Jurnal::create([
-                        'tipe' => 'JNL',
+                        'tipe' => $tipe,
                         'coa_id' => ($order->checkOmset() ? $c76 : $c31),
                         'order_id' => $order->id,
                         'nomor' => $nomor,
@@ -167,7 +175,7 @@ class JasaKirimController extends Controller
                     ]);
                 }else{
                     Jurnal::create([
-                        'tipe' => 'JNL',
+                        'tipe' => $tipe,
                         'coa_id' => ($order->checkOmset() ? $c76 : $c31),
                         'order_id' => $order->id,
                         'nomor' => $nomor,
@@ -181,7 +189,7 @@ class JasaKirimController extends Controller
             }
             foreach($item->kirim_dokumen as $kirim){
                 Jurnal::create([
-                    'tipe' => 'JNL',
+                    'tipe' => $tipe,
                     'coa_id' => ($kirim->order->checkOmset() ? $c76 : $c31),
                     'order_id' => $kirim->order_id,
                     'nomor' => $nomor,
@@ -198,9 +206,8 @@ class JasaKirimController extends Controller
             ]);
         }
         Jurnal::create([
-            'tipe' => 'JNL',
+            'tipe' => $tipe,
             'coa_id' => $c63,
-            'order_id' => $order->id,
             'invoice_agen' => $invoice,
             'nomor' => $nomor,
             'relasi' => $nomor,
