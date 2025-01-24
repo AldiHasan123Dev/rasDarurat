@@ -619,7 +619,11 @@
             var koli = $(this).jqGrid('getCell', rowId, 'koli');
             var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
             lock_biaya = $(this).jqGrid('getCell', rowId, 'lock_biaya');
-            $('#btn-pindah-kapal').show();
+            if (invoice && invoice !== "-") {
+        $('#btn-pindah-kapal').hide(); // Sembunyikan tombol jika invoice ada
+    } else {
+        $('#btn-pindah-kapal').show(); // Tampilkan tombol jika invoice kosong
+    }
             $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#koli-info').show();

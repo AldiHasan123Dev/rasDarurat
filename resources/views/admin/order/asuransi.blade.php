@@ -92,11 +92,13 @@
                                 <input type="hidden" name="orders_id" class="orders_id">
                                 <button type="submit" class="btn btn-success btn-sm">Export Excel</button>
                             </form>
+                            @if (Auth::id()==14)
                             <form action="{{ route('asuransi.tarik') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="orders_id" class="orders_id">
                                 <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('are you sure?')">Tarik Asuransi</button>
                             </form>
+                            @endif
                             <form action="{{ route('asuransi.cetak') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="asuransi_cetak" value="1">
@@ -148,12 +150,14 @@
                 <div class="card">
                     <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                         <div class="d-flex gap-2">
+                            @if (Auth::id()==14)
                             <form action="{{ route('asuransi.cetak') }}" method="post">
                                 @csrf
                                 <input type="hidden" name="asuransi_cetak" value="0">
                                 <input type="hidden" name="orders_id" class="orders_id">
                                 <button type="submit" class="btn btn-secondary btn-sm" onclick="return confirm('are you sure?')">Masukan Belum Cetak</button>
                             </form>
+                            @endif
                         </div>
                         <p>List Order Dengan Asuransi (Sudah Cetak)</p>
                     </div>

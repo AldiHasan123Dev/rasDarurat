@@ -329,12 +329,18 @@ class OrderController extends Controller
     {
         $order = Order::find($request->order_id);
         $order_job = $order->job;
+        $jasaKirim = $order->jasa_kirim_id ?? null;
+        $tarifs = $order->tarif_id;
+        $tarif = Tarif::find($tarifs);
         $job_count = Order::where('job',$order->job)->get()->count();
         $setting = Setting::find(1);
         if($job_count <= 1){
             return back()->with('danger','Dilarang pindah kapal dikarenakan cuman ada 1 job! Gunakan Fitur edit');
         }
-        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->get();
+        $cek = Order::where('jadwal_kapal_id',$request->jadwal_kapal_id)->whereHas('tarif', function($q) use($tarif){
+            $q->where('customer_id',$tarif->customer_id);
+            $q->where('tujuan',$tarif->tujuan);
+        })->get();
         if(count($cek)>0){
             $job = $cek[0]->job;
             $no_job = count($cek) + 1;
@@ -349,6 +355,7 @@ class OrderController extends Controller
             $no_job = 1;
         }
         $order->update([
+            'jasa_kirim_id' => $jasaKirim,
             'jadwal_kapal_id' => $request->jadwal_kapal_id,
             'job' => $job,
             'no_job' => $no_job,
