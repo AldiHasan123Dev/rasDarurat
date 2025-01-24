@@ -11,6 +11,7 @@ use App\Imports\JurnalImport;
 use App\Models\COA;
 use App\Models\Agen;
 use App\Models\HutangPelayaran;
+use App\Models\JasaKirim;
 use App\Models\Jurnal;
 use App\Models\Customer;
 use App\Models\CustomerTrucking;
@@ -703,7 +704,15 @@ class JurnalController extends Controller
 
     public function store_merge(Request $request)
     {
+
         $tujuan = Jurnal::where('nomor', $request->tujuan)->first();
+        $jasakirim = JasaKirim::where('jurnal',$request->awal)->get();
+        if ($jasakirim->isNotEmpty()) {
+            // Update data JasaKirim terkait
+            JasaKirim::where('jurnal', $request->awal)->update([
+                'jurnal' => $tujuan->nomor,
+            ]);
+        }
         Jurnal::where('nomor', $request->awal)->update([
             'relasi' => $tujuan->nomor ?? $tujuan->relasi,
             'nomor' => $tujuan->nomor,
@@ -2109,21 +2118,21 @@ class JurnalController extends Controller
 
     public function syncJob()
     {
-        $data = Jurnal::whereNotNull('order_id')->whereNull('container')->whereBetween('created_at', ['2023-07-01', date('Y-m-d')])->get();
+        $last = Carbon::now()->subDays(35)->format('Y-m-d');
+        $data = Jurnal::whereNotNull('order_id')->whereNull('container')->whereBetween('created_at', [$last, date('Y-m-d')])->get();
         foreach ($data as $item) {
             $item->update([
                 'container' => $item->order->container ?? null,
             ]);
         }
 
-        $data = Jurnal::whereNotNull('order_trucking_id')->whereNull('order_id')->whereBetween('created_at', ['2023-07-01', date('Y-m-d')])->get();
+        $data = Jurnal::whereNotNull('order_trucking_id')->whereNull('order_id')->whereBetween('created_at', [$last, date('Y-m-d')])->get();
         $awal = $data->count();
         $akhir = 0;
         $subs = 0;
         foreach ($data as $item) {
             if (!is_null($item->order_trucking->container ?? null) && !is_null($item->order_trucking->seal ?? null)) {
                 $order = Order::where('container', $item->order_trucking->container)->where('seal', $item->order_trucking->seal)->first();
-
                 if ($order) {
                     $item->update([
                         'order_id' => $order->id,
