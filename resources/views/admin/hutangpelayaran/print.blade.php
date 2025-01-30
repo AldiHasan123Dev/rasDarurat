@@ -465,8 +465,13 @@
             <tbody>
                 @php
                     $a = 1;
+                    $b = 2;
+                    $c = 2;
                     if(!is_null($hp->penambahan) && $hp->penambahan_nominal != 0){
                         $a = $jobs->count() + 2;
+                        $b = $jobs->count() + 1;
+                        $c = $jobs->count();
+
                     }
                 @endphp
                 <tr style="background-color: red" class="text-white">
@@ -558,7 +563,7 @@
                     @endforeach
                 @endforeach --}}
                 <tr style="border: 2px solid red">
-                    <td style="color:red" colspan="2">Ch/ BG. No :</td>
+                    <td style="color:red" colspan="{{ $c }}">Ch/ BG. No :</td>
                     <td colspan="2" class="fw-bold">{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_ut,2,',','.') }}</td>
                 </tr>
