@@ -563,8 +563,13 @@
                     @endforeach
                 @endforeach --}}
                 <tr style="border: 2px solid red">
-                    <td style="color:red" colspan="{{ $c }}">Ch/ BG. No :</td>
-                    <td colspan="2" class="fw-bold">{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
+                    @if (!is_null($hp->penambahan) && $hp->penambahan_nominal != 0)
+                    <td style="color:red" colspan="2">Ch/ BG. No :</td>
+                    <td colspan="1" class="fw-bold">{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
+                    @else
+                    <td style="color:red" colspan="{{ $b }}">Ch/ BG. No :</td>
+                    <td colspan="{{ $b }}" class="fw-bold">{{ $hp->no_bg_ut }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_ut)) }})</td>
+                    @endif
                     <td class="text-end fw-bold">{{ number_format($hp->nominal_bg_ut,2,',','.') }}</td>
                 </tr>
             </tbody>
