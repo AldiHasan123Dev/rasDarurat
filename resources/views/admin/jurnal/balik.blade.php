@@ -221,7 +221,6 @@
                                         <input type="hidden" value="{{ $item['debit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
                                         <input type="hidden" value="{{ $item['debit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                         <input type="hidden" value="{{ $item['debit']->debit }}" name="jurnal[{{ $k }}][credit]">
-                                        <input type="hidden" value="{{ $item['debit']->credit }}" name="jurnal[{{ $k }}][debit]">
                                         <input type="hidden" value="{{ $item['debit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
                                         <input type="hidden" value="{{ $item['debit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
                                         <input type="hidden" value="{{ $item['debit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
@@ -258,7 +257,6 @@
                                         <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                         <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
                                         <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
-                                        <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
                                         <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
                                         <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
                                         <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
@@ -295,9 +293,9 @@
                                     @if (request('credit_coa_id_tujuan'))
                                     <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                     <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
+                                    <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                     <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
                                     <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
-                                    <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
                                     <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
                                     <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
                                     <input type="hidden" value="{{ $item['credit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
