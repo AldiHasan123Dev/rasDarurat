@@ -1035,7 +1035,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endif
+                            @endif 
                             @if ($item['jumlah'] < 1)
                             <tr style="height: 20px !important">
                                 <td colspan="4"></td>
