@@ -447,7 +447,7 @@ class CetakController extends Controller
             $items[$idx]['jumlah'] = round($jumlah,2);
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'Cont '.$tar->first()->tarif->shipmentInfo->nama;
-            $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * round($jumlah,2))) * $this->ppn) + ($tar->first()->tarif->tarif * round($jumlah,2));
+            $items[$idx]['sub_total'] = ((($tar->first()->tarif->tarif * max(1, round($jumlah, 2)))) * $this->ppn) + ($tar->first()->tarif->tarif * round($jumlah,2));
             $items[$idx]['tarif'] = $items[$idx]['sub_total'] / round($jumlah,2);
             $sub_total += $items[$idx]['sub_total'];
         }
@@ -599,8 +599,8 @@ class CetakController extends Controller
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'M3 '.$tar->first()->tarif->shipmentInfo->nama;
             $items[$idx]['tarif'] = $tar->first()->tarif->tarif;
-            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * round($jumlah,2);
-            $sub_total += $tar->first()->tarif->tarif * round($jumlah,2)    ;
+            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * max(1, round($jumlah, 2));
+            $sub_total += $tar->first()->tarif->tarif * max(1, round($jumlah, 2))    ;
         }
         $sub_total += $doc_total;
         $asuransi += $admin;
