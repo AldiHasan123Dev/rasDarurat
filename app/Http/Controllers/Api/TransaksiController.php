@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TransaksiResource;
 use App\Models\Jurnal;
-use App\Models\JurnalBalik;
+use App\Models\COA;
 use App\Models\Order;
 use App\Models\TemplateJurnal;
 use App\Models\Transaksi;
@@ -49,7 +49,7 @@ class TransaksiController extends Controller
         $month_number = date("n", strtotime($request->created_at)); // mengambil nomor bulan dari tanggal
         $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
         $invoice = sprintf('%04d',$no).'/RAS/'.$month_roman.'/'.date('y', strtotime($request->created_at));
-        
+
 
         Order::where('job',$transaksi->job)->update([
             'invoice' => $invoice,
@@ -141,7 +141,11 @@ class TransaksiController extends Controller
                             'created_at' => $date,
                         ]);
                     }
-                    if($item->coa_credit_id==86){
+                    $c86 = COA::where('coa_ras',86)->first()->id ?? 86;
+                    $c56 = COA::where('coa_ras',56)->first()->id ?? 56;
+                    $c25 = COA::where('coa_ras',25)->first()->id ?? 25;
+                    $c28 = COA::where('coa_ras',28)->first()->id ?? 28;
+                    if($item->coa_credit_id==$c86){
                         Jurnal::create([
                             'invoice' => $order->invoice ?? null,
                             'nopol' => $order->nopol ?? null,
@@ -158,7 +162,7 @@ class TransaksiController extends Controller
                             'created_at' => $date,
                         ]);
                     }
-                    if($item->coa_credit_id==56){
+                    if($item->coa_credit_id==$c56){
                         Jurnal::create([
                             'invoice' => $order->invoice ?? null,
                             'relasi' => $nomor,
@@ -175,7 +179,7 @@ class TransaksiController extends Controller
                             'created_at' => $date,
                         ]);
                     }
-                    if($item->coa_credit_id==25){
+                    if($item->coa_credit_id==$c25){
                         foreach ($transaksi->jobs as $job) {
                             if($job->asuransi=='ADA EXC'){
                                 if (!is_null($job->asuransi_id)) {
@@ -223,7 +227,7 @@ class TransaksiController extends Controller
                             }
                         }
                     }
-                    if($item->coa_credit_id==28){
+                    if($item->coa_credit_id==$c28){
                         foreach ($transaksi->jobs as $job) {
                             if($job->tagihan->count()>0){
                                 foreach ($job->tagihan as $tagihan) {
@@ -269,9 +273,11 @@ class TransaksiController extends Controller
         $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
         $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'. ($this->sno == 'ALB' ? 'ALB/' : '').date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
 
+        $c52 = COA::where('coa_ras',52)->first()->id ?? 52;
+        $c46 = COA::where('coa_ras',46)->first()->id ?? 46;
         if(is_null($trx->jurnal_bupot)){
             Jurnal::create([
-                'coa_id' => 52,
+                'coa_id' => $c52,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
@@ -283,7 +289,7 @@ class TransaksiController extends Controller
                 'created_at' => date('Y-m-d'),
             ]);
             Jurnal::create([
-                'coa_id' => 46,
+                'coa_id' => $c46,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
