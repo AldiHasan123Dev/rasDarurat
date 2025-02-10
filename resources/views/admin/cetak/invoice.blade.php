@@ -1073,7 +1073,7 @@
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black;">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span>PPN 1,2%:</span>
+                                        <span>PPN 1,1%:</span>
                                         {{-- <span>PPN 1.2%:</span> --}}
                                     </div>
                                 </td>
