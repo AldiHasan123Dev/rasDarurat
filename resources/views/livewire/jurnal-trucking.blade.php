@@ -551,7 +551,7 @@
         }
 
         $('#apply').click(function(e) {
-            $('.init-table').remove();
+            $('.init-table').hide();
             addTemplate();
         });
         $('#addBarisTemplate').click(function(e) {
@@ -566,9 +566,7 @@
                 success: function(response) {
                     $.each(response.items, function(idx, item) {
                         console.log(item);
-                        var amounts = $("input[name='amount[]']").map(function() {
-                            return $(this).val();
-                        }).get();
+                        var amounts = $("input[name='amount[]']").map(function(){return $(this).val();}).get();
                         debit = amounts.length + 1;
                         let html = '';
                         html += `<tr>
@@ -597,7 +595,7 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td style="width: 250px"><input name="name[]" id="keterangan-${debit}" style="width: 300px" type="text"></td>
+                        <td style="width: 250px"><input name="name[]" value="${item.keterangan}" id="keterangan-${debit}" style="width: 300px" type="text"></td>
                         <td><input type="number" name="amount[]" onkeyup="total()" id="amount-${debit}"></td>
                         <td>
                 <select class="form-control select2 tipe"
