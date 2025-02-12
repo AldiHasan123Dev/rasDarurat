@@ -799,7 +799,7 @@
                                 <td colspan="4"></td>
                                 <td colspan="3" style="border: 1px solid black;">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span>1,2%:</span>
+                                        <span>1,1%:</span>
                                     </div>
                                 </td>
                                 <td colspan="1" style="border: 1px solid black;">
