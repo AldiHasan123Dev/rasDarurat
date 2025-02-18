@@ -1028,21 +1028,15 @@ class JurnalController extends Controller
 
     public function store_balik(Request $request)
     {
+        
         $r = 0;
         foreach ($request->jurnal as $item) {
             $data = $item;
             if (!empty($data['nama'])) {
                 $data['created_at'] = date('Y-m-d');
-                $data['order_id'] = $data['order_id'] ?? null;
-                $data['order_trucking_id'] = $data['order_trucking_id'] ?? null;
                 $data['jurnal_balik'] = empty($data['jurnal_balik']) ? null : $data['jurnal_balik'];
                 $data['is_balik'] = 1;
                 $data['relasi'] = $request->nomor;
-                $data['invoice'] = $data['invoice'] ?? null;
-                $data['invoice_external'] = $data['invoice_external'] ?? null;
-                $data['invoice_vendor'] = $data['invoice_vendor'] ?? null;
-                $data['invoice_agen'] = $data['invoice_agen'] ?? null;
-                $data['invoice_trucking'] = $data['invoice_trucking'] ?? null;
                 $data['nomor'] = $request->nomor;
                 $data['no'] = $request->no;
                 $data['tipe'] = $request->tipe;
