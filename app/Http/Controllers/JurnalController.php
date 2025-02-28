@@ -1028,34 +1028,56 @@ class JurnalController extends Controller
 
     public function store_balik(Request $request)
     {
+        if (empty($request->check) || empty($request->jurnal)) {
+            return back()->with('danger', 'Data tidak valid');
+        }
         
-        $r = 0;
-        foreach ($request->jurnal as $item) {
-            $data = $item;
-            if (!empty($data['nama'])) {
-                $data['created_at'] = date('Y-m-d');
-                $data['jurnal_balik'] = empty($data['jurnal_balik']) ? null : $data['jurnal_balik'];
-                $data['is_balik'] = 1;
-                $data['relasi'] = $request->nomor;
-                $data['nomor'] = $request->nomor;
-                $data['no'] = $request->no;
-                $data['tipe'] = $request->tipe;
-                $j = Jurnal::create($data);
-                if ($j) {
+        $selectedJurnals = array_intersect_key($request->jurnal, array_flip($request->check));
+        
+        if (empty($selectedJurnals)) {
+            return back()->with('danger', 'Tidak ada jurnal yang dipilih');
+        }
+        DB::beginTransaction(); // Mulai transaksi
+        try {
+            $r = 0;
+            foreach ($selectedJurnals as $item) {
+                $data = $item;
+                if (!empty($data['nama'])) {
+                    $data['created_at'] = now();
+                    $data['jurnal_balik'] = empty($data['jurnal_balik']) ? null : $data['jurnal_balik'];
+                    $data['is_balik'] = 1;
+                    $data['relasi'] = $request->nomor;
+                    $data['nomor'] = $request->nomor;
+                    $data['no'] = $request->no;
+                    $data['tipe'] = $request->tipe;
+    
+                    // Simpan data jurnal baru
+                    $j = Jurnal::create($data);
+                    
+                    // Update jurnal_balik jika ada
                     if (!empty($data['jurnal_balik'])) {
-                        Jurnal::find($data['jurnal_balik'])->update([
-                            'jurnal_balik' => $j->id
-                        ]);
+                        Jurnal::where('id', $data['jurnal_balik'])
+                              ->update(['jurnal_balik' => $j->id]);
                     }
+    
                     $r++;
                 }
             }
+            if ($r == 0) {
+                DB::rollBack(); // Batalkan transaksi jika tidak ada data yang berhasil disimpan
+                return back()->with('danger', 'Data gagal disimpan');
+            }
+    
+            DB::commit(); // Simpan perubahan ke database
+            return redirect()->route('jurnal.balik.create')->with('success', 'Data berhasil disimpan');
+    
+        } catch (\Exception $e) {
+            DB::rollBack(); // Batalkan transaksi jika terjadi error
+            \Log::error('Gagal menyimpan jurnal:', ['error' => $e->getMessage()]);
+            return back()->with('danger', 'Terjadi kesalahan saat menyimpan data');
         }
-        if ($r == 0) {
-            return back()->with('danger', 'Data gagal disimpan');
-        }
-        return redirect()->route('jurnal.balik.create')->with('success', 'Data berhasil disimpan');
     }
+    
 
     public function create()
     {
