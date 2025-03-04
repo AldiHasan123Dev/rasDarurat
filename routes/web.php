@@ -343,6 +343,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jqgrid-order-biaya', [OrderBiayaController::class, 'jqgrid'])->name('order_biaya.jqgrid');
     Route::get('monitoring-pembayar', [OrderController::class, 'monitoring_pembayar'])->name('order.monitoring_pembayar');
     Route::get('monitoring-shipment', [OrderBiayaController::class, 'index'])->name('order_biaya.index');
+    Route::get('monitoring-shipment-jayapura', [OrderBiayaController::class, 'jayapura'])->name('order_biaya.jayapura');
     Route::get('monitoring-shipment/{order}', [OrderBiayaController::class, 'edit'])->name('order_biaya.edit');
     Route::put('monitoring-shipment/{order}', [OrderBiayaController::class, 'update'])->name('order_biaya.update');
 

@@ -11,20 +11,74 @@ class OrderBiayaController extends Controller
 {
     public function index()
     {
-        $order = Order::whereHas('tarif',function($q){
-            $q->whereHas('tujuan_lokasi', function($a){
-                $a->where('nama','like','%banjarmasin%');
-            });
-        })->pluck('id')->map(function ($id) {
-            $biaya = OrderBiaya::where('order_id',$id)->first();
-            if(!$biaya){
-                OrderBiaya::create([
-                    'order_id' => $id
-                ]);
+        $orderIds = Order::whereHas('tarif', function ($q) {
+                $q->whereHas('tujuan_lokasi', function ($a) {
+                    $a->where('nama', 'like', '%banjarmasin%');
+                });
+            })
+            ->pluck('id');
+    
+        foreach ($orderIds as $id) {
+            $biayaExists = OrderBiaya::where('order_id', $id)
+                ->whereHas('orderInfo', function ($o) {
+                    $o->whereHas('tarif', function ($t) { // Tambahkan whereHas tarif setelah orderInfo
+                        $t->whereHas('tujuan_lokasi', function ($a) {
+                            $a->where('nama', 'like', '%banjarmasin%');
+                        });
+                    });
+                })
+                ->exists();
+    
+            if (!$biayaExists) {
+                OrderBiaya::create(['order_id' => $id]);
             }
-        });
+        }
+    
         return view('admin.keuangan.biaya_order');
     }
+    
+
+    public function jayapura()
+{
+    // Ambil ID order yang memiliki tujuan Jayapura
+    $orders = Order::whereHas('tarif', function ($q) {
+            $q->whereHas('tujuan_lokasi', function ($a) {
+                $a->where('nama', 'like', '%jayapura%');
+            });
+        })
+        ->pluck('id');
+
+    // Cek dan buat OrderBiaya jika belum ada
+    foreach ($orders as $id) {
+        $biayaExists = OrderBiaya::where('order_id', $id)
+            ->whereHas('orderInfo', function ($o) {
+                $o->whereHas('tarif', function ($t) {
+                    $t->whereHas('tujuan_lokasi', function ($a) {
+                        $a->where('nama', 'like', '%jayapura%');
+                    });
+                });
+            })
+            ->exists();
+
+        if (!$biayaExists) {
+            OrderBiaya::create([
+                'order_id' => $id
+            ]);
+        }
+    }
+
+    // Ambil data OrderBiaya yang hanya terkait dengan Jayapura
+    $biayaJayapura = OrderBiaya::whereHas('orderInfo', function ($o) {
+            $o->whereHas('tarif', function ($t) {
+                $t->whereHas('tujuan_lokasi', function ($a) {
+                    $a->where('nama', 'like', '%jayapura%');
+                });
+            });
+        })
+        ->get();
+
+    return view('admin.keuangan.biaya_order-jayapura', compact('biayaJayapura'));
+}
 
     public function edit(OrderBiaya $order)
     {
@@ -65,6 +119,7 @@ class OrderBiayaController extends Controller
                 $q->where('order.job','LIKE','%'.request('job').'%');
             });
         }
+
 
         // if(request('no_job')){
         //     $me = explode('-',request('no_job'));
@@ -191,6 +246,26 @@ class OrderBiayaController extends Controller
                 $q->whereHas('tarif',function($a){
                     $a->whereHas('tujuan_lokasi', function($b){
                         $b->where('nama','LIKE','%'.request('tujuan').'%');
+                    });
+                });
+            });
+        }
+        if(request('kota')){
+            $query->whereHas('orderInfo', function($q) {
+                $q->whereHas('tarif', function($a) {
+                    $a->whereHas('tujuan_lokasi', function($b) {
+                        $b->where('nama', 'LIKE', '%' . request('kota') . '%');
+                    })->whereHas('kondisiInfo', function($c) {
+                        $c->whereNotIn('id', [1, 6]);
+                    });
+                });
+            });            
+        }
+        if(request('kota1')){
+            $query->whereHas('orderInfo', function($q){
+                $q->whereHas('tarif',function($a){
+                    $a->whereHas('tujuan_lokasi', function($b){
+                        $b->where('nama','LIKE','%'.request('kota1').'%');
                     });
                 });
             });

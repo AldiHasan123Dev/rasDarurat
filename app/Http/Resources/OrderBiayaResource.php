@@ -19,6 +19,7 @@ class OrderBiayaResource extends JsonResource
             'job' => $this->order->job ?? '-',
             'no_job' => $this->order->job.'-'.sprintf($this->order->no_job),
             'pembayar' => $this->order->tarif->customer->nama,
+            'kondisi' => $this->order->tarif->kondisiInfo->nama,
             'penerima' => $this->order->penerima->nama,
             'tujuan' => $this->order->tarif->tujuan_lokasi->nama,
             'shipment' => $this->order->tarif->shipmentInfo->nama,

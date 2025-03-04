@@ -58,7 +58,7 @@
         url: '{{ route('order_biaya.jqgrid') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { kota1:  'banjarmasin' },
+        postData: { kota:  'jayapura' },
         colModel: [
             {search:true, name: 'job', label : 'Job', frozen:true, width:70},
             {search:true, name: 'no_job', label : 'ID Job', frozen:true, width:70},
@@ -83,6 +83,7 @@
             {search:true, name: 'nominal_kuli', label : 'Nominal Kuli'},
             {search:true, name: 'tgl_jc', label : 'Tgl JC'},
             {search:true, name: 'nominal_jc', label : 'Nominal JC'},
+            {search:true, name: 'kondisi', label : 'Kondisi'},
         ],
         autowidth: true,
         shrinkToFit: false,
@@ -92,7 +93,7 @@
         rowList:[10,25,50,100,250,500,1000],
         viewrecords: true,
         pager: "#jqGridPager",
-        caption: "Monitoring Biaya Shipment Banjarmasin",
+        caption: "Monitoring Biaya Shipment Jayapura",
         onCellSelect: function (rowId, iRow, iCol, e) {
             var id = $(this).jqGrid('getCell', rowId, 'id');
             var order_id = $(this).jqGrid('getCell', rowId, 'no_job');
