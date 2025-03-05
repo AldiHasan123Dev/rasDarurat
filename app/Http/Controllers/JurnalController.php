@@ -1028,47 +1028,43 @@ class JurnalController extends Controller
 
     public function store_balik(Request $request)
     {
-        if (empty($request->check) || empty($request->jurnal)) {
-            return back()->with('danger', 'Data tidak valid');
+    
+        $dataToInsert = []; // Kumpulkan data sebelum transaksi
+        $r = 0;
+        // Loop pertama: Menyiapkan data
+        foreach ($request->jurnal as $item) {
+            if (!empty($item['nama'])) {
+                $item['created_at'] = now();
+                $item['jurnal_balik'] = empty($item['jurnal_balik']) ? null : $item['jurnal_balik'];
+                $item['is_balik'] = 1;
+                $item['relasi'] = $request->nomor;
+                $item['nomor'] = $request->nomor;
+                $item['no'] = $request->no;
+                $item['tipe'] = $request->tipe;
+    
+                $dataToInsert[] = $item;
+                $r++;
+            }
         }
-        
-        $selectedJurnals = array_intersect_key($request->jurnal, array_flip($request->check));
-        
-        if (empty($selectedJurnals)) {
-            return back()->with('danger', 'Tidak ada jurnal yang dipilih');
+    
+        if ($r == 0) {
+            return back()->with('danger', 'Data gagal disimpan');
         }
-        DB::beginTransaction(); // Mulai transaksi
+    
+        DB::beginTransaction(); // Mulai transaksi setelah data siap
+    
         try {
-            $r = 0;
-            foreach ($selectedJurnals as $item) {
-                $data = $item;
-                if (!empty($data['nama'])) {
-                    $data['created_at'] = now();
-                    $data['jurnal_balik'] = empty($data['jurnal_balik']) ? null : $data['jurnal_balik'];
-                    $data['is_balik'] = 1;
-                    $data['relasi'] = $request->nomor;
-                    $data['nomor'] = $request->nomor;
-                    $data['no'] = $request->no;
-                    $data['tipe'] = $request->tipe;
+            foreach ($dataToInsert as $data) {
+                $j = Jurnal::create($data);
     
-                    // Simpan data jurnal baru
-                    $j = Jurnal::create($data);
-                    
-                    // Update jurnal_balik jika ada
-                    if (!empty($data['jurnal_balik'])) {
-                        Jurnal::where('id', $data['jurnal_balik'])
-                              ->update(['jurnal_balik' => $j->id]);
-                    }
-    
-                    $r++;
+                // Update jurnal_balik jika ada
+                if (!empty($data['jurnal_balik'])) {
+                    Jurnal::where('id', $data['jurnal_balik'])
+                          ->update(['jurnal_balik' => $j->id]);
                 }
             }
-            if ($r == 0) {
-                DB::rollBack(); // Batalkan transaksi jika tidak ada data yang berhasil disimpan
-                return back()->with('danger', 'Data gagal disimpan');
-            }
     
-            DB::commit(); // Simpan perubahan ke database
+            DB::commit(); // Simpan semua data ke database
             return redirect()->route('jurnal.balik.create')->with('success', 'Data berhasil disimpan');
     
         } catch (\Exception $e) {
@@ -1076,7 +1072,7 @@ class JurnalController extends Controller
             \Log::error('Gagal menyimpan jurnal:', ['error' => $e->getMessage()]);
             return back()->with('danger', 'Terjadi kesalahan saat menyimpan data');
         }
-    }
+    }    
     
 
     public function create()
