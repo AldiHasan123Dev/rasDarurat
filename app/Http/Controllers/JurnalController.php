@@ -1031,8 +1031,14 @@ class JurnalController extends Controller
     
         $dataToInsert = []; // Kumpulkan data sebelum transaksi
         $r = 0;
+        $jurnal = $request->jurnal;
+
+        // Pastikan $jurnal adalah array sebelum mengurutkan
+        if (is_array($jurnal)) {
+            ksort($jurnal); // Mengurutkan array berdasarkan key (indeks)
+        }
         // Loop pertama: Menyiapkan data
-        foreach ($request->jurnal as $item) {
+        foreach ($jurnal as $item) {
             if (!empty($item['nama'])) {
                 $item['created_at'] = now();
                 $item['jurnal_balik'] = empty($item['jurnal_balik']) ? null : $item['jurnal_balik'];

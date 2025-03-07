@@ -357,7 +357,6 @@
                             </thead>
                             <tbody>
                                 @if (request('credit_coa_id_tujuan'))
-                                <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                     <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
                                     <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                     <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
