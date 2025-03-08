@@ -326,11 +326,13 @@ class JurnalController extends Controller
             if (request('debit_coa_id_tujuan')) {
                 $query->where('coa_id', request('debit_coa_id_tujuan'));
                 $query->where('debit', '>', 0);
+                $query->orderBy('debit','asc');
             }
             if (request('credit_coa_id_tujuan')) {
                 $query->where('coa_id', request('credit_coa_id_tujuan'));
                 $query->where('credit', '>', 0);
                 $query->whereNull('jurnal_balik');
+                $query->orderBy('credit','asc');
                 if (request('order_id')) {
                     $query->where('order_id', request('order_id'));
                 }
