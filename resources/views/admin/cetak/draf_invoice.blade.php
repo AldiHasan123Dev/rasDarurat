@@ -192,7 +192,7 @@
                                         <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -412,7 +412,7 @@
                                         <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -647,7 +647,7 @@
                                         <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -906,7 +906,7 @@
                                         <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -1187,7 +1187,7 @@
                                         <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Invoice final akan diterbitkan setelah dokumen pendukung lengkap.</td>
                                     </tr>
                                 </table>
                             </div>
