@@ -235,6 +235,58 @@ class CetakController extends Controller
         return view('admin.cetak.doring', compact('agents','orders','jadwal_kapal','tujuan','jadwal_kapals','data_lokasi','order','order_id','no','no_dooring','url'));
     }
 
+    public function draftinvoice()
+    {
+        if(request('order_id')){
+            $order = Order::find(request('order_id'));
+            $order->update(['is_draft' => 1]);
+        }
+        if (request('job')) {
+            $order = Order::where('job',request('job'))->first();
+        }
+        $orders = Order::where('job',$order->job)->get();
+        if (!$order) {
+            return back()->with('danger','Anda harus memilih job terlebih dahulu!');
+        }
+
+        $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+        $type = strtoupper(strtolower($order->tarif->shipmentInfo->nama[0]));
+        $is_allin = false;
+        if ($type=='F') {
+            $allin = [];
+            if ($order->tarif->customer->all_in==1) {
+                $allin = $this->allinFCL($order);
+                $is_allin = true;
+                $invoice = $this->FCL($order,1);
+            }else{
+                $invoice = $this->FCL($order);
+            }
+            $validate = $this->FCL($order)['validate'];
+        }else{
+            $allin = [];
+            if ($order->tarif->customer->all_in==1) {
+                $allin = $this->allinLCL($order);
+                $is_allin = true;
+                $invoice = $this->LCL($order,1);
+            }else{
+                $invoice = $this->LCL($order);
+            }
+            $validate = $this->LCL($order)['validate'];
+        }
+
+        $validate = array_unique($validate);
+        $br = Order::with('barang')->where('job',$order->job)->get()->pluck('barang.nama')->toArray();
+        $br = array_unique($br);
+        $nama_barang = implode(',',$br);
+        $ppn = $this->ppn;
+        $pph = $this->pph;
+        $invoice_name = $this->invoice_name;
+        $bank = $this->bank;
+        $no_rek = $this->no_rek;
+        $bank_name = $this->bank_name;
+        return view('admin.cetak.draf_invoice',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin','bank','no_rek','bank_name'));
+    }
+
     public function invoice()
     {
         if(request('order_id')){

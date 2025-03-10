@@ -250,7 +250,9 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('keuangan/customer', [KeuanganController::class, 'customer'])->name('keuangan.customer');
     Route::get('keuangan/order', [KeuanganController::class, 'order'])->name('keuangan.order');
     Route::get('keuangan/draft-invoice', [KeuanganController::class, 'draft_invoice'])->name('keuangan.draft_invoice');
+    Route::get('keuangan/draft-invoice1', [KeuanganController::class, 'draft_invoice1'])->name('keuangan.draft_invoice1');
     Route::get('keuangan/data-draft-invoice', [KeuanganController::class, 'draftInvoiceData'])->name('draft.invoice.data');
+    Route::get('keuangan/data-draft-invoice1', [KeuanganController::class, 'draftInvoiceData1'])->name('draft.invoice.data1');
     Route::get('keuangan/ba_kembali', [KeuanganController::class, 'ba_kembali'])->name('keuangan.ba_kembali');
     Route::get('keuangan/pre-invoice', [KeuanganController::class, 'pre_invoice'])->name('keuangan.pre_invoice');
     Route::get('keuangan/pre-invoic1', [KeuanganController::class, 'pre_invoice1'])->name('keuangan.pre_invoice1');
@@ -282,6 +284,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('cetak/shipment', [CetakController::class, 'shipment'])->name('cetak.shipment');
     Route::get('cetak/dooring', [CetakController::class, 'dooring'])->name('cetak.dooring');
     Route::get('cetak/invoice', [CetakController::class, 'invoice'])->name('cetak.invoice');
+    Route::get('cetak/draft_invoice', [CetakController::class, 'draftinvoice'])->name('cetak.draft_invoice');
     Route::get('cetak/invoice-cont', [CetakController::class, 'invoiceCont'])->name('cetak.invoice.cont');
     Route::post('copy-orders/{order}', [OrderController::class, 'copy'])->name('order.copy');
     Route::post('si-export', [OrderController::class, 'SIExport'])->name('order.export.si');

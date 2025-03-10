@@ -61,6 +61,7 @@ class Order extends Model
         'lock_biaya',
         'lock_omset',
         'jasa_kirim_id',
+        'is_draft',
     ];
 
     protected static function booted()

@@ -1643,7 +1643,8 @@ class JurnalController extends Controller
         $month = request('month') ?? date('m');
         $coa_id = request('coa_id') ?? 46;
         $subjek = request('subjek') ?? 'customer_xpdc';
-
+        $startDate = '2022-01-01';
+        $endDate = Carbon::create($year, $month)->endOfMonth()->toDateString();
         // Cek apakah COA ditemukan
         $coa = COA::find($coa_id);
         if (!$coa) {
@@ -1670,16 +1671,15 @@ class JurnalController extends Controller
                 return Order::whereIn('tarif_id', $tarif)->pluck('id');
             });
             // Cache jurnal berdasarkan kriteria
-            $jurnal = Cache::remember("jurnal_{$coa_id}_{$year}_{$month}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $year, $month) {
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $endDate, $startDate) {
                 return Jurnal::where('coa_id', $coa_id)
                     ->whereIn('order_id', $order)
                     ->whereNull('order_trucking_id')
                     ->whereNull('invoice_trucking')
                     ->whereNull('invoice_vendor')
                     ->whereNull('invoice_agen')
+                    ->whereBetween('created_at', [$startDate, $endDate])
                     ->whereNotNull('invoice')
-                    ->whereYear('input', $year)
-                    ->whereMonth('input', $month)
                     ->get(['order_id', 'debit', 'credit']);
             });
             // Proses data untuk hasil akhir
@@ -1880,6 +1880,8 @@ class JurnalController extends Controller
     $totalSaldo =0;
     $groupedJurnal=[];
     $customerPelayaran = null;
+    $startDate = '2022-01-01';
+    $endDate = Carbon::create($year, $month)->endOfMonth()->toDateString();
 
     if ($subjek == 'customer_xpdc') {
         // Ambil data terkait customer
@@ -1893,19 +1895,18 @@ class JurnalController extends Controller
             ->whereNull('order_trucking_id')
             ->whereNull('invoice_trucking')
             ->whereNull('invoice_vendor')
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->whereNull('invoice_agen')
             ->whereNotNull('invoice')
-            ->whereYear('input', $year)
-            ->whereMonth('input', $month)
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice']);
 
         // Kelompokkan jurnal berdasarkan invoice
         $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) {
             return [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
-                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
+                'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('input')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
-                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
+                'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('input')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'invoice' => $items->first()->invoice,
                 'debit' => $items->sum('debit'),
                 'credit' => $items->sum('credit'),

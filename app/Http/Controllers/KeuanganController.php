@@ -38,6 +38,11 @@ class KeuanganController extends Controller
         return view('admin.keuangan.draft_invoice');
     }
 
+    public function draft_invoice1(Request $request)
+    {
+        return view('admin.keuangan.draft1_invoice');
+    }
+
     public function draftInvoiceData(Request $request)
     {
         $orders = Order::with([
@@ -107,6 +112,76 @@ class KeuanganController extends Controller
         return response()->json($response);
     }
 
+    public function draftInvoiceData1(Request $request)
+    {
+        $orders = Order::with([
+            'tarif.customer.marketing',
+            'tarif.customer.cs',
+            'barang',
+            'pengirim',
+            'penerima',
+            'tarif.dari_lokasi',
+            'jadwal_kapal.kapal',
+            'tarif.shipmentInfo'
+        ])->whereNull('invoice');
+
+        // Tambahkan pencarian berdasarkan parameter filter yang diterima
+        $searchFilters = $request->input('_search') ? $request->only('searchField', 'searchString', 'searchOper') : [];
+
+        if (!empty($searchFilters)) {
+            foreach ($searchFilters as $field => $value) {
+                if ($value) {
+                    $orders->where($field, 'like', "%$value%");
+                }
+            }
+        }
+
+        // Paginasi
+        $totalRecords = $orders->count();
+        $page = (int)$request->input('page', 1);
+        $limit = (int)$request->input('rows', 10);
+        $start = ($page - 1) * $limit;
+
+        // Pastikan page tidak lebih besar dari total halaman
+        $totalPages = ceil($totalRecords / $limit);
+        $page = min($page, $totalPages);  // Pastikan page tidak lebih besar dari totalPages
+
+        $paginatedOrders = $orders->skip($start)->take($limit)->get();
+
+        // Format data untuk jqGrid
+        $rows = $paginatedOrders->map(function ($order) {
+            return [
+                'order_id' => $order->id ?? '-',
+                'created_at' => $order->created_at->format('d/m/y'),
+                'marketing' => optional($order->tarif->customer->marketing)->name ?? '-',
+                'cs' => optional($order->tarif->customer->cs)->name ?? '-',
+                'job' => $order->job . '-' . sprintf('%02d', $order->no_job),
+                'invoice' => $order->invoice ?? '-',
+                'customer' => optional($order->tarif->customer)->nama ?? '-',
+                'barang' => optional($order->barang)->nama ?? '-',
+                'pengirim' => optional($order->pengirim)->nama ?? '-',
+                'penerima' => optional($order->penerima)->nama ?? '-',
+                'trucking' => $order->trucking ?? '-',
+                'seal' => $order->seal ?? '-',
+                'container' => $order->container ?? '-',
+                'nopol' => $order->nopol ?? '-',
+                'dari_lokasi' => optional($order->tarif->dari_lokasi)->nama ?? '-',
+                'kapal' => optional($order->jadwal_kapal->kapal)->nama ?? '-',
+                'voyage' => $order->jadwal_kapal->voyage ?? '-',
+                'shipment' => $order->tarif->shipmentInfo->nama ?? '-',
+                'is_draft' => $order->is_draft,
+            ];
+        });
+
+        $response = [
+            'page' => $page,
+            'total' => $totalPages,  // Total halaman yang benar
+            'records' => $totalRecords,
+            'rows' => $rows, // Konversi ke array
+        ];
+
+        return response()->json($response);
+    }
 
 
     public function customer()
