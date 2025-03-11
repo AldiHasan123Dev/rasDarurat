@@ -1681,7 +1681,7 @@ class JurnalController extends Controller
                     ->whereBetween('created_at', [$startDate, $endDate])
                     ->whereNotNull('invoice')
                     ->get(['order_id', 'debit', 'credit']);
-            });
+                });
             // Proses data untuk hasil akhir
             $finalData = $jurnal->map(function ($item) use ($customer) {
                 return [
@@ -1721,14 +1721,13 @@ class JurnalController extends Controller
             $order = Cache::remember("order_pelayaran_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
                 return Order::whereIn('tarif_id', $tarif)->pluck('id');
             });
-            $jurnal = Cache::remember("jurnal_pelayaran_{$coa_id}_{$year}_{$month}", 60, function () use ($coa_id, $year, $month) {
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $endDate, $startDate) {
                 return Jurnal::with(['order.hutang_pelayaran.pelayaran' => function($query) {
                         $query->select('id', 'nama'); // Pilih kolom 'id' dan 'nama' dari tabel 'pelayaran'
                     }])
                     ->where('coa_id', $coa_id)
                     ->whereNotNull('no_bg')
-                    ->whereYear('input', $year)
-                    ->whereMonth('input', $month)
+                    ->whereBetween('created_at', [$startDate, $endDate])
                     ->get();
             });
 
@@ -1773,7 +1772,7 @@ class JurnalController extends Controller
             $order = Cache::remember("order_agen_list_{$customer->keys()->implode('_')}", 60, function () use ($customer) {
                 return Order::whereIn('agen_id', $customer->keys())->pluck('id');
             });
-            $jurnal = Cache::remember("jurnal_agen_{$coa_id}_{$year}_{$month}_{$order}", 60, function () use ($coa_id, $year, $month,$order) {
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $endDate, $startDate) {
                 return Jurnal::where('coa_id', $coa_id)
 
                     ->whereIn('order_id',$order)
@@ -1782,8 +1781,7 @@ class JurnalController extends Controller
                     ->whereNull('invoice_vendor')
                     ->whereNull('invoice')
                     ->whereNotNull('invoice_agen')
-                    ->whereYear('input', $year)
-                    ->whereMonth('input', $month)
+                    ->whereBetween('created_at', [$startDate, $endDate])
                     ->get();
             });
             $finalData = $jurnal->map(function ($item) use ($customer) {
@@ -1833,8 +1831,7 @@ class JurnalController extends Controller
                 ->whereNotNull('invoice_trucking')
                 ->whereNull('invoice_vendor') // Pastikan order_trucking_id tidak null
                 ->whereIn('order_trucking_id', $order)
-                ->whereYear('input', $year)
-                ->whereMonth('input', $month)
+                ->whereBetween('created_at', [$startDate, $endDate])
                 ->get(['order_trucking_id', 'debit', 'credit']);
 
             // Gabungkan hasil customer trucking dan jurnal
@@ -1898,19 +1895,22 @@ class JurnalController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->whereNull('invoice_agen')
             ->whereNotNull('invoice')
-            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice']);
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice']);
 
         // Kelompokkan jurnal berdasarkan invoice
         $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) {
             return [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
-                'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('input')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
-                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
-                'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('input')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
+                'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
+                'nomor_k' =>  $items->where('credit', '>', 0)
+                        ->pluck('nomor')
+                        ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                        ->implode('<br>'),
+                'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'invoice' => $items->first()->invoice,
                 'debit' => $items->sum('debit'),
                 'credit' => $items->sum('credit'),
-                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
             ];
         });
         
@@ -1937,8 +1937,7 @@ class JurnalController extends Controller
             ->whereNull('invoice_vendor')
             ->whereNull('invoice')
             ->whereNotNull('invoice_agen')
-            ->whereYear('input', $year)
-            ->whereMonth('input', $month)
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice_agen']);
 
         // Kelompokkan jurnal berdasarkan invoice
@@ -1977,20 +1976,22 @@ class JurnalController extends Controller
             ->whereIn('order_trucking_id', $order)
             ->whereNull('invoice_vendor')
             ->whereNotNull('invoice_trucking')
-            ->whereYear('input', $year)
-            ->whereMonth('input', $month)
-            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice_trucking','invoice_vendor']);
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_trucking','invoice_vendor']);
         // Kelompokkan jurnal berdasarkan invoice
         $groupedJurnal = $jurnal->groupBy('invoice_trucking')->map(function ($items) {
             return [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
-                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
-                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
-                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
+                'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
+                'nomor_k' =>  $items->where('credit', '>', 0)
+                        ->pluck('nomor')
+                        ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                        ->implode('<br>'),
+                'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'invoice_trucking' => $items->first()->invoice_trucking,
                 'debit' => $items->sum('debit'),
                 'credit' => $items->sum('credit'),
-                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
             ];
         });
         
@@ -2024,20 +2025,22 @@ class JurnalController extends Controller
 
         $jurnal = Jurnal::where('coa_id', $coa_id)
             ->whereIn('no_bg', $customer1) // Menggunakan array $customer
-            ->whereYear('input', $year)
-            ->whereMonth('input', $month)
-            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'no_bg']);
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'no_bg']);
         // Kelompokkan jurnal berdasarkan invoice
         $groupedJurnal = $jurnal->groupBy('no_bg')->map(function ($items) {
             return [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
-                'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
-                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
-                'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
+                'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
+                'nomor_k' =>  $items->where('credit', '>', 0)
+                        ->pluck('nomor')
+                        ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                        ->implode('<br>'),
+                'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'no_bg' => $items->first()->no_bg,
                 'debit' => $items->sum('debit'),
                 'credit' => $items->sum('credit'),
-                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
             ];
         });
 
@@ -2048,7 +2051,7 @@ class JurnalController extends Controller
         }
 
         // Saldo total
-        $totalSaldo = $totalDebit - $totalCredit;
+        $totalSaldo = $totalCredit - $totalDebit;
     }
 
     return view('admin.jurnal.buku_besar_pembantu_detail', compact('customerPelayaran','customer', 'subjek', 'totalSaldo', 'groupedJurnal', 'totalDebit', 'totalCredit'));

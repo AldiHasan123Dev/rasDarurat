@@ -250,17 +250,20 @@ class OrderBiayaController extends Controller
                 });
             });
         }
-        if(request('kota')){
-            $query->whereHas('orderInfo', function($q) {
-                $q->whereHas('tarif', function($a) {
-                    $a->whereHas('tujuan_lokasi', function($b) {
-                        $b->where('nama', 'LIKE', '%' . request('kota') . '%');
-                    })->whereHas('kondisiInfo', function($c) {
-                        $c->whereNotIn('id', [1, 6]);
-                    });
-                });
-            });            
+        if (request('kota')) {
+            $query->whereHas('orderInfo', function ($q) {
+                $q->whereHas('tarif', function ($a) {
+                    $a->whereHas('tujuan_lokasi', function ($b) {
+                        $b->where('nama', 'LIKE', '%' . request('kota') . '%')
+                          ->whereNull('deleted_at');
+                    })->whereHas('kondisiInfo', function ($c) {
+                        $c->whereNotIn('id', [1, 6])
+                          ->whereNull('deleted_at');
+                    })->whereNull('deleted_at');
+                })->whereNull('deleted_at');
+            });
         }
+        
         if(request('kota1')){
             $query->whereHas('orderInfo', function($q){
                 $q->whereHas('tarif',function($a){

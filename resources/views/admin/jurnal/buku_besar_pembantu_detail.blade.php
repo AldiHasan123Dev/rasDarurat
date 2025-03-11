@@ -44,7 +44,7 @@
         select {
             border: 1px solid #ddd;
             padding: 6px 10px;
-            font-size: 0.8rem;
+            font-size: 0.6rem;
             border-radius: 4px;
         }
 
@@ -133,7 +133,16 @@
                                                         <tr>
                                                             <td class="text-center">{{ $loop->iteration }}</td>
                                                             <td class="text-center">{{ $j['tgl_d'] ?: '-' }}</td>
-                                                            <td class="text-center">{{ $j['nomor_d'] ?: '-' }}</td>
+                                                            <td class="text-center">
+                                                                @if($j['nomor_d'])
+                                                                    <a href="{{ url('admin/jurnal-edit?jurnal=' . $j['nomor_d']) }}" target="_blank">
+                                                                        {{ $j['nomor_d'] }}
+                                                                    </a>
+                                                                @else
+                                                                    -
+                                                                @endif
+                                                            </td>
+                                                            
                                                             <td class="text-center"> {!! $j['tgl_k'] ?: '-' !!}</td>
                                                             <td class="text-center"> {!! $j['nomor_k'] ?: '-' !!}</td>
                                                             <td class="text-center">
