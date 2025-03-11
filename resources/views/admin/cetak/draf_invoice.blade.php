@@ -189,10 +189,12 @@
                             <div style="width:30%; ">
                                 <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
+                                        <td class="text-center" style="line-spacing: 1rem">PROFORMA INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Finalnya akan diterbitkan setelah validasi dokumen.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> 
+                                            Tidak berlaku sebagai Invoice resmi.<br>
+                                            Invoice final terbit setelah dokumen terpenuhi.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -201,8 +203,8 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">Draft Invoice</td>
-                                        <td>:</td>
+                                        <td style="width: 120px">No Invoice</td>
+                                        <td>: - </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
@@ -409,10 +411,12 @@
                             <div style="width:30%; ">
                                 <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
+                                        <td class="text-center" style="line-spacing: 1rem">PROFORMA INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Finalnya akan diterbitkan setelah validasi dokumen.</td>
+                                        <td class="text-center" style="line-spacing: 1rem">
+                                            Tidak berlaku sebagai Invoice resmi.<br>
+                                            Invoice final terbit setelah dokumen terpenuhi.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -421,8 +425,8 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">Draft Invoice</td>
-                                        <td>:</td>
+                                        <td style="width: 120px">No Invoice</td>
+                                        <td>: - </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
@@ -644,10 +648,12 @@
                             <div style="width:30%; ">
                                 <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
+                                        <td class="text-center" style="line-spacing: 1rem">PROFORMA INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Finalnya akan diterbitkan setelah validasi dokumen.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> 
+                                            Tidak berlaku sebagai Invoice resmi.<br>
+                                            Invoice final terbit setelah dokumen terpenuhi.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -656,8 +662,8 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">Draft Invoice</td>
-                                        <td>:</td>
+                                        <td style="width: 120px">No Invoice</td>
+                                        <td>: - </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
@@ -903,10 +909,12 @@
                             <div style="width:30%; ">
                                 <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
+                                        <td class="text-center" style="line-spacing: 1rem">PROFORMA INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Finalnya akan diterbitkan setelah validasi dokumen.</td>
+                                        <td class="text-center" style="line-spacing: 1rem"> 
+                                            Tidak berlaku sebagai Invoice resmi.<br>
+                                            Invoice final terbit setelah dokumen terpenuhi.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -915,8 +923,8 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">Draft Invoice</td>
-                                        <td>: </td>
+                                        <td style="width: 120px">No Invoice</td>
+                                        <td>: - </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
@@ -1184,10 +1192,12 @@
                             <div style="width:30%; ">
                                 <table style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem">DRAFT INVOICE</td>
+                                        <td class="text-center" style="line-spacing: 1rem">PROFORMA INVOICE</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-center" style="line-spacing: 1rem"> Draft Invoice ini tidak berlaku sebagai Invoice resmi. <br> Finalnya akan diterbitkan setelah validasi dokumen.</td>
+                                        <td class="text-center" style="line-spacing: 1rem">
+                                            Tidak berlaku sebagai Invoice resmi.<br>
+                                            Invoice final terbit setelah dokumen terpenuhi.</td>
                                     </tr>
                                 </table>
                             </div>
@@ -1196,8 +1206,8 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">Draft Invoice</td>
-                                        <td>:</td>
+                                        <td style="width: 120px">No Invoice</td>
+                                        <td>: - </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
