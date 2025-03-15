@@ -20,6 +20,7 @@ use App\Models\JurnalTampungan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
 use App\Models\Tarif;
+use App\Models\Transaksi;
 use App\Models\Pelayaran;
 use App\Models\Setting;
 use App\Models\TransaksiSopir;
@@ -1885,6 +1886,7 @@ class JurnalController extends Controller
         $customers = Customer::where('nama', $customer)->pluck('nama', 'id');
         $tarif = Tarif::whereIn('customer_id', $customers->keys())->pluck('id');
         $order = Order::whereIn('tarif_id', $tarif)->pluck('id');
+        $transaksi = Transaksi::whereIn('order_id', $order)->pluck('pph', 'order_id');
 
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
@@ -1896,25 +1898,37 @@ class JurnalController extends Controller
             ->whereNull('invoice_agen')
             ->whereNotNull('invoice')
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice']);
-
+        $nomor = $jurnal->pluck('nomor');
+        $pph =  Jurnal::where('coa_id',52)
+        ->whereIn('nomor',$nomor)
+        ->pluck('nomor')->unique();
         // Kelompokkan jurnal berdasarkan invoice
-        $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) {
-            return [
+        $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) use ($transaksi, $subjek, $coa_id,$pph,$nomor) {
+            $data = [
+                'no_pph' => $pph,
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
                 'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
-                'nomor_k' =>  $items->where('credit', '>', 0)
-                        ->pluck('nomor')
-                        ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
-                        ->implode('<br>'),
+                'nomor_k' => $items->where('credit', '>', 0)
+                    ->pluck('nomor')
+                    ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                    ->implode('<br>'),
                 'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'invoice' => $items->first()->invoice,
                 'debit' => $items->sum('debit'),
                 'credit' => $items->sum('credit'),
-                'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
             ];
+            // Tambahkan pph jika kondisi terpenuhi
+            if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+                $orderIds = $items->pluck('order_id')->unique();
+                $data['pph'] = $orderIds
+                    ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
+                    ->filter()
+                    ->implode('<br>');
+                    $data['debit'] =  $data['debit'] - $data['pph'];
+            }            
+            return $data;
         });
-        
-
         // Hitung total debit dan credit
         foreach ($groupedJurnal as $detail) {
             $totalDebit += $detail['debit'];
@@ -2054,7 +2068,7 @@ class JurnalController extends Controller
         $totalSaldo = $totalCredit - $totalDebit;
     }
 
-    return view('admin.jurnal.buku_besar_pembantu_detail', compact('customerPelayaran','customer', 'subjek', 'totalSaldo', 'groupedJurnal', 'totalDebit', 'totalCredit'));
+    return view('admin.jurnal.buku_besar_pembantu_detail', compact('coa_id','customerPelayaran','customer', 'subjek', 'totalSaldo', 'groupedJurnal', 'totalDebit', 'totalCredit'));
 }
 
 

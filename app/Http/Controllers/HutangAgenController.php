@@ -348,6 +348,7 @@ class HutangAgenController extends Controller
         }
 
         foreach ($hutang_agen->groupBy('invoice') as $invoice => $invoice_group) {
+            $firstRecord = $invoice_group->first();
             Jurnal::create([
                 'order_id' => null,
                 'nomor' => $nomor,
@@ -360,19 +361,18 @@ class HutangAgenController extends Controller
                 'credit' => $invoice_group->sum('pph'),
                 'invoice_agen' => $invoice
             ]);
-
             Jurnal::create([
                 'order_id' => null,
                 'nomor' => $nomor,
-                'relasi' => $nomor,
-                'no' => $no,
                 'nama' => 'Hutang Agen ' . $invoice . ' ' . ($hutang_agen->first()->order->agent->nama ?? ''),
+                'relasi' => $nomor,
                 'tipe' => 'JNL',
                 'coa_id' => $c63,
-                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $total_tagihan_agen,
+                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + 
+                            ($firstRecord->order_id == $tagihan->order_id ? $total_tagihan_agen : 0),
                 'debit' => 0,
                 'invoice_agen' => $invoice
-            ]);
+            ]);            
         }
 
         return true;

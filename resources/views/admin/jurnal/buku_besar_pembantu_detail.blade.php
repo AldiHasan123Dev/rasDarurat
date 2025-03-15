@@ -47,6 +47,20 @@
             font-size: 0.6rem;
             border-radius: 4px;
         }
+        th.text-center:nth-child(2), /* Tgl (D) */
+        th.text-center:nth-child(4), /* Tgl (K) */
+        td.text-center:nth-child(2), /* Tgl (D) */
+        td.text-center:nth-child(4)  /* Tgl (K) */ {
+            min-width: 50px; /* Sesuaikan ukuran sesuai kebutuhan */
+        }
+        th.text-center:nth-child(3), /* Nomor (D) */
+        th.text-center:nth-child(5), /* Nomor (K) */
+        td.text-center:nth-child(3), /* Nomor (D) */
+        td.text-center:nth-child(5)  /* Nomor (K) */ {
+            min-width: 90px; /* Atur ukuran sesuai kebutuhan */
+        }
+
+
 
         /* Elemen untuk print */
         @media print {
@@ -123,6 +137,9 @@
                                                             Invoice Xpdc
                                                             @endif
                                                         </th>
+                                                        @if ($subjek == 'customer_xpdc' && $coa_id == 46)
+                                                        <th class="text-center">Pph</th>
+                                                        @endif
                                                         <th class="text-center">Debit</th>
                                                         <th class="text-center">Credit</th>
                                                         <th class="text-center">Keterangan</th>
@@ -156,17 +173,21 @@
                                                                 {{ $j['invoice'] ?: '-' }}
                                                                 @endif
                                                             </td>
-
-                                                            <td
-                                                                class="text-end 
-                                        @if ($j['debit'] != $j['credit']) bg-danger text-white @endif">
-                                                                {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : '-' }}
-                                                            </td>
-                                                            <td
-                                                                class="text-end 
-                                        @if ($j['debit'] != $j['credit']) bg-danger text-white @endif">
-                                                                {{ $j['credit'] ? number_format($j['credit'], 2, ',', '.') : '-' }}
-                                                            </td>
+                                                            @if ($subjek == 'customer_xpdc' && $coa_id == 46)
+                                                            <td>{{ $j['pph'] ? number_format($j['pph'], 2, ',', '.') : '-' }}</td>
+                                                            @endif
+                                                            <td class="text-end 
+                                                            @if ($subjek == 'customer_xpdc' && $coa_id == 46 && abs($j['debit'] - $j['credit']) > 2 && $j['debit'] > $j['credit']) 
+                                                                bg-danger text-white 
+                                                            @endif">
+                                                            {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : '-' }}
+                                                        </td>
+                                                        <td class="text-end 
+                                                            @if ($subjek == 'customer_xpdc' && $coa_id == 46 && abs($j['debit'] - $j['credit']) > 2 && $j['debit'] > $j['credit']) 
+                                                                bg-danger text-white 
+                                                            @endif">
+                                                            {{ $j['credit'] ? number_format($j['credit'], 2, ',', '.') : '-' }}
+                                                        </td>                                                        
                                                             <td class="text-start">
                                                                 {!! $j['keterangan'] ?: '-' !!}
                                                             </td>
@@ -175,9 +196,15 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
+                                                        @if ($subjek =='customer_xpdc' && $coa_id == 46)     
+                                                        <td class="text-end" colspan="7"><b>TOTAL</b></td>
+                                                        <td class="text-end"><b
+                                                                id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b>
+                                                        @else
                                                         <td class="text-end" colspan="6"><b>TOTAL</b></td>
                                                         <td class="text-end"><b
                                                                 id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b>
+                                                        @endif
                                                         </td>
                                                         <td class="text-end"><b
                                                                 id="credit-total">{{ number_format($totalCredit, 2, ',', '.') }}</b>
