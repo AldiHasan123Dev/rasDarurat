@@ -161,7 +161,7 @@ class Jurnal extends Model
     {
         $trx = Transaksi::where('invoice',$this->invoice)->first();
         if(!$trx){
-            $trx = TransaksiTrucking::where('invoice',$this->invoice_trucking ?? $this->invoice_trucking)->first();
+            $trx = TransaksiTrucking::where('invoice',$this->invoice_trucking ?? $this->invoice_vendor)->first();
         }
         return $trx;
     }
