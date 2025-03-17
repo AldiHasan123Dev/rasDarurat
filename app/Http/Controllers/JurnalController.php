@@ -750,7 +750,6 @@ class JurnalController extends Controller
                 $vendor = OrderTrucking::find($order_vendor);
                 $invoice = $trucking->invoice ?? null;
                 $invoice_vendor = $vendor->invoice?? null;
-                // dd($invoice_vendor,$vendor);
                  // Mengambil ID saja
                 $nopol = null;
                 $container = null;
@@ -761,7 +760,9 @@ class JurnalController extends Controller
                     $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
                     $cont = $order->container;
                     $seal = $order->seal;
-                    $order_id = $order->order ? $order->order->id : null;
+                    $order_id = $order->id ?? null;
+                    $invoice = $order->invoice ?? null;
+                    $invoice_vendor = $order->invoice ?? null;
                     $shipment = $order->order ? $order->order->tarif->shipmentInfo->nama : '-';
                     $pembayar = $order->order ? $order->order->tarif->customer->nama : '-';
                     $kapal = $order->order ? $order->order->jadwal_kapal->kapal->nama : '-';
@@ -792,16 +793,15 @@ class JurnalController extends Controller
                     // Tentukan nilai relasi untuk debit dan kredit
                     $relasiDebit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null ? $nomor : $nomor);
                     $relasiCredit = $data['relasi'][$i] ?? ($invoice === null && $invoice_vendor === null  ? $nomor : $nomor);
-
                     // Buat entri untuk debit terlebih dahulu
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['debit_coa_id'][$i],
-                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice_vendor : null,
                         'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                         'nopol' => $nopol,
                         'container' => $container,
-                        'order_trucking_id' => $order_trucking,
+                        'order_trucking_id' => $order_trucking ?? $order_vendor,
                         'nomor' => $nomor,
                         'nama' => $name,
                         'debit' => $data['amount'][$i],
@@ -815,11 +815,11 @@ class JurnalController extends Controller
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'coa_id' => $data['credit_coa_id'][$i],
-                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
-                        'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                        'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice_vendor  : null,
+                        'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice  : null,
                         'nopol' => $nopol,
                         'container' => $container,
-                        'order_trucking_id' => $order_trucking,
+                        'order_trucking_id' => $order_trucking ?? $order_vendor,
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
@@ -837,11 +837,11 @@ class JurnalController extends Controller
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'coa_id' => $data['debit_coa_id'][$i],
-                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice_vendor  : null,
                             'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
                             'nopol' => $nopol,
                             'container' => $container,
-                            'order_trucking_id' => $order_trucking,
+                            'order_trucking_id' => $order_trucking ?? $order_vendor,
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
@@ -860,12 +860,12 @@ class JurnalController extends Controller
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'coa_id' => $data['credit_coa_id'][$i],
-                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice : null,
-                            'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice : null,
+                            'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice_vendor  : null,
+                            'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice  : null,
                             'nopol' => $nopol,
                             'container' => $container,
                             'order_id' => $order_id,
-                            'order_trucking_id' => $order_trucking,
+                            'order_trucking_id' => $order_trucking ?? $order_vendor,
                             'nomor' => $nomor,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
@@ -1671,18 +1671,26 @@ class JurnalController extends Controller
             $order = Cache::remember("order_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
                 return Order::whereIn('tarif_id', $tarif)->pluck('id');
             });
-            // Cache jurnal berdasarkan kriteria
-            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $endDate, $startDate) {
-                return Jurnal::where('coa_id', $coa_id)
-                    ->whereIn('order_id', $order)
-                    ->whereNull('order_trucking_id')
-                    ->whereNull('invoice_trucking')
-                    ->whereNull('invoice_vendor')
-                    ->whereNull('invoice_agen')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->whereNotNull('invoice')
-                    ->get(['order_id', 'debit', 'credit']);
-                });
+            // Pastikan $order tidak kosong sebelum query transaksi
+            $transaksi = $order->isNotEmpty()
+                ? Transaksi::whereIn('order_id', $order)->pluck('pph', 'order_id')
+                : collect();
+            
+            // Cache jurnal berdasarkan kriteria, dengan pengecekan agar cache tetap efisien
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa_id, $order, $startDate, $endDate) {
+                return $order->isNotEmpty()
+                    ? Jurnal::where('coa_id', $coa_id)
+                        ->whereIn('order_id', $order)
+                        ->whereNull('order_trucking_id')
+                        ->whereNull('invoice_trucking')
+                        ->whereNull('invoice_vendor')
+                        ->whereNull('invoice_agen')
+                        ->whereBetween('created_at', [$startDate, $endDate])
+                        ->whereNotNull('invoice')
+                        ->get(['order_id', 'debit', 'credit'])
+                    : collect();
+            });
+            
             // Proses data untuk hasil akhir
             $finalData = $jurnal->map(function ($item) use ($customer) {
                 return [
@@ -1691,21 +1699,35 @@ class JurnalController extends Controller
                     'credit' => $item->credit,
                 ];
             });
-            // Kelompokkan dan hitung total
+            
+            // Cek kondisi untuk perhitungan PPH
+            if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+                $orderIds = $jurnal->pluck('order_id')->unique();
+            
+                $data['pph'] = $orderIds
+                    ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
+                    ->filter()
+                    ->implode('<br>');
+            
+                // Kurangi debit dengan PPH jika ada
+                $data['debit'] = ((int) ($data['debit'] ?? 0)) - ((int) ($data['pph'] ?? 0));
+            }
+            
+            // Kelompokkan dan hitung total per customer
             $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
                 $customerName = $group->first()['customer_name'];
+                $totalPPH = $group->sum('pph');
                 $totalDebit = $group->sum('debit');
                 $totalCredit = $group->sum('credit');
-                $saldo = $tipe == 'D'
-                    ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
-                    : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+                $saldo = $tipe == 'D' ? $totalDebit - $totalCredit : $totalCredit - $totalDebit;
+            
                 return [
                     'customer_name' => $customerName,
-                    'total_debit' => $group->sum('debit'),
-                    'total_credit' => $group->sum('credit'),
+                    'total_debit' => $totalDebit - $totalPPH,
+                    'total_credit' => $totalCredit,
                     'saldo' => $saldo,
                 ];
-            })->sortByDesc('saldo');
+            })->sortByDesc('saldo');            
         }
         if ($subjek == 'pelayaran') {
             // Gunakan cache untuk jurnal berdasarkan filter
