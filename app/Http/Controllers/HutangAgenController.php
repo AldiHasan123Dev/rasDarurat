@@ -32,7 +32,7 @@ class HutangAgenController extends Controller
 
     public function list()
     {
-        $data = HutangAgen::all()->whereNotNull('jurnal')->groupBy('draf');
+        $data = HutangAgen::all()->whereNotNull('jurnal')->whereNull('deleted_at')->groupBy('draf');
         // dd($data);
         return view('admin.hutangagen.list', compact('data'));
     }
@@ -346,9 +346,9 @@ class HutangAgenController extends Controller
             $total += $tagihan->jumlah;
             $total_tagihan_agen += $tagihan->jumlah;
         }
-
         foreach ($hutang_agen->groupBy('invoice') as $invoice => $invoice_group) {
             $firstRecord = $invoice_group->first();
+            
             Jurnal::create([
                 'order_id' => null,
                 'nomor' => $nomor,
@@ -361,6 +361,13 @@ class HutangAgenController extends Controller
                 'credit' => $invoice_group->sum('pph'),
                 'invoice_agen' => $invoice
             ]);
+        
+            // Pastikan $tagihan tidak null sebelum mengakses order_id
+            $tambahan_tagihan = (!empty($tagihan) && !empty($tagihan->order_id) && $firstRecord->order_id == $tagihan->order_id)
+            ? $total_tagihan_agen
+            : 0;
+
+        
             Jurnal::create([
                 'order_id' => null,
                 'nomor' => $nomor,
@@ -368,13 +375,11 @@ class HutangAgenController extends Controller
                 'relasi' => $nomor,
                 'tipe' => 'JNL',
                 'coa_id' => $c63,
-                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + 
-                            ($firstRecord->order_id == $tagihan->order_id ? $total_tagihan_agen : 0),
+                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $tambahan_tagihan,
                 'debit' => 0,
                 'invoice_agen' => $invoice
             ]);            
-        }
-
+        }        
         return true;
     }
 
