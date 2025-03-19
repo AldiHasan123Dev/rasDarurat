@@ -186,7 +186,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('templatejurnal', TemplateJurnalController::class);
     Route::resource('templatejurnalitem', TemplateJurnalItemController::class);
     Route::resource('jurnal', JurnalController::class)->except('edit');
-    Route::resource('hutang-agen', HutangAgenController::class);
+    Route::resource('hutang-agen', HutangAgenController::class)->except(['show']);
     Route::resource('hutang-pelayaran', HutangPelayaranController::class)->except(['show']);
     Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
     Route::resource('port', PortController::class);
