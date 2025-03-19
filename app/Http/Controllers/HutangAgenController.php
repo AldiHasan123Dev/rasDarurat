@@ -112,6 +112,10 @@ class HutangAgenController extends Controller
         return redirect()->route('hutang-agen.print', ['draf' => $draf])->with('success', 'Data berhasil disimpan');
     }
 
+    public function show(){
+        
+    }
+
     public function update(HutangAgen $hutangagen, Request $request)
     {
         $data = $request->all();
