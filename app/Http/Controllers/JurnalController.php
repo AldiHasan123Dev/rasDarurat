@@ -539,6 +539,7 @@ class JurnalController extends Controller
                     $order = Order::find($order_id);
                     $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
                     $cont = $order->container;
+                    $invoice = $order->invoice;
                     $seal = $order->seal;
                     $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
@@ -1103,7 +1104,7 @@ class JurnalController extends Controller
         $deb = Jurnal::where('nomor', $jurnal)->sum('debit');
         $cre = Jurnal::where('nomor', $jurnal)->sum('credit');
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(9)->format('Y-m-d');
         $orders = Order::whereBetween('created_at', [$last, $now])
         ->select('id', 'no_job', 'job', 'seal', 'invoice')
         ->orderBy('job')
