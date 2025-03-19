@@ -112,7 +112,7 @@ class HutangAgenController extends Controller
         return redirect()->route('hutang-agen.print', ['draf' => $draf])->with('success', 'Data berhasil disimpan');
     }
 
-    public function show(){
+    public function show(Request $request){
         $ids = $request->order_id;
         $orders = Order::whereIn('id', $ids)->get()->groupBy('agen_id');
         if (count($ids) == 0) {
