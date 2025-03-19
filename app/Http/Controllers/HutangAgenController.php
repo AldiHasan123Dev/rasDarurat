@@ -112,23 +112,6 @@ class HutangAgenController extends Controller
         return redirect()->route('hutang-agen.print', ['draf' => $draf])->with('success', 'Data berhasil disimpan');
     }
 
-    public function show(Request $request){
-        $ids = $request->order_id;
-        $orders = Order::whereIn('id', $ids)->get()->groupBy('agen_id');
-        if (count($ids) == 0) {
-            return back()->with('danger', 'Harus centang salah satu!');
-        }
-        if ($orders->count() > 1) {
-            return back()->with('danger', 'Harus centang pada agen yang sama!');
-        }
-
-        $orders = Order::whereIn('id', $ids)->get();
-        $jobs = $orders->groupBy('job');
-        $tarif = TarifAgen::where('agen_id', $orders->first()->agen_id)->where('is_active', 1)->orderBy('created_at')->get();
-        $count = Order::whereIn('id', $ids)->count();
-        return view('admin.hutangagen.draf', compact('orders', 'tarif', 'ids', 'count', 'jobs'));
-    }
-
     public function update(HutangAgen $hutangagen, Request $request)
     {
         $data = $request->all();
@@ -388,6 +371,7 @@ class HutangAgenController extends Controller
             Jurnal::create([
                 'order_id' => null,
                 'nomor' => $nomor,
+                'no' => $no,
                 'nama' => 'Hutang Agen ' . $invoice . ' ' . ($hutang_agen->first()->order->agent->nama ?? ''),
                 'relasi' => $nomor,
                 'tipe' => 'JNL',
