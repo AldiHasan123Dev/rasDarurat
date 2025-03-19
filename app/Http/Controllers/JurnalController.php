@@ -1207,7 +1207,7 @@ class JurnalController extends Controller
 {
     $coa = COA::where('is_active', 1)->orderBy('kode')->get();
     $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-    $last = Carbon::now()->subMonths(6)->format('Y-m-d');
+    $last = Carbon::now()->subMonths(9)->format('Y-m-d');
 
     // Default orders and other variables
     $orders = Order::whereBetween('created_at', [$last, $now])
