@@ -1994,7 +1994,7 @@ class JurnalController extends Controller
         });
         // Hitung total debit dan credit
         foreach ($groupedJurnal as $detail) {
-            $totalDebit += $detail['debit'];
+            $totalDebit += $detail['debit'] + $detail['pph'];
             $totalCredit += $detail['credit'];
         }
 
