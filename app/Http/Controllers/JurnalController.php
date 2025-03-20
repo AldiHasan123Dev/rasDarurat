@@ -1959,6 +1959,7 @@ class JurnalController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->whereNull('invoice_agen')
             ->whereNotNull('invoice')
+            ->orderBy('invoice')
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice']);
         $nomor = $jurnal->pluck('nomor');
         $pph =  Jurnal::where('coa_id',52)
@@ -1993,7 +1994,7 @@ class JurnalController extends Controller
         });
         // Hitung total debit dan credit
         foreach ($groupedJurnal as $detail) {
-            $totalDebit += $detail['debit'] + $detail['pph'];
+            $totalDebit += $detail['debit'];
             $totalCredit += $detail['credit'];
         }
 
