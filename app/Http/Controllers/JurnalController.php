@@ -1325,7 +1325,7 @@ class JurnalController extends Controller
             $data['no_bg'] = $data['no_bg'] ?? null;
             $data['invoice_external'] = $data['invoice_external'] ?? null;
         }
-        if (!empty($data['inv_expdc']) || !empty($data['invoice_agen'])) {
+        if (!empty($data['inv_expdc'])) {
             $name = $data['nama'];
             $order_expdc = $data['inv_expdc'] ?? $data['invoice_agen'] ?? null;
             $order = Order::find($order_expdc);
@@ -1350,13 +1350,47 @@ class JurnalController extends Controller
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
             $data['invoice'] = $order->invoice ?? null;
-            $data['invoice_agen'] = $order->invoice_agen ?? null;
+            $data['invoice_agen'] = null;
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
             $data['order_id'] =$order_expdc;
             $data['nopol'] = $order->nopol ?? null;
             $data['container'] = $order->container ?? null;
+            $data['nama'] = $name;
+        }
+        if (!empty($data['invoice_agen'])) {
+            $name = $data['nama'];
+            $order_agen = $data['invoice_agen'] ?? null;
+            $order1 = Order::find($order_agen);
+            $id_job = $order1->job . '-' . sprintf('%02d', $order1->no_job);
+            $cont = $order1->container;
+            $seal = $order1->seal;
+            $shipment = $order1->tarif->shipmentInfo->nama;
+            $pembayar = $order1->tarif->customer->nama ?? '-';
+            $kapal = $order1->jadwal_kapal->kapal->nama ?? '-';
+            $voyage = $order1->jadwal_kapal->voyage ?? '-';
+            $customer = is_null($order1->truckingInfo) ? '-' : $order1->truckingInfo->customer->nama;
+            $shipment_trucking = is_null($order1->truckingInfo) ? '-' : $order1->truckingInfo->tipe;
+            $tujuan_trucking = is_null($order1->truckingInfo) ? '-' : $order1->truckingInfo->tarif->tujuan->tujuanInfo->nama;
+            $name = str_replace('[1]', $id_job, $name);
+            $name = str_replace('[2]', $cont, $name);
+            $name = str_replace('[3]', $seal, $name);
+            $name = str_replace('[4]', $kapal, $name);
+            $name = str_replace('[5]', $voyage, $name);
+            $name = str_replace('[6]', $shipment, $name);
+            $name = str_replace('[7]', $pembayar, $name);
+            $name = str_replace('[8]', $customer, $name);
+            $name = str_replace('[9]', $shipment_trucking, $name);
+            $name = str_replace('[10]', $tujuan_trucking, $name);
+            $data['invoice'] = null;
+            $data['invoice_agen'] = $order1->invoice_agen ?? null;
+            $data['invoice_trucking'] = null;
+            $data['invoice_vendor'] = null;
+            $data['order_trucking_id'] = null;
+            $data['order_id'] =$order_agen;
+            $data['nopol'] = $order1->nopol ?? null;
+            $data['container'] = $order1->container ?? null;
             $data['nama'] = $name;
         }
         if (!empty($data['inv_trucking'])) {
@@ -1954,7 +1988,7 @@ class JurnalController extends Controller
         });
         // Hitung total debit dan credit
         foreach ($groupedJurnal as $detail) {
-            $totalDebit += $detail['debit'];
+            $totalDebit += $detail['debit'] + $detail['pph'];
             $totalCredit += $detail['credit'];
         }
 
