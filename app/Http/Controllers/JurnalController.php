@@ -539,7 +539,6 @@ class JurnalController extends Controller
                     $order = Order::find($order_id);
                     $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
                     $cont = $order->container;
-                    $invoice = $order->invoice;
                     $seal = $order->seal;
                     $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
@@ -1354,14 +1353,15 @@ class JurnalController extends Controller
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
+            $data['no_bg'] = null;
             $data['order_id'] =$order_expdc;
             $data['nopol'] = $order->nopol ?? null;
             $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
-        if (!empty($data['invoice_agen'])) {
+        if (!empty($data['inv_agen'])) {
             $name = $data['nama'];
-            $order_agen = $data['invoice_agen'] ?? null;
+            $order_agen = $data['inv_agen'] ?? null;
             $order1 = Order::find($order_agen);
             $id_job = $order1->job . '-' . sprintf('%02d', $order1->no_job);
             $cont = $order1->container;
@@ -1386,6 +1386,7 @@ class JurnalController extends Controller
             $data['invoice'] = null;
             $data['invoice_agen'] = $order1->invoice_agen ?? null;
             $data['invoice_trucking'] = null;
+            $data['no_bg'] = null;
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
             $data['order_id'] =$order_agen;
@@ -1422,6 +1423,7 @@ class JurnalController extends Controller
             $data['order_id'] = null;
             $data['nopol'] = $order->kendaraan->nopol;
             $data['invoice'] = null;
+            $data['no_bg'] = null;
             $data['invoice_vendor'] = null;
             $data['invoice_agen'] = null;
             $data['order_trucking_id'] = $order_expdc;
@@ -1430,8 +1432,8 @@ class JurnalController extends Controller
         }
         if(!empty($data['inv_vendor'])) {
             $name = $data['nama'];
-            $order_expdc = $data['inv_vendor'] ?? null;
-            $order = OrderTrucking::find($order_expdc);
+            $order_vendor = $data['inv_vendor'] ?? null;
+            $order = OrderTrucking::find($order_vendor);
             $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
             $cont = $order->container;
             $seal = $order->seal;
@@ -1454,8 +1456,9 @@ class JurnalController extends Controller
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
             $data['invoice_vendor'] = $order->invoice ?? null;
-            $data['order_trucking_id'] = $order_expdc;
+            $data['order_trucking_id'] = $order_vendor;
             $data['order_id'] = null;
+            $data['no_bg'] = null;
             $data['invoice'] = null;
             $data['invoice_trucking'] = null;
             $data['invoice_agen'] = null;
@@ -1465,8 +1468,8 @@ class JurnalController extends Controller
         }
         if (!empty($data['trucking'])) {
             $name = $data['nama'];
-            $order_expdc = $data['trucking'] ?? null;
-            $order = OrderTrucking::find($order_expdc);
+            $order_trucking = $data['trucking'] ?? null;
+            $order = OrderTrucking::find($order_trucking);
             $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
             $cont = $order->container;
             $seal = $order->seal;
@@ -1491,8 +1494,9 @@ class JurnalController extends Controller
             $name = str_replace('[10]', $tujuan_trucking, $name);
             $data['invoice_vendor'] = !str_contains($invoice, 'RAS-LT') ? $invoice : null;
             $data['invoice_trucking'] = str_contains($invoice, 'RAS-LT') ? $invoice : null;
-            $data['order_trucking_id'] = $order_expdc;
+            $data['order_trucking_id'] = $order_trucking;
             $data['order_id'] = null;
+            $data['no_bg'] = null;
             $data['invoice'] = null;
             $data['invoice_agen'] = null;
             $data['nopol'] = $order->kendaraan->nopol ?? null;
@@ -1502,8 +1506,8 @@ class JurnalController extends Controller
 
         if (!empty($data['job'])) {
             $name = $data['nama'];
-            $order_expdc = $data['job'] ?? null;
-            $order = Order::find($order_expdc);
+            $order_job = $data['job'] ?? null;
+            $order = Order::find($order_job);
             $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
             $cont = $order->container;
             $seal = $order->seal;
@@ -1524,14 +1528,15 @@ class JurnalController extends Controller
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = $order->invoice ?? null;
-            $data['invoice_agen'] = $order->invoice_agen ?? null;
+            $data['invoice'] = null;
+            $data['no_bg'] = null;
+            $data['invoice_agen'] = null;
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
-            $data['order_id'] =$order_expdc;
-            $data['nopol'] = $order->nopol ?? null;
-            $data['container'] = $order->container ?? null;
+            $data['order_id'] =$order_job;
+            $data['nopol'] = null;
+            $data['container'] = null;
             $data['nama'] = $name;
         }
         

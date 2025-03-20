@@ -163,7 +163,7 @@
         container.innerHTML = `
             <div class="col-12 mb-3">
                 <label for="order_id1">Inv Agen</label><br>
-                <select class="form-control select2" id="invoice_agen" name="invoice_agen" style="font-size:.9rem !important">
+                <select class="form-control select2" id="inv_agen" name="inv_agen" style="font-size:.9rem !important">
                     <option value=""></option>
                     @foreach ($orders_agen as $item)
                     <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} / {{ $item->invoice_agen }}</option>
