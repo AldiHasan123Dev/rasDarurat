@@ -1988,13 +1988,13 @@ class JurnalController extends Controller
                     ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
                     ->filter()
                     ->implode('<br>');
-                    $data['debit'] =  $data['debit'] - $data['pph'];
+                    $data['debit'] =  $data['debit'];
             }            
             return $data;
         });
         // Hitung total debit dan credit
         foreach ($groupedJurnal as $detail) {
-            $totalDebit += $detail['debit'] + $detail['pph']; 
+            $totalDebit += $detail['debit']; 
             $totalCredit += $detail['credit'];
         }
 

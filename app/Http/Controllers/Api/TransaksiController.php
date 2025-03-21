@@ -278,6 +278,7 @@ class TransaksiController extends Controller
         if(is_null($trx->jurnal_bupot)){
             Jurnal::create([
                 'coa_id' => $c52,
+                'order_id' => $trx->order_id,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
@@ -290,6 +291,7 @@ class TransaksiController extends Controller
             ]);
             Jurnal::create([
                 'coa_id' => $c46,
+                'order_id' => $trx->order_id,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
@@ -302,10 +304,12 @@ class TransaksiController extends Controller
             ]);
         }else{
             Jurnal::where('nomor',$trx->jurnal_bupot)->where('debit','>',0)->first()->update([
+                'order_id' => $trx->order_id,
                 'debit' => $data['bupot'],
                 'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
             ]);
             Jurnal::where('nomor',$trx->jurnal_bupot)->where('credit','>',0)->first()->update([
+                'order_id' => $trx->order_id,
                 'credit' => $data['bupot'],
                 'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
             ]);
