@@ -226,6 +226,12 @@
                                             Bongkar Full Teluk Lamong
                                         </label>
                                     </div>
+                                    <div>
+                                        <label>
+                                            <input type="checkbox" name="is_seal" value="1">
+                                            Seal Ditagihkan
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="mb-2">
@@ -466,6 +472,12 @@
                                 Bongkar Full Teluk Lamong
                             </label>
                         </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" name="is_seal" id="is_seal" value="1">
+                                Seal Ditagihkan
+                            </label>
+                        </div>
                     </div>
                     <textarea name="keterangan" id="keterangan" cols="30" rows="4" class="form-control"></textarea>
                 </div>
@@ -664,6 +676,7 @@
                 {search:true, frozen:true, name: 'customer', label : 'Customer', width:80},
                 {search:true, frozen:true, name: 'trucking', label : 'Trucking', width:80},
                 {search:true, frozen:true, name: 'pembayar', label : 'Pembayar', width:80},
+                {search:true, frozen:true, name: 'is_seal', label : 'Is Seal', width:50},
                 {search:false, name: 'class', label : 'class', hidden:true},
                 {search:false, name:'is_vendor', label:'#', hidden:true},
                 {search:false, name:'ambil_empty_tambak_langon', label:'#', hidden:true},
@@ -763,9 +776,11 @@
                 var ambil_empty_tambak_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_tambak_langon');
                 var ambil_empty_teluk_langon = $(this).jqGrid('getCell', rowId, 'ambil_empty_teluk_langon');
                 var bongkar_full_teluk_langon = $(this).jqGrid('getCell', rowId, 'bongkar_full_teluk_langon');
+                var is_seal = $(this).jqGrid('getCell', rowId, 'is_seal');
                 $('#edit-form').attr('action','{{ url('admin/ordertrucking') }}/'+id);
                 $('#edit-form-vendor').attr('action','{{ url('admin/ordertrucking') }}/'+id);
                 $('#delete').val(id);
+                $('#is_seal').val(is_seal);
                 $('#job').val(job);
                 $('#borongan').val(borongan);
                 $('#tambah_isi').val(tambah_isi);
@@ -827,8 +842,12 @@
                     $('#delete').show();
                 }
                 $('#ambil_empty_tambak_langon').attr('checked',false);
+                $('#is_seal').attr('checked',false);
                 $('#ambil_empty_teluk_langon').attr('checked',false);
                 $('#bongkar_full_teluk_langon').attr('checked',false);
+                if(is_seal=='Y'){
+                    $('#is_seal').attr('checked',true);
+                }
                 if(ambil_empty_tambak_langon==1){
                     $('#ambil_empty_tambak_langon').attr('checked',true);
                 }
@@ -913,7 +932,6 @@
                             options_cont += `<option value="${item.id}">${item.job}-${pad(item.no_job, 2)} || ${item.container}</option>`
                         }
                     });
-
                     $('#container').append(options_cont);
                 }
             });

@@ -199,6 +199,9 @@
                     </form>
                     @endif
                 @endif
+                @if ($order->is_seal == 1)    
+                <button type="button" class="btn btn-sm btn-danger mb-2" style="margin-left: 780px">Terdapat Seal Ditagihkan</button>
+                @endif
             </div>
             @else
             <script>

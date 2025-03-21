@@ -63,6 +63,7 @@ class OrderTrucking extends Model
         'bongkar_full_teluk_langon',
         'created_at',
         'tgl_muat',
+        'is_seal',
     ];
 
     protected static function booted()

@@ -263,6 +263,13 @@ class OrderTruckingController extends Controller
                 $data['ambil_empty_tambak_langon'] = 0;
             }
         }
+        if (!empty($data['is_seal'])) {
+            if ($data['is_seal'] == "true") {
+                $data['is_seal'] = 1;
+            } else {
+                $data['is_seal'] = 0;
+            }
+        }
         if (!empty($data['ambil_empty_teluk_langon'])) {
             if ($data['ambil_empty_teluk_langon'] == "true") {
                 if ($ordertrucking->tipe == '20' || $ordertrucking->tipe == 'COMBO') {
