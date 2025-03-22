@@ -2016,7 +2016,6 @@ class JurnalController extends Controller
             ->whereNotNull('invoice_agen')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice_agen']);
-
         // Kelompokkan jurnal berdasarkan invoice
         $groupedJurnal = $jurnal->groupBy('invoice_agen')->map(function ($items) {
             return [
@@ -2046,6 +2045,7 @@ class JurnalController extends Controller
         // Ambil data terkait customer
         $customers = CustomerTrucking::where('nama', $customer)->pluck('nama', 'id');
         $order = OrderTrucking::whereIn('customer_id', $customers->keys())->whereNotNull('invoice')->pluck('id');
+        $transaksi = TransaksiTrucking::whereIn('order_id', $order)->pluck('pph', 'order_id');
 
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
@@ -2054,10 +2054,14 @@ class JurnalController extends Controller
             ->whereNull('invoice_vendor')
             ->whereNotNull('invoice_trucking')
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_trucking','invoice_vendor']);
+            ->get(['order_id', 'order_trucking_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_trucking','invoice_vendor']);
+            $nomor = $jurnal->pluck('nomor');
+            $pph =  Jurnal::where('coa_id',52)
+                ->whereIn('nomor',$nomor)
+                ->pluck('nomor')->unique();
         // Kelompokkan jurnal berdasarkan invoice
-        $groupedJurnal = $jurnal->groupBy('invoice_trucking')->map(function ($items) {
-            return [
+        $groupedJurnal = $jurnal->groupBy('invoice_trucking')->map(function ($items) use ($transaksi, $subjek, $coa_id,$pph,$nomor){
+            $data = [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
                 'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'nomor_k' =>  $items->where('credit', '>', 0)
@@ -2070,6 +2074,15 @@ class JurnalController extends Controller
                 'credit' => $items->sum('credit'),
                 'keterangan' => $items->pluck('nama')->unique()->implode('<br>') , // Gabungkan semua keterangan
             ];
+            if ($subjek == 'customer_trucking' && $coa_id == 47) {
+                $orderIds = $items->pluck('order_trucking_id')->unique();
+                $data['pph'] = $orderIds
+                    ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
+                    ->filter()
+                    ->implode('<br>');
+                    $data['debit'] =  $data['debit'];
+            }            
+            return $data;
         });
         
 

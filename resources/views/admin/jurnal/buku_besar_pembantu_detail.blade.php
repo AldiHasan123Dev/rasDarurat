@@ -51,7 +51,7 @@
         th.text-center:nth-child(4), /* Tgl (K) */
         td.text-center:nth-child(2), /* Tgl (D) */
         td.text-center:nth-child(4)  /* Tgl (K) */ {
-            min-width: 50px; /* Sesuaikan ukuran sesuai kebutuhan */
+            min-width: 90px; /* Sesuaikan ukuran sesuai kebutuhan */
         }
         th.text-center:nth-child(3), /* Nomor (D) */
         th.text-center:nth-child(5), /* Nomor (K) */
@@ -137,7 +137,7 @@
                                                             Invoice Xpdc
                                                             @endif
                                                         </th>
-                                                        @if ($subjek == 'customer_xpdc' && $coa_id == 46)
+                                                        @if ($subjek == 'customer_xpdc' && $coa_id == 46 || $subjek == 'customer_trucking' && $coa_id == 47)
                                                         <th class="text-center">Pph</th>
                                                         @endif
                                                         <th class="text-center">Debit</th>
@@ -173,24 +173,25 @@
                                                                 {{ $j['invoice'] ?: '-' }}
                                                                 @endif
                                                             </td>
-                                                            @if ($subjek == 'customer_xpdc' && $coa_id == 46)
-                                                            <td>{{ $j['pph'] ? number_format($j['pph'], 2, ',', '.') : '-' }}</td>
-                                                            @endif
-                                                            <td class="text-end 
-                                                            @if ($subjek == 'customer_xpdc' && $coa_id == 46 && abs($j['debit'] - $j['credit']) > 2 && $j['debit'] > $j['credit']) 
-                                                                bg-danger text-white 
-                                                            @endif">
-                                                            {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : '-' }}
+                                                            @if (($subjek == 'customer_xpdc' && $coa_id == 46) || ($subjek == 'customer_trucking' && $coa_id == 47))
+                                                            <td class="text-end">{{ $j['pph'] ? number_format($j['pph'], 2, ',', '.') : 0 }}</td>
+                                                        @endif
+                                                        
+                                                        @php
+                                                            $highlight = (($subjek == 'customer_xpdc' && $coa_id == 46) || 
+                                                                          ($subjek == 'customer_trucking' && $coa_id == 47)) && 
+                                                                         (abs($j['debit'] - $j['credit']) > 2 && $j['debit'] > $j['credit']);
+                                                        @endphp
+                                                        
+                                                        <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }}">
+                                                            {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : 0 }}
                                                         </td>
-                                                        <td class="text-end 
-                                                            @if ($subjek == 'customer_xpdc' && $coa_id == 46 && abs($j['debit'] - $j['credit']) > 2 && $j['debit'] > $j['credit']) 
-                                                                bg-danger text-white 
-                                                            @endif">
-                                                            {{ $j['credit'] ? number_format($j['credit'], 2, ',', '.') : '-' }}
+                                                        <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }}">
+                                                            {{ $j['credit'] ? number_format($j['credit'], 2, ',', '.') : 0 }}
+                                                        </td>
+                                                        <td class="text-start">
+                                                            {!! $j['keterangan'] ?: '-' !!}
                                                         </td>                                                        
-                                                            <td class="text-start">
-                                                                {!! $j['keterangan'] ?: '-' !!}
-                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
@@ -282,20 +283,20 @@
         </script>
         <script>
             $(document).ready(function() {
-                $('table.data').DataTable({
-                    paging: true,
-                    searching: true,
-                    lengthMenu: [10, 25, 50, 100],
-                    columnDefs: [{
-                            targets: [0],
-                            orderable: false
-                        }, // Kolom "No" tidak dapat diurutkan
-                    ],
-                    language: {
-                        search: "Cari:",
-                    },
-                });
-            });
+    $('.table.data').DataTable({
+        "ordering": true, // Mengaktifkan fitur sorting
+        "searching": false, // Menonaktifkan fitur pencarian
+        "paging": true, // Mengaktifkan pagination
+        "info": false, // Menonaktifkan informasi jumlah data
+        "autoWidth": false,
+        "order": [[1, "asc"]], // Mengurutkan kolom indeks 2 secara ascending
+        "columnDefs": [
+            { "orderable": true, "targets": [1] } // Mengaktifkan sorting hanya di kolom indeks 2
+        ]
+    });
+});
+
+
         </script>
     @endpush
 @endsection
