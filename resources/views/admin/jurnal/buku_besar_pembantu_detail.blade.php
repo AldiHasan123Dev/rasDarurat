@@ -51,7 +51,7 @@
         th.text-center:nth-child(4), /* Tgl (K) */
         td.text-center:nth-child(2), /* Tgl (D) */
         td.text-center:nth-child(4)  /* Tgl (K) */ {
-            min-width: 90px; /* Sesuaikan ukuran sesuai kebutuhan */
+            min-width: 70px; /* Sesuaikan ukuran sesuai kebutuhan */
         }
         th.text-center:nth-child(3), /* Nomor (D) */
         th.text-center:nth-child(5), /* Nomor (K) */
@@ -121,7 +121,7 @@
                                                 style="font-size: .7rem">
                                                 <thead>
                                                     <tr>
-                                                        <th class="text-center">No</th>
+                                                        
                                                         <th class="text-center">Tgl (D)</th>
                                                         <th class="text-center">Nomor (D)</th>
                                                         <th class="text-center">Tgl (K)</th>
@@ -146,9 +146,11 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
+                                                    @php
+                                                        $no = 1;
+                                                    @endphp
                                                     @foreach ($groupedJurnal as $index => $j)
                                                         <tr>
-                                                            <td class="text-center">{{ $loop->iteration }}</td>
                                                             <td class="text-center">{!! $j['tgl_d'] ?: '-' !!}</td>
                                                             <td class="text-center">
                                                                 @if($j['nomor_d'])
@@ -198,11 +200,11 @@
                                                 <tfoot>
                                                     <tr>
                                                         @if ($subjek =='customer_xpdc' && $coa_id == 46)     
-                                                        <td class="text-end" colspan="7"><b>TOTAL</b></td>
+                                                        <td class="text-end" colspan="6"><b>TOTAL</b></td>
                                                         <td class="text-end"><b
                                                                 id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b>
                                                         @else
-                                                        <td class="text-end" colspan="6"><b>TOTAL</b></td>
+                                                        <td class="text-end" colspan="5"><b>TOTAL</b></td>
                                                         <td class="text-end"><b
                                                                 id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b>
                                                         @endif
@@ -289,9 +291,9 @@
         "paging": true, // Mengaktifkan pagination
         "info": false, // Menonaktifkan informasi jumlah data
         "autoWidth": false,
-        "order": [[1, "asc"]], // Mengurutkan kolom indeks 2 secara ascending
+        "order": [[0, "desc"]], // Mengurutkan kolom indeks 2 secara ascending
         "columnDefs": [
-            { "orderable": true, "targets": [1] } // Mengaktifkan sorting hanya di kolom indeks 2
+            { "orderable": true, "targets": [0] } // Mengaktifkan sorting hanya di kolom indeks 2
         ]
     });
 });
