@@ -350,7 +350,7 @@ class HutangAgenController extends Controller
             $firstRecord = $invoice_group->first();
             
             Jurnal::create([
-                'order_id' => null,
+                'order_id' => $firstRecord->order_id,
                 'nomor' => $nomor,
                 'relasi' => $nomor,
                 'no' => $no,
@@ -369,7 +369,7 @@ class HutangAgenController extends Controller
 
         
             Jurnal::create([
-                'order_id' => null,
+                'order_id' => $firstRecord->order_id,
                 'nomor' => $nomor,
                 'no' => $no,
                 'nama' => 'Hutang Agen ' . $invoice . ' ' . ($hutang_agen->first()->order->agent->nama ?? ''),
