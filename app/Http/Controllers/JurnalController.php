@@ -2049,7 +2049,6 @@ class JurnalController extends Controller
 
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
-            ->whereNull('order_id')
             ->whereIn('order_trucking_id', $order)
             ->whereNull('invoice_vendor')
             ->whereNotNull('invoice_trucking')
