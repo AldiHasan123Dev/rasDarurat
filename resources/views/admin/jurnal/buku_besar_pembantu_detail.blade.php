@@ -287,7 +287,7 @@
             $(document).ready(function() {
     $('.table.data').DataTable({
         "ordering": true, // Mengaktifkan fitur sorting
-        "searching": false, // Menonaktifkan fitur pencarian
+        "searching": true, // Menonaktifkan fitur pencarian
         "paging": true, // Mengaktifkan pagination
         "info": false, // Menonaktifkan informasi jumlah data
         "autoWidth": false,
