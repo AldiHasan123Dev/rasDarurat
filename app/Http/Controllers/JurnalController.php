@@ -2044,7 +2044,8 @@ class JurnalController extends Controller
         // Ambil data terkait customer
         $customers = CustomerTrucking::where('nama', $customer)->pluck('nama', 'id');
         $order = OrderTrucking::whereIn('customer_id', $customers->keys())->whereNotNull('invoice')->pluck('id');
-        $transaksi = TransaksiTrucking::whereIn('order_id', $order)->pluck('pph', 'order_id');
+        $invoice = OrderTrucking::whereIn('customer_id', $customers->keys())->whereNotNull('invoice')->pluck('invoice');
+        $transaksi = TransaksiTrucking::whereIn('customer_id',$customers->keys())->pluck('pph', 'order_trucking_id');
 
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
