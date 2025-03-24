@@ -1890,7 +1890,6 @@ class JurnalController extends Controller
 
             // Ambil jurnal berdasarkan order_trucking_id dan coa_id
             $jurnal = Jurnal::where('coa_id', $coa_id)
-                ->whereNull('order_id')
                 ->whereNotNull('invoice_trucking')
                 ->whereNull('invoice_vendor') // Pastikan order_trucking_id tidak null
                 ->whereIn('order_trucking_id', $order)
