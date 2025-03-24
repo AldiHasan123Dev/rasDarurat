@@ -199,7 +199,7 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        @if ($subjek =='customer_xpdc' && $coa_id == 46)     
+                                                        @if ($subjek =='customer_xpdc' && $coa_id == 46 || $subjek =='customer_trucking' && $coa_id == 47)     
                                                         <td class="text-end" colspan="6"><b>TOTAL</b></td>
                                                         <td class="text-end"><b
                                                                 id="debit-total">{{ number_format($totalDebit, 2, ',', '.') }}</b>
