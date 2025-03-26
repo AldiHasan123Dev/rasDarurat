@@ -1834,17 +1834,16 @@ class JurnalController extends Controller
             });
             
             $order = Cache::remember("order_agen_list_" . implode('_', $customer->keys()->toArray()), 60, function () use ($customer) {
-                return Order::whereIn('agen_id', $customer->keys())->pluck('invoice_agen', 'id'); // Mengambil invoice_agen dengan ID order sebagai key
+                return Order::whereIn('agen_id', $customer->keys())->pluck('invoice_agen'); // Mengambil invoice_agen dengan ID order sebagai key
             });
             
             $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_" . implode('_', $order->values()->toArray()), 60, function () use ($coa_id, $order, $endDate, $startDate) {
                 return Jurnal::where('coa_id', $coa_id)
                     ->whereNull('order_trucking_id')
-                    ->whereNull('deleted_at')
                     ->whereNull('invoice_trucking')
                     ->whereNull('invoice_vendor')
                     ->whereNull('invoice')
-                    ->whereIn('invoice_agen', $order->values())
+                    ->whereIn('invoice_agen', $order)
                     ->get();
             });
             
@@ -2047,6 +2046,7 @@ class JurnalController extends Controller
         }
 
         // Saldo total
+        if('')
         $totalSaldo = $totalDebit - $totalCredit;
     }
 
