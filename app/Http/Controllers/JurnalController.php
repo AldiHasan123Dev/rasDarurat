@@ -1830,32 +1830,43 @@ class JurnalController extends Controller
         }
         if ($subjek== 'agen'){
             $customer = Cache::remember('agen_list', 60, function () {
-                return Agen::pluck('nama', 'id');
+                return Agen::pluck('nama', 'id'); // Mengambil semua agen (ID sebagai key, Nama sebagai value)
             });
-            $order = Cache::remember("order_agen_list_{$customer->keys()->implode('_')}", 60, function () use ($customer) {
-                return Order::whereIn('agen_id', $customer->keys())->pluck('id');
+            
+            $order = Cache::remember("order_agen_list_" . implode('_', $customer->keys()->toArray()), 60, function () use ($customer) {
+                return Order::whereIn('agen_id', $customer->keys())->pluck('invoice_agen', 'id'); // Mengambil invoice_agen dengan ID order sebagai key
             });
-            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $endDate, $startDate) {
+            
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_" . implode('_', $order->values()->toArray()), 60, function () use ($coa_id, $order, $endDate, $startDate) {
                 return Jurnal::where('coa_id', $coa_id)
-
-                    ->whereIn('order_id',$order)
                     ->whereNull('order_trucking_id')
+                    ->whereNull('deleted_at')
                     ->whereNull('invoice_trucking')
                     ->whereNull('invoice_vendor')
                     ->whereNull('invoice')
-                    ->whereNotNull('invoice_agen')
-                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->whereIn('invoice_agen', $order->values())
                     ->get();
             });
-            $finalData = $jurnal->map(function ($item) use ($customer) {
-                // Ambil nama customer berdasarkan ID dari relasi order_trucking
-                $customerName = optional($item->order)->agent->nama ?? 'Unknown'; // Cegah error dengan optional()
+            
+            // Ambil semua order yang sesuai dengan invoice_agen dari jurnal
+            $orderIds = Order::whereIn('invoice_agen', $order->values())->pluck('agen_id', 'invoice_agen');
+            
+            // Ambil semua agen berdasarkan ID order yang ditemukan
+            $agenList = Agen::whereIn('id', $orderIds->values())->pluck('nama', 'id');
+            
+            $finalData = $jurnal->map(function ($item) use ($orderIds, $agenList) {
+                // Ambil agen_id dari order berdasarkan invoice_agen
+                $agenId = $orderIds[$item->invoice_agen] ?? null;
+            
+                // Ambil nama agen dari daftar yang sudah di-cache
+                $customerName = $agenList[$agenId] ?? 'Unknown';
+            
                 return [
                     'customer_name' => $customerName,
                     'debit' => $item->debit,
                     'credit' => $item->credit,
                 ];
-            });
+            });            
             // Kelompokkan berdasarkan nama customer dan hitung sum debit dan kredit
             $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
                 // Ambil nama customer (satu karena sudah dikelompokkan)
@@ -2004,15 +2015,14 @@ class JurnalController extends Controller
     if ($subjek == 'agen') {
         // Ambil data terkait customer
         $customers = Agen::where('nama', $customer)->pluck('nama', 'id');
-        $order = Order::whereNotNull('invoice_agen')->whereIn('agen_id', $customers->keys())->pluck('id');
+        $order = Order::whereNotNull('invoice_agen')->whereIn('agen_id', $customers->keys())->pluck('invoice_agen','id');
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
-            ->whereIn('order_id', $order)
-            ->whereNull('order_trucking_id')
-            ->whereNull('invoice_trucking')
-            ->whereNull('invoice_vendor')
-            ->whereNull('invoice')
-            ->whereNotNull('invoice_agen')
+        ->whereNull('order_trucking_id')
+        ->whereNull('invoice_trucking')
+        ->whereNull('invoice_vendor')
+        ->whereNull('invoice')
+        ->whereIn('invoice_agen', $order->values())
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'input', 'invoice_agen']);
         // Kelompokkan jurnal berdasarkan invoice

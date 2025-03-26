@@ -184,7 +184,7 @@
                                 <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>
                                 <td class="text-center">
                                         @php
-                                            $pelayaranName = $data['pelayaran'] ?? $data['customer_name'];
+                                            $pelayaranName = $data['no_bg_list'] ?? $data['customer_name'];
                                         @endphp
                                         <a 
                                             target="_blank" 
