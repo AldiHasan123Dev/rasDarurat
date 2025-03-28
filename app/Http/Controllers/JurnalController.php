@@ -1841,6 +1841,7 @@ class JurnalController extends Controller
                 ->whereNull('order_trucking_id')
                 ->whereNull('invoice_trucking')
                 ->whereNull('invoice_vendor')
+                ->whereBetween('created_at', [$startDate, $endDate])
                 ->whereNull('invoice')
                 ->whereIn('invoice_agen', $order)
                 ->get();
