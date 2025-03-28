@@ -180,10 +180,16 @@
                                                         @endif
                                                         
                                                         @php
-                                                            $highlight = (($subjek == 'customer_xpdc' && $coa_id == 46) || 
-                                                                          ($subjek == 'customer_trucking' && $coa_id == 47) ||
-                                                                          ($subjek == 'agen' && $coa_id == 63)) && 
-                                                                         (abs($j['debit'] - $j['credit']) > 2 && $j['debit'] > $j['credit']);
+                                                           $highlight = (
+                                                                ($subjek == 'customer_xpdc' && $coa_id == 46) || 
+                                                                ($subjek == 'customer_trucking' && $coa_id == 47) ||
+                                                                ($subjek == 'agen' && $coa_id == 63)
+                                                            ) && (
+                                                                abs($j['debit'] - $j['credit']) > 2 && 
+                                                                (
+                                                                    ($coa_id == 63) ? ($j['credit'] > $j['debit']) : ($j['debit'] > $j['credit'])
+                                                                )
+                                                            );
                                                         @endphp
                                                         
                                                         <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }}">

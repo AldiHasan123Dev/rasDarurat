@@ -1830,21 +1830,20 @@ class JurnalController extends Controller
         }
         if ($subjek== 'agen'){
             $customer = Cache::remember('agen_list', 60, function () {
-                return Agen::pluck('nama', 'id'); // Mengambil semua agen (ID sebagai key, Nama sebagai value)
+                return Agen::pluck('id'); // Mengambil semua agen (ID sebagai key, Nama sebagai value)
             });
             
-            $order = Cache::remember("order_agen_list_" . implode('_', $customer->keys()->toArray()), 60, function () use ($customer) {
-                return Order::whereIn('agen_id', $customer->keys())->pluck('invoice_agen'); // Mengambil invoice_agen dengan ID order sebagai key
+            $order = Cache::remember("order_agen_list_" . $customer, 60, function () use ($customer) {
+                return Order::whereIn('agen_id', $customer)->pluck('invoice_agen'); // Mengambil invoice_agen dengan ID order sebagai key
             });
-            
             $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_" . implode('_', $order->values()->toArray()), 60, function () use ($coa_id, $order, $endDate, $startDate) {
                 return Jurnal::where('coa_id', $coa_id)
-                    ->whereNull('order_trucking_id')
-                    ->whereNull('invoice_trucking')
-                    ->whereNull('invoice_vendor')
-                    ->whereNull('invoice')
-                    ->whereIn('invoice_agen', $order)
-                    ->get();
+                ->whereNull('order_trucking_id')
+                ->whereNull('invoice_trucking')
+                ->whereNull('invoice_vendor')
+                ->whereNull('invoice')
+                ->whereIn('invoice_agen', $order)
+                ->get();
             });
             
             // Ambil semua order yang sesuai dengan invoice_agen dari jurnal
@@ -1934,6 +1933,41 @@ class JurnalController extends Controller
                 ];
             })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
     }
+
+    if($subjek=='relasi'){
+        // Ambil data customer trucking
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->whereNotNull('relasi')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+
+        // Gabungkan hasil customer trucking dan jurnal
+        $finalData = $jurnal->map(function ($item) {
+            // Ambil nama customer berdasarkan ID dari relasi order_trucking
+
+            return [
+                'customer_name' => $item->relasi,
+                'debit' => $item->debit,
+                'credit' => $item->credit,
+            ];
+        });
+        // Kelompokkan berdasarkan nama customer dan hitung sum debit dan kredit
+        $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe){
+            // Ambil nama customer (satu karena sudah dikelompokkan)
+            $relasi = $group->first()['customer_name'];
+            $totalDebit = $group->sum('debit');
+            $totalCredit = $group->sum('credit');
+            $saldo = $tipe == 'D'
+                ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+                : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+            return [
+                'customer_name' => $relasi,
+                'total_debit' => $group->sum('debit'),
+                'total_credit' => $group->sum('credit'),
+                'saldo' => $saldo,
+            ];
+        })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
+}
         // Daftar bulan
 
         // Mengembalikan tampilan dengan data yang sudah dihitung dan diproses
@@ -1949,6 +1983,7 @@ class JurnalController extends Controller
     $totalSaldo =0;
     $groupedJurnal=[];
     $customerPelayaran = null;
+    $tipe = in_array(substr($coa_id, 0, 1), ['2', '3', '5']) ? 'C' : 'D';
     $startDate = '2022-01-01';
     $endDate = Carbon::create($year, $month)->endOfMonth()->toDateString();
 
@@ -2014,7 +2049,7 @@ class JurnalController extends Controller
     if ($subjek == 'agen') {
         // Ambil data terkait customer
         $customers = Agen::where('nama', $customer)->pluck('nama', 'id');
-        $order = Order::whereNotNull('invoice_agen')->whereIn('agen_id', $customers->keys())->pluck('invoice_agen','id');
+        $order = Order::whereIn('agen_id', $customers->keys())->pluck('invoice_agen','id');
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
         ->whereNull('order_trucking_id')
@@ -2029,7 +2064,10 @@ class JurnalController extends Controller
             return [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
                 'tgl_d' => $items->where('debit', '>', 0)->pluck('input')->first(),
-                'nomor_k' => $items->where('credit', '>', 0)->pluck('nomor')->implode('<br>'),
+                'nomor_k' => $items->where('credit', '>', 0)
+                    ->pluck('nomor')
+                    ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                    ->implode('<br>'),
                 'tgl_k' => $items->where('credit', '>', 0)->pluck('input')->implode('<br>'),
                 'invoice_agen' => $items->first()->invoice_agen,
                 'debit' => $items->sum('debit'),
@@ -2046,8 +2084,9 @@ class JurnalController extends Controller
         }
 
         // Saldo total
-        if('')
-        $totalSaldo = $totalDebit - $totalCredit;
+        $totalSaldo = $tipe == 'C'
+        ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+        : $totalCredit - $totalDebit;
     }
 
     if ($subjek == 'customer_trucking') {

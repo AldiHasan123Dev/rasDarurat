@@ -95,6 +95,7 @@
                                         <option value="customer_trucking" {{ $subjek == 'customer_trucking' ? 'selected' : '' }}>Customer Trucking</option>
                                         <option value="pelayaran" {{ $subjek == 'pelayaran' ? 'selected' : '' }}>Pelayaran</option>
                                         <option value="agen" {{ $subjek == 'agen' ? 'selected' : '' }}>Agen</option>
+                                        <option value="relasi" {{ $subjek == 'relasi' ? 'selected' : '' }}>Relasi</option>
                                         {{--<option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                     </select>
                                 </form>
@@ -164,6 +165,8 @@
                                     Customer Trucking
                                     @elseif ($subjek == 'customer_trucking')
                                     Agen
+                                    @elseif ($subjek == 'relasi')
+                                    Relasi
                                     @else
                                     Customer XPDC
                                     @endif 
@@ -171,7 +174,9 @@
                                 <th class="text-center">Debit</th>
                                 <th class="text-center">Credit</th>
                                 <th class="text-center">Saldo</th>
+                                @if($subjek != 'relasi')
                                 <th class="text-center">Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -182,23 +187,25 @@
                                 <td class="text-end">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
                                 <td class="text-end">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
                                 <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>
+                                @if($subjek != 'relasi')
                                 <td class="text-center">
-                                        @php
-                                            $pelayaranName = $data['no_bg_list'] ?? $data['customer_name'];
-                                        @endphp
-                                        <a 
-                                            target="_blank" 
-                                            href="{{ route('jurnal.buku_besar_pembantu_rincian', [
-                                                'subjek' => $subjek,
-                                                'coa_id' => $coa_id, 
-                                                'month' => $month, 
-                                                'year' => $year, 
-                                                'customer' => $pelayaranName
-                                            ]) }}" 
-                                            class="btn btn-success btn-custom">
-                                            Rincian
-                                        </a>
-                                </td>                                                          
+                                    @php
+                                        $pelayaranName = $data['no_bg_list'] ?? $data['customer_name'];
+                                    @endphp
+                                    <a 
+                                        target="_blank" 
+                                        href="{{ route('jurnal.buku_besar_pembantu_rincian', [
+                                            'subjek' => $subjek,
+                                            'coa_id' => $coa_id, 
+                                            'month' => $month, 
+                                            'year' => $year, 
+                                            'customer' => $pelayaranName
+                                        ]) }}" 
+                                        class="btn btn-success btn-custom">
+                                        Rincian
+                                    </a>
+                                </td>
+                            @endif                                                                                    
                             </tr>
                             @endforeach
                             <tfoot>
@@ -207,7 +214,9 @@
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
+                                    @if($subjek != 'relasi')
                                     <td></td>
+                                    @endif
                                 </tr>
                             </tfoot>
                     </table>                    
