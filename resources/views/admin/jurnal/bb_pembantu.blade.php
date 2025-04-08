@@ -125,7 +125,7 @@
                                     <input type="hidden" name="month" value="{{ $month }}">
                                     <input type="hidden" name="coa_id" value="{{ $coa_id }}">
                                     <input type="hidden" name="subjek" value="{{ $subjek }}">
-                                    <select class="form-control px-3 py-1" name="year" onchange="submit()">
+                                    <select class="form-control select21 px-3 py-1" name="year" onchange="submit()">
                                         @for ($i = 2023; $i <= 2030; $i++)
                                             <option value="{{ $i }}" {{ $year == $i ? 'selected' : '' }}>{{ $i }}</option>
                                         @endfor
@@ -163,9 +163,9 @@
                                 <th class="text-center">Tgl (D)</th> 
                                 <th class="text-center">Ket (D)</th>
                                 <th class="text-center">Debit</th> 
+                                <th class="text-center">Credit</th>
                                 <th class="text-center">Tgl (C)</th> 
                                 <th class="text-center">Ket (C)</th>
-                                <th class="text-center">Credit</th>
                                 <th class="text-center">Saldo</th>
                                 @else
                                 <th class="text-center">No</th>
@@ -192,6 +192,11 @@
                             @foreach ($groupedData as $data)
                             <tr>
                                 @if ($subjek === 'relasi')
+                                    @php
+                                        $debit = $data['total_debit'];
+                                        $credit = $data['total_credit'];
+                                        $isMismatch = $debit !== $credit;
+                                    @endphp
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
                                 
@@ -199,17 +204,17 @@
                                 <td>{{ is_array($data['tgl_d']) ? '' : $data['tgl_d']->first() }}</td>
                                 <td>{{ is_array($data['ket_d']) ? '' : $data['ket_d']->first() }}</td>
                                 
-                                <td class="text-end">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
+                                <td class="text-end {{ $isMismatch ? 'bg-danger text-white' : '' }}">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
+                                <td class="text-end {{ $isMismatch ? 'bg-danger text-white' : '' }}">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
                                 
                                 <td>{{ is_array($data['tgl_c']) ? '' : $data['tgl_c']->first() }}</td>
                                 <td>{{ is_array($data['ket_c']) ? '' : $data['ket_c']->first() }}</td>
                                 
-                                <td class="text-end">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
                                 <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>                                
                                 @else
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
-                                <td class="text-end">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
+                                <td class="text-end ">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
                                 <td class="text-end">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
                                 <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>
                                 @if($subjek != 'relasi')

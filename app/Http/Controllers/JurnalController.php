@@ -1942,31 +1942,44 @@ class JurnalController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['debit', 'credit', 'nama', 'nomor', 'created_at', 'relasi']);
     
-        // Kelompokkan berdasarkan relasi (ID customer trucking)
-        $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
-            $customerName = $group->first()->relasi;
-            $totalDebit = $group->sum('debit');
-            $ket_d = $group->where('debit','>',0)->pluck('nama');
-            $ket_c = $group->where('credit','>',0)->pluck('nama');
-            $date_d = $group->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray();
-            $date_c = $group->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray();
-            $totalCredit = $group->sum('credit');
-    
-            $saldo = $tipe == 'D'
-                ? $totalDebit - $totalCredit
-                : $totalCredit - $totalDebit;
-    
-            return [
-                'ket_d' => $ket_d,
-                'tgl_d' => $date_d,
-                'ket_c' => $ket_c,
-                'tgl_c' => $date_c,
-                'customer_name' => $customerName,
-                'total_debit' => $totalDebit,
-                'total_credit' => $totalCredit,
-                'saldo' => $saldo,
-            ];
-        })->sortByDesc('saldo')->values();
+            $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
+                $customerName = $group->first()->relasi;
+            
+                // Ambil nama & tanggal untuk debit
+                $ket_d = $group->where('debit', '>', 0)->pluck('nama')->values();
+                $date_d = $group->where('debit', '>', 0)
+                    ->pluck('created_at')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
+                    ->values();
+            
+                // Ambil nama & tanggal untuk kredit
+                $ket_c = $group->where('credit', '>', 0)->pluck('nama')->values();
+                $date_c = $group->where('credit', '>', 0)
+                    ->pluck('created_at')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
+                    ->values();
+            
+                // Total
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+            
+                // Hitung saldo tergantung tipe
+                $saldo = $tipe === 'D'
+                    ? $totalDebit - $totalCredit
+                    : $totalCredit - $totalDebit;
+            
+                return [
+                    'customer_name' => $customerName,
+                    'ket_d' => $ket_d,
+                    'tgl_d' => $date_d,
+                    'ket_c' => $ket_c,
+                    'tgl_c' => $date_c,
+                    'total_debit' => $totalDebit,
+                    'total_credit' => $totalCredit,
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('saldo')->values(); // Urutkan dari saldo tertinggi dan reset index
+            
          // Mengurutkan dan reset index
     
         // Return atau gunakan $groupedData sesuai kebutuhan
