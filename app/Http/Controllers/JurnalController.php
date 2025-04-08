@@ -2166,13 +2166,13 @@ class JurnalController extends Controller
             ->whereNull('invoice_trucking')
             ->whereNotNull('invoice_vendor')
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->get(['order_id', 'order_trucking_id', 'debit', 'credit', 'nama', 'nomor', 'created_at','invoice_vendor']);
+            ->get(['order_trucking_id', 'debit', 'credit', 'nama', 'nomor', 'created_at','invoice_vendor']);
             $nomor = $jurnal->pluck('nomor');
             $pph =  Jurnal::where('coa_id',52)
                 ->whereIn('nomor',$nomor)
                 ->pluck('nomor')->unique();
         // Kelompokkan jurnal berdasarkan invoice
-        $groupedJurnal = $jurnal->groupBy('invoice_trucking')->map(function ($items) use ($transaksi, $subjek, $coa_id,$pph,$nomor){
+        $groupedJurnal = $jurnal->groupBy('invoice_vendor')->map(function ($items) use ($transaksi, $subjek, $coa_id,$pph,$nomor){
             $data = [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
                 'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
@@ -2205,7 +2205,9 @@ class JurnalController extends Controller
         }
 
         // Saldo total
-        $totalSaldo = $totalDebit - $totalCredit;
+        $totalSaldo = $tipe == 'C'
+        ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+        : $totalCredit - $totalDebit;
     }
 
     if ($subjek == 'customer_trucking') {
