@@ -30,7 +30,7 @@ class JurnalTrucking extends Component
         $no_6 = ModelsJurnal::where('tipe','BBKT')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_7 = ModelsJurnal::where('tipe','BBMT')->whereYear('created_at',date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(12)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(13)->format('Y-m-d');
         $setting = Setting::find(1);
         $this->invx = ModelsJurnal::whereNotNull('invoice_external')
         ->orderBy('invoice_external')
@@ -77,7 +77,7 @@ class JurnalTrucking extends Component
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
         $this->c31 = COA::where('coa_ras', 31)->first()->id ?? 31;
-        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last_relasi = Carbon::now()->subMonths(13)->format('Y-m-d');
         $this->relasi = ModelsJurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
     }
 

@@ -87,7 +87,7 @@ class JurnalManual extends Component
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
-        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last_relasi = Carbon::now()->subMonths(13)->format('Y-m-d');
         $this->relasi = ModelsJurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
     }
 
