@@ -244,10 +244,10 @@
                             <tfoot>
                                 <tr class="fw-bold">
                                     @if ($subjek === 'relasi')    
-                                    <td colspan="7" class="text-center">Total</td>
+                                    <td colspan="5" class="text-center">Total</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
-                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
+                                    <td colspan="3" class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
                                     @else
                                     <td colspan="2" class="text-center">Total</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
