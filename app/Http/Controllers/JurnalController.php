@@ -2026,7 +2026,7 @@ class JurnalController extends Controller
                     'total_credit' => $totalCredit,
                     'saldo' => $saldo,
                 ];
-            })->sortByDesc('saldo')->values(); // Urutkan dari saldo tertinggi dan reset index
+            })->sortByDesc('tgl_d')->values(); // Urutkan dari saldo tertinggi dan reset index
             
          // Mengurutkan dan reset index
     
