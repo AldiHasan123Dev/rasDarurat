@@ -96,6 +96,7 @@
                                         <option value="pelayaran" {{ $subjek == 'pelayaran' ? 'selected' : '' }}>Pelayaran</option>
                                         <option value="agen" {{ $subjek == 'agen' ? 'selected' : '' }}>Agen</option>
                                         <option value="relasi" {{ $subjek == 'relasi' ? 'selected' : '' }}>Relasi</option>
+                                        <option value="vendor" {{ $subjek == 'vendor' ? 'selected' : '' }}>Vendor Trucking</option>
                                         {{--<option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                     </select>
                                 </form>
@@ -160,6 +161,7 @@
                                 @if ($subjek === 'relasi')
                                 <th class="text-center">No</th>
                                 <th class="text-center">No Jurnal</th>
+                                <th class="text-center">Invoice</th>
                                 <th class="text-center">Tgl (D)</th> 
                                 <th class="text-center">Ket (D)</th>
                                 <th class="text-center">Debit</th> 
@@ -199,7 +201,7 @@
                                     @endphp
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
-                                
+                                <td>{{ $data['invoice'] }}</td>
                                 {{-- Ambil elemen pertama dari array/collection --}}
                                 <td>{{ is_array($data['tgl_d']) ? '' : $data['tgl_d']->first() }}</td>
                                 <td>{{ is_array($data['ket_d']) ? '' : $data['ket_d']->first() }}</td>
@@ -242,7 +244,7 @@
                             <tfoot>
                                 <tr class="fw-bold">
                                     @if ($subjek === 'relasi')    
-                                    <td colspan="6" class="text-center">Total</td>
+                                    <td colspan="7" class="text-center">Total</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>

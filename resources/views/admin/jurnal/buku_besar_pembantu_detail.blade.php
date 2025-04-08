@@ -110,6 +110,9 @@
                                             @elseif ($subjek == 'agen')
                                             <span class="badge bg-danger text-white">Agen :
                                                     {{ $customer }}</span>
+                                                    @elseif ($subjek == 'vendor')
+                                            <span class="badge bg-danger text-white">Vendor Trucking :
+                                                    {{ $customer }}</span>
                                             @else
                                                 <span class="badge bg-success text-white">Customer :
                                                     {{ $customer }}</span>
@@ -133,6 +136,8 @@
                                                             Invoice Trucking
                                                             @elseif ($subjek == 'agen')
                                                             Agen
+                                                            @elseif ($subjek == 'vendor')
+                                                            Invoice Vendor
                                                             @else
                                                             Invoice Xpdc
                                                             @endif
@@ -171,6 +176,8 @@
                                                                 {{ $j['invoice_trucking'] ?: '-' }}
                                                                 @elseif ($subjek == 'agen')
                                                                 {{ $j['invoice_agen'] ?: '-' }}
+                                                                @elseif ($subjek == 'vendor')
+                                                                {{ $j['invoice_vendor'] ?: '-' }}
                                                                 @else
                                                                 {{ $j['invoice'] ?: '-' }}
                                                                 @endif
