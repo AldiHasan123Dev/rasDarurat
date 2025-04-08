@@ -1935,40 +1935,43 @@ class JurnalController extends Controller
             })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
     }
 
-    if($subjek=='relasi'){
-        // Ambil data customer trucking
+    if ($subjek == 'relasi') {
+        // Ambil data jurnal yang memiliki relasi (customer trucking) dalam rentang tanggal
         $jurnal = Jurnal::where('coa_id', $coa_id)
             ->whereNotNull('relasi')
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
-
-        // Gabungkan hasil customer trucking dan jurnal
-        $finalData = $jurnal->map(function ($item) {
-            // Ambil nama customer berdasarkan ID dari relasi order_trucking
-
-            return [
-                'customer_name' => $item->relasi,
-                'debit' => $item->debit,
-                'credit' => $item->credit,
-            ];
-        });
-        // Kelompokkan berdasarkan nama customer dan hitung sum debit dan kredit
-        $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe){
-            // Ambil nama customer (satu karena sudah dikelompokkan)
-            $relasi = $group->first()['customer_name'];
+            ->get(['debit', 'credit', 'nama', 'nomor', 'created_at', 'relasi']);
+    
+        // Kelompokkan berdasarkan relasi (ID customer trucking)
+        $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
+            $customerName = $group->first()->relasi;
             $totalDebit = $group->sum('debit');
+            $ket_d = $group->where('debit','>',0)->pluck('nama');
+            $ket_c = $group->where('credit','>',0)->pluck('nama');
+            $date_d = $group->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray();
+            $date_c = $group->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray();
             $totalCredit = $group->sum('credit');
+    
             $saldo = $tipe == 'D'
-                ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
-                : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+                ? $totalDebit - $totalCredit
+                : $totalCredit - $totalDebit;
+    
             return [
-                'customer_name' => $relasi,
-                'total_debit' => $group->sum('debit'),
-                'total_credit' => $group->sum('credit'),
+                'ket_d' => $ket_d,
+                'tgl_d' => $date_d,
+                'ket_c' => $ket_c,
+                'tgl_c' => $date_c,
+                'customer_name' => $customerName,
+                'total_debit' => $totalDebit,
+                'total_credit' => $totalCredit,
                 'saldo' => $saldo,
             ];
-        })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
-}
+        })->sortByDesc('saldo')->values();
+         // Mengurutkan dan reset index
+    
+        // Return atau gunakan $groupedData sesuai kebutuhan
+    }
+    
         // Daftar bulan
 
         // Mengembalikan tampilan dengan data yang sudah dihitung dan diproses

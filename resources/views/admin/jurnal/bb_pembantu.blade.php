@@ -153,9 +153,21 @@
 
                 <!-- Data Table -->
                 <div class="col-12 mt-4">
+                    <div style="overflow-x: auto; overflow-y: auto; max-height: 500px;">
                     <table class="table data table-bordered table-sm data-table" style="font-size: .8rem;">
                         <thead>
                             <tr>
+                                @if ($subjek === 'relasi')
+                                <th class="text-center">No</th>
+                                <th class="text-center">No Jurnal</th>
+                                <th class="text-center">Tgl (D)</th> 
+                                <th class="text-center">Ket (D)</th>
+                                <th class="text-center">Debit</th> 
+                                <th class="text-center">Tgl (C)</th> 
+                                <th class="text-center">Ket (C)</th>
+                                <th class="text-center">Credit</th>
+                                <th class="text-center">Saldo</th>
+                                @else
                                 <th class="text-center">No</th>
                                 <th class="text-center"> @if($subjek === 'pelayaran')
                                     Pelayaran
@@ -165,8 +177,6 @@
                                     Customer Trucking
                                     @elseif ($subjek == 'customer_trucking')
                                     Agen
-                                    @elseif ($subjek == 'relasi')
-                                    Relasi
                                     @else
                                     Customer XPDC
                                     @endif 
@@ -174,7 +184,6 @@
                                 <th class="text-center">Debit</th>
                                 <th class="text-center">Credit</th>
                                 <th class="text-center">Saldo</th>
-                                @if($subjek != 'relasi')
                                 <th class="text-center">Action</th>
                                 @endif
                             </tr>
@@ -182,6 +191,22 @@
                         <tbody>
                             @foreach ($groupedData as $data)
                             <tr>
+                                @if ($subjek === 'relasi')
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
+                                
+                                {{-- Ambil elemen pertama dari array/collection --}}
+                                <td>{{ is_array($data['tgl_d']) ? '' : $data['tgl_d']->first() }}</td>
+                                <td>{{ is_array($data['ket_d']) ? '' : $data['ket_d']->first() }}</td>
+                                
+                                <td class="text-end">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
+                                
+                                <td>{{ is_array($data['tgl_c']) ? '' : $data['tgl_c']->first() }}</td>
+                                <td>{{ is_array($data['ket_c']) ? '' : $data['ket_c']->first() }}</td>
+                                
+                                <td class="text-end">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
+                                <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>                                
+                                @else
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
                                 <td class="text-end">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
@@ -205,21 +230,30 @@
                                         Rincian
                                     </a>
                                 </td>
+                                @endif
                             @endif                                                                                    
                             </tr>
                             @endforeach
                             <tfoot>
                                 <tr class="fw-bold">
+                                    @if ($subjek === 'relasi')    
+                                    <td colspan="6" class="text-center">Total</td>
+                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
+                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
+                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
+                                    @else
                                     <td colspan="2" class="text-center">Total</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
                                     <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
+                                    @endif
                                     @if($subjek != 'relasi')
                                     <td></td>
                                     @endif
                                 </tr>
                             </tfoot>
-                    </table>                    
+                    </table>            
+                    </div>        
                 </div>
             </div>
         </div>
