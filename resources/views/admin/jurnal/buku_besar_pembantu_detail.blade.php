@@ -305,22 +305,26 @@
             //     },
             // });
         </script>
-        <script>
-            $(document).ready(function() {
-    $('.table.data').DataTable({
-        "ordering": true, // Mengaktifkan fitur sorting
-        "searching": true, // Menonaktifkan fitur pencarian
-        "paging": true, // Mengaktifkan pagination
-        "info": false, // Menonaktifkan informasi jumlah data
-        "autoWidth": false,
-        "order": [[0, "desc"]], // Mengurutkan kolom indeks 2 secara ascending
-        "columnDefs": [
-            { "orderable": true, "targets": [0] } // Mengaktifkan sorting hanya di kolom indeks 2
-        ]
-    });
-});
-
-
-        </script>
+      <script>
+        $(document).ready(function() {
+            @if ($subjek == 'vendor' && $coa_id == 131)
+                var orderConfig = [[2, "desc"]];
+                var columnDefsConfig = [{ "orderable": true, "targets": [2] }];
+            @else
+                var orderConfig = [[0, "desc"]];
+                var columnDefsConfig = [{ "orderable": true, "targets": [0] }];
+            @endif
+    
+            $('.table.data').DataTable({
+                "ordering": true,       // Mengaktifkan fitur sorting
+                "searching": true,      // Mengaktifkan fitur pencarian
+                "paging": true,         // Mengaktifkan pagination
+                "info": false,          // Menonaktifkan informasi jumlah data
+                "autoWidth": false,
+                "order": orderConfig,           // Konfigurasi urutan kolom sesuai kondisi
+                "columnDefs": columnDefsConfig  // Konfigurasi columnDefs sesuai kondisi
+            });
+        });
+    </script>    
     @endpush
 @endsection
