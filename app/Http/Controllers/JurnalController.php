@@ -1936,27 +1936,35 @@ class JurnalController extends Controller
     }
 
     if($subjek=='vendor'){
-        // Ambil data customer trucking
-        $customer = CustomerTrucking::pluck('nama', 'id'); // Pastikan key adalah ID, value adalah nama
+                // Ambil data customer trucking
+            // Ambil semua customer trucking
+        $customer = CustomerTrucking::pluck('nama', 'id'); // Key = ID, Value = Nama
 
-        // Ambil order trucking berdasarkan customer_id
-        $order = OrderTrucking::whereIn('customer_id', $customer->keys()) // Menggunakan keys() untuk ID
+        // Ambil invoice dari OrderTrucking yang ada customer_id-nya di daftar customer, dan tidak null
+        $order = OrderTrucking::whereIn('customer_id', $customer->keys())
             ->whereNotNull('invoice')
-            ->pluck('id');
+            ->pluck('invoice');
 
-        // Ambil jurnal berdasarkan order_trucking_id dan coa_id
+        // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
         $jurnal = Jurnal::where('coa_id', $coa_id)
-            ->whereNotNull('order_id')
-            ->whereNotNull('invoice_vendor')
-            ->whereNull('invoice_trucking') // Pastikan order_trucking_id tidak null
-            ->whereIn('order_trucking_id', $order)
+            ->whereNull('invoice_trucking')
+            ->whereIn('invoice_vendor', $order)
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->get(['order_trucking_id', 'debit', 'credit']);
+            ->get(['order_trucking_id', 'debit', 'credit', 'invoice_vendor']); // tambahkan invoice_vendor untuk referensi
 
-        // Gabungkan hasil customer trucking dan jurnal
-        $finalData = $jurnal->map(function ($item) use ($customer) {
-            // Ambil nama customer berdasarkan ID dari relasi order_trucking
-            $customerName = optional($item->order_trucking)->customer->nama ?? 'Unknown'; // Cegah error dengan optional()
+        // Ambil mapping invoice → customer_id, tapi hanya yang bukan RAS-LT
+        $orderIds = OrderTrucking::whereIn('invoice', $order->values())
+            ->where('invoice', 'not like', '%RAS-LT%')
+            ->pluck('customer_id', 'invoice'); // ['invoice' => customer_id]
+
+        // Ambil nama customer berdasarkan customer_id yang ditemukan
+        $vendorList = CustomerTrucking::whereIn('id', $orderIds->values())
+            ->pluck('nama', 'id'); // ['id' => nama]
+
+        // Map data jurnal ke format final dengan customer_name
+        $finalData = $jurnal->map(function ($item) use ($orderIds, $vendorList) {
+            $vendorId = $orderIds[$item->invoice_vendor] ?? null;
+            $customerName = $vendorList[$vendorId] ?? 'Unknown';
 
             return [
                 'customer_name' => $customerName,
@@ -1964,22 +1972,22 @@ class JurnalController extends Controller
                 'credit' => $item->credit,
             ];
         });
-        // Kelompokkan berdasarkan nama customer dan hitung sum debit dan kredit
-        $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe){
-            // Ambil nama customer (satu karena sudah dikelompokkan)
-            $customerName = $group->first()['customer_name'];
+
+        // Kelompokkan dan hitung total per customer
+        $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
             $totalDebit = $group->sum('debit');
             $totalCredit = $group->sum('credit');
-            $saldo = $tipe == 'D'
-                ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
-                : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
+
             return [
-                'customer_name' => $customerName,
-                'total_debit' => $group->sum('debit'),
-                'total_credit' => $group->sum('credit'),
-                'saldo' => $saldo,
+                'customer_name' => $group->first()['customer_name'],
+                'total_debit' => $totalDebit,
+                'total_credit' => $totalCredit,
+                'saldo' => $tipe === 'D'
+                    ? $totalDebit - $totalCredit
+                    : $totalCredit - $totalDebit,
             ];
-        })->sortByDesc('saldo'); // Mengurutkan berdasarkan saldo, terbesar dulu
+        })->sortByDesc('saldo');
+
 }
 
     if ($subjek == 'relasi') {
@@ -2162,9 +2170,8 @@ class JurnalController extends Controller
 
         // Query jurnal
         $jurnal = Jurnal::where('coa_id', $coa_id)
-            ->whereIn('order_trucking_id', $order)
+            ->whereIn('invoice_vendor', $invoice)
             ->whereNull('invoice_trucking')
-            ->whereNotNull('invoice_vendor')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_trucking_id', 'debit', 'credit', 'nama', 'nomor', 'created_at','invoice_vendor']);
             $nomor = $jurnal->pluck('nomor');
