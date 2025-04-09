@@ -1769,6 +1769,77 @@ class JurnalController extends Controller
                 ];
             })->sortByDesc('saldo');            
         }
+                if ($subjek == 'customer_xpdc') {
+            // Cache daftar customer
+            $customer = Cache::remember('customer_list', 60, function () {
+                return Customer::pluck('nama', 'id');
+            });
+            // Cache daftar tarif
+            $tarif = Cache::remember("tarif_list_{$customer->keys()->implode('_')}", 60, function () use ($customer) {
+                return Tarif::whereIn('customer_id', $customer->keys())->pluck('id');
+            });
+            // Cache daftar order
+            $order = Cache::remember("order_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
+                return Order::whereIn('tarif_id', $tarif)->pluck('id');
+            });
+            // Pastikan $order tidak kosong sebelum query transaksi
+            $transaksi = $order->isNotEmpty()
+                ? Transaksi::whereIn('order_id', $order)->pluck('pph', 'order_id')
+                : collect();
+            
+            // Cache jurnal berdasarkan kriteria, dengan pengecekan agar cache tetap efisien
+            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_" . implode('_', $order->toArray()), 60, function () use ($coa_id, $order, $startDate, $endDate) {
+                return $order->isNotEmpty()
+                    ? Jurnal::where('coa_id', $coa_id)
+                        ->whereIn('order_id', $order)
+                        ->whereNull('order_trucking_id')
+                        ->whereNull('invoice_trucking')
+                        ->whereNull('invoice_vendor')
+                        ->whereNull('invoice_agen')
+                        ->whereBetween('created_at', [$startDate, $endDate])
+                        ->whereNotNull('invoice')
+                        ->get(['order_id', 'debit', 'credit'])
+                    : collect();
+            });
+            
+            // Proses data untuk hasil akhir
+            $finalData = $jurnal->map(function ($item) use ($customer) {
+                return [
+                    'customer_name' => $customer[$item->order->tarif->customer_id] ?? 'Unknown',
+                    'debit' => $item->debit,
+                    'credit' => $item->credit,
+                ];
+            });
+            
+            // Cek kondisi untuk perhitungan PPH
+            if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+                $orderIds = $jurnal->pluck('order_id')->unique();
+            
+                $data['pph'] = $orderIds
+                    ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
+                    ->filter()
+                    ->implode('<br>');
+            
+                // Kurangi debit dengan PPH jika ada
+                $data['debit'] = ((int) ($data['debit'] ?? 0)) - ((int) ($data['pph'] ?? 0));
+            }
+            
+            // Kelompokkan dan hitung total per customer
+            $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
+                $customerName = $group->first()['customer_name'];
+                $totalPPH = $group->sum('pph');
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+                $saldo = $tipe == 'D' ? $totalDebit - $totalCredit : $totalCredit - $totalDebit;
+            
+                return [
+                    'customer_name' => $customerName,
+                    'total_debit' => $totalDebit - $totalPPH,
+                    'total_credit' => $totalCredit,
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('saldo');            
+        }
         if ($subjek == 'pelayaran') {
             // Gunakan cache untuk jurnal berdasarkan filter
             $customer = Cache::remember('pelayaran_list', 60, function () {
@@ -1966,6 +2037,11 @@ class JurnalController extends Controller
             $vendorId = $orderIds[$item->invoice_vendor] ?? null;
             $customerName = $vendorList[$vendorId] ?? 'Unknown';
 
+            // Ganti nama jika cocok dengan yang ditentukan
+            if ($customerName === 'PT. RAHMAT ALAM SAMUDERA') {
+                $customerName = 'R1';
+            }            
+
             return [
                 'customer_name' => $customerName,
                 'debit' => $item->debit,
@@ -1989,6 +2065,62 @@ class JurnalController extends Controller
         })->sortByDesc('saldo');
 
 }
+
+        if($subjek=='lain-lain'){
+            // Ambil data customer trucking
+        // Ambil semua customer trucking
+        $customer = CustomerTrucking::pluck('nama', 'id'); // Key = ID, Value = Nama
+
+        // Ambil invoice dari OrderTrucking yang ada customer_id-nya di daftar customer, dan tidak null
+        $order = OrderTrucking::whereIn('customer_id', $customer->keys())
+        ->whereNotNull('invoice')
+        ->pluck('invoice');
+
+        // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+        ->whereNull('invoice_trucking')
+        ->whereIn('invoice_external', $order)
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->get(['order_trucking_id', 'debit', 'credit','invoice_external']); 
+        dd($jurnal);// tambahkan invoice_vendor untuk referensi
+
+        // Ambil mapping invoice → customer_id, tapi hanya yang bukan RAS-LT
+        $orderIds = OrderTrucking::whereIn('invoice', $order->values())
+        ->where('invoice', 'not like', '%RAS-LT%')
+        ->pluck('customer_id', 'invoice'); // ['invoice' => customer_id]
+
+        // Ambil nama customer berdasarkan customer_id yang ditemukan
+        $vendorList = CustomerTrucking::whereIn('id', $orderIds->values())
+        ->pluck('nama', 'id'); // ['id' => nama]
+
+        // Map data jurnal ke format final dengan customer_name
+        $finalData = $jurnal->map(function ($item) use ($orderIds, $vendorList) {
+        $vendorId = $orderIds[$item->invoice_vendor] ?? null;
+        $customerName = $vendorList[$vendorId] ?? 'Unknown';
+
+        return [
+            'customer_name' => $customerName,
+            'debit' => $item->debit,
+            'credit' => $item->credit,
+        ];
+        });
+
+        // Kelompokkan dan hitung total per customer
+        $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
+        $totalDebit = $group->sum('debit');
+        $totalCredit = $group->sum('credit');
+
+        return [
+            'customer_name' => $group->first()['customer_name'],
+            'total_debit' => $totalDebit,
+            'total_credit' => $totalCredit,
+            'saldo' => $tipe === 'D'
+                ? $totalDebit - $totalCredit
+                : $totalCredit - $totalDebit,
+        ];
+        })->sortByDesc('saldo');
+
+        }
 
     if ($subjek == 'relasi') {
         // Ambil data jurnal yang memiliki relasi (customer trucking) dalam rentang tanggal
@@ -2163,7 +2295,14 @@ class JurnalController extends Controller
     }
     if ($subjek == 'vendor') {
         // Ambil data terkait customer
-        $customers = CustomerTrucking::where('nama', $customer)->pluck('nama', 'id');
+        if ($customer == 'R1') {
+            // Karena 'PT. RAHMAT ALAM SAMUDERA' ada di id 2,
+            // maka buat koleksi dengan index 2 dan value-nya
+            $customers = collect([2 => 'R1']);
+        } else {
+            $customers = CustomerTrucking::where('nama', $customer)
+                ->pluck('nama', 'id');
+        }        
         $order = OrderTrucking::whereIn('customer_id', $customers->keys())->whereNotNull('invoice')->pluck('id');
         $invoice = OrderTrucking::whereIn('customer_id', $customers->keys())->whereNotNull('invoice')->pluck('invoice');
         $transaksi = TransaksiTrucking::whereIn('customer_id',$customers->keys())->pluck('pph', 'order_trucking_id');
