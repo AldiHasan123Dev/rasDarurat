@@ -186,18 +186,26 @@
                                                             <td class="text-end">{{ $j['pph'] ? number_format($j['pph'], 2, ',', '.') : 0 }}</td>
                                                         @endif
                                                         
-                                                        @php
-                                                           $highlight = (
-                                                                ($subjek == 'customer_xpdc' && $coa_id == 46) || 
-                                                                ($subjek == 'customer_trucking' && $coa_id == 47) ||
-                                                                ($subjek == 'agen' && $coa_id == 63)
-                                                            ) && (
-                                                                abs($j['debit'] - $j['credit']) > 2 && 
-                                                                (
-                                                                    ($coa_id == 63) ? ($j['credit'] > $j['debit']) : ($j['debit'] > $j['credit'])
-                                                                )
-                                                            );
-                                                        @endphp
+                                                    @php
+                                                        $isRelevantSubjek = 
+                                                            ($subjek == 'customer_xpdc' && $coa_id == 46) || 
+                                                            ($subjek == 'customer_trucking' && $coa_id == 47) ||
+                                                            ($subjek == 'agen' && $coa_id == 63) ||
+                                                            ($subjek == 'vendor' && $coa_id == 131);
+
+                                                        $selisih = abs($j['debit'] - $j['credit']) > 2;
+
+                                                        // Aturan pembanding debit/credit berdasarkan coa_id
+                                                        $validPerbandingan = false;
+                                                        if ($coa_id == 63 || $coa_id == 131) {
+                                                            $validPerbandingan = $j['credit'] > $j['debit'];
+                                                        } else {
+                                                            $validPerbandingan = $j['debit'] > $j['credit'];
+                                                        }
+
+                                                        $highlight = $isRelevantSubjek && $selisih && $validPerbandingan;
+                                                    @endphp
+
                                                         
                                                         <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }}">
                                                             {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : 0 }}
