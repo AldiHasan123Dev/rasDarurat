@@ -97,7 +97,7 @@
                                         <option value="agen" {{ $subjek == 'agen' ? 'selected' : '' }}>Agen</option>
                                         <option value="relasi" {{ $subjek == 'relasi' ? 'selected' : '' }}>Relasi</option>
                                         <option value="vendor" {{ $subjek == 'vendor' ? 'selected' : '' }}>Vendor Trucking</option>
-                                        <option value="lain-lain" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>Lain-lain</option>
+                                        <option value="lain-lain" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>Lain-lain (External Inv)</option>
                                         {{--<option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                     </select>
                                 </form>

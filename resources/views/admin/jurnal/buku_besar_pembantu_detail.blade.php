@@ -111,7 +111,10 @@
                                             <span class="badge bg-danger text-white">Agen :
                                                     {{ $customer }}</span>
                                                     @elseif ($subjek == 'vendor')
-                                            <span class="badge bg-danger text-white">Vendor Trucking :
+                                            <span class="badge bg-primary text-white">Vendor Trucking :
+                                                    {{ $customer }}</span>
+                                                    @elseif ($subjek == 'lain-lain')
+                                            <span class="badge bg-dark">Lain-lain :
                                                     {{ $customer }}</span>
                                             @else
                                                 <span class="badge bg-success text-white">Customer :
@@ -138,6 +141,8 @@
                                                             Agen
                                                             @elseif ($subjek == 'vendor')
                                                             Invoice Vendor
+                                                            @elseif ($subjek == 'lain-lain')
+                                                            Invoice External
                                                             @else
                                                             Invoice Xpdc
                                                             @endif
@@ -178,6 +183,8 @@
                                                                 {{ $j['invoice_agen'] ?: '-' }}
                                                                 @elseif ($subjek == 'vendor')
                                                                 {{ $j['invoice_vendor'] ?: '-' }}
+                                                                @elseif ($subjek == 'lain-lain')
+                                                                {{ $j['invoice_external'] ?: '-' }}
                                                                 @else
                                                                 {{ $j['invoice'] ?: '-' }}
                                                                 @endif

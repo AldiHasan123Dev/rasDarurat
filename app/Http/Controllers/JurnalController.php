@@ -2069,56 +2069,59 @@ class JurnalController extends Controller
         if($subjek=='lain-lain'){
             // Ambil data customer trucking
         // Ambil semua customer trucking
-        $customer = CustomerTrucking::pluck('nama', 'id'); // Key = ID, Value = Nama
-
-        // Ambil invoice dari OrderTrucking yang ada customer_id-nya di daftar customer, dan tidak null
-        $order = OrderTrucking::whereIn('customer_id', $customer->keys())
-        ->whereNotNull('invoice')
-        ->pluck('invoice');
+        $customer = Customer::pluck('nama', 'id'); // Key = ID, Value = Nama
+        $tarif = Cache::remember("tarif_list_{$customer->keys()->implode('_')}", 60, function () use ($customer) {
+            return Tarif::whereIn('customer_id', $customer->keys())->pluck('id');
+        });
+        // Cache daftar order
+        $order = Cache::remember("order_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
+            return Order::whereIn('tarif_id', $tarif)->pluck('id');
+        });
 
         // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
         $jurnal = Jurnal::where('coa_id', $coa_id)
-        ->whereNull('invoice_trucking')
-        ->whereIn('invoice_external', $order)
+        ->whereIn('order_id',$order)
+        ->whereNotNull('invoice_external')
         ->whereBetween('created_at', [$startDate, $endDate])
-        ->get(['order_trucking_id', 'debit', 'credit','invoice_external']); 
-        dd($jurnal);// tambahkan invoice_vendor untuk referensi
-
-        // Ambil mapping invoice → customer_id, tapi hanya yang bukan RAS-LT
-        $orderIds = OrderTrucking::whereIn('invoice', $order->values())
-        ->where('invoice', 'not like', '%RAS-LT%')
-        ->pluck('customer_id', 'invoice'); // ['invoice' => customer_id]
-
-        // Ambil nama customer berdasarkan customer_id yang ditemukan
-        $vendorList = CustomerTrucking::whereIn('id', $orderIds->values())
-        ->pluck('nama', 'id'); // ['id' => nama]
+        ->get(['order_id', 'debit', 'credit','invoice_external']); 
 
         // Map data jurnal ke format final dengan customer_name
-        $finalData = $jurnal->map(function ($item) use ($orderIds, $vendorList) {
-        $vendorId = $orderIds[$item->invoice_vendor] ?? null;
-        $customerName = $vendorList[$vendorId] ?? 'Unknown';
-
-        return [
-            'customer_name' => $customerName,
-            'debit' => $item->debit,
-            'credit' => $item->credit,
-        ];
+        $finalData = $jurnal->map(function ($item) use ($customer) {
+            return [
+                'customer_name' => $customer[$item->order->tarif->customer_id] ?? 'Unknown',
+                'debit' => $item->debit,
+                'credit' => $item->credit,
+            ];
         });
-
+        
+        // Cek kondisi untuk perhitungan PPH
+        if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+            $orderIds = $jurnal->pluck('order_id')->unique();
+        
+            $data['pph'] = $orderIds
+                ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
+                ->filter()
+                ->implode('<br>');
+        
+            // Kurangi debit dengan PPH jika ada
+            $data['debit'] = ((int) ($data['debit'] ?? 0)) - ((int) ($data['pph'] ?? 0));
+        }
+        
         // Kelompokkan dan hitung total per customer
         $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
-        $totalDebit = $group->sum('debit');
-        $totalCredit = $group->sum('credit');
-
-        return [
-            'customer_name' => $group->first()['customer_name'],
-            'total_debit' => $totalDebit,
-            'total_credit' => $totalCredit,
-            'saldo' => $tipe === 'D'
-                ? $totalDebit - $totalCredit
-                : $totalCredit - $totalDebit,
-        ];
-        })->sortByDesc('saldo');
+            $customerName = $group->first()['customer_name'];
+            $totalPPH = $group->sum('pph');
+            $totalDebit = $group->sum('debit');
+            $totalCredit = $group->sum('credit');
+            $saldo = $tipe == 'D' ? $totalDebit - $totalCredit : $totalCredit - $totalDebit;
+        
+            return [
+                'customer_name' => $customerName,
+                'total_debit' => $totalDebit - $totalPPH,
+                'total_credit' => $totalCredit,
+                'saldo' => $saldo,
+            ];
+        })->sortByDesc('saldo'); 
 
         }
 
@@ -2186,7 +2189,7 @@ class JurnalController extends Controller
     $totalDebit = 0;
     $totalCredit = 0;
     $totalSaldo =0;
-    $groupedJurnal=[];
+    $groupedJurnal=[]; 
     $customerPelayaran = null;
     $tipe = in_array(substr($coa_id, 0, 1), ['2', '3', '5']) ? 'C' : 'D';
     $startDate = '2022-01-01';
@@ -2249,6 +2252,66 @@ class JurnalController extends Controller
 
         // Saldo total
         $totalSaldo = $totalDebit - $totalCredit;
+    }
+    if ($subjek == 'lain-lain') {
+        // Ambil data terkait customer
+        $customers = Customer::where('nama', $customer)->pluck('nama', 'id');
+        $tarif = Tarif::whereIn('customer_id', $customers->keys())->pluck('id');
+        $order = Order::whereIn('tarif_id', $tarif)->pluck('id');
+        $transaksi = Transaksi::whereIn('order_id', $order)->pluck('pph', 'order_id');
+
+        // Query jurnal
+        // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
+        $jurnal = Jurnal::where('coa_id', $coa_id)
+        ->whereIn('order_id',$order)
+        ->whereNotNull('invoice_external')
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_external']);
+        $nomor = $jurnal->pluck('nomor');
+        // Kelompokkan jurnal berdasarkan invoice
+        $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) use ($transaksi, $subjek, $coa_id,$nomor) {
+            $data = [
+                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
+                            'tgl_d' => implode(
+                    '<br>',
+                    $items->where('debit', '>', 0)
+                        ->pluck('created_at')
+                        ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
+                        ->unique()
+                        ->toArray()
+                ),
+
+                'nomor_k' => $items->where('credit', '>', 0)
+                    ->pluck('nomor')
+                    ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                    ->implode('<br>'),
+                'tgl_k' => implode('<br>', $items->where('credit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
+                'invoice_external' => $items->first()->invoice_external,
+                'debit' => $items->sum('debit'),
+                'credit' => $items->sum('credit'),
+                'keterangan' => $items->pluck('nama')->unique()->implode('<br>'), // Gabungkan semua keterangan
+            ];
+            // Tambahkan pph jika kondisi terpenuhi
+            if ($subjek == 'customer_xpdc' && $coa_id == 46) {
+                $orderIds = $items->pluck('order_id')->unique();
+                $data['pph'] = $orderIds
+                    ->map(fn($id) => isset($transaksi[$id]) ? round($transaksi[$id]) : null)
+                    ->filter()
+                    ->implode('<br>');
+                    $data['debit'] =  $data['debit'];
+            }            
+            return $data;
+        });
+        // Hitung total debit dan credit
+        foreach ($groupedJurnal as $detail) {
+            $totalDebit += $detail['debit']; 
+            $totalCredit += $detail['credit'];
+        }
+
+        // Saldo total
+        $totalSaldo = $tipe == 'C'
+        ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
+        : $totalCredit - $totalDebit;
     }
 
     if ($subjek == 'agen') {
