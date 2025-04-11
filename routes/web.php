@@ -204,6 +204,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('hutang-pelayaran-cetak', [HutangPelayaranController::class, 'cetak'])->name('hutang-pelayaran.cetak');
 
     Route::get('marketing/{marketing}', [OrderController::class, 'index'])->name('order.index.marketing');
+    Route::get('trucking/monitor_biaya_truck', [OrderTruckingController::class, 'monitoring_biaya_truck'])->name('monitoringBiayaTruck');
     Route::get('laporan/pelayaran', [LaporanController::class, 'pelayaran'])->name('laporan.pelayaran');
     Route::get('laporan/tujuan', [LaporanController::class, 'tujuan'])->name('laporan.tujuan');
     Route::get('laporan/customer', [LaporanController::class, 'customer'])->name('laporan.customer');

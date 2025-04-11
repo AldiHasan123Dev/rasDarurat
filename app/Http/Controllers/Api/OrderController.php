@@ -83,7 +83,7 @@ class OrderController extends Controller
         $start = request('start');
         $limit = request('limit');
         $data = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [5, 6]);
+            $q->whereIn('kondisi', [5, 6,10]);
             $q->whereHas('customer', function ($qu) {
                 $qu->where('ba_kembali', 1);
             });

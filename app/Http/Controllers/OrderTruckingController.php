@@ -37,6 +37,10 @@ class OrderTruckingController extends Controller
         return view('admin.ordertrucking.index', compact('kendaraan', 'sopir', 'tujuan', 'customers', 'no_order'));
     }
 
+    public function monitoring_biaya_truck(){
+        return view('admin.monitoring-biaya-truck.monitoring_biaya_truck');   
+    }
+
     public function store(Request $request)
     {
         $data = $request->all();
