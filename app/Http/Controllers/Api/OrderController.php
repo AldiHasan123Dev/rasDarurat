@@ -184,7 +184,7 @@ class OrderController extends Controller
         if (request('ba_kembali_null')) {
             $query->whereNull('order.ba_kembali');
             $query->whereHas('tarif', function ($a) {
-                $a->whereIn('kondisi', [5, 7]);
+                $a->whereIn('kondisi', [5, 7, 10]);
             });
         }
 
