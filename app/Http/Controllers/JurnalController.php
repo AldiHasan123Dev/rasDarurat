@@ -1685,7 +1685,7 @@ class JurnalController extends Controller
         $coa_id = request('coa_id') ?? 46;
         $subjek = request('subjek') ?? 'customer_xpdc';
         $startDate = '2022-01-01';
-        $endDate = Carbon::create($year, $month)->endOfMonth()->toDateString();
+        $endDate = Carbon::create($year, $month)->endOfMonth()->endOfDay();
         // Cek apakah COA ditemukan
         $coa = COA::find($coa_id);
         if (!$coa) {
@@ -2193,7 +2193,7 @@ class JurnalController extends Controller
     $customerPelayaran = null;
     $tipe = in_array(substr($coa_id, 0, 1), ['2', '3', '5']) ? 'C' : 'D';
     $startDate = '2022-01-01';
-    $endDate = Carbon::create($year, $month)->endOfMonth()->toDateString();
+    $endDate = Carbon::create($year, $month)->endOfMonth()->endOfDay();
 
     if ($subjek == 'customer_xpdc') {
         // Ambil data terkait customer
