@@ -2080,19 +2080,28 @@ class JurnalController extends Controller
 
         // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
         $jurnal = Jurnal::where('coa_id', $coa_id)
-        ->whereIn('order_id',$order)
+        ->where(function ($query) use ($order) {
+            $query->whereIn('order_id', $order)
+                  ->orWhereNull('order_id');
+        })
         ->whereNotNull('invoice_external')
         ->whereBetween('created_at', [$startDate, $endDate])
-        ->get(['order_id', 'debit', 'credit','invoice_external']); 
+        ->get(['order_id', 'debit', 'credit', 'invoice_external']);    
 
-        // Map data jurnal ke format final dengan customer_name
         $finalData = $jurnal->map(function ($item) use ($customer) {
+            $customerName = 'Lain-lain';
+        
+            if ($item->order && $item->order->tarif) {
+                $customerId = $item->order->tarif->customer_id;
+                $customerName = $customer[$customerId] ?? 'Lain-lain';
+            }
+        
             return [
-                'customer_name' => $customer[$item->order->tarif->customer_id] ?? 'Unknown',
+                'customer_name' => $customerName,
                 'debit' => $item->debit,
                 'credit' => $item->credit,
             ];
-        });
+        });        
         
         // Cek kondisi untuk perhitungan PPH
         if ($subjek == 'customer_xpdc' && $coa_id == 46) {
@@ -2262,14 +2271,25 @@ class JurnalController extends Controller
 
         // Query jurnal
         // Ambil jurnal yang sesuai coa_id, belum terkait invoice_trucking, dan berdasarkan invoice_vendor
-        $jurnal = Jurnal::where('coa_id', $coa_id)
-        ->whereIn('order_id',$order)
-        ->whereNotNull('invoice_external')
-        ->whereBetween('created_at', [$startDate, $endDate])
-        ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_external']);
+        if($customer == 'Lain-lain'){
+            $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->where(function ($query) use ($order) {
+                $query->whereIn('order_id', $order)
+                      ->orWhereNull('order_id');
+            })
+            ->whereNotNull('invoice_external')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_external']);
+        } else {
+            $jurnal = Jurnal::where('coa_id', $coa_id)
+            ->whereIn('order_id',$order)
+            ->whereNotNull('invoice_external')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'invoice_external']);   
+        }
         $nomor = $jurnal->pluck('nomor');
         // Kelompokkan jurnal berdasarkan invoice
-        $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) use ($transaksi, $subjek, $coa_id,$nomor) {
+        $groupedJurnal = $jurnal->groupBy('invoice_external')->map(function ($items) use ($transaksi, $subjek, $coa_id,$nomor) {
             $data = [
                 'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
                             'tgl_d' => implode(
