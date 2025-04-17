@@ -153,7 +153,6 @@ class HutangPelayaranController extends Controller
                         'debit' => $item[$a],
                         'credit' => 0,
                     ]);
-
                     $opp_total += $item[$a];
                 }
             }
@@ -244,19 +243,21 @@ class HutangPelayaranController extends Controller
                 'credit' => 0,
             ]);
         }
-        Jurnal::create([
-            'tipe' => 'JNL',
-            'no_bg' => $hp->no_bg_opp,
-            'tgl_bg' => $hp->tgl_bg_opp,
-            'nominal_bg' => $hp->nominal_bg_opp,
-            'coa_id' => $c62,
-            'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
-            'relasi' => $data_nomor[$hp->no_bg_opp]['nomor'],
-            'no' => $data_nomor[$hp->no_bg_opp]['no'],
-            'nama' => 'Hutang OPP '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
-            'debit' => 0,
-            'credit' => $opp_total - $hp->pph,
-        ]);
+        if (!is_null($hp->no_bg_opp)){
+            Jurnal::create([
+                'tipe' => 'JNL',
+                'no_bg' => $hp->no_bg_opp,
+                'tgl_bg' => $hp->tgl_bg_opp,
+                'nominal_bg' => $hp->nominal_bg_opp,
+                'coa_id' => $c62,
+                'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
+                'relasi' => $data_nomor[$hp->no_bg_opp]['nomor'],
+                'no' => $data_nomor[$hp->no_bg_opp]['no'],
+                'nama' => 'Hutang OPP '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
+                'debit' => 0,
+                'credit' => $opp_total - $hp->pph,
+            ]);
+        }
         if (!is_null($hp->no_bg_opt)) {
             Jurnal::create([
                 'tipe' => 'JNL',
@@ -286,7 +287,7 @@ class HutangPelayaranController extends Controller
                 'debit' => 0,
                 'credit' => $ut_total + $hp->penambahan_nominal,
             ]);
-
+        
             if(!is_null($hp->penambahan)){
                 if($hp->penambahan_nominal!=0){
                     if($hp->penambahan_nominal>0){
