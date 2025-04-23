@@ -117,4 +117,5 @@ Route::get('jqgrid-jurnal',[JurnalController::class,'jqgrid'])->name('jqgrid.jur
 Route::post('jurnal-neraca',[JurnalController::class,'neraca'])->name('api.neraca.jurnal');
 Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order');
 Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
+Route::get('jqgrid-order-trucking1',[OrderTruckingController::class,'jqgrid1'])->name('jqgrid1.ordertrucking');
 Route::post('sync-order-trucking',[SyncController::class,'order_trucking'])->name('api.sync.ordertrucking');

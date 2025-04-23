@@ -198,7 +198,8 @@
                                                             ($subjek == 'customer_xpdc' && $coa_id == 46) || 
                                                             ($subjek == 'customer_trucking' && $coa_id == 47) ||
                                                             ($subjek == 'agen' && $coa_id == 63) ||
-                                                            ($subjek == 'vendor' && $coa_id == 131);
+                                                            ($subjek == 'vendor' && $coa_id == 131 ||
+                                                            $subjek == 'lain-lain');
 
                                                         $selisih = abs($j['debit'] - $j['credit']) > 2;
 

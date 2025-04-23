@@ -7,6 +7,7 @@ use App\Models\CustomerTrucking;
 use App\Models\Kendaraan;
 use App\Models\Order;
 use App\Models\OrderTrucking;
+use App\Models\OrderBiayaTruck;
 use App\Models\SanguSopir;
 use App\Models\Sopir;
 use App\Models\TarifTrucking;
@@ -40,6 +41,60 @@ class OrderTruckingController extends Controller
     public function monitoring_biaya_truck(){
         return view('admin.monitoring-biaya-truck.monitoring_biaya_truck');   
     }
+
+    public function updateSangu(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:order_biaya_truck,id',
+    ]);
+
+    $orderBiaya = OrderBiayaTruck::find($request->id);
+
+   
+        $orderBiaya->update([
+            'tgl_sangu_kuli1' => $request->tgl_sangu_kuli1 ?? null,
+            'tgl_sangu_kuli2' => $request->tgl_sangu_kuli2 ?? null,
+            'tgl_sangu_kuli3' => $request->tgl_sangu_kuli3 ?? null,
+            'nominal_sangu_kuli1' => $request->nominal_sangu_kuli1 ?? 0,
+            'nominal_sangu_kuli2' => $request->nominal_sangu_kuli2 ?? 0,
+            'nominal_sangu_kuli3' => $request->nominal_sangu_kuli3 ?? 0
+        ]);
+
+    
+
+    return response()->json(['status' => 'success', 'message' => 'Data berhasil diperbarui.']);
+}
+
+public function updateTbTl(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:order_biaya_truck,id',
+    ]);
+
+    $orderBiaya = OrderBiayaTruck::find($request->id);
+        $orderBiaya->update([
+            'tgl_tb_tl' => $request->tgl_tb_tl ?? null,
+            'nominal_tb_tl1' => $request->nominal_tb_tl1 ?? 0,
+        ]);
+    return response()->json(['status' => 'success', 'message' => 'Data berhasil diperbarui.']);
+}
+
+public function updateStappel(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:order_biaya_truck,id',
+    ]);
+
+
+    $orderBiaya = OrderBiayaTruck::find($request->id);
+        $orderBiaya->update([
+            'tgl_stappel' => $request->tgl_stappel ?? null,
+            'nominal_stappel1' => $request->nominal_stappel1 ?? 0,
+        ]);
+    return response()->json(['status' => 'success', 'message' => 'Data berhasil diperbarui.']);
+}
+
+    
 
     public function store(Request $request)
     {
@@ -143,7 +198,10 @@ class OrderTruckingController extends Controller
             }
         }
 
-        OrderTrucking::create($data);
+        $order = OrderTrucking::create($data);
+        OrderBiayaTruck::create([
+            'order_trucking_id' => $order->id
+        ]);
 
         return back()->with('success', 'Data berhasil disimpan');
     }
@@ -167,6 +225,30 @@ class OrderTruckingController extends Controller
         // ]);
 
         $data = $request->all();
+        $kuli = str_replace(['.', ','], '', $request->kuli);
+        $sangu = str_replace(['.', ','], '', $request->sangu);
+        $stappel = str_replace(['.', ','], '', $request->stappel);
+        $tbtl = 0;
+        if (!empty($data['ambil_empty_tambak_langon'])) {
+            if ($data['ambil_empty_tambak_langon'] == "true") {
+                if ($ordertrucking->tipe == '20' || $ordertrucking->tipe == 'COMBO') {
+                    $tbtl += 50000;
+                }
+                if ($ordertrucking->tipe == '40') {
+                    $tbtl += 75000;
+                }
+            }
+        } 
+        $cekStappel = $stappel != (double) $ordertrucking->stappel;
+        $cekTbtl = $tbtl != 0;
+        $cekKuli = $kuli != (double) $ordertrucking->kuli;
+        $cekSangu = $sangu != (double) $ordertrucking->sangu;
+        $ob = OrderBiayaTruck::where('order_trucking_id', $ordertrucking->id)->first();
+        
+        if ($ob) {
+            $selisihSanguSopir = $sangu - $ordertrucking->sangu;
+            $selisihSanguKuli = $kuli - $ordertrucking->kuli;
+        }
         $data['tipe'] = $ordertrucking->tipe;
         if (!empty($data['tujuan'])) {
             $sangu = SanguSopir::find($data['tujuan']);
@@ -315,7 +397,39 @@ class OrderTruckingController extends Controller
             'total_sopir' => $totalan,
             'margin' => $margin
         ]);
-
+        
+        // $orderBiaya = OrderBiayaTruck::where('order_trucking_id', $order->id)->get();
+        // if ( $order->kuli || $order->tb_tl || $order->stappel){
+        //     if ($orderBiaya->isEmpty()) {
+        //         OrderBiayaTruck::create([
+        //             'order_trucking_id' => $order->id,
+        //             'nominal_sangu' => $order->sangu,
+        //             'nominal_sangu_kuli' => $order->kuli,
+        //             'nominal_tb_tl' => $order->tb_tl,
+        //             'nominal_stappel' => $order->stappel,
+        //         ]);
+        //     } else  {
+        //        $orderBiayaTruck = OrderBiayaTruck::where('order_trucking_id',$order->id)->first();
+        //        $orderBiayaTruck1 =  OrderBiayaTruck::find($orderBiayaTruck->id);
+        //        if ($cekKuli) {
+        //             $orderBiayaTruck1->update([
+        //                     'nominal_sangu_kuli' => $order->kuli
+        //                 ]);                    
+        //         } 
+        //     } // Jika tidak ada perubahan, tidak melakukan update sangu & kuli
+        //     if ($cekStappel) {
+        //         $orderBiayaTruck1->update([
+        //         'nominal_stappel' => $order->stappel
+        //         ]);
+        //     }
+        // if ($cekTbtl) {
+        //     if ($orderBiayaTruck1->nominal_tb_tl1 == 0){
+        //         $orderBiayaTruck1->update([
+        //         'nominal_tb_tl' => $order->tb_tl
+        //         ]);
+        //     }
+        // }
+        // }
         return response('Data berhasil di update!');
         return back()->with('success', 'Data berhasil diupdate');
     }

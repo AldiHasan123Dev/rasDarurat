@@ -205,6 +205,9 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
 
     Route::get('marketing/{marketing}', [OrderController::class, 'index'])->name('order.index.marketing');
     Route::get('trucking/monitor_biaya_truck', [OrderTruckingController::class, 'monitoring_biaya_truck'])->name('monitoringBiayaTruck');
+    Route::post('trucking/monitor_biaya_truck/update-sangu-kuli', [OrderTruckingController::class, 'updateSangu'])->name('monitoringBiayaTruck.update');
+    Route::post('trucking/monitor_biaya_truck/update-tb-tl', [OrderTruckingController::class, 'updateTbtl'])->name('monitoringBiayaTruck.update1');
+    Route::post('trucking/monitor_biaya_truck/update-stappel', [OrderTruckingController::class, 'updateStappel'])->name('monitoringBiayaTruck.update2');
     Route::get('laporan/pelayaran', [LaporanController::class, 'pelayaran'])->name('laporan.pelayaran');
     Route::get('laporan/tujuan', [LaporanController::class, 'tujuan'])->name('laporan.tujuan');
     Route::get('laporan/customer', [LaporanController::class, 'customer'])->name('laporan.customer');

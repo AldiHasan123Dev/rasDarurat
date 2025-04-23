@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderTruckingResource;
+use App\Http\Resources\OrderBiayaTruckResource;
 use App\Services\SyncService;
 use App\Models\Jurnal;
 use App\Models\OrderTrucking;
+use App\Models\OrderBiayaTruck;
 use Illuminate\Http\Request;
 
 class OrderTruckingController extends Controller
@@ -162,6 +164,48 @@ class OrderTruckingController extends Controller
         }
 
         $response = OrderTruckingResource::collection($data);
+        return response([
+            'page' => $page,
+            'total' => $total_pages,
+            'records' => $count,
+            'rows' => $response
+        ]);
+    }
+    public function jqgrid1()
+    {
+        $page = request('page'); // get the requested page
+        $limit = request('rows'); // get how many rows we want to have into the grid
+        $sidx = request('sidx'); // get index row - i.e. user click to sort
+        $sord = request('sord'); // get the direction
+        $search = request('_search'); // get the search
+        $is_search = false;
+        if($search=='true'){
+            $is_search = true;
+        }
+        $query = OrderBiayaTruck::query();
+
+        $start = $limit * $page - $limit;
+        if ($start < 0){
+            $start = 0;
+        }
+        // if($is_search){
+        //     $count = $query->count();
+        // }else{
+        // }
+        $count = OrderBiayaTruck::get('id')->count();
+
+        if ($count > 0 && $limit > 0) {
+            $total_pages = ceil($count / $limit);
+        } else {
+            $total_pages = 0;
+        }
+
+        if ($page > $total_pages){
+            $page = $total_pages;
+        }
+        $data = $query->skip($start)->take($limit)->get();
+
+        $response = OrderBiayaTruckResource::collection($data);
         return response([
             'page' => $page,
             'total' => $total_pages,
