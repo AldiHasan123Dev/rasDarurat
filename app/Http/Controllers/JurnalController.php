@@ -1613,7 +1613,7 @@ class JurnalController extends Controller
                 if ($tipe == 'D') {
                     $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('debit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('credit');
                 } else {
-                    $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $last])->sum('credit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $last])->sum('debit');
+                    $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('credit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('debit');
                 }
             } else {
                 // if ($tipe=='D') {
