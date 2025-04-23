@@ -230,40 +230,49 @@
                 },
                 caption: "Sangu Kuli", // Caption tampil di atas grid
                 colModel: [{
+                    search:true,
                         name: 'id',
                         label: 'ID',
                         width: 90,
                         sorttype: 'number'
                     },
                     {
+                        search:true,
                         name: 'job',
                         label: 'Job'
                     },
                     {
+                        search:true,
                         name: 'sopir',
                         label: 'Sopir'
                     },
                     {
+                        search:true,
                         name: 'nopol',
                         label: 'Kendaraan'
                     },
                     {
+                        search:true,
                         name: 'container',
                         label: 'Container'
                     },
                     {
+                        search:true,
                         name: 'seal',
                         label: 'Seal'
                     },
                     {
+                        search:true,
                         name: 'customer',
                         label: 'Customer'
                     },
                     {
+                        search:true,
                         name: 'tujuan',
                         label: 'Tujuan'
                     },
                     {
+                        search:true,
                         name: 'nominal_sangu_kuli1',
                         label: 'Tambahan Sangu Kuli 1',
                         sorttype: 'number',
@@ -276,10 +285,12 @@
                         }
                     },
                     {
+                        search:true,
                         name: 'tgl_sangu_kuli1',
                         label: 'Tgl Tambahan Sangu Kuli 1'
                     },
                     {
+                        search:true,
                         name: 'nominal_sangu_kuli2',
                         label: 'Tambahan Sangu Kuli 2',
                         sorttype: 'number',
@@ -292,10 +303,12 @@
                         }
                     },
                     {
+                        search:true,
                         name: 'tgl_sangu_kuli2',
                         label: 'Tgl Tambahan Sangu Kuli 2'
                     },
                     {
+                        search:true,
                         name: 'nominal_sangu_kuli3',
                         label: 'Tambahan Sangu Kuli 3',
                         sorttype: 'number',
@@ -308,6 +321,7 @@
                         }
                     },
                     {
+                        search:true,
                         name: 'tgl_sangu_kuli3',
                         label: 'Tgl Tambahan Sangu Kuli 3'
                     },
@@ -347,44 +361,54 @@
                 },
                 caption: "TB/TL", // Caption tampil di atas grid
                 colModel: [{
+                    search:true,
                         name: 'id',
                         label: 'ID',
                         width: 90,
                         sorttype: 'number'
                     },
                     {
+                        search:true,
                         name: 'job',
                         label: 'Job'
                     },
                     {
+                        search:true,
                         name: 'sopir',
                         label: 'Sopir'
                     },
                     {
+                        search:true,
                         name: 'nopol',
                         label: 'Kendaraan'
                     },
                     {
+                        search:true,
                         name: 'container',
                         label: 'Container'
                     },
                     {
+                        search:true,
                         name: 'seal',
                         label: 'Seal'
                     },
-                    {
+                    {  
+                        search:true,
                         name: 'customer',
                         label: 'Customer'
                     },
                     {
+                        search:true,
                         name: 'tujuan',
                         label: 'Tujuan'
                     },
                     {
+                        search:true,
                         name: 'tgl_tb_tl',
                         label: 'Tgl Tambahan TB/TL'
                     },
                     {
+                        search:true,
                         name: 'nominal_tb_tl1',
                         label: 'Tambahan TB/TL',
                         sorttype: 'number',
@@ -422,40 +446,49 @@
                 },
                 caption: "Stappel", // Caption tampil di atas grid
                 colModel: [{
+                    search:true,
                         name: 'id',
                         label: 'ID',
                         width: 90,
                         sorttype: 'number'
                     },
                     {
+                        search:true,
                         name: 'job',
                         label: 'Job'
                     },
                     {
+                        search:true,
                         name: 'sopir',
                         label: 'Sopir'
                     },
                     {
+                        search:true,
                         name: 'nopol',
                         label: 'Kendaraan'
                     },
                     {
+                        search:true,
                         name: 'container',
                         label: 'Container'
                     },
                     {
+                        search:true,
                         name: 'seal',
                         label: 'Seal'
                     },
                     {
+                        search:true,
                         name: 'customer',
                         label: 'Customer'
                     },
                     {
+                        search:true,
                         name: 'tujuan',
                         label: 'Tujuan'
                     },
                     {
+                        search:true,
                         name: 'nominal_stappel1',
                         label: 'Tambahan Stappel',
                         sorttype: 'number',
@@ -468,6 +501,7 @@
                         }
                     },
                     {
+                        search:true,
                         name: 'tgl_stappel',
                         label: 'Tgl Tambahan Stappel'
                     },

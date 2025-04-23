@@ -188,6 +188,16 @@ class OrderTruckingController extends Controller
         if ($start < 0){
             $start = 0;
         }
+        if (request('seal')) {
+            $query->whereHas('orderTruck', function ($q) {
+                $q->where('seal', 'LIKE', '%' . request('seal') . '%');
+            });
+        }        
+        if (request('container')) {
+            $query->whereHas('orderTruck', function ($q) {
+                $q->where('container', 'LIKE', '%' . request('container') . '%');
+            });
+        }      
         // if($is_search){
         //     $count = $query->count();
         // }else{
