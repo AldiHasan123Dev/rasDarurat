@@ -188,13 +188,6 @@ class OrderTruckingController extends Controller
         if ($start < 0){
             $start = 0;
         }
-        if(request('job')){
-            $query->whereHas('orderTruck', function ($q) {
-                $q->whereHas('order', function ($q2) {
-                    $q2->where('job','LIKE','%'.request('job').'%');
-                });
-            });
-        }
         if(request('customer')){
             $query->whereHas('orderTruck', function ($q) {
             $q->whereHas('customer', function($q2){
@@ -234,6 +227,9 @@ class OrderTruckingController extends Controller
         }
         if (request('nominal_tb_tl1')) {
             $query->where('nominal_tb_tl1', 'LIKE', '%' . request('nominal_tb_tl1') . '%');
+        }
+        if (request('order_trucking_id')) {
+            $query->where('order_trucking_id', 'LIKE', '%' . request('order_trucking_id') . '%');
         }
         if (request('nominal_stappel1')) {
             $query->where('nominal_stappel1', 'LIKE', '%' . request('nominal_stappel1') . '%');

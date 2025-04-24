@@ -231,7 +231,7 @@
                 caption: "Sangu Kuli", // Caption tampil di atas grid
                 colModel: [{
                     search:true,
-                        name: 'id',
+                        name: 'order_trucking_id',
                         label: 'ID',
                         width: 90,
                         sorttype: 'number'
@@ -367,7 +367,7 @@
                 caption: "TB/TL", // Caption tampil di atas grid
                 colModel: [{
                     search:true,
-                        name: 'id',
+                        name: 'order_trucking_id',
                         label: 'ID',
                         width: 90,
                         sorttype: 'number'
@@ -457,7 +457,7 @@
                 caption: "Stappel", // Caption tampil di atas grid
                 colModel: [{
                     search:true,
-                        name: 'id',
+                        name: 'order_trucking_id',
                         label: 'ID',
                         width: 90,
                         sorttype: 'number'
