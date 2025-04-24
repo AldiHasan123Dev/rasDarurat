@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderBiayaTruckResource extends JsonResource
@@ -21,7 +22,9 @@ class OrderBiayaTruckResource extends JsonResource
             'job' => $orderTruck && $orderTruck->order
                 ? $orderTruck->order->job . '-' . sprintf('%02d', $orderTruck->order->no_job)
                 : '-',
-
+            'tgl_muat' => $orderTruck && $orderTruck->tgl_muat 
+            ? \Carbon\Carbon::parse($orderTruck->tgl_muat)->format('d/m/y') 
+            : '-',
             'order_trucking_id' => $this->order_trucking_id,
             'tujuan' => optional($orderTruck?->tarif?->tujuan?->tujuanInfo)->nama ?? '-',
             'container' => $orderTruck?->container ?? '-',

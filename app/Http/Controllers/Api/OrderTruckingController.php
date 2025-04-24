@@ -188,9 +188,28 @@ class OrderTruckingController extends Controller
         if ($start < 0){
             $start = 0;
         }
+        if(request('job')){
+            $query->whereHas('orderTruck', function ($q) {
+                $q->whereHas('order', function ($q2) {
+                    $q2->where('job','LIKE','%'.request('job').'%');
+                });
+            });
+        }
+        if(request('customer')){
+            $query->whereHas('orderTruck', function ($q) {
+            $q->whereHas('customer', function($q2){
+                $q->where('nama','LIKE','%'.request('customer').'%');
+            });
+        });
+        }
         if (request('seal')) {
             $query->whereHas('orderTruck', function ($q) {
                 $q->where('seal', 'LIKE', '%' . request('seal') . '%');
+            });
+        } 
+        if (request('tgl_muat')) {
+            $query->whereHas('orderTruck', function ($q) {
+                $q->where('tgl_muat', 'LIKE', '%' . request('tgl_muat') . '%');
             });
         }        
         if (request('container')) {
@@ -198,6 +217,60 @@ class OrderTruckingController extends Controller
                 $q->where('container', 'LIKE', '%' . request('container') . '%');
             });
         }      
+        if (request('job')) {
+            $query->whereHas('orderTruck', function ($q) {
+                $q->whereHas('order', function ($q2) {
+                    $q2->where('job', 'LIKE', '%' . request('job') . '%');
+                });
+            });
+        }
+        
+        if (request('sopir')) {
+            $query->whereHas('orderTruck', function ($q) {
+                $q->whereHas('sopir', function ($q2) {
+                    $q2->where('nama', 'LIKE', '%' . request('sopir') . '%');
+                });
+            });
+        }
+        if (request('nominal_tb_tl1')) {
+            $query->where('nominal_tb_tl1', 'LIKE', '%' . request('nominal_tb_tl1') . '%');
+        }
+        if (request('nominal_stappel1')) {
+            $query->where('nominal_stappel1', 'LIKE', '%' . request('nominal_stappel1') . '%');
+        }
+        if (request('nominal_sangu_kuli1')) {
+            $query->where('nominal_sangu_kuli1', 'LIKE', '%' . request('nominal_sangu_kuli1') . '%');
+        }
+        if (request('nominal_sangu_kuli2')) {
+            $query->where('nominal_sangu_kuli2', 'LIKE', '%' . request('nominal_sangu_kuli2') . '%');
+        }
+        if (request('nominal_sangu_kuli3')) {
+            $query->where('nominal_sangu_kuli3', 'LIKE', '%' . request('nominal_sangu_kuli3') . '%');
+        }
+        if (request('tgl_sangu_kuli1')) {
+            $query->where('tgl_sangu_kuli1', 'LIKE', '%' . request('tgl_sangu_kuli1') . '%');
+        }
+        if (request('tgl_sangu_kuli2')) {
+            $query->where('tgl_sangu_kuli2', 'LIKE', '%' . request('tgl_sangu_kuli2') . '%');
+        }
+        if (request('tgl_sangu_kuli3')) {
+            $query->where('tgl_sangu_kuli3', 'LIKE', '%' . request('tgl_sangu_kuli3') . '%');
+        }
+        if (request('tgl_tb_tl')) {
+            $query->where('tgl_tb_tl', 'LIKE', '%' . request('tgl_tb_tl') . '%');
+        }
+        if (request('tgl_stappel')) {
+            $query->where('tgl_stappel', 'LIKE', '%' . request('tgl_stappel') . '%');
+        }
+        if (request('nopol')) {
+            $query->whereHas('orderTruck', function ($q) {
+                $q->whereHas('kendaraan', function ($q2) {
+                    $q2->where('nopol','LIKE','%'.request('nopol').'%');
+                    $q2->orWhere('milik','LIKE','%'.request('nopol').'%');
+                });
+            });
+        }
+        
         // if($is_search){
         //     $count = $query->count();
         // }else{

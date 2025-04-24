@@ -253,6 +253,11 @@
                     },
                     {
                         search:true,
+                        name: 'tgl_muat',
+                        label: 'Tgl Muat'
+                    },
+                    {
+                        search:true,
                         name: 'container',
                         label: 'Container'
                     },
@@ -384,6 +389,11 @@
                     },
                     {
                         search:true,
+                        name: 'tgl_muat',
+                        label: 'Tgl Muat'
+                    },
+                    {
+                        search:true,
                         name: 'container',
                         label: 'Container'
                     },
@@ -404,11 +414,6 @@
                     },
                     {
                         search:true,
-                        name: 'tgl_tb_tl',
-                        label: 'Tgl Tambahan TB/TL'
-                    },
-                    {
-                        search:true,
                         name: 'nominal_tb_tl1',
                         label: 'Tambahan TB/TL',
                         sorttype: 'number',
@@ -420,6 +425,11 @@
                             defaultValue: '0'
                         }
 
+                    },
+                    {
+                        search:true,
+                        name: 'tgl_tb_tl',
+                        label: 'Tgl Tambahan TB/TL'
                     },
                 ],
                 autowidth: true,
@@ -466,6 +476,11 @@
                         search:true,
                         name: 'nopol',
                         label: 'Kendaraan'
+                    },
+                    {
+                        search:true,
+                        name: 'tgl_muat',
+                        label: 'Tgl Muat'
                     },
                     {
                         search:true,
