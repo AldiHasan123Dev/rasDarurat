@@ -1604,7 +1604,7 @@ class JurnalController extends Controller
             $bln = $idx + 1;
             $c = new Carbon($year . '-' . sprintf('%02d', $bln) . '-01');
             $now = $c->startOfMonth()->format('Y-m-d');
-            $last = $c->endOfMonth()->format('Y-m-d');
+            $last = Carbon::parse($year . '-' . sprintf('%02d', $bln) . '-01')->endOfMonth()->format('Y-m-d 23:59:59');
             $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
             // $start = '2022-12-01';
             $des = $c->endOfMonth()->format('Y-m-d');
