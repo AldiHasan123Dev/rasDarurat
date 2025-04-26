@@ -515,7 +515,7 @@ class JurnalController extends Controller
             $start = ((int)$year - 1).'-12-01';
         }
         $start = '2022-12-01';
-        $end = $this->getLastDay($year, $month);
+        $end = Carbon::parse($year . '-' . sprintf('%02d', $month) . '-01')->endOfMonth()->format('Y-m-d 23:59:59');
         $aktiva_lancar = COA::where('kode','not like','1.2%')->where('kode','like','1%')->orderBy('kode')->get();
         $aktiva_tak_lancar = COA::where('kode','like','1.2%')->orderBy('kode')->get();
         $kewajiban = COA::where('kode','like','2.%')->orderBy('kode')->get();
