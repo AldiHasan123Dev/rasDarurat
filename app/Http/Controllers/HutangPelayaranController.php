@@ -130,9 +130,12 @@ class HutangPelayaranController extends Controller
                 }else{
                     $title = strtoupper($a);
                 }
-                if($a=='lss' && $hp->order->tarif->customer_id==318 || $hp->order->tarif->customer_id==3134 ){
-                    $coa_id = $c28;
+                if ($a == 'lss') {
+                    if ($hp->order->tarif->customer_id == 318 || $hp->order->tarif->customer_id == 3134) {
+                        $coa_id = $c28;
+                    }
                 }
+                
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_opp'])){
                     $check_double = Jurnal::where('tipe','JNL')->where('coa_id',$coa_id)->where('nama',$name)->first();
