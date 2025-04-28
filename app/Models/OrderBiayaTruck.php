@@ -21,7 +21,9 @@ class OrderBiayaTruck extends Model
         'tgl_sangu_kuli2',
         'tgl_sangu_kuli3',
         'nominal_tb_tl1',
+        'nominal_tb_tl2',
         'tgl_tb_tl',
+        'tgl_tb_tl1',
         'nominal_stappel1',
         'tgl_stappel',
     ];

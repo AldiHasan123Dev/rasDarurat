@@ -75,6 +75,8 @@ public function updateTbTl(Request $request)
         $orderBiaya->update([
             'tgl_tb_tl' => $request->tgl_tb_tl ?? null,
             'nominal_tb_tl1' => $request->nominal_tb_tl1 ?? 0,
+            'tgl_tb_tl1' => $request->tgl_tb_tl1,
+            'nominal_tb_tl2' => $request->nominal_tb_tl2
         ]);
     return response()->json(['status' => 'success', 'message' => 'Data berhasil diperbarui.']);
 }

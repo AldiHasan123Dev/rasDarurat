@@ -162,12 +162,20 @@
                             <input type="text" class="form-control" id="nopol_tbtl" readonly>
                         </div>
                         <div class="col-md-6">
-                            <label for="tgl_tb_tl" class="form-label">Tanggal Tambahan TB/TL</label>
+                            <label for="tgl_tb_tl" class="form-label">Tanggal Tambahan TB/TL (1)</label>
                             <input type="date" class="form-control" id="tgl_tb_tl" name="tgl_tb_tl">
                         </div>
                         <div class="col-md-6">
-                            <label for="nominal_tb_tl" class="form-label">Tambahan TB/TL</label>
+                            <label for="nominal_tb_tl" class="form-label">Tambahan TB/TL (1)</label>
                             <input type="number" class="form-control" id="nominal_tb_tl1" name="nominal_tb_tl1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="tgl_tb_tl1" class="form-label">Tanggal Tambahan TB/TL(2)</label>
+                            <input type="date" class="form-control" id="tgl_tb_tl1" name="tgl_tb_tl1">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="nominal_tb_tl2" class="form-label">Tambahan TB/TL (2)</label>
+                            <input type="number" class="form-control" id="nominal_tb_tl2" name="nominal_tb_tl2">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -414,8 +422,13 @@
                     },
                     {
                         search:true,
+                        name: 'tgl_tb_tl',
+                        label: 'Tgl Tambahan TB/TL 1'
+                    },
+                    {
+                        search:true,
                         name: 'nominal_tb_tl1',
-                        label: 'Tambahan TB/TL',
+                        label: 'Tambahan TB/TL 1',
                         sorttype: 'number',
                         formatter: 'number',
                         formatoptions: {
@@ -428,8 +441,22 @@
                     },
                     {
                         search:true,
-                        name: 'tgl_tb_tl',
-                        label: 'Tgl Tambahan TB/TL'
+                        name: 'nominal_tb_tl2',
+                        label: 'Tambahan TB/TL 2',
+                        sorttype: 'number',
+                        formatter: 'number',
+                        formatoptions: {
+                            decimalSeparator: ".",
+                            thousandsSeparator: ",",
+                            decimalPlaces: 0,
+                            defaultValue: '0'
+                        }
+
+                    },
+                    {
+                        search:true,
+                        name: 'tgl_tb_tl1',
+                        label: 'Tgl Tambahan TB/TL 2'
                     },
                 ],
                 autowidth: true,
@@ -611,8 +638,10 @@
             $("#rowId1").val(rowId);
             $("#sopir_tbtl").val(rowData.sopir);
             $("#tgl_tb_tl").val(rowData.tgl_tb_tl);
+            $("#tgl_tb_tl1").val(rowData.tgl_tb_tl1);
             $("#nopol_tbtl").val(rowData.nopol);
             $("#nominal_tb_tl1").val(rowData.nominal_tb_tl1);
+            $("#nominal_tb_tl2").val(rowData.nominal_tb_tl2);
             function toggleReadonlyFields() {
                 let valTbtl1 = parseFloat($("#nominal_tb_tl1").val().replace(/,/g, '')) || 0;
                 // $("#nominal_tb_tl").prop("readonly", valTbtl > 0);
@@ -690,7 +719,9 @@
             const formData = {
                 id: $('#rowId1').val(),
                 tgl_tb_tl: $('#tgl_tb_tl').val(),
+                tgl_tb_tl1: $('#tgl_tb_tl1').val(),
                 nominal_tb_tl1: $('#nominal_tb_tl1').val(),
+                nominal_tb_tl2: $('#nominal_tb_tl2').val(),
             };
 
             $.ajax({
@@ -722,7 +753,6 @@
                 tgl_stappel: $('#tgl_stappel').val(),
                 nominal_stappel1: $('#nominal_stappel1').val(),
             };
-            console.log(formData);
             $.ajax({
                 url: '{{ route('monitoringBiayaTruck.update2') }}',
                 method: 'POST',

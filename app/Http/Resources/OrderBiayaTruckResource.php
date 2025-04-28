@@ -44,7 +44,9 @@ class OrderBiayaTruckResource extends JsonResource
             'nominal_sangu_kuli3' => $this->nominal_sangu_kuli3,
 
             'nominal_tb_tl1' => $this->nominal_tb_tl1,
+            'nominal_tb_tl2' => $this->nominal_tb_tl2,
             'tgl_tb_tl' => $this->tgl_tb_tl,
+            'tgl_tb_tl1' => $this->tgl_tb_tl1,
 
             'nominal_stappel1' => $this->nominal_stappel1,
             'tgl_stappel' => $this->tgl_stappel,
