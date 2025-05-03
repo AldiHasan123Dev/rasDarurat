@@ -1312,21 +1312,21 @@ class JurnalController extends Controller
     {
         $data = $request->all();
         $data['relasi'] = $data['relasi'] ?? $request->relasi1;
-        $data['invoice'] = null;
-        $data['invoice_agen'] = null;
-        $data['invoice_trucking'] = null;
-        $data['invoice_vendor'] = null;
-        $data['order_trucking_id'] = null;
-        $data['order_id'] = null;
-        $data['nopol'] = null;
-        $data['container'] = null;
+        $data['invoice'] = $jurnal->invoice;
+        $data['invoice_agen'] = $jurnal->invoice_agen;
+        $data['invoice_trucking'] = $jurnal->invoice_trucking;
+        $data['invoice_vendor'] = $jurnal->invoice_vendor;
+        $data['order_trucking_id'] = $jurnal->order_trucking_id;
+        $data['order_id'] = $jurnal->order_id;
+        $data['nopol'] = $jurnal->nopol;
+        $data['container'] = $jurnal->container;
         if (!empty($data['invoice_external']) || !empty($data['no_bg'])) {
             $data['no_bg'] = $data['no_bg'] ?? null;
             $data['invoice_external'] = $data['invoice_external'] ?? null;
         }
-        if (!empty($data['inv_expdc'])) {
+        else if (!empty($data['inv_expdc'])) {
             $name = $data['nama'];
-            $order_expdc = $data['inv_expdc'] ?? $data['invoice_agen'] ?? null;
+            $order_expdc = $data['inv_expdc'] ?? null;
             $order = Order::find($order_expdc);
             $id_job = $order->job . '-' . sprintf('%02d', $order->no_job);
             $cont = $order->container;
@@ -1348,18 +1348,18 @@ class JurnalController extends Controller
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = $order->invoice ?? null;
+            $data['invoice'] = $order->invoice;
             $data['invoice_agen'] = null;
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = null;
             $data['no_bg'] = null;
-            $data['order_id'] =$order_expdc;
+            $data['order_id'] =$order->id;
             $data['nopol'] = $order->nopol ?? null;
             $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
-        if (!empty($data['inv_agen'])) {
+        else if (!empty($data['inv_agen'])) {
             $name = $data['nama'];
             $order_agen = $data['inv_agen'] ?? null;
             $order1 = Order::find($order_agen);
@@ -1394,7 +1394,7 @@ class JurnalController extends Controller
             $data['container'] = $order1->container ?? null;
             $data['nama'] = $name;
         }
-        if (!empty($data['inv_trucking'])) {
+        else if (!empty($data['inv_trucking'])) {
             $name = $data['nama'];
             $order_expdc = $data['inv_trucking'] ?? null;
             $order = OrderTrucking::find($order_expdc);
@@ -1430,7 +1430,7 @@ class JurnalController extends Controller
             $data['container'] = $order->container;
             $data['nama'] = $name;
         }
-        if(!empty($data['inv_vendor'])) {
+        else if(!empty($data['inv_vendor'])) {
             $name = $data['nama'];
             $order_vendor = $data['inv_vendor'] ?? null;
             $order = OrderTrucking::find($order_vendor);
@@ -1466,7 +1466,7 @@ class JurnalController extends Controller
             $data['container'] = $order->container ?? null;
             $data['nama'] = $name;
         }
-        if (!empty($data['trucking'])) {
+        else if (!empty($data['trucking'])) {
             $name = $data['nama'];
             $order_trucking = $data['trucking'] ?? null;
             $order = OrderTrucking::find($order_trucking);
@@ -1504,7 +1504,7 @@ class JurnalController extends Controller
             $data['nama'] = $name;
         }
 
-        if (!empty($data['job'])) {
+         else if (!empty($data['job'])) {
             $name = $data['nama'];
             $order_job = $data['job'] ?? null;
             $order = Order::find($order_job);
@@ -1528,15 +1528,15 @@ class JurnalController extends Controller
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = null;
-            $data['no_bg'] = null;
-            $data['invoice_agen'] = null;
-            $data['invoice_trucking'] = null;
-            $data['invoice_vendor'] = null;
-            $data['order_trucking_id'] = null;
+            $data['invoice'] = $jurnal->invoice;
+            $data['no_bg'] = $jurnal->no_bg;
+            $data['invoice_agen'] = $jurnal->invoice_agen;
+            $data['invoice_trucking'] = $jurnal->invoice_trucking;
+            $data['invoice_vendor'] = $jurnal->invoice_vendor;
+            $data['order_trucking_id'] = $jurnal->order_trucking_id;
             $data['order_id'] =$order_job;
-            $data['nopol'] = null;
-            $data['container'] = null;
+            $data['nopol'] = $jurnal->nopol;
+            $data['container'] = $jurnal->container;
             $data['nama'] = $name;
         }
         
