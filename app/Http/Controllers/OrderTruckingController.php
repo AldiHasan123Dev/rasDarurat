@@ -241,16 +241,6 @@ public function updateStappel(Request $request)
                 }
             }
         } 
-        $cekStappel = $stappel != (double) $ordertrucking->stappel;
-        $cekTbtl = $tbtl != 0;
-        $cekKuli = $kuli != (double) $ordertrucking->kuli;
-        $cekSangu = $sangu != (double) $ordertrucking->sangu;
-        $ob = OrderBiayaTruck::where('order_trucking_id', $ordertrucking->id)->first();
-        
-        if ($ob) {
-            $selisihSanguSopir = $sangu - $ordertrucking->sangu;
-            $selisihSanguKuli = $kuli - $ordertrucking->kuli;
-        }
         $data['tipe'] = $ordertrucking->tipe;
         if (!empty($data['tujuan'])) {
             $sangu = SanguSopir::find($data['tujuan']);
