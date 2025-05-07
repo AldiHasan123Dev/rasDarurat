@@ -240,7 +240,7 @@ class KeuanganController extends Controller
         }
 
         $data3 = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [5, 7, 10]);
+            $q->whereIn('kondisi', [5, 7, 10, 9]);
             $q->whereHas('customer', function ($qu) {
                 $qu->where('ba_kembali', 0);
             });
