@@ -73,7 +73,7 @@ class HutangPelayaranController extends Controller
         $n = HutangPelayaran::max('no') + 1;
         $code = 'HP/'.date('ymd').'/'.sprintf('%02d',$n);
         $c31 = COA::where('coa_ras',31)->first()->id ?? 31;
-        $c28 = COA::where('coa_ras',28)->first()->id ?? 28;
+        $c28 = COA::where('coa_ras',24)->first()->id ?? 24;
         $c73 = COA::where('coa_ras',73)->first()->id ?? 73;
         $c130 = COA::where('coa_ras',130)->first()->id ?? 130;
         $c62 = COA::where('coa_ras',62)->first()->id ?? 62;
