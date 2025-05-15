@@ -225,7 +225,7 @@
             <table class="table table-sm" style="font-size: .7rem">
                 <thead>
                     <tr>
-                        <th colspan="2">DETAIL</th>
+                        <th colspan="2">SUMMARY</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -266,7 +266,7 @@
                         <td class="text-end">{{ number_format($total_penjualan_usaha - $total_hpp - $total_biaya_usaha - $total_biaya_depresiasi - $total_biaya_lain - $total_biaya_keuangan1,2,',','.') }}</td>
                     </tr>
                     <tr style="border-bottom: 3px solid black !important;">
-                        <td>TOTAL BIAYA KEUANGAN I</td>
+                        <td>TOTAL BIAYA KEUANGAN II</td>
                         <td class="text-end">{{ number_format($total_biaya_keuangan2,2,',','.') }}</td>
                     </tr>
                     <tr>
