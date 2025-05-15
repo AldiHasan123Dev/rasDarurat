@@ -515,6 +515,8 @@ class JurnalController extends Controller
             $start = ((int)$year - 1).'-12-01';
         }
         $start = '2022-12-01';
+        $tahunCo = $year;
+        $dateCo = now()->create($tahunCo . '-' . '01' . '-01')->startOfMonth()->toDateString();
         $end = Carbon::parse($year . '-' . sprintf('%02d', $month) . '-01')->endOfMonth()->format('Y-m-d 23:59:59');
         $aktiva_lancar = COA::where('kode','not like','1.2%')->where('kode','like','1%')->orderBy('kode')->get();
         $aktiva_tak_lancar = COA::where('kode','like','1.2%')->orderBy('kode')->get();
@@ -522,15 +524,15 @@ class JurnalController extends Controller
         $modal = COA::where('kode','like','3.%')->orderBy('kode')->get();
         $kel5 = Jurnal::join('coa', 'coa.id', '=', 'jurnal.coa_id')
         ->where('coa.kode', 'like', '5.%')
-        ->whereBetween('jurnal.created_at', [$start, $end])
+        ->whereBetween('jurnal.created_at', [$dateCo, $end])
         ->select(DB::raw('SUM(jurnal.debit) AS debit'), DB::raw('SUM(jurnal.credit) AS credit'))->first();
         $kel6 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
         ->where('coa.kode','like','6.%')
-        ->whereBetween('jurnal.created_at',[$start,$end])
+        ->whereBetween('jurnal.created_at',[$dateCo,$end])
         ->select(DB::raw('SUM(jurnal.debit) AS debit'), DB::raw('SUM(jurnal.credit) AS credit'))->first();
         $kel7 = Jurnal::join('coa','coa.id','=','jurnal.coa_id')
         ->where('coa.kode','like','7.%')
-        ->whereBetween('jurnal.created_at',[$start,$end])
+        ->whereBetween('jurnal.created_at',[$dateCo,$end])
         ->select(DB::raw('SUM(jurnal.debit) AS debit'), DB::raw('SUM(jurnal.credit) AS credit'))->first();
         $lr = ($kel5->credit - $kel5->debit) - (($kel6->debit - $kel6->credit) + ($kel7->debit - $kel7->credit));
 
