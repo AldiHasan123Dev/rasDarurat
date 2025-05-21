@@ -211,14 +211,22 @@
                                                             $validPerbandingan = $j['debit'] > $j['credit'];
                                                         }
 
+                                                        $validPerbandingan1 = false;
+                                                        if ($coa_id == 63 || $coa_id == 131) {
+                                                            $validPerbandingan1 = $j['credit'] < $j['debit'];
+                                                        } else {
+                                                            $validPerbandingan1 = $j['debit'] < $j['credit'];
+                                                        }
+
                                                         $highlight = $isRelevantSubjek && $selisih && $validPerbandingan;
+                                                        $highlight1 = $validPerbandingan1;
                                                     @endphp
 
                                                         
-                                                        <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }}">
+                                                        <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }} {{ $highlight1 ? 'bg-success text-white' : '' }}">
                                                             {{ $j['debit'] ? number_format($j['debit'], 2, ',', '.') : 0 }}
                                                         </td>
-                                                        <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }}">
+                                                        <td class="text-end {{ $highlight ? 'bg-danger text-white' : '' }} {{ $highlight1 ? 'bg-success text-white' : '' }}">
                                                             {{ $j['credit'] ? number_format($j['credit'], 2, ',', '.') : 0 }}
                                                         </td>
                                                         <td class="text-start">
