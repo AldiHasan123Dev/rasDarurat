@@ -316,17 +316,24 @@ class KeuanganController extends Controller
         // dd($transaksi);
         $data = TransaksiResource::collection($transaksi);
         $faktur = NSFP::where('available', 1)->first();
-        $no = '-';
-        if ($faktur) {
-            $no = '010' . substr($faktur->nomor, 3, 50);
-        }
-        $customers = Customer::pluck('nama');
+       $startOfYear = Carbon::now()->startOfYear(); // 1 Januari tahun ini
+$now = Carbon::now(); // waktu sekarang
+
+$invoices = Order::whereNotNull('invoice')
+        ->whereBetween('created_at', [$startOfYear, $now])
+        ->distinct()
+        ->pluck('invoice'); // ubah ke array biasa
+$no = '-';
+if ($faktur) {
+    $no = '010' . substr($faktur->nomor, 3, 50);
+}
+$customers = Customer::pluck('nama');
         $lokasi = Lokasi::pluck('nama');
         $ppn = $transaksi->sum('ppn');
         $pph = $transaksi->sum('pph');
         $total = $transaksi->sum('total');
         $sub_total = $transaksi->sum('sub_total');
-        return view('admin.keuangan.laporan_ppn', compact('transaksi', 'data', 'start', 'end', 'no', 'customers', 'lokasi', 'ppn', 'pph', 'total', 'sub_total'));
+        return view('admin.keuangan.laporan_ppn', compact('invoices','transaksi', 'data', 'start', 'end', 'no', 'customers', 'lokasi', 'ppn', 'pph', 'total', 'sub_total'));
     }
 
     public function PPNExport()

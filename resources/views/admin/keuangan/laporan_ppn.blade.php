@@ -127,7 +127,7 @@
                     <label for="nsfp">Nomor Faktur</label>
                     <input type="text" name="nsfp" id="nsfp" class="form-control" value="{{ $no }}" required readonly>
                 </div>
-                <div class="mb-2 col-6">
+                <div class="mb-2 col-6 autocomplete">
                     <label for="invoice">Invoice</label>
                     <input type="text" name="invoice" id="invoice" class="form-control" required>
                 </div>
@@ -245,8 +245,10 @@
 <script>
     $(function() {
         var customers = @json($customers);
+        var invoices = @json($invoices);
         var lokasi = @json($lokasi);
         autocomplete(document.getElementById("pembayar_id"), customers);
+        autocomplete(document.getElementById("invoice"), invoices);
         autocomplete(document.getElementById("tujuan"), lokasi);
     });
 </script>

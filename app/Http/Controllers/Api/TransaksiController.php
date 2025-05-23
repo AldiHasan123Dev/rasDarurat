@@ -270,38 +270,57 @@ class TransaksiController extends Controller
         $data = $request->all();
         $data['masa_bupot'] = $request->masa_bupot_bulan.' '.$request->masa_bupot_tahun;
         $trx = Transaksi::find($request->id);
+        $order = Order::where('invoice', $trx->invoice)->get();
         $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
         $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'. ($this->sno == 'ALB' ? 'ALB/' : '').date('y',strtotime(date('Y').'-'.sprintf('%02d',date('m')).'-01'));
 
         $c52 = COA::where('coa_ras',52)->first()->id ?? 52;
         $c46 = COA::where('coa_ras',46)->first()->id ?? 46;
         if(is_null($trx->jurnal_bupot)){
-            Jurnal::create([
-                'coa_id' => $c52,
-                'order_id' => $trx->order_id,
-                'nomor' => $nomor,
-                'relasi' => $nomor,
-                'nama' => 'PPh 23 Dibayar Dimuka '.$trx->pembayar->nama,
-                'invoice' => $trx->invoice,
-                'debit' => $data['bupot'],
-                'credit' => 0,
-                'tipe' => 'JNL',
-                'no' => $no,
-                'created_at' => date('Y-m-d'),
-            ]);
-            Jurnal::create([
-                'coa_id' => $c46,
-                'order_id' => $trx->order_id,
-                'nomor' => $nomor,
-                'relasi' => $nomor,
-                'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka '.$trx->pembayar->nama,
-                'invoice' => $trx->invoice,
-                'debit' => 0,
-                'credit' => $data['bupot'],
-                'tipe' => 'JNL',
-                'no' => $no,
-                'created_at' => date('Y-m-d'),
-            ]);
+            // Cek apakah data order kosong
+$isExternal = $order->isEmpty();
+
+// Data jurnal pertama (debit)
+$dataJurnalDebit = [
+    'coa_id' => $c52,
+    'order_id' => $trx->order_id,
+    'nomor' => $nomor,
+    'relasi' => $nomor,
+    'nama' => 'PPh 23 Dibayar Dimuka ' . $trx->pembayar->nama,
+    'debit' => $data['bupot'],
+    'credit' => 0,
+    'tipe' => 'JNL',
+    'no' => $no,
+    'created_at' => date('Y-m-d'),
+];
+
+// Data jurnal kedua (kredit)
+$dataJurnalKredit = [
+    'coa_id' => $c46,
+    'order_id' => $trx->order_id,
+    'nomor' => $nomor,
+    'relasi' => $nomor,
+    'nama' => 'Pelunasan Piutang Ekspedisi/Pph 23 Dibayar Dimuka ' . $trx->pembayar->nama,
+    'debit' => 0,
+    'credit' => $data['bupot'],
+    'tipe' => 'JNL',
+    'no' => $no,
+    'created_at' => date('Y-m-d'),
+];
+
+// Tentukan field invoice atau invoice_external
+if ($isExternal) {
+    $dataJurnalDebit['invoice_external'] = $trx->invoice;
+    $dataJurnalKredit['invoice_external'] = $trx->invoice;
+} else {
+    $dataJurnalDebit['invoice'] = $trx->invoice;
+    $dataJurnalKredit['invoice'] = $trx->invoice;
+}
+
+// Simpan ke database
+Jurnal::create($dataJurnalDebit);
+Jurnal::create($dataJurnalKredit);
+
         }else{
             Jurnal::where('nomor',$trx->jurnal_bupot)->where('debit','>',0)->first()->update([
                 'order_id' => $trx->order_id,
