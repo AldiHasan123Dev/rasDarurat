@@ -2681,11 +2681,9 @@ class JurnalController extends Controller
         if ($data['simpan'] == 'tampungan') {
             $jurnal_model = new JurnalTampungan();
         }
-        $orders = OrderTrucking::where('invoice', $data['invoice'])->get();
-        foreach ($orders as $order) {
-            $order_trucking = $order->id;
-            # code...
-        }
+       $orders = OrderTrucking::where('invoice', $data['invoice'])
+    ->distinct()
+    ->pluck('id');
 
         $month = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULY', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
 
