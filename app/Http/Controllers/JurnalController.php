@@ -1531,9 +1531,9 @@ class JurnalController extends Controller
             $data['invoice'] = $jurnal->invoice;
             $data['no_bg'] = $jurnal->no_bg;
             $data['invoice_agen'] = $jurnal->invoice_agen;
-            $data['invoice_trucking'] = $jurnal->invoice_trucking;
-            $data['invoice_vendor'] = $jurnal->invoice_vendor;
-            $data['order_trucking_id'] = $jurnal->order_trucking_id;
+            $data['invoice_trucking'] = null;
+            $data['invoice_vendor'] = null;
+            $data['order_trucking_id'] = null;
             $data['order_id'] =$order_job;
             $data['nopol'] = $jurnal->nopol;
             $data['container'] = $jurnal->container;
@@ -2704,7 +2704,7 @@ class JurnalController extends Controller
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'order_trucking_id' => $order_trucking,
+                        'order_trucking_id' => $orders[$i],
                         'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                         'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                         'coa_id' => $data['debit_coa_id'][$i],
@@ -2717,7 +2717,7 @@ class JurnalController extends Controller
                     ]);
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
-                        'order_trucking_id' => $order_trucking,
+                        'order_trucking_id' => $orders[$i],
                         'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                         'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                         'coa_id' => $data['credit_coa_id'][$i],
@@ -2732,7 +2732,7 @@ class JurnalController extends Controller
                     if ($data['debit_coa_id'][$i]) {
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'order_trucking_id' => $order_trucking,
+                            'order_trucking_id' => $orders[$i],
                             'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                             'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                             'coa_id' => $data['debit_coa_id'][$i],
@@ -2747,7 +2747,7 @@ class JurnalController extends Controller
                     if ($data['credit_coa_id'][$i]) {
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
-                            'order_trucking_id' => $order_trucking,
+                            'order_trucking_id' => $orders[$i],
                             'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                             'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
                             'coa_id' => $data['credit_coa_id'][$i],
