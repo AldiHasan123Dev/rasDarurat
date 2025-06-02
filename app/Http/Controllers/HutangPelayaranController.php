@@ -131,11 +131,11 @@ class HutangPelayaranController extends Controller
                     $title = strtoupper($a);
                 }
                 if ($a === 'lss') {
-    $customer_id = (int) ($hp->order->tarif->customer_id ?? 0);
-    $coa_id = $c31; 
+    $customer_id = (int) ($item['order']['tarif']['customer_id'] ?? 0);
     if ($customer_id === 318 || $customer_id === 3134) {
         $coa_id = $c28;
-    }
+    } 
+
 }
 
                 
