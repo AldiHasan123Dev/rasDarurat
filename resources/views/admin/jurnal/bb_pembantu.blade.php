@@ -95,7 +95,9 @@
                                         <option value="customer_trucking" {{ $subjek == 'customer_trucking' ? 'selected' : '' }}>Customer Trucking</option>
                                         <option value="pelayaran" {{ $subjek == 'pelayaran' ? 'selected' : '' }}>Pelayaran</option>
                                         <option value="agen" {{ $subjek == 'agen' ? 'selected' : '' }}>Agen</option>
-                                        <option value="relasi" {{ $subjek == 'relasi' ? 'selected' : '' }}>Relasi</option>
+                                        @if ($coa_id != 46 && $coa_id != 47  && $coa_id != 62 && $coa_id != 63 && $coa_id != 131)
+                                            <option value="relasi" {{ $subjek == 'relasi' ? 'selected' : '' }}>Relasi</option>
+                                        @endif
                                         <option value="vendor" {{ $subjek == 'vendor' ? 'selected' : '' }}>Vendor Trucking</option>
                                         <option value="lain-lain" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>Lain-lain (External Inv)</option>
                                         {{--<option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
