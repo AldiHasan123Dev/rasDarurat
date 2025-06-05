@@ -123,13 +123,17 @@ class OmsetController extends Controller
             $data[$idx]['rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->sum('credit');
             $data[$idx]['j_rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->pluck('id')->toJson();
             $data[$idx]['biaya'] =  $data[$idx]['trucking'] + $data[$idx]['opt'] + $data[$idx]['opp'] + $data[$idx]['ut'] + $data[$idx]['bl'] + $data[$idx]['apbs'] + $data[$idx]['cleaning'] + $data[$idx]['lss'] + $data[$idx]['storage'] + $data[$idx]['jasa_door'] + $data[$idx]['ops'] + $data[$idx]['segel'] + $data[$idx]['ops_seal'] + $data[$idx]['ops_seal_cleaning'] + $data[$idx]['buruh'] + $data[$idx]['checker'] + $data[$idx]['karantina'] + $data[$idx]['demmurage'] + $data[$idx]['kirim_dokumen'] + $data[$idx]['flexibag'] + $data[$idx]['rc'] + $data[$idx]['asuransi'];
-            $data[$idx]['biaya_lain'] =  (Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->sum('credit')) - $data[$idx]['biaya'];
+            if(request('is_pra')){
+             $data[$idx]['biaya_lain'] =  (Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->sum('credit')) - $data[$idx]['biaya'];
+            } else{
+                $data[$idx]['biaya_lain'] =  Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->sum('debit') - $data[$idx]['biaya'];
+            }
             $data[$idx]['biaya'] += $data[$idx]['biaya_lain'] + ($tipe=='R2'?$data[$idx]['trucking']:0);
             $data[$idx]['tarif'] = $tarif;
             $data[$idx]['laba_kotor'] = $data[$idx]['tarif'] - $data[$idx]['biaya'];
             $data[$idx]['margin'] = $data[$idx]['laba_kotor'] / $data[$idx]['tarif'];
-
-            $biaya_lain = json_encode(
+             if(request('is_pra')){
+                $biaya_lain = json_encode(
                     array_merge(
                         json_decode($data[$idx]['j_trucking'], true),
                         json_decode($data[$idx]['j_opp'], true),
@@ -164,6 +168,45 @@ class OmsetController extends Controller
                         json_decode(Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->pluck('id')->toJson(), true),
                     )
                 );
+             }else{
+
+             
+            $biaya_lain = json_encode(
+                    array_merge(
+                        json_decode($data[$idx]['j_trucking'], true),
+                        json_decode($data[$idx]['j_opp'], true),
+                        json_decode($data[$idx]['j_opt'], true),
+                        json_decode($data[$idx]['j_ut'], true),
+                        json_decode($data[$idx]['j_bl'], true),
+                        json_decode($data[$idx]['j_apbs'], true),
+                        json_decode($data[$idx]['j_cleaning'], true),
+                        json_decode($data[$idx]['j_lss'], true),
+                        json_decode($data[$idx]['j_storage'], true),
+                        json_decode($data[$idx]['j_jasa_door'], true),
+                        json_decode($data[$idx]['j_asuransi'], true),
+                        json_decode($data[$idx]['j_ops'], true),
+                        json_decode($data[$idx]['j_segel'], true),
+                        json_decode($data[$idx]['j_ops_seal'], true),
+                        json_decode($data[$idx]['j_ops_seal_cleaning'], true),
+                        json_decode($data[$idx]['j_buruh'], true),
+                        json_decode($data[$idx]['j_checker'], true),
+                        json_decode($data[$idx]['j_karantina'], true),
+                        json_decode($data[$idx]['j_demmurage'], true),
+                        json_decode($data[$idx]['j_kirim_dokumen'], true),
+                        json_decode($data[$idx]['j_flexibag'], true),
+                        json_decode($data[$idx]['j_rc'], true),
+                        json_decode($data[$idx]['j_job_slip_pod'], true),
+                        json_decode($data[$idx]['j_lolo_pod'], true),
+                        json_decode($data[$idx]['j_cleaning_pod'], true),
+                        json_decode($data[$idx]['j_ops_pod'], true),
+                        json_decode($data[$idx]['j_opt_pod'], true),
+                        json_decode($data[$idx]['j_truck_pod'], true),
+                        json_decode($data[$idx]['j_kuli_pod'], true),
+                        json_decode($data[$idx]['j_storage_pod'], true),
+                        json_decode(Jurnal::where('order_id',$order->id)->where('debit', '>', 0)->whereIn('coa_id',$coa_id)->pluck('id')->toJson(), true),
+                    )
+                );
+            }
 
                 $data[$idx]['j_biaya_lain'] = json_encode($this->findUniqueValue(json_decode($biaya_lain,true)));
                 $a = json_decode($biaya_lain,true);
@@ -261,7 +304,19 @@ class OmsetController extends Controller
     {
         $id = str_replace(['[',']','"'],'',$request->id);
         $id = explode(',',$id);
-        $data = Jurnal::whereIn('id',$id)->get();
+        $data = Jurnal::whereIn('id', $id)
+              ->where('debit', '>', 0)
+              ->get();
+        $res = JurnalResource::collection($data);
+        return response($res);
+    }
+
+    public function getJurnal1(Request $request)
+    {
+        $id = str_replace(['[',']','"'],'',$request->id);
+        $id = explode(',',$id);
+        $data = Jurnal::whereIn('id', $id)
+              ->get();
         $res = JurnalResource::collection($data);
         return response($res);
     }

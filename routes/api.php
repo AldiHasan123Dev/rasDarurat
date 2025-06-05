@@ -108,6 +108,7 @@ Route::delete('kirim-dokumen/{kirim_dokumen}',[KirimDokumenController::class,'de
 Route::post('sync-omset',[OmsetController::class,'sync'])->name('omset.sync');
 Route::post('sync-jurnal-balik',[OmsetController::class,'syncJurnalBalik'])->name('omset.sync.jurnal_balik');
 Route::post('get-omset-jurnal',[OmsetController::class,'getJurnal'])->name('omset.jurnal');
+Route::post('get-omset-jurnal',[OmsetController::class,'getJurnal1'])->name('omset.jurnal1');
 Route::post('add-omset-jurnal',[OmsetController::class,'addJurnal'])->name('omset.add.item');
 Route::post('jurnal-filter',[JurnalController::class,'filter'])->name('api.jurnal.filter');
 Route::post('customer-trucking/{customertrucking}',[CustomerTruckingController::class,'update'])->name('api.customertrucking.update');

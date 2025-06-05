@@ -93,12 +93,7 @@
                                     <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
                                 </select>
                                 <div>
-                                    <label for="radio1">
-                                        <input type="radio" name="tipe" id="radio1" value="inv" {{ $tipe=='inv'?'checked':'' }} onchange="submit()"> Periode Invoice
-                                    </label>
-                                    <label for="radio2">
-                                        <input type="radio" name="tipe" id="radio2" value="job" {{ $tipe=='job'?'checked':'' }} onchange="submit()"> Periode JOB
-                                    </label>
+                                    <input type="radio" name="tipe" id="radio1" hidden value="inv" {{ $tipe=='inv'?'checked':'' }} onchange="submit()">
                                 </div>
                             </div>
                         </form>
@@ -252,14 +247,17 @@
                                     </tr> --}}
                                 </thead>
                                 <tbody>
+                                     @php
+    $totalTarif = 0;
+@endphp
                                     @foreach ($data as $order)
                                         <tr class="table-{{ $order->omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 ? 'secondary' : ($order->omset->margin < 0 ? 'danger' : '')) : '' }}">
                                             <td>{{ $order->omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
                                             @if ($order->lock_omset==2)
-                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="unlock({{ $order->id }},1)"><i class="fas fa-lock"></i></button></td>
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="unlock({{ $order->id }},1)"><i class="fas fa-lock"></i></button></td>
                                             @else
-                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="lock({{ $order->id }},2)"><i class="fas fa-unlock"></i></button></td>
+                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="lock({{ $order->id }},2)"><i class="fas fa-unlock"></i></button></td>
                                             @endif
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
@@ -466,6 +464,7 @@
                                                     if($cbm=='CBM'){
                                                         $tarif *= $order->bttb->sum('vol');
                                                     }
+                                                    $totalTarif += $tarif; 
                                                 @endphp
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
@@ -482,6 +481,34 @@
             </div>
         </div>
     </div>
+
+    <div class="card-footer py-2">
+                    <div class="d-flex gap-3 mt-2 justify-content-center">
+                        @php
+                              $totalBiaya = $data->sum(function($o) {
+    return $o->omset->biaya ?? 0;
+});
+
+$totalLB = $data->sum(function($o) {
+    return $o->omset->laba_kotor ?? 0;
+});
+
+                        @endphp
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total Biaya</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($totalBiaya ?? 0),2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total Tarif</li>
+                            
+                            <li class="list-group-item fw-bold">{{  number_format(($totalTarif ?? 0),0,',','.') }}</li>
+                        </ul>
+                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total Laba-Kotor</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($totalLB  ?? 0),0,',','.') }}</li>
+                        </ul>
+                    </div>
+                </div>
 
     <div class="modal fade" id="modal-jurnal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
