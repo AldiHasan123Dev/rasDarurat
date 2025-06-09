@@ -191,15 +191,14 @@
                                 {{-- <input type="date" style="width: 100%" name="created_at" required value="{{ request('created_at') ?? date('Y-m-d') }}"> --}}
                             </div>
                         </div>
-                        <div class="table-responsive" style="height:250px">
+                                               <div class="table-responsive" style="height:250px">
                             <table class="table table-sm" style="font-size: .7rem; white-space:nowrap">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>No</th>
-                                        <th>ID Job</th>
-                                        <th>Inv. External</th>
-                                        <th>Account</th>
+                                        {{-- <th>ID Job</th> --}}
+                                        <th>Inv. Agen / Inv. External</th>
                                         <th>Debit</th>
                                         <th>Credit</th>
                                         <th>Keterangan</th>
@@ -227,21 +226,21 @@
                                         </td>
                                             <td>{{ $k }}</td>
                                             @if ($item['debit']->order)
-                                                <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td>
+                                                {{-- <td>{{ $item['debit']->order->job }}-{{ sprintf('%02d',$item['debit']->order->no_job) }}</td> --}}
                                             @else
-                                                <td>-</td>
+                                                {{-- <td>-</td> --}}
                                             @endif
-                                            <td>{{ $item['debit']->invoice_external ?? '-' }}</td>
+                                            <td> {{ $item['debit']->invoice_agen ?? '-' }} /  {{ $item['debit']->invoice_external ?? '-' }}</td>
                                             @if ($item['debit']->debit==0)
                                                 <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
-                                                <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
+                                                {{-- <td>{{ $coa_debit->kode }}</td> --}}
                                             @else
                                                 <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
-                                                <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
+                                                {{-- <td>{{ $coa_credit->kode }}</td> --}}
                                             @endif
                                             <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
-                                            <td><input type="text" class="input-name" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%"></td>
+                                            <td><input type="hidden" class="input-name" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%">{{ $item['credit']->nama }}</td>
                                         </tr>
                                         @php
                                             $k++;
@@ -265,21 +264,21 @@
                                             </td>
                                             <td>{{ $k }}</td>
                                             @if ($item['credit']->order)
-                                                <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td>
+                                                {{-- <td>{{ $item['credit']->order->job }}-{{ sprintf('%02d',$item['credit']->order->no_job) }}</td> --}}
                                             @else
-                                                <td>-</td>
+                                                {{-- <td>-</td> --}}
                                             @endif
-                                            <td>{{ $item['credit']->invoice_external ?? '-' }}</td>
+                                            <td> {{ $item['credit']->invoice_agen ?? '-' }} /  {{ $item['credit']->invoice_external ?? '-' }}</td>
                                             @if ($item['credit']->debit==0)
                                                 <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
-                                                <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
+                                                {{-- <td>{{ $coa_debit->kode }}</td> --}}
                                             @else
                                                 <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
-                                                <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
+                                                {{-- <td>{{ $coa_credit->kode }}</td> --}}
                                             @endif
                                             <td>{{  $item['credit']->credit == 0 ? '-' : number_format($item['credit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['credit']->debit == 0 ? '-' : number_format($item['credit']->debit,2,'.',',') }}</td>
-                                            <td><input type="text" name="jurnal[{{ $k }}][nama]" value="{{ $item['credit']->nama }}" required id="name-{{ $k }}" class="input-name" style="width: 100%"></td>
+                                            <td><input type="hidden" name="jurnal[{{ $k }}][nama]" value="{{ $item['credit']->nama }}" required id="name-{{ $k }}" class="input-name" style="width: 100%"> {{ $item['credit']->nama }} </td>
                                         </tr>
                                         @php
                                             $k++;
@@ -348,7 +347,7 @@
                                     <th>#</th>
                                     <th>No</th>
                                     <th>ID Job</th>
-                                    <th>Inv. External</th>
+                                    <th>Inv. Agen/Inv. External</th>
                                     <th>Account</th>
                                     <th>Debit</th>
                                     <th>Credit</th>
