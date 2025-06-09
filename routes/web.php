@@ -192,6 +192,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('port', PortController::class);
 
     Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
+     Route::get('data-customer', [CustomerController::class, 'data_customer'])->name('data-customer.list');
     Route::get('hutang-agen-list', [HutangAgenController::class, 'list'])->name('hutang-agen.list');
     Route::get('hutang-agen-print', [HutangAgenController::class, 'print'])->name('hutang-agen.print');
     Route::post('hutang-agen/draf', [HutangAgenController::class, 'draf'])->name('hutang-agen.draf');

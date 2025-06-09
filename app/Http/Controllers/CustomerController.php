@@ -32,6 +32,19 @@ class CustomerController extends Controller
         return view('admin.customer.index', compact('pelayaran','customer','lokasi','satuan','kondisi','shipment'));
     }
 
+        public function data_customer()
+    {
+        $jadwal_kapal = JadwalKapal::whereHas('pelayaran')->where('is_active',1)->get();
+        $customer = Customer::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+        $pelayaran = Pelayaran::pluck('nama','id');
+
+        return view('admin.customer.data-customers', compact('pelayaran','customer','lokasi','satuan','kondisi','shipment'));
+    }
+
     public function tarif()
     {
         $jadwal_kapal = JadwalKapal::whereHas('pelayaran')->where('is_active',1)->get();
