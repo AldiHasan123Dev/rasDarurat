@@ -736,7 +736,7 @@ $totalLB = $data->sum(function($o) {
         function getJurnal(id,type){
             $.ajax({
                 type: "POST",
-                url: "{{ route('omset.jurnal') }}",
+                url: "{{ route('omset.jurnal1') }}",
                 data: {
                     id:id
                 },
@@ -876,7 +876,7 @@ $totalLB = $data->sum(function($o) {
                     lock_omset:val,
                 },
                 success: function (response) {
-                    var html = `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
+                    var html = `<td class="text-center" id="lock-${id}"><button class="text-danger bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
                     $('#lock-'+id).html(html);
                     alert('Lock berhasil!')
                 }
@@ -892,7 +892,7 @@ $totalLB = $data->sum(function($o) {
                     lock_omset:val,
                 },
                 success: function (response) {
-                    var html = `<td class="text-center" id="lock-${id}"><button class="text-danger bg-transparent" style="border: none" onclick="lock(${id})"><i class="fas fa-unlock"></i></button></td>`;
+                    var html = `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="lock(${id})"><i class="fas fa-unlock"></i></button></td>`;
                     $('#lock-'+id).html(html);
                     alert('Unlock berhasil!')
                 }
