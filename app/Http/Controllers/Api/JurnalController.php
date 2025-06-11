@@ -378,23 +378,38 @@ class JurnalController extends Controller
     }
 
     public function check_omset()
-    {
-        $order_id = request('order_id') ?? [];
-        foreach($order_id as $id){
-            $jurnals = Jurnal::where('order_id',$id)->where('coa_id',93)->where('debit','>',0)->get();
-            $order = Order::find($id);
-            if($jurnals->count()>0 && $order){
-                return response([
-                    'status' => 1,
-                    'message' => $order->job.'-'.sprintf('%02d',$order->no_job).' sudah close dari Uang Muka'
-                ]);
-            }
-        }
-        return response([
-            'status' => 0,
-            'message' => 'aman'
-        ]);
+{
+    $order_ids = request('order_id') ?? [];
+    if (empty($order_ids)) {
+        return response(['status' => 0, 'message' => 'aman']);
     }
+
+    // Ambil semua jurnal yang sesuai dalam satu query
+    $jurnals = Jurnal::whereIn('order_id', $order_ids)
+        ->where('coa_id', 93)
+        ->where('debit', '>', 0)
+        ->get()
+        ->groupBy('order_id');
+
+    // Ambil semua order sekaligus
+    $orders = Order::whereIn('id', $order_ids)->get()->keyBy('id');
+
+    foreach ($jurnals as $orderId => $jurnalList) {
+        if (isset($orders[$orderId])) {
+            $order = $orders[$orderId];
+            return response([
+                'status' => 1,
+                'message' => $order->job . '-' . sprintf('%02d', $order->no_job) . ' sudah close dari Uang Muka'
+            ]);
+        }
+    }
+
+    return response([
+        'status' => 0,
+        'message' => 'aman'
+    ]);
+}
+
 
     public function check_omset_trucking()
     {

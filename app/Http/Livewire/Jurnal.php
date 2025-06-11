@@ -32,11 +32,13 @@ class Jurnal extends Component
         $last = Carbon::now()->subMonths(5)->format('Y-m-d');
         $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
         $setting = Setting::find(1);
-        $this->invx = ModelsJurnal::whereNotNull('invoice_external')
+        $this->invx = ModelsJurnal::whereBetween('created_at', [$last, $now])
+        ->whereNotNull('invoice_external')
         ->orderBy('invoice_external')
         ->distinct()
         ->pluck('invoice_external');    
-        $this->invoices = Order::select('invoice', 'id', 'container')
+        $this->invoices = Order::whereBetween('created_at', [$last, $now])
+        ->select('invoice', 'id', 'container')
         ->whereNotNull('invoice') // Pilih hanya kolom invoice
         ->distinct() // Tambahkan distinct untuk menghapus duplikat
         ->orderBy('invoice') // Urutkan berdasarkan invoice (opsional)
@@ -73,7 +75,7 @@ class Jurnal extends Component
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
-        $this->relasi = ModelsJurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
+        $this->relasi = ModelsJurnal::whereBetween('created_at',[$last,$now])->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
     }
 
     public function render()
