@@ -201,7 +201,7 @@
                                                             ($subjek == 'vendor' && $coa_id == 131 ||
                                                             $subjek == 'lain-lain');
 
-                                                        $selisih = abs($j['debit'] - $j['credit']) > 2;
+                                                        $selisih = abs($j['debit'] - $j['credit']) > 0;
 
                                                         // Aturan pembanding debit/credit berdasarkan coa_id
                                                         $validPerbandingan = false;
