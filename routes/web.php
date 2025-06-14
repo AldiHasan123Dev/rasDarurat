@@ -306,6 +306,9 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jurnal-tampungan', [JurnalController::class, 'tampungan'])->name('jurnal.tampungan');
     Route::delete('jurnal-tampungan', [JurnalController::class, 'tampungan_destroy'])->name('jurnal.tampungan.destroy');
     Route::post('jurnal-tampungan', [JurnalController::class, 'tampungan_store'])->name('jurnal.tampungan.store');
+    Route::get('jurnal-edit-coa', [JurnalController::class, 'editCoa'])->name('jurnal.edit.coa');
+    Route::put('jurnal-edit-coa-{jurnal}', [JurnalController::class, 'updateCoa'])->name('jurnal.update.coa');
+
     Route::get('jurnal-edit-{jurnal}', [JurnalController::class, 'editOne'])->name('jurnal.edit.one');
     Route::put('jurnal-edit-{jurnal}', [JurnalController::class, 'updateOne'])->name('jurnal.update.one');
     Route::get('jurnal-balik', [JurnalController::class, 'balik'])->name('jurnal.balik.create');

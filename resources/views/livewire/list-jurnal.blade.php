@@ -1,3 +1,18 @@
+<style>
+    .btn-bank {
+    background-color: #1a532f !important; /* Tailwind bg-green-300 */
+    color: white !important;
+    border-color: #1a532f  !important;
+}
+
+    .btn-active {
+    background-color: #4ade80 !important; /* Tailwind bg-green-300 */
+    color: white !important;
+    border-color: #4ade80 !important;
+}
+
+</style>
+
 <div class="row">
     <div class="col-12 mt-3">
         {{-- <div class="row">
@@ -84,20 +99,73 @@
         {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
         {{-- @endif --}}
         <div class="row">
-            <div class="col-12 mb-2 col-md-6">
+             <b class="mb-3">Cek Jurnal Harian</b>
+            {{-- <div class="col-12 mb-2 col-md-6">
                 <label for="" class="form-label">Keterangan</label>
                 <input type="text" name="keterangan" id="keterangan" class="form-control">
             </div>
-            <div class="col-12 mb-2 col-md-3">
+            <div class="col-12 mb-2 col-md-6">
                 <label for="" class="form-label">Container</label>
                 <input type="text" name="container" id="container" class="form-control">
+            </div> --}}
+
+    <!-- gx = horizontal gap, gy = vertical -->
+    <div class="col-auto">
+        <button type="button"
+            class="btn btn-bank {{ request('bank') == 'bank' ? 'btn-active' : '' }}"
+            onclick="setTipe('Bank')">
+            Bank
+        </button>
+        <input type="hidden" id="bank" name="bank" value="{{ request('bank') }}">
+    </div>
+
+
+    <div class="col-auto">
+        <button type="button"
+            class="btn btn-bank"
+            onclick="setKas('Kas')"
+            id="btn-kas">
+            Kas
+        </button>
+        <input type="hidden" name="kas" id="kas" value="">
+    </div>
+
+    <div class="col-auto">
+        <button type="button"
+            class="btn btn-bank"
+            onclick="setJurnal('Jurnal')"
+            id="btn-jnl">
+            Jurnal
+        </button>
+        <input type="hidden" name="jurnal" id="jurnal" value="">
+    </div>
+
+     <div class="col-auto">
+        <button type="button"
+            class="btn btn-bank"
+            onclick="setBkt('bkt')"
+            id="btn-bkt">
+            Bank Trucking
+        </button>
+        <input type="hidden" name="bkt" id="bkt" value="">
+    </div>
+
+        <div class="col-auto mb-6">
+               <input type="date" name="tgl" id="tgl" class="form-control" >
             </div>
-            <div class="col-12 mb-2 col-md-3">
-                <div class="d-flex gap-3">
-                    <button class="btn btn-success btn-sm mt-3" type="button" onclick="searchJurnal()">Search</button>
-                    <a href="#" class="btn btn-sm btn-primary mt-3" id="edit-btn">Edit</a>
-                </div>
-            </div>
+
+
+
+
+
+          <div class="col-12 mb-4 col-md-3 ms-auto">
+    <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal()">Search</button>
+        {{-- <a href="#" class="btn btn-sm btn-primary" id="edit-btn">Edit</a> --}}
+        <a class="btn btn-sm btn-warning" id="edit-coa">Edit COA</a> <!-- Contoh tambahan -->
+    </div>
+</div>
+
         </div>
         <div class="table-responsives">
             <table id="jqGrid"></table>
@@ -123,13 +191,172 @@
             </tr>
         </table>
     </div>
+    <div class="row">
+         <b class="mb-3">Pencarian Data Jurnal</b>
+            <div class="col-12 mb-2 col-md-6">
+                <label for="" class="form-label">Keterangan</label>
+                <input type="text" name="keterangan" id="keterangan" class="form-control">
+            </div>
+            <div class="col-12 mb-2 col-md-3">
+                <label for="" class="form-label">Container</label>
+                <input type="text" name="container" id="container" class="form-control">
+            </div>
+              <div class="col-12 mb-2 col-md-3">
+                <label for="" class="form-label">No Jurnal</label>
+                <input type="text" name="no-jnl" id="no-jnl" class="form-control">
+            </div>
+            <div class="col-12 mb-4 col-md-3 ms-auto">
+    <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal1()">Search</button>
+        <a href="#" class="btn btn-sm btn-primary" id="edit-btn">Edit</a>
+    </div>
+
 </div>
+</div>
+<div class="table-responsives">
+       <table id="jqGrid1"></table>
+       <div id="jqGridPager1"></div>
+   </div>
 
 @push('scripts')
     <script src="{{ asset('assets/js/resize-column.js') }}"></script>
     <script>
         let id;
         let kategori = @json($is_sample);
+                $("#jqGrid1").jqGrid({
+            url: '{{ route('jqgrid.jurnal') }}',
+            mtype: 'GET',
+            datatype: 'json',
+            postData: {
+                kategori: kategori
+            },
+            colModel: [{
+                    search: true,
+                    width: 50,
+                    name: 'created_at',
+                    label: 'Tanggal',
+                    frozen: true
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'nomor',
+                    label: 'Nomor Jurnal',
+                    frozen: true,
+                    sortable: false
+                },
+                {
+                    search: true,
+                    width: 50,
+                    name: 'coa_kode',
+                    label: 'Kode',
+                    frozen: true,
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'coa_nama',
+                    label: 'Akun',
+                    frozen: true,
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'id',
+                    label: 'id',
+                    hidden: true
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'invoice',
+                    label: 'Invoice'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'job',
+                    label: 'Group JOB'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'no_job',
+                    label: 'ID JOB'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'container',
+                    label: 'Container'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'nopol',
+                    label: 'Nopol'
+                },
+                {
+                    search: true,
+                    width: 300,
+                    name: 'nama',
+                    label: 'Keterangan'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'debit',
+                    label: 'Debit'
+                },
+                {
+                    search: true,
+                    width: 100,
+                    name: 'credit',
+                    label: 'Credit'
+                },
+            ],
+            autowidth: true,
+            shrinkToFit: true,
+            height: 'auto',
+            oadonce: true,
+            rowNum: 25,
+            rowList: [10, 25, 50, 100, 250, 500, 1000],
+            viewrecords: true,
+            pager: "#jqGridPager1",
+            caption: "Jurnal List",
+            onCellSelect: function(rowId, iRow, iCol, e) {
+                id = $(this).jqGrid('getCell', rowId, 'id');
+                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+                $('#edit-btn').attr('href', @json(url('admin/jurnal-edit')) + '?jurnal=' + nomor);
+
+            },
+            rowattr: function(item) {
+                return {
+                    "class": item.class
+                };
+            }
+        });
+
+        $('#jqGrid1').jqGrid('navGrid', "#jqGridPager", {
+            search: false,
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+        $("#jqGrid1").jqGrid('setFrozenColumns');
+
+        $('#search').keyup(function(e) {
+            let val = $(this).val();
+            $("#jqGrid1").jqGrid('setGridParam', {
+                postData: {
+                    month: @json($month),
+                    tipe: @json($tipe),
+                    search: val
+                }
+            }).trigger('reloadGrid');
+        });
+
         $("#jqGrid").jqGrid({
             url: '{{ route('jqgrid.jurnal') }}',
             mtype: 'GET',
@@ -223,8 +450,8 @@
                 },
             ],
             autowidth: true,
-            shrinkToFit: false,
-            height: 250,
+            shrinkToFit: true,
+            height: 'auto',
             oadonce: true,
             rowNum: 25,
             rowList: [10, 25, 50, 100, 250, 500, 1000],
@@ -234,7 +461,8 @@
             onCellSelect: function(rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
                 let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
-                $('#edit-btn').attr('href', @json(url('admin/jurnal-edit')) + '?jurnal=' + nomor);
+               $('#edit-coa').attr('href', @json(route('jurnal.edit.coa')) + '?jurnal=' + encodeURIComponent(nomor));
+
             },
             rowattr: function(item) {
                 return {
@@ -267,16 +495,195 @@
             kategori = type;
         }
 
-        function searchJurnal() {
-            let keterangan = $('#keterangan').val();
-            let container = $('#container').val();
-            $("#jqGrid").jqGrid('setGridParam', {
-                postData: {
-                    kategori: "real",
-                    keterangan: keterangan,
-                    container: container
-                }
-            }).trigger('reloadGrid');
+      function setKas(kas) {
+    const inputKas = document.getElementById('kas');
+    const inputBank = document.getElementById('bank');
+    const inputJurnal = document.getElementById('jurnal');
+    const inputBkt = document.getElementById('bkt');
+    const btnKas = document.getElementById('btn-kas');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBkt = document.getElementById('btn-bkt');
+
+    // Nonaktifkan yang lain
+    inputBank.value = '';
+    btnBank.forEach(btn => btn.classList.remove('btn-active'));
+
+    inputJurnal.value = '';
+    if (btnJurnal) btnJurnal.classList.remove('btn-active');
+
+    inputBkt.value = '';
+    if (btnBkt) btnBkt.classList.remove('btn-active');
+
+    // Toggle kas
+    if (inputKas.value === kas) {
+        inputKas.value = '';
+        btnKas.classList.remove('btn-active');
+    } else {
+        inputKas.value = kas;
+        btnKas.classList.add('btn-active');
+    }
+}
+
+function setBkt(bkt) {
+    const inputKas = document.getElementById('kas');
+    const inputBank = document.getElementById('bank');
+    const inputJurnal = document.getElementById('jurnal');
+    const inputBkt = document.getElementById('bkt');
+    const btnKas = document.getElementById('btn-kas');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBkt = document.getElementById('btn-bkt');
+
+    // Nonaktifkan yang lain
+    inputBank.value = '';
+    btnBank.forEach(btn => btn.classList.remove('btn-active'));
+
+    inputKas.value = '';
+    if (btnKas) btnKas.classList.remove('btn-active');
+
+    inputJurnal.value = '';
+    if (btnJurnal) btnJurnal.classList.remove('btn-active');
+
+    // Toggle bkt
+    if (inputBkt.value === bkt) {
+        inputBkt.value = '';
+        btnBkt.classList.remove('btn-active');
+    } else {
+        inputBkt.value = bkt;
+        btnBkt.classList.add('btn-active');
+    }
+}
+
+function setJurnal(jurnal) {
+    const inputKas = document.getElementById('kas');
+    const inputBank = document.getElementById('bank');
+    const inputJurnal = document.getElementById('jurnal');
+    const inputBkt = document.getElementById('bkt');
+    const btnKas = document.getElementById('btn-kas');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBkt = document.getElementById('btn-bkt');
+
+    // Nonaktifkan yang lain
+    inputBank.value = '';
+    btnBank.forEach(btn => btn.classList.remove('btn-active'));
+
+    inputKas.value = '';
+    if (btnKas) btnKas.classList.remove('btn-active');
+
+    inputBkt.value = '';
+    if (btnBkt) btnBkt.classList.remove('btn-active');
+
+    // Toggle jurnal
+    if (inputJurnal.value === jurnal) {
+        inputJurnal.value = '';
+        btnJurnal.classList.remove('btn-active');
+    } else {
+        inputJurnal.value = jurnal;
+        btnJurnal.classList.add('btn-active');
+    }
+}
+
+function setTipe(bank) {
+    const inputBank = document.getElementById('bank');
+    const inputKas = document.getElementById('kas');
+    const inputJurnal = document.getElementById('jurnal');
+    const inputBkt = document.getElementById('bkt');
+    const btnKas = document.getElementById('btn-kas');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnBkt = document.getElementById('btn-bkt');
+
+    let isActive = false;
+
+    btnBank.forEach(btn => {
+        if (btn.textContent.trim() === bank && btn.classList.contains('btn-active')) {
+            isActive = true;
         }
+        btn.classList.remove('btn-active');
+    });
+
+    if (isActive) {
+        inputBank.value = '';
+    } else {
+        inputBank.value = bank;
+
+        btnBank.forEach(btn => {
+            if (btn.textContent.trim() === bank) {
+                btn.classList.add('btn-active');
+            }
+        });
+
+        inputKas.value = '';
+        if (btnKas) btnKas.classList.remove('btn-active');
+
+        inputJurnal.value = '';
+        if (btnJurnal) btnJurnal.classList.remove('btn-active');
+
+        inputBkt.value = '';
+        if (btnBkt) btnBkt.classList.remove('btn-active');
+    }
+}
+
+
+
+
+       function searchJurnal() {
+    const keterangan = $('#keterangan').val().trim();
+    const container = $('#container').val().trim();
+    let tgl = $('#tgl').val();
+
+    const bankInput = document.getElementById('bank');
+    const bktInput = document.getElementById('bkt');
+    const jurnalInput = document.getElementById('jurnal');
+    const kasInput = document.getElementById('kas');
+
+    const btnKas = document.getElementById('btn-kas');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnBkt = document.getElementById('btn-bkt');
+
+    let bank = bankInput?.value || '';
+    let bkt = bktInput?.value || '';
+    let jurnal = jurnalInput?.value || '';
+    let kas = kasInput?.value || '';
+
+    // Reset filter jika keterangan dan container diisi
+    
+
+    // Jalankan pencarian di jqGrid
+    $("#jqGrid").jqGrid('setGridParam', {
+        postData: {
+            kategori: "real",
+            tgl,
+            bank,
+            kas,
+            jurnal,
+            bkt
+        },
+        page: 1
+    }).trigger('reloadGrid');
+}
+
+ function searchJurnal1() {
+    const keterangan = $('#keterangan').val().trim();
+    const container = $('#container').val().trim();
+    const nomor = $('#no-jnl').val();
+
+    // Reset filter jika keterangan dan container diisi
+
+    // Jalankan pencarian di jqGrid
+    $("#jqGrid1").jqGrid('setGridParam', {
+        postData: {
+            kategori: "real",
+            keterangan,
+            container,
+            nomor
+        },
+        page: 1
+    }).trigger('reloadGrid');
+}
+
     </script>
 @endpush

@@ -36,7 +36,7 @@
                     <div class="container">
                         <div class="my-3">
                             <div class="alert alert-success alert-dismissible fade show text-white py-2" role="alert">
-                                <strong>Success!</strong> {{ session('success') }}
+                                <strong>Success!</strong>  {!! session('success') !!}
                                 <button type="button" class="btn-close pt-2" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         </div>

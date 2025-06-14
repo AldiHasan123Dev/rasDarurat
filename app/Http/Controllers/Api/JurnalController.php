@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Models\Pelayaran;
 use App\Models\OrderTrucking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -190,79 +191,90 @@ class JurnalController extends Controller
         $is_sample = request('is_sample');
         $kategori = request('kategori');
         $keterangan = request('keterangan');
+        $bank = request('bank');
+        $kas = request('kas');
+        $jurnal = request('jurnal');
+        $bkt = request('bkt');
+        $tgl = request('tgl');
         $container = request('container');
         $is_search = false;
         if($search=='true'){
             $is_search = true;
         }
 
-        $jurnal_model = new Jurnal();
-        if ($kategori=='sample') {
-            $jurnal_model = new JurnalSample();
-        }
-        $query = $jurnal_model->query();
+$jurnal_model = ($kategori === 'sample') ? new JurnalSample() : new Jurnal();
+$query = $jurnal_model->newQuery()->with([
+    'coa',
+    'order',
+    'order_trucking.order',
+]);
 
+$start = max(0, $limit * $page - $limit);
 
-        $start = $limit * $page - $limit;
-        if ($start < 0){
-            $start = 0;
-        }
+$hasFilter = false;
 
-        if($keterangan && strlen($keterangan)>3){
-            $query->where('nama','like',$keterangan);
-        }
-        if($container && strlen($container)>3){
-            $query->where('container','like',$container);
-        }
+if ($keterangan && strlen($keterangan) > 3) {
+    $query->where('nama', 'like', '%' . $keterangan . '%');
+    $hasFilter = true;
+}
 
-        // if(request('date')){
-        //     $query->whereDate('created_at',request('date'));
-        // }else{
-        //     if(request('month')){
-        //         $query->whereMonth('created_at',request('month'));
-        //     }
-        //     if(request('year')){
-        //         $query->whereYear('created_at',request('year'));
-        //     }
-        //     if(request('tipe')){
-        //         $query->where('tipe','LIKE','%'.request('tipe').'%');
-        //     }
-        // }
+if ($container && strlen($container) > 3) {
+    $query->where('container', 'like', '%' . $container . '%');
+    $hasFilter = true;
+}
 
-        // if(request('search')){
-        //     $query->search(request('search'));
-        // }
-        $data = $query->orderBy('created_at','desc')->orderBy('nomor','desc')->skip($start)->take($limit)->get();
+if ($bank) {
+    $query->whereIn('tipe', ['BBK', 'BBM']);
+    $hasFilter = true;
+} elseif ($bkt) {
+    $query->whereIn('tipe', ['BBKT', 'BBMT']);
+    $hasFilter = true;
+} elseif ($kas) {
+    $query->whereIn('tipe', ['BKK', 'BKM']);
+    $hasFilter = true;
+} elseif ($jurnal) {
+    $query->where('tipe', 'JNL');
+    $hasFilter = true;
+}
 
-        // $count = $jurnal_model->get('id')->count();
-        $count = $data->count();
-        // dd($data->count());
-        // if (request('date')) {
-        //     $count = $jurnal_model->whereDate('created_at',request('date'))->get('id')->count();
-        // }else{
-        //     if(request('month') && request('tipe')){
-        //         $count = $jurnal_model->whereMonth('created_at',request('month'))->where('tipe','LIKE','%'.request('tipe').'%')->get('id')->count();
-        //     }
-        // }
+if ($tgl && strlen($tgl) > 3) {
+    $query->whereDate('created_at', $tgl);
+    $hasFilter = true;
+}
 
+// Hitung total data (tanpa limit)
+$count = $query->count();
 
-        if ($count > 0 && $limit > 0) {
-            $total_pages = ceil($count / $limit);
-        } else {
-            $total_pages = 0;
-        }
+// Pagination
+if ($count > 0 && $limit > 0) {
+    $total_pages = ceil($count / $limit);
+} else {
+    $total_pages = 0;
+}
 
-        if ($page > $total_pages){
-            $page = $total_pages;
-        }
+if ($page > $total_pages) {
+    $page = $total_pages;
+}
+$start = max(0, $limit * ($page - 1));
 
-        $response = JurnalResource::collection($data);
-        return response([
-            'page' => $page,
-            'total' => $total_pages,
-            'records' => $count,
-            'rows' => $response
-        ]);
+// Ambil data sesuai limit & offset
+$data = $hasFilter
+? $query->orderByDesc('nomor')
+            ->orderByDesc('created_at')
+            ->skip($start)
+            ->take($limit)
+            ->get()
+    : collect();
+
+// Format response
+$response = JurnalResource::collection($data);
+return response([
+    'page' => $page,
+    'total' => $total_pages,
+    'records' => $count,
+    'rows' => $response
+]);
+
     }
 
     public function buku_besar()

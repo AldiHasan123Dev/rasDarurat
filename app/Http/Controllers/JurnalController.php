@@ -42,19 +42,34 @@ class JurnalController extends Controller
         $setting = Setting::find(1);
         $this->sno = $setting->short_name;
     }
+
+
     public function index()
     {
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(3)->format('Y-m-d');
-        $unbalance = Jurnal::select([DB::raw("SUM(debit) as debit"), DB::raw("SUM(credit) as credit"), 'nomor'])->whereBetween('created_at', [$last, $now])->groupBy('nomor')->get()->reject(function ($data) {
-            return $data->debit == $data->credit;
+
+        $cacheKey = 'jurnal_unbalance_' . $last . '_' . $now;
+
+        $unbalance = Cache::remember($cacheKey, 60, function () use ($last, $now) {
+            return Jurnal::select([
+                    'nomor',
+                    DB::raw("SUM(debit) as debit"),
+                    DB::raw("SUM(credit) as credit")
+                ])
+                ->whereBetween('created_at', [$last, $now])
+                ->groupBy('nomor')
+                ->havingRaw('SUM(debit) != SUM(credit)')
+                ->get();
         });
-        // $unbalance = [];
+
         $month = request('month') ?? date('m');
         $year = request('year') ?? date('Y');
         $is_sample = request('is_sample') ?? 'real';
+
         return view('admin.jurnal.index', compact('month', 'unbalance', 'year', 'is_sample'));
     }
+
 
     public function totalan_sopir()
     {
@@ -1201,6 +1216,64 @@ class JurnalController extends Controller
         // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
         return view('admin.jurnal.new_edit', compact('orders','orders_expdc', 'orders_agen', 'orders_trucking', 'orders_trucking1', 'orders_vendor',  'invx','bgs','data', 'relasi', 'coa', 'tipe', 'jur', 'voucher', 'deb', 'cre', 'count'));
     }
+
+
+    public function editCoa(Request $request) {
+    $nomor = $request->query('jurnal');
+    $data = Jurnal::where('nomor',$nomor)->get();
+
+    $coa = COA::where('is_active', 1)->orderBy('kode')->get();
+    $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+    $last = Carbon::now()->subMonths(9)->format('Y-m-d');
+
+    return view('admin.jurnal.edit-coa', compact('coa','data'));
+}
+
+public function updateCoa(Request $request, $jurnal_id)
+{
+    $data = $request->input('jurnal'); // Format: [id => ['coa_id' => ...], ...]
+
+    if (!$data || !is_array($data)) {
+        return back()->with('error', 'Data COA tidak valid.');
+    }
+
+    $logChanges = [];
+
+    foreach ($data as $id => $value) {
+        $jurnal = Jurnal::find($id);
+        if ($jurnal) {
+            $oldCoaId = $jurnal->coa_id;
+            $newCoaId = $value['coa_id'] ?? null;
+
+            if ($oldCoaId != $newCoaId) {
+                $oldCoa = Coa::find($oldCoaId);
+                $newCoa = Coa::find($newCoaId);
+
+                $logChanges[] = [
+                    'id' => $jurnal->id,
+                    'nomor' => $jurnal->nomor,
+                    'coa_sebelumnya' => $oldCoa ? "{$oldCoa->kode} - {$oldCoa->nama}" : 'null',
+                    'coa_baru' => $newCoa ? "{$newCoa->kode} - {$newCoa->nama}" : 'null',
+                ];
+
+                $jurnal->coa_id = $newCoaId;
+                $jurnal->save();
+            }
+        }
+    }
+
+    if (empty($logChanges)) {
+        return back()->with('info', 'Tidak ada perubahan COA yang dilakukan.');
+    }
+
+    $logText = collect($logChanges)->map(function ($item) {
+        return "ID: {$item['id']}, Nomor: {$item['nomor']}, COA Lama: {$item['coa_sebelumnya']}, COA Baru: {$item['coa_baru']}";
+    })->implode('<br>');
+
+    return back()->with('success', "Berhasil update COA berikut:<br>{$logText}");
+}
+
+
 
     public function editOne(Jurnal $jurnal)
 {
