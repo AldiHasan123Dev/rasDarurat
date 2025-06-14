@@ -679,7 +679,7 @@ function setTipe(bank) {
             kategori: "real",
             keterangan,
             container,
-            nomor
+            nomor: nomor
         },
         page: 1
     }).trigger('reloadGrid');

@@ -193,6 +193,7 @@ class JurnalController extends Controller
         $keterangan = request('keterangan');
         $bank = request('bank');
         $kas = request('kas');
+        $nomor = request('nomor');
         $jurnal = request('jurnal');
         $bkt = request('bkt');
         $tgl = request('tgl');
@@ -215,6 +216,11 @@ $hasFilter = false;
 
 if ($keterangan && strlen($keterangan) > 3) {
     $query->where('nama', 'like', '%' . $keterangan . '%');
+    $hasFilter = true;
+}
+
+if ($nomor) {
+    $query->where('nomor', 'like', '%' . $nomor . '%');
     $hasFilter = true;
 }
 
