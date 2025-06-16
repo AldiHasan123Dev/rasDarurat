@@ -181,7 +181,7 @@
                 <td>Debit</td>
                 <td>: {{ number_format($total_debit, 2, ',', '.') }}</td>
             </tr>
-            <tr>
+            <tr> 
                 <td>Credit</td>
                 <td>: {{ number_format($total_credit, 2, ',', '.') }}</td>
             </tr>
