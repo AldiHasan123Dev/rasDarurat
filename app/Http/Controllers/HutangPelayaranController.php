@@ -138,6 +138,7 @@ class HutangPelayaranController extends Controller
 
 }
 
+
                 
                 $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
                 if($item[$a]>0 && !is_null($item['no_bg_opp'])){
@@ -293,41 +294,43 @@ class HutangPelayaranController extends Controller
                 'debit' => 0,
                 'credit' => $ut_total + $hp->penambahan_nominal,
             ]);
-        
-            if(!is_null($hp->penambahan)){
-                if($hp->penambahan_nominal!=0){
-                    if($hp->penambahan_nominal>0){
-                        Jurnal::create([
-                            'tipe' => 'JNL',
-                            'no_bg' => $hp->no_bg_ut,
-                            'tgl_bg' => $hp->tgl_bg_ut,
-                            'nominal_bg' => $hp->nominal_bg_ut,
-                            'coa_id' => $c23,
-                            'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                            'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                            'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                            'nama' => $hp->penambahan,
-                            'debit' => $hp->penambahan_nominal,
-                            'credit' => 0,
-                        ]);
-                    }else{
-                        Jurnal::create([
-                            'tipe' => 'JNL',
-                            'no_bg' => $hp->no_bg_ut,
-                            'tgl_bg' => $hp->tgl_bg_ut,
-                            'nominal_bg' => $hp->nominal_bg_ut,
-                            'coa_id' => $c23,
-                            'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                            'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                            'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                            'nama' => $hp->penambahan,
-                            'debit' => 0,
-                            'credit' => $hp->penambahan_nominal * -1,
-                        ]);
+                    if (!is_null($hp->penambahan)) {
+                        if ($hp->penambahan_nominal != 0) {
+                            $coa = (stripos($hp->penambahan, 'pph 23') !== false) ? 73 : $c23;
+
+
+                            if ($hp->penambahan_nominal > 0) {
+                                Jurnal::create([
+                                    'tipe' => 'JNL',
+                                    'no_bg' => $hp->no_bg_ut,
+                                    'tgl_bg' => $hp->tgl_bg_ut,
+                                    'nominal_bg' => $hp->nominal_bg_ut,
+                                    'coa_id' => $coa,
+                                    'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                                    'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                                    'no' => $data_nomor[$hp->no_bg_ut]['no'],
+                                    'nama' => $hp->penambahan,
+                                    'debit' => $hp->penambahan_nominal,
+                                    'credit' => 0,
+                                ]);
+                            } else {
+                                Jurnal::create([
+                                    'tipe' => 'JNL',
+                                    'no_bg' => $hp->no_bg_ut,
+                                    'tgl_bg' => $hp->tgl_bg_ut,
+                                    'nominal_bg' => $hp->nominal_bg_ut,
+                                    'coa_id' => $coa,
+                                    'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                                    'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
+                                    'no' => $data_nomor[$hp->no_bg_ut]['no'],
+                                    'nama' => $hp->penambahan,
+                                    'debit' => 0,
+                                    'credit' => $hp->penambahan_nominal * -1,
+                                ]);
+                            }
+                        }
                     }
                 }
-            }
-        }
 
         $data = HutangPelayaran::whereIn('id',$ids)->get();
         foreach ($data as $item) {
