@@ -301,6 +301,9 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('order-import', [OrderController::class, 'import'])->name('order.import');
     Route::get('estimasi-biaya', [EstimasiController::class, 'biaya'])->name('estimasi.biaya');
 
+    Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
+    Route::get('data-rekap-piutang', [LaporanController::class, 'data_rekap_piutang'])->name('data-rekap.piutang');
+
     Route::get('jurnal-edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
     Route::get('jurnal-kolektif', [JurnalController::class, 'kolektif'])->name('jurnal.kolektif.create');
     Route::get('jurnal-tampungan', [JurnalController::class, 'tampungan'])->name('jurnal.tampungan');
