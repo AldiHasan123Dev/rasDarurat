@@ -25,6 +25,40 @@ class LaporanController extends Controller
         $count = Order::where('job','LIKE',$year.'%')->count();
         return view('admin.laporan.pelayaran', compact('data','year','count'));
     }
+    public function data_rekap_piutang(Request $request){
+        // Ambil parameter untuk pagination dari request
+      // Filter berdasarkan kolom pencarian
+      $searchField = $request->input('searchField');
+      $searchString = $request->input('searchString');
+  
+      // Query data berdasarkan filter dan pagination
+      $query = Order::query();
+  
+      if ($searchField && $searchString) {
+          $query->where($searchField, 'like', "%$searchString%");
+      }
+    // Ambil data dari tabel Jurnals dengan pagination, urutkan berdasarkan 'tgl' descending
+    $jurnals = Jurnal::withTrashed()
+    ->where('tipe', 'BBM')
+    ->whereNull('deleted_at')
+    ->where('debit', '!=', 0)
+    ->select(
+        'invoice',
+        \DB::raw('SUM(debit) as total_debit'),
+        \DB::raw("GROUP_CONCAT(CONCAT('<div style=\"margin-bottom: 5px; margin-top:5px;\">', DATE_FORMAT(created_at, '%Y-%m-%d'), '</div>') ORDER BY created_at ASC SEPARATOR '') as daftar_tanggal",
+        "jurnal.*")
+    )
+    ->groupBy('invoice')
+    ->orderByDesc('invoice')
+    ->get();
+
+     $orders = Order::with([
+    'order.tarif.customer' => function($query) {
+        $query->select('id', 'nama');
+    },// Menambahkan relasi transaksi.barang
+]);
+
+    }
     public function tujuan()
     {
         $tarif = Tarif::pluck('tujuan')->toArray();

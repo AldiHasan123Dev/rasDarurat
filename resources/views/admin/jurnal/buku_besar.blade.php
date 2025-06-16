@@ -3,33 +3,84 @@
 <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css">
-    <style>
-        @media print {
-            @import url('https://fonts.cdnfonts.com/css/dot-matrix');
-            body * {
-                visibility: hidden;
-                font-family: 'Dot Matrix', sans-serif;
-                color: #000;
-            }
-            #print, #print * {
-                visibility: visible;
-                font-size: .7rem !important;
-            }
-            #print {
-                width: 100%;
-                position: absolute;
-                left: 0;
-                top: -70px;
-            }
-            #table td, #table th{
-                border: 1px solid black;
-            }
-            #print {
-                color: #000;
-            }
-        }
-        table.data th, td { white-space: nowrap; }
-    </style>
+   <style>
+/* ----------- PRINT MODE ONLY ----------- */
+@media print {
+    @import url('https://fonts.cdnfonts.com/css/dot-matrix');
+
+    body * {
+        visibility: hidden;
+        font-family: 'Dot Matrix', sans-serif;
+        color: #000;
+    }
+
+    #print, #print * {
+        visibility: visible;
+        font-size: .7rem !important;
+    }
+
+    #print {
+        width: 100%;
+        position: absolute;
+        left: 0;
+        top: -70px;
+    }
+
+    #table td, #table th {
+        border: 1px solid black;
+    }
+
+    #print {
+        color: #000;
+    }
+}
+
+/* ----------- NORMAL SCREEN MODE ----------- */
+.table-responsive {
+    overflow-x: auto;
+    position: relative;
+}
+
+table th, table td {
+    white-space: nowrap;
+    font-size: .7rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Base sticky */
+.sticky-col {
+    position: sticky;
+    background: #fff;
+    z-index: 4;
+}
+
+
+
+td.sticky-col {
+    background: #f8f9fa;
+    z-index: 5;
+}
+
+th.sticky-col {
+    background: #f8f9fa;
+    z-index: 5;
+}
+
+
+/* Freeze columns */
+.left-col    { left: 0px; min-width: 100px; z-index: 4; }         /* Tanggal (misalnya 120px) */
+.second-col  { left: 110px; min-width: 120px; z-index: 4; }         /* No. Jurnal */
+.third-col   { left: 230px; min-width: 20px; z-index: 4; }          /* No. Akun */
+.fourth-col   { left: 350px; min-width: 180px; z-index: 4; }        /* Akun */
+
+
+table.data th, td {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+</style>
+
 @endsection
 @section('content')
 <div class="container">
@@ -156,10 +207,10 @@
                             <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3 data-table" style="font-size: .7rem;">
                                 <thead>
                                     <tr>
-                                        <th data-rtc-resizable="tanggal">Tanggal</th>
-                                        <th data-rtc-resizable="no_jurnal">No. Jurnal</th>
-                                        <th data-rtc-resizable="no_akun">No. Akun</th>
-                                        <th data-rtc-resizable="akun">Akun</th>
+                                        <th class="sticky-col left-col" >Tanggal</th>
+                                        <th class="sticky-col">No. Jurnal</th>
+                                        <th class="sticky-col">No. Akun</th>
+                                        <th class="sticky-col">Akun</th>
                                         @if ($coa->is_cont)
                                         <th data-rtc-resizable="cont">No. Cont</th>
                                         @endif
@@ -208,10 +259,10 @@
                                         }
                                     @endphp
                                     <tr>
-                                        <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                                        <td>{{ $item->nomor }}</td>
-                                        <td>{{ $item->coa->kode }}</td>
-                                        <td>{{ $item->coa->nama }}</td>
+                                        <td class="sticky-col left-col">{{ date('d/m/y', strtotime($item->created_at)) }}</td>
+<td class="sticky-col second-col">{{ $item->nomor }}</td>
+<td class="sticky-col third-col">{{ $item->coa->kode }}</td>
+<td class="sticky-col fourth-col">{{ $item->coa->nama }}</td>
                                         @if ($coa->is_cont)
                                         <td>{{ $item->container ?? '-' }}</td>
                                         @endif
@@ -219,13 +270,13 @@
                                         <td>{{ $item->nopol ?? '-' }}</td>
                                         @endif
                                         @if ($coa->is_nojob)
-                                        <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
+                                        <td style="left: 30px">{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
                                         @endif
                                         @if ($coa->is_invoice)
                                         <td>{{ $item->invoice ?? '-' }}</td>
                                         @endif
                                         @if ($coa->is_invoice_trucking)
-                                        <td>{{ $item->invoice ?? '-' }}</td>
+                                        <td>{{ $item->invoice_trucking ?? '-' }}</td>
                                         @endif
                                         <td>{{ $item->nama }}</td>
                                         <td>{{ number_format($item->debit,2,',','.') }}</td>
@@ -293,11 +344,7 @@
             [25, 50, 100, 200, -1],
             [25, 50, 100, 200, "All"]
         ],
-        iDisplayLength: 25,
-        fixedHeader: true,
-        fixedColumns: {
-            leftColumns: 2
-        },
+        iDisplayLength: 25
     });
 </script>
 @endpush
