@@ -162,7 +162,7 @@
     <div class="d-flex justify-content-end gap-2">
         <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal()">Search</button>
         {{-- <a href="#" class="btn btn-sm btn-primary" id="edit-btn">Edit</a> --}}
-        <a class="btn btn-sm btn-warning" id="edit-coa">Edit COA</a> <!-- Contoh tambahan -->
+        <a class="btn btn-sm btn-warning" target="_blank" id="edit-coa">Edit COA</a> <!-- Contoh tambahan -->
     </div>
 </div>
 
@@ -208,7 +208,7 @@
             <div class="col-12 mb-4 col-md-3 ms-auto">
     <div class="d-flex justify-content-end gap-2">
         <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal1()">Search</button>
-        <a href="#" class="btn btn-sm btn-primary" id="edit-btn">Edit</a>
+        <a href="#" class="btn btn-sm btn-primary" target="_blank" id="edit-btn">Edit</a>
     </div>
 
 </div>
