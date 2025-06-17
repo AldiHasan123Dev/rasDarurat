@@ -70,6 +70,20 @@ class JurnalController extends Controller
         return view('admin.jurnal.index', compact('month', 'unbalance', 'year', 'is_sample'));
     }
 
+    public function j_cekcoa(){
+        return view('admin.jurnal.jurnal-cek-coa', compact('month', 'unbalance', 'year', 'is_sample'));
+    }
+
+    public function show($id) {
+      $month = request('month') ?? date('m');
+      $year = request('year') ?? date('Y');
+      $is_sample = request('is_sample') ?? 'real';
+      $tipe = request('tipe') ?? 'BB';
+    // Atau kembalikan response kosong jika tidak diperlukan
+      return view('admin.jurnal.jurnal-cek-coa', compact('month', 'year', 'is_sample','tipe'));
+    }
+
+
 
     public function totalan_sopir()
     {
@@ -1205,7 +1219,7 @@ class JurnalController extends Controller
         $jur = $data;
         $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
         $bgs = array_unique($bgs);
-        $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+        $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
         $relasi = Jurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
         $debit = Jurnal::where('nomor', $jurnal)->whereIn('coa_id', [16, 45, 175])->where('credit', 0)->sum('debit');
         $credit = Jurnal::where('nomor', $jurnal)->whereIn('coa_id', [16, 45, 175])->where('debit', 0)->sum('credit');
@@ -1370,7 +1384,7 @@ public function updateCoa(Request $request, $jurnal_id)
         ->toArray();
     $bgs = array_unique($bgs);
 
-    $last_relasi = Carbon::now()->subMonths(3)->format('Y-m-d');
+    $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
     $relasi = Jurnal::where('created_at', '>=', $last_relasi)
         ->distinct('nomor')
         ->orderBy('nomor')
