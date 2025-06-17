@@ -191,6 +191,8 @@ class JurnalController extends Controller
         $is_sample = request('is_sample');
         $kategori = request('kategori');
         $keterangan = request('keterangan');
+        $nomorS = request('nomorS');
+        $nomorE = request('nomorE');
         $bank = request('bank');
         $kas = request('kas');
         $nomor = request('nomor');
@@ -223,6 +225,18 @@ if ($nomor) {
     $query->where('nomor', 'like', '%' . $nomor . '%');
     $hasFilter = true;
 }
+
+if ($nomorS && $nomorE) {
+    $query->whereBetween('nomor', [$nomorS, $nomorE]);
+    $hasFilter = true;
+} elseif ($nomorS) {
+    $query->where('nomor', 'like', '%' . $nomorS . '%');
+    $hasFilter = true;
+} elseif ($nomorE) {
+    $query->where('nomor', 'like', '%' . $nomorE . '%');
+    $hasFilter = true;
+}
+
 
 if ($container && strlen($container) > 3) {
     $query->where('container', 'like', '%' . $container . '%');
@@ -264,13 +278,24 @@ if ($page > $total_pages) {
 $start = max(0, $limit * ($page - 1));
 
 // Ambil data sesuai limit & offset
-$data = $hasFilter
-? $query->orderByDesc('nomor')
-            ->orderByDesc('created_at')
-            ->skip($start)
-            ->take($limit)
-            ->get()
-    : collect();
+if ($nomorS && $nomorE) {
+    $query->whereBetween('nomor', [$nomorS, $nomorE]);
+    $hasFilter = true;
+
+    $data = $query->orderBy('nomor', 'asc')
+                 ->skip($start)
+                 ->take($limit)
+                 ->get();
+} elseif ($hasFilter) {
+    $data = $query->orderByDesc('nomor')
+                 ->orderByDesc('created_at')
+                 ->skip($start)
+                 ->take($limit)
+                 ->get();
+} else {
+    $data = collect();
+}
+
 
 // Format response
 $response = JurnalResource::collection($data);
