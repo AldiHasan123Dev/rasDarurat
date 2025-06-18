@@ -99,7 +99,7 @@
         {{-- <button wire:click.prevent="loadMore" class="btn btn-sm btn-primary w-100">Load more</button> --}}
         {{-- @endif --}}
         <div class="row">
-             <b class="mb-3">Cek Jurnal Harian</b>
+             {{-- <b class="mb-3">Cek Jurnal Harian</b> --}}
             {{-- <div class="col-12 mb-2 col-md-6">
                 <label for="" class="form-label">Keterangan</label>
                 <input type="text" name="keterangan" id="keterangan" class="form-control">
@@ -110,7 +110,7 @@
             </div> --}}
 
     <!-- gx = horizontal gap, gy = vertical -->
-    <div class="col-auto">
+    {{-- <div class="col-auto">
         <button type="button"
             class="btn btn-bank {{ request('bank') == 'bank' ? 'btn-active' : '' }}"
             onclick="setTipe('Bank')">
@@ -161,7 +161,7 @@
           <div class="col-12 mb-4 col-md-3 ms-auto">
     <div class="d-flex justify-content-end gap-2">
         <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal()">Search</button>
-        {{-- <a href="#" class="btn btn-sm btn-primary" id="edit-btn">Edit</a> --}}
+        <a href="#" class="btn btn-sm btn-primary" id="edit-btn">Edit</a>
         <a class="btn btn-sm btn-warning" target="_blank" id="edit-coa">Edit COA</a> <!-- Contoh tambahan -->
     </div>
 </div>
@@ -170,7 +170,7 @@
         <div class="table-responsives">
             <table id="jqGrid"></table>
             <div id="jqGridPager"></div>
-        </div>
+        </div> --}}
         <table class="table table-sm mt-2">
             {{-- @if ($total_debit != $total_credit)
                 <tr>
