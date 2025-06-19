@@ -31,7 +31,20 @@ class LaporanController extends Controller
 
     public function rekap_piutang()
     {
-        return view('admin.laporan.rekap-piutang');
+    
+    $totalTelahBayar = Jurnal::withTrashed()
+    ->where('tipe', 'BBM')
+    ->whereNull('deleted_at')
+    ->where('debit', '!=', 0)
+    ->whereNotNull('invoice')
+    ->sum('debit');
+
+    $totalNilaiInvoice = Transaksi::whereNotNull('tanggal_kirim')->sum('total');
+    $totalInvoiceCount = Transaksi::whereNotNull('tanggal_kirim')->count('invoice');
+    $totalBelumBayar = $totalNilaiInvoice - $totalTelahBayar;
+
+        return view('admin.laporan.rekap-piutang', compact('totalTelahBayar','totalNilaiInvoice',
+        'totalInvoiceCount','totalBelumBayar'));
     }
 public function data_rekap_piutang(Request $request)
 {
@@ -129,7 +142,7 @@ public function data_rekap_piutang(Request $request)
             'invoice' => $invoice,
             'customer' => $cust->nama ?? '-',
             'jumlah_harga' => $jumlah_harga,
-            'pph' => $pph,
+            'pph' => round($pph),
             'top' => $top,
             'ditagih_tgl' => $invoiceDate,
             'tempo' => $tempo,
@@ -196,14 +209,17 @@ public function data_total_rekap_piutang(Request $request)
             ->when($searchField && $searchString, function ($q) use ($searchField, $searchString) {
                 return $q->where($searchField, 'like', "%$searchString%");
             })
+            ->whereNull('deleted_at')
             ->whereYear('invoice_date', $thn_inv)
+            ->whereNotNull('invoice')
             ->orderBy('created_at', 'desc')
             ->get();
     });
 
     // Ambil job unik dari invoices
-    $jobs = $invoices->pluck('job')->filter()->unique();
-    $transaksis = Transaksi::whereIn('job', $jobs)->pluck('total', 'job'); // key = job
+    $jobs = $invoices->pluck('job')->filter()->unique()->values();
+    $transaksis = Transaksi::whereNotNull('tanggal_kirim')->whereIn('job', $jobs)->pluck('total', 'job');
+
 
     // Ambil data jurnal
     $jurnals = Cache::remember($cacheKeyJurnals, now()->addMinutes(60), function () use ($thn_inv) {
@@ -223,7 +239,10 @@ public function data_total_rekap_piutang(Request $request)
     // Grup dan hitung data per bulan
     $data = $invoices->groupBy(fn($invoice) => Carbon::parse($invoice->invoice_date)->format('Y-m'))
         ->map(function ($group) use ($jurnalsPerInvoice, $transaksis) {
-            $subtotal = $group->sum(fn($i) => $transaksis[$i->job] ?? 0);
+            $subtotal = $group->pluck('job')->unique()->sum(function ($job) use ($transaksis) {
+    return $transaksis[$job] ?? 0;
+});
+
             $jumlah_harga = round($subtotal);
 
             $invoiceNumbers = $group->pluck('invoice')->filter()->unique();
@@ -255,6 +274,7 @@ public function data_total_rekap_piutang(Request $request)
         $nilaiInvoice += $item['nilai_invoice'];
         $result[] = $item;
     }
+
 
     // Pagination
     $indexStart = ($page - 1) * $rows;

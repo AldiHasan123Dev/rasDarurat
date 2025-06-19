@@ -178,6 +178,27 @@
                     <table id="jqGrid1"></table>
                     <div id="jqGridPager1"></div>
                 </div>
+                
+    <div class="card-footer py-2">
+                    <div class="d-flex gap-3 mt-2 justify-content-center">
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Grand Jumlah Invoice</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($totalInvoiceCount ?? 0),0,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Grand Total Nilai Invoice</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($totalNilaiInvoice ?? 0),0,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Grand Total Invoice Terbayarr</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($totalTelahBayar ?? 0),0,',','.') }}</li>
+                        </ul>
+                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Grand Total Belum Bayar</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($totalBelumBayar ?? 0),0,',','.') }}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -578,7 +599,7 @@
 
                 // Menambahkan sum_telah_bayar ke footer
                 $("#jqGrid1").jqGrid('footerData', 'set', {
-                    "bulan": "Total",
+                    "bulan": "Sub Total",
                     "total_invoice": countInvoice,
                     "telah_bayar": sumTelahBayar,
                     "belum_dibayar": sumBelumBayar,
