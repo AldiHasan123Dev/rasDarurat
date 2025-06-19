@@ -54,9 +54,13 @@ public function data_rekap_piutang(Request $request)
     $searchString = $request->input('searchString');
     $tglInvFilter = $request->input('tgl_inv');
     $invFilter = $request->input('inv');
-   if ($tglInvFilter && str_contains($tglInvFilter, '2024')) {
-    return collect(); // atau return response()->json([], 200);
+ if ($tglInvFilter) {
+    $tahun = (int) substr($tglInvFilter, 0, 4);
+    if ($tahun < 2025) {
+        return collect(); // atau response()->json([], 200);
+    }
 }
+
 
 
     // Ambil invoice dengan relasi yang diperlukan
