@@ -5,6 +5,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.7/css/fixedHeader.dataTables.min.css">
    <style>
 /* ----------- PRINT MODE ONLY ----------- */
+/* ----------- PRINT MODE ----------- */
 @media print {
     @import url('https://fonts.cdnfonts.com/css/dot-matrix');
 
@@ -24,14 +25,11 @@
         position: absolute;
         left: 0;
         top: -70px;
+        color: #000;
     }
 
     #table td, #table th {
-        border: 1px solid black;
-    }
-
-    #print {
-        color: #000;
+        border: 1px solid black !important;
     }
 }
 
@@ -45,39 +43,43 @@ table th, table td {
     white-space: nowrap;
     font-size: .7rem;
     border: 1px solid #dee2e6;
+    vertical-align: middle;
 }
 
-/* Base sticky */
+/* Freeze Base */
 .sticky-col {
     position: sticky;
-    background: #fff;
+    background: #f8f9fa !important;
     z-index: 4;
 }
 
-
+th.sticky-col {
+    z-index: 6 !important; /* agar header di atas td */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
 
 td.sticky-col {
-    background: #f8f9fa;
-    z-index: 5;
-}
-
-th.sticky-col {
-    background: #f8f9fa;
     z-index: 5;
 }
 
 
-/* Freeze columns */
-.left-col    { left: 0px; min-width: 100px; z-index: 4; }         /* Tanggal (misalnya 120px) */
-.second-col  { left: 110px; min-width: 120px; z-index: 4; }         /* No. Jurnal */
-.third-col   { left: 230px; min-width: 20px; z-index: 4; }          /* No. Akun */
-.fourth-col   { left: 350px; min-width: 180px; z-index: 4; }        /* Akun */
-
-
-table.data th, td {
-    white-space: nowrap;
-    vertical-align: middle;
+/* Saat sel di klik */
+td.clicked, th.clicked {
+    background-color: #d1ecf1 !important; /* warna biru muda */
 }
+
+/* Atau saat diseleksi */
+td::selection, th::selection {
+    background: #b3d7ff;
+    color: #000;
+}
+
+/* Kolom yang di-freeze */
+.left-col    { left: 0px;   text-align: center; min-width: 90px; }
+.second-col  { left: 90px;  text-align: center; min-width: 120px; }
+.third-col   { left: 210px; text-align: center; min-width: 80px; }
+.fourth-col  { left: 290px; text-align: center; min-width: 140px; }
+
 
 </style>
 
@@ -207,10 +209,10 @@ table.data th, td {
                             <table data-rtc-resizable-table="table.{{ $month }}" class="table data table-bordered table-sm mt-3 data-table" style="font-size: .7rem;">
                                 <thead>
                                     <tr>
-                                        <th class="sticky-col left-col" >Tanggal</th>
-                                        <th class="sticky-col">No. Jurnal</th>
-                                        <th class="sticky-col">No. Akun</th>
-                                        <th class="sticky-col">Akun</th>
+                                        <th class="sticky-col left-col text-center" >Tanggal</th>
+                                        <th class="sticky-col text-center">No. Jurnal</th>
+                                        <th class="sticky-col text-center">No. Akun</th>
+                                        <th class="sticky-col text-center">Akun</th>
                                         @if ($coa->is_cont)
                                         <th data-rtc-resizable="cont">No. Cont</th>
                                         @endif
