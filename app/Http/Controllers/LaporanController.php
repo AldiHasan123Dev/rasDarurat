@@ -54,24 +54,30 @@ public function data_rekap_piutang(Request $request)
     $searchString = $request->input('searchString');
     $tglInvFilter = $request->input('tgl_inv');
     $invFilter = $request->input('inv');
+   if ($tglInvFilter && str_contains($tglInvFilter, '2024')) {
+    return collect(); // atau return response()->json([], 200);
+}
+
 
     // Ambil invoice dengan relasi yang diperlukan
-    $orders = Order::with([
-        'tarif.customer:id,nama,top',
-        'transaksi:id,job,total,pph'
-    ])
-    ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
-    ->when($searchField && $searchString, function ($q) use ($searchField, $searchString) {
-        $q->where($searchField, 'like', "%$searchString%");
-    })
-    ->when($tglInvFilter, function ($q) use ($tglInvFilter) {
-        $q->where('invoice_date', 'like', "%$tglInvFilter%");
-    })
-    ->when($invFilter, function ($q) use ($invFilter) {
-        $q->where('invoice', 'like', "%$invFilter%");
-    })
-    ->orderByDesc('created_at')
-    ->get();
+
+$orders = Order::with([
+    'tarif.customer:id,nama,top',
+    'transaksi:id,job,total,pph'
+])
+->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+->when($searchField && $searchString, function ($q) use ($searchField, $searchString) {
+    $q->where($searchField, 'like', "%$searchString%");
+})
+->when($tglInvFilter, function ($q) use ($tglInvFilter) {
+    $q->where('invoice_date', 'like', "%$tglInvFilter%");
+})
+->when($invFilter, function ($q) use ($invFilter) {
+    $q->where('invoice', 'like', "%$invFilter%");
+})
+->orderByDesc('created_at')
+->get();
+
 
     // Index untuk mapping
     $ordersByInvoice = $orders->groupBy('invoice');
