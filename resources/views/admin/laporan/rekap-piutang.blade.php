@@ -143,11 +143,10 @@
         </div>
     </div>
 
-    <div class="container">
+    {{-- <div class="container">
 
         <div class="card">
             <div class="card-body">
-                {{-- Filter Kedua --}}
                 <div class="section-title">Summary Rekap Piutang</div>
                 <div class="row g-3">
                     @php
@@ -166,14 +165,10 @@
                     </div>
 
                     <div class="col-md-3 ms-auto text-end">
-                        {{-- <div class="d-flex justify-content-end gap-2">
-                        <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal1()">Search</button>
-                        <a class="btn btn-sm btn-warning" target="_blank" id="edit-coa1">Edit COA</a>
-                    </div> --}}
                     </div>
                 </div>
 
-                {{-- Grid Kedua --}}
+
                 <div class="table-wrapper">
                     <table id="jqGrid1"></table>
                     <div id="jqGridPager1"></div>
@@ -201,7 +196,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 
