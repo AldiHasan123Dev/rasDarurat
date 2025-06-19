@@ -58,6 +58,8 @@
         <tr>
             <th>ID</th>
             <th>COA</th>
+            <th>No JOB</th>
+            <th>Container</th>
             <th>Keterangan</th>
             <th>Debit</th>
             <th>Credit</th>
@@ -86,7 +88,15 @@
         @endforeach
     </select>
 </td>
+           <td>
+    @if ($j->order)
+        {{ $j->order->job }} - {{  sprintf('%02d', $j->order->no_job) }}
+    @else
+        -
+    @endif
+</td>
 
+            <td>{{ $j->container ?? '-' }}</td>
             <td>{{ $j->nama }}</td>
             <td>{{ number_format($j->debit) }}</td>
             <td>{{ number_format($j->credit) }}</td>
