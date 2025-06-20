@@ -136,7 +136,8 @@ $subtotal = $jurnalN;
         $jumlah_harga = round($subtotal);
         $top = (int)($cust->top ?? 0);
         $invoiceDate = $group->first()->invoice_date;
-        $tempo = Carbon::parse($invoiceDate)->addDays($top);
+        $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
+        $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
           if ($jumlah_harga == 0) {
         return null;
         }
@@ -146,7 +147,7 @@ $subtotal = $jurnalN;
         $sebesar = $jurnal->total_credit ?? 0;
         $kurang_bayar = $jumlah_harga - $sebesar;
         $today = Carbon::now();
-        $daysDiff = $tempo->diffInDays($today, false); // FALSE agar hasil bisa negatif
+        $daysDiff = $tempo1->diffInDays($today, false); // FALSE agar hasil bisa negatif
         $warna_status = '';
 
         // Jika lunas
@@ -174,6 +175,7 @@ $subtotal = $jurnalN;
         }
 
 
+
         return [
             'tanggal' => now()->toDateString(),
             'invoice' => $invoice,
@@ -183,7 +185,7 @@ $subtotal = $jurnalN;
             'top' => $top,
             'ditagih_tgl' => $invoiceDate,
             'tempo' => $tempo,
-            'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top),
+            'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top + 1),
             'dibayar_tgl' => $dibayar_tgl,
             'sebesar' => $sebesar,
             'kurang_bayar' => $kurang_bayar,
