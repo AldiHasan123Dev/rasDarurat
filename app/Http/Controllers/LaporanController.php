@@ -189,7 +189,7 @@ $subtotal = $jurnalN;
             'kurang_bayar' => $kurang_bayar,
             'warna_status' => $warna_status, // <== TAMBAH DI SINI
         ];
-    })->filter()->values();
+    })->filter()->sortByDesc('invoice')->values();
 
     // Filter berdasarkan tanggal ditagih jika ada
     $ditagihFilter = $request->input('ditagih_tgl');
