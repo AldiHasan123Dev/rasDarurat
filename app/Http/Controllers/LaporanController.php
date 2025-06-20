@@ -136,7 +136,7 @@ $subtotal = $jurnalN;
         $jumlah_harga = round($subtotal);
         $top = (int)($cust->top ?? 0);
         $invoiceDate = $group->first()->invoice_date;
-        $tempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');
+        $tempo = Carbon::parse($invoiceDate)->addDays($top);
           if ($jumlah_harga == 0) {
         return null;
         }
@@ -145,7 +145,8 @@ $subtotal = $jurnalN;
         $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
         $sebesar = $jurnal->total_credit ?? 0;
         $kurang_bayar = $jumlah_harga - $sebesar;
-
+        $today = Carbon::now();
+        $daysDiff = $tempo->diffInDays($today, false); // FALSE agar hasil bisa negatif
         $warna_status = '';
 
         // Jika lunas
@@ -157,7 +158,7 @@ $subtotal = $jurnalN;
             $warna_status = 'biru';
         }
         // Jika PPh sama dengan kurang bayar
-        elseif ($pph == $kurang_bayar) {
+        elseif (round($pph)== $kurang_bayar) {
             $warna_status = 'oranye';
         }
         // Jika jatuh tempo dalam 1-4 hari ke depan
@@ -168,7 +169,7 @@ $subtotal = $jurnalN;
             }
         }
         // Jika sudah jatuh tempo
-        elseif (Carbon::parse($tempo)->isPast()) {
+        elseif ($daysDiff > 0) {
             $warna_status = 'merah';
         }
 

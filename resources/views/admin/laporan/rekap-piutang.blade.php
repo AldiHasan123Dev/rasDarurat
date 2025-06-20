@@ -63,6 +63,19 @@
             border-radius: 8px;
             margin-top: 15px;
         }
+      .ui-jqgrid .ui-jqgrid-htable th[id*="kurang_bayar"],
+.ui-jqgrid .ui-jqgrid-htable th[id*="sebesar"],
+.ui-jqgrid .ui-jqgrid-htable th[id*="jumlah_harga"],
+.ui-jqgrid .ui-jqgrid-htable th[id*="pph"] {
+    padding: 5px;
+    text-align: right !important;
+}
+
+.ui-jqgrid .ui-jqgrid-htable th[id*="invoice"] {
+    padding: 5px;
+    text-align: center !important;
+}
+
     </style>
 @endsection
 @section('content')
@@ -265,7 +278,6 @@
                     align: "center",
                     name: 'invoice',
                     width: 80,
-                    align: "center",
                     sortable: true,
                     search: true
                 },
@@ -280,7 +292,7 @@
                 },
                 {
                     label: 'Harga (INC.PPN)',
-                    align: "center",
+                    align: "right",
                     name: 'jumlah_harga',
                     width: 100,
                     align: "right",
@@ -351,7 +363,7 @@
                 },
                 {
                     label: 'Dibayar',
-                    align: "center",
+                    align: "right",
                     name: 'sebesar',
                     width: 100,
                     align: "right",
@@ -365,7 +377,7 @@
                 },
                 {
                     label: 'PPH',
-                    align: "center",
+                    align: "right",
                     name: 'pph',
                     width: 100,
                     align: "right",
@@ -381,20 +393,21 @@
                     name: 'warna_status',
                     hidden: true
                 },
-                {
-                    label: 'Kurang Bayar',
-                    align: "center",
-                    name: 'kurang_bayar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                }
+{
+    label: 'Kurang Bayar',
+    name: 'kurang_bayar',
+    width: 100,
+    align: "right",         // isi cell rata kanan
+    labelAlign: "right",    // label header rata kanan
+    formatter: 'currency',
+    formatoptions: {
+        thousandsSeparator: ',',
+        decimalSeparator: '.',
+        prefix: ''
+    },
+    sortable: true
+}
+
             ],
             autowidth: true,
             shrinkToFit: true,
