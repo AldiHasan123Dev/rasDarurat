@@ -54,12 +54,12 @@ public function data_rekap_piutang(Request $request)
     $searchString = $request->input('searchString');
     $tglInvFilter = $request->input('tgl_inv');
     $invFilter = $request->input('inv');
- if ($tglInvFilter) {
-    $tahun = (int) substr($tglInvFilter, 0, 4);
-    if ($tahun < 2025) {
-        return collect(); // atau response()->json([], 200);
-    }
-}
+//  if ($tglInvFilter) {
+//     $tahun = (int) substr($tglInvFilter, 0, 4);
+//     if ($tahun < 2025) {
+//         return collect(); // atau response()->json([], 200);
+//     }
+// }
 
 
 
