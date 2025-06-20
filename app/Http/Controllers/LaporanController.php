@@ -67,7 +67,12 @@ public function data_rekap_piutang(Request $request)
 
 $orders = Order::with([
     'tarif.customer:id,nama,top',
-    'transaksi:id,job,total,pph'
+    'transaksi:id,job,total,pph',
+    'jurnals' => function ($query) {
+        $query->where('coa_id', 46)
+              ->where('debit', '>', 0)
+              ->select('order_id', 'debit');
+    },
 ])
 ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
 ->when($searchField && $searchString, function ($q) use ($searchField, $searchString) {
@@ -83,14 +88,16 @@ $orders = Order::with([
 ->get();
 
 
+
     // Index untuk mapping
     $ordersByInvoice = $orders->groupBy('invoice');
+    $jurnalNilai = $orders->pluck('jurnals', 'invoice');
     $transaksis = $orders->pluck('transaksi', 'invoice');
     $customers = $orders->pluck('tarif.customer', 'invoice');
 
     // Ambil jurnal dan group by invoice
     $jurnals = Jurnal::withTrashed()
-        ->where('tipe', 'BBM')
+        ->where('coa_id', 46)
         ->whereNull('deleted_at')
         ->where('credit', '!=', 0)
         ->whereNotNull('invoice')
@@ -103,12 +110,16 @@ $orders = Order::with([
         ->get()
         ->keyBy('invoice');
 
+        
+
     // Hitung data rekap
-    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals) {
+    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals,$jurnalNilai) {
         $trans = $transaksis[$invoice] ?? null;
         $cust = $customers[$invoice] ?? null;
+        $jurnalN = $jurnalNilai[$invoice]->first()?->debit ?? 0;
+$subtotal = $jurnalN;
 
-        $subtotal = $trans->total ?? 0;
+        // $subtotal = $trans->total ?? 0;
         $pph = $trans->pph ?? 0;
         $jumlah_harga = round($subtotal);
         $top = (int)($cust->top ?? 0);
