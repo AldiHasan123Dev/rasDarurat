@@ -137,6 +137,9 @@ $subtotal = $jurnalN;
         $top = (int)($cust->top ?? 0);
         $invoiceDate = $group->first()->invoice_date;
         $tempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');
+          if ($jumlah_harga == 0) {
+        return null;
+        }
 
         $jurnal = $jurnals[$invoice] ?? null;
         $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
@@ -185,7 +188,7 @@ $subtotal = $jurnalN;
             'kurang_bayar' => $kurang_bayar,
             'warna_status' => $warna_status, // <== TAMBAH DI SINI
         ];
-    })->values();
+    })->filter()->values();
 
     // Filter berdasarkan tanggal ditagih jika ada
     $ditagihFilter = $request->input('ditagih_tgl');
