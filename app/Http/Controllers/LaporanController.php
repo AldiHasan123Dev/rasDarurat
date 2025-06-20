@@ -67,17 +67,17 @@ public function data_rekap_piutang(Request $request)
 
 $orders = Order::with([
     'tarif.customer:id,nama,top',
-    'transaksi:id,job,total,pph',
+    'transaksi' => function ($query) {
+        $query->whereNotNull('tanggal_kirim')
+              ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+    },
     'jurnals' => function ($query) {
         $query->where('coa_id', 46)
-              ->where('debit', '>', 0)
-              ->select('order_id', 'debit');
+              ->where('debit', '!=', 0)
+              ->select('order_id', 'debit','coa_id');
     },
 ])
 ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
-->when($searchField && $searchString, function ($q) use ($searchField, $searchString) {
-    $q->where($searchField, 'like', "%$searchString%");
-})
 ->when($tglInvFilter, function ($q) use ($tglInvFilter) {
     $q->where('invoice_date', 'like', "%$tglInvFilter%");
 })
@@ -87,6 +87,17 @@ $orders = Order::with([
 ->orderByDesc('created_at')
 ->get();
 
+$jurnalNilaiInv = Jurnal::withTrashed()
+    ->select('invoice', 'order_id', 'debit')
+    ->where('coa_id', 46)
+    ->whereNull('deleted_at')
+    ->where('debit', '!=', 0)
+    ->whereNotNull('invoice')
+    ->get()
+    ->keyBy('invoice');
+
+
+
 
 
     // Index untuk mapping
@@ -94,7 +105,6 @@ $orders = Order::with([
     $jurnalNilai = $orders->pluck('jurnals', 'invoice');
     $transaksis = $orders->pluck('transaksi', 'invoice');
     $customers = $orders->pluck('tarif.customer', 'invoice');
-
     // Ambil jurnal dan group by invoice
     $jurnals = Jurnal::withTrashed()
         ->where('coa_id', 46)
@@ -113,10 +123,10 @@ $orders = Order::with([
         
 
     // Hitung data rekap
-    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals,$jurnalNilai) {
+    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals,$jurnalNilai,$jurnalNilaiInv) {
         $trans = $transaksis[$invoice] ?? null;
         $cust = $customers[$invoice] ?? null;
-        $jurnalN = $jurnalNilai[$invoice]->first()?->debit ?? 0;
+        $jurnalN = $jurnalNilaiInv[$invoice]->debit ?? 0;
 $subtotal = $jurnalN;
 
         // $subtotal = $trans->total ?? 0;
