@@ -88,13 +88,15 @@ $orders = Order::with([
 ->get();
 
 $jurnalNilaiInv = Jurnal::withTrashed()
-    ->select('invoice', 'order_id', 'debit')
+    ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
     ->where('coa_id', 46)
     ->whereNull('deleted_at')
     ->where('debit', '!=', 0)
     ->whereNotNull('invoice')
+    ->groupBy('invoice')
     ->get()
     ->keyBy('invoice');
+
 
 
 
@@ -126,7 +128,7 @@ $jurnalNilaiInv = Jurnal::withTrashed()
     $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals,$jurnalNilai,$jurnalNilaiInv) {
         $trans = $transaksis[$invoice] ?? null;
         $cust = $customers[$invoice] ?? null;
-        $jurnalN = $jurnalNilaiInv[$invoice]->debit ?? 0;
+        $jurnalN = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
 $subtotal = $jurnalN;
 
         // $subtotal = $trans->total ?? 0;
