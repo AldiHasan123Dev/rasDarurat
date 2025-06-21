@@ -42,9 +42,10 @@ class LaporanController extends Controller
     $totalNilaiInvoice = Transaksi::whereNotNull('tanggal_kirim')->sum('total');
     $totalInvoiceCount = Transaksi::whereNotNull('tanggal_kirim')->count('invoice');
     $totalBelumBayar = $totalNilaiInvoice - $totalTelahBayar;
+    $customers = Customer::all();
 
         return view('admin.laporan.rekap-piutang', compact('totalTelahBayar','totalNilaiInvoice',
-        'totalInvoiceCount','totalBelumBayar'));
+        'totalInvoiceCount','totalBelumBayar','customers'));
     }
 public function data_rekap_piutang(Request $request)
 {
@@ -53,6 +54,7 @@ public function data_rekap_piutang(Request $request)
     $searchField = $request->input('searchField');
     $searchString = $request->input('searchString');
     $tglInvFilter = $request->input('tgl_inv');
+    $customersFilter = $request->input('customers');
     $invFilter = $request->input('inv');
 //  if ($tglInvFilter) {
 //     $tahun = (int) substr($tglInvFilter, 0, 4);
@@ -65,29 +67,79 @@ public function data_rekap_piutang(Request $request)
 
     // Ambil invoice dengan relasi yang diperlukan
 
-$orders = Order::with([
-    'tarif.customer:id,nama,top',
-    'transaksi' => function ($query) {
-        $query->whereNotNull('tanggal_kirim')
-              ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
-    },
-    'jurnals' => function ($query) {
-        $query->where('coa_id', 46)
-              ->where('debit', '!=', 0)
-              ->select('order_id', 'debit','coa_id');
-    },
-])
-->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
-->when($tglInvFilter, function ($q) use ($tglInvFilter) {
-    $q->where('invoice_date', 'like', "%$tglInvFilter%");
-})
-->when($invFilter, function ($q) use ($invFilter) {
-    $q->where('invoice', 'like', "%$invFilter%");
-})
-->orderByDesc('created_at')
-->get();
+   if ($customersFilter && !$tglInvFilter && !$invFilter) {
+    // ❗ Hanya filter customer
+    $orders = Order::with([
+            'tarif.customer:id,nama,top',
+            'transaksi' => function ($query) {
+                $query->whereNotNull('tanggal_kirim')
+                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+            },
+            'jurnals' => function ($query) {
+                $query->where('coa_id', 46)
+                      ->where('debit', '!=', 0)
+                      ->select('order_id', 'debit','coa_id');
+            },
+        ])
+        ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
+            $q->where('nama', 'like', "%$customersFilter%");
+        })
+        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->orderByDesc('created_at')
+        ->get();
 
-$jurnalNilaiInv = Jurnal::withTrashed()
+} elseif (!$customersFilter && ($tglInvFilter || $invFilter)) {
+    // ❗ Hanya filter tanggal dan/atau invoice
+    $orders = Order::with([
+            'tarif.customer:id,nama,top',
+            'transaksi' => function ($query) {
+                $query->whereNotNull('tanggal_kirim')
+                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+            },
+            'jurnals' => function ($query) {
+                $query->where('coa_id', 46)
+                      ->where('debit', '!=', 0)
+                      ->select('order_id', 'debit','coa_id');
+            },
+        ])
+        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->when($tglInvFilter, function ($q) use ($tglInvFilter) {
+            $q->where('invoice_date', 'like', "%$tglInvFilter%");
+        })
+        ->when($invFilter, function ($q) use ($invFilter) {
+            $q->where('invoice', 'like', "%$invFilter%");
+        })
+        ->orderByDesc('created_at')
+        ->get();
+
+} elseif ($customersFilter && ($tglInvFilter || $invFilter)) {
+    // ❗ Jika customer dan tanggal/invoice digabung → hanya filter customer saja
+    $orders = Order::with([
+            'tarif.customer:id,nama,top',
+            'transaksi' => function ($query) {
+                $query->whereNotNull('tanggal_kirim')
+                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+            },
+            'jurnals' => function ($query) {
+                $query->where('coa_id', 46)
+                      ->where('debit', '!=', 0)
+                      ->select('order_id', 'debit','coa_id');
+            },
+        ])
+        ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
+            $q->where('nama', 'like', "%$customersFilter%");
+        })
+        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->orderByDesc('created_at')
+        ->get();
+} else {
+    // ❗ Semua filter kosong → kosongkan hasil
+    $orders = collect();
+}
+
+
+
+    $jurnalNilaiInv = Jurnal::withTrashed()
     ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
     ->where('coa_id', 46)
     ->whereNull('deleted_at')
@@ -96,12 +148,6 @@ $jurnalNilaiInv = Jurnal::withTrashed()
     ->groupBy('invoice')
     ->get()
     ->keyBy('invoice');
-
-
-
-
-
-
     // Index untuk mapping
     $ordersByInvoice = $orders->groupBy('invoice');
     $jurnalNilai = $orders->pluck('jurnals', 'invoice');
@@ -129,96 +175,96 @@ $jurnalNilaiInv = Jurnal::withTrashed()
         $trans = $transaksis[$invoice] ?? null;
         $cust = $customers[$invoice] ?? null;
         $jurnalN = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
-$subtotal = $jurnalN;
+        $subtotal = $jurnalN;
 
-        // $subtotal = $trans->total ?? 0;
-        $pph = $trans->pph ?? 0;
-        $jumlah_harga = round($subtotal);
-        $top = (int)($cust->top ?? 0);
-        $invoiceDate = $group->first()->invoice_date;
-        $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
-        $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
-          if ($jumlah_harga == 0) {
-        return null;
-        }
+                // $subtotal = $trans->total ?? 0;
+                $pph = $trans->pph ?? 0;
+                $jumlah_harga = round($subtotal);
+                $top = (int)($cust->top ?? 0);
+                $invoiceDate = $group->first()->invoice_date;
+                $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
+                $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
+                if ($jumlah_harga == 0) {
+                return null;
+                }
 
-        $jurnal = $jurnals[$invoice] ?? null;
-        $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
-        $sebesar = $jurnal->total_credit ?? 0;
-        $kurang_bayar = $jumlah_harga - $sebesar;
-        $today = Carbon::now();
-        $daysDiff = $tempo1->diffInDays($today, false); // FALSE agar hasil bisa negatif
-        $warna_status = '';
+                $jurnal = $jurnals[$invoice] ?? null;
+                $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
+                $sebesar = $jurnal->total_credit ?? 0;
+                $kurang_bayar = $jumlah_harga - $sebesar;
+                $today = Carbon::now();
+                $daysDiff = $tempo1->diffInDays($today, false); // FALSE agar hasil bisa negatif
+                $warna_status = '';
 
-        // Jika lunas
-        if ($kurang_bayar == 0) {
-            $warna_status = 'hijau';
-        }
+                // Jika lunas
+                if ($kurang_bayar == 0) {
+                    $warna_status = 'hijau';
+                }
 
-         elseif ($kurang_bayar < 0) {
-            $warna_status = 'biru';
-        }
-        // Jika PPh sama dengan kurang bayar
-        elseif (round($pph)== $kurang_bayar) {
-            $warna_status = 'oranye';
-        }
-        // Jika jatuh tempo dalam 1-4 hari ke depan
-        elseif (Carbon::parse($tempo)->isFuture()) {
-            $daysDiff = Carbon::now()->diffInDays(Carbon::parse($tempo), false);
-            if ($daysDiff > 0 && $daysDiff <= 4) {
-                $warna_status = 'kuning';
+                elseif ($kurang_bayar < 0) {
+                    $warna_status = 'biru';
+                }
+                // Jika PPh sama dengan kurang bayar
+                elseif (round($pph)== $kurang_bayar) {
+                    $warna_status = 'oranye';
+                }
+                // Jika jatuh tempo dalam 1-4 hari ke depan
+                elseif (Carbon::parse($tempo)->isFuture()) {
+                    $daysDiff = Carbon::now()->diffInDays(Carbon::parse($tempo), false);
+                    if ($daysDiff > 0 && $daysDiff <= 4) {
+                        $warna_status = 'kuning';
+                    }
+                }
+                // Jika sudah jatuh tempo
+                elseif ($daysDiff > 0) {
+                    $warna_status = 'merah';
+                }
+
+
+
+                return [
+                    'tanggal' => now()->toDateString(),
+                    'invoice' => $invoice,
+                    'customer' => $cust->nama ?? '-',
+                    'jumlah_harga' => $jumlah_harga,
+                    'pph' => round($pph),
+                    'top' => $top,
+                    'ditagih_tgl' => $invoiceDate,
+                    'tempo' => $tempo,
+                    'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top + 1),
+                    'dibayar_tgl' => $dibayar_tgl,
+                    'sebesar' => $sebesar,
+                    'kurang_bayar' => $kurang_bayar,
+                    'warna_status' => $warna_status, // <== TAMBAH DI SINI
+                ];
+            })->filter()->sortByDesc('invoice')->values();
+
+            // Filter berdasarkan tanggal ditagih jika ada
+            $ditagihFilter = $request->input('ditagih_tgl');
+            if ($ditagihFilter) {
+                $rekapData = $rekapData->filter(function ($row) use ($ditagihFilter) {
+                    return Str::contains($row['ditagih_tgl'], $ditagihFilter);
+                })->values();
+            }
+            
+            // Tambahkan filter dari jqGrid (khusus untuk warna_status)
+        $filters = $request->input('filters');
+        if ($filters) {
+            $filterRules = json_decode($filters, true)['rules'] ?? [];
+            foreach ($filterRules as $rule) {
+                if ($rule['field'] === 'warna_status') {
+                    $value = $rule['data'];
+                    $rekapData = $rekapData->filter(fn($item) => $item['warna_status'] === $value)->values();
+                }
             }
         }
-        // Jika sudah jatuh tempo
-        elseif ($daysDiff > 0) {
-            $warna_status = 'merah';
-        }
-
-
-
-        return [
-            'tanggal' => now()->toDateString(),
-            'invoice' => $invoice,
-            'customer' => $cust->nama ?? '-',
-            'jumlah_harga' => $jumlah_harga,
-            'pph' => round($pph),
-            'top' => $top,
-            'ditagih_tgl' => $invoiceDate,
-            'tempo' => $tempo,
-            'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top + 1),
-            'dibayar_tgl' => $dibayar_tgl,
-            'sebesar' => $sebesar,
-            'kurang_bayar' => $kurang_bayar,
-            'warna_status' => $warna_status, // <== TAMBAH DI SINI
-        ];
-    })->filter()->sortByDesc('invoice')->values();
-
-    // Filter berdasarkan tanggal ditagih jika ada
-    $ditagihFilter = $request->input('ditagih_tgl');
-    if ($ditagihFilter) {
-        $rekapData = $rekapData->filter(function ($row) use ($ditagihFilter) {
-            return Str::contains($row['ditagih_tgl'], $ditagihFilter);
-        })->values();
-    }
-    
-    // Tambahkan filter dari jqGrid (khusus untuk warna_status)
-$filters = $request->input('filters');
-if ($filters) {
-    $filterRules = json_decode($filters, true)['rules'] ?? [];
-    foreach ($filterRules as $rule) {
-        if ($rule['field'] === 'warna_status') {
-            $value = $rule['data'];
-            $rekapData = $rekapData->filter(fn($item) => $item['warna_status'] === $value)->values();
-        }
-    }
-}
-// Pagination
-    $totalRecords = $rekapData->count();
-    $indexStart = ($page - 1) * $rows;
-    $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
-        $item['no'] = $indexStart + $index + 1;
-        return $item;
-    });
+        // Pagination
+            $totalRecords = $rekapData->count();
+            $indexStart = ($page - 1) * $rows;
+            $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
+                $item['no'] = $indexStart + $index + 1;
+                return $item;
+            });
 
     return response()->json([
         'rows' => $paginated,

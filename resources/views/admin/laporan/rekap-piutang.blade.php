@@ -2,6 +2,9 @@
 @section('style')
     <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" />
+    <!-- CSS Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 
     <style>
@@ -156,6 +159,50 @@
         </div>
     </div>
 
+
+    <div class="container">
+
+        <div class="card">
+            <div class="card-body">
+                {{-- Filter Kedua --}}
+                  <div class="col-md-3">
+<div class="col-md-12">
+    <label class="form-label">Cari Berdasarkan Customers</label>
+    <select id="customers" name="customers" class="form-control" style="width: 100%;">
+        <option value="">-- Pilih Customer --</option>
+        @foreach ($customers as $c)
+            <option value="{{ $c->nama }}" {{ request('customers') == $c->nama ? 'selected' : '' }}>
+                {{ $c->nama }}
+            </option>
+        @endforeach
+    </select>
+</div>
+
+                    <div class="col-md-6 mb-5 text-end">
+                        <label class="form-label d-block">&nbsp;</label> {{-- spacing --}}
+                        <div class="d-flex gap-2 mb-2">
+                            <button class="btn btn-sm btn-danger" onclick="filterWarna1('merah')">Merah</button>
+                            <button class="btn btn-sm btn-warning" onclick="filterWarna1('kuning')">Kuning</button>
+                            <button class="btn btn-sm btn-orange text-white" style="background-color: #ff9d00;"
+                                onclick="filterWarna1('oranye')">Oranye</button>
+                            <button class="btn btn-sm btn-success" onclick="filterWarna1('hijau')">Hijau</button>
+                            <button class="btn btn-sm btn-primary" onclick="filterWarna1('biru')">Biru</button>
+                            <button class="btn btn-sm btn-secondary" onclick="filterWarna1('')">Reset</button>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                {{-- Grid Kedua --}}
+                <div class="table-wrapper">
+                    <table id="jqGrid1"></table>
+                    <div id="jqGridPager1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- <div class="container">
 
         <div class="card">
@@ -214,9 +261,24 @@
 
 
 @section('script')
+<!-- JS Select2 dan jQuery (jika belum ada) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
     <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
     <script src="{{ asset('assets/js/resize-column.js') }}"></script>
+    <script>
+       $(document).ready(function() {
+    $('#customers').select2({
+        placeholder: '-- Pilih Customer --',
+        allowClear: true,
+        width: '100%' // bukan 'resolve', agar 100%
+    });
+});
+
+
+    </script>
     <script>
         $(document).ready(function() {
             function reloadGridWithFilters() {
@@ -237,21 +299,25 @@
     </script>
 
     <script>
-        $(document).ready(function() {
-            function reloadGridWithFilters() {
-                $("#jqGrid1").jqGrid('setGridParam', {
-                    datatype: 'json',
-                    postData: {
-                        thn_inv: $('#thn_inv').val(),
-                    },
-                    page: 1
-                }).trigger('reloadGrid');
-            }
+      $(document).ready(function() {
+    function reloadGridWithFilters(customersValue = null) {
+        const customers = customersValue ?? $('#customers').val(); // fallback ke value select jika tidak dikirim
 
-            $('#thn_inv').on('change', function() {
-                reloadGridWithFilters();
-            });
-        });
+        $("#jqGrid1").jqGrid('setGridParam', {
+            datatype: 'json',
+            postData: {
+                customers: customers
+            },
+            page: 1
+        }).trigger('reloadGrid');
+    }
+
+    $('#customers').on('change', function() {
+        const selectedCustomer = $(this).val();
+        reloadGridWithFilters(selectedCustomer); // kirim value yang dipilih ke fungsi
+    });
+});
+
     </script>
 
 
@@ -514,72 +580,154 @@
             }).trigger("reloadGrid");
         }
 
-
-
-
-        $("#jqGrid1").jqGrid({
-            url: '{{ route('data-rekap-total.piutang') }}',
+         $("#jqGrid1").jqGrid({
+            url: '{{ route('data-rekap.piutang') }}',
             mtype: 'GET',
             postData: {
-                thn_inv: function() {
-                    return $('#thn_inv').val();
+                customers: function() {
+                    return $('#customers').val();
                 }
             },
             datatype: 'json',
             colModel: [{
-                    label: 'No',
-                    name: 'no',
-                    width: 30,
-                    align: "center",
-                    sortable: false
+                    name: 'id',
+                    hidden: true
                 },
                 {
-                    label: 'Bulan',
-                    name: 'bulan',
-                    width: 40,
+                    label: 'Invoice',
                     align: "center",
-                    sortable: true
+                    name: 'invoice',
+                    width: 80,
+                    sortable: true,
+                    search: true
                 },
                 {
-                    label: 'Jumlah Invoice',
-                    name: 'total_invoice',
-                    width: 40,
+                    label: 'Nama Customer',
                     align: "center",
-                    sortable: true
-                },
-                {
-                    label: 'Nilai Invoice',
-                    name: 'nilai_invoice',
+                    name: 'customer',
                     width: 120,
+                    align: "left",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Harga (INC.PPN)',
+                    align: "right",
+                    name: 'jumlah_harga',
+                    width: 100,
                     align: "right",
                     formatter: 'currency',
                     formatoptions: {
-                        thousandsSeparator: ','
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
                     },
                     sortable: true
+                },
+                {
+                    name: 'tanggal',
+                    align: "center",
+                    label: 'Tanggal',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    hidden: true
+                },
+                {
+                    label: 'TGL Invoice',
+                    align: "center",
+                    name: 'ditagih_tgl',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'TOP',
+                    align: "center",
+                    name: 'top',
+                    width: 30,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Jatuh Tempo TGL',
+                    align: "center",
+                    name: 'tempo',
+                    width: 80,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar TGL',
+                    align: "center",
+                    name: 'dibayar_tgl',
+                    width: 50,
+                    align: "center",
+                    sortable: true,
+                    search: true
                 },
                 {
                     label: 'Dibayar',
-                    name: 'telah_bayar',
-                    width: 120,
+                    align: "right",
+                    name: 'sebesar',
+                    width: 100,
                     align: "right",
                     formatter: 'currency',
                     formatoptions: {
-                        thousandsSeparator: ','
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
                     },
                     sortable: true
                 },
                 {
-                    label: 'Belum Dibayar',
-                    name: 'belum_dibayar',
-                    width: 120,
+                    label: 'PPH',
+                    align: "right",
+                    name: 'pph',
+                    width: 100,
                     align: "right",
                     formatter: 'currency',
                     formatoptions: {
-                        thousandsSeparator: ','
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
                     },
                     sortable: true
-                }
+                },
+                {
+                    name: 'warna_status',
+                    hidden: true
+                },
+{
+    label: 'Kurang Bayar',
+    name: 'kurang_bayar',
+    width: 100,
+    align: "right",         // isi cell rata kanan
+    labelAlign: "right",    // label header rata kanan
+    formatter: 'currency',
+    formatoptions: {
+        thousandsSeparator: ',',
+        decimalSeparator: '.',
+        prefix: ''
+    },
+    sortable: true
+}
+
             ],
             autowidth: true,
             shrinkToFit: true,
@@ -597,30 +745,62 @@
                 total: "total",
                 records: "records"
             },
-
-            loadComplete: function(data) {
-                // Mengambil nilai sum_telah_bayar dari luar rows
-                var sumTelahBayar = data.sum_telah_bayar;
-                var sumBelumBayar = data.sum_belum_bayar;
-                var countInvoice = data.count_invoice;
-                var sumInvoice = data.sum_nilai_invoice;
-
-                // Menambahkan sum_telah_bayar ke footer
-                $("#jqGrid1").jqGrid('footerData', 'set', {
-                    "bulan": "Sub Total",
-                    "total_invoice": countInvoice,
-                    "telah_bayar": sumTelahBayar,
-                    "belum_dibayar": sumBelumBayar,
-                    "nilai_invoice": sumInvoice // Menampilkan sum_telah_bayar di footer
-                });
-            },
-            footerrow: true,
-            userDataOnFooter: true,
-
             onCellSelect: function(rowId, iRow, iCol, e) {
                 let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+            },
+            rowattr: function(rowData) {
+                if (!rowData.tempo) return {}; // Jika tidak ada tempo, tidak ada warna
+
+                let today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+                let selisih = rowData.pph - rowData.kurang_bayar;
+
+                let timeDiff = new Date(rowData.tempo) - new Date();
+                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                // Jika kurang bayar = 0, semua kondisi tetap hijau
+                if (parseFloat(rowData.kurang_bayar) === 0) {
+                    return {
+                        "style": "background-color: #3fae43; color: white;"
+                    };
+                }
+
+                if (parseFloat(rowData.kurang_bayar) < 0) {
+                    return {
+                        "style": "background-color: #0099ff;; color: white;"
+                    };
+                }
+
+                if (selisih === 0) {
+                    return {
+                        "style": "background-color: #ff9d00; color: white;"
+                    };
+                }
+
+                // Jika TOP = 0 dan jatuh tempo hari ini, tidak diberi warna
+                if (parseInt(rowData.top) === 0 && tempoDate === today) {
+                    return {};
+                }
+
+                // Warna oranye untuk jatuh tempo dalam 1-3 hari
+                if (daysDiff > 0 && daysDiff <= 4) {
+                    return {
+                        "style": "background-color: #ffd503; color: white;"
+                    };
+                }
+
+                // Warna merah jika sudah jatuh tempo atau jatuh tempo hari ini
+                if (daysDiff < 0) {
+                    return {
+                        "style": "background-color: red; color: white;"
+                    };
+                }
+
+                return {};
             }
         });
+
 
         // Navigation
         $('#jqGrid1').jqGrid('navGrid', "#jqGridPager1", {
@@ -633,5 +813,145 @@
 
         // Frozen columns
         $("#jqGrid1").jqGrid('setFrozenColumns');
+
+        // Live Search
+        function filterWarna1(warna) {
+            let grid = $("#jqGrid1");
+            let postData = grid.jqGrid('getGridParam', 'postData');
+
+            postData.filters = JSON.stringify({
+                groupOp: "AND",
+                rules: warna ? [{
+                    field: "warna_status",
+                    op: "eq",
+                    data: warna
+                }] : []
+            });
+
+            grid.jqGrid('setGridParam', {
+                search: true,
+                postData: postData
+            }).trigger("reloadGrid");
+        }
+
+
+
+
+        // $("#jqGrid1").jqGrid({
+        //     url: '{{ route('data-rekap-total.piutang') }}',
+        //     mtype: 'GET',
+        //     postData: {
+        //         thn_inv: function() {
+        //             return $('#thn_inv').val();
+        //         }
+        //     },
+        //     datatype: 'json',
+        //     colModel: [{
+        //             label: 'No',
+        //             name: 'no',
+        //             width: 30,
+        //             align: "center",
+        //             sortable: false
+        //         },
+        //         {
+        //             label: 'Bulan',
+        //             name: 'bulan',
+        //             width: 40,
+        //             align: "center",
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Jumlah Invoice',
+        //             name: 'total_invoice',
+        //             width: 40,
+        //             align: "center",
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Nilai Invoice',
+        //             name: 'nilai_invoice',
+        //             width: 120,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ','
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Dibayar',
+        //             name: 'telah_bayar',
+        //             width: 120,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ','
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Belum Dibayar',
+        //             name: 'belum_dibayar',
+        //             width: 120,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ','
+        //             },
+        //             sortable: true
+        //         }
+        //     ],
+        //     autowidth: true,
+        //     shrinkToFit: true,
+        //     height: 'auto',
+        //     loadonce: false,
+        //     rowNum: 150,
+        //     rowList: [150, 500, 1000],
+        //     viewrecords: true,
+        //     pager: "#jqGridPager1",
+        //     caption: "Jurnal List",
+        //     jsonReader: {
+        //         repeatitems: false,
+        //         root: "rows",
+        //         page: "page",
+        //         total: "total",
+        //         records: "records"
+        //     },
+
+        //     loadComplete: function(data) {
+        //         // Mengambil nilai sum_telah_bayar dari luar rows
+        //         var sumTelahBayar = data.sum_telah_bayar;
+        //         var sumBelumBayar = data.sum_belum_bayar;
+        //         var countInvoice = data.count_invoice;
+        //         var sumInvoice = data.sum_nilai_invoice;
+
+        //         // Menambahkan sum_telah_bayar ke footer
+        //         $("#jqGrid1").jqGrid('footerData', 'set', {
+        //             "bulan": "Sub Total",
+        //             "total_invoice": countInvoice,
+        //             "telah_bayar": sumTelahBayar,
+        //             "belum_dibayar": sumBelumBayar,
+        //             "nilai_invoice": sumInvoice // Menampilkan sum_telah_bayar di footer
+        //         });
+        //     },
+        //     footerrow: true,
+        //     userDataOnFooter: true,
+
+        //     onCellSelect: function(rowId, iRow, iCol, e) {
+        //         let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+        //     }
+        // });
+
+        // // Navigation
+        // $('#jqGrid1').jqGrid('navGrid', "#jqGridPager1", {
+        //     search: false,
+        //     add: false,
+        //     edit: false,
+        //     del: false,
+        //     refresh: true
+        // });
+
+        // // Frozen columns
+        // $("#jqGrid1").jqGrid('setFrozenColumns');
     </script>
 @endsection
