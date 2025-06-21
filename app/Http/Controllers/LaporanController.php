@@ -42,7 +42,7 @@ class LaporanController extends Controller
     $totalNilaiInvoice = Transaksi::whereNotNull('tanggal_kirim')->sum('total');
     $totalInvoiceCount = Transaksi::whereNotNull('tanggal_kirim')->count('invoice');
     $totalBelumBayar = $totalNilaiInvoice - $totalTelahBayar;
-    $customers = Customer::all();
+    $customers = Customer::select('nama')->distinct()->get();
 
         return view('admin.laporan.rekap-piutang', compact('totalTelahBayar','totalNilaiInvoice',
         'totalInvoiceCount','totalBelumBayar','customers'));
