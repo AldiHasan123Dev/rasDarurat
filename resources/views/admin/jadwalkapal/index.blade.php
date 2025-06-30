@@ -28,8 +28,8 @@
                                 <th>Etd</th>
                                 <th>Td</th>
                                 {{-- <th>BA Kirim</th> --}}
-                                <th>Keterangan</th>
                                 <th>Eta</th>
+                                <th>Keterangan</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -87,8 +87,8 @@
                 { data: 'etd', name: 'etd' },
                 { data: 'td', name: 'td' },
                 // { data: 'ba_kirim', name: 'ba_kirim' },
-                { data: 'keterangan', name: 'keterangan' },
                 { data: 'eta', name: 'eta' },
+                { data: 'keterangan', name: 'keterangan' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
