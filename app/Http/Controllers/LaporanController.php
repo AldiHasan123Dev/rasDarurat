@@ -47,7 +47,8 @@ class LaporanController extends Controller
         return view('admin.laporan.rekap-piutang', compact('totalTelahBayar','totalNilaiInvoice',
         'totalInvoiceCount','totalBelumBayar','customers'));
     }
-public function data_rekap_piutang(Request $request)
+
+    public function data_rekap_piutang_addcost(Request $request)
 {
     $page = $request->input('page', 1);
     $rows = $request->input('rows', 20);
@@ -56,15 +57,159 @@ public function data_rekap_piutang(Request $request)
     $tglInvFilter = $request->input('tgl_inv');
     $customersFilter = $request->input('customers');
     $invFilter = $request->input('inv');
-//  if ($tglInvFilter) {
-//     $tahun = (int) substr($tglInvFilter, 0, 4);
-//     if ($tahun < 2025) {
-//         return collect(); // atau response()->json([], 200);
-//     }
-// }
+
+    // Ambil total debit per invoice
+    $jurnalInvX = Jurnal::withTrashed()
+        ->select('order_id', 'invoice_external', \DB::raw('SUM(debit) as total_debit'))
+        ->where('coa_id', 46)
+        ->whereNull('deleted_at')
+        ->where('debit', '!=', 0)
+        ->whereNotNull('invoice_external')
+        ->groupBy('invoice_external', 'order_id')
+        ->get()
+        ->keyBy('invoice_external');
+
+    // Ambil total credit dan daftar tanggal bayar per invoice
+    $jurnals = Jurnal::withTrashed()
+        ->where('coa_id', 46)
+        ->whereNull('deleted_at')
+        ->where('credit', '!=', 0)
+        ->whereNotNull('invoice_external')
+        ->select(
+            'order_id',
+            'invoice_external',
+            \DB::raw('SUM(credit) as total_credit'),
+            \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+        )
+        ->groupBy('invoice_external', 'order_id')
+        ->get()
+        ->keyBy('invoice_external');
+
+    // Group data berdasarkan invoice_external
+    $ordersByInvoice = $jurnalInvX->groupBy('invoice_external');
+
+    // Ambil total_credit dan order_id untuk setiap invoice_external
+    $jurnalNilai = $jurnals->mapWithKeys(function ($item) {
+        return [
+            $item->invoice_external => [
+                'order_id' => $item->order_id,
+                'total_credit' => $item->total_credit,
+            ]
+        ];
+    });
+
+    // Ambil data customer dari relasi order.tarif.customer
+    $customers = $jurnalInvX->pluck('order.tarif.customer', 'invoice_external');
+
+    // Proses rekap per invoice
+    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($customers, $jurnals, $jurnalInvX) {
+        $cust = $customers[$invoice] ?? null;
+        if (!$cust || !$cust->nama) {
+    return null; // Lewati jika customer tidak ditemukan
+}
+        $jurnalDebit = $jurnalInvX[$invoice]->total_debit ?? 0;
+
+        $jumlah_harga = round($jurnalDebit);
+        $top = (int)($cust->top ?? 0);
+       $invoiceDates = $group->first()->created_at ?? null;
 
 
 
+$invoiceDate = Carbon::parse($invoiceDates)->subDay();
+
+
+        $tempoDate = Carbon::parse($invoiceDate)->addDays($top);
+        $tempoFormatted = $tempoDate->format('Y-m-d');
+
+        $jurnal = $jurnals[$invoice] ?? null;
+        $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
+        $sebesar = $jurnal->total_credit ?? 0;
+        $kurang_bayar = $jumlah_harga - $sebesar;
+
+        $today = Carbon::now();
+        $daysDiff = $tempoDate->diffInDays($today, false);
+        $warna_status = '';
+
+        if ($kurang_bayar == 0) {
+            $warna_status = 'hijau';
+        } elseif ($kurang_bayar < 0) {
+            $warna_status = 'biru';
+        } elseif ($tempoDate->isFuture()) {
+            $diff = Carbon::now()->diffInDays($tempoDate, false);
+            if ($diff > 0 && $diff <= 4) {
+                $warna_status = 'kuning';
+            }
+        } elseif ($daysDiff > 0) {
+            $warna_status = 'merah';
+        }
+
+        return [
+            'tanggal' => now()->toDateString(),
+            'invoice_external' => $invoice,
+            'customer' => $cust->nama ?? '-',
+            'jumlah_harga' => $jumlah_harga,
+            'top' => $top,
+            'ditagih_tgl' => $invoiceDate,
+            'tempo' => $tempoFormatted,
+            'hitung_tempo' => $tempoDate->copy()->addDay()->format('Y-m-d'),
+            'dibayar_tgl' => $dibayar_tgl,
+            'sebesar' => $sebesar,
+            'kurang_bayar' => $kurang_bayar,
+            'warna_status' => $warna_status,
+        ];
+    })->filter()->sortByDesc('invoice_external')->values();
+
+    // Filter berdasarkan tanggal ditagih
+    if ($ditagihFilter = $request->input('ditagih_tgl')) {
+        $rekapData = $rekapData->filter(function ($row) use ($ditagihFilter) {
+            return Str::contains($row['ditagih_tgl'], $ditagihFilter);
+        })->values();
+    }
+
+    // Filter warna_status dari jqGrid
+    if ($filters = $request->input('filters')) {
+        $filterRules = json_decode($filters, true)['rules'] ?? [];
+        foreach ($filterRules as $rule) {
+            if ($rule['field'] === 'warna_status') {
+                $value = $rule['data'];
+                $rekapData = $rekapData->filter(fn($item) => $item['warna_status'] === $value)->values();
+            }
+        }
+    }
+
+     $totalRecords = $rekapData->count();
+            $indexStart = ($page - 1) * $rows;
+            $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
+                $item['no'] = $indexStart + $index + 1;
+                return $item;
+            });
+
+    return response()->json([
+        'rows' => $paginated,
+        'current_page' => $page,
+        'last_page' => ceil($totalRecords / $rows),
+        'total' => $totalRecords,
+        'records' => $totalRecords,
+    ]);
+    // Tampilkan hasil akhir
+}
+
+
+public function data_rekap_piutang(Request $request)
+    {
+    $page = $request->input('page', 1);
+    $rows = $request->input('rows', 20);
+    $searchField = $request->input('searchField');
+    $searchString = $request->input('searchString');
+    $tglInvFilter = $request->input('tgl_inv');
+    $customersFilter = $request->input('customers');
+    $invFilter = $request->input('inv');
+    //  if ($tglInvFilter) {
+    //     $tahun = (int) substr($tglInvFilter, 0, 4);
+    //     if ($tahun < 2025) {
+    //         return collect(); // atau response()->json([], 200);
+    //     }
+    // }
     // Ambil invoice dengan relasi yang diperlukan
 
    if ($customersFilter && !$tglInvFilter && !$invFilter) {
@@ -86,7 +231,11 @@ public function data_rekap_piutang(Request $request)
         })
         ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
         ->orderByDesc('created_at')
-        ->get();
+        ->get()
+        ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        return $order;
+    });
 
 } elseif (!$customersFilter && ($tglInvFilter || $invFilter)) {
     // ❗ Hanya filter tanggal dan/atau invoice
@@ -99,7 +248,7 @@ public function data_rekap_piutang(Request $request)
             'jurnals' => function ($query) {
                 $query->where('coa_id', 46)
                       ->where('debit', '!=', 0)
-                      ->select('order_id', 'debit','coa_id');
+                     ->select('order_id', 'debit','coa_id','created_at');
             },
         ])
         ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
@@ -110,7 +259,11 @@ public function data_rekap_piutang(Request $request)
             $q->where('invoice', 'like', "%$invFilter%");
         })
         ->orderByDesc('created_at')
-        ->get();
+        ->get()
+        ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        return $order;
+    });
 
 } elseif ($customersFilter && ($tglInvFilter || $invFilter)) {
     // ❗ Jika customer dan tanggal/invoice digabung → hanya filter customer saja
@@ -131,13 +284,36 @@ public function data_rekap_piutang(Request $request)
         })
         ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
         ->orderByDesc('created_at')
-        ->get();
-} else {
+        ->get()
+        ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        return $order;
+        });
+} elseif (request('full')) {
+
+    $orders = Order::with([
+            'tarif.customer:id,nama,top',
+            'transaksi' => function ($query) {
+                $query->whereNotNull('tanggal_kirim')
+                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+            },
+            'jurnals' => function ($query) {
+                $query->where('coa_id', 46)
+                      ->where('debit', '!=', 0)
+                      ->select('order_id', 'debit','coa_id');
+            },
+        ])
+        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->orderByDesc('created_at')
+        ->get()
+        ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        return $order;
+    });;
     // ❗ Semua filter kosong → kosongkan hasil
+} else {
     $orders = collect();
 }
-
-
 
     $jurnalNilaiInv = Jurnal::withTrashed()
     ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
@@ -181,7 +357,7 @@ public function data_rekap_piutang(Request $request)
                 $pph = $trans->pph ?? 0;
                 $jumlah_harga = round($subtotal);
                 $top = (int)($cust->top ?? 0);
-                $invoiceDate = $group->first()->invoice_date;
+                $invoiceDate = $group->first()->tanggal_kirim;
                 $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
                 $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
                 if ($jumlah_harga == 0) {
@@ -238,6 +414,30 @@ public function data_rekap_piutang(Request $request)
                     'warna_status' => $warna_status, // <== TAMBAH DI SINI
                 ];
             })->filter()->sortByDesc('invoice')->values();
+
+            if (request('full')) {
+    $rekapData = $rekapData->sortBy([
+        ['customer', 'asc'],
+        ['invoice', 'asc'],
+    ])->values();
+
+    $filters = request()->input('filters');
+    if ($filters) {
+        $filterRules = json_decode($filters, true)['rules'] ?? [];
+        foreach ($filterRules as $rule) {
+            if ($rule['field'] === 'warna_status') {
+                $value = $rule['data'];
+                $rekapData = $rekapData->filter(fn($item) => $item['warna_status'] === $value)->values();
+            }
+        }
+    } else {
+        // Jika tidak ada filter, default filter ke warna_status merah
+        $rekapData = $rekapData->filter(fn($item) => $item['warna_status'] === 'merah')->values();
+    }
+} else {
+    $rekapData = $rekapData->sortByDesc('invoice')->values();
+}
+
 
             // Filter berdasarkan tanggal ditagih jika ada
             $ditagihFilter = $request->input('ditagih_tgl');

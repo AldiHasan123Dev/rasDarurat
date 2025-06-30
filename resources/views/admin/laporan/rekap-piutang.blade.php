@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/resize-column.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" />
     <!-- CSS Select2 -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
 
@@ -66,23 +66,134 @@
             border-radius: 8px;
             margin-top: 15px;
         }
-      .ui-jqgrid .ui-jqgrid-htable th[id*="kurang_bayar"],
-.ui-jqgrid .ui-jqgrid-htable th[id*="sebesar"],
-.ui-jqgrid .ui-jqgrid-htable th[id*="jumlah_harga"],
-.ui-jqgrid .ui-jqgrid-htable th[id*="pph"] {
-    padding: 5px;
-    text-align: right !important;
-}
 
-.ui-jqgrid .ui-jqgrid-htable th[id*="invoice"] {
-    padding: 5px;
-    text-align: center !important;
-}
+        .ui-jqgrid .ui-jqgrid-htable th[id*="kurang_bayar"],
+        .ui-jqgrid .ui-jqgrid-htable th[id*="sebesar"],
+        .ui-jqgrid .ui-jqgrid-htable th[id*="jumlah_harga"],
+        .ui-jqgrid .ui-jqgrid-htable th[id*="pph"] {
+            padding: 5px;
+            text-align: right !important;
+        }
 
+        .ui-jqgrid .ui-jqgrid-htable th[id*="invoice"] {
+            padding: 5px;
+            text-align: center !important;
+        }
     </style>
 @endsection
 @section('content')
-    <div class="container">
+ <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="section-title">Rekap Piutang (Belum Bayar)</div>
+                {{-- Filter Kedua --}}
+                <div class="col-md-3">
+
+                    {{-- <div class="col-md-6 mb-5 text-end">
+                        <label class="form-label d-block">&nbsp;</label> 
+                        <div class="d-flex gap-2 mb-2">
+                            <button class="btn btn-sm btn-danger" onclick="filterWarna2('merah')">Merah</button>
+                            <button class="btn btn-sm btn-warning" onclick="filterWarna2('kuning')">Kuning</button>
+                            <button class="btn btn-sm btn-orange text-white" style="background-color: #ff9d00;"
+                                onclick="filterWarna2('oranye')">Oranye</button>
+                            <button class="btn btn-sm btn-success" onclick="filterWarna2('hijau')">Hijau</button>
+                            <button class="btn btn-sm btn-primary" onclick="filterWarna2('biru')">Biru</button>
+                            <button class="btn btn-sm btn-secondary" onclick="filterWarna2('')">Reset</button>
+                        </div>
+
+                    </div> --}}
+                </div>
+
+
+                {{-- Grid Kedua --}}
+                <div class="table-wrapper">
+                    <table id="jqGrid2"></table>
+                    <div id="jqGridPager2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <div class="container mt-5">
+
+        <div class="card">
+            <div class="card-body">
+                <div class="section-title">Rekap Piutang Add Cost</div>
+                {{-- Filter Kedua --}}
+                <div class="col-md-3">
+
+                    <div class="col-md-6 mb-5 text-end">
+                        <label class="form-label d-block">&nbsp;</label> {{-- spacing --}}
+                        <div class="d-flex gap-2 mb-2">
+                            <button class="btn btn-sm btn-danger" onclick="filterWarna3('merah')">Merah</button>
+                            <button class="btn btn-sm btn-warning" onclick="filterWarna3('kuning')">Kuning</button>
+                            <button class="btn btn-sm btn-orange text-white" style="background-color: #ff9d00;"
+                                onclick="filterWarna3('oranye')">Oranye</button>
+                            <button class="btn btn-sm btn-success" onclick="filterWarna3('hijau')">Hijau</button>
+                            <button class="btn btn-sm btn-primary" onclick="filterWarna3('biru')">Biru</button>
+                            <button class="btn btn-sm btn-secondary" onclick="filterWarna3('')">Reset</button>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                {{-- Grid Kedua --}}
+                <div class="table-wrapper">
+                    <table id="jqGrid3"></table>
+                    <div id="jqGridPager3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-5">
+
+        <div class="card">
+            <div class="card-body">
+                {{-- Filter Kedua --}}
+                <div class="section-title">Rekap Piutang (Berdasarkan Customer)</div>
+                <div class="col-md-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Cari Berdasarkan Customers</label>
+                        <select id="customers" name="customers" class="form-control" style="width: 100%;">
+                            <option value="">-- Pilih Customer --</option>
+                            @foreach ($customers as $c)
+                                <option value="{{ $c->nama }}"
+                                    {{ request('customers') == $c->nama ? 'selected' : '' }}>
+                                    {{ $c->nama }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 mb-5 text-end">
+                        <label class="form-label d-block">&nbsp;</label> {{-- spacing --}}
+                        <div class="d-flex gap-2 mb-2">
+                            <button class="btn btn-sm btn-danger" onclick="filterWarna1('merah')">Merah</button>
+                            <button class="btn btn-sm btn-warning" onclick="filterWarna1('kuning')">Kuning</button>
+                            <button class="btn btn-sm btn-orange text-white" style="background-color: #ff9d00;"
+                                onclick="filterWarna1('oranye')">Oranye</button>
+                            <button class="btn btn-sm btn-success" onclick="filterWarna1('hijau')">Hijau</button>
+                            <button class="btn btn-sm btn-primary" onclick="filterWarna1('biru')">Biru</button>
+                            <button class="btn btn-sm btn-secondary" onclick="filterWarna1('')">Reset</button>
+                        </div>
+
+                    </div>
+                </div>
+
+
+                {{-- Grid Kedua --}}
+                <div class="table-wrapper">
+                    <table id="jqGrid1"></table>
+                    <div id="jqGridPager1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+        <div class="container">
 
         <div class="card">
             <div class="card-body">
@@ -158,51 +269,6 @@
             </div>
         </div>
     </div>
-
-
-    <div class="container">
-
-        <div class="card">
-            <div class="card-body">
-                {{-- Filter Kedua --}}
-                  <div class="col-md-3">
-<div class="col-md-12">
-    <label class="form-label">Cari Berdasarkan Customers</label>
-    <select id="customers" name="customers" class="form-control" style="width: 100%;">
-        <option value="">-- Pilih Customer --</option>
-        @foreach ($customers as $c)
-            <option value="{{ $c->nama }}" {{ request('customers') == $c->nama ? 'selected' : '' }}>
-                {{ $c->nama }}
-            </option>
-        @endforeach
-    </select>
-</div>
-
-                    <div class="col-md-6 mb-5 text-end">
-                        <label class="form-label d-block">&nbsp;</label> {{-- spacing --}}
-                        <div class="d-flex gap-2 mb-2">
-                            <button class="btn btn-sm btn-danger" onclick="filterWarna1('merah')">Merah</button>
-                            <button class="btn btn-sm btn-warning" onclick="filterWarna1('kuning')">Kuning</button>
-                            <button class="btn btn-sm btn-orange text-white" style="background-color: #ff9d00;"
-                                onclick="filterWarna1('oranye')">Oranye</button>
-                            <button class="btn btn-sm btn-success" onclick="filterWarna1('hijau')">Hijau</button>
-                            <button class="btn btn-sm btn-primary" onclick="filterWarna1('biru')">Biru</button>
-                            <button class="btn btn-sm btn-secondary" onclick="filterWarna1('')">Reset</button>
-                        </div>
-
-                    </div>
-                </div>
-
-
-                {{-- Grid Kedua --}}
-                <div class="table-wrapper">
-                    <table id="jqGrid1"></table>
-                    <div id="jqGridPager1"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     {{-- <div class="container">
 
         <div class="card">
@@ -261,23 +327,21 @@
 
 
 @section('script')
-<!-- JS Select2 dan jQuery (jika belum ada) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!-- JS Select2 dan jQuery (jika belum ada) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
     <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
     <script src="{{ asset('assets/js/resize-column.js') }}"></script>
     <script>
-       $(document).ready(function() {
-    $('#customers').select2({
-        placeholder: '-- Pilih Customer --',
-        allowClear: true,
-        width: '100%' // bukan 'resolve', agar 100%
-    });
-});
-
-
+        $(document).ready(function() {
+            $('#customers').select2({
+                placeholder: '-- Pilih Customer --',
+                allowClear: true,
+                width: '100%' // bukan 'resolve', agar 100%
+            });
+        });
     </script>
     <script>
         $(document).ready(function() {
@@ -299,25 +363,25 @@
     </script>
 
     <script>
-      $(document).ready(function() {
-    function reloadGridWithFilters(customersValue = null) {
-        const customers = customersValue ?? $('#customers').val(); // fallback ke value select jika tidak dikirim
+        $(document).ready(function() {
+            function reloadGridWithFilters(customersValue = null) {
+                const customers = customersValue ?? $('#customers')
+                    .val(); // fallback ke value select jika tidak dikirim
 
-        $("#jqGrid1").jqGrid('setGridParam', {
-            datatype: 'json',
-            postData: {
-                customers: customers
-            },
-            page: 1
-        }).trigger('reloadGrid');
-    }
+                $("#jqGrid1").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {
+                        customers: customers
+                    },
+                    page: 1
+                }).trigger('reloadGrid');
+            }
 
-    $('#customers').on('change', function() {
-        const selectedCustomer = $(this).val();
-        reloadGridWithFilters(selectedCustomer); // kirim value yang dipilih ke fungsi
-    });
-});
-
+            $('#customers').on('change', function() {
+                const selectedCustomer = $(this).val();
+                reloadGridWithFilters(selectedCustomer); // kirim value yang dipilih ke fungsi
+            });
+        });
     </script>
 
 
@@ -459,20 +523,20 @@
                     name: 'warna_status',
                     hidden: true
                 },
-{
-    label: 'Kurang Bayar',
-    name: 'kurang_bayar',
-    width: 100,
-    align: "right",         // isi cell rata kanan
-    labelAlign: "right",    // label header rata kanan
-    formatter: 'currency',
-    formatoptions: {
-        thousandsSeparator: ',',
-        decimalSeparator: '.',
-        prefix: ''
-    },
-    sortable: true
-}
+                {
+                    label: 'Kurang Bayar',
+                    name: 'kurang_bayar',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                }
 
             ],
             autowidth: true,
@@ -483,7 +547,7 @@
             rowList: [150, 500, 1000],
             viewrecords: true,
             pager: "#jqGridPager",
-            caption: "Jurnal List",
+            caption: "Rekap Piutang Periode Bulan",
             jsonReader: {
                 repeatitems: false,
                 root: "rows",
@@ -580,7 +644,7 @@
             }).trigger("reloadGrid");
         }
 
-         $("#jqGrid1").jqGrid({
+        $("#jqGrid1").jqGrid({
             url: '{{ route('data-rekap.piutang') }}',
             mtype: 'GET',
             postData: {
@@ -713,20 +777,20 @@
                     name: 'warna_status',
                     hidden: true
                 },
-{
-    label: 'Kurang Bayar',
-    name: 'kurang_bayar',
-    width: 100,
-    align: "right",         // isi cell rata kanan
-    labelAlign: "right",    // label header rata kanan
-    formatter: 'currency',
-    formatoptions: {
-        thousandsSeparator: ',',
-        decimalSeparator: '.',
-        prefix: ''
-    },
-    sortable: true
-}
+                {
+                    label: 'Kurang Bayar',
+                    name: 'kurang_bayar',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                }
 
             ],
             autowidth: true,
@@ -737,7 +801,7 @@
             rowList: [150, 500, 1000],
             viewrecords: true,
             pager: "#jqGridPager1",
-            caption: "Jurnal List",
+            caption: "Rekap Piutang Berdasarkan Customer",
             jsonReader: {
                 repeatitems: false,
                 root: "rows",
@@ -834,8 +898,496 @@
             }).trigger("reloadGrid");
         }
 
+        $("#jqGrid2").jqGrid({
+            url: '{{ route('data-rekap.piutang') }}',
+            mtype: 'GET',
+            postData: {
+                full: true,
+            },
+            datatype: 'json',
+            colModel: [{
+                    name: 'id',
+                    hidden: true
+                },
+                {
+                    label: 'Invoice',
+                    align: "center",
+                    name: 'invoice',
+                    width: 80,
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Nama Customer',
+                    align: "center",
+                    name: 'customer',
+                    width: 120,
+                    align: "left",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Harga (INC.PPN)',
+                    align: "right",
+                    name: 'jumlah_harga',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    name: 'tanggal',
+                    align: "center",
+                    label: 'Tanggal',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    hidden: true
+                },
+                {
+                    label: 'TGL Invoice',
+                    align: "center",
+                    name: 'ditagih_tgl',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'TOP',
+                    align: "center",
+                    name: 'top',
+                    width: 30,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Jatuh Tempo TGL',
+                    align: "center",
+                    name: 'tempo',
+                    width: 80,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar TGL',
+                    align: "center",
+                    name: 'dibayar_tgl',
+                    width: 50,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar',
+                    align: "right",
+                    name: 'sebesar',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    label: 'PPH',
+                    align: "right",
+                    name: 'pph',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    name: 'warna_status',
+                    hidden: true
+                },
+                {
+                    label: 'Kurang Bayar',
+                    name: 'kurang_bayar',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                }
+
+            ],
+            autowidth: true,
+            shrinkToFit: true,
+            height: 'auto',
+            loadonce: false,
+            rowNum: 150,
+            rowList: [150, 500, 1000],
+            viewrecords: true,
+            pager: "#jqGridPager2",
+            caption: "Rekap Piutang Belum Bayar",
+            jsonReader: {
+                repeatitems: false,
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records"
+            },
+            onCellSelect: function(rowId, iRow, iCol, e) {
+                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+            },
+            rowattr: function(rowData) {
+                if (!rowData.tempo) return {}; // Jika tidak ada tempo, tidak ada warna
+
+                let today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+                let selisih = rowData.pph - rowData.kurang_bayar;
+
+                let timeDiff = new Date(rowData.tempo) - new Date();
+                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                // Jika kurang bayar = 0, semua kondisi tetap hijau
+                if (parseFloat(rowData.kurang_bayar) === 0) {
+                    return {
+                        "style": "background-color: #3fae43; color: white;"
+                    };
+                }
+
+                if (parseFloat(rowData.kurang_bayar) < 0) {
+                    return {
+                        "style": "background-color: #0099ff;; color: white;"
+                    };
+                }
+
+                if (selisih === 0) {
+                    return {
+                        "style": "background-color: #ff9d00; color: white;"
+                    };
+                }
+
+                // Jika TOP = 0 dan jatuh tempo hari ini, tidak diberi warna
+                if (parseInt(rowData.top) === 0 && tempoDate === today) {
+                    return {};
+                }
+
+                // Warna oranye untuk jatuh tempo dalam 1-3 hari
+                if (daysDiff > 0 && daysDiff <= 4) {
+                    return {
+                        "style": "background-color: #ffd503; color: white;"
+                    };
+                }
+
+                // Warna merah jika sudah jatuh tempo atau jatuh tempo hari ini
+                if (daysDiff < 0) {
+                    return {
+                        "style": "background-color: red; color: white;"
+                    };
+                }
+
+                return {};
+            }
+        });
 
 
+        // Navigation
+        $('#jqGrid2').jqGrid('navGrid', "#jqGridPager2", {
+            search: false,
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+
+        // Frozen columns
+        $("#jqGrid2").jqGrid('setFrozenColumns');
+
+        // Live Search
+        function filterWarna2(warna) {
+            let grid = $("#jqGrid2");
+            let postData = grid.jqGrid('getGridParam', 'postData');
+
+            postData.filters = JSON.stringify({
+                groupOp: "AND",
+                rules: warna ? [{
+                    field: "warna_status",
+                    op: "eq",
+                    data: warna
+                }] : []
+            });
+
+            grid.jqGrid('setGridParam', {
+                search: true,
+                postData: postData
+            }).trigger("reloadGrid");
+        }
+
+
+        $("#jqGrid3").jqGrid({
+            url: '{{ route('data-rekap-addcost.piutang') }}',
+            mtype: 'GET',
+            postData: {
+                tgl_inv: function() {
+                    return $('#tgl_inv').val();
+                },
+
+                inv: function() {
+                    return $('#inv').val();
+                }
+            },
+            datatype: 'json',
+            colModel: [{
+                    name: 'id',
+                    hidden: true
+                },
+                {
+                    label: 'Invoice External',
+                    align: "center",
+                    name: 'invoice_external',
+                    width: 80,
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Nama Customer',
+                    align: "center",
+                    name: 'customer',
+                    width: 120,
+                    align: "left",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Harga (INC.PPN)',
+                    align: "right",
+                    name: 'jumlah_harga',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    name: 'tanggal',
+                    align: "center",
+                    label: 'Tanggal',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    hidden: true
+                },
+                {
+                    label: 'TGL Invoice',
+                    align: "center",
+                    name: 'ditagih_tgl',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'TOP',
+                    align: "center",
+                    name: 'top',
+                    width: 30,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Jatuh Tempo TGL',
+                    align: "center",
+                    name: 'tempo',
+                    width: 80,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar TGL',
+                    align: "center",
+                    name: 'dibayar_tgl',
+                    width: 50,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar',
+                    align: "right",
+                    name: 'sebesar',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    name: 'warna_status',
+                    hidden: true
+                },
+                {
+                    label: 'Kurang Bayar',
+                    name: 'kurang_bayar',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                }
+
+            ],
+            autowidth: true,
+            shrinkToFit: true,
+            height: 'auto',
+            loadonce: false,
+            rowNum: 150,
+            rowList: [150, 500, 1000],
+            viewrecords: true,
+            pager: "#jqGridPager3",
+            caption: "Rekap Piutang Add-Cost",
+            jsonReader: {
+                repeatitems: false,
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records"
+            },
+            onCellSelect: function(rowId, iRow, iCol, e) {
+                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+            },
+            rowattr: function(rowData) {
+                if (!rowData.tempo) return {}; // Jika tidak ada tempo, tidak ada warna
+
+                let today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+
+
+                let timeDiff = new Date(rowData.tempo) - new Date();
+                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                // Jika kurang bayar = 0, semua kondisi tetap hijau
+                if (parseFloat(rowData.kurang_bayar) === 0) {
+                    return {
+                        "style": "background-color: #3fae43; color: white;"
+                    };
+                }
+
+                if (parseFloat(rowData.kurang_bayar) < 0) {
+                    return {
+                        "style": "background-color: #0099ff;; color: white;"
+                    };
+                }
+
+                // Jika TOP = 0 dan jatuh tempo hari ini, tidak diberi warna
+                if (parseInt(rowData.top) === 0 && tempoDate === today) {
+                    return {};
+                }
+
+                // Warna oranye untuk jatuh tempo dalam 1-3 hari
+                if (daysDiff > 0 && daysDiff <= 4) {
+                    return {
+                        "style": "background-color: #ffd503; color: white;"
+                    };
+                }
+
+                // Warna merah jika sudah jatuh tempo atau jatuh tempo hari ini
+                if (daysDiff < 0) {
+                    return {
+                        "style": "background-color: red; color: white;"
+                    };
+                }
+
+                return {};
+            }
+        });
+
+
+        // Navigation
+        $('#jqGrid3').jqGrid('navGrid', "#jqGridPager3", {
+            search: false,
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+
+        // Frozen columns
+        $("#jqGrid3").jqGrid('setFrozenColumns');
+
+        // Live Search
+        function filterWarna3(warna) {
+            let grid = $("#jqGrid3");
+            let postData = grid.jqGrid('getGridParam', 'postData');
+
+            postData.filters = JSON.stringify({
+                groupOp: "AND",
+                rules: warna ? [{
+                    field: "warna_status",
+                    op: "eq",
+                    data: warna
+                }] : []
+            });
+
+            grid.jqGrid('setGridParam', {
+                search: true,
+                postData: postData
+            }).trigger("reloadGrid");
+        }
 
         // $("#jqGrid1").jqGrid({
         //     url: '{{ route('data-rekap-total.piutang') }}',

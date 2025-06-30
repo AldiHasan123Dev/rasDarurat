@@ -306,6 +306,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
     Route::get('jurnal/cek-coa', [JurnalController::class, 'j_cekcoa'])->name('jurnal.cekcoa');
     Route::get('data-rekap-piutang', [LaporanController::class, 'data_rekap_piutang'])->name('data-rekap.piutang');
+    Route::get('data-rekap-piutang-addcost', [LaporanController::class, 'data_rekap_piutang_addcost'])->name('data-rekap-addcost.piutang');
     Route::get('data-total-rekap-piutang', [LaporanController::class, 'data_total_rekap_piutang'])->name('data-rekap-total.piutang');
 
     Route::get('jurnal-edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
