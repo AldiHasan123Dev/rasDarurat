@@ -202,7 +202,7 @@
     @php
         $debit = $data['total_debit'];
         $credit = $data['total_credit'];
-        $isMismatch = $debit !== $credit;
+         $isMismatch = $debit !== $credit && !in_array($coa_id, [65, 66]);
     @endphp
 
     <td class="text-center">{{ $loop->iteration }}</td>
