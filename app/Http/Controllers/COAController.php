@@ -49,6 +49,15 @@ class COAController extends Controller
         if ($request->is_invoice) {
             $data['is_invoice'] = $coa->is_invoice==1?0:1;
         }
+        if ($request->is_invoice_agen) {
+            $data['is_invoice_agen'] = $coa->is_invoice_agen==1?0:1;
+        }
+         if ($request->is_invoice_vendor) {
+            $data['is_invoice_vendor'] = $coa->is_invoice_vendor==1?0:1;
+        }
+         if ($request->is_invoice_external) {
+            $data['is_invoice_external'] = $coa->is_invoice_external==1?0:1;
+        }
         if ($request->is_invoice_trucking) {
             $data['is_invoice_trucking'] = $coa->is_invoice_trucking==1?0:1;
         }

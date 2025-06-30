@@ -225,8 +225,17 @@ td::selection, th::selection {
                                         @if ($coa->is_invoice)
                                         <th data-rtc-resizable="invoice">Invoice</th>
                                         @endif
+                                         @if ($coa->is_invoice_agen)
+                                        <th data-rtc-resizable="invoice">Invoice Agen</th>
+                                        @endif
+                                         @if ($coa->is_invoice_vendor)
+                                        <th data-rtc-resizable="invoice">Invoice Vendor</th>
+                                        @endif
+                                         @if ($coa->is_invoice_external)
+                                        <th data-rtc-resizable="invoice">Invoice External</th>
+                                        @endif
                                         @if ($coa->is_invoice_trucking)
-                                        <th data-rtc-resizable="invoice">Invoice</th>
+                                        <th data-rtc-resizable="invoice">Invoice Trucking</th>
                                         @endif
                                         <th data-rtc-resizable="nama">Keterangan</th>
                                         <th data-rtc-resizable="debit">Debit</th>
@@ -276,6 +285,15 @@ td::selection, th::selection {
                                         @endif
                                         @if ($coa->is_invoice)
                                         <td>{{ $item->invoice ?? '-' }}</td>
+                                        @endif
+                                         @if ($coa->is_invoice_agen)
+                                        <td>{{ $item->invoice_agen ?? '-' }}</td>
+                                        @endif
+                                         @if ($coa->is_invoice_vendor)
+                                        <td>{{ $item->invoice_vendor ?? '-' }}</td>
+                                        @endif
+                                         @if ($coa->is_invoice_external)
+                                        <td>{{ $item->invoice_external ?? '-' }}</td>
                                         @endif
                                         @if ($coa->is_invoice_trucking)
                                         <td>{{ $item->invoice_trucking ?? '-' }}</td>

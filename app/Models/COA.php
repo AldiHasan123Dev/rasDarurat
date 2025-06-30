@@ -29,6 +29,9 @@ class COA extends Model
         'is_tglbupot',
         'keterangan',
         'is_active',
+        'is_invoice_agen',
+        'is_invoice_vendor',
+        'is_invoice_external',
     ];
 
     public function coa()

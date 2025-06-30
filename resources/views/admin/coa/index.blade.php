@@ -35,7 +35,10 @@
                                 <th>View Nopol</th>
                                 <th>View No JOB</th>
                                 <th>View Invoice XPDC</th>
-                                <th>View Invoice TRX</th>
+                                 <th>View Invoice Agen</th>
+                                <th>View Invoice Truck</th>
+                                <th>View Invoice Vendor Truck</th>
+                                 <th>View Invoice External</th>
                                 <th>View No BG</th>
                                 <th>View No Bupot</th>
                                 <th>View Tgl Bupot</th>
@@ -59,7 +62,10 @@
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nopol')" {{ $item->is_nopol==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nojob')" {{ $item->is_nojob==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice')" {{ $item->is_invoice==1?'checked':'' }}></td>
+                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice_agen')" {{ $item->is_invoice_agen==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice_trucking')" {{ $item->is_invoice_trucking==1?'checked':'' }}></td>
+                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice_vendor')" {{ $item->is_invoice_vendor==1?'checked':'' }}></td>
+                                    <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_invoice_external')" {{ $item->is_invoice_external==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nobg')" {{ $item->is_nobg==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_nobupot')" {{ $item->is_nobupot==1?'checked':'' }}></td>
                                     <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $item->id }},'is_tglbupot')" {{ $item->is_tglbupot==1?'checked':'' }}></td>
@@ -97,7 +103,10 @@
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nopol')" {{ $a->is_nopol==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nojob')" {{ $a->is_nojob==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice')" {{ $a->is_invoice==1?'checked':'' }}></td>
+                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice_agen')" {{ $a->is_invoice_agen==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice_trucking')" {{ $a->is_invoice_trucking==1?'checked':'' }}></td>
+                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice_vendor')" {{ $a->is_invoice_vendor==1?'checked':'' }}></td>
+                                          <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_invoice_external')" {{ $a->is_invoice_external==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobg')" {{ $a->is_nobg==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_nobupot')" {{ $a->is_nobupot==1?'checked':'' }}></td>
                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $a->id }},'is_tglbupot')" {{ $a->is_tglbupot==1?'checked':'' }}></td>
@@ -135,7 +144,10 @@
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nopol')" {{ $b->is_nopol==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nojob')" {{ $b->is_nojob==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice')" {{ $b->is_invoice==1?'checked':'' }}></td>
+                                                <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice_agen')" {{ $b->is_invoice_agen==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice_trucking')" {{ $b->is_invoice_trucking==1?'checked':'' }}></td>
+                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice_vendor')" {{ $b->is_invoice_vendor==1?'checked':'' }}></td>
+                                                  <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_invoice_external')" {{ $b->is_invoice_external==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nobg')" {{ $b->is_nobg==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_nobupot')" {{ $b->is_nobupot==1?'checked':'' }}></td>
                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $b->id }},'is_tglbupot')" {{ $b->is_tglbupot==1?'checked':'' }}></td>
@@ -173,7 +185,10 @@
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nopol')" {{ $c->is_nopol==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nojob')" {{ $c->is_nojob==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice')" {{ $c->is_invoice==1?'checked':'' }}></td>
+                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice_agen')" {{ $c->is_invoice_agen==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice_trucking')" {{ $c->is_invoice_trucking==1?'checked':'' }}></td>
+                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice_vendor')" {{ $c->is_invoice_vendor==1?'checked':'' }}></td>
+                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_invoice_external')" {{ $c->is_invoice_external==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nobg')" {{ $c->is_nobg==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_nobupot')" {{ $c->is_nobupot==1?'checked':'' }}></td>
                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $c->id }},'is_tglbupot')" {{ $c->is_tglbupot==1?'checked':'' }}></td>
@@ -211,7 +226,10 @@
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nopol')" {{ $d->is_nopol==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nojob')" {{ $d->is_nojob==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice')" {{ $d->is_invoice==1?'checked':'' }}></td>
+                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice_agen')" {{ $d->is_invoice_agen==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice_trucking')" {{ $d->is_invoice_trucking==1?'checked':'' }}></td>
+                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice_vendor')" {{ $d->is_invoice_vendor==1?'checked':'' }}></td>
+                                                                  <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_invoice_external')" {{ $d->is_invoice_external==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nobg')" {{ $d->is_nobg==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_nobupot')" {{ $d->is_nobupot==1?'checked':'' }}></td>
                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $d->id }},'is_tglbupot')" {{ $d->is_tglbupot==1?'checked':'' }}></td>
@@ -244,7 +262,10 @@
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nopol')" {{ $e->is_nopol==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nojob')" {{ $e->is_nojob==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice')" {{ $e->is_invoice==1?'checked':'' }}></td>
+                                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice_agen')" {{ $e->is_invoice_agen==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice_trucking')" {{ $e->is_invoice_trucking==1?'checked':'' }}></td>
+                                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice_vendor')" {{ $e->is_invoice_vendor==1?'checked':'' }}></td>
+                                                                        <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_invoice_external')" {{ $e->is_invoice_external==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nobg')" {{ $e->is_nobg==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_nobupot')" {{ $e->is_nobupot==1?'checked':'' }}></td>
                                                                         <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $e->id }},'is_tglbupot')" {{ $e->is_tglbupot==1?'checked':'' }}></td>
@@ -277,7 +298,10 @@
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nopol')" {{ $f->is_nopol==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nojob')" {{ $f->is_nojob==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice')" {{ $f->is_invoice==1?'checked':'' }}></td>
+                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice_agen')" {{ $f->is_invoice_agen==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice_trucking')" {{ $f->is_invoice_trucking==1?'checked':'' }}></td>
+                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice_vendor')" {{ $f->is_invoice_vendor==1?'checked':'' }}></td>
+                                                                                  <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_invoice_external')" {{ $f->is_invoice_external==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nobg')" {{ $f->is_nobg==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_nobupot')" {{ $f->is_nobupot==1?'checked':'' }}></td>
                                                                                 <td><input type="checkbox" value="1" onchange="updateActive(this,{{ $f->id }},'is_tglbupot')" {{ $f->is_tglbupot==1?'checked':'' }}></td>
@@ -371,6 +395,18 @@
             }
             if(tipe=='is_invoice'){
                 data.is_invoice = 1;
+            }
+            if(tipe=='is_invoice_agen'){
+                data.is_invoice_agen = 1;
+            }
+             if(tipe=='is_invoice_trucking'){
+                data.is_invoice_trucking = 1;
+            }
+            if(tipe=='is_invoice_vendor'){
+                data.is_invoice_vendor = 1;
+            }
+            if(tipe=='is_invoice_external'){
+                data.is_invoice_external = 1;
             }
             if(tipe=='is_nobg'){
                 data.is_nobg = 1;
