@@ -448,7 +448,7 @@
                     hidden: true
                 },
                 {
-                    label: 'TGL Kirim Invoice',
+                    label: 'TGL Kirim Inv',
                     align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
@@ -702,7 +702,7 @@
                     hidden: true
                 },
                 {
-                    label: 'TGL Kirim Invoice',
+                    label: 'TGL Kirim Inv',
                     align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
@@ -954,7 +954,7 @@
                     hidden: true
                 },
                 {
-                    label: 'TGL Kirim Invoice',
+                    label: 'TGL Kirim Inv',
                     align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
