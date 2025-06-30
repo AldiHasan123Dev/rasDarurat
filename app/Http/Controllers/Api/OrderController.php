@@ -181,10 +181,49 @@ class OrderController extends Controller
             $start = 0;
         }
 
-        if (request('ba_kembali_null')) {
-            $query->whereNull('order.ba_kembali');
+      if (request('ba_kembali_null')) {
+    $query->whereNull('order.ba_kembali');
+     $query->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
+            });
+    $query->whereHas('tarif', function ($a) {
+        $a->whereIn('kondisi', [5, 7, 10]);
+        $a->whereHas('customer', function ($qu) {
+                $qu->where('ba_kembali', 1);
+            });
+    });
+
+    // Tambahan kondisi: jika tujuan = 97, maka ba_diantar_sby harus tidak null
+    $query->where(function ($q) {
+        $q->whereHas('tarif', function ($t) {
+            $t->where('tujuan', '!=', 97);
+        })->orWhere(function ($q2) {
+            $q2->whereHas('tarif', function ($t2) {
+                $t2->where('tujuan', 97);
+            })->whereNotNull('order.ba_diantar_sby')->whereNotNull('order.barang_diantar');
+        });
+    });
+}
+
+          if (request('barang_diantar_null') ) {
+            $query->whereNull('order.invoice')->whereNull('order.barang_diantar');
+            $query->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
+            });
+          $query->whereHas('tarif', function ($a) {
+                $a->whereIn('kondisi', [5, 7, 10]);
+                $a->where('tujuan',97);
+            });
+        }
+
+        if (request('ba_diantar_sby_null') ) {
+            $query->whereNull('order.invoice')->whereNull('order.ba_diantar_sby');
+             $query->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
+            });
             $query->whereHas('tarif', function ($a) {
                 $a->whereIn('kondisi', [5, 7, 10]);
+                $a->where('tujuan',97);
             });
         }
 
@@ -378,9 +417,44 @@ class OrderController extends Controller
                 });
             })->count();
         }
-        if (request('ba_kembali_null')) {
-            $count = Order::whereNull('ba_kembali')->whereHas('tarif', function ($a) {
+       if (request('ba_kembali_null')) {
+    $count = Order::whereNull('ba_kembali')
+        ->whereHas('tarif', function ($a) {
+            $a->whereIn('kondisi', [5, 7, 10])
+              ->whereHas('customer', function ($qu) {
+                  $qu->where('ba_kembali', 1);
+              });
+        })
+        ->where(function ($q) {
+            $q->whereHas('tarif', function ($t) {
+                $t->where('tujuan', '!=', 97);
+            })->orWhere(function ($q2) {
+                $q2->whereHas('tarif', function ($t2) {
+                    $t2->where('tujuan', 97);
+                })
+                ->whereNotNull('ba_diantar_sby')
+                ->whereNotNull('barang_diantar');
+            });
+        })
+        ->whereHas('jadwal_kapal', function ($j) {
+            $j->whereNotNull('eta');
+        })
+        ->count();
+}
+
+        if (request('barang_diantar_null')) {
+            $count = Order::whereNull('invoice')->whereNull('barang_diantar')->whereHas('tarif', function ($a) {
                 $a->whereIn('kondisi', [5, 7]);
+            })->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
+            })->count();
+        }
+         if (request('ba_diantar_sby_null')) {
+            $count = Order::whereNull('invoice')->whereNull('ba_diantar_sby')->whereHas('tarif', function ($a) {
+                $a->whereIn('kondisi', [5, 7]);
+                $a->where('tujuan',97);
+            })->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
             })->count();
         }
         if (request('input_invoice_bayar')) {

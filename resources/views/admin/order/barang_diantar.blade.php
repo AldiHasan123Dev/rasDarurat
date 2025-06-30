@@ -23,7 +23,8 @@
                             <button class="py-2 px-3 btn btn-sm btn-success" type="submit">Export Excel</button>
                         </form>
                     @endif
-                    <button data-bs-toggle="modal" data-bs-target="#ba-kembali" class="btn btn-sm btn-success">BA Kembali</button>
+                    <button data-bs-toggle="modal" data-bs-target="#ba-kembali" class="btn btn-sm btn-success">Barang Diantar
+                    </button>
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
             </div>
@@ -46,7 +47,7 @@
         <input type="hidden" name="order_id" id="order_id">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="ba-'.$data->id.'Label">BA Kembali <span class="nojob"></span></h5>
+                <h5 class="modal-title" id="ba-'.$data->id.'Label">Barang Diantar <span class="nojob"></span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -54,15 +55,15 @@
                     {{-- <div class="col-12 mb-2">
                         <label for="ba_kirim">BA Kirim</label>
                         <input type="date" name="ba_kirim" class="form-control" id="ba_kirim">
-                    </div>
+                    </div>--}}
                     <div class="col-12 mb-2">
                         <label for="ba_kembali">Barang Diantar</label>
                         <input type="date" name="barang_diantar" class="form-control" id="barang_diantar">
-                    </div> --}}
-                    <div class="col-12 mb-2">
+                    </div> 
+                    {{-- <div class="col-12 mb-2">
                         <label for="ba_kembali">BA Kembali</label>
                         <input type="date" name="ba_kembali" class="form-control" id="ba_kembali">
-                    </div>
+                    </div> --}}
                     <div class="col-12 mb-2">
                         <label for="keterangan">Keterangan</label>
                         <textarea name="keterangan" id="keterangan" cols="30" rows="5" class="form-control"></textarea>
@@ -93,7 +94,7 @@
         url: '{{ route('jqgrid.order') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { ba_kembali_null: true },
+        postData: { barang_diantar_null: true },
         colModel: [
             {search:true, name: 'invoice', label : 'invoice', frozen:true, width:70},
             {search:true, name: 'job', label : 'job', frozen:true, width:70},
@@ -145,7 +146,7 @@
         rowList:[10,25,50,100,250,500,1000],
         viewrecords: true,
         pager: "#jqGridPager",
-        caption: "Order Job BA Kembali",
+        caption: "Order Job Barang Diantar",
         onCellSelect: function (rowId, iRow, iCol, e) {
             row_id = rowId;
             id = $(this).jqGrid('getCell', rowId, 'id');
@@ -155,8 +156,8 @@
             var keterangan = $(this).jqGrid('getCell', rowId, 'keterangan');
             console.log(ba_kirim, barang_diantar);
             $('#order_id_bttb').val(id);
-            $('#keterangan').val(keterangan);
             $('#order_id').val(id);
+            $('#keterangan').val(keterangan);
             $('#barang_diantar').val(barang_diantar);
             $('#ba_kirim').val(ba_kirim);
             $('.nojob').html(no);

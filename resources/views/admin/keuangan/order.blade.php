@@ -67,6 +67,8 @@
             {search:true, name: 'kapal', label : 'kapal'},
             {search:true, name: 'voyage', label : 'voyage'},
             {search:true, name: 'etd', label : 'etd',sorttype: 'date', datefmt:'d/m/y'},
+              {search:true, name: 'eta', label : 'eta',sorttype: 'date', datefmt:'d/m/y'},
+            
             {search:true, name: 'td', label : 'td',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'ba_kirim', label : 'ba_kirim',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'nopol', label : 'nopol'},
@@ -77,6 +79,7 @@
             {search:true, name: 'stuffing_type', label : 'stuffing_type'},
             {search:true, name: 'full', label : 'full'},
             {search:true, name: 'barang_diantar', label : 'barang_diantar'},
+            {search:true, name: 'ba_diantar_sby', label : 'ba_diantar_sby',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, name: 'satuan', label : 'satuan'},
             {search:true, name: 'unit', label : 'unit'},

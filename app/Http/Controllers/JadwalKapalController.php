@@ -127,6 +127,9 @@ class JadwalKapalController extends Controller
         ->addColumn('td', function($data){
             return is_null($data->td)?'-':date('d/m/Y',strtotime($data->td));
         })
+         ->addColumn('eta', function($data){
+            return is_null($data->eta)?'-':date('d/m/Y',strtotime($data->eta));
+        })
         ->addColumn('closing', function($data){
             return is_null($data->closing)?'-':date('d/m/Y',strtotime($data->closing));
         })

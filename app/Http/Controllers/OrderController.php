@@ -78,6 +78,24 @@ class OrderController extends Controller
         return view('admin.order.ba_kembali');
     }
 
+    public function baDiantarSBY()
+    {
+        // $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
+        //     $a->whereIn('kondisi',[5,7]);
+        // })->orderBy('job')->orderBy('no_job')->get();
+        // $data = OrderResource::collection($data);
+        return view('admin.order.ba_antar_sby');
+    }
+
+     public function barangDiantar()
+    {
+        // $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
+        //     $a->whereIn('kondisi',[5,7]);
+        // })->orderBy('job')->orderBy('no_job')->get();
+        // $data = OrderResource::collection($data);
+        return view('admin.order.barang_diantar');
+    }
+
     public function closing()
     {
         $data = Order::whereHas('jadwal_kapal', function($a){

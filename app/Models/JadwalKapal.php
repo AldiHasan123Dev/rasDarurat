@@ -23,6 +23,7 @@ class JadwalKapal extends Model
         'ba_kirim',
         'keterangan',
         'is_active',
+        'eta',
     ];
 
     protected static function booted()

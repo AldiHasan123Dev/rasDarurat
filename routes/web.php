@@ -275,6 +275,8 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('tarik-asuransi', [AsuransiController::class, 'tarik'])->name('asuransi.tarik');
     Route::post('cetak-asuransi', [AsuransiController::class, 'cetak'])->name('asuransi.cetak');
     Route::get('ba-kembali', [OrderController::class, 'baKembali'])->name('order.ba-kembali');
+    Route::get('barang-diantar', [OrderController::class, 'barangDiantar'])->name('order.barang_diantar');
+    Route::get('ba-diantar-sby', [OrderController::class, 'baDiantarSBY'])->name('order.ba_diantar_sby');
     Route::get('closing', [OrderController::class, 'closing'])->name('order.closing');
     Route::get('sj-kembali', [OrderController::class, 'sj_kembali'])->name('order.sj-kembali');
     Route::get('order-asuransi', [OrderController::class, 'asuransi'])->name('order.asuransi');

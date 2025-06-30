@@ -35,6 +35,7 @@ class Order extends Model
         'stuffing_type',
         'full',
         'barang_diantar',
+        'ba_diantar_sby',
         'ba_kembali',
         'resi',
         'trucking',

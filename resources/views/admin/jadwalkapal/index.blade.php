@@ -29,6 +29,7 @@
                                 <th>Td</th>
                                 {{-- <th>BA Kirim</th> --}}
                                 <th>Keterangan</th>
+                                <th>Eta</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -87,6 +88,7 @@
                 { data: 'td', name: 'td' },
                 // { data: 'ba_kirim', name: 'ba_kirim' },
                 { data: 'keterangan', name: 'keterangan' },
+                { data: 'eta', name: 'eta' },
                 { data: 'status', name: 'status' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
