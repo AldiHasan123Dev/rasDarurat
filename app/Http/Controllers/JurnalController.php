@@ -1123,113 +1123,95 @@ class JurnalController extends Controller
         return view('admin.jurnal.trucking');
     }
 
-    public function edit()
-    {
-        $jurnal = request('jurnal');
-        $coa = COA::where('is_active', 1)->orderBy('kode')->get();
-        $count = Jurnal::where('nomor', $jurnal)->count();
-        $data = Jurnal::where('nomor', $jurnal)->first();
-        $deb = Jurnal::where('nomor', $jurnal)->sum('debit');
-        $cre = Jurnal::where('nomor', $jurnal)->sum('credit');
-        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(9)->format('Y-m-d');
-        $orders = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice')
-        ->orderBy('job')
-        ->orderBy('no_job')
-        ->get();
-        $orders_expdc = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice')
-        ->whereNotNull('invoice')
-        ->orderBy('job')
-        ->orderBy('no_job')
-        ->get();
+   public function edit()
+{
+    $jurnal = request('jurnal');
+    $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+    $last = Carbon::now()->subMonths(9)->format('Y-m-d');
 
-    $orders_agen = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
-        ->orderBy('job')
-        ->whereNotNull('invoice_agen')
-        ->orderBy('no_job')
-        ->get();
+    $coa = Cache::remember('coa_active', 60, function () {
+        return COA::where('is_active', 1)->orderBy('kode')->get();
+    });
 
-    $orders_trucking = collect();
-    $orders_trucking1 = collect(); // Default empty collection
-    $orders_vendor = collect(); // Default empty collection
+    $jurnalQuery = Jurnal::where('nomor', $jurnal);
+    $count = $jurnalQuery->count();
+    $data = $jurnalQuery->first();
+    $deb = $jurnalQuery->sum('debit');
+    $cre = $jurnalQuery->sum('credit');
+
+    $orderSelect = ['id', 'no_job', 'job', 'seal', 'invoice'];
+
+    $orders = Cache::remember("orders_all_$last", 60, function () use ($last, $now, $orderSelect) {
+        return Order::whereBetween('created_at', [$last, $now])
+            ->orderBy('job')->orderBy('no_job')
+            ->select($orderSelect)
+            ->get();
+    });
+
+    $orders_expdc = Cache::remember("orders_expdc_$last", 60, function () use ($last, $now, $orderSelect) {
+        return Order::whereBetween('created_at', [$last, $now])
+            ->whereNotNull('invoice')
+            ->orderBy('job')->orderBy('no_job')
+            ->select($orderSelect)
+            ->get();
+    });
+
+    $orders_agen = Cache::remember("orders_agen_$last", 60, function () use ($last, $now) {
+        return Order::whereBetween('created_at', [$last, $now])
+            ->whereNotNull('invoice_agen')
+            ->orderBy('job')->orderBy('no_job')
+            ->select(['id', 'no_job', 'job', 'seal', 'invoice_agen'])
+            ->get();
+    });
+
+    $orders_trucking1 = Cache::remember("orders_trucking1_$last", 60, function () use ($last, $now) {
+        return OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+    });
 
     $tipe = 'xpdc';
+    $orders_trucking = collect();
+    $orders_vendor = collect();
 
-    $invx = Jurnal::whereNotNull('invoice_external')
-        ->distinct('invoice_external')
-        ->orderBy('invoice_external')
-        ->pluck('invoice_external')
-        ->toArray();
+    $invx = Cache::remember('invx_unique', 60, function () {
+        return Jurnal::whereNotNull('invoice_external')->orderBy('invoice_external')->pluck('invoice_external')->unique()->toArray();
+    });
 
     if ($data->order_trucking_id) {
         $tipe = 'trucking';
-        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-
-        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'not like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-            $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-    } elseif ($data->order_trucking_id === null && $data->order_id === null) {
+        $orders_trucking = $orders_trucking1->filter(fn($q) => str_contains($q->invoice, 'RAS-LT'))->values();
+        $orders_vendor = $orders_trucking1->filter(fn($q) => !str_contains($q->invoice, 'RAS-LT'))->values();
+    } elseif (is_null($data->order_trucking_id) && is_null($data->order_id)) {
         $tipe = 'lain-lain';
-        $orders = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice')
-        ->orderBy('job')
-        ->orderBy('no_job')
-        ->get();
-        $orders_expdc = Order::whereBetween('created_at', [$last, $now])
-            ->select('id', 'no_job', 'job', 'seal', 'invoice')
-            ->orderBy('job')
-            ->orderBy('no_job')
-            ->get();
-
-        $orders_agen = Order::whereBetween('created_at', [$last, $now])
-            ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
-            ->orderBy('job')
-            ->orderBy('no_job')
-            ->get();
-
-            $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-
-        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'not like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
+        $orders_trucking = $orders_trucking1->filter(fn($q) => str_contains($q->invoice, 'RAS-LT'))->values();
+        $orders_vendor = $orders_trucking1->filter(fn($q) => !str_contains($q->invoice, 'RAS-LT'))->values();
     }
-        $jur = $data;
-        $bgs = Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
-        $bgs = array_unique($bgs);
-        $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
-        $relasi = Jurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
-        $debit = Jurnal::where('nomor', $jurnal)->whereIn('coa_id', [16, 45, 175])->where('credit', 0)->sum('debit');
-        $credit = Jurnal::where('nomor', $jurnal)->whereIn('coa_id', [16, 45, 175])->where('debit', 0)->sum('credit');
-        $voucher  = $debit - $credit;
-        if ($voucher < 0) {
-            $voucher = $voucher * -1;
-        }
-        // return view('admin.jurnal.edit', compact('data','orders','coa','tipe'));
-        return view('admin.jurnal.new_edit', compact('orders','orders_expdc', 'orders_agen', 'orders_trucking', 'orders_trucking1', 'orders_vendor',  'invx','bgs','data', 'relasi', 'coa', 'tipe', 'jur', 'voucher', 'deb', 'cre', 'count'));
-    }
+
+    $jur = $data;
+
+    $bgs = Cache::remember('bgs_unique', 60, function () {
+        return Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->unique()->toArray();
+    });
+
+    $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
+    $relasi = Cache::remember("relasi_$last_relasi", 60, function () use ($last_relasi) {
+        return Jurnal::where('created_at', '>=', $last_relasi)->orderBy('nomor')->pluck('nomor')->unique()->toArray();
+    });
+
+    $voucherDeb = $jurnalQuery->whereIn('coa_id', [16, 45, 175])->where('credit', 0)->sum('debit');
+    $voucherCre = $jurnalQuery->whereIn('coa_id', [16, 45, 175])->where('debit', 0)->sum('credit');
+    $voucher = abs($voucherDeb - $voucherCre);
+
+    return view('admin.jurnal.new_edit', compact(
+        'orders', 'orders_expdc', 'orders_agen',
+        'orders_trucking', 'orders_trucking1', 'orders_vendor',
+        'invx', 'bgs', 'data', 'relasi', 'coa', 'tipe',
+        'jur', 'voucher', 'deb', 'cre', 'count'
+    ));
+}
+
 
 
     public function editCoa(Request $request) {
@@ -1289,110 +1271,91 @@ public function updateCoa(Request $request, $jurnal_id)
 
 
 
-    public function editOne(Jurnal $jurnal)
+public function editOne(Jurnal $jurnal)
 {
-    $coa = COA::where('is_active', 1)->orderBy('kode')->get();
     $now = Carbon::now()->addMonths(1)->format('Y-m-d');
     $last = Carbon::now()->subMonths(9)->format('Y-m-d');
 
-    // Default orders and other variables
-    $orders = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice')
-        ->orderBy('job')
-        ->orderBy('no_job')
-        ->get();
-    
-    $orders_expdc = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice')
-        ->orderBy('job')
-        ->whereNotNull('invoice')
-        ->orderBy('no_job')
-        ->get();
+    $coa = Cache::remember('coa_active', 60, function () {
+        return COA::where('is_active', 1)->orderBy('kode')->get();
+    });
 
-    $orders_agen = Order::whereBetween('created_at', [$last, $now])
-        ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
-        ->orderBy('job')
-        ->whereNotNull('invoice_agen')
-        ->orderBy('no_job')
-        ->get();
+    $orderBaseKey = 'order_base_' . $last;
+    $orders = Cache::remember($orderBaseKey . '_all', 60, function () use ($last, $now) {
+        return Order::whereBetween('created_at', [$last, $now])
+            ->orderBy('job')->orderBy('no_job')
+            ->select('id', 'no_job', 'job', 'seal', 'invoice')
+            ->get();
+    });
 
+    $orders_expdc = Cache::remember($orderBaseKey . '_expdc', 60, function () use ($last, $now) {
+        return Order::whereBetween('created_at', [$last, $now])
+            ->whereNotNull('invoice')
+            ->orderBy('job')->orderBy('no_job')
+            ->select('id', 'no_job', 'job', 'seal', 'invoice')
+            ->get();
+    });
+
+    $orders_agen = Cache::remember($orderBaseKey . '_agen', 60, function () use ($last, $now) {
+        return Order::whereBetween('created_at', [$last, $now])
+            ->whereNotNull('invoice_agen')
+            ->orderBy('job')->orderBy('no_job')
+            ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
+            ->get();
+    });
+
+    $orders_trucking1 = Cache::remember("orders_trucking1_$last", 60, function () use ($last, $now) {
+        return OrderTrucking::whereBetween('created_at', [$last, $now])
+            ->select('container', 'seal', 'id', 'invoice')
+            ->orderBy('container')
+            ->get();
+    });
+
+    $invx = Cache::remember('invx_unique', 60, function () {
+        return Jurnal::whereNotNull('invoice_external')
+            ->orderBy('invoice_external')
+            ->pluck('invoice_external')
+            ->distinct()
+            ->toArray();
+    });
+
+    // Filter trucking/vendor
     $orders_trucking = collect();
-    $orders_trucking1 = collect(); // Default empty collection
-    $orders_vendor = collect(); // Default empty collection
-
+    $orders_vendor = collect();
     $tipe = 'xpdc';
-
-    $invx = Jurnal::whereNotNull('invoice_external')
-        ->distinct('invoice_external')
-        ->orderBy('invoice_external')
-        ->pluck('invoice_external')
-        ->toArray();
 
     if ($jurnal->order_trucking_id) {
         $tipe = 'trucking';
-        $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
-        ->select('container', 'seal', 'id', 'invoice')
-        ->orderBy('container')
-        ->get();
-        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-
-        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'not like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-    } elseif ($jurnal->order_trucking_id === null && $jurnal->order_id === null) {
+    } elseif (is_null($jurnal->order_trucking_id) && is_null($jurnal->order_id)) {
         $tipe = 'lain-lain';
-        $orders_trucking1 = OrderTrucking::whereBetween('created_at', [$last, $now])
-        ->select('container', 'seal', 'id', 'invoice')
-        ->orderBy('container')
-        ->get();
-        $orders_expdc = Order::whereBetween('created_at', [$last, $now])
-            ->select('id', 'no_job', 'job', 'seal', 'invoice')
-            ->whereNotNull('invoice')
-            ->orderBy('job')
-            ->orderBy('no_job')
-            ->get();
-
-        $orders_agen = Order::whereBetween('created_at', [$last, $now])
-            ->select('id', 'no_job', 'job', 'seal', 'invoice_agen')
-            ->orderBy('job')
-            ->whereNotNull('invoice_agen')
-            ->orderBy('no_job')
-            ->get();
-
-        $orders_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
-
-        $orders_vendor = OrderTrucking::whereBetween('created_at', [$last, $now])
-            ->where('invoice', 'not like', '%RAS-LT%')
-            ->select('container', 'seal', 'id', 'invoice')
-            ->orderBy('container')
-            ->get();
     }
 
-    $bgs = Jurnal::whereNotNull('no_bg')
-        ->orderBy('no_bg')
-        ->pluck('no_bg')
-        ->toArray();
-    $bgs = array_unique($bgs);
+    if ($tipe !== 'xpdc') {
+        $orders_trucking = $orders_trucking1->filter(fn($row) => str_contains($row->invoice, 'RAS-LT'))->values();
+        $orders_vendor = $orders_trucking1->filter(fn($row) => !str_contains($row->invoice, 'RAS-LT'))->values();
+    }
+
+    $bgs = Cache::remember('jurnal_bgs', 60, function () {
+        return Jurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->unique()->toArray();
+    });
 
     $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
-    $relasi = Jurnal::where('created_at', '>=', $last_relasi)
-        ->distinct('nomor')
-        ->orderBy('nomor')
-        ->pluck('nomor')
-        ->toArray();
+    $relasi = Cache::remember("jurnal_relasi_$last_relasi", 60, function () use ($last_relasi) {
+        return Jurnal::where('created_at', '>=', $last_relasi)
+            ->orderBy('nomor')
+            ->pluck('nomor')
+            ->unique()
+            ->toArray();
+    });
 
-    return view('admin.jurnal.form_edit', compact('orders','invx', 'jurnal', 'orders_trucking1', 'orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor', 'coa', 'tipe', 'bgs', 'relasi'));
+    return view('admin.jurnal.form_edit', compact(
+        'orders', 'invx', 'jurnal', 'orders_trucking1',
+        'orders_expdc', 'orders_agen', 'orders_trucking', 'orders_vendor',
+        'coa', 'tipe', 'bgs', 'relasi'
+    ));
 }
+
+
 
 
     public function updateOne(Request $request, Jurnal $jurnal)
@@ -2227,7 +2190,6 @@ public function updateCoa(Request $request, $jurnal_id)
             ->whereNotNull('relasi')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['debit', 'credit', 'nama', 'nomor', 'created_at', 'relasi','invoice','invoice_trucking','invoice_external','invoice_vendor']);
-    
             $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
                 $customerName = $group->first()->relasi;
                 $invoice = $group->first()->invoice ?? $group->first()->invoice_external ?? $group->first()->invoice_vendor ?? $group->first()->invoice_trucking;            
