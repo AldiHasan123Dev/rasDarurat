@@ -118,7 +118,7 @@
 
         <div class="card">
             <div class="card-body">
-                <div class="section-title">Rekap Piutang Add Cost</div>
+                <div class="section-title">Rekap Piutang Add Cost (Invoice External)</div>
                 {{-- Filter Kedua --}}
                 <div class="col-md-3">
 
@@ -152,7 +152,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- Filter Kedua --}}
-                <div class="section-title">Rekap Piutang (Berdasarkan Customer)</div>
+                <div class="section-title">Rekap Piutang Invoice (Berdasarkan Customer)</div>
                 <div class="col-md-3">
                     <div class="col-md-12">
                         <label class="form-label">Cari Berdasarkan Customers</label>
@@ -198,7 +198,7 @@
         <div class="card">
             <div class="card-body">
                 {{-- Filter Kedua --}}
-                <div class="section-title">Rekap Piutang</div>
+                <div class="section-title">Rekap Piutang Invoice Perbulan</div>
                 <div class="row g-3">
                     <div class="mt-3">
                         <div class="card shadow-sm border-0" style="background-color: #f8f9fa;">
@@ -448,7 +448,7 @@
                     hidden: true
                 },
                 {
-                    label: 'TGL Invoice',
+                    label: 'TGL Kirim Invoice',
                     align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
@@ -702,7 +702,7 @@
                     hidden: true
                 },
                 {
-                    label: 'TGL Invoice',
+                    label: 'TGL Kirim Invoice',
                     align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
@@ -954,7 +954,7 @@
                     hidden: true
                 },
                 {
-                    label: 'TGL Invoice',
+                    label: 'TGL Kirim Invoice',
                     align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
