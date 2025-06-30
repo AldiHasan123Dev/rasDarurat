@@ -1313,10 +1313,11 @@ public function editOne(Jurnal $jurnal)
 
     $invx = Cache::remember('invx_unique', 60, function () {
         return Jurnal::whereNotNull('invoice_external')
-            ->orderBy('invoice_external')
-            ->pluck('invoice_external')
-            ->distinct()
-            ->toArray();
+    ->distinct()
+    ->orderBy('invoice_external')
+    ->pluck('invoice_external')
+    ->toArray();
+
     });
 
     // Filter trucking/vendor
