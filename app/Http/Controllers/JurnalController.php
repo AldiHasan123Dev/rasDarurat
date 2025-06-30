@@ -2186,12 +2186,14 @@ public function editOne(Jurnal $jurnal)
         }
 
     if ($subjek == 'relasi') {
-        // Ambil data jurnal yang memiliki relasi (customer trucking) dalam rentang tanggal
-        $jurnal = Jurnal::where('coa_id', $coa_id)
-            ->whereNotNull('relasi')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get(['debit', 'credit', 'nama', 'nomor', 'created_at', 'relasi','invoice','invoice_trucking','invoice_external','invoice_vendor']);
-            $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
+    $jurnal = Jurnal::where('coa_id', $coa_id)
+        ->whereNotNull('relasi')
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->orderBy('created_at', 'asc') // Pastikan urut tanggal
+        ->get(['debit', 'credit', 'nama', 'nomor', 'created_at', 'relasi', 'invoice', 'invoice_trucking', 'invoice_external', 'invoice_vendor']);
+
+    $runningBalance = 0;
+    $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
                 $customerName = $group->first()->relasi;
                 $invoice = $group->first()->invoice ?? $group->first()->invoice_external ?? $group->first()->invoice_vendor ?? $group->first()->invoice_trucking;            
                 // Ambil nama & tanggal untuk debit
@@ -2233,7 +2235,88 @@ public function editOne(Jurnal $jurnal)
          // Mengurutkan dan reset index
     
         // Return atau gunakan $groupedData sesuai kebutuhan
+ $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
+                $customerName = $group->first()->relasi;
+                $invoice = $group->first()->invoice ?? $group->first()->invoice_external ?? $group->first()->invoice_vendor ?? $group->first()->invoice_trucking;            
+                // Ambil nama & tanggal untuk debit
+                $ket_d = $group->where('debit', '>', 0)->pluck('nama')->values();
+                $date_d = $group->where('debit', '>', 0)
+                    ->pluck('created_at')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
+                    ->values();
+            
+                // Ambil nama & tanggal untuk kredit
+                $ket_c = $group->where('credit', '>', 0)->pluck('nama')->values();
+                $date_c = $group->where('credit', '>', 0)
+                    ->pluck('created_at')
+                    ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
+                    ->values();
+            
+                // Total
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+            
+                // Hitung saldo tergantung tipe
+                $saldo = $tipe === 'D'
+                    ? $totalDebit - $totalCredit
+                    : $totalCredit - $totalDebit;
+            
+                return [
+                    'invoice' => $invoice,
+                    'customer_name' => $customerName,
+                    'ket_d' => $ket_d,
+                    'tgl_d' => $date_d,
+                    'ket_c' => $ket_c,
+                    'tgl_c' => $date_c,
+                    'total_debit' => $totalDebit,
+                    'total_credit' => $totalCredit,
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('tgl_d')->values();
+
+    if($coa_id == 65 || $coa_id == 66){
+        $groupedData = $jurnal->map(function ($row) use (&$runningBalance, $tipe) {
+            $customerName = $row->relasi;
+            $invoice = $row->invoice ?? $row->invoice_external ?? $row->invoice_vendor ?? $row->invoice_trucking;
+    
+            // Tanggal dan keterangan tunggal karena ini per baris
+            $ket_d = $row->debit > 0 ? [$row->nama] : [];
+            $tgl_d = $row->debit > 0
+                ? [Carbon::parse($row->created_at)->format('Y-m-d')]
+                : ($row->credit > 0 ? [Carbon::parse($row->created_at)->format('Y-m-d')] : []);
+    
+            $ket_c = $row->credit > 0 ? [$row->nama] : [];
+            $tgl_c = $row->credit > 0
+                ? [Carbon::parse($row->created_at)->format('Y-m-d')]
+                : [];
+    
+            $totalDebit = $row->debit;
+            $totalCredit = $row->credit;
+    
+            // Tambahkan ke saldo berjalan
+            $runningBalance += $tipe === 'D'
+                ? ($totalDebit - $totalCredit)
+                : ($totalCredit - $totalDebit);
+    
+            return [
+                'invoice' => $invoice,
+                'customer_name' => $customerName,
+                'ket_d' => collect($ket_d),
+                'tgl_d' => collect($tgl_d),
+                'ket_c' => collect($ket_c),
+                'tgl_c' => collect($tgl_c),
+                'total_debit' => $totalDebit,
+                'total_credit' => $totalCredit,
+                'saldo' => $runningBalance, // saldo berjalan
+            ];
+        });
     }
+
+
+    // Gunakan $groupedData sesuai kebutuhan (misal kirim ke view)
+}
+
+
     
         // Daftar bulan
 

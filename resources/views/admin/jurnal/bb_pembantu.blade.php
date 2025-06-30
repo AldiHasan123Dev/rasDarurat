@@ -199,25 +199,36 @@
                             @foreach ($groupedData as $data)
                             <tr>
                                 @if ($subjek === 'relasi')
-                                    @php
-                                        $debit = $data['total_debit'];
-                                        $credit = $data['total_credit'];
-                                        $isMismatch = $debit !== $credit;
-                                    @endphp
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
-                                <td>{{ $data['invoice'] }}</td>
-                                {{-- Ambil elemen pertama dari array/collection --}}
-                                <td>{{ is_array($data['tgl_d']) ? '' : $data['tgl_d']->first() }}</td>
-                                <td>{{ is_array($data['ket_d']) ? '' : $data['ket_d']->first() }}</td>
-                                
-                                <td class="text-end {{ $isMismatch ? 'bg-danger text-white' : '' }}">{{ number_format($data['total_debit'], 2, ',', '.') }}</td>
-                                <td class="text-end {{ $isMismatch ? 'bg-danger text-white' : '' }}">{{ number_format($data['total_credit'], 2, ',', '.') }}</td>
-                                
-                                <td>{{ is_array($data['tgl_c']) ? '' : $data['tgl_c']->first() }}</td>
-                                <td>{{ is_array($data['ket_c']) ? '' : $data['ket_c']->first() }}</td>
-                                
-                                <td class="text-end">{{ number_format($data['saldo'], 2, ',', '.') }}</td>                                
+    @php
+        $debit = $data['total_debit'];
+        $credit = $data['total_credit'];
+        $isMismatch = $debit !== $credit;
+    @endphp
+
+    <td class="text-center">{{ $loop->iteration }}</td>
+    <td>{{ $data['customer_name'] }}</td>
+    <td>{{ $data['invoice'] }}</td>
+
+    {{-- Tanggal dan Keterangan Debit --}}
+    <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
+    <td>{!! $data['ket_d']->implode('<br>') !!}</td>
+
+    {{-- Nominal Debit dan Kredit --}}
+    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+        {{ number_format($debit, 2, ',', '.') }}
+    </td>
+    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+        {{ number_format($credit, 2, ',', '.') }}
+    </td>
+
+    {{-- Tanggal dan Keterangan Kredit --}}
+    <td>{!! $data['tgl_c']->implode('<br>') !!}</td>
+    <td>{!! $data['ket_c']->implode('<br>') !!}</td>
+
+    {{-- Saldo --}}
+    <td class="text-end">
+        {{ number_format($data['saldo'], 2, ',', '.') }}
+    </td>                           
                                 @else
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}</td>
@@ -246,24 +257,48 @@
                             @endif                                                                                    
                             </tr>
                             @endforeach
-                            <tfoot>
-                                <tr class="fw-bold">
-                                    @if ($subjek === 'relasi')    
-                                    <td colspan="5" class="text-center">Total</td>
-                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
-                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
-                                    <td colspan="3" class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
+                          <tfoot>
+                            <tr class="fw-bold">
+                                @if ($subjek === 'relasi')
+                                    @if ($coa_id == 65 || $coa_id == 66)
+                                        <td colspan="5" class="text-center">Total</td>
+                                        <td class="text-end">
+                                            {{ number_format($groupedData->sum('total_debit'), 2, ',', '.') }}
+                                        </td>
+                                        <td class="text-end">
+                                            {{ number_format($groupedData->sum('total_credit'), 2, ',', '.') }}
+                                        </td>
+                                        <td colspan="3" class="text-end">
+                                            {{ number_format($groupedData->sum('total_credit') - $groupedData->sum('total_debit'), 2, ',', '.') }}
+                                        </td>
                                     @else
+                                        <td colspan="5" class="text-center">Total</td>
+                                        <td class="text-end">
+                                            {{ number_format($groupedData->sum('total_debit'), 2, ',', '.') }}
+                                        </td>
+                                        <td class="text-end">
+                                            {{ number_format($groupedData->sum('total_credit'), 2, ',', '.') }}
+                                        </td>
+                                        <td colspan="3" class="text-end">
+                                            {{ number_format($groupedData->sum('saldo'), 2, ',', '.') }}
+                                        </td>
+                                    @endif
+                                @else
                                     <td colspan="2" class="text-center">Total</td>
-                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_debit' : 'total_debit'), 2, ',', '.') }}</td>
-                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'total_credit' : 'total_credit'), 2, ',', '.') }}</td>
-                                    <td class="text-end">{{ number_format($groupedData->sum($subjek === 'pelayaran' ? 'saldo' : 'saldo'), 2, ',', '.') }}</td>
-                                    @endif
-                                    @if($subjek != 'relasi')
+                                    <td class="text-end">
+                                        {{ number_format($groupedData->sum('total_debit'), 2, ',', '.') }}
+                                    </td>
+                                    <td class="text-end">
+                                        {{ number_format($groupedData->sum('total_credit'), 2, ',', '.') }}
+                                    </td>
+                                    <td class="text-end">
+                                        {{ number_format($groupedData->sum('saldo'), 2, ',', '.') }}
+                                    </td>
                                     <td></td>
-                                    @endif
-                                </tr>
-                            </tfoot>
+                                @endif
+                            </tr>
+                        </tfoot>
+
                     </table>            
                     </div>        
                 </div>
@@ -284,7 +319,8 @@
                 "searching": true,
                 "info": true,
                 "lengthMenu": [10, 25, 50, 100],
-                "responsive": true
+                "responsive": true,
+                "ordering": false // Nonaktifkan sorting kolom
             });
         });
     </script>
