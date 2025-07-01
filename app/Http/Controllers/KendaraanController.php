@@ -114,18 +114,26 @@ class KendaraanController extends Controller
     {
        
         $today = Carbon::today();
-        $threshold = $today->copy()->addDays(-30); // 30 hari ke belakang
+$threshold = Carbon::today()->subDays(30);
 
-       $data = Kendaraan::where(function ($query) use ($threshold) {
+$data = Kendaraan::where(function ($query) use ($threshold) {
         $query->whereIn('milik', ['R1', 'R2'])
+              ->where('is_active', 1)
               ->whereDate('kir', '>', $threshold)
               ->whereDate('masa_pkb', '>', $threshold)
               ->whereDate('stid', '>', $threshold);
     })
-    ->orWhereNotIn('milik', ['R1', 'R2']) // data milik selain R1/R2 tetap tampil tanpa filter tanggal
+    ->orWhere(function ($query) {
+        $query->whereIn('milik', ['R1', 'R2'])
+              ->where('is_active', 0);
+    })
+    ->orWhere(function ($query) {
+        $query->whereNotIn('milik', ['R1', 'R2']);
+    })
     ->orderBy('is_active', 'desc')
     ->orderBy('created_at', 'desc')
     ->get();
+
         return Datatables::of($data)
             ->addColumn('created_at', function($data){
                 return date('d/m/y', strtotime($data->created_at));
