@@ -557,7 +557,7 @@ function handleLainLainChange(select, rowId) {
             xhr = $.ajax({
                 type: "POST",
                 url: "{{ url('api/get-jurnal') }}",
-                data: {nomor:@json($jur->nomor), page:page},
+                data: {nomor:@json($jur->nomor)},
                 success: function (response) {
                     let html = '';
                     $.each(response, function (idx, item) {
