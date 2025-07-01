@@ -14,6 +14,9 @@ class Kendaraan extends Model
     protected $table = 'kendaraan';
     protected $fillable = [
         'pkb',
+        'masa_pkb',
+        'kir',
+        'stid',
         'warna',
         'tahun',
         'no_rangka',

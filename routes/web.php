@@ -172,6 +172,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('sangusopir', SanguSopirController::class);
     Route::resource('ordertrucking', OrderTruckingController::class);
     Route::resource('menu', MenuController::class);
+    Route::post('/kendaraan/mass-update', [KendaraanController::class, 'massUpdate'])->name('kendaraan.mass-update');
     Route::resource('submenu', SubMenuController::class);
     Route::resource('tariftrucking', TarifTruckingController::class);
     Route::resource('tagihantrucking', TagihanTruckingController::class);

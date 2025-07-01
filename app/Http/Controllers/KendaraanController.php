@@ -6,13 +6,71 @@ use App\Models\Kendaraan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
 
 class KendaraanController extends Controller
 {
+
     public function index()
-    {
-        return view('admin.kendaraan.index');
+{
+    $kendaraanList = Kendaraan::where('is_active', 1)
+        ->whereIn('milik', ['R1', 'R2'])
+        ->get();
+
+    $today = Carbon::today();
+    $reminders = [];
+
+    foreach ($kendaraanList as $kendaraan) {
+        $reminder = [];
+
+        // Reminder KIR
+        if ($kendaraan->kir) {
+          $days = $today->diffInDays(Carbon::parse($kendaraan->kir), false);
+            if ($days === -30) {
+                $reminder[] = 'KIR akan jatuh tempo dalam 30 hari';
+            } elseif ($days < 0) {
+                $reminder[] = 'KIR HABIS!';
+            }
+        }
+
+        // Reminder PKB
+        if ($kendaraan->masa_pkb) {
+            $days = $today->diffInDays(Carbon::parse($kendaraan->masa_pkb), false);
+            if ($days === -30) {
+                $reminder[] = 'PKB akan jatuh tempo dalam 30 hari';
+            } elseif ($days < 0) {
+                $reminder[] = 'PKB HABIS!';
+            }
+        }
+
+        // Reminder STID
+        if ($kendaraan->stid) {
+           $days = $today->diffInDays(Carbon::parse($kendaraan->stid), false);
+            if ($days === -30) {
+                $reminder[] = 'STID akan jatuh tempo dalam 30 hari';
+            } elseif ($days < 0) {
+                $reminder[] = 'STID HABIS!';
+            }
+        }
+
+        if (!empty($reminder)) {
+            $reminders[] = [
+                'id' => $kendaraan->id,
+                'no_rangka' => $kendaraan->no_rangka,
+                'no_mesin' => $kendaraan->no_mesin,
+                'nopol' => $kendaraan->nopol,
+                'milik' => $kendaraan->milik,
+                'masa_pkb' => $kendaraan->masa_pkb,
+                'kir' => $kendaraan->kir,
+                'stid' => $kendaraan->stid,
+                'reminder' => $reminder,
+                'days' => $days
+            ];
+        }
     }
+    return view('admin.kendaraan.index', compact('reminders'));
+}
+
 
     public function store(Request $request)
     {
@@ -21,6 +79,21 @@ class KendaraanController extends Controller
 
         return back()->with('success','Data berhasil disimpan');
     }
+
+        public function massUpdate(Request $request)
+    {
+        $items = $request->input('items', []);
+        foreach ($items as $item) {
+            Kendaraan::where('id', $item['id'])->update([
+                'masa_pkb' => $item['masa_pkb'],
+                'kir'      => $item['kir'],
+                'stid'     => $item['stid'],
+            ]);
+        }
+
+        return back()->with('success', 'Semua data reminder berhasil diperbarui.');
+    }
+
 
     public function update(Kendaraan $kendaraan, Request $request)
     {
@@ -39,8 +112,20 @@ class KendaraanController extends Controller
 
     public function datatable()
     {
-        $data = Kendaraan::query()->orderBy('is_active','desc')->orderBy('created_at','desc');
+       
+        $today = Carbon::today();
+        $threshold = $today->copy()->addDays(-30); // 30 hari ke belakang
 
+       $data = Kendaraan::where(function ($query) use ($threshold) {
+        $query->whereIn('milik', ['R1', 'R2'])
+              ->whereDate('kir', '>', $threshold)
+              ->whereDate('masa_pkb', '>', $threshold)
+              ->whereDate('stid', '>', $threshold);
+    })
+    ->orWhereNotIn('milik', ['R1', 'R2']) // data milik selain R1/R2 tetap tampil tanpa filter tanggal
+    ->orderBy('is_active', 'desc')
+    ->orderBy('created_at', 'desc')
+    ->get();
         return Datatables::of($data)
             ->addColumn('created_at', function($data){
                 return date('d/m/y', strtotime($data->created_at));
