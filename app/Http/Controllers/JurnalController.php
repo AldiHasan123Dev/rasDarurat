@@ -2280,12 +2280,12 @@ public function editOne(Jurnal $jurnal)
             $invoice = $row->invoice ?? $row->invoice_external ?? $row->invoice_vendor ?? $row->invoice_trucking;
     
             // Tanggal dan keterangan tunggal karena ini per baris
-            $ket_d = $row->debit > 0 ? [$row->nama] : [];
+            $ket_d = [$row->nama];
             $tgl_d = $row->debit > 0
                 ? [Carbon::parse($row->created_at)->format('Y-m-d')]
                 : ($row->credit > 0 ? [Carbon::parse($row->created_at)->format('Y-m-d')] : []);
     
-            $ket_c = $row->credit > 0 ? [$row->nama] : [];
+            $ket_c = $row->nama;
             $tgl_c = $row->credit > 0
                 ? [Carbon::parse($row->created_at)->format('Y-m-d')]
                 : [];

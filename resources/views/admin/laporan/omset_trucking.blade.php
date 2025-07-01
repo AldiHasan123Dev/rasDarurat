@@ -149,13 +149,32 @@
                                     </thead>
                                     <tbody>
                                         @php
+    $total_per_coa = [];
+@endphp
+
+                                        @php
                                             $no = 1;
                                         @endphp
                                         @foreach ($data as $orders)
                                             @php
                                                 $total = 0;
                                             @endphp
-                                            @foreach ($orders as $order)
+                                           @foreach ($orders as $order)
+    @php
+        $coa_ids = $tipe == 'xpdc' ? [61, 81] : [98, 80, 87];
+
+        $jurnals = $order->jurnals()->whereIn('coa_id', $coa_ids)->where('debit', '>', 0)->get();
+        foreach ($jurnals as $jurnal) {
+            $total_per_coa[$jurnal->coa_id] = ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->debit;
+        }
+
+        $jurnals_credit = $order->jurnals()->whereIn('coa_id', $coa_ids)->where('credit', '>', 0)->get();
+        foreach ($jurnals_credit as $jurnal) {
+            $total_per_coa[$jurnal->coa_id] = ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->credit;
+        }
+    @endphp
+
+
                                                 @php
                                                     $total +=
                                                         $order
@@ -368,6 +387,33 @@
             </div>
         </div>
     </div>
+                                    <div class="card-footer py-2">
+                    <div class="d-flex gap-3 mt-2 justify-content-center">
+                        @if ($tipe == 'xpdc')    
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total COA 1.6.2.2</li>
+                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[61] ?? 0) }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total COA 2.1.5.2.2</li>
+                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[81] ?? 0) }}</li>
+                        </ul> 
+                        @else
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total COA 6.2.1</li>
+                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[98] ?? 0) }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total COA 2.1.5.2.1</li>
+                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[80] ?? 0) }}</li>
+                        </ul> 
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total COA 5.1.2</li>
+                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[87] ?? 0) }}</li>
+                        </ul> 
+                        @endif
+                    </div>
+                </div>
 @endsection
 @section('script')
     <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>

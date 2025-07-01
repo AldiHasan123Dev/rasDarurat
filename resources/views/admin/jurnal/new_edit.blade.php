@@ -95,9 +95,9 @@
                             Total Baris : {{ $count }}
                         </div>
                         <div class="d-flex flex-wrap">
-                            @for ($i = 0; $i <= ((int)$count/10) + 1; $i++)
+                            {{-- @for ($i = 0; $i <= ((int)$count/10) + 1; $i++)
                                 <button type="button" class="btn btn-sm mt-2 mx-1 btn-{{$i==1?'primary':'secondary'}}" id="page-{{ $i }}" onclick="changePage({{ $i }})">{{$i==0?'All':$i}}</button>
-                            @endfor
+                            @endfor --}}
                         </div>
                     </div>
                     <table>
