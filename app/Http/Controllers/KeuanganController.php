@@ -214,8 +214,8 @@ class KeuanganController extends Controller
     public function pre_invoice()
     {
         $data1_id = [];
-        $data1 = Order::whereNotNull('ba_kembali')->whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [1, 6,5,7,10]);
+        $data1 = Order::whereHas('tarif', function ($q) {
+            $q->whereIn('kondisi', [1, 6]);
         })->whereHas('jadwal_kapal', function ($q) {
             $q->whereNotNull('td');
         })->whereNull('invoice')->pluck('id');

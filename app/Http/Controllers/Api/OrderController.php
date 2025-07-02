@@ -211,8 +211,10 @@ class OrderController extends Controller
                  $j->whereNotNull('eta');
             });
           $query->whereHas('tarif', function ($a) {
-                $a->whereIn('kondisi', [5, 7, 10]);
-                $a->where('tujuan',97);
+                $a->whereIn('kondisi', [5, 7, 10])
+                  ->whereHas('tujuan_lokasi', function ($t3) {
+                  $t3->where('nama', 'like', '%banjarmasin%');
+              });
             });
         }
 
@@ -223,7 +225,10 @@ class OrderController extends Controller
             });
             $query->whereHas('tarif', function ($a) {
                 $a->whereIn('kondisi', [5, 7, 10]);
-                $a->where('tujuan',97);
+               $a->whereIn('kondisi', [5, 7])
+              ->whereHas('tujuan_lokasi', function ($t3) {
+                  $t3->where('nama', 'like', '%banjarmasin%');
+              });
             });
         }
 
@@ -442,17 +447,28 @@ class OrderController extends Controller
         ->count();
 }
 
-        if (request('barang_diantar_null')) {
-            $count = Order::whereNull('invoice')->whereNull('barang_diantar')->whereHas('tarif', function ($a) {
-                $a->whereIn('kondisi', [5, 7]);
-            })->whereHas('jadwal_kapal',function ($j){
-                 $j->whereNotNull('eta');
-            })->count();
-        }
+       if (request('barang_diantar_null')) {
+    $count = Order::whereNull('invoice')
+        ->whereNull('barang_diantar')
+        ->whereHas('tarif', function ($a) {
+            $a->whereIn('kondisi', [5, 7])
+              ->whereHas('tujuan_lokasi', function ($t3) {
+                  $t3->where('nama', 'like', '%banjarmasin%');
+              });
+        })
+        ->whereHas('jadwal_kapal', function ($j) {
+            $j->whereNotNull('eta');
+        })
+        ->count();
+}
+
          if (request('ba_diantar_sby_null')) {
             $count = Order::whereNull('invoice')->whereNull('ba_diantar_sby')->whereHas('tarif', function ($a) {
                 $a->whereIn('kondisi', [5, 7]);
-                $a->where('tujuan',97);
+                $a->whereIn('kondisi', [5, 7])
+              ->whereHas('tujuan_lokasi', function ($t3) {
+                  $t3->where('nama', 'like', '%banjarmasin%');
+              });
             })->whereHas('jadwal_kapal',function ($j){
                  $j->whereNotNull('eta');
             })->count();
