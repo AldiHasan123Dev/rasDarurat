@@ -215,11 +215,23 @@ class KeuanganController extends Controller
     {
         $data1_id = [];
         $data1 = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [1, 6,5,7,10]);
+            $q->whereIn('kondisi', [1, 6]);
         })->whereHas('jadwal_kapal', function ($q) {
             $q->whereNotNull('td');
         })->whereNull('invoice')->pluck('id');
         foreach ($data1 as $item) {
+            array_push($data1_id, $item);
+        }
+
+         $data4 = Order::whereHas('tarif', function ($q) {
+            $q->whereIn('kondisi', [5, 7,10]);
+            $q->whereHas('customer', function ($qu) {
+                $qu->where('ba_kembali', 0);
+            });
+        })->whereHas('jadwal_kapal', function ($q) {
+            $q->whereNotNull('td');
+        })->whereNull('invoice')->pluck('id');
+        foreach ($data4 as $item) {
             array_push($data1_id, $item);
         }
 
