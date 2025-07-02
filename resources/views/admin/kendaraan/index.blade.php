@@ -41,7 +41,8 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKendaraan" aria-controls="offcanvasKendaraan">Tambah Kendaraan</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKendaraan"
+                    aria-controls="offcanvasKendaraan">Tambah Kendaraan</button>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -73,7 +74,7 @@
         </div>
     </div>
 
-    
+
     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
@@ -92,45 +93,50 @@
                                 <th>STID</th>
                                 <th>Milik</th>
                                 <th>Pesan Reminder</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($reminders as $index => $item)
                                 <form action="{{ route('kendaraan.mass-update') }}" method="POST">
-                                     @csrf                                
-                                <tr>
-                                    <td>{{ $item['id'] }}</td>
-                                    <td>{{ $item['nopol'] }}</td>
-                                    <td>{{ $item['no_rangka'] }}</td>
-                                    <td>{{ $item['no_mesin'] }}</td>
-                                    
-                                    {{-- input ID tersembunyi untuk update --}}
-                                    <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item['id'] }}">
-                                    
-                                    <td>
-                                        <input type="date" 
-                                               name="items[{{ $index }}][masa_pkb]" 
-                                               value="{{ $item['masa_pkb'] }}">
-                                    </td>
-                                    <td>
-                                        <input type="date" 
-                                               name="items[{{ $index }}][kir]" 
-                                               value="{{ $item['kir'] }}">
-                                    </td>
-                                    <td>
-                                        <input type="date" 
-                                               name="items[{{ $index }}][stid]" 
-                                               value="{{ $item['stid'] }}">
-                                    </td>
-                                    <td>{{ $item['milik'] }}</td>
-                                    <td>
-                                        <ul class="mb-0">
-                                            @foreach ($item['reminder'] as $r)
-                                                <li>{{ $r }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </td>
-                                </tr>
+                                    @csrf
+                                    <tr>
+                                        <td>{{ $item['id'] }}</td>
+                                        <td>{{ $item['nopol'] }}</td>
+                                        <td>{{ $item['no_rangka'] }}</td>
+                                        <td>{{ $item['no_mesin'] }}</td>
+
+                                        {{-- input ID tersembunyi untuk update --}}
+                                        <input type="hidden" name="items[{{ $index }}][id]"
+                                            value="{{ $item['id'] }}">
+
+                                        <td>
+                                            <input type="date" name="items[{{ $index }}][masa_pkb]"
+                                                value="{{ $item['masa_pkb'] }}">
+                                        </td>
+                                        <td>
+                                            <input type="date" name="items[{{ $index }}][kir]"
+                                                value="{{ $item['kir'] }}">
+                                        </td>
+                                        <td>
+                                            <input type="date" name="items[{{ $index }}][stid]"
+                                                value="{{ $item['stid'] }}">
+                                        </td>
+                                        <td>{{ $item['milik'] }}</td>
+                                        <td>
+                                            <ul class="mb-0">
+                                                @foreach ($item['reminder'] as $r)
+                                                    <li>{{ $r }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </td>
+                                        <td>
+                                            <select name="items[{{ $index }}][is_active]" class="form-select form-select-sm status-dropdown" data-index="{{ $index }}">
+                                                <option value="1" {{ $item['status'] == 1 ? 'selected' : '' }}>Aktif</option>
+                                                <option value="0" {{ $item['status'] == 0 ? 'selected' : '' }}>Nonaktif</option>
+                                            </select>
+                                        </td>
+                                    </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -138,14 +144,13 @@
                     <div class="mt-3">
                         <button type="submit" class="btn btn-primary">Update Reminder</button>
                     </div>
-
                 @else
                     <div class="alert alert-success">Tidak ada kendaraan dengan reminder saat ini.</div>
                 @endif
             </div>
         </div>
     </div>
-</form>
+    </form>
 
 
     <div class="offcanvas offcanvas-start" tabindex="-2" id="offcanvasKendaraan" aria-labelledby="offcanvasKendaraanLabel">
@@ -168,27 +173,73 @@
             processing: true,
             serverSide: true,
             scrollY: '50vh',
-            ajax:{
+            ajax: {
                 url: '{{ route('kendaraan.data') }}',
-                method:'POST',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
             },
-            columns: [
-                { data: 'id', name: 'id', visible:false },
-                { data: 'created_at', name: 'created_at' },
-                { data: 'nopol', name: 'nopol' },
-                { data: 'milik', name: 'milik' },
-                { data: 'is_active', name: 'is_active' },
-                { data: 'warna', name: 'warna' },
-                { data: 'tahun', name: 'tahun' },
+            columns: [{
+                    data: 'id',
+                    name: 'id',
+                    visible: false
+                },
+                {
+                    data: 'created_at',
+                    name: 'created_at'
+                },
+                {
+                    data: 'nopol',
+                    name: 'nopol'
+                },
+                {
+                    data: 'milik',
+                    name: 'milik'
+                },
+                {
+                    data: 'is_active',
+                    name: 'is_active'
+                },
+                {
+                    data: 'warna',
+                    name: 'warna'
+                },
+                {
+                    data: 'tahun',
+                    name: 'tahun'
+                },
                 // { data: 'pkb', name: 'pkb' },
-                { data: 'masa_pkb', name: 'masa_pkb' },
-                { data: 'kir', name: 'kir' },
-                { data: 'stid', name: 'stid' },
-                { data: 'no_rangka', name: 'no_rangka' },
-                { data: 'no_mesin', name: 'no_mesin' },
-                { data: 'keterangan', name: 'keterangan' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                {
+                    data: 'masa_pkb',
+                    name: 'masa_pkb'
+                },
+                {
+                    data: 'kir',
+                    name: 'kir'
+                },
+                {
+                    data: 'stid',
+                    name: 'stid'
+                },
+                {
+                    data: 'no_rangka',
+                    name: 'no_rangka'
+                },
+                {
+                    data: 'no_mesin',
+                    name: 'no_mesin'
+                },
+                {
+                    data: 'keterangan',
+                    name: 'keterangan'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
             ]
         });
     </script>

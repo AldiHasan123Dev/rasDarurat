@@ -64,7 +64,7 @@ class KendaraanController extends Controller
                 'kir' => $kendaraan->kir,
                 'stid' => $kendaraan->stid,
                 'reminder' => $reminder,
-                'days' => $days
+                'status' => $kendaraan->is_active
             ];
         }
     }
@@ -88,6 +88,7 @@ class KendaraanController extends Controller
                 'masa_pkb' => $item['masa_pkb'],
                 'kir'      => $item['kir'],
                 'stid'     => $item['stid'],
+                'is_active'     => $item['is_active'],
             ]);
         }
 
