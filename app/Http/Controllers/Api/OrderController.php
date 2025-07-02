@@ -181,29 +181,37 @@ class OrderController extends Controller
             $start = 0;
         }
 
-      if (request('ba_kembali_null')) {
+if (request('ba_kembali_null')) {
     $query->whereNull('order.ba_kembali');
-     $query->whereHas('jadwal_kapal',function ($j){
-                 $j->whereNotNull('eta');
-            });
-    $query->whereHas('tarif', function ($a) {
-        $a->whereIn('kondisi', [5, 7, 10]);
-        $a->whereHas('customer', function ($qu) {
-                $qu->where('ba_kembali', 1);
-            });
+
+    $query->whereHas('jadwal_kapal', function ($j) {
+        $j->whereNotNull('eta');
     });
 
-    // Tambahan kondisi: jika tujuan = 97, maka ba_diantar_sby harus tidak null
+    $query->whereHas('tarif', function ($a) {
+        $a->whereIn('kondisi', [5, 7, 10])
+          ->whereHas('customer', function ($qu) {
+              $qu->where('ba_kembali', 1);
+          });
+    });
+
+    // Tambahan kondisi: jika tujuan mengandung 'banjarmasin', maka harus sudah diantar
     $query->where(function ($q) {
         $q->whereHas('tarif', function ($t) {
-            $t->where('tujuan', '!=', 97);
+            $t->whereDoesntHave('tujuan_lokasi', function ($t3) {
+                $t3->where('nama', 'like', '%banjarmasin%');
+            });
         })->orWhere(function ($q2) {
             $q2->whereHas('tarif', function ($t2) {
-                $t2->where('tujuan', 97);
-            })->whereNotNull('order.ba_diantar_sby')->whereNotNull('order.barang_diantar');
+                $t2->whereHas('tujuan_lokasi', function ($t3) {
+                    $t3->where('nama', 'like', '%banjarmasin%');
+                });
+            })->whereNotNull('order.ba_diantar_sby')
+              ->whereNotNull('order.barang_diantar');
         });
     });
 }
+
 
           if (request('barang_diantar_null') ) {
             $query->whereNull('order.invoice')->whereNull('order.barang_diantar');
