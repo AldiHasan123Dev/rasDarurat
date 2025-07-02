@@ -215,7 +215,7 @@ class KeuanganController extends Controller
     {
         $data1_id = [];
         $data1 = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [1, 6]);
+            $q->whereIn('kondisi', [1, 6,5,7,10]);
         })->whereHas('jadwal_kapal', function ($q) {
             $q->whereNotNull('td');
         })->whereNull('invoice')->pluck('id');
