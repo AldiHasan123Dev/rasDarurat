@@ -219,10 +219,7 @@ if (request('ba_kembali_null')) {
                  $j->whereNotNull('eta');
             });
           $query->whereHas('tarif', function ($a) {
-                $a->whereIn('kondisi', [5, 7, 10])
-                  ->whereHas('tujuan_lokasi', function ($t3) {
-                  $t3->where('nama', 'like', '%banjarmasin%');
-              });
+                $a->whereIn('kondisi', [5, 7, 10]);
             });
         }
 
@@ -459,10 +456,7 @@ if (request('ba_kembali_null')) {
     $count = Order::whereNull('invoice')
         ->whereNull('barang_diantar')
         ->whereHas('tarif', function ($a) {
-            $a->whereIn('kondisi', [5, 7])
-              ->whereHas('tujuan_lokasi', function ($t3) {
-                  $t3->where('nama', 'like', '%banjarmasin%');
-              });
+            $a->whereIn('kondisi', [5, 7]);
         })
         ->whereHas('jadwal_kapal', function ($j) {
             $j->whereNotNull('eta');
