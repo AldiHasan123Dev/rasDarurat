@@ -1242,14 +1242,18 @@ class JurnalController extends Controller
 public function simpanKode(Request $request)
 {
     $data = $request->input('data');
+
     foreach ($data as $row) {
-        DB::table('jurnal')
-            ->where('id', $row['id'])
-            ->update(['kode' => $row['kode']]); // pastikan kolom 'kode' ada
+        if (isset($row['kode']) && trim($row['kode']) !== '') {
+            DB::table('jurnal')
+                ->where('id', $row['id'])
+                ->update(['kode' => $row['kode']]);
+        }
     }
 
     return response()->json(['status' => 'success']);
 }
+
 
 
 // public function buatCode(Request $request) {

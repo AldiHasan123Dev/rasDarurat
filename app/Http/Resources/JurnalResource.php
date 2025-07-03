@@ -50,7 +50,7 @@ class JurnalResource extends JsonResource
             'created_at' => date('d/m/y', strtotime($this->created_at)),
             'debit_num' => $this->debit,
             'credit_num' => $this->credit,
-            'kode' => $this->kode,
+            'kode' => $this->kode ?? '',
             'relasi' => $this->relasi ?? '-',
         ];
     }
