@@ -365,7 +365,7 @@ class JurnalController extends Controller
                 }
             }
             if (request('name')) {
-                $query->where('kode', request('kode'));
+                $query->where('kode', request('name'));
             }
             if (request('debit_coa_id_tujuan')) {
                 $query->where('coa_id', request('debit_coa_id_tujuan'));
