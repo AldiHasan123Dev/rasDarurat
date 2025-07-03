@@ -27,6 +27,7 @@ class Jurnal extends Model
         'credit',
         'tipe',
         'no',
+        'kode',
         'is_balik',
         'created_at',
         'input',

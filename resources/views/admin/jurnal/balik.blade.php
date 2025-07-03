@@ -59,17 +59,24 @@
                                 <tr>
                                     <td>Tanggal Awal</td>
                                     <td>Tanggal Akhir</td>
-                                    <td colspan="2">Kriteria Keterangan (bisa pakai %)</td>
+                                    <td colspan="2">Kriteria Kode</td>
                                 </tr>
                                 <tr>
                                     <td>
-                                        <input required type="date" name="start" id="start" class="form-control" value="{{ request('start') }}">
+                                        <input type="date" name="start" id="start" class="form-control" value="{{ request('start') }}">
                                     </td>
                                     <td>
-                                        <input required type="date" name="end" id="end" class="form-control" value="{{ request('end') }}">
+                                        <input type="date" name="end" id="end" class="form-control" value="{{ request('end') }}">
                                     </td>
                                     <td colspan="2">
-                                        <input type="text" name="name" id="name" class="form-control" value="{{ request('name') }}">
+                                        <select name="name" id="name" class="form-control select2">
+                                            <option value="">Pilih Kode</option>
+                                            @foreach ($kode as $nama)
+                                                <option value="{{ $nama }}" {{ request('name') == $nama ? 'selected' : '' }}>
+                                                    {{ $nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
@@ -223,6 +230,7 @@
                                         <input type="hidden" value="{{ $item['debit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
                                         <input type="hidden" value="{{ $item['debit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
                                         <input type="hidden" value="{{ $item['debit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
+                                        <input type="hidden" value="{{ $item['debit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                         </td>
                                             <td>{{ $k }}</td>
                                             @if ($item['debit']->order)
@@ -261,6 +269,7 @@
                                             <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
                                             <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
                                             <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
+                                            <input type="hidden" value="{{ $item['credit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                             </td>
                                             <td>{{ $k }}</td>
                                             @if ($item['credit']->order)
@@ -297,6 +306,7 @@
                                     <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
                                     <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
                                     <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
+                                    <input type="hidden" value="{{ $item['credit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                         {{-- <tr>
                                             <td></td>
                                             <td>{{ $k }}</td>
@@ -366,6 +376,7 @@
                                     <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
                                     <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
                                     <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
+                                    <input type="hidden" value="{{ $item['credit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                 <tr id="total-jurnal-row">
                                     <td></td>
                                     <td>{{ $k }}</td>
@@ -427,6 +438,15 @@
     </script>
 @endsection
 @push('scripts')
+<script>
+    $(document).ready(function () {
+    $('#name').select2({
+        placeholder: "Pilih Nama",
+        allowClear: true
+    });
+});
+
+</script>
 <script>
     $(document).ready(function () {
     function cekCheckbox() {

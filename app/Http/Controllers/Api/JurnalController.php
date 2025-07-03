@@ -191,8 +191,12 @@ class JurnalController extends Controller
         $is_sample = request('is_sample');
         $kategori = request('kategori');
         $keterangan = request('keterangan');
+        $year_is = request('year_is');
+        $month_is = request('month_is');
+        $coa = request('coa_id');
         $nomorS = request('nomorS');
         $nomorE = request('nomorE');
+        $tipe = request('tipe');
         $bank = request('bank');
         $kas = request('kas');
         $nomor = request('nomor');
@@ -200,6 +204,12 @@ class JurnalController extends Controller
         $bkt = request('bkt');
         $tgl = request('tgl');
         $container = request('container');
+        \Log::info('FILTER PARAMS', [
+    'coa_id' => $coa,
+    'month_is' => $month_is,
+    'year_is' => $year_is,
+]);
+
         $is_search = false;
         if($search=='true'){
             $is_search = true;
@@ -260,6 +270,20 @@ if ($bank) {
 if ($tgl && strlen($tgl) > 3) {
     $query->whereDate('created_at', $tgl);
     $hasFilter = true;
+}
+
+if ($coa) {
+    $query->where('coa_id', $coa)
+          ->whereNull('jurnal_balik')
+          ->whereMonth('created_at', $month_is)
+          ->whereYear('created_at', $year_is);
+    $hasFilter = true;
+    
+if ($tipe === 'debit') {
+    $query->where('debit', '>', 0)->orderByDesc('debit');
+} elseif ($tipe === 'credit') {
+    $query->where('credit', '>', 0)->orderByDesc('credit');
+}
 }
 
 // Hitung total data (tanpa limit)

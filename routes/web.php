@@ -236,6 +236,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'jurnal'])->name('jasakirim.draf.jurnal');
     Route::post('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'generateJurnal'])->name('jasakirim.generate.jurnal');
     Route::get('jurnal-order', [JurnalController::class, 'order'])->name('jurnal.order');
+    Route::get('jurnal-code', [JurnalController::class, 'code'])->name('jurnal.code');
     Route::get('jurnal-order-trucking', [JurnalController::class, 'order_trucking'])->name('jurnal.order_trucking');
     Route::get('trucking/monitoring', [TruckingController::class, 'monitoring'])->name('trucking.monitoring');
     Route::get('trucking/monitoring-invoice', [TruckingController::class, 'monitoring_invoice'])->name('trucking.monitoring.invoice');
@@ -311,11 +312,13 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('data-total-rekap-piutang', [LaporanController::class, 'data_total_rekap_piutang'])->name('data-rekap-total.piutang');
 
     Route::get('jurnal-edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
+    Route::post('/jurnal/simpan-kode', [JurnalController::class, 'simpanKode'])->name('jurnal.simpanKode');
     Route::get('jurnal-kolektif', [JurnalController::class, 'kolektif'])->name('jurnal.kolektif.create');
     Route::get('jurnal-tampungan', [JurnalController::class, 'tampungan'])->name('jurnal.tampungan');
     Route::delete('jurnal-tampungan', [JurnalController::class, 'tampungan_destroy'])->name('jurnal.tampungan.destroy');
     Route::post('jurnal-tampungan', [JurnalController::class, 'tampungan_store'])->name('jurnal.tampungan.store');
     Route::get('jurnal-edit-coa', [JurnalController::class, 'editCoa'])->name('jurnal.edit.coa');
+    Route::get('jurnal-buat-code', [JurnalController::class, 'buatCode'])->name('jurnal.buat.code');
     Route::put('jurnal-edit-coa-{jurnal}', [JurnalController::class, 'updateCoa'])->name('jurnal.update.coa');
 
     Route::get('jurnal-edit-{jurnal}', [JurnalController::class, 'editOne'])->name('jurnal.edit.one');

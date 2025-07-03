@@ -74,6 +74,19 @@ class JurnalController extends Controller
         return view('admin.jurnal.jurnal-cek-coa', compact('month', 'unbalance', 'year', 'is_sample'));
     }
 
+    public function code(){
+        $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(3)->format('Y-m-d');
+
+        $cacheKey = 'jurnal_unbalance_' . $last . '_' . $now;
+        $coa = COA::where('is_active', 1)->orderBy('kode')->get();
+
+        $month = request('month') ?? date('m');
+        $year = request('year') ?? date('Y');
+        $is_sample = request('is_sample') ?? 'real';
+        return view('admin.jurnal.kode-balik', compact('month', 'year', 'is_sample', 'coa'));
+    }
+
     public function show($id) {
       $month = request('month') ?? date('m');
       $year = request('year') ?? date('Y');
@@ -331,6 +344,7 @@ class JurnalController extends Controller
     public function balik()
     {
         $coa = COA::where('is_active', 1)->orderBy('kode')->get();
+        $kode = Jurnal::whereNotNull('kode')->distinct()->pluck('kode');
         $data = [];
         $new = [];
         $coa_debit = null;
@@ -351,7 +365,7 @@ class JurnalController extends Controller
                 }
             }
             if (request('name')) {
-                $query->where('nama', 'LIKE', request('name'));
+                $query->where('kode', 'like', '%' . request('kode'). '%');
             }
             if (request('debit_coa_id_tujuan')) {
                 $query->where('coa_id', request('debit_coa_id_tujuan'));
@@ -392,7 +406,7 @@ class JurnalController extends Controller
         $nomor_3 = sprintf('%03d', $no_3) . '/BBM-' . $this->sno . '/' . date('y');
         $nomor_4 = sprintf('%03d', $no_4) . '/BKK-' . $this->sno . '/' . date('y');
         $nomor_5 = sprintf('%03d', $no_5) . '/BKM-' . $this->sno . '/' . date('y');
-        return view('admin.jurnal.balik', compact('coa', 'new', 'coa_debit', 'coa_credit', 'orders', 'data', 'no_1', 'no_2', 'no_3', 'no_4', 'no_5', 'nomor_1', 'nomor_2', 'nomor_3', 'nomor_4', 'nomor_5'));
+        return view('admin.jurnal.balik', compact('kode','coa', 'new', 'coa_debit', 'coa_credit', 'orders', 'data', 'no_1', 'no_2', 'no_3', 'no_4', 'no_5', 'nomor_1', 'nomor_2', 'nomor_3', 'nomor_4', 'nomor_5'));
     }
 
     public function store_manual(Request $request)
@@ -1223,6 +1237,30 @@ class JurnalController extends Controller
     $last = Carbon::now()->subMonths(9)->format('Y-m-d');
 
     return view('admin.jurnal.edit-coa', compact('coa','data'));
+}
+
+public function simpanKode(Request $request)
+{
+    $data = $request->input('data');
+    foreach ($data as $row) {
+        DB::table('jurnal')
+            ->where('id', $row['id'])
+            ->update(['kode' => $row['kode']]); // pastikan kolom 'kode' ada
+    }
+
+    return response()->json(['status' => 'success']);
+}
+
+
+public function buatCode(Request $request) {
+    $nomor = $request->query('jurnal');
+    $data = Jurnal::with('order')->where('nomor',$nomor)->get();
+
+    $coa = COA::where('is_active', 1)->orderBy('kode')->get();
+    $now = Carbon::now()->addMonths(1)->format('Y-m-d');
+    $last = Carbon::now()->subMonths(9)->format('Y-m-d');
+
+    return view('admin.jurnal.buat-code-balik', compact('coa','data'));
 }
 
 public function updateCoa(Request $request, $jurnal_id)
