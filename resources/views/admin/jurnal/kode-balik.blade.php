@@ -198,7 +198,7 @@
                         label: 'Kode',
                         width: 100,
                         formatter: function (cellval, opts, rowObject) {
-                            return `<input type="text" class="form-control form-control-sm kode-input" data-id="${rowObject.id}" />`;
+                            return `<input type="text" value="${rowObject.kode}" class="form-control form-control-sm kode-input" data-id="${rowObject.id}" />`;
                         },
                         sortable: false,
                         align: 'center'
