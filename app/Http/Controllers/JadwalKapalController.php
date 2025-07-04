@@ -47,40 +47,17 @@ class JadwalKapalController extends Controller
     public function update(JadwalKapal $jadwalkapal, Request $request)
     {
         $data = $request->all();
-        if (!empty($data['td'])) {
-            $data['is_active'] = 0;
-            Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
-                'is_active' => 0
-            ]);
-            // $orders = Order::where('jadwal_kapal_id',$jadwalkapal->id)->get();
-            // foreach ($orders as $order) {
-            //     if($order->agent){
-            //         $tarif_agen = TarifAgen::where('agen_id',$order->agen_id)
-            //                         ->where('dari',$order->tarif->dari)
-            //                         ->where('tujuan',$order->tarif->tujuan)
-            //                         ->where('tipe',$order->tarif->shipment)
-            //                         ->where('penerima_id',$order->penerima_id)
-            //                         ->where('pembayar_id',$order->tarif->customer_id)
-            //                         ->first();
-            //         if($tarif_agen){
-            //             HutangAgen::create([
-            //                 'tarif_agen_id' => $tarif_agen->id,
-            //                 'order_id' => $order->id,
-            //                 'jumlah' => $tarif_agen->tarif,
-            //                 'status' => 0,
-            //             ]);
-            //         }
-            //     }
-            // }
-        }else{
-            $data['is_active'] = 1;
-            Tarif::where('jadwal_kapal_id',$jadwalkapal->id)->update([
-                'is_active' => 1
-            ]);
-        }
-        $jadwalkapal->update($data);
+          if ($request->has('td')) {
+        $data['is_active'] = !empty($data['td']) && $data['td'] != '0000-00-00' ? 0 : 1;
 
-        return back()->with('success','Data berhasil diupdate');
+        Tarif::where('jadwal_kapal_id', $jadwalkapal->id)->update([
+            'is_active' => $data['is_active']
+        ]);
+    }
+
+    $jadwalkapal->update($data);
+
+    return back()->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy(JadwalKapal $jadwalkapal)
