@@ -653,10 +653,10 @@
                                     <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
                                     </p>
                                     @if ($allin['total'] >= 5000000)
-                                        <img src="{{ asset('assets/img/ainun_ras.png') }}"
+                                        <img src="{{ asset('assets/img/ainun-ras.png') }}"
                                              style="width: 200px; height:104px; margin-left: 1px;">
                                     @else
-                                        <img src="{{ asset('assets/img/ainun_ras.png') }}"
+                                        <img src="{{ asset('assets/img/ainun-ras.png') }}"
                                              style="width: 200px; height:104px; margin-left: 1px;">
                                     @endif
                                     <br>
@@ -1452,10 +1452,10 @@
                                     <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
                                     </p>
                                     @if ($invoice['total'] >= 5000000)
-                                        <img src="{{ asset('assets/img/ainun_ras.png') }}"
+                                        <img src="{{ asset('assets/img/ainun-ras.png') }}"
                                             style="width: 200px; height:104px; margin-left: 1px;">
                                     @else
-                                        <img src="{{ asset('assets/img/ainun_ras.png') }}"
+                                        <img src="{{ asset('assets/img/ainun-ras.png') }}"
                                             style="width: 200px; height:104px; margin-left: 1px;">
                                     @endif
                                     <br>
