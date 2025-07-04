@@ -11,21 +11,24 @@
             position: relative;
             overflow-y: scroll;
         }
+
         .ui-jqgrid .ui-jqgrid-htable th {
-    position: sticky;
-    top: 0;
-    background: white;
-    z-index: 10;
-}
-.ui-jqgrid .ui-jqgrid-htable th {
-    border-bottom: 2px solid #ccc;
-}
-.ui-jqgrid .ui-jqgrid-htable th {
-    position: sticky !important;
-    top: 0 !important;
-    background: #fff !important;
-    z-index: 999 !important;
-}
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .ui-jqgrid .ui-jqgrid-htable th {
+            border-bottom: 2px solid #ccc;
+        }
+
+        .ui-jqgrid .ui-jqgrid-htable th {
+            position: sticky !important;
+            top: 0 !important;
+            background: #fff !important;
+            z-index: 999 !important;
+        }
 
 
 
@@ -56,16 +59,16 @@
         }
 
         .ui-jqgrid .ui-jqgrid-htable th {
-    position: sticky !important;
-    top: 0 !important;
-    background: white !important;
-    z-index: 10 !important;
-}
+            position: sticky !important;
+            top: 0 !important;
+            background: white !important;
+            z-index: 10 !important;
+        }
 
-.ui-jqgrid .ui-jqgrid-bdiv {
-    max-height: 70vh;
-    overflow-y: auto !important;
-}
+        .ui-jqgrid .ui-jqgrid-bdiv {
+            max-height: 70vh;
+            overflow-y: auto !important;
+        }
 
 
         .card {
@@ -110,13 +113,15 @@
                     <div class="col-md-3">
                         <label class="form-label"></label>
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-success btn-sm type-btn" data-type="debit">Debit</button>
-                            <button type="button" class="btn btn-outline-danger btn-sm type-btn" data-type="credit">Credit</button>
+                            <button type="button" class="btn btn-outline-success btn-sm type-btn"
+                                data-type="debit">Debit</button>
+                            <button type="button" class="btn btn-outline-danger btn-sm type-btn"
+                                data-type="credit">Credit</button>
                         </div>
                     </div>
                     {{-- Filter Bulan --}}
                     <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
-                         <label class="form-label">Bulan</label>
+                        <label class="form-label">Bulan</label>
                         {{-- Tombol Bulan --}}
                         @php
                             $months = [
@@ -138,7 +143,7 @@
                             <button type="button" id="month" class="btn btn-outline-primary btn-sm month-btn"
                                 data-month="{{ $num }}">{{ $name }}</button>
                         @endforeach
-                         <label class="form-label">Tahun</label>
+                        <label class="form-label">Tahun</label>
                         <select id="filter-year" class="form-select form-select-sm" style="width: auto;">
                             @php
                                 $currentYear = date('Y');
@@ -149,12 +154,14 @@
                         </select>
                         <div class="col-md-2 ms-auto text-end align-self-start">
                             <div class="d-flex justify-content-end gap-2">
-                                <button class="btn btn-success btn-sm" type="button" onclick="searchJurnal1()">Search</button>
-                                
+                                <button class="btn btn-success btn-sm" type="button"
+                                    onclick="searchJurnal1()">Search</button>
+
                             </div>
                         </div>
                     </div>
-                    <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Simpan Kode</a>
+                    <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Simpan
+                        Kode</a>
 
 
                     <div class="col-md-2 ms-auto text-end align-self-start">
@@ -162,10 +169,10 @@
                 </div>
 
                 {{-- Table --}}
-               <div class="table-wrapper">
-    <table id="jqGrid1"></table>
-    <div id="jqGridPager1"></div>
-</div>
+                <div class="table-wrapper">
+                    <table id="jqGrid1"></table>
+                    <div id="jqGridPager1"></div>
+                </div>
 
             </div>
         </div>
@@ -192,12 +199,11 @@
                 url: '{{ route('jqgrid.jurnal') }}',
                 mtype: 'GET',
                 datatype: 'json',
-                colModel: [
-                                        {
+                colModel: [{
                         name: 'kode_input',
                         label: 'Kode',
                         width: 100,
-                        formatter: function (cellval, opts, rowObject) {
+                        formatter: function(cellval, opts, rowObject) {
                             return `<input type="text" value="${rowObject.kode}" class="form-control form-control-sm kode-input" data-id="${rowObject.id}" />`;
                         },
                         sortable: false,
@@ -316,7 +322,7 @@
 
         let selectedMonth = null;
 
-        $('.month-btn').on('click', function () {
+        $('.month-btn').on('click', function() {
             $('.month-btn').removeClass('active'); // hilangkan class aktif dari semua
             $(this).addClass('active'); // tambahkan class aktif pada tombol yang diklik
 
@@ -326,64 +332,69 @@
 
         let selectedType = "";
 
-        $('.type-btn').on('click', function () {
+        $('.type-btn').on('click', function() {
             $('.type-btn').removeClass('active');
             $(this).addClass('active');
 
             selectedType = $(this).data('type');
         });
 
-        $('#edit-coa1').on('click', function (e) {
-    e.preventDefault();
+        $('#edit-coa1').on('click', function(e) {
+            e.preventDefault();
 
-    let dataToSend = [];
+            let dataToSend = [];
 
-    $('.kode-input').each(function () {
-        const kode = $(this).val();
-        const id = $(this).data('id');
+            $('.kode-input').each(function() {
+                const kode = $(this).val();
+                const id = $(this).data('id');
 
-        if (kode.trim() !== '') {
-            dataToSend.push({ id, kode });
-        }
-    });
+                dataToSend.push({
+                    id,
+                    kode: kode.trim() === '' ? null : kode.trim()
+                });
+            });
 
-    if (dataToSend.length === 0) {
-        alert('Tidak ada kode yang diisi.');
-        return;
-    }
+            if (dataToSend.length === 0) {
+                alert('Tidak ada data untuk disimpan.');
+                return;
+            }
 
-    // Kirim ke server
-    $.ajax({
-        url: '{{ route("jurnal.simpanKode") }}',
-        method: 'POST',
-        data: {
-            _token: '{{ csrf_token() }}',
-            data: dataToSend
-        },
-        success: function (res) {
-            alert('Kode berhasil disimpan!');
-            $("#jqGrid1").trigger('reloadGrid');
-        },
-        error: function () {
-            alert('Terjadi kesalahan saat menyimpan.');
-        }
-    });
-});
+            $.ajax({
+                url: '{{ route('jurnal.simpanKode') }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    data: dataToSend
+                },
+                success: function(res) {
+                    alert('Kode berhasil disimpan!');
+                    $("#jqGrid1").trigger('reloadGrid');
+                },
+                error: function() {
+                    alert('Terjadi kesalahan saat menyimpan.');
+                }
+            });
+
+        });
 
 
         function searchJurnal1() {
             const coa_id = $('#coa').val();
             const month = selectedMonth; // gunakan dari variable
             const year = $('#filter-year').val();
-              console.log('FILTER:', { coa_id, month, year }); // <- Tambahkan ini
+            console.log('FILTER:', {
+                coa_id,
+                month,
+                year
+            }); // <- Tambahkan ini
 
             $("#jqGrid1").jqGrid('setGridParam', {
                 postData: {
                     kategori: "real",
                     coa_id: coa_id,
-                    month_is : month,
-                    year_is : year,
-                     tipe: selectedType // ← tambahan di sini
+                    month_is: month,
+                    year_is: year,
+                    tipe: selectedType // ← tambahan di sini
                 },
                 page: 1
             }).trigger('reloadGrid');
