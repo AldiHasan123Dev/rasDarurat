@@ -397,8 +397,12 @@ class TruckingController extends Controller
                                 foreach ($orders as $ord) {
                                     if ($ord->tagihans->count() > 0) {
                                         foreach ($ord->tagihans as $tag) {
+
+                                            // Cek apakah nama tagihan mengandung "TB/TL"
+                                            $coa_id = str_contains($tag->nama, 'TB/TL') ? 87 : $item->coa_credit_id;
+
                                             Jurnal::create([
-                                                'coa_id' => $item->coa_credit_id,
+                                                'coa_id' => $coa_id,
                                                 'order_trucking_id' => $ord->id,
                                                 'nomor' => $nomor,
                                                 'nama' => $tag->nama,
@@ -417,6 +421,7 @@ class TruckingController extends Controller
                                     }
                                 }
                             }
+
                         }
                         OrderTrucking::whereIn('id', $order_id)->update([
                             'jurnal_piutang' => $nomor,
