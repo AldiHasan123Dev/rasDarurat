@@ -163,8 +163,6 @@
                     <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Simpan
                         Kode</a>
 
-                     <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Export Jurnal</a>
-
 
 
                     <div class="col-md-2 ms-auto text-end align-self-start">
