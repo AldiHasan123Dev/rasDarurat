@@ -192,6 +192,7 @@ class JurnalController extends Controller
         $kategori = request('kategori');
         $keterangan = request('keterangan');
         $year_is = request('year_is');
+        $tahun = request('tahun');
         $month_is = request('month_is');
         $coa = request('coa_id');
         $nomorS = request('nomorS');
@@ -237,13 +238,13 @@ if ($nomor) {
 }
 
 if ($nomorS && $nomorE) {
-    $query->whereBetween('nomor', [$nomorS, $nomorE]);
+    $query->whereBetween('nomor', [$nomorS, $nomorE])->whereYear('created_at', $tahun);
     $hasFilter = true;
 } elseif ($nomorS) {
-    $query->where('nomor', 'like', '%' . $nomorS . '%');
+    $query->where('nomor', 'like', '%' . $nomorS . '%')->whereYear('created_at', $tahun);;
     $hasFilter = true;
 } elseif ($nomorE) {
-    $query->where('nomor', 'like', '%' . $nomorE . '%');
+    $query->where('nomor', 'like', '%' . $nomorE . '%')->whereYear('created_at', $tahun);;
     $hasFilter = true;
 }
 
@@ -280,9 +281,9 @@ if ($coa) {
     $hasFilter = true;
     
 if ($tipe === 'debit') {
-    $query->where('debit', '>', 0)->orderByDesc('debit');
+    $query->where('debit', '>', 0)->orderByDesc('created_at');
 } elseif ($tipe === 'credit') {
-    $query->where('credit', '>', 0)->orderByDesc('credit');
+    $query->where('credit', '>', 0)->orderByDesc('created_at');
 }
 }
 

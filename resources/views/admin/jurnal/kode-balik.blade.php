@@ -163,6 +163,9 @@
                     <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Simpan
                         Kode</a>
 
+                     <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Export Jurnal</a>
+
+
 
                     <div class="col-md-2 ms-auto text-end align-self-start">
                     </div>
@@ -228,11 +231,6 @@
                     },
                     {
                         width: 100,
-                        name: 'invoice',
-                        label: 'Invoice'
-                    },
-                    {
-                        width: 100,
                         name: 'invoice_external',
                         label: 'Invoice External'
                     },
@@ -253,31 +251,11 @@
                     },
                     {
                         width: 100,
-                        name: 'no_bg',
-                        label: 'No Bg'
-                    },
-                    {
-                        width: 100,
-                        name: 'job',
-                        label: 'Group JOB'
-                    },
-                    {
-                        width: 100,
-                        name: 'no_job',
-                        label: 'ID JOB'
-                    },
-                    {
-                        width: 100,
                         name: 'container',
                         label: 'Container'
                     },
                     {
-                        width: 100,
-                        name: 'nopol',
-                        label: 'Nopol'
-                    },
-                    {
-                        width: 300,
+                        width: 700,
                         name: 'nama',
                         label: 'Keterangan'
                     },

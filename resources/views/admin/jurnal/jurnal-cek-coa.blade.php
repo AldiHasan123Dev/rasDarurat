@@ -103,12 +103,20 @@
             <div class="section-title">Pencarian Data Jurnal</div>
             <div class="row g-3">
                 <div class="col-md-3">
-                    <label class="form-label">No Jurnal Dari </label>
+                    <label class="form-label">No Jurnal Dari</label>
                     <input type="text" name="no-jnl-start" id="no-jnl-start" class="form-control">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">No Jurnal Sampai</label>
                     <input type="text" name="no-jnl-end" id="no-jnl-end" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Tahun</label>
+                    <select name="tahun-no" id="tahun-no" class="form-select">
+                        @for ($i = date('Y'); $i >= 2020; $i--)
+                            <option value="{{ $i }}">{{ $i }}</option>
+                        @endfor
+                    </select>
                 </div>
                 <div class="col-md-3 ms-auto text-end">
                     <div class="d-flex justify-content-end gap-2">
@@ -117,6 +125,7 @@
                     </div>
                 </div>
             </div>
+
 
             {{-- Grid Kedua --}}
             <div class="table-wrapper">
@@ -580,6 +589,7 @@ function setTipe(bank) {
  function searchJurnal1() {
     const nomorS = $('#no-jnl-start').val();
     const nomorE = $('#no-jnl-end').val();
+    const tahun = $('#tahun-no').val();
 
     // Reset filter jika keterangan dan container diisi
 
@@ -587,6 +597,7 @@ function setTipe(bank) {
     $("#jqGrid1").jqGrid('setGridParam', {
         postData: {
             kategori: "real",
+            tahun: tahun,
             nomorS: nomorS,
             nomorE: nomorE
         },
