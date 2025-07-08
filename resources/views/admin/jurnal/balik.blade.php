@@ -72,8 +72,8 @@
                                         <select name="name" id="name" class="form-control select2">
                                             <option value="">Pilih Kode</option>
                                             @foreach ($kode as $nama)
-                                                <option value="{{ $nama }}" {{ request('name') == $nama ? 'selected' : '' }}>
-                                                    {{ $nama }}
+                                                <option value="{{ $nama['kode'] }}" {{ request('name') == $nama['kode'] ? 'selected' : '' }}>
+                                                    {{ $nama['kode'] }}
                                                 </option>
                                             @endforeach
                                         </select>

@@ -15,6 +15,7 @@ use App\Models\HutangPelayaran;
 use App\Models\JasaKirim;
 use App\Models\Jurnal;
 use App\Models\Customer;
+use Illuminate\Support\Collection;
 use App\Models\CustomerTrucking;
 use App\Models\JurnalSample;
 use App\Models\JurnalTampungan;
@@ -355,7 +356,44 @@ class JurnalController extends Controller
     public function balik()
     {
         $coa = COA::where('is_active', 1)->orderBy('kode')->get();
-        $kode = Jurnal::whereNotNull('kode')->whereNull('jurnal_balik')->distinct()->pluck('kode');
+
+$code = Jurnal::whereNotNull('kode')
+    ->whereNull('jurnal_balik')
+    ->select('kode', 'jurnal_balik')
+    ->distinct()
+    ->get()
+    ->toArray();
+
+$uncode = Jurnal::whereNotNull('kode')
+    ->whereNotNull('jurnal_balik')
+    ->select('kode', 'jurnal_balik')
+    ->distinct()
+    ->get()
+    ->toArray();
+
+// Gabungkan
+$combined = array_merge($code, $uncode);
+
+// Konversi ke koleksi
+$collection = collect($combined);
+
+// Ambil semua kode yang punya jurnal_balik tidak null
+$kodeDenganBalik = $collection
+    ->whereNotNull('jurnal_balik')
+    ->pluck('kode')
+    ->unique();
+
+// Filter hanya yang jurnal_balik null dan tidak ada di daftar kode dengan jurnal_balik
+$kode = $collection
+    ->filter(function ($item) use ($kodeDenganBalik) {
+        return is_null($item['jurnal_balik']) && !$kodeDenganBalik->contains($item['kode']);
+    })
+    ->values()
+    ->toArray();
+
+
+
+
         $data = [];
         $new = [];
         $coa_debit = null;
