@@ -224,7 +224,7 @@ class KeuanganController extends Controller
         }
 
          $data4 = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [5, 7,10]);
+            $q->whereIn('kondisi', [5, 7,10,8,9]);
             $q->whereHas('customer', function ($qu) {
                 $qu->where('ba_kembali', 0);
             });
@@ -236,7 +236,7 @@ class KeuanganController extends Controller
         }
 
         $data2 = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [5, 7, 10]);
+            $q->whereIn('kondisi', [5, 7, 10,8,9]);
             $q->whereHas('customer', function ($qu) {
                 $qu->where('ba_kembali', 1);
             });
@@ -248,7 +248,7 @@ class KeuanganController extends Controller
         }
 
         $data3 = Order::whereHas('tarif', function ($q) {
-            $q->whereIn('kondisi', [5, 7, 10, 9]);
+            $q->whereIn('kondisi', [5, 7, 10, 9,8]);
             $q->whereHas('customer', function ($qu) {
                 $qu->where('ba_kembali', 0);
             });
