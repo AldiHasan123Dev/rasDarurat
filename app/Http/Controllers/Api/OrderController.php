@@ -214,7 +214,7 @@ if (request('ba_kembali_null')) {
 
 
           if (request('barang_diantar_null') ) {
-            $query->whereNull('order.invoice')->whereNull('order.barang_diantar');
+            $query->whereNull('order.barang_diantar');
             $query->whereHas('jadwal_kapal',function ($j){
                  $j->whereNotNull('eta');
             });
@@ -224,7 +224,7 @@ if (request('ba_kembali_null')) {
         }
 
         if (request('ba_diantar_sby_null') ) {
-            $query->whereNull('order.invoice')->whereNull('order.ba_diantar_sby');
+            $query->whereNull('order.ba_diantar_sby');
              $query->whereHas('jadwal_kapal',function ($j){
                  $j->whereNotNull('eta');
             });
