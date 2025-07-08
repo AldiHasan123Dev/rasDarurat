@@ -344,7 +344,7 @@ class JurnalController extends Controller
     public function balik()
     {
         $coa = COA::where('is_active', 1)->orderBy('kode')->get();
-        $kode = Jurnal::whereNotNull('kode')->distinct()->pluck('kode');
+        $kode = Jurnal::whereNotNull('kode')->whereNull('jurnal_balik')->distinct()->pluck('kode');
         $data = [];
         $new = [];
         $coa_debit = null;
@@ -2666,24 +2666,18 @@ public function editOne(Jurnal $jurnal)
     }
 
 
-    if ($subjek == 'pelayaran') {
+        if ($subjek == 'pelayaran') {
         // Ambil data terkait 
-        $customer1 = json_decode($customer, true); // Dekode JSON menjadi array
-        $customers = HutangPelayaran::where('no_bg_opp', $customer1)
-        ->orWhere('no_bg_opt', $customer1)
-        ->orWhere('no_bg_ut', $customer1) // Tambahkan kondisi orWhere untuk no_bg lainnya
-        ->pluck('pelayaran_id');
-        $customerPelayaran = Pelayaran::whereIn('id', $customers)->pluck('nama')->first();
+        $pelayaran = Pelayaran::where('nama', $customer)->first();
 
-    
-        // $tarif = Tarif::whereIn('pelayaran_id', $customers->keys())->pluck('id');
-        // $order = Order::whereIn('tarif_id', $tarif)->pluck('id','no_bg');
-        // dd($order);
-
-        // Query jurnal
+        if (!$pelayaran) {
+            return response()->json(['error' => 'Pelayaran tidak ditemukan'], 404);
+        }
+        // Ambil semua no BG dari relasi
+        $no_bgs = $pelayaran->bg(); // atau $pelayaran->bg_list jika pakai accessor
 
         $jurnal = Jurnal::where('coa_id', $coa_id)
-            ->whereIn('no_bg', $customer1) // Menggunakan array $customer
+            ->whereIn('no_bg', $no_bgs) // Menggunakan array $customer
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get(['order_id', 'debit', 'credit', 'nama', 'nomor', 'created_at', 'no_bg']);
         // Kelompokkan jurnal berdasarkan invoice

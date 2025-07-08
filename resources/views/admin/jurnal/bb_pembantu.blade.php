@@ -286,7 +286,7 @@
                                                     <td class="text-center">
                                                         @php
                                                             $pelayaranName =
-                                                                $data['no_bg_list'] ?? $data['customer_name'];
+                                                                $data['pelayaran'] ?? $data['customer_name'];
                                                         @endphp
                                                         <a target="_blank"
                                                             href="{{ route('jurnal.buku_besar_pembantu_rincian', [

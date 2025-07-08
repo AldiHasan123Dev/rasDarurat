@@ -103,7 +103,7 @@
                                                 class="font-weight-bold">{{ $subjek }}</span></h5>
                                         <h5 class="mt-3">
                                             @if ($subjek === 'pelayaran')
-                                                <span class="badge bg-info text-white">Pelayaran : {{ $customerPelayaran }}</span>
+                                                <span class="badge bg-info text-white">Pelayaran : {{ $customer }}</span>
                                             @elseif ($subjek == 'customer_trucking')
                                             <span class="badge bg-warning text-white">Customer Trucking :
                                                 {{ $customer }}</span>
