@@ -452,8 +452,7 @@ if (request('ba_kembali_null')) {
 }
 
        if (request('barang_diantar_null')) {
-    $count = Order::whereNull('invoice')
-        ->whereNull('barang_diantar')
+    $count = Order::whereNull('barang_diantar')
         ->whereHas('tarif', function ($a) {
             $a->whereIn('kondisi', [5, 7, 10]);
         })
@@ -464,7 +463,7 @@ if (request('ba_kembali_null')) {
 }
 
          if (request('ba_diantar_sby_null')) {
-            $count = Order::whereNull('invoice')->whereNull('ba_diantar_sby')->whereHas('tarif', function ($a) {
+            $count = Order::whereNull('ba_diantar_sby')->whereHas('tarif', function ($a) {
                 $a->whereIn('kondisi', [5, 7, 10]);
                 $a->whereIn('kondisi', [5, 7, 10])
               ->whereHas('tujuan_lokasi', function ($t3) {
