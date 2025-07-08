@@ -9,6 +9,7 @@ use App\Http\Resources\OrderResource;
 use App\Services\SyncService;
 use App\Imports\JurnalImport;
 use App\Models\COA;
+   use App\Exports\JurnalCodeExport;
 use App\Models\Agen;
 use App\Models\HutangPelayaran;
 use App\Models\JasaKirim;
@@ -73,6 +74,16 @@ class JurnalController extends Controller
     public function j_cekcoa(){
         return view('admin.jurnal.jurnal-cek-coa', compact('month', 'unbalance', 'year', 'is_sample'));
     }
+
+        public function exportExcel(Request $request)
+{
+    $data = json_decode($request->input('data'), true);
+    $jurnals = Jurnal::whereIn('id', $data)->get();
+
+    $tanggal = Carbon::now()->format('Ymd'); // Format: 20250708
+
+    return Excel::download(new JurnalCodeExport($jurnals), "{$tanggal}-jurnal-code.xlsx");
+}
 
     public function code(){
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');

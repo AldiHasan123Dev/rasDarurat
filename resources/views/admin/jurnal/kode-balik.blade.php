@@ -162,8 +162,9 @@
                     </div>
                     <a class="btn btn-sm btn-warning" style="width: 140px; margin-left: 20px;" id="edit-coa1">Simpan
                         Kode</a>
-
-
+                    <a class="btn btn-sm btn-primary" style="width: 160px; margin-left: 20px;" id="excel">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </a>
 
                     <div class="col-md-2 ms-auto text-end align-self-start">
                     </div>
@@ -352,6 +353,61 @@
             });
 
         });
+
+
+        $('#excel').on('click', function(e) {
+            e.preventDefault();
+
+            let dataToSend = [];
+
+            $('.kode-input').each(function() {
+                const id = $(this).data('id');
+                dataToSend.push(id);
+            });
+
+            if (dataToSend.length === 0) {
+                alert('Tidak ada data untuk disimpan.');
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('jurnal.exportExcel') }}',
+                method: 'POST',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    data: JSON.stringify(dataToSend)
+                },
+                success: function(blob, status, xhr) {
+                    // Ambil nama file dari Content-Disposition header jika tersedia
+                    const disposition = xhr.getResponseHeader('Content-Disposition');
+                    let filename = 'export-jurnal.xlsx';
+
+                    if (disposition && disposition.indexOf('attachment') !== -1) {
+                        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                        if (matches && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+
+                    // Buat dan klik link untuk download
+                    const link = document.createElement('a');
+                    const url = window.URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function() {
+                    alert('Gagal export Excel.');
+                }
+            });
+        });
+
 
 
         function searchJurnal1() {
