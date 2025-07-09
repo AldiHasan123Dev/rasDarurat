@@ -298,6 +298,19 @@ if (request('ba_kembali_null')) {
         if (request('pembayar')) {
             $query->where('customers.nama', 'LIKE', '%' . request('pembayar') . '%');
         }
+       if (request('syarat_ba')) {
+    $val = request('syarat_ba');
+
+    if ($val === 'Iya') {
+        $query->where('customers.ba_kembali', 1);
+    } elseif ($val === 'Tidak') {
+        $query->where('customers.ba_kembali', 0);
+    } elseif ($val === '-') {
+        $query->whereNull('customers.ba_kembali')
+              ->orWhereNotIn('customers.ba_kembali', [0, 1]);
+    }
+}
+
         if (request('penerima_bl')) {
             $query->whereHas('agent', function ($q) {
                 $q->where('nama', 'LIKE', '%' . request('penerima_bl') . '%');
