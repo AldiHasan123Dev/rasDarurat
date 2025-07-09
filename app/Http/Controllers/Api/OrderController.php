@@ -189,7 +189,7 @@ if (request('ba_kembali_null')) {
     });
 
     $query->whereHas('tarif', function ($a) {
-        $a->whereIn('kondisi', [5, 7, 10])
+        $a->whereIn('kondisi', [5, 7, 10,8,9])
           ->whereHas('customer', function ($qu) {
               $qu->where('ba_kembali', 1);
           });
@@ -219,7 +219,7 @@ if (request('ba_kembali_null')) {
                  $j->whereNotNull('eta');
             });
           $query->whereHas('tarif', function ($a) {
-                $a->whereIn('kondisi', [5, 7, 10]);
+                $a->whereIn('kondisi', [5, 7, 10, 8, 9]);
             });
         }
 
@@ -229,7 +229,7 @@ if (request('ba_kembali_null')) {
                  $j->whereNotNull('eta');
             });
             $query->whereHas('tarif', function ($a) {
-               $a->whereIn('kondisi', [5, 7,10])
+               $a->whereIn('kondisi', [5, 7,10,8,9])
               ->whereHas('tujuan_lokasi', function ($t3) {
                   $t3->where('nama', 'like', '%banjarmasin%');
               });
@@ -429,7 +429,7 @@ if (request('ba_kembali_null')) {
        if (request('ba_kembali_null')) {
     $count = Order::whereNull('ba_kembali')
         ->whereHas('tarif', function ($a) {
-            $a->whereIn('kondisi', [5, 7, 10])
+            $a->whereIn('kondisi', [5, 7, 10,8,9])
               ->whereHas('customer', function ($qu) {
                   $qu->where('ba_kembali', 1);
               });
@@ -454,7 +454,7 @@ if (request('ba_kembali_null')) {
        if (request('barang_diantar_null')) {
     $count = Order::whereNull('barang_diantar')
         ->whereHas('tarif', function ($a) {
-            $a->whereIn('kondisi', [5, 7, 10]);
+            $a->whereIn('kondisi', [5, 7, 10,8,9]);
         })
         ->whereHas('jadwal_kapal', function ($j) {
             $j->whereNotNull('eta');
