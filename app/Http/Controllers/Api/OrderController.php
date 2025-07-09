@@ -305,7 +305,7 @@ if (request('ba_kembali_null')) {
         $query->where('customers.ba_kembali', 1);
     } elseif ($val === 'Tidak') {
         $query->where('customers.ba_kembali', 0);
-    } elseif ($val === '-') {
+    } elseif ($val === '') {
         $query->whereNull('customers.ba_kembali')
               ->orWhereNotIn('customers.ba_kembali', [0, 1]);
     }
