@@ -591,7 +591,7 @@ $(document).ready(function () {
                     sortable: true
                 },
                  {
-                    label: 'TF Masuk',
+                    label: 'TF Masuk ??',
                     name: 'tf_masuk',
                     width: 100,
                     align: "right", // isi cell rata kanan
@@ -1724,7 +1724,7 @@ $(document).ready(function () {
                     sortable: true
                 },
                 {
-                    label: 'TF Masuk',
+                    label: 'TF Masuk ??',
                     name: 'tf_masuk',
                     width: 100,
                     align: "right", // isi cell rata kanan
