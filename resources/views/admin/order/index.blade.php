@@ -592,6 +592,7 @@
             {search:true, width:100, name: 'full', label : 'full'},
             {search:true, width:100, name: 'barang_diantar', label : 'barang_diantar'},
             {search:true, name: 'ba_diantar_sby', label : 'ba_diantar_sby',sorttype: 'date', datefmt:'d/m/y'},
+            {search:true, width:100, name: 'syarat_ba', label : 'syarat_ba'},
             {search:true, width:100, name: 'ba_kembali', label : 'ba_kembali',sorttype: 'date', datefmt:'d/m/y'},
             {search:true, width:100, name: 'koli', label : 'koli',sortable: false},
             {search:true, width:100, name: 'm3', label : 'm3',sortable: false},

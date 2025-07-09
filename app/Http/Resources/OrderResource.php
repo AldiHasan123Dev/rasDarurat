@@ -42,6 +42,7 @@ class OrderResource extends JsonResource
             'tujuan_trucking' => is_null($this->truckingInfo) ? '-' : $this->truckingInfo->tujuan,
             'pembayar' => $this->tarif->customer->nama ?? '-',
             'marketing' => $this->tarif->customer->marketing->name ?? '-',
+            'syarat_ba' => $this->tarif->customer->ba_kembali === 1 ? 'Iya' : ($this->tarif->customer->ba_kembali === 0 ? 'Tidak' : '-'),
             'cs' => $this->tarif->customer->cs->name ?? '-',
             'pengirim' => $this->pengirim->nama ?? '-',
             'penerima' => $this->penerima->nama ?? '-',

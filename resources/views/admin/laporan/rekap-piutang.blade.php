@@ -70,7 +70,8 @@
         .ui-jqgrid .ui-jqgrid-htable th[id*="kurang_bayar"],
         .ui-jqgrid .ui-jqgrid-htable th[id*="sebesar"],
         .ui-jqgrid .ui-jqgrid-htable th[id*="jumlah_harga"],
-        .ui-jqgrid .ui-jqgrid-htable th[id*="pph"] {
+        .ui-jqgrid .ui-jqgrid-htable th[id*="pph"],
+        .ui-jqgrid .ui-jqgrid-htable th[id*="tf_masuk"] {
             padding: 5px;
             text-align: right !important;
         }
@@ -192,8 +193,29 @@
         </div>
     </div>
 
+    
+    <div class="container mt-5">
 
-        <div class="container">
+        <div class="card">
+            <div class="card-body">
+                {{-- Filter Kedua --}}
+                <div class="section-title">Rekap Piutang Invoice (Berdasarkan TF Masuk)</div>
+                    <div class="col-md-3">
+                        <label class="form-label">Cari Nominal TF Masuk</label>
+                        <input type="text" id="tf-masuk" name="tf-masuk" class="form-control" />
+                    </div>
+                {{-- Grid Kedua --}}
+                <div class="table-wrapper">
+                    <table id="jqGrid5"></table>
+                    <div id="jqGridPager5"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+        <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -361,6 +383,37 @@
             });
         });
     </script>
+
+        <script>
+$(document).ready(function () {
+    function formatRibuan(angka) {
+        return angka.replace(/\D/g, '')  // hanya angka
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+    function reloadGridWithFilters() {
+        const tfMasukVal = $('#tf-masuk').val().replace(/[^0-9]/g, '');
+        console.log("Memuat ulang grid dengan tf_masuk:", tfMasukVal);
+
+        $("#jqGrid5").jqGrid('setGridParam', {
+            datatype: 'json',
+            postData: {
+                tf_masuk: tfMasukVal
+            },
+            page: 1
+        }).trigger('reloadGrid');
+    }
+
+    $('#tf-masuk').on('input', function () {
+        let val = $(this).val();
+        let formatted = formatRibuan(val);
+        $(this).val(formatted);
+        reloadGridWithFilters();
+    });
+});
+
+</script>
+
 
     <script>
         $(document).ready(function() {
@@ -536,6 +589,20 @@
                         prefix: ''
                     },
                     sortable: true
+                },
+                 {
+                    label: 'TF Masuk',
+                    name: 'tf_masuk',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
                 }
 
             ],
@@ -643,6 +710,8 @@
                 postData: postData
             }).trigger("reloadGrid");
         }
+
+
 
         $("#jqGrid1").jqGrid({
             url: '{{ route('data-rekap.piutang') }}',
@@ -1505,5 +1574,274 @@
 
         // // Frozen columns
         // $("#jqGrid1").jqGrid('setFrozenColumns');
+
+        $("#jqGrid5").jqGrid({
+            url: '{{ route('data-rekap.piutang') }}',
+            mtype: 'GET',
+            postData: {
+                
+                tf_masuk: function() {
+                    return $('#tf-masuk').val();
+                }
+            },
+            datatype: 'json',
+            colModel: [{
+                    name: 'id',
+                    hidden: true
+                },
+                {
+                    label: 'Invoice',
+                    align: "center",
+                    name: 'invoice',
+                    width: 80,
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Nama Customer',
+                    align: "center",
+                    name: 'customer',
+                    width: 120,
+                    align: "left",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Harga (INC.PPN)',
+                    align: "right",
+                    name: 'jumlah_harga',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    name: 'tanggal',
+                    align: "center",
+                    label: 'Tanggal',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    hidden: true
+                },
+                {
+                    label: 'TGL Kirim Inv',
+                    align: "center",
+                    name: 'ditagih_tgl',
+                    width: 50,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'TOP',
+                    align: "center",
+                    name: 'top',
+                    width: 30,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Jatuh Tempo TGL',
+                    align: "center",
+                    name: 'tempo',
+                    width: 80,
+                    align: "center",
+                    formatter: 'date',
+                    formatoptions: {
+                        newformat: 'Y-m-d'
+                    },
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar TGL',
+                    align: "center",
+                    name: 'dibayar_tgl',
+                    width: 50,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
+                    label: 'Dibayar',
+                    align: "right",
+                    name: 'sebesar',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    label: 'PPH',
+                    align: "right",
+                    name: 'pph',
+                    width: 100,
+                    align: "right",
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    name: 'warna_status',
+                    hidden: true
+                },
+                {
+                    label: 'Kurang Bayar',
+                    name: 'kurang_bayar',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                },
+                {
+                    label: 'TF Masuk',
+                    name: 'tf_masuk',
+                    width: 100,
+                    align: "right", // isi cell rata kanan
+                    labelAlign: "right", // label header rata kanan
+                    formatter: 'currency',
+                    formatoptions: {
+                        thousandsSeparator: ',',
+                        decimalSeparator: '.',
+                        prefix: ''
+                    },
+                    sortable: true
+                }
+
+            ],
+            autowidth: true,
+            shrinkToFit: true,
+            height: 'auto',
+            loadonce: false,
+            rowNum: 150,
+            rowList: [150, 500, 1000],
+            viewrecords: true,
+            pager: "#jqGridPager5",
+            caption: "Rekap Piutang Periode Bulan",
+            jsonReader: {
+                repeatitems: false,
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records"
+            },
+            onCellSelect: function(rowId, iRow, iCol, e) {
+                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+            },
+            rowattr: function(rowData) {
+                if (!rowData.tempo) return {}; // Jika tidak ada tempo, tidak ada warna
+
+                let today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+                let selisih = rowData.pph - rowData.kurang_bayar;
+
+                let timeDiff = new Date(rowData.tempo) - new Date();
+                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+                // Jika kurang bayar = 0, semua kondisi tetap hijau
+                if (parseFloat(rowData.kurang_bayar) === 0) {
+                    return {
+                        "style": "background-color: #3fae43; color: white;"
+                    };
+                }
+
+                if (parseFloat(rowData.kurang_bayar) < 0) {
+                    return {
+                        "style": "background-color: #0099ff;; color: white;"
+                    };
+                }
+
+                if (selisih === 0) {
+                    return {
+                        "style": "background-color: #ff9d00; color: white;"
+                    };
+                }
+
+                // Jika TOP = 0 dan jatuh tempo hari ini, tidak diberi warna
+                if (parseInt(rowData.top) === 0 && tempoDate === today) {
+                    return {};
+                }
+
+                // Warna oranye untuk jatuh tempo dalam 1-3 hari
+                if (daysDiff > 0 && daysDiff <= 4) {
+                    return {
+                        "style": "background-color: #ffd503; color: white;"
+                    };
+                }
+
+                // Warna merah jika sudah jatuh tempo atau jatuh tempo hari ini
+                if (daysDiff < 0) {
+                    return {
+                        "style": "background-color: red; color: white;"
+                    };
+                }
+
+                return {};
+            }
+        });
+
+
+        // Navigation
+        $('#jqGrid5').jqGrid('navGrid', "#jqGridPager5", {
+            search: false,
+            add: false,
+            edit: false,
+            del: false,
+            refresh: true
+        });
+
+        // Frozen columns
+        $("#jqGrid5").jqGrid('setFrozenColumns');
+
+        // Live Search
+        // function filterWarna(warna) {
+        //     let grid = $("#jqGrid5");
+        //     let postData = grid.jqGrid('getGridParam', 'postData');
+
+        //     postData.filters = JSON.stringify({
+        //         groupOp: "AND",
+        //         rules: warna ? [{
+        //             field: "warna_status",
+        //             op: "eq",
+        //             data: warna
+        //         }] : []
+        //     });
+
+        //     grid.jqGrid('setGridParam', {
+        //         search: true,
+        //         postData: postData
+        //     }).trigger("reloadGrid");
+        // }
     </script>
 @endsection

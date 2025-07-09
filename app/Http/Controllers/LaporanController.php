@@ -177,6 +177,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
         }
     }
 
+
      $totalRecords = $rekapData->count();
             $indexStart = ($page - 1) * $rows;
             $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
@@ -204,6 +205,7 @@ public function data_rekap_piutang(Request $request)
     $tglInvFilter = $request->input('tgl_inv');
     $customersFilter = $request->input('customers');
     $invFilter = $request->input('inv');
+    $tfMasukVal = $request->input('tf_masuk');
     //  if ($tglInvFilter) {
     //     $tahun = (int) substr($tglInvFilter, 0, 4);
     //     if ($tahun < 2025) {
@@ -311,7 +313,32 @@ public function data_rekap_piutang(Request $request)
         return $order;
     });;
     // ❗ Semua filter kosong → kosongkan hasil
-} else {
+} 
+
+elseif ($tfMasukVal) {
+
+    $orders = Order::with([
+            'tarif.customer:id,nama,top',
+            'transaksi' => function ($query) {
+                $query->whereNotNull('tanggal_kirim')
+                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+            },
+            'jurnals' => function ($query) {
+                $query->where('coa_id', 46)
+                      ->where('debit', '!=', 0)
+                      ->select('order_id', 'debit','coa_id');
+            },
+        ])
+        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->orderByDesc('created_at')
+        ->get()
+        ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        return $order;
+    });;
+    // ❗ Semua filter kosong → kosongkan hasil
+} 
+else {
     $orders = collect();
 }
 
@@ -396,6 +423,8 @@ public function data_rekap_piutang(Request $request)
                     $warna_status = 'merah';
                 }
 
+                $tfMasuk = $kurang_bayar - round($pph);
+
 
 
                 return [
@@ -411,10 +440,20 @@ public function data_rekap_piutang(Request $request)
                     'dibayar_tgl' => $dibayar_tgl,
                     'sebesar' => $sebesar,
                     'kurang_bayar' => $kurang_bayar,
+                    'tf_masuk' => (int)$tfMasuk,
                     'warna_status' => $warna_status, // <== TAMBAH DI SINI
                 ];
             })->filter()->sortByDesc('invoice')->values();
+if ($tfMasukVal !== null && $tfMasukVal !== '') {
+    $inputVal = preg_replace('/[^\d]/', '', $tfMasukVal); // tetap string angka saja
 
+    $rekapData = $rekapData->filter(function ($row) use ($inputVal) {
+        $tfMasukRow = (string) $row['tf_masuk'];
+        return strpos($tfMasukRow, $inputVal) !== false;
+    })->values();
+}
+
+            
             if (request('full')) {
     $rekapData = $rekapData->sortBy([
         ['customer', 'asc'],
@@ -446,7 +485,7 @@ public function data_rekap_piutang(Request $request)
                     return Str::contains($row['ditagih_tgl'], $ditagihFilter);
                 })->values();
             }
-            
+
             // Tambahkan filter dari jqGrid (khusus untuk warna_status)
         $filters = $request->input('filters');
         if ($filters) {
@@ -458,6 +497,11 @@ public function data_rekap_piutang(Request $request)
                 }
             }
         }
+
+// ⬇⬇ Tambahkan di sini, sebelum filter warna_status
+
+
+
         // Pagination
             $totalRecords = $rekapData->count();
             $indexStart = ($page - 1) * $rows;
