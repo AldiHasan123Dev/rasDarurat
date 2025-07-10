@@ -254,6 +254,50 @@ if (request('ba_kembali_null')) {
             $query->where('order.job', 'LIKE', '%' . request('job') . '%');
         }
 
+        if (request('ba_kembali')) {
+            if (request('ba_kembali') === '-') {
+                $query->whereNull('order.ba_kembali');
+            } else {
+                try {
+                    $tanggal = \Carbon\Carbon::createFromFormat('d-m-Y', request('ba_kembali'))->format('Y-m-d');
+                    $query->whereDate('order.ba_kembali', $tanggal);
+                } catch (\Exception $e) {
+                    // Optional: handle error parsing tanggal
+                }
+            }
+        }
+
+        if (request('ba_kirim')) {
+            if (request('ba_kirim') === '-') {
+                $query->whereNull('order.ba_kirim');
+            } else {
+                try {
+                    $tanggal = \Carbon\Carbon::createFromFormat('d-m-Y', request('ba_kirim'))->format('Y-m-d');
+                    $query->whereDate('order.ba_kirim', $tanggal);
+                } catch (\Exception $e) {
+                    // Optional: handle error parsing tanggal
+                }
+            }
+        }
+                if (request('td')) {
+            if (request('td') === '-') {
+                $query->where(function ($q) {
+                    $q->whereNull('jadwal_kapal_id') // jika relasi null
+                    ->orWhereHas('jadwal_kapal', function ($sub) {
+                        $sub->whereNull('td')->orWhere('td', '');
+                    });
+                });
+            } else {
+                try {
+                    $tanggal = \Carbon\Carbon::createFromFormat('d-m-Y', request('td'))->format('Y-m-d');
+                    $query->whereHas('jadwal_kapal', function ($q) use ($tanggal) {
+                        $q->whereDate('td', $tanggal);
+                    });
+                } catch (\Exception $e) {
+                    // bisa tambahkan log jika gagal parsing tanggal
+                }
+            }
+        }
         if (request('customer_id')) {
             $query->whereHas('tarif', function ($q) {
                 $q->where('customer_id', request('customer_id'));
@@ -271,9 +315,15 @@ if (request('ba_kembali_null')) {
                 $query->where('order.no_job', (int)$me[1]);
             }
         }
-        if (request('invoice')) {
-            $query->where('order.invoice', 'LIKE', '%' . request('invoice') . '%');
+
+            if (request('invoice')) {
+            if (request('invoice') === '-') {
+                $query->whereNull('order.invoice');
+            } else {
+                $query->where('order.invoice', 'LIKE', '%' . request('invoice') . '%');
+            }
         }
+
         if (request('asuransi')) {
             $query->where('order.asuransi', 'LIKE', '%' . request('asuransi') . '%');
         }

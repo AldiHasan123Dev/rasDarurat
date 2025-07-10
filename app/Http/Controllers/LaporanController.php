@@ -457,7 +457,7 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
             if (request('full')) {
     $rekapData = $rekapData->sortBy([
         ['customer', 'asc'],
-        ['invoice', 'asc'],
+        ['ditagih_tgl', 'asc'],
     ])->values();
 
     $filters = request()->input('filters');
