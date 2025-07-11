@@ -362,6 +362,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('jurnal-export-batch', [JurnalController::class, 'exportJurnalBatch'])->name('jurnal.exportJurnalBatch');
     Route::post('jurnal-export-month', [JurnalController::class, 'exportMonth'])->name('jurnal.exportMonth');
     Route::post('jurnal-balik-trucking', [OmsetController::class, 'jurnalBalikTrucking'])->name('jurnal.balik.trucking');
+    Route::post('jurnal-balik-trucking-ext', [OmsetController::class, 'jurnalBalikTruckingExt'])->name('jurnal.balik.trucking.ext');
 
     Route::get('jqgrid-tarif-agent', [TarifAgenController::class, 'jqgrid'])->name('jqgrid.tarif.agent');
     Route::get('jqgrid-tarif-pelayaran', [TarifPelayaranController::class, 'jqgrid'])->name('jqgrid.tarif.pelayaran');

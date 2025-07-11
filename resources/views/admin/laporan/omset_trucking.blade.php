@@ -85,15 +85,28 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-3">
                             {{-- <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button> --}}
-                            <form action="{{ route('jurnal.balik.trucking') }}" method="post">
-                                @csrf
-                                <input type="hidden" name="jurnal_id" value="{{ json_encode($jurnal_id) }}">
-                                <input type="hidden" name="month" value="{{ $month }}">
-                                <input type="hidden" name="year" value="{{ $year }}">
-                                <input type="hidden" name="tipe" value="{{ $tipe }}">
-                                <button type="submit" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE
-                                    JURNAL BALIK</button>
-                            </form>
+                             <!-- Form untuk XPDC -->
+                             @if ($tipe === 'xpdc')
+<form action="{{ route('jurnal.balik.trucking') }}" method="post" style="display: inline-block;">
+    @csrf
+    <input type="hidden" name="jurnal_id" value="{{ json_encode($jurnal_id) }}">
+    <input type="hidden" name="month" value="{{ $month }}">
+    <input type="hidden" name="year" value="{{ $year }}">
+    <input type="hidden" name="tipe" value="xpdc">
+    <button type="submit" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()">JURNAL BALIK TRUCK XPDC</button>
+</form>
+@else
+<!-- Form untuk EXTERNAL -->
+<form action="{{ route('jurnal.balik.trucking.ext') }}" method="post" style="display: inline-block;">
+    @csrf
+    <input type="hidden" name="jurnal_id" value="{{ json_encode($jurnal_id) }}">
+    <input type="hidden" name="month" value="{{ $month }}">
+    <input type="hidden" name="year" value="{{ $year }}">
+    <input type="hidden" name="tipe" value="ext">
+    <button type="submit" class="btn btn-sm btn-success" onclick="syncJurnalBalik()">JURNAL BALIK TRUCK EXTERNAL</button>
+</form>
+@endif
+
                         </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">
@@ -149,8 +162,8 @@
                                     </thead>
                                     <tbody>
                                         @php
-    $total_per_coa = [];
-@endphp
+                                            $total_per_coa = [];
+                                        @endphp
 
                                         @php
                                             $no = 1;
@@ -159,20 +172,44 @@
                                             @php
                                                 $total = 0;
                                             @endphp
-                                           @foreach ($orders as $order)
-    @php
-        $coa_ids = $tipe == 'xpdc' ? [61, 81] : [98, 80, 87];
+                                            @foreach ($orders as $order)
+                                                @php
+                                                    $coa_ids = $tipe == 'xpdc' ? [61, 81] : [98, 80, 87];
 
-        $jurnals = $order->jurnals()->whereIn('coa_id', $coa_ids)->where('debit', '>', 0)->get();
-        foreach ($jurnals as $jurnal) {
-            $total_per_coa[$jurnal->coa_id] = ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->debit;
-        }
+                                                    $jurnals = $order
+                                                        ->jurnals()
+                                                        ->whereIn('coa_id', $coa_ids)
+                                                        ->where('debit', '>', 0)
+                                                        ->get();
+                                                    foreach ($jurnals as $jurnal) {
+                                                        $total_per_coa[$jurnal->coa_id] =
+                                                            ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->debit;
+                                                    }
 
-        $jurnals_credit = $order->jurnals()->whereIn('coa_id', $coa_ids)->where('credit', '>', 0)->get();
-        foreach ($jurnals_credit as $jurnal) {
-            $total_per_coa[$jurnal->coa_id] = ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->credit;
-        }
-    @endphp
+                                                    // $jurnals_credit = $order
+                                                    //     ->jurnals()
+                                                    //     ->whereIn('coa_id', $coa_ids)
+                                                    //     ->where('credit', '>', 0)
+                                                    //     ->get();
+                                                    // foreach ($jurnals_credit as $jurnal) {
+                                                    //     $total_per_coa[$jurnal->coa_id] =
+                                                    //         ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->credit;
+                                                    // }
+
+                                                            if (in_array(87, $coa_ids)) {
+    $jurnals = $order
+        ->jurnals()
+        ->where('coa_id', 87)
+        ->where('credit', '>', 0)
+        ->get();
+
+    foreach ($jurnals as $jurnal) {
+        $total_per_coa[$jurnal->coa_id] =
+            ($total_per_coa[$jurnal->coa_id] ?? 0) + $jurnal->credit;
+    }
+}
+
+                                                @endphp
 
 
                                                 @php
@@ -213,9 +250,42 @@
                                                 @endphp
 
                                                 <tr class="{{ $no % 2 == 0 ? 'table-primary' : '' }}">
-                                                    <td>{{ is_null($order->jurnals()->where('nama', 'like', 'sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': date('d/m/y',strtotime($order->jurnals()->where('nama', 'like', 'sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->created_at)) }}
+                                                    <td>
+                                                        {!! is_null(
+                                                            $order->jurnals()
+                                                                ->where('nama', 'like', 'sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->first()
+                                                        )
+                                                            ? '-'
+                                                            : implode('<br>', $order->jurnals()
+                                                                ->where('nama', 'like', 'sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->pluck('created_at')
+                                                                ->map(fn($tgl) => \Carbon\Carbon::parse($tgl)->format('d/m/y'))
+                                                                ->toArray())
+                                                        !!}
                                                     </td>
-                                                    <td>{{ is_null($order->jurnals()->where('nama', 'like', 'sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': $order->jurnals()->where('nama', 'like', 'sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nomor }}
+
+                                                    </td>
+                                                    <td>
+                                                        {!! is_null($order->jurnals()
+                                                            ->where('nama', 'like', 'sangu sopir%')
+                                                            ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                            ->where('debit', '>', 0)
+                                                            ->first()) 
+                                                            ? '-' 
+                                                            : implode('<br>', $order->jurnals()
+                                                                ->where('nama', 'like', 'sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->pluck('nomor')
+                                                                ->toArray())
+                                                        !!}
+                                                    </td>
+
                                                     </td>
                                                     <td>{{ $order->container }}/{{ $order->seal }}</td>
                                                     <td>
@@ -239,33 +309,51 @@
                                                     @endif
                                                 </tr>
                                                 <tr class="{{ $no % 2 == 0 ? 'table-primary' : '' }}">
-                                                    <td>{{ is_null(
-                                                        $order->jurnals()->where(function ($q) {
-                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
-                                                            })->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first(),
-                                                    )
-                                                        ? '-'
-                                                        : date(
-                                                            'd/m/y',
-                                                            strtotime(
-                                                                $order->jurnals()->where(function ($q) {
-                                                                        $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', [
-                                                                            'sangu kuli%',
-                                                                        ]);
-                                                                    })->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->created_at,
-                                                            ),
-                                                        ) }}
+                                                   <td>
+                                                        {!! is_null(
+                                                            $order->jurnals()->where(function ($q) {
+                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])
+                                                                ->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
+                                                            })
+                                                            ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                            ->where('debit', '>', 0)
+                                                            ->first()
+                                                        )
+                                                            ? '-'
+                                                            : implode('<br>', $order->jurnals()->where(function ($q) {
+                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])
+                                                                ->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
+                                                            })
+                                                            ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                            ->where('debit', '>', 0)
+                                                            ->pluck('created_at')
+                                                            ->map(fn($tgl) => \Carbon\Carbon::parse($tgl)->format('d/m/y'))
+                                                            ->toArray())
+                                                        !!}
                                                     </td>
-                                                    <td>{{ is_null(
-                                                        $order->jurnals()->where(function ($q) {
-                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
-                                                            })->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first(),
-                                                    )
-                                                        ? '-'
-                                                        : $order->jurnals()->where(function ($q) {
-                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
-                                                            })->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nomor }}
+
+                                                   <td>
+                                                        {!! is_null(
+                                                            $order->jurnals()->where(function ($q) {
+                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])
+                                                                ->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
+                                                            })
+                                                            ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                            ->where('debit', '>', 0)
+                                                            ->first()
+                                                        )
+                                                            ? '-'
+                                                            : implode('<br>', $order->jurnals()->where(function ($q) {
+                                                                $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])
+                                                                ->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
+                                                            })
+                                                            ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                            ->where('debit', '>', 0)
+                                                            ->pluck('nomor')
+                                                            ->toArray())
+                                                        !!}
                                                     </td>
+
                                                     <td>{{ $order->container }}/{{ $order->seal }}</td>
                                                     <td>
                                                         @if ($order->order)
@@ -302,9 +390,44 @@
                                                     @endif
                                                 </tr>
                                                 <tr class="{{ $no % 2 == 0 ? 'table-primary' : '' }}">
-                                                    <td>{{ is_null($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': date('d/m/y',strtotime($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->created_at)) }}
+                                                    <td>
+                                                        {!! is_null(
+                                                            $order->jurnals()
+                                                                ->where('nama', 'like', 'simpanan sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->first()
+                                                        )
+                                                            ? '-'
+                                                            : implode('<br>', $order->jurnals()
+                                                                ->where('nama', 'like', 'simpanan sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->pluck('created_at')
+                                                                ->map(fn($tgl) => \Carbon\Carbon::parse($tgl)->format('d/m/y'))
+                                                                ->toArray())
+                                                        !!}
                                                     </td>
-                                                    <td>{{ is_null($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': $order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nomor }}
+
+                                                    </td>
+                                                    <td>
+                                                        {!! is_null(
+                                                            $order->jurnals()
+                                                                ->where('nama', 'like', 'simpanan sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->first()
+                                                        )
+                                                            ? '-'
+                                                            : implode('<br>', $order->jurnals()
+                                                                ->where('nama', 'like', 'simpanan sangu sopir%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->pluck('nomor')
+                                                                ->toArray())
+                                                        !!}
+                                                    </td>
+
                                                     </td>
                                                     <td>{{ $order->container }}/{{ $order->seal }}</td>
                                                     <td>
@@ -329,9 +452,39 @@
                                                 </tr>
                                                 @if ($tipe == 'ext')
                                                     <tr class="{{ $no % 2 == 0 ? 'table-primary' : '' }}">
-                                                        <td>{{ is_null($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': date('d/m/y',strtotime($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->created_at)) }}
+                                                        <td>
+                                                            {!! is_null(
+                                                                $order->jurnals()
+                                                                    ->where('nama', 'like', 'biaya operasional trucking%')
+                                                                    ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                    ->where('debit', '>', 0)
+                                                                    ->first()
+                                                            )
+                                                                ? '-'
+                                                                : implode('<br>', $order->jurnals()
+                                                                    ->where('nama', 'like', 'biaya operasional trucking%')
+                                                                    ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                    ->where('debit', '>', 0)
+                                                                    ->pluck('created_at')
+                                                                    ->map(fn($tgl) => \Carbon\Carbon::parse($tgl)->format('d/m/y'))
+                                                                    ->toArray())
+                                                            !!}
                                                         </td>
-                                                        <td>{{ is_null($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': $order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nomor }}
+                                                        <td>
+                                                            {!! is_null($order->jurnals()
+                                                                ->where('nama', 'like', 'biaya operasional trucking%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->first()) 
+                                                                ? '-' 
+                                                                : implode('<br>', $order->jurnals()
+                                                                    ->where('nama', 'like', 'biaya operasional trucking%')
+                                                                    ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                    ->where('debit', '>', 0)
+                                                                    ->pluck('nomor')
+                                                                    ->toArray())
+                                                            !!}
+                                                        </td>
                                                         </td>
                                                         <td>{{ $order->container }}/{{ $order->seal }}</td>
                                                         <td>
@@ -351,9 +504,42 @@
                                                         </td>
                                                     </tr>
                                                     <tr class="table-danger">
-                                                        <td>{{ is_null($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': date('d/m/y',strtotime($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->created_at)) }}
+                                                        <td>
+                                                            {!! is_null(
+                                                                $order->jurnals()
+                                                                    ->where('nama', 'like', 'pendapatan trucking%')
+                                                                    ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                    ->where('debit', '>', 0)
+                                                                    ->first()
+                                                            )
+                                                                ? '-'
+                                                                : implode('<br>', $order->jurnals()
+                                                                    ->where('nama', 'like', 'pendapatan trucking%')
+                                                                    ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                    ->where('debit', '>', 0)
+                                                                    ->pluck('created_at')
+                                                                    ->map(fn($tgl) => \Carbon\Carbon::parse($tgl)->format('d/m/y'))
+                                                                    ->toArray())
+                                                            !!}
                                                         </td>
-                                                        <td>{{ is_null($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first())? '-': $order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nomor }}
+
+                                                       <td>
+                                                            {!! is_null($order->jurnals()
+                                                                ->where('nama', 'like', 'pendapatan trucking%')
+                                                                ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                ->where('debit', '>', 0)
+                                                                ->first()) 
+                                                                ? '-' 
+                                                                : implode('<br>', $order->jurnals()
+                                                                    ->where('nama', 'like', 'pendapatan trucking%')
+                                                                    ->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])
+                                                                    ->where('debit', '>', 0)
+                                                                    ->pluck('nomor')
+                                                                    ->toArray()
+                                                                ) 
+                                                            !!}
+                                                        </td>
+
                                                         </td>
                                                         <td>{{ $order->container }}/{{ $order->seal }}</td>
                                                         <td>
@@ -387,33 +573,33 @@
             </div>
         </div>
     </div>
-                                    <div class="card-footer py-2">
-                    <div class="d-flex gap-3 mt-2 justify-content-center">
-                        @if ($tipe == 'xpdc')    
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total COA 1.6.2.2</li>
-                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[61] ?? 0) }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total COA 2.1.5.2.2</li>
-                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[81] ?? 0) }}</li>
-                        </ul> 
-                        @else
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total COA 6.2.1</li>
-                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[98] ?? 0) }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total COA 2.1.5.2.1</li>
-                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[80] ?? 0) }}</li>
-                        </ul> 
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total COA 5.1.2</li>
-                            <li class="list-group-item fw-bold">{{ number_format($total_per_coa[87] ?? 0) }}</li>
-                        </ul> 
-                        @endif
-                    </div>
-                </div>
+    <div class="card-footer py-2">
+        <div class="d-flex gap-3 mt-2 justify-content-center">
+            @if ($tipe == 'xpdc')
+                <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                    <li class="list-group-item fw-bold">Total COA 1.6.2.2</li>
+                    <li class="list-group-item fw-bold">{{ number_format($total_per_coa[61] ?? 0) }}</li>
+                </ul>
+                <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                    <li class="list-group-item fw-bold">Total COA 2.1.5.2.2</li>
+                    <li class="list-group-item fw-bold">{{ number_format($total_per_coa[81] ?? 0) }}</li>
+                </ul>
+            @else
+                <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                    <li class="list-group-item fw-bold">Total COA 6.2.1</li>
+                    <li class="list-group-item fw-bold">{{ number_format($total_per_coa[98] ?? 0) }}</li>
+                </ul>
+                <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                    <li class="list-group-item fw-bold">Total COA 2.1.5.2.1</li>
+                    <li class="list-group-item fw-bold">{{ number_format($total_per_coa[80] ?? 0) }}</li>
+                </ul>
+                <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                    <li class="list-group-item fw-bold">Total COA 5.1.2</li>
+                    <li class="list-group-item fw-bold">{{ number_format($total_per_coa[87] ?? 0) }}</li>
+                </ul>
+            @endif
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>

@@ -551,7 +551,7 @@ class OmsetController extends Controller
                 'tipe' => 'trucking',
             ]);
         }
-        $jurnal = Jurnal::whereIn('id',$jurnal_id)->get();;
+        $jurnal = Jurnal::whereIn('id',$jurnal_id)->get();
         $res = [];
         foreach($jurnal as $j_biaya){
             if($j_biaya->jurnal_balik_data()->count()>0){
@@ -576,7 +576,7 @@ class OmsetController extends Controller
                 $data = $j_biaya->toArray();
                 unset($data['id']);
                 if ($tipe=='xpdc') {
-                    if ($j_biaya->coa_id==61) {
+                    if ($j_biaya->coa_id===61 && $j_biaya->coa_id !=80) {
                         $data['jurnal_balik'] = $j_biaya->id;
                         $data['coa_id'] = 100;
                         $data['debit'] = $j_biaya->debit;
@@ -599,9 +599,85 @@ class OmsetController extends Controller
                         $data['created_at'] = $balik->tanggal;
                         Jurnal::create($data);
                     }
+                } 
+                array_push($res,$j_biaya->id);
+            }
+        }
+
+        return back()->with('success','Data berhasil disimpan dengan nomor jurnal '.$balik->nomor);
+    }
+
+    public function jurnalBalikTruckingExt()
+    {
+        $month = request('month');
+        $year = request('year');
+        $tipe = request('tipe');
+        $balik = JurnalBalik::where('bulan',$month)->where('tipe','trucking')->where('tahun',$year)->first();
+        $jurnal_id = json_decode(request('jurnal_id'));
+        if(!$balik){
+            $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
+            $last = $c->endOfMonth()->format('Y-m-d');
+            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','TEST')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
+            $nomor = 'TES-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
+            $balik = JurnalBalik::create([
+                'tanggal' => $last,
+                'bulan' => $month,
+                'tahun' => $year,
+                'nomor' => $nomor,
+                'no' => $no,
+                'tipe' => 'trucking',
+            ]);
+        }
+        $jurnal = Jurnal::whereIn('id',$jurnal_id)->get();
+        $res = [];
+        foreach($jurnal as $j_biaya){
+            if($j_biaya->jurnal_balik_data()->count()>0){
+                foreach($j_biaya->jurnal_balik_data as $item){
+                    if($item->debit==0){
+                        $item->update([
+                            'credit' => $j_biaya->debit,
+                            'no' => $balik->no,
+                            'nomor' => $balik->nomor
+                        ]);
+                    }else{
+                        $item->update([
+                            'debit' => $j_biaya->debit,
+                            'no' => $balik->no,
+                            'nomor' => $balik->nomor
+                        ]);
+                    }
                 }
 
+                array_push($res,$j_biaya->id);
+            }else{
+                $data = $j_biaya->toArray();
+                unset($data['id']);
+                if ($tipe=='ext'){
+                    if ($j_biaya->coa_id===80 ) {
+                        $data['jurnal_balik'] = $j_biaya->id;
+                        $data['coa_id'] = 98;
+                        $data['debit'] = $j_biaya->debit;
+                        $data['credit'] = 0;
+                        $data['tipe'] = 'TEST';
+                        $data['nomor'] = $balik->nomor;
+                        $data['relasi'] = $balik->nomor;
+                        $data['no'] = $balik->no;
+                        $data['created_at'] = $balik->tanggal;
+                        Jurnal::create($data);
 
+
+                        $data['jurnal_balik'] = $j_biaya->id;
+                        $data['coa_id'] = $j_biaya->coa_id;
+                        $data['credit'] = $j_biaya->debit;
+                        $data['debit'] = 0;
+                        $data['tipe'] = 'TEST';
+                        $data['relasi'] = $balik->nomor;
+                        $data['nomor'] = $balik->nomor;
+                        $data['no'] = $balik->no;
+                        $data['created_at'] = $balik->tanggal;
+                        Jurnal::create($data);
+                    }
+                }
                 array_push($res,$j_biaya->id);
             }
         }

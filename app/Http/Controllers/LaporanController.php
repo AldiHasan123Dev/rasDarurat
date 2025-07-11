@@ -743,8 +743,17 @@ public function data_total_rekap_piutang(Request $request)
             $jurnal_id = Jurnal::whereIn('order_trucking_id',$get_id)->whereIn('coa_id',[61,81])->pluck('id')->toArray();
             $data = OrderTrucking::whereIn('id',$get_id)->get()->groupBy('seal');
         }else{
-            $order_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->where('coa_id',87)->pluck('order_trucking_id')->toArray();
-            $jurnal_id = Jurnal::whereNotNull('order_trucking_id')->whereMonth('created_at',$month)->whereYear('created_at',$year)->where('coa_id',87)->pluck('id')->toArray();
+           $order_id = Jurnal::whereNotNull('order_trucking_id')
+    ->whereMonth('created_at', $month)
+    ->whereYear('created_at', $year)
+    ->whereIn('coa_id', [87])
+    ->pluck('order_trucking_id')
+    ->toArray();
+
+
+            $jurnal_id = Jurnal::whereIn('order_trucking_id', $order_id)
+    ->pluck('id')
+    ->toArray();
             $data = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('seal');
         }
         return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id'));
