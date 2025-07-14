@@ -26,6 +26,9 @@ class User extends Authenticatable
         'phone',
         'address',
         'password',
+        'tgl_lahir',
+        'tgl_masuk',
+        'kota_lahir',
     ];
 
     /**

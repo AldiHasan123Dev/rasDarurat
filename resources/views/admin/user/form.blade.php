@@ -39,6 +39,18 @@
         <label for="nama">Alamat.</label>
         <textarea name="address" id="address" cols="30" rows="3" class="form-control">{{ $user->address ?? '' }}</textarea>
     </div>
+     <div class="col-12 mb-2 px-1">
+        <label for="nama">Kota Lahir</label>
+        <input type="text" name="kota_lahir" id="kota_lahir" cols="30" rows="3" value="{{ $user->kota_lahir ?? '' }}" class="form-control">
+    </div>
+    <div class="col-12 mb-2 px-1">
+        <label for="nama">Tgl Lahir</label>
+        <input type="date" name="tgl_lahir" id="tgl_lahir" cols="30" rows="3" value="{{ $user->tgl_lahir ?? '' }}" class="form-control">
+    </div>
+        <div class="col-12 mb-2 px-1">
+        <label for="nama">Tgl Masuk</label>
+        <input type="date" name="tgl_masuk" id="tgl_masuk" cols="30" rows="3" value="{{ $user->tgl_masuk ?? '' }}" class="form-control">
+    </div>
     <div class="col-12 mb-2 px-1">
         <button type="submit" class="btn btn-success btn-sm">{{ empty($user)?'Tambah':'Update' }} Data</button>
     </div>
