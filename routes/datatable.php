@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('pelayaran',[PelayaranController::class,'datatable'])->name('pelayaran.data');
 Route::post('customer',[CustomerController::class,'datatable'])->name('customer.data');
-Route::post('user',[UserController::class,'datatable'])->name('user.data');
+Route::post('uservaleg55',[UserController::class,'datatable'])->name('uservaleg55.data');
 Route::post('pelayaran',[PelayaranController::class,'datatable'])->name('pelayaran.data');
 Route::post('agen',[AgenController::class,'datatable'])->name('agen.data');
 Route::post('truk',[TrukController::class,'datatable'])->name('truk.data');

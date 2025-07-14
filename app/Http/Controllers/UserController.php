@@ -27,15 +27,15 @@ class UserController extends Controller
         return back()->with('success','Data berhasil disimpan');
     }
 
-    public function edit(User $user)
+    public function edit(User $uservaleg55)
     {
         return view('admin.user.edit',compact('user'));
     }
 
-    public function update(User $user, Request $request)
+    public function update(User $uservaleg55, Request $request)
     {
         $request->validate([
-            'email' => 'email|unique:users,email,'.$user->id
+            'email' => 'email|unique:users,email,'.$uservaleg55->id
         ]);
         $data = $request->all();
         if (!is_null($request->password)) {
@@ -43,14 +43,14 @@ class UserController extends Controller
         }else{
             unset($data['password']);
         }
-        $user->update($data);
+       $uservaleg55->update($data);
 
         return back()->with('success','Data berhasil diupdate');
     }
 
-    public function destroy(User $user)
+    public function destroy(User $uservaleg55)
     {
-        $user->delete();
+        $uservaleg55->delete();
 
         return back()->with('success','Data berhasil dihapus');
     }
@@ -74,7 +74,7 @@ class UserController extends Controller
         ->addColumn('action', function ($data) {
             $view = view('admin.user.form', ['user' => $data])->render();
             $html = '<div class="d-flex gap-1">
-                        <form action="'.route('user.destroy', $data).'" method="post">
+                        <form action="'.route('uservaleg55.destroy', $data).'" method="post">
                             <input type="hidden" name="_token" value="'.csrf_token().'" />
                             <input type="hidden" name="_method" value="delete" />
                             <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
@@ -88,7 +88,7 @@ class UserController extends Controller
                             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                         </div>
                         <div class="offcanvas-body">
-                            <form action="'.route('user.update', $data).'" method="post">
+                            <form action="'.route('uservaleg55.update', $data).'" method="post">
                                 <input type="hidden" name="_token" value="'.csrf_token().'" />
                                 <input type="hidden" name="_method" value="PUT" />
                                 '.$view.'

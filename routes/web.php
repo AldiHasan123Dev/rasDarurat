@@ -141,7 +141,7 @@ Route::get('buku-besar', function () {
 Route::post('update-jurnal', [UpdateDataController::class, 'jurnal'])->name('update.jurnal');
 
 Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
-    Route::resource('user', UserController::class)->except(['create']);
+    Route::resource('uservaleg55', UserController::class)->except(['create']);
     Route::resource('customer', CustomerController::class);
     Route::resource('pelayaran', PelayaranController::class)->except(['create', 'edit']);
     Route::resource('agen', AgenController::class)->except(['create', 'edit']);

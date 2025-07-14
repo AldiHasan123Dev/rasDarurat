@@ -38,7 +38,7 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body">
-            <form action="{{ route('user.store') }}" method="post">
+            <form action="{{ route('uservaleg55.store') }}" method="post">
                 @csrf
                 @include('admin.user.form',['user'=>[]])
             </form>
@@ -52,7 +52,7 @@
             processing: true,
             serverSide: true,
             ajax:{
-                url: '{{ route('user.data') }}',
+                url: '{{ route('uservaleg55.data') }}',
                 method:'POST',
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
