@@ -62,12 +62,20 @@ class UserController extends Controller
                 ->get();
 
     return Datatables::of($data)
-        ->addColumn('usia', function($data) {
-            if ($data->tgl_lahir) {
-                return \Carbon\Carbon::parse($data->tgl_lahir)->age . ' tahun';
-            }
-            return '-';
-        })
+       ->addColumn('usia', function($data) {
+    if ($data->tgl_lahir) {
+        $tglLahir = \Carbon\Carbon::parse($data->tgl_lahir);
+        $now = \Carbon\Carbon::now();
+
+        $years = $tglLahir->diffInYears($now);
+        $months = $tglLahir->addYears($years)->diffInMonths($now);
+        $days = $tglLahir->addMonths($months)->diffInDays($now);
+
+        return "{$years} tahun {$months} bulan";
+    }
+    return '-';
+})
+
         ->addColumn('role', function($data){
             return $data->role->name ?? '-';
         })
