@@ -12,14 +12,15 @@
                             <tr>
                                 <th>ID.</th>
                                 <th>Role</th>
-                                <th>Tgl Masuk</th>
                                 <th>Nama</th>
-                                <th>Tgl Lahir</th>
                                 <th>Kota Lahir</th>
+                                <th>Tgl Lahir</th>
+                                <th>Usia</th>
+                                <th>Tgl Masuk</th>
+                                <th>Lama Masuk</th>
                                 <th>Email</th>
                                 <th>Telp</th>
                                 <th>Alamat</th>
-                                <th>Usia</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -59,14 +60,15 @@
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'role', name: 'roles.name' },
-                { data: 'tgl_masuk', name: 'tgl_masuk' },
                 { data: 'name', name: 'name' },
-                { data: 'tgl_lahir', name: 'tgl_lahir' },
                 { data: 'kota_lahir', name: 'kota_lahir' },
+                { data: 'tgl_lahir', name: 'tgl_lahir' },
+                { data: 'usia', name: 'usia' },
+                { data: 'tgl_masuk', name: 'tgl_masuk' },
+                { data: 'lama_masuk', name: 'lama_masuk' },
                 { data: 'email', name: 'email' },
                 { data: 'phone', name: 'phone' },
                 { data: 'address', name: 'address' },
-                { data: 'usia', name: 'usia' },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

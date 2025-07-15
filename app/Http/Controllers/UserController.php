@@ -75,6 +75,19 @@ class UserController extends Controller
     }
     return '-';
 })
+->addColumn('lama_masuk', function($data) {
+    if ($data->tgl_masuk) {
+        $tglLahir = \Carbon\Carbon::parse($data->tgl_masuk);
+        $now = \Carbon\Carbon::now();
+
+        $years = $tglLahir->diffInYears($now);
+        $months = $tglLahir->addYears($years)->diffInMonths($now);
+        $days = $tglLahir->addMonths($months)->diffInDays($now);
+
+        return "{$years} tahun {$months} bulan";
+    }
+    return '-';
+})
 
         ->addColumn('role', function($data){
             return $data->role->name ?? '-';
