@@ -308,15 +308,12 @@ if ($nomorS && $nomorE) {
     $hasFilter = true;
 
     $data = $query
-    ->orderBy('created_at', 'asc')
-    ->orderBy('tipe')
     ->orderBy('nomor', 'asc')
                  ->skip($start)
                  ->take($limit)
                  ->get();
 } elseif ($hasFilter) {
     $data = $query
-    ->orderByDesc('created_at')
     ->orderByDesc('nomor')
                   ->orderBy('tipe')
                  ->skip($start)
