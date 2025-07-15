@@ -589,20 +589,6 @@ $(document).ready(function () {
                         prefix: ''
                     },
                     sortable: true
-                },
-                 {
-                    label: 'TF Masuk ??',
-                    name: 'tf_masuk',
-                    width: 100,
-                    align: "right", // isi cell rata kanan
-                    labelAlign: "right", // label header rata kanan
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
                 }
 
             ],
