@@ -307,7 +307,10 @@ if ($nomorS && $nomorE) {
     $query->whereBetween('nomor', [$nomorS, $nomorE]);
     $hasFilter = true;
 
-    $data = $query->orderBy('nomor', 'asc')
+    $data = $query
+    ->orderBy('created_at', 'asc')
+    ->orderBy('tipe')
+    ->orderBy('nomor', 'asc')
                  ->skip($start)
                  ->take($limit)
                  ->get();

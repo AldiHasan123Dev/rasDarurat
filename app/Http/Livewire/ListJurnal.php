@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Models\Jurnal;
 use App\Models\JurnalSample;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -73,21 +74,22 @@ class ListJurnal extends Component
         //         ->orderBy('jurnal'.$prefix.'.tipe')
         //         ->orderBy('jurnal'.$prefix.'.nomor')
         //         ->paginate($this->perPage);
-        $debit =  $jurnal_model->join('coa','coa.id','=','jurnal'.$prefix.'.coa_id')
-                ->leftJoin('order','order.id','=','jurnal'.$prefix.'.order_id')
-                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
-                // ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
-                ->select('jurnal'.$prefix.'.*')
-                ->sum('debit');
-        $credit =  $jurnal_model->join('coa','coa.id','=','jurnal'.$prefix.'.coa_id')
-                ->leftJoin('order','order.id','=','jurnal'.$prefix.'.order_id')
-                ->whereMonth('jurnal'.$prefix.'.created_at',$this->month)
-                // ->where('jurnal'.$prefix.'.tipe','LIKE',$this->tipe.'%')
-                ->whereYear('jurnal'.$prefix.'.created_at',$this->year)
-                ->select('jurnal'.$prefix.'.*')
-                ->sum('credit');
-        $jnl = $jurnal_model->whereMonth('created_at',$this->month)->whereYear('created_at',$this->year)->where('tipe','JNL')->max('no');
+      $start = Carbon::createFromDate($this->year, $this->month, 1)->startOfDay();
+$end = Carbon::createFromDate($this->year, $this->month, 1)->endOfMonth()->endOfDay();
+
+$data = $jurnal_model
+    ->whereBetween('created_at', [$start, $end])
+    ->selectRaw('SUM(debit) as total_debit, SUM(credit) as total_credit')
+    ->first();
+
+$jnl = $jurnal_model
+    ->whereBetween('created_at', [$start, $end])
+    ->where('tipe', 'JNL')
+    ->max('no');
+
+$debit = $data->total_debit;
+$credit = $data->total_credit;
+
         return view('livewire.list-jurnal',[
             // 'data' => $data,
             'total_debit' => $debit,

@@ -53,7 +53,7 @@ class JurnalController extends Controller
 
         $cacheKey = 'jurnal_unbalance_' . $last . '_' . $now;
 
-        $unbalance = Cache::remember($cacheKey, 60, function () use ($last, $now) {
+        $unbalance = Cache::remember($cacheKey, 300, function () use ($last, $now) {
             return Jurnal::select([
                     'nomor',
                     DB::raw("SUM(debit) as debit"),
@@ -61,7 +61,7 @@ class JurnalController extends Controller
                 ])
                 ->whereBetween('created_at', [$last, $now])
                 ->groupBy('nomor')
-                ->havingRaw('SUM(debit) != SUM(credit)')
+                ->havingRaw('ABS(SUM(debit) - SUM(credit)) > 0.01')
                 ->get();
         });
 
@@ -71,6 +71,7 @@ class JurnalController extends Controller
 
         return view('admin.jurnal.index', compact('month', 'unbalance', 'year', 'is_sample'));
     }
+
 
     public function j_cekcoa(){
         return view('admin.jurnal.jurnal-cek-coa', compact('month', 'unbalance', 'year', 'is_sample'));
