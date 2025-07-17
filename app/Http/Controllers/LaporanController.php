@@ -689,8 +689,9 @@ public function data_total_rekap_piutang(Request $request)
         }
         $ids = $data->pluck('id')->toArray();
         $coa = COA::where('is_active',1)->get();
+        $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',93)->sum('debit');
         $is_pra = false;
-        return view('admin.laporan.omset', compact('is_pra','data','year','months','month','tipe','ids','coa'));
+        return view('admin.laporan.omset', compact('jurnal61','is_pra','data','year','months','month','tipe','ids','coa'));
     }
     public function praomset()
     {
@@ -705,9 +706,10 @@ public function data_total_rekap_piutang(Request $request)
             $data = Order::where('job','like',$job.'%')->get();
         }
         $ids = $data->pluck('id')->toArray();
+        $jurnal161 = Jurnal::whereIn('order_id',$ids)->where('coa_id',31)->sum('debit');
         $coa = COA::where('is_active',1)->get();
         $is_pra = true;
-        return view('admin.laporan.pra_omset', compact('is_pra','data','year','months','month','tipe','ids','coa'));
+        return view('admin.laporan.pra_omset', compact('is_pra','jurnal161','data','year','months','month','tipe','ids','coa'));
     }
     public function invoice()
     {

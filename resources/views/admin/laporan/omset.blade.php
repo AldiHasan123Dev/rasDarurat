@@ -495,6 +495,10 @@ $totalLB = $data->sum(function($o) {
 
                         @endphp
                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                            <li class="list-group-item fw-bold">Total COA 6.1</li>
+                            <li class="list-group-item fw-bold">{{  number_format(($jurnal61 ?? 0),2,',','.') }}</li>
+                        </ul>
+                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
                             <li class="list-group-item fw-bold">Total Biaya</li>
                             <li class="list-group-item fw-bold">{{  number_format(($totalBiaya ?? 0),2,',','.') }}</li>
                         </ul>

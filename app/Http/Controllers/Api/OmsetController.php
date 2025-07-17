@@ -432,8 +432,8 @@ class OmsetController extends Controller
         if(!$balik){
             $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
             $last = $c->endOfMonth()->format('Y-m-d');
-            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','TEST')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
-            $nomor = 'TES-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
+            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','OMZ')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
+            $nomor = 'OMZ-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
             $balik = JurnalBalik::create([
                 'tanggal' => $last,
                 'bulan' => $month,
@@ -482,7 +482,7 @@ class OmsetController extends Controller
                                 $data['coa_id'] = 93;
                                 $data['debit'] = $j_->debit;
                                 $data['credit'] = 0;
-                                $data['tipe'] = 'TEST';
+                                $data['tipe'] = 'OMZ';
                                 $data['relasi'] = $balik->nomor;
                                 $data['nomor'] = $balik->nomor;
                                 $data['no'] = $balik->no;
@@ -493,7 +493,7 @@ class OmsetController extends Controller
                                 $data['coa_id'] = $j_->coa_id;
                                 $data['credit'] = $j_->debit;
                                 $data['debit'] = 0;
-                                $data['tipe'] = 'TEST';
+                                $data['tipe'] = 'OMZ';
                                 $data['nomor'] = $balik->nomor;
                                 $data['relasi'] = $balik->nomor;
                                 $data['no'] = $balik->no;
@@ -540,8 +540,8 @@ class OmsetController extends Controller
         if(!$balik){
             $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
             $last = $c->endOfMonth()->format('Y-m-d');
-            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','TEST')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
-            $nomor = 'TES-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
+            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','OMZ')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
+            $nomor = 'OMZ-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
             $balik = JurnalBalik::create([
                 'tanggal' => $last,
                 'bulan' => $month,
@@ -581,7 +581,7 @@ class OmsetController extends Controller
                         $data['coa_id'] = 100;
                         $data['debit'] = $j_biaya->debit;
                         $data['credit'] = 0;
-                        $data['tipe'] = 'TEST';
+                        $data['tipe'] = 'OMZ';
                         $data['nomor'] = $balik->nomor;
                         $data['relasi'] = $balik->nomor;
                         $data['no'] = $balik->no;
@@ -592,7 +592,7 @@ class OmsetController extends Controller
                         $data['coa_id'] = $j_biaya->coa_id;
                         $data['credit'] = $j_biaya->debit;
                         $data['debit'] = 0;
-                        $data['tipe'] = 'TEST';
+                        $data['tipe'] = 'OMZ';
                         $data['relasi'] = $balik->nomor;
                         $data['nomor'] = $balik->nomor;
                         $data['no'] = $balik->no;
@@ -617,8 +617,8 @@ class OmsetController extends Controller
         if(!$balik){
             $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
             $last = $c->endOfMonth()->format('Y-m-d');
-            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','TEST')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
-            $nomor = 'TES-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
+            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','OMZ')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
+            $nomor = 'OMZ-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
             $balik = JurnalBalik::create([
                 'tanggal' => $last,
                 'bulan' => $month,
@@ -658,7 +658,7 @@ class OmsetController extends Controller
                         $data['coa_id'] = 98;
                         $data['debit'] = $j_biaya->debit;
                         $data['credit'] = 0;
-                        $data['tipe'] = 'TEST';
+                        $data['tipe'] = 'OMZ';
                         $data['nomor'] = $balik->nomor;
                         $data['relasi'] = $balik->nomor;
                         $data['no'] = $balik->no;
@@ -670,7 +670,7 @@ class OmsetController extends Controller
                         $data['coa_id'] = $j_biaya->coa_id;
                         $data['credit'] = $j_biaya->debit;
                         $data['debit'] = 0;
-                        $data['tipe'] = 'TEST';
+                        $data['tipe'] = 'OMZ';
                         $data['relasi'] = $balik->nomor;
                         $data['nomor'] = $balik->nomor;
                         $data['no'] = $balik->no;
