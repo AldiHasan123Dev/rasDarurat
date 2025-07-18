@@ -756,14 +756,15 @@ public function data_total_rekap_piutang(Request $request)
         });
 
         // Rekap data per bulan dengan pengurangan debit - kredit
-        $rekapPerBulan = $jurnalPerBulan->map(function ($items, $bulan) {
+                $rekapPerBulan = $jurnalPerBulan->map(function ($items, $bulan) {
             return [
                 'periode' => $bulan,
                 'total_debit' => $items->sum('debit'),
                 'total_kredit' => $items->sum('credit'),
-                'net_total' => $items->sum('debit') - $items->sum('credit'), // net = debit - kredit
+                'net_total' => $items->sum('debit') - $items->sum('credit'),
             ];
-        })->values();
+        })->sortBy('periode')->values();
+
 
         // Tampilkan hasil
         $coa = COA::where('is_active',1)->get();
