@@ -193,7 +193,7 @@
     </div>
     <div class="row">
          <b class="mb-3">Pencarian Data Jurnal</b>
-            <div class="col-12 mb-2 col-md-6">
+            <div class="col-12 mb-2 col-md-3">
                 <label for="" class="form-label">Keterangan</label>
                 <input type="text" name="keterangan" id="keterangan" class="form-control">
             </div>
@@ -204,6 +204,10 @@
               <div class="col-12 mb-2 col-md-3">
                 <label for="" class="form-label">No Jurnal</label>
                 <input type="text" name="no-jnl" id="no-jnl" class="form-control">
+            </div>
+            <div class="col-12 mb-2 col-md-3">
+                <label for="" class="form-label">JOB</label>
+                <input type="text" name="job" id="job" class="form-control">
             </div>
             <div class="col-12 mb-4 col-md-3 ms-auto">
     <div class="d-flex justify-content-end gap-2">
@@ -670,6 +674,7 @@ function setTipe(bank) {
     const keterangan = $('#keterangan').val().trim();
     const container = $('#container').val().trim();
     const nomor = $('#no-jnl').val();
+    const job = $('#job').val();
 
     // Reset filter jika keterangan dan container diisi
 
@@ -679,7 +684,8 @@ function setTipe(bank) {
             kategori: "real",
             keterangan,
             container,
-            nomor: nomor
+            nomor: nomor,
+            job: job
         },
         page: 1
     }).trigger('reloadGrid');

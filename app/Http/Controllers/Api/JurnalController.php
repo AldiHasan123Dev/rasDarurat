@@ -203,6 +203,7 @@ class JurnalController extends Controller
         $nomor = request('nomor');
         $jurnal = request('jurnal');
         $bkt = request('bkt');
+        $job = request('job');
         $tgl = request('tgl');
         $container = request('container');
         \Log::info('FILTER PARAMS', [
@@ -253,6 +254,14 @@ if ($container && strlen($container) > 3) {
     $query->where('container', 'like', '%' . $container . '%');
     $hasFilter = true;
 }
+
+if ($job) {
+    $query->whereHas('order', function ($q) use ($job) {
+        $q->where('job', 'like', '%' . $job . '%');
+    });
+    $hasFilter = true;
+}
+
 
 if ($bank) {
     $query->whereIn('tipe', ['BBK', 'BBM']);
