@@ -690,8 +690,37 @@ public function data_total_rekap_piutang(Request $request)
         $ids = $data->pluck('id')->toArray();
         $coa = COA::where('is_active',1)->get();
         $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',93)->sum('debit');
+         $jurnalDebit = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 93)
+            ->sum('debit');
+
+        $jurnalKredit = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 93)
+            ->sum('credit');
+
+        $jurnal61 = $jurnalDebit - $jurnalKredit;
+
+        // Ambil data jurnal
+        $jurnalList61 = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 93)
+            ->get();
+
+        // Kelompokkan berdasarkan bulan dari created_at
+        $jurnalPerBulan = $jurnalList61->groupBy(function ($jurnal) {
+            return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
+        });
+
+        // Rekap data per bulan dengan pengurangan debit - kredit
+        $rekapPerBulan = $jurnalPerBulan->map(function ($items, $bulan) {
+            return [
+                'periode' => $bulan,
+                'total_debit' => $items->sum('debit'),
+                'total_kredit' => $items->sum('credit'),
+                'net_total' => $items->sum('debit') - $items->sum('credit'), // net = debit - kredit
+            ];
+        })->values();
         $is_pra = false;
-        return view('admin.laporan.omset', compact('jurnal61','is_pra','data','year','months','month','tipe','ids','coa'));
+        return view('admin.laporan.omset', compact('rekapPerBulan','jurnal61','is_pra','data','year','months','month','tipe','ids','coa'));
     }
     public function praomset()
     {
@@ -706,10 +735,40 @@ public function data_total_rekap_piutang(Request $request)
             $data = Order::where('job','like',$job.'%')->get();
         }
         $ids = $data->pluck('id')->toArray();
-        $jurnal161 = Jurnal::whereIn('order_id',$ids)->where('coa_id',31)->sum('debit');
+        $jurnalDebit = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 31)
+            ->sum('debit');
+
+        $jurnalKredit = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 31)
+            ->sum('credit');
+
+        $jurnal161 = $jurnalDebit - $jurnalKredit;
+
+        // Ambil data jurnal
+        $jurnalList161 = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 31)
+            ->get();
+
+        // Kelompokkan berdasarkan bulan dari created_at
+        $jurnalPerBulan = $jurnalList161->groupBy(function ($jurnal) {
+            return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
+        });
+
+        // Rekap data per bulan dengan pengurangan debit - kredit
+        $rekapPerBulan = $jurnalPerBulan->map(function ($items, $bulan) {
+            return [
+                'periode' => $bulan,
+                'total_debit' => $items->sum('debit'),
+                'total_kredit' => $items->sum('credit'),
+                'net_total' => $items->sum('debit') - $items->sum('credit'), // net = debit - kredit
+            ];
+        })->values();
+
+        // Tampilkan hasil
         $coa = COA::where('is_active',1)->get();
         $is_pra = true;
-        return view('admin.laporan.pra_omset', compact('is_pra','jurnal161','data','year','months','month','tipe','ids','coa'));
+        return view('admin.laporan.pra_omset', compact('rekapPerBulan','is_pra','jurnal161','data','year','months','month','tipe','ids','coa'));
     }
     public function invoice()
     {

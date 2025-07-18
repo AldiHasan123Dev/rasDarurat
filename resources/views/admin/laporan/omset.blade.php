@@ -514,6 +514,53 @@ $totalLB = $data->sum(function($o) {
                     </div>
                 </div>
 
+                {{-- <div class="container my-2">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header py-2 px-3 text-white" style="background: linear-gradient(90deg, #007bff, #0056b3);">
+            <h6 class="mb-0 fw-semibold">
+                <i class="bi bi-bar-chart-fill me-2"></i>Rincian Jurnal - COA 6.1
+            </h6>
+        </div>
+
+        <div class="card-body p-2">
+            <div class="table-responsive">
+                <table class="table table-sm table-bordered table-hover align-middle mb-0">
+                    <thead class="table-dark text-center small">
+                        <tr>
+                            <th style="width: 25%">Periode</th>
+                            <th style="width: 25%">Total Debit (Rp)</th>
+                            <th style="width: 25%">Total Kredit (Rp)</th>
+                            <th style="width: 25%">Net Total (Rp)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($rekapPerBulan as $row)
+                            <tr class="small">
+                                <td class="text-center fw-medium">
+                                    {{ \Carbon\Carbon::parse($row['periode'].'-01')->isoFormat('MMMM Y') }}
+                                </td>
+                                <td class="text-end text-primary">
+                                    {{ number_format($row['total_debit'], 0, ',', '.') }}
+                                </td>
+                                <td class="text-end text-danger">
+                                    {{ number_format($row['total_kredit'], 0, ',', '.') }}
+                                </td>
+                                <td class="text-end fw-bold {{ $row['net_total'] < 0 ? 'text-danger' : 'text-success' }}">
+                                    {{ number_format($row['net_total'], 0, ',', '.') }}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-2">Data tidak tersedia</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
     <div class="modal fade" id="modal-jurnal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
