@@ -206,7 +206,7 @@
                 <input type="text" name="no-jnl" id="no-jnl" class="form-control">
             </div>
             <div class="col-12 mb-2 col-md-3">
-                <label for="" class="form-label">JOB</label>
+                <label for="" class="form-label">Group JOB</label>
                 <input type="text" name="job" id="job" class="form-control">
             </div>
             <div class="col-12 mb-4 col-md-3 ms-auto">
