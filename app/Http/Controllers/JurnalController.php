@@ -68,7 +68,6 @@ class JurnalController extends Controller
         $month = request('month') ?? date('m');
         $year = request('year') ?? date('Y');
         $is_sample = request('is_sample') ?? 'real';
-
         return view('admin.jurnal.index', compact('month', 'unbalance', 'year', 'is_sample'));
     }
 
@@ -850,6 +849,7 @@ $kode = $collection
                 if ($data['order_id'][$i]) {
                     $order_trucking = $data['order_id'][$i];
                     $order = OrderTrucking::find($data['order_id'][$i]);
+                    $order_ids = $order->order_id;
                     $id_job = $order->order ? $order->order->job . '-' . sprintf('%02d', $order->order->no_job) : '-';
                     $cont = $order->container;
                     $seal = $order->seal;
@@ -897,6 +897,7 @@ $kode = $collection
                         'order_trucking_id' => $order_trucking ?? $order_vendor,
                         'nomor' => $nomor,
                         'nama' => $name,
+                        'order_id' => ($data['debit_coa_id'][$i] == 31 ? $order_ids : null),
                         'debit' => $data['amount'][$i],
                         'created_at' => $data['created_at'],
                         'relasi' => $relasiDebit,
@@ -911,6 +912,7 @@ $kode = $collection
                         'invoice_vendor' => !str_contains($invoice, 'RAS-LT') ? $invoice_vendor  : null,
                         'invoice_trucking' => str_contains($invoice, 'RAS-LT') ? $invoice  : null,
                         'nopol' => $nopol,
+                        'order_id' => ($data['credit_coa_id'][$i] == 31 ? $order_ids : null),
                         'container' => $container,
                         'order_trucking_id' => $order_trucking ?? $order_vendor,
                         'nomor' => $nomor,

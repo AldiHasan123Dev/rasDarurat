@@ -66,6 +66,34 @@
         padding: 0px;
         box-sizing: border-box;
     }
+    /* Untuk baris utama */
+#table tbody tr.selected1 > td {
+    background-color: #adf8dc !important;
+}
+
+/* Jika ada hover dalam keadaan selected */
+#table tbody tr.selected1:hover > td {
+    background-color: #adf8dc !important;
+}
+
+/* Untuk FixedColumns kiri/kanan */
+div.DTFC_LeftWrapper .DTFC_Cloned tbody tr.selected1 td,
+div.DTFC_RightWrapper .DTFC_Cloned tbody tr.selected1 td {
+    background-color: #adf8dc !important;
+}
+
+/* Jika pakai fixedHeader */
+table.dataTable.fixedHeader-floating tbody tr.selected1 td {
+    background-color: #adf8dc !important;
+}
+
+/* Tambahan untuk style DataTables Bootstrap atau lainnya */
+table.dataTable tbody > tr.selected1,
+table.dataTable tbody > tr.selected1 td {
+    background-color: #adf8dc !important;
+}
+
+
 </style>
 @endsection
 @section('content')
@@ -80,7 +108,8 @@
                             {{-- <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button> --}}
                             @if ($is_pra)
-                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK (DEBIT)</button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE JURNAL BALIK (CREDIT)</button>
                             @endif
                         </div>
                         <form action="{{ url()->current() }}" method="get">
@@ -743,6 +772,17 @@ $totalLB = $data->sum(function($o) {
                 return: true
             }
         });
+
+$('#table tbody').on('click', 'tr', function () {
+    if ($(this).hasClass('selected1')) {
+       
+    } else {
+        $('#table tbody tr').removeClass('selected1');
+        $(this).addClass('selected1');
+    }
+});
+
+
         table.column( 0 ).visible( false );
         table.column( 1 ).visible( false );
         table.column( 40 ).visible( false );
@@ -759,6 +799,10 @@ $totalLB = $data->sum(function($o) {
 
         function syncJurnalBalik(){
             syncJurnalBalikAction(0,50);
+        }
+
+         function syncJurnalBalik1(){
+            syncJurnalBalikAction1(0,50);
         }
 
         function syncAction(start,end){
@@ -798,6 +842,27 @@ $totalLB = $data->sum(function($o) {
                         alert("SINKRONISASI JURNAL BALIK BERHASIL!");
                     }else{
                         syncJurnalBalikAction(response,50)
+                    }
+                }
+            });
+        }
+
+        function syncJurnalBalikAction1(start,end){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('omset.sync.jurnal_balik1') }}",
+                data: {
+                    id:@json($ids),
+                    start:start,
+                    end:end,
+                    month:@json($month),
+                    year:@json($year),
+                },
+                success: function (response) {
+                    if(response=='complete'){
+                        alert("SINKRONISASI JURNAL BALIK BERHASIL!");
+                    }else{
+                        syncJurnalBalikAction1(response,50)
                     }
                 }
             });
