@@ -108,8 +108,8 @@ table.dataTable tbody > tr.selected1 td {
                             {{-- <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button> --}}
                             @if ($is_pra)
-                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK (DEBIT)</button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE JURNAL BALIK (CREDIT)</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK (161 DEBIT)</button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE JURNAL BALIK (161 CREDIT)</button>
                             @endif
                         </div>
                         <form action="{{ url()->current() }}" method="get">
