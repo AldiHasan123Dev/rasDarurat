@@ -41,53 +41,234 @@ class OmsetController extends Controller
             if($cbm=='CBM'){
                 $tarif *= $order->bttb->sum('vol');
             }
-            $data[$idx]['order_id'] = $order->id;
-            $data[$idx]['trucking'] = 0;
-            $data[$idx]['j_trucking'] = '[]';
-            // $data[$idx]['trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%trucking%')->sum('debit');
-            // $data[$idx]['j_trucking'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%trucking%')->pluck('id')->toJson();
-            $tipe = '';
-            if($order->truckingInfo && $order->trucking == 'XPDC'){
-                $tipe = $order->truckingInfo->kendaraan->milik;
-                if($order->truckingInfo->customer->r1 == 1){
-                    $tipe = 'R1';
-                }
-                if($order->truckingInfo->customer->r2 == 1){
-                    $tipe = 'R2';
-                }
-                if($tipe == 'R2'){
-                    $data[$idx]['trucking'] = ($order->truckingInfo->tarif->tarif + $order->truckingInfo->tb_tl + $order->truckingInfo->tambah_isi + $order->truckingInfo->tambah_solar + $order->truckingInfo->stappel + $order->truckingInfo->lain_lain) ?? 0;
-                    $data[$idx]['j_trucking'] = '[]';
-                }
-            }else{
-                $data[$idx]['trucking'] = 0;
-                $data[$idx]['j_trucking'] = '[]';
-            }
+          $data[$idx]['order_id'] = $order->id;
+$data[$idx]['trucking'] = 0;
+$data[$idx]['j_trucking'] = '[]';
+
+$tipe = '';
+if ($order->truckingInfo && $order->trucking == 'XPDC') {
+    // Cek apakah customer R1
+    if ($order->truckingInfo->customer->r1 == 1) {
+        $tipe = 'R1';
+    }
+    // Jika bukan R1, cek apakah R2
+    elseif ($order->truckingInfo->customer->r2 == 1) {
+        $tipe = 'R2';
+    } else {
+        $tipe = $order->truckingInfo->kendaraan->milik ?? '';
+    }
+
+    if ($tipe === 'R1' || strtolower($tipe) === 'vendor') {
+        $data[$idx]['trucking'] = Jurnal::where('order_id', $order->id)
+            ->whereIn('coa_id', $coa_id)
+            ->where(function ($q) {
+                $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
+            })
+            ->sum('debit')
+            - Jurnal::where('order_id', $order->id)
+            ->whereIn('coa_id', $coa_id)
+            ->where(function ($q) {
+                $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
+            })
+            ->sum('credit');
+
+        $data[$idx]['j_trucking'] = Jurnal::where('order_id', $order->id)
+            ->whereIn('coa_id', $coa_id)
+            ->where(function ($q) {
+                $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
+            })
+            ->pluck('id')->toJson();
+    }
+
+    if ($tipe == 'R2') {
+        $data[$idx]['trucking'] =
+            ($order->truckingInfo->tarif->tarif ?? 0) +
+            ($order->truckingInfo->tb_tl ?? 0) +
+            ($order->truckingInfo->tambah_isi ?? 0) +
+            ($order->truckingInfo->tambah_solar ?? 0) +
+            ($order->truckingInfo->stappel ?? 0) +
+            ($order->truckingInfo->lain_lain ?? 0);
+        $data[$idx]['j_trucking'] = '[]';
+    }
+} else {
+    // Kondisi jika tidak ada truckingInfo atau trucking bukan XPDC
+    $data[$idx]['trucking'] = 0;
+    $data[$idx]['j_trucking'] = '[]';
+}
+
             $data[$idx]['job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% do pod %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% do pod %')->sum('credit');
-            $data[$idx]['lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% lolo pod %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% lolo pod %')->sum('credit');
+            
+            $data[$idx]['lolo_pod'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%lolo pod%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya turun job empty / lolo banjarmasin%'");
+                })
+                ->sum('debit')
+                - Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%lolo pod%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya turun job empty / lolo banjarmasin%'");
+                })
+                ->sum('credit');
+
+            $data[$idx]['j_lolo_pod'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%lolo pod%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya turun job empty / lolo banjarmasin%'");
+                })
+                ->pluck('id')->toJson();
+
+
             $data[$idx]['cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% cleaning pod %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% cleaning pod %')->sum('credit');
             $data[$idx]['ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% operasional pod %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% operasional pod %')->sum('credit');
-            $data[$idx]['opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% pelabuhan / job slip pod')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% pelabuhan / job slip pod')->sum('credit');
-            $data[$idx]['truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% trucking pod %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% trucking pod %')->sum('credit');
             $data[$idx]['kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% buruh / kuli pod %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% buruh / kuli pod %')->sum('credit');
             $data[$idx]['storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->sum('credit');
             $data[$idx]['j_job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% do pod %')->pluck('id')->toJson();
-            $data[$idx]['j_lolo_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% lolo pod %')->pluck('id')->toJson();
             $data[$idx]['j_cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% cleaning pod %')->pluck('id')->toJson();
             $data[$idx]['j_ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% operasional pod %')->pluck('id')->toJson();
-            $data[$idx]['j_opt_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% pelabuhan / job slip pod')->pluck('id')->toJson();
-            $data[$idx]['j_truck_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% trucking pod %')->pluck('id')->toJson();
+            
+            $data[$idx]['opt_pod'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%pelabuhan / job slip pod%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo stripping dalam banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'");
+                })
+                ->sum('debit') 
+                - Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%pelabuhan / job slip pod%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo stripping dalam banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'");
+                })
+                ->sum('credit');
+
+            $data[$idx]['j_opt_pod'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%pelabuhan / job slip pod%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo stripping dalam banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'");
+                })
+                ->pluck('id')->toJson();
+
+            
+$data[$idx]['truck_pod'] = Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw("LOWER(nama) LIKE '%trucking pod%'")
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'");
+    })
+    ->sum('debit')
+    - Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw("LOWER(nama) LIKE '%trucking pod%'")
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'");
+    })
+    ->sum('credit');
+
+$data[$idx]['j_truck_pod'] = Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw("LOWER(nama) LIKE '%trucking pod%'")
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'");
+    })
+    ->pluck('id')->toJson();
+
+            
             $data[$idx]['j_kuli_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% buruh / kuli pod %')->pluck('id')->toJson();
             $data[$idx]['j_storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->pluck('id')->toJson();
 
-            $data[$idx]['opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->sum('credit');
-            $data[$idx]['j_opt'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPT %')->pluck('id')->toJson();
+          $data[$idx]['opt'] = Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw("LOWER(nama) LIKE 'opt %'")
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya thc lolo%'");
+    })
+    ->sum('debit')
+    - Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw("LOWER(nama) LIKE 'opt %'")
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya thc lolo%'");
+    })
+    ->sum('credit');
+
+$data[$idx]['j_opt'] = Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw("LOWER(nama) LIKE 'opt %'")
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya thc lolo%'");
+    })
+    ->pluck('id')->toJson();
+
             $data[$idx]['opp'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->sum('credit');
             $data[$idx]['j_opp'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','OPP %')->orWhere('nama','LIKE','%stamp%')->whereIn('coa_id',$coa_id)->where('order_id',$order->id)->pluck('id')->toJson();
-            $data[$idx]['ut'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','UT %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','UT %')->sum('credit');
-            $data[$idx]['j_ut'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','UT %')->pluck('id')->toJson();
-            $data[$idx]['bl'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','BL %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','BL %')->sum('credit');
-            $data[$idx]['j_bl'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','BL %')->pluck('id')->toJson();
+            
+           $data[$idx]['ut'] = Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw('LOWER(nama) LIKE ?', ['ut %'])
+          ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya lcl%']);
+    })
+    ->sum('debit')
+    -
+    Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw('LOWER(nama) LIKE ?', ['ut %'])
+          ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya lcl%']);
+    })
+    ->sum('credit');
+
+$data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
+    ->whereIn('coa_id', $coa_id)
+    ->where(function ($q) {
+        $q->whereRaw('LOWER(nama) LIKE ?', ['ut %'])
+          ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya lcl%']);
+    })
+    ->pluck('id')
+    ->toJson();
+
+
+            $data[$idx]['bl'] = Jurnal::where('order_id', $order->id)
+                                ->whereIn('coa_id', $coa_id)
+                                ->where(function ($q) {
+                                    $q->whereRaw("LOWER(nama) LIKE '%bl %'")
+                                    ->orWhereRaw("LOWER(nama) LIKE '%doc. do meratus%'")
+                                    ->orWhereRaw("LOWER(nama) LIKE '%do meratus%'");
+                                })->sum('debit') 
+                                - Jurnal::where('order_id', $order->id)
+                                ->whereIn('coa_id', $coa_id)
+                                ->where(function ($q) {
+                                    $q->whereRaw("LOWER(nama) LIKE '%bl %'")
+                                    ->orWhereRaw("LOWER(nama) LIKE '%doc. do meratus%'")
+                                    ->orWhereRaw("LOWER(nama) LIKE '%do meratus%'");
+                                })->sum('credit');
+
+            $data[$idx]['j_bl'] = Jurnal::where('order_id', $order->id)
+                                ->whereIn('coa_id', $coa_id)
+                                ->where(function ($q) {
+                                    $q->whereRaw("LOWER(nama) LIKE '%bl %'")
+                                    ->orWhereRaw("LOWER(nama) LIKE '%doc. do meratus%'")
+                                    ->orWhereRaw("LOWER(nama) LIKE '%do meratus%'");
+                                })->pluck('id')->toJson();
+
+
             $data[$idx]['apbs'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','APBS %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','APBS %')->sum('credit');
             $data[$idx]['j_apbs'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','APBS %')->pluck('id')->toJson();
             $data[$idx]['cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%CLEANING %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%CLEANING %')->sum('credit');
@@ -96,14 +277,80 @@ class OmsetController extends Controller
             $data[$idx]['j_lss'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','LSS %')->pluck('id')->toJson();
             $data[$idx]['storage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%storage %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%storage %')->sum('credit');
             $data[$idx]['j_storage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%storage %')->pluck('id')->toJson();
-            $data[$idx]['jasa_door'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%dooring %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%dooring %')->sum('credit');
-            $data[$idx]['j_jasa_door'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%dooring %')->pluck('id')->toJson();
+            
+            $data[$idx]['jasa_door'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->whereRaw("LOWER(nama) LIKE '%dooring %'")
+                ->sum('debit') 
+                - Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->whereRaw("LOWER(nama) LIKE '%dooring %'")
+                ->sum('credit');
+
+            $data[$idx]['j_jasa_door'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->whereRaw("LOWER(nama) LIKE '%dooring %'")
+                ->pluck('id')->toJson();
+
             $data[$idx]['asuransi'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%asuransi %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%asuransi %')->sum('credit');
             $data[$idx]['j_asuransi'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%asuransi %')->pluck('id')->toJson();
-            $data[$idx]['ops'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %'")->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %'")->sum('credit');
-            $data[$idx]['j_ops'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %0")->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE',"biaya operasional xpdc %'")->pluck('id')->toJson();
-            $data[$idx]['segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','pembayaran seal%')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','pembayaran seal%')->sum('credit');
-            $data[$idx]['j_segel'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','pembayaran seal%')->pluck('id')->toJson();
+            
+            $data[$idx]['ops'] = Jurnal::where('order_id', $order->id)
+                                    ->whereIn('coa_id', $coa_id)
+                                    ->where(function ($q) {
+                                    $q->whereRaw('LOWER(nama) LIKE ?', ['%biaya operasional xpdc%'])
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya tally%'])
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya operasional ekspedisi%']);
+                                })
+                                    ->sum('debit')
+                                - Jurnal::where('order_id', $order->id)
+                                    ->whereIn('coa_id', $coa_id)
+                                    ->where(function ($q) {
+                                    $q->whereRaw('LOWER(nama) LIKE ?', ['%biaya operasional xpdc%'])
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya tally%'])
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya operasional ekspedisi%']);
+                                })
+                                    ->sum('credit');
+
+            $data[$idx]['j_ops'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                $q->whereRaw('LOWER(nama) LIKE ?', ['%biaya operasional xpdc%'])
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya tally%'])
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya operasional ekspedisi%']);
+            })
+                ->pluck('id')
+                ->toJson();
+
+            $data[$idx]['segel'] = Jurnal::where('order_id', $order->id)
+                                    ->whereIn('coa_id', $coa_id)
+                                    ->where(function ($q) {
+                                    $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
+                                })
+
+                                ->sum('debit')
+                            - Jurnal::where('order_id', $order->id)
+                                ->whereIn('coa_id', $coa_id)
+                            ->where(function ($q) {
+                                $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
+                                ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
+                                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
+                            })
+                                ->sum('credit');
+
+            $data[$idx]['j_segel'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
+            })
+
+                ->pluck('id')
+                ->toJson();
+
             $data[$idx]['ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal')->sum('credit');
             $data[$idx]['j_ops_seal'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal')->pluck('id')->toJson();
             $data[$idx]['ops_seal_cleaning'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal, cleaning')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal , cleaning')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional %, seal, cleaning')->orWhere('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','biaya operasional % , seal , cleaning')->sum('credit');
@@ -116,8 +363,35 @@ class OmsetController extends Controller
             $data[$idx]['j_karantina'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%karantina %')->pluck('id')->toJson();
             $data[$idx]['demmurage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%demmurage %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%demmurage %')->sum('credit');
             $data[$idx]['j_demmurage'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%demmurage %')->pluck('id')->toJson();
-            $data[$idx]['kirim_dokumen'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%Pengiriman Dokumen%')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%Pengiriman Dokumen%')->sum('credit');
-            $data[$idx]['j_kirim_dokumen'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%Pengiriman Dokumen%')->pluck('id')->toJson();
+            
+            $data[$idx]['kirim_dokumen'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%pengiriman dokumen%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya dokumen%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya kirim dokumen/invoice%'")
+                     ->orWhereRaw("LOWER(nama) LIKE '%biaya kirim dokumen%'");
+                })
+                ->sum('debit')
+                - Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%pengiriman dokumen%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya dokumen%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya kirim dokumen/invoice%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya kirim dokumen%'");
+                })
+                ->sum('credit');
+            $data[$idx]['j_kirim_dokumen'] = Jurnal::where('order_id', $order->id)
+                ->whereIn('coa_id', $coa_id)
+                ->where(function ($q) {
+                    $q->whereRaw("LOWER(nama) LIKE '%pengiriman dokumen%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya dokumen%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya kirim dokumen/invoice%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya kirim dokumen%'");
+                })
+                ->pluck('id')->toJson();
+
             $data[$idx]['flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%flexibag %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%flexibag %')->sum('credit');
             $data[$idx]['j_flexibag'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%flexibag %')->pluck('id')->toJson();
             $data[$idx]['rc'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','%rc %')->sum('credit');
