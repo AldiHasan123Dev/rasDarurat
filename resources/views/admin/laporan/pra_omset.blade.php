@@ -68,30 +68,23 @@
     }
     /* Untuk baris utama */
 #table tbody tr.selected1 > td {
-    background-color: #adf8dc !important;
+    /* Dikosongkan agar tidak ganggu inline style dari PHP */
 }
 
-/* Jika ada hover dalam keadaan selected */
 #table tbody tr.selected1:hover > td {
-    background-color: #adf8dc !important;
+    /* Dikosongkan juga */
 }
 
-/* Untuk FixedColumns kiri/kanan */
+/* Tetap dipakai jika kamu butuh FixedColumns/FixedHeader */
 div.DTFC_LeftWrapper .DTFC_Cloned tbody tr.selected1 td,
-div.DTFC_RightWrapper .DTFC_Cloned tbody tr.selected1 td {
-    background-color: #adf8dc !important;
-}
-
-/* Jika pakai fixedHeader */
-table.dataTable.fixedHeader-floating tbody tr.selected1 td {
-    background-color: #adf8dc !important;
-}
-
-/* Tambahan untuk style DataTables Bootstrap atau lainnya */
+div.DTFC_RightWrapper .DTFC_Cloned tbody tr.selected1 td,
+table.dataTable.fixedHeader-floating tbody tr.selected1 td,
 table.dataTable tbody > tr.selected1,
 table.dataTable tbody > tr.selected1 td {
-    background-color: #adf8dc !important;
+    /* Ini bisa kamu hapus juga kalau mau full kontrol di JS */
+    /* background-color: #adf8dc !important; */
 }
+
 
 
 </style>
@@ -535,7 +528,7 @@ table.dataTable tbody > tr.selected1 td {
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
                                             <td>{{ number_format(($order->pra_omset->laba_kotor ?? 0),2,',','.') }}</td>
-                                            <td>{{ number_format((($order->pra_omset->margin ?? 0) * 100),3,',','.') }}</td>
+                                            <td  style="{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 ? 'background-color: #f3ff0dfc;' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">{{ number_format((($order->pra_omset->margin ?? 0) * 100),3,',','.') }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -774,13 +767,28 @@ $totalLB = $data->sum(function($o) {
         });
 
 $('#table tbody').on('click', 'tr', function () {
-    if ($(this).hasClass('selected1')) {
-       
-    } else {
-        $('#table tbody tr').removeClass('selected1');
-        $(this).addClass('selected1');
-    }
+    // Hapus seleksi lama
+    $('#table tbody tr').removeClass('selected1');
+    $('#table tbody tr td').each(function () {
+        // Hapus background-color hanya jika ditambahkan via JS sebelumnya
+        if ($(this).data('clicked') === true) {
+            $(this).css('background-color', '');
+            $(this).removeData('clicked');
+        }
+    });
+
+    // Tambah seleksi baru
+    $(this).addClass('selected1');
+    $(this).find('td').each(function () {
+        const inlineStyle = $(this).attr('style') || '';
+        if (!inlineStyle.includes('background-color')) {
+            $(this).css('background-color', '#adf8dc');
+            $(this).data('clicked', true); // Flag sebagai td yang diwarnai via JS
+        }
+    });
 });
+
+
 
 
         table.column( 0 ).visible( false );

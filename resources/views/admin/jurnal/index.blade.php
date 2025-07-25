@@ -34,11 +34,11 @@
                         <input type="file" name="file" id="file" onchange="submit()">
                     </form>
                 @endif
-                <form action="{{ route('jurnal.sync.job') }}" method="post">
+                {{-- <form action="{{ route('jurnal.sync.job') }}" method="post">
                     @csrf
                     <button class="btn btn-sm btn-info" type="submit">Sinkronisasi</button>
                 </form>
-                <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export"><i class="fas fa-download"></i></button>
+                <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export"><i class="fas fa-download"></i></button> --}}
             </div>
             <div class="card-body">
                 @if (count($unbalance)>0)
