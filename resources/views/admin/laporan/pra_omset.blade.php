@@ -133,10 +133,12 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">ID</th>
                                         <th style="min-width:40px !important">ORDER_ID</th>
                                         <th style="min-width:40px !important">#</th>
-                                        <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Invoice</th>
-                                        <th style="min-width:40px !important">Group JOB</th>
                                         <th style="min-width:40px !important">ID JOB</th>
+                                         <th style="min-width:40px !important">Shipment</th>
+                                        <th style="min-width:40px !important">Kondisi</th>
+                                        <th style="min-width:40px !important">Group JOB</th>
+                                        <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Asuransi</th>
                                         <th style="min-width:40px !important">Pembayar</th>
                                         <th style="min-width:40px !important">Marketing</th>
@@ -145,8 +147,6 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">Penerima</th>
                                         <th style="min-width:40px !important">Dari</th>
                                         <th style="min-width:40px !important">Tujuan</th>
-                                        <th style="min-width:40px !important">Shipment</th>
-                                        <th style="min-width:40px !important">Kondisi</th>
                                         <th style="min-width:40px !important">Barang</th>
                                         <th style="min-width:40px !important">Pelayaran</th>
                                         <th style="min-width:40px !important">Kapal</th>
@@ -185,8 +185,8 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">ASURANSI</th>
                                         <th style="min-width:40px !important">OPS</th>
                                         <th style="min-width:40px !important">SEGEL</th>
-                                        <th style="min-width:40px !important">OPS & SEGEL</th>
-                                        <th style="min-width:40px !important">OPS & SEGEL & CLEANING</th>
+                                        {{-- <th style="min-width:40px !important">OPS & SEGEL</th>
+                                        <th style="min-width:40px !important">OPS & SEGEL & CLEANING</th> --}}
                                         <th style="min-width:40px !important">BURUH</th>
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
@@ -286,10 +286,12 @@ table.dataTable tbody > tr.selected1 td {
                                             @else
                                             <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="lock({{ $order->id }})"><i class="fas fa-unlock"></i></button></td>
                                             @endif
-                                            <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->invoice }}</td>
-                                            <td>{{ $order->job }}</td>
                                             <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
+                                            <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
+                                            <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
+                                            <td>{{ $order->job }}</td>
+                                            <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->asuransi }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->customer->marketing->name ?? '-' }}</td>
@@ -298,8 +300,6 @@ table.dataTable tbody > tr.selected1 td {
                                             <td>{{ $order->penerima->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->dari_lokasi->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->tujuan_lokasi->nama ?? '-' }}</td>
-                                            <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
-                                            <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->barang->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->pelayaran->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->kapal->nama ?? '-' }}</td>
@@ -426,7 +426,7 @@ table.dataTable tbody > tr.selected1 td {
                                                     {{ number_format(($order->pra_omset->segel ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_segel ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_ops_seal-{{ $order->id }}" >
+                                            {{-- <td id="j_ops_seal-{{ $order->id }}" >
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_seal ?? '[]'}}')">
                                                     {{ number_format(($order->pra_omset->ops_seal ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_ops_seal ?? '[]')) }}
                                                 </a>
@@ -435,7 +435,7 @@ table.dataTable tbody > tr.selected1 td {
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal_cleaning',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_seal_cleaning ?? '[]'}}')">
                                                     {{ number_format(($order->pra_omset->ops_seal_cleaning ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_ops_seal_cleaning ?? '[]')) }}
                                                 </a>
-                                            </td>
+                                            </td> --}}
                                             <td id="j_buruh-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_buruh ?? '[]'}}')">
                                                     {{ number_format(($order->pra_omset->buruh ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_buruh ?? '[]')) }}
