@@ -1266,9 +1266,16 @@ $kode = $collection
         return Jurnal::where('created_at', '>=', $last_relasi)->orderBy('nomor')->pluck('nomor')->unique()->toArray();
     });
 
-    $voucherDeb = $jurnalQuery->whereIn('coa_id', [16, 45, 175])->where('credit', 0)->sum('debit');
-    $voucherCre = $jurnalQuery->whereIn('coa_id', [16, 45, 175])->where('debit', 0)->sum('credit');
-    $voucher = abs($voucherDeb - $voucherCre);
+$voucherDeb = $jurnalQuery
+    ->whereIn('coa_id', [16, 45, 175])
+    ->sum('debit');
+
+$voucherCre = $jurnalQuery
+    ->whereIn('coa_id', [16, 45, 175])
+    ->sum('credit');
+
+$voucher = abs($voucherDeb - $voucherCre);
+
 
     return view('admin.jurnal.new_edit', compact(
         'orders', 'orders_expdc', 'orders_agen',
@@ -1633,10 +1640,12 @@ public function editOne(Jurnal $jurnal)
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice_vendor'] = !str_contains($invoice, 'RAS-LT') ? $invoice : null;
-            $data['invoice_trucking'] = str_contains($invoice, 'RAS-LT') ? $invoice : null;
+            // $data['invoice_vendor'] = !str_contains($invoice, 'RAS-LT') ? $invoice : null;
+            // $data['invoice_trucking'] = str_contains($invoice, 'RAS-LT') ? $invoice : null;
+            $data['invoice_vendor'] = $jurnal->invoice_vendor;
+            $data['invoice_trucking'] = $jurnal->invoice_trucking;
             $data['order_trucking_id'] = $order_trucking;
-            $data['order_id'] = null;
+            $data['order_id'] = $order->order_id;
             $data['no_bg'] = null;
             $data['invoice'] = null;
             $data['invoice_agen'] = null;
@@ -1674,7 +1683,7 @@ public function editOne(Jurnal $jurnal)
             $data['invoice_agen'] = $jurnal->invoice_agen;
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
-            $data['order_trucking_id'] = null;
+            $data['order_trucking_id'] = $order;
             $data['order_id'] =$order_job;
             $data['nopol'] = $jurnal->nopol;
             $data['container'] = $jurnal->container;

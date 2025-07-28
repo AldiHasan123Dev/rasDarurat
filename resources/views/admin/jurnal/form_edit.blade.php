@@ -19,8 +19,28 @@
                     <option {{ $jurnal->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }} / {{ $item->seal }} / {{ $item->invoice }}</option>
                     @endforeach
                 </select>
-            </div>               
+            </div>         
+             <div class="col-12 mb-3">
+                <label for="trucking">Trucking</label><br>
+                <select class="form-control select2" id="trucking12-{{ $jurnal->id }}" name="trucking" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders_trucking1 as $item)
+                    <option {{ $jurnal->order_trucking_id==$item->id?'selected':'' }} value="{{ $item->id }}">
+                        {{ $item->container }} - {{ $item->seal }} - {{ $item->invoice }}
+                    </option>
+                    @endforeach
+                </select>
+            </div>      
             @elseif ($tipe == 'trucking')
+             <div class="col-12 mb-3">
+                <label for="job">Job</label><br>
+                <select class="form-control select2" id="job-{{ $jurnal->id }}" name="job" style="font-size:.9rem !important">
+                    <option value=""></option>
+                    @foreach ($orders as $item)
+                    <option {{ $jurnal->order_id==$item->id?'selected':'' }} value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->seal }} </option>
+                    @endforeach
+                </select>
+            </div>
             <div class="col-12 mb-3">
                 <label for="trucking">Trucking</label><br>
                 <select class="form-control select2" id="trucking12-{{ $jurnal->id }}" name="trucking" style="font-size:.9rem !important">
