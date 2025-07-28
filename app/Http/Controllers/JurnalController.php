@@ -1683,7 +1683,7 @@ public function editOne(Jurnal $jurnal)
             $data['invoice_agen'] = $jurnal->invoice_agen;
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
-            $data['order_trucking_id'] = $order;
+            $data['order_trucking_id'] = $jurnal->order_trucking_id;
             $data['order_id'] =$order_job;
             $data['nopol'] = $jurnal->nopol;
             $data['container'] = $jurnal->container;
