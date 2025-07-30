@@ -19,7 +19,7 @@ class LapPelayaranResource extends JsonResource
             'id' => $this->id,
             'pelayaran' => optional($this->pelayaran)->nama ?? '-',
             'tujuan' => optional($this->lokasi)->nama ?? '-',
-           'jadwal_kapal' => $this->jadwalKapal? $this->jadwalKapal->rute . ' - ' . $this->jadwalKapal->voyage . ' / ETD (' . $this->jadwalKapal->voyage . ')' : '-',
+           'jadwal_kapal' => $this->jadwalKapal? $this->jadwalKapal->kapal->nama . ' - ' . $this->jadwalKapal->voyage . ' / ETD (' . $this->jadwalKapal->etd . ')' : '-',
             'voyage' => optional($this->jadwalKapal)->voyage ?? '-',
             'shipments' => optional($this->shipment)->nama ?? '-',
             'kondisi' => optional($this->kondisi1)->nama ?? '-',
