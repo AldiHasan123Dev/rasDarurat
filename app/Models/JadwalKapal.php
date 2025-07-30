@@ -37,6 +37,10 @@ class JadwalKapal extends Model
         });
     }
 
+    public function lapPelayaran() {
+        return $this->hasMany(LapPelayaran::class, 'jadwal_kapal_id');
+    }
+
     public function hasInvoice()
     {
         $count = Order::where('jadwal_kapal_id', $this->id)->whereNotNull('invoice')->count();

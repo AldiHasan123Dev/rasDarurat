@@ -37,6 +37,12 @@ class Pelayaran extends Model
         });
     }
 
+    public function lapPelayaran()
+{
+    return $this->hasMany(LapPelayaran::class, 'pelayaran_id');
+}
+
+
     public function laporan20Fit($bulan, $thn = 2023)
     {
         $thn = substr($thn,-2);

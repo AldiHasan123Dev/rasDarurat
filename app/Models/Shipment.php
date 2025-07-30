@@ -24,5 +24,11 @@ class Shipment extends Model
         static::saving(function ($model) {
             $model->updated_by = Auth::id();
         });
+
+        
     }
+        public function lapPelayaran()
+{
+    return $this->hasMany(LapPelayaran::class, 'shipments');
+}
 }

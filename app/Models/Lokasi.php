@@ -30,6 +30,8 @@ class Lokasi extends Model
         });
     }
 
+    
+
     public function laporan20Fit($bulan, $thn = 2023)
     {
         $thn = substr($thn,-2);
