@@ -439,7 +439,7 @@
     <script>
         $('#edit-btn').on('click', function() {
             const id = $(this).data('id'); // ID dari baris terpilih
-            let url = `http://127.0.0.1:8080/admin/lap-pelayaran/update/${id}`;
+            let url = `/admin/harga-of/update/${id}`;
 $('#form-edit').attr('action', url);
             if (!id) return;
 
@@ -483,7 +483,7 @@ $('#form-edit').attr('action', url);
         return;
     }
 
-    const url = `/admin/lap-pelayaran/update/${id}`;
+    const url = `/admin/harga-of/update/${id}`;
     const formData = $(this).serialize();
 
     $.ajax({
