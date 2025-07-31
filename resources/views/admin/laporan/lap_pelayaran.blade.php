@@ -12,10 +12,11 @@
         }
 
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(5, minmax(240px, 1fr));
-            gap: 16px;
-        }
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
 
         .form-group {
             display: flex;
@@ -61,23 +62,18 @@
             background-color: #1d4ed8;
         }
 
-        .card-select-container {
-            background: #fff;
-            /* Card background putih */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            /* Shadow lembut */
-            border-radius: 8px;
-            /* Sudut membulat */
-            padding: 16px;
-            /* Padding dalam card */
-            width: 400px;
-            /* Lebar card */
-            margin-bottom: 16px;
-            /* Jarak bawah */
-            display: flex;
-            flex-direction: column;
-            /* Label dan select ke bawah */
-        }
+.card-select-container {
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
 
         .label-biru {
             color: #698af3;
@@ -135,6 +131,23 @@
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
+
+        @media (max-width: 768px) {
+    .form-grid,
+    .modal-body form {
+        grid-template-columns: 1fr !important;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #edit-btn {
+        width: 100%;
+    }
+}
+
 
         .modal-body form .form-group {
             display: flex;
@@ -548,21 +561,21 @@ $('#form-edit').attr('action', url);
                  {
                     name: 'tujuan',
                     label: 'Tujuan',
-                    width: 180,
+                    width: 80,
                     search: true,
                     frozen: true
                 },
                 {
                     name: 'pelayaran',
                     label: 'Pelayaran',
-                    width: 160,
+                    width: 220,
                     search: true,
                     frozen: true
                 },
                   {
                     name: 'sales',
                     label: 'Sales',
-                    width: 100,
+                    width: 90,
                     search: true
                 },
                 // {
@@ -574,13 +587,13 @@ $('#form-edit').attr('action', url);
                 {
                     name: 'shipments',
                     label: 'Shipment',
-                    width: 140,
+                    width: 80,
                     search: true
                 },
                 {
                     name: 'kondisi',
                     label: 'Kondisi',
-                    width: 140,
+                    width: 90,
                     search: true
                 },
                 {
@@ -592,7 +605,7 @@ $('#form-edit').attr('action', url);
                  {
                     name: 'jadwal_kapal',
                     label: 'Berlaku Per',
-                    width: 120,
+                    width: 230,
                     search: true,
                     frozen: true
                 },
@@ -605,7 +618,7 @@ $('#form-edit').attr('action', url);
                 {
                     name: 'tgl_info',
                     label: 'Tanggal Info',
-                    width: 120,
+                    width: 100,
                     search: true,
                     formatter: 'date',
                     formatoptions: {
@@ -624,13 +637,15 @@ $('#form-edit').attr('action', url);
                 {
                     name: 'status',
                     label: 'Status',
-                    width: 80,
+                    width: 70,
                     search: true,
                     align: 'center'
                 }
             ],
             autowidth: true,
-            shrinkToFit: true,
+            shrinkToFit: false,
+            responsive: true,
+            forceFit: false,
             height: 'auto',
             oadonce: true,
             rowNum: 25,
@@ -650,6 +665,11 @@ $('#form-edit').attr('action', url);
                 };
             }
         });
+
+        $(window).on('resize', function() {
+    const newWidth = $("#jqGrid").closest(".ui-jqgrid").parent().width();
+    $("#jqGrid").jqGrid("setGridWidth", newWidth, true);
+});
 
         $('#jqGrid').jqGrid('navGrid', "#jqGridPager", {
             search: false,
