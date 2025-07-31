@@ -347,40 +347,43 @@ class HutangAgenController extends Controller
             $total_tagihan_agen += $tagihan->jumlah;
         }
         foreach ($hutang_agen->groupBy('invoice') as $invoice => $invoice_group) {
-            $firstRecord = $invoice_group->first();
-            
-            Jurnal::create([
-                'order_id' => null,
-                'nomor' => $nomor,
-                'relasi' => $nomor,
-                'no' => $no,
-                'nama' => 'Potongan PPH 23 Agen ' . ($hutang_agen->first()->order->agent->nama ?? '') . ' ' . $invoice,
-                'tipe' => 'JNL',
-                'coa_id' => $c73,
-                'debit' => 0,
-                'credit' => $invoice_group->sum('pph'),
-                'invoice_agen' => $invoice
-            ]);
-        
-            // Pastikan $tagihan tidak null sebelum mengakses order_id
-            $tambahan_tagihan = (!empty($tagihan) && !empty($tagihan->order_id) && $firstRecord->order_id == $tagihan->order_id)
-            ? $total_tagihan_agen
-            : 0;
+    $firstRecord = $invoice_group->first();
 
-        
-            Jurnal::create([
-                'order_id' => null,
-                'nomor' => $nomor,
-                'no' => $no,
-                'nama' => 'Hutang Agen ' . $invoice . ' ' . ($hutang_agen->first()->order->agent->nama ?? ''),
-                'relasi' => $nomor,
-                'tipe' => 'JNL',
-                'coa_id' => $c63,
-                'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $tambahan_tagihan,
-                'debit' => 0,
-                'invoice_agen' => $invoice
-            ]);            
-        }        
+    // Hitung ulang total_tagihan_agen hanya untuk invoice ini
+    $total_tagihan_agen = $tagihan_agen
+        ->where('order_id', $firstRecord->order_id)
+        ->sum('jumlah') ?? 0;
+
+    // PPH 23
+    Jurnal::create([
+        'order_id' => null,
+        'nomor' => $nomor,
+        'relasi' => $nomor,
+        'no' => $no,
+        'nama' => 'Potongan PPH 23 Agen ' . ($firstRecord->order->agent->nama ?? '') . ' ' . $invoice,
+        'tipe' => 'JNL',
+        'coa_id' => $c73,
+        'debit' => 0,
+        'credit' => $invoice_group->sum('pph'),
+        'invoice_agen' => $invoice
+    ]);
+
+
+    // Hutang Agen
+    Jurnal::create([
+        'order_id' => null,
+        'nomor' => $nomor,
+        'no' => $no,
+        'nama' => 'Hutang Agen ' . $invoice . ' ' . ($firstRecord->order->agent->nama ?? ''),
+        'relasi' => $nomor,
+        'tipe' => 'JNL',
+        'coa_id' => $c63,
+        'credit' => ($invoice_group->sum('tarif') + round($invoice_group->sum('ppn'))) - $invoice_group->sum('pph') + $total_tagihan_agen,
+        'debit' => 0,
+        'invoice_agen' => $invoice
+    ]);
+}
+
         return true;
     }
 
