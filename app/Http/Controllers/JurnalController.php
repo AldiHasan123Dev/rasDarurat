@@ -2907,7 +2907,7 @@ public function editOne(Jurnal $jurnal)
         if ($data['simpan'] == 'tampungan') {
             $jurnal_model = new JurnalTampungan();
         }
-       $orders = OrderTrucking::where('invoice', $data['invoice'])
+       $orders = OrderTrucking::whereIn('invoice', $data['invoice'])
     ->distinct()
     ->pluck('id');
 
