@@ -2907,16 +2907,19 @@ public function editOne(Jurnal $jurnal)
         if ($data['simpan'] == 'tampungan') {
             $jurnal_model = new JurnalTampungan();
         }
-       $orders = OrderTrucking::whereIn('invoice', $data['invoice'])
+       $orders = OrderTrucking::whereIn('id', $data['invoice'])
     ->distinct()
     ->pluck('id');
+    $invoice =  OrderTrucking::whereIn('id', $data['invoice'])
+    ->distinct()
+    ->pluck('invoice');
 
         $month = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULY', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
 
         for ($i = 0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
-                $trx = TransaksiTrucking::where('invoice', $data['invoice'][$i])->first();
+                $trx = TransaksiTrucking::where('invoice', $invoice)->first();
                 if ($trx) {
                     $name = str_replace('[1]', $trx->customer->nama, $name);
                 }
@@ -2929,8 +2932,8 @@ public function editOne(Jurnal $jurnal)
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'order_trucking_id' => $orders[$i],
-                        'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
-                        'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                        'invoice_vendor' => !str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
+                        'invoice_trucking' => str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
                         'coa_id' => $data['debit_coa_id'][$i],
                         'nomor' => $nomor,
                         'relasi' => $nomor,
@@ -2942,8 +2945,8 @@ public function editOne(Jurnal $jurnal)
                     $jurnal_model->create([
                         'tipe' => $data['tipe'],
                         'order_trucking_id' => $orders[$i],
-                        'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
-                        'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                       'invoice_vendor' => !str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
+                        'invoice_trucking' => str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
                         'coa_id' => $data['credit_coa_id'][$i],
                         'nomor' => $nomor,
                         'relasi' => $nomor,
@@ -2957,8 +2960,8 @@ public function editOne(Jurnal $jurnal)
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'order_trucking_id' => $orders[$i],
-                            'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
-                            'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                             'invoice_vendor' => !str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
+                        'invoice_trucking' => str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
                             'coa_id' => $data['debit_coa_id'][$i],
                             'nomor' => $nomor,
                             'relasi' => $nomor,
@@ -2972,8 +2975,8 @@ public function editOne(Jurnal $jurnal)
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
                             'order_trucking_id' => $orders[$i],
-                            'invoice_vendor' => !str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
-                            'invoice_trucking' => str_contains($data['invoice'][$i], 'RAS-LT') ? $data['invoice'][$i] : null,
+                           'invoice_vendor' => !str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
+                        'invoice_trucking' => str_contains($invoice[$i], 'RAS-LT') ? $invoice[$i] : null,
                             'coa_id' => $data['credit_coa_id'][$i],
                             'nomor' => $nomor,
                             'relasi' => $nomor,
@@ -2985,7 +2988,7 @@ public function editOne(Jurnal $jurnal)
                     }
                 }
 
-                TransaksiTrucking::where('invoice', $data['invoice'][$i])->update([
+                TransaksiTrucking::where('invoice', $invoice[$i])->update([
                     'bupot' => $data['amount'][$i],
                     'masa_bupot' => date('F Y', strtotime($data['masa_bupot'][$i])),
                     'tanggal_bupot' => $data['tanggal_bupot'][$i],

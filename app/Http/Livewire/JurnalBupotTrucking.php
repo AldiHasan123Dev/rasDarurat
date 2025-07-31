@@ -29,7 +29,7 @@ class JurnalBupotTrucking extends Component
         $setting = Setting::find(1);
         $this->order = null;
         $this->is_apply = false;
-        $this->invoice = TransaksiTrucking::pluck('invoice');
+        $this->invoice = TransaksiTrucking::all();
         $this->coa = COA::where('is_active',1)->orderBy('kode')->get();
         $this->templates = TemplateJurnal::all();
         $this->debit_idx = 2;

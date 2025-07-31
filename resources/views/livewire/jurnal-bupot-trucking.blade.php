@@ -80,7 +80,7 @@
                                     <select class="form-control select2" id="invoice-{{ $i }}" name="invoice[]" style="font-size:.9rem !important; width:150px">
                                         <option value=""></option>
                                         @foreach ($invoice as $item)
-                                            <option value="{{ $item }}">{{ $item }}</option>
+                                            <option value="{{ $item->order_trucking_id }}">{{ $item->invoice }}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -167,7 +167,7 @@
                             <select class="form-control select2" id="invoice-${debit}" name="invoice[]" style="font-size:.9rem !important; width:150px">
                                 <option value=""></option>
                                 @foreach ($invoice as $item)
-                                    <option value="{{ $item }}">{{ $item }}</option>
+                                    <option value="{{ $item->order_trucking_id }}">{{ $item->invoice }}</option>
                                 @endforeach
                             </select>
                         </td>
