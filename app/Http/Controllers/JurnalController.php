@@ -2919,7 +2919,7 @@ public function editOne(Jurnal $jurnal)
         for ($i = 0; $i < count($data['debit_coa_id']); $i++) {
             if ($data['name'][$i] && $data['amount'][$i]) {
                 $name = $data['name'][$i];
-                $trx = TransaksiTrucking::where('invoice', $invoice)->first();
+                $trx = TransaksiTrucking::where('invoice', $invoice[$i])->first();
                 if ($trx) {
                     $name = str_replace('[1]', $trx->customer->nama, $name);
                 }
