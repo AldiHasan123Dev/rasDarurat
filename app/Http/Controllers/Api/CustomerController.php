@@ -20,7 +20,7 @@ class CustomerController extends Controller
             $isPaging = $request->has('page');
             $query = Customer::query();
             if ($request->has('cari')) {
-                $query->where('nama', 'like', "%$request->cari%");
+                $query->where('nama', 'like', "%$request->cari%")->whereNotNull('npwp')->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(npwp, '.', ''), '-', ''), ' ', ''), '0', '') != ''");
                 $counts = $query->count();
             } else {
                 $counts = $query->count();
