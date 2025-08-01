@@ -2907,12 +2907,20 @@ public function editOne(Jurnal $jurnal)
         if ($data['simpan'] == 'tampungan') {
             $jurnal_model = new JurnalTampungan();
         }
-       $orders = OrderTrucking::whereIn('id', $data['invoice'])
-    ->distinct()
-    ->pluck('id');
-    $invoice =  OrderTrucking::whereIn('id', $data['invoice'])
-    ->distinct()
-    ->pluck('invoice');
+$inputIds = $data['invoice']; // array:11 berisi id: [7, 19, 2, ...]
+
+$order = OrderTrucking::whereIn('id', $inputIds)
+    ->get(['id', 'invoice']);
+
+// Urutkan sesuai urutan input
+$invoice = collect($inputIds)->map(function ($id) use ($order) {
+    return optional($order->firstWhere('id', $id))->invoice;
+})->filter(); // filter jika ada null
+
+$orders = collect($inputIds)->map(function ($id) use ($order) {
+    return optional($order->firstWhere('id', $id))->id;
+})->filter(); // filter jika ada null
+
 
         $month = ['JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI', 'JULY', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'];
 
