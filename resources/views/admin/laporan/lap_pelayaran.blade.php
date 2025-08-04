@@ -203,8 +203,6 @@
 
 
     <div class="container mx-auto mt-8 px-4">
-@auth
-    @if (auth()->user()->id == 23 || auth()->user()->id == 36)
         <div class="form-wrapper">
             <form action="{{ route('lap-pelayaran.store') }}" method="POST" id="formLapPelayaran">
                 @csrf
@@ -281,8 +279,6 @@
                 </div>
             </form>
         </div>
-            @endif
-@endauth
 
 <div class="form-wrapper">
     <div class="card-select-container">
@@ -295,14 +291,11 @@
         </select>
     </div>
     
-    @auth
-        @if (auth()->user()->id == 23 || auth()->user()->id == 36)
+   
             <div style="text-align: right; margin-bottom: 16px;">
                 <button id="edit-btn" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#editModal">Edit</button>
             </div>
-                @endif
-@endauth
 
 
 
