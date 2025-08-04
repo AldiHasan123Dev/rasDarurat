@@ -243,21 +243,32 @@
             return newDate;
         }
 
-        $('#btn-update').click(function (e) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('api.transaksi.update') }}",
-                data: {
-                    id: $('#invoice_id').val(),
-                    created_at: $('#created_at').val(),
-                    tanggal_kirim: $('#tanggal_kirim').val(),
-                },
-                success: function (response) {
-                    alert('Data berhasil di update!');
-                    location.reload()
-                }
-            });
-        });
+       $('#btn-update').click(function (e) {
+    e.preventDefault(); // hindari submit default jika tombol dalam form
+
+    // Disable tombol dan ubah teksnya
+    const $btn = $(this);
+    $btn.prop('disabled', true).text('Menyimpan...');
+
+    $.ajax({
+        type: "POST",
+        url: "{{ route('api.transaksi.update') }}",
+        data: {
+            id: $('#invoice_id').val(),
+            created_at: $('#created_at').val(),
+            tanggal_kirim: $('#tanggal_kirim').val(),
+        },
+        success: function (response) {
+            alert('Data berhasil di update!');
+            location.reload();
+        },
+        error: function (xhr) {
+            alert('Terjadi kesalahan. Silakan coba lagi.');
+            // Enable kembali tombol jika gagal
+            $btn.prop('disabled', false).text('Update');
+        }
+    });
+});
 
         function loadTable() {
             $('#jqGrid').jqGrid('clearGridData');
