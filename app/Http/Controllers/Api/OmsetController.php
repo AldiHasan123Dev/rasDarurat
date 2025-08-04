@@ -106,7 +106,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->whereIn('coa_id', $coa_id)
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%do pod%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya do'");
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya do %'");
                 })
                 ->sum('debit')
                  - Jurnal::where('order_id', $order->id)
@@ -150,7 +150,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
             $data[$idx]['storage_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->sum('debit') - Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% perpanjangan do %')->sum('credit');
             $data[$idx]['j_job_slip_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where(function ($q) {
                      $q->whereRaw("LOWER(nama) LIKE '%do pod%'")
-                     ->orWhereRaw("LOWER(nama) LIKE '%biaya do'");
+                     ->orWhereRaw("LOWER(nama) LIKE '%biaya do %'");
                 })->pluck('id')->toJson();
             $data[$idx]['j_cleaning_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% cleaning pod %')->pluck('id')->toJson();
             $data[$idx]['j_ops_pod'] = Jurnal::where('order_id',$order->id)->whereIn('coa_id',$coa_id)->where('nama','LIKE','% operasional pod %')->pluck('id')->toJson();
