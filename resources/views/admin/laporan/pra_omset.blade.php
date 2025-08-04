@@ -191,11 +191,11 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
                                         <th style="min-width:40px !important">DEMMURAGE</th>
-                                        <th style="min-width:40px !important">job slip pod</th>
+                                        <th style="min-width:40px !important">DO POD</th>
+                                        <th style="min-width:40px !important">JOB SLIP</th>
                                         <th style="min-width:40px !important">lolo pod</th>
                                         <th style="min-width:40px !important">cleaning pod</th>
                                         <th style="min-width:40px !important">ops pod</th>
-                                        <th style="min-width:40px !important">opt pod</th>
                                         <th style="min-width:40px !important">truck pod</th>
                                         <th style="min-width:40px !important">kuli pod</th>
                                         <th style="min-width:40px !important">KRM DOK</th>
@@ -461,6 +461,11 @@ table.dataTable tbody > tr.selected1 td {
                                                     {{ number_format(($order->pra_omset->job_slip_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_job_slip_pod ?? '[]')) }}
                                                 </a>
                                             </td>
+                                            <td id="j_opt_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->pra_omset->opt_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_opt_pod ?? '[]')) }}
+                                                </a>
+                                            </td>
                                             <td id="j_lolo_pod-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lolo_pod ?? '[]'}}')">
                                                     {{ number_format(($order->pra_omset->lolo_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_lolo_pod ?? '[]')) }}
@@ -474,11 +479,6 @@ table.dataTable tbody > tr.selected1 td {
                                             <td id="j_ops_pod-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_pod ?? '[]'}}')">
                                                     {{ number_format(($order->pra_omset->ops_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_ops_pod ?? '[]')) }}
-                                                </a>
-                                            </td>
-                                            <td id="j_opt_pod-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->opt_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_opt_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_truck_pod-{{ $order->id }}">
