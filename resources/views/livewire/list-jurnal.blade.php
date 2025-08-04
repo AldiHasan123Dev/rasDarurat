@@ -304,7 +304,7 @@
                             label: 'Keterangan'
                         },
                         {
-                            name: 'debit',
+                            name: 'debits',
                             label: 'Debit',
                             width: 100,
                             search: true,
@@ -318,7 +318,7 @@
                             }
                         },
                         {
-                            name: 'credit',
+                            name: 'credits',
                             label: 'Credit',
                             width: 100,
                             search: true,
