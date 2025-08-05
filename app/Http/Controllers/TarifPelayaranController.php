@@ -167,14 +167,7 @@ class TarifPelayaranController extends Controller
             $query->where('komoditi','LIKE','%'.request('komoditi').'%');
         }
 
-          if (request('harga_of')) {
-        $query->orderBy('tarif', 'asc')->where('is_active', 1); // termurah dulu
-    } else {
-        $query->orderBy('is_active', 'desc')
-              ->orderBy('tanggal', 'desc');
-    }
-
-    $data = $query->skip($start)->take($limit)->get();
+        $data = $query->orderBy('is_active','desc')->orderBy('tanggal','desc')->skip($start)->take($limit)->get();
 
         $count = TarifPelayaran::get('id')->count();
         if(request('pelayaran_id')){
