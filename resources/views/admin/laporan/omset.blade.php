@@ -63,6 +63,28 @@
         padding: 0px;
         box-sizing: border-box;
     }
+
+    .bg-warning1{
+        background-color: #f3ff0dfc;
+    }
+    /* Untuk baris utama */
+#table tbody tr.selected1 > td {
+    /* Dikosongkan agar tidak ganggu inline style dari PHP */
+}
+
+#table tbody tr.selected1:hover > td {
+    /* Dikosongkan juga */
+}
+
+/* Tetap dipakai jika kamu butuh FixedColumns/FixedHeader */
+div.DTFC_LeftWrapper .DTFC_Cloned tbody tr.selected1 td,
+div.DTFC_RightWrapper .DTFC_Cloned tbody tr.selected1 td,
+table.dataTable.fixedHeader-floating tbody tr.selected1 td,
+table.dataTable tbody > tr.selected1,
+table.dataTable tbody > tr.selected1 td {
+    /* Ini bisa kamu hapus juga kalau mau full kontrol di JS */
+    /* background-color: #adf8dc !important; */
+}
 </style>
 @endsection
 @section('content')
@@ -164,11 +186,11 @@
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
                                         <th style="min-width:40px !important">DEMMURAGE</th>
-                                        <th style="min-width:40px !important">job slip pod</th>
+                                        <th style="min-width:40px !important">DO POD</th>
+                                        <th style="min-width:40px !important">JOB SLIP</th>
                                         <th style="min-width:40px !important">lolo pod</th>
                                         <th style="min-width:40px !important">cleaning pod</th>
                                         <th style="min-width:40px !important">ops pod</th>
-                                        <th style="min-width:40px !important">opt pod</th>
                                         <th style="min-width:40px !important">truck pod</th>
                                         <th style="min-width:40px !important">kuli pod</th>
                                         <th style="min-width:40px !important">KRM DOK</th>
@@ -402,6 +424,11 @@
                                                     {{ number_format(($order->omset->job_slip_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_job_slip_pod ?? '[]')) }}
                                                 </a>
                                             </td>
+                                             <td id="j_opt_pod-{{ $order->id }}">
+                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt_pod ?? '[]'}}')">
+                                                    {{ number_format(($order->omset->opt_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_opt_pod ?? '[]')) }}
+                                                </a>
+                                            </td>
                                             <td id="j_lolo_pod-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_lolo_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->lolo_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_lolo_pod ?? '[]')) }}
@@ -415,11 +442,6 @@
                                             <td id="j_ops_pod-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops_pod ?? '[]')) }}
-                                                </a>
-                                            </td>
-                                            <td id="j_opt_pod-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->omset->opt_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_opt_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_truck_pod-{{ $order->id }}">
@@ -706,6 +728,29 @@ $totalLB = $data->sum(function($o) {
                 return: true
             }
         });
+
+$('#table tbody').on('click', 'tr', function () {
+    // Hapus seleksi lama
+    $('#table tbody tr').removeClass('selected1');
+    $('#table tbody tr td').each(function () {
+        // Hapus background-color hanya jika ditambahkan via JS sebelumnya
+        if ($(this).data('clicked') === true) {
+            $(this).css('background-color', '');
+            $(this).removeData('clicked');
+        }
+    });
+
+    // Tambah seleksi baru
+    $(this).addClass('selected1');
+    $(this).find('td').each(function () {
+        const inlineStyle = $(this).attr('style') || '';
+        if (!inlineStyle.includes('background-color')) {
+            $(this).css('background-color', '#adf8dc');
+            $(this).data('clicked', true); // Flag sebagai td yang diwarnai via JS
+        }
+    });
+});
+
         table.column( 0 ).visible( false );
         table.column( 1 ).visible( false );
         table.column( 40 ).visible( false );
