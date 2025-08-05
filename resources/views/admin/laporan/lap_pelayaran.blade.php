@@ -413,7 +413,7 @@ $('#form-edit').attr('action', url);
                     search: true,
                     formatter: 'date',
                     formatoptions: {
-                        srcformat: 'Y-m-d',
+                        srcformat: 'd-m-y',
                         newformat: 'd-M-Y'
                     }
                 },
