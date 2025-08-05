@@ -148,6 +148,13 @@ class TarifPelayaranController extends Controller
                 $q->where('nama','LIKE','%'.request('tujuan').'%');
             });
         }
+
+          if(request('tujuans')){
+            $query->where('is_active', 1)->whereHas('tujuanInfo', function($q){
+                $q->where('nama','LIKE','%'.request('tujuans').'%');
+            });
+        }
+
         if(request('tipe')){
             $query->whereHas('shipment', function($q){
                 $q->where('nama','LIKE','%'.request('tipe').'%');
@@ -160,7 +167,14 @@ class TarifPelayaranController extends Controller
             $query->where('komoditi','LIKE','%'.request('komoditi').'%');
         }
 
-        $data = $query->orderBy('is_active','desc')->orderBy('tanggal','desc')->skip($start)->take($limit)->get();
+          if (request('harga_of')) {
+        $query->orderBy('tarif', 'asc')->where('is_active', 1); // termurah dulu
+    } else {
+        $query->orderBy('is_active', 'desc')
+              ->orderBy('tanggal', 'desc');
+    }
+
+    $data = $query->skip($start)->take($limit)->get();
 
         $count = TarifPelayaran::get('id')->count();
         if(request('pelayaran_id')){

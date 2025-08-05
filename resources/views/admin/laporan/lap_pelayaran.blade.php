@@ -203,82 +203,7 @@
 
 
     <div class="container mx-auto mt-8 px-4">
-        <div class="form-wrapper">
-            <form action="{{ route('lap-pelayaran.store') }}" method="POST" id="formLapPelayaran">
-                @csrf
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="pelayaran_id">Pelayaran</label>
-                        <select id="selectPelayaran" name="pelayaran_id" required class="form-control select2">
-                            <option value="">-- Pilih Pelayaran --</option>
-                            @foreach ($pelayaran as $row)
-                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="tujuan">Tujuan</label>
-                        <select id="selectLokasi" name="tujuan" required class="form-control select2">
-                            <option value="">-- Pilih Tujuan --</option>
-                            @foreach ($lokasi as $row)
-                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="comodity">Komoditas</label>
-                        <input type="text" name="comodity" id="comodity">
-                    </div>
-                    <div class="form-group">
-                        <label for="shipments">Shipment</label>
-                        <select id="selectShipment" name="shipments" required class="form-control select2">
-                            <option value="">-- Pilih Shipment --</option>
-                            @foreach ($shipment as $row)
-                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="kondisi">Kondisi</label>
-                        <select id="selectKondisi" name="kondisi" required class="form-control select2">
-                            <option value="">-- Pilih Kondisi --</option>
-                            @foreach ($kondisi as $row)
-                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="harga">Harga OF</label>
-                        <input type="number" step="0.01" name="harga" id="harga">
-                    </div>
-                    <div class="form-group">
-                        <label for="jadwal_kapal_id">Berlaku Per Jadwal Kapal </label>
-                        <select id="selectJadwal" name="jadwal_kapal_id" class="form-control select2">
-                            <option value="">-- Pilih Jadwal Kapal --</option>
-                            @foreach ($jadwalKapal as $row)
-                                <option value="{{ $row->id }}">{{ $row->kapal->nama ?? '-' }} - {{ $row->voyage }} /
-                                    ETD ({{ $row->etd }})</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="sales">Sales Pelayaran</label>
-                        <input type="text" name="sales" id="sales">
-                    </div>
-                    <div class="form-group">
-                        <label for="keterangan">Keterangan</label>
-                        <input type="text" name="keterangan" id="keterangan">
-                    </div>
-                    <div class="form-group">
-                        <label for="tgl_info">Tanggal Info</label>
-                        <input type="date" name="tgl_info" id="tgl_info">
-                    </div>
-                </div>
-                <div class="form-action">
-                    <button type="submit">Simpan Data</button>
-                </div>
-            </form>
-        </div>
+        
 
 <div class="form-wrapper">
     <div class="card-select-container">
@@ -290,18 +215,6 @@
             @endforeach
         </select>
     </div>
-    
-   
-            <div style="text-align: right; margin-bottom: 16px;">
-                <button id="edit-btn" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editModal">Edit</button>
-            </div>
-
-
-
-
-
-
             <div class="table-responsives">
                 <table id="jqGrid"></table>
                 <div id="jqGridPager"></div>
@@ -309,113 +222,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Tarif Freight</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-
-                <div class="modal-body">
-                    <form id="editForm" method="POST"
-                        style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
-                        @csrf
-                        <input type="hidden" name="id" id="edit-id">
-
-                        <!-- Kolom 1 -->
-                        <div>
-                            <label for="pelayaran_id">Pelayaran</label>
-                            <select id="edit-pelayaran-id" name="pelayaran_id" class="form-control select2">
-                                @foreach ($pelayaran as $row)
-                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="jadwal_kapal_id">Jadwal Kapal</label>
-                            <select id="edit-jadwal-kapal-id" name="jadwal_kapal_id" class="form-control select2">
-                                @foreach ($jadwalKapal as $row)
-                                    <option value="{{ $row->id }}">{{ $row->kapal->nama ?? '-' }} -
-                                        {{ $row->voyage }} / ETD ({{ $row->etd }})</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="shipments">Shipment</label>
-                            <select id="edit-shipments" name="shipments" class="form-control select2">
-                            @foreach ($shipment as $row)
-                                <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                            @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="tujuan">Tujuan</label>
-                            <select id="edit-tujuan" name="tujuan" class="form-control select2">
-                                @foreach ($lokasi as $row)
-                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="kondisi">Kondisi</label>
-                            <select id="edit-kondisi" name="kondisi" class="form-control select2">
-                                @foreach ($kondisi as $row)
-                                    <option value="{{ $row->id }}">{{ $row->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="edit-comodity">Komoditas</label>
-                            <input type="text" class="form-control" id="edit-comodity" name="comodity">
-                        </div>
-
-                        <div>
-                            <label for="edit-harga">Harga</label>
-                            <input type="number" step="0.01" class="form-control" id="edit-harga" name="harga"
-                                required>
-                        </div>
-
-                        <div>
-                            <label for="edit-keterangan">Keterangan</label>
-                            <input type="text" class="form-control" id="edit-keterangan" name="keterangan">
-                        </div>
-
-                        <div>
-                            <label for="edit-sales">Sales</label>
-                            <input type="text" class="form-control" id="edit-sales" name="sales">
-                        </div>
-
-                        <div>
-                            <label for="edit-tgl-info">Tgl Info</label>
-                            <input type="date" name="tgl_info" class="form-control" id="edit-tgl-info">
-                        </div>
-
-                        <div style="grid-column: span 2;">
-                            <label for="edit-status">Status</label>
-                            <select class="form-control" id="edit-status" name="status" required>
-                                <option value="1">AKTIF</option>
-                                <option value="0">NON-AKTIF</option>
-                            </select>
-                        </div>
-
-                        <!-- Footer tombol -->
-                        <div class="modal-footer"
-                            style="grid-column: span 2; display: flex; justify-content: flex-end; gap: 10px;">
-                            <button type="submit" id="edit-save-btn" class="btn btn-success">Simpan</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 @endsection
 @push('scripts')
     <!-- jQuery -->
@@ -525,10 +332,11 @@ $('#form-edit').attr('action', url);
 
             // Update jqGrid dengan parameter tujuan
             $("#jqGrid").setGridParam({
-                url: '{{ route('data-lap-pelayaran.list') }}',
+                url: '{{ route('jqgrid.tarif.pelayaran') }}',
                 datatype: 'json',
                 postData: {
-                    tujuan: selectedTujuan // kirim parameter
+                    harga_of: true,
+                    tujuans: selectedTujuan // kirim parameter
                 },
                 page: 1
             }).trigger("reloadGrid");
@@ -536,9 +344,12 @@ $('#form-edit').attr('action', url);
 
         let id;
         $("#jqGrid").jqGrid({
-            url: '{{ route('data-lap-pelayaran.list') }}',
+             url: '{{ route('jqgrid.tarif.pelayaran') }}',
             mtype: 'GET',
             datatype: 'json',
+             postData: {
+        harga_of: true, // atau ambil dari input jika ada
+    },
             colModel: [{
                     name: 'id',
                     label: 'ID',
@@ -565,12 +376,12 @@ $('#form-edit').attr('action', url);
                     search: true,
                     frozen: true
                 },
-                  {
-                    name: 'sales',
-                    label: 'Sales',
-                    width: 90,
-                    search: true
-                },
+                //   {
+                //     name: 'sales',
+                //     label: 'Sales',
+                //     width: 90,
+                //     search: true
+                // },
                 // {
                 //     name: 'voyage',
                 //     label: 'Voyage',
@@ -578,29 +389,16 @@ $('#form-edit').attr('action', url);
                 //     search: true
                 // },
                 {
-                    name: 'shipments',
+                    name: 'tipe',
                     label: 'Shipment',
                     width: 80,
                     search: true
                 },
                 {
-                    name: 'kondisi',
-                    label: 'Kondisi',
-                    width: 90,
-                    search: true
-                },
-                {
-                    name: 'comodity',
+                    name: 'komoditi',
                     label: 'Komoditas',
                     width: 120,
                     search: true
-                },
-                 {
-                    name: 'jadwal_kapal',
-                    label: 'Berlaku Per',
-                    width: 230,
-                    search: true,
-                    frozen: true
                 },
                 {
                     name: 'keterangan',
@@ -609,7 +407,7 @@ $('#form-edit').attr('action', url);
                     search: true
                 },
                 {
-                    name: 'tgl_info',
+                    name: 'tanggal',
                     label: 'Tanggal Info',
                     width: 100,
                     search: true,
@@ -620,7 +418,7 @@ $('#form-edit').attr('action', url);
                     }
                 },
                 {
-                    name: 'harga',
+                    name: 'tarif_nominal',
                     label: 'Harga OF',
                     width: 150,
                     align: 'right',
@@ -628,7 +426,7 @@ $('#form-edit').attr('action', url);
                     search: false
                 },
                 {
-                    name: 'status',
+                    name: 'is_active',
                     label: 'Status',
                     width: 70,
                     search: true,
@@ -636,13 +434,13 @@ $('#form-edit').attr('action', url);
                 }
             ],
             autowidth: true,
-            shrinkToFit: false,
+            shrinkToFit: true,
             responsive: true,
             forceFit: false,
             height: 'auto',
             oadonce: true,
-            rowNum: 25,
-            rowList: [10, 25, 50, 100, 250, 500, 1000],
+            rowNum: 20,
+            rowList: [20, 50, 100, 250, 500, 1000],
             viewrecords: true,
             pager: "#jqGridPager",
             caption: "Tarif Freight",
