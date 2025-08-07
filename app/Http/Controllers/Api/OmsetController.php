@@ -66,6 +66,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
             })
+            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
             ->sum('debit')
             - Jurnal::where('order_id', $order->id)
             ->whereIn('coa_id', $coa_id)
@@ -74,6 +75,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
             })
+            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
             ->sum('credit');
 
         $data[$idx]['j_trucking'] = Jurnal::where('order_id', $order->id)
@@ -83,6 +85,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
             })
+            ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
             ->pluck('id')->toJson();
     }
 
