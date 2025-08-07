@@ -34,7 +34,7 @@
                             @csrf
                             <input type="hidden" name="start" value="{{ $start }}">
                             <input type="hidden" name="end" value="{{ $end }}">
-                            <button type="submit" class="btn btn-success btn-sm">Export XML</button>
+                            <button type="submit" class="btn btn-success btn-sm">Export Bahan XML</button>
                         </form>
                         <form method="get" action="{{ url()->current() }}" class="d-flex gap-3">
                             <div class="btn-group">
