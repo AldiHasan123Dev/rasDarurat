@@ -64,7 +64,14 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         $kodeBarangJasa = $item->keterangan;
         $Invoice = $item->invoice;
         $countInvoice = Order::where('invoice', $Invoice)->count();
-        $hargaSatuan = number_format($item->orderInfo->tarif->tarif ?? 0, 2, '.', '');
+        $tarifAsli = $item->orderInfo->tarif->tarif ?? 0;
+
+        // Atur harga satuan: kurangi 500000 jika kondisi BUKAN 1 atau 6
+        if (in_array($kondisi, [1, 6])) {
+            $hargaSatuan = $tarifAsli - 500000; // Jangan sampai negatif
+        } else {
+            $hargaSatuan = $tarifAsli;
+        }
         $dpp = number_format($item->sub_total, 2, '.', '');
         $ppn = number_format($item->ppn ?? 0, 2, '.', '');
         $NamaSatuan =  'UM.0030';
@@ -95,8 +102,8 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         // Tambahkan baris kedua jika kondisi terpenuhi
         if (in_array($kondisi, [1, 6])) {
             $hargaSatuan = 500000;
-            $dpp = $hargaSatuan * $countInvoice;
-            $ppn = $dpp * 12;
+            $dpp1 = $hargaSatuan * $countInvoice;
+            $ppn1 = $dpp1 * 0.11;
             $extraRow = [
                 $rowNumber,
                 'B',
@@ -106,10 +113,10 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
                 $hargaSatuan,
                 $countInvoice,
                 '0.00',
-                $dpp,
-                $dpp,
+                $dpp1,
+                $dpp1,
                 12,
-                $ppn,
+                $ppn1,
                 '0.00',
                 '0.00',
             ];
