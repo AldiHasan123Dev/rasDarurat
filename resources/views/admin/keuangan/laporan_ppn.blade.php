@@ -30,6 +30,12 @@
                             <input type="hidden" name="end" value="{{ $end }}">
                             <button type="submit" class="btn btn-success btn-sm">Export CSV</button>
                         </form>
+                          <form action="{{ route('keuangan.xml.export') }}" method="post">
+                            @csrf
+                            <input type="hidden" name="start" value="{{ $start }}">
+                            <input type="hidden" name="end" value="{{ $end }}">
+                            <button type="submit" class="btn btn-success btn-sm">Export XML</button>
+                        </form>
                         <form method="get" action="{{ url()->current() }}" class="d-flex gap-3">
                             <div class="btn-group">
                                 <input type="date" name="start" id="start" value="{{ $start }}" class="form-control">

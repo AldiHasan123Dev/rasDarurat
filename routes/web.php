@@ -276,6 +276,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('import-invoice', [KeuanganController::class, 'import'])->name('invoice.import');
     Route::post('export-laporan-ppn', [KeuanganController::class, 'PPNExport'])->name('keuangan.ppn.export');
     Route::post('export-laporan-pajak', [KeuanganController::class, 'PajakExport'])->name('keuangan.pajak.export');
+    Route::post('export-laporan-xml', [KeuanganController::class, 'XmlExport'])->name('keuangan.xml.export');
     Route::post('export-order', [OrderController::class, 'export'])->name('order.export');
     Route::post('export-order-malindo', [OrderController::class, 'exportMalindo'])->name('order.export.malindo');
     Route::post('export-order-cheiljedang', [OrderController::class, 'exportCheiljedang'])->name('order.export.cheiljedang');

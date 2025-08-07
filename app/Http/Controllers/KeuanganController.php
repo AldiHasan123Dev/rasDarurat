@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\LaporanPPNExport;
 use App\Exports\PajakExport;
+use App\Exports\MultipleSheetExport;
 use App\Http\Resources\LaporanPPNResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\TransaksiResource;
@@ -353,6 +354,17 @@ $customers = Customer::pluck('nama');
     {
         return Excel::download(new PajakExport(request('start'), request('end')), 'laporan_pajak.csv', \Maatwebsite\Excel\Excel::CSV, ['Content-Type' => 'text/csv',]);
     }
+
+    public function XmlExport()
+    {
+       return Excel::download(
+    new MultipleSheetExport(request('start'), request('end')),
+    'bahan_xml.xlsx',
+    \Maatwebsite\Excel\Excel::XLSX
+);
+
+    }
+
 
     public function invoiceTable()
     {
