@@ -23,13 +23,23 @@ class XmlExport implements FromCollection, WithHeadings, WithMapping, WithColumn
         $this->end = $end;
     }
 
-    public function collection()
-    {
-        return Transaksi::with('pembayar')
-            ->whereBetween('created_at', [$this->start, $this->end])
-            ->orderBy('created_at')
-            ->get();
-    }
+   public function collection()
+{
+    $transaksis = Transaksi::with('pembayar')
+        ->whereBetween('created_at', [$this->start, $this->end])
+        ->orderBy('created_at')
+        ->get()
+        ->values();
+
+    // Simpan flag agar tahu kita akan memproses baris END di map()
+    $this->withEnd = true;
+
+    // Tambahkan placeholder dummy object untuk "END"
+    $transaksis->push((object)['is_end' => true]);
+
+    return $transaksis;
+}
+
 
     public function headings(): array
     {
@@ -61,6 +71,9 @@ class XmlExport implements FromCollection, WithHeadings, WithMapping, WithColumn
     }
    public function map($item): array
 {
+     if (isset($item->is_end) && $item->is_end) {
+        return ['END'];
+    }
     $npwpPenjual = "0753461920614000000000"; // tanpa petik satu
 
     $npwpOrNik = $item->pembayar->nik === '-' 

@@ -125,7 +125,7 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
 
         $rowNumber++;
     }
-
+    $data[] = ['END'];
     return $data;
 }
 
