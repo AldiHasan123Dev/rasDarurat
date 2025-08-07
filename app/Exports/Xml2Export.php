@@ -70,11 +70,11 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         if (in_array($kondisi, [1, 6])) {
             $hargaSatuan = $tarifAsli - 500000;
             $dpp = $item->sub_total - 500000;
-            $ppn = $dpp * 1.1;
+            $ppn = number_format($dpp * 1.1 / 100 , 2, '.', '');
         } else {
             $hargaSatuan = $tarifAsli;
             $dpp = number_format($item->sub_total, 2, '.', '');
-            $ppn = number_format($item->ppn ?? 0, 2, '.', '');
+            $ppn = number_format($dpp * 1.1 / 100, 2, '.', '');
         }
         $NamaSatuan =  'UM.0030';
         $shipments = $item->orderInfo->tarif->shipmentInfo->id ?? 0;
@@ -105,7 +105,7 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         if (in_array($kondisi, [1, 6])) {
             $hargaSatuan = 500000;
             $dpp1 = $hargaSatuan * $countInvoice;
-            $ppn1 = number_format($dpp1 * 1.1 , 2, '.', '');
+            $ppn1 = number_format($dpp1 * 1.1 / 100 , 2, '.', '');
             $extraRow = [
                 $rowNumber,
                 'B',
