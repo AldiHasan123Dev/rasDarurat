@@ -1371,7 +1371,7 @@ public function updateCoa(Request $request, $jurnal_id)
 public function editOne(Jurnal $jurnal)
 {
     $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-    $last = Carbon::now()->subMonths(9)->format('Y-m-d');
+    $last = Carbon::now()->subMonths(12)->format('Y-m-d');
 
     $coa = Cache::remember('coa_active', 60, function () {
         return COA::where('is_active', 1)->orderBy('kode')->get();

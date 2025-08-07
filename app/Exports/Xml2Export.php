@@ -68,12 +68,14 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
 
         // Atur harga satuan: kurangi 500000 jika kondisi BUKAN 1 atau 6
         if (in_array($kondisi, [1, 6])) {
-            $hargaSatuan = $tarifAsli - 500000; // Jangan sampai negatif
+            $hargaSatuan = $tarifAsli - 500000;
+            $dpp = $item->sub_total - 500000;
+            $ppn = $dpp * 1.1;
         } else {
             $hargaSatuan = $tarifAsli;
+            $dpp = number_format($item->sub_total, 2, '.', '');
+            $ppn = number_format($item->ppn ?? 0, 2, '.', '');
         }
-        $dpp = number_format($item->sub_total, 2, '.', '');
-        $ppn = number_format($item->ppn ?? 0, 2, '.', '');
         $NamaSatuan =  'UM.0030';
         $shipments = $item->orderInfo->tarif->shipmentInfo->id ?? 0;
         if ($shipments === 19 || $shipments === 13 || $shipments === 11 ){
@@ -103,7 +105,7 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         if (in_array($kondisi, [1, 6])) {
             $hargaSatuan = 500000;
             $dpp1 = $hargaSatuan * $countInvoice;
-            $ppn1 = $dpp1 * 0.11;
+            $ppn1 = number_format($dpp1 * 1.1 , 2, '.', '');
             $extraRow = [
                 $rowNumber,
                 'B',
