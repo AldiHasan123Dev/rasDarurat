@@ -121,7 +121,7 @@ class XmlExport implements FromCollection, WithHeadings, WithMapping, WithColumn
         'IDN',
         $NomorDokPembeli,
         $item->pembayar->nama,
-        $item->pembayar->alamat,
+        $item->pembayar->alamat_npwp,
         $item->pembayar->email ?? '-',
         (string) $npwpOrNik1,
     ];

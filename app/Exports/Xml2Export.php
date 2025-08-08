@@ -69,7 +69,7 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         // Atur harga satuan: kurangi 500000 jika kondisi BUKAN 1 atau 6
         if (in_array($kondisi, [1, 6])) {
             $hargaSatuan = $tarifAsli - 500000;
-            $dpp = $item->sub_total - 500000;
+            $dpp = $item->sub_total;
             $ppn = number_format($dpp * 1.1 / 100 , 2, '.', '');
         } else {
             $hargaSatuan = $tarifAsli;
