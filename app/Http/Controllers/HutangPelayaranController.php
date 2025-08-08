@@ -80,6 +80,7 @@ class HutangPelayaranController extends Controller
         $c23 = COA::where('coa_ras',23)->first()->id ?? 23;
         foreach ($data['data'] as $id => $item) {
             $prop = $item;
+          
             $prop['no'] = $n;
             $prop['invoice'] = $code;
             $prop['tgl_invoice'] = date('Y-m-d');
@@ -118,7 +119,7 @@ class HutangPelayaranController extends Controller
         $hp = HutangPelayaran::whereIn('id',$ids)->first();
         $lists = HutangPelayaran::with(['order','order.tarif','order.tarif.shipmentInfo','order.tarif.customer'])->whereIn('id',$ids)->get()->toArray();
         foreach ($lists as $item) {
-            $opp = ['opp','apbs','cleaning','thc','lss','opp_stamp'];
+            $opp = ['opp','apbs','cleaning','thc','lss','opp_stamp','hp_seal'];
             $opt = ['opt','opt_stamp'];
             $ut = ['ut','ut_stamp','bl','ut_cleaning'];
             foreach($opp as $a){
@@ -127,6 +128,8 @@ class HutangPelayaranController extends Controller
                     $title = 'THC LOLO';
                 }else if($a=='opp_stamp'){
                     $title = 'STAMP OPP';
+                }else if($a=='hp_seal'){
+                    $title = 'SEAL';
                 }else{
                     $title = strtoupper($a);
                 }
@@ -484,6 +487,7 @@ class HutangPelayaranController extends Controller
             $j = $list->where('bl','>',0)->count();
             $k = $list->where('ut_stamp','>',0)->groupBy('ut_stamp')->count();
             $l = $list->where('ut_cleaning','>',0)->groupBy('ut_cleaning')->count();
+            $m = $list->where('hp_seal','>',0)->groupBy('hp_seal')->count();
             if($a>0){
                 $opp+=$a;
             }
@@ -519,6 +523,9 @@ class HutangPelayaranController extends Controller
             }
             if($l>0){
                 $ut+=$l;
+            }
+            if($m>0){
+                $opp+=$m;
             }
         }
         // dd($jobs->count());

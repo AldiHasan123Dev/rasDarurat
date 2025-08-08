@@ -135,7 +135,7 @@
                                                 @foreach ($data as $job)
                                                     @foreach ($job as $item)
                                                         <tr>
-                                                            <td rowspan="6" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                                            <td rowspan="7" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
                                                             <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="{{ $item->opp ?? 0 }}"  class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
@@ -154,6 +154,10 @@
                                                         <tr>
                                                             <td>Stamp</td>
                                                             <td><input type="number" onkeyup="hitung('opp_stamp',this.value)" onclick="this.select()" value="{{ $item->opp_stamp }}"  class="opp-stamp" name="data[{{ $item->id }}][opp_stamp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                        </tr>
+                                                         <tr>
+                                                            <td>Seal</td>
+                                                            <td><input type="number" onkeyup="hitung('hp_seal',this.value)" onclick="this.select()" value="{{ $item->hp_seal }}"  class="opp-hp_seal" name="data[{{ $item->id }}][hp_seal]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                         <tr>
                                                             <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
@@ -346,7 +350,7 @@
                                                     @foreach ($job as $item)
                                                     <tr>
                                                         @php
-                                                            $t_opp = $job->sum('opp') + $job->sum('apbs') + $job->sum('lss') + $job->sum('cleaning') + $job->sum('thc') + $job->sum('opp_stamp');
+                                                            $t_opp = $job->sum('opp') + $job->sum('apbs') + $job->sum('lss') + $job->sum('cleaning') + $job->sum('thc') + $job->sum('opp_stamp') + $job->sum('hp_seal');
                                                             $t_opt = $job->sum('opt') + $job->sum('opt_stamp');
                                                             $t_ut = $job->sum('ut') + $job->sum('bl') + $job->sum('ut_stamp') + $job->sum('ut_cleaning');
                                                         @endphp
@@ -440,71 +444,89 @@
 <script src="{{ asset('assets/js/jquery-serializeFields.js') }}"></script>
 <script>
 
-    function hitung(tipe,val){
-        if ($('#kolektif').is(':checked')) {
-            if (tipe=='opp') {
-                $('input[type="number"].opp-opp').each(function () {
-                    $(this).val(val);
-                });
-            }
-            if (tipe=='lss') {
-                $('input[type="number"].opp-lss').each(function () {
-                    $(this).val(val);
-                });
-            }
-            if (tipe=='thc') {
-                $('input[type="number"].opp-thc').each(function () {
-                    $(this).val(val);
-                });
-            }
-            if (tipe=='apbs') {
-                $('input[type="number"].opp-apbs').each(function () {
-                    $(this).val(val);
-                });
-            }
-            if (tipe=='cleaning') {
-                $('input[type="number"].opp-cleaning').each(function () {
-                    $(this).val(val);
-                });
-            }
-            if (tipe=='opp_stamp') {
-                $('input[type="number"].opp-stamp').each(function () {
-                    $(this).val(val);
-                });
-            }
+function hitung(tipe, val) {
+    if ($('#kolektif').is(':checked')) {
+        if (tipe == 'opp') {
+            $('input[type="number"].opp-opp').each(function () {
+                $(this).val(val);
+            });
         }
-        let opp = 0;
-        let lss = 0;
-        let thc = 0;
-        let apbs = 0;
-        let cleaning = 0;
-        let stamp = 0;
-        let jumlah = 0;
-        let pph = parseFloat($('#pph').val());
-        let pembulatan = parseFloat($('#pembulatan').val());
-        $('input[type="number"].opp-opp').each(function () {
-            opp+=parseFloat($(this).val());
-        });
-        $('input[type="number"].opp-lss').each(function () {
-            lss+=parseFloat($(this).val());
-        });
-        $('input[type="number"].opp-thc').each(function () {
-            thc+=parseFloat($(this).val());
-        });
-        $('input[type="number"].opp-apbs').each(function () {
-            apbs+=parseFloat($(this).val());
-        });
-        $('input[type="number"].opp-cleaning').each(function () {
-            cleaning+=parseFloat($(this).val());
-        });
-        $('input[type="number"].opp-stamp').each(function () {
-            stamp+=parseFloat($(this).val());
-        });
-
-        jumlah = (opp + lss + thc + apbs + cleaning+ stamp + pembulatan) - pph;
-        $('.nominal_bg_opp').val(jumlah);
-        $('.nominal_bg_opp').text(jumlah.toLocaleString('en-US'));
+        if (tipe == 'hp_seal') {
+            $('input[type="number"].opp-hp_seal').each(function () {
+                $(this).val(val);
+            });
+        }
+        if (tipe == 'lss') {
+            $('input[type="number"].opp-lss').each(function () {
+                $(this).val(val);
+            });
+        }
+        if (tipe == 'thc') {
+            $('input[type="number"].opp-thc').each(function () {
+                $(this).val(val);
+            });
+        }
+        if (tipe == 'apbs') {
+            $('input[type="number"].opp-apbs').each(function () {
+                $(this).val(val);
+            });
+        }
+        if (tipe == 'cleaning') {
+            $('input[type="number"].opp-cleaning').each(function () {
+                $(this).val(val);
+            });
+        }
+        if (tipe == 'opp_stamp') {
+            $('input[type="number"].opp-stamp').each(function () {
+                $(this).val(val);
+            });
+        }
     }
+
+    let opp = 0;
+    let lss = 0;
+    let hp_seal = 0;
+    let thc = 0;
+    let apbs = 0;
+    let cleaning = 0;
+    let stamp = 0;
+    let jumlah = 0;
+
+    let pph = parseFloat($('#pph').val()) || 0;
+    let pembulatan = parseFloat($('#pembulatan').val()) || 0;
+
+    $('input[type="number"].opp-opp').each(function () {
+        opp += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-lss').each(function () {
+        lss += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-thc').each(function () {
+        thc += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-apbs').each(function () {
+        apbs += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-cleaning').each(function () {
+        cleaning += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-stamp').each(function () {
+        stamp += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-hp_seal').each(function () {
+        hp_seal += parseFloat($(this).val()) || 0;
+    });
+
+    jumlah = (opp + lss + thc + apbs + cleaning + stamp + pembulatan + hp_seal) - pph;
+
+    $('.nominal_bg_opp').val(jumlah);
+    $('.nominal_bg_opp').text(jumlah.toLocaleString('en-US'));
+
+    // 🔍 Log ke konsol
+    console.log('Seal:', tipe);
+    console.log('Jumlah:', jumlah);
+}
+
 
     function hitungOpt(tipe,val){
         if ($('#kolektif').is(':checked')) {

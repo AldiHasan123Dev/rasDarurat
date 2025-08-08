@@ -259,6 +259,21 @@
                             </tr>
                         @endif
                     @endforeach
+                    @foreach ($list->where('hp_seal','!=',0)->groupBy('hp_seal') as $item)
+                        @if ($item->count()>1)
+                            <tr>
+                                <td></td>
+                                <td colspan="2">SEAL</td>
+                                <td class="text-end">{{ number_format($item->first()->hp_seal * $item->count(),2,',','.') }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td></td>
+                                <td colspan="2">SEAL</td>
+                                <td class="text-end">{{ number_format($item->first()->hp_seal,2,',','.') }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
                     @foreach ($list->where('lss','!=',0)->groupBy('lss') as $item)
                         @if ($item->count()>1)
                             <tr>
