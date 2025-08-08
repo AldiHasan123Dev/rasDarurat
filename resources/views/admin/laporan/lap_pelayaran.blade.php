@@ -69,9 +69,10 @@
     padding: 16px;
     width: 100%;
     max-width: 500px;
-    margin-bottom: 16px;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 15px;
+     display: flex;
+    align-items: flex-end;
+    gap: 20px; /* jarak antar elemen */
 }
 
 
@@ -164,6 +165,24 @@
             justify-content: flex-end;
             gap: 10px;
         }
+        #btn-filter {
+    background-color: #0d6efd; /* Biru Bootstrap */
+    border-color: #0d6efd;
+    color: white;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#btn-filter:hover {
+    background-color: #0b5ed7; /* Biru lebih gelap */
+    border-color: #0b5ed7;
+}
+
+#btn-filter:active {
+    background-color: #0a58ca; /* Biru lebih pekat */
+    border-color: #0a58ca;
+    transform: scale(0.97); /* Sedikit mengecil saat ditekan */
+}
+
 
         /* Semua input dan select 100% lebar dalam form grid */
         #editForm select,
@@ -188,7 +207,7 @@
         .select2-selection__rendered {
             line-height: 24px !important;
         }
-        
+
          .section-title {
             font-weight: bold;
             font-size: 1rem;
@@ -213,14 +232,21 @@
         <div class="form-wrapper">
     <div class="section-title">Harga OF Pelayaran</div>
     <div class="card-select-container">
+    <div>
         <label for="lokasi" class="label-biru">Cari menurut Tujuan</label>
         <select id="lokasi" name="lokasi" class="select2 input-select">
             <option value="">-- Pilih Tujuan --</option>
             @foreach ($lokasi as $row)
-            <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                <option value="{{ $row->nama }}">{{ $row->nama }}</option>
             @endforeach
         </select>
     </div>
+
+    <button class="btn btn-primary h-100" type="button" id="btn-filter">
+        <i class="fa fa-search"></i> Cari
+    </button>
+</div>
+
             <div class="table-responsives">
                 <table id="jqGrid"></table>
                 <div id="jqGridPager"></div>
@@ -333,20 +359,22 @@ $('#form-edit').attr('action', url);
         $('#edit-btn').prop('disabled', true); // default disable
 
         // Filter otomatis saat pilih tujuan
-        $('#lokasi').on('change', function() {
-            let selectedTujuan = $(this).val();
+       $('#btn-filter').on('click', function(e) {
+    e.preventDefault(); // Biar tidak reload halaman jika tombol type="submit"
 
-            // Update jqGrid dengan parameter tujuan
-            $("#jqGrid").setGridParam({
-                url: '{{ route('jqgrid.tarif.pelayaran') }}',
-                datatype: 'json',
-                postData: {
-                    harga_of: true,
-                    tujuans: selectedTujuan // kirim parameter
-                },
-                page: 1
-            }).trigger("reloadGrid");
-        });
+    let selectedTujuan = $('#lokasi').val();
+
+    $("#jqGrid").setGridParam({
+        url: '{{ route('jqgrid.tarif.pelayaran') }}',
+        datatype: 'json',
+        postData: {
+            harga_of: true,
+            tujuans: selectedTujuan
+        },
+        page: 1
+    }).trigger("reloadGrid");
+});
+
 
         let id;
         $("#jqGrid").jqGrid({
