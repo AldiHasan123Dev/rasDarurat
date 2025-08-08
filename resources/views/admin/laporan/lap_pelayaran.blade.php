@@ -188,6 +188,12 @@
         .select2-selection__rendered {
             line-height: 24px !important;
         }
+        
+         .section-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 20px 0 10px;
+        }
 
         .select2-selection__arrow {
             height: 36px !important;
@@ -204,8 +210,8 @@
 
     <div class="container mx-auto mt-8 px-4">
         
-
-<div class="form-wrapper">
+        <div class="form-wrapper">
+    <div class="section-title">Harga OF Pelayaran</div>
     <div class="card-select-container">
         <label for="lokasi" class="label-biru">Cari menurut Tujuan</label>
         <select id="lokasi" name="lokasi" class="select2 input-select">
@@ -361,6 +367,13 @@ $('#form-edit').attr('action', url);
                     name: 'class',
                     label: 'class',
                     hidden: true
+                },
+                {
+                    name: 'dari',
+                    label: 'Dari',
+                    width: 80,
+                    search: true,
+                    frozen: true
                 },
                  {
                     name: 'tujuan',
