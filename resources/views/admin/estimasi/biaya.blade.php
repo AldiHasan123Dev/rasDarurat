@@ -19,11 +19,11 @@
 
 @section('script')
     <script>
-        // $("#pelayaran").select2();
-        // $("#stuffing").select2();
-        // $("#cont").select2();
-        // $("#dari").select2();
-        // $("#tujuan").select2();
+        $("#pelayaran").select2();
+        $("#stuffing").select2();
+        $("#cont").select2();
+        $("#dari").select2();
+        $("#tujuan").select2();
     </script>
 @endsection
 

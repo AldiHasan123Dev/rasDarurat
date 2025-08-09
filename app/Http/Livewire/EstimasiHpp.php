@@ -22,7 +22,6 @@ class EstimasiHpp extends Component
 
     public function mount()
     {
-        $this->hitung();
         $this->lokasi = Lokasi::orderBy('nama')->get();
         $this->pelayarans = Pelayaran::orderBy('nama')->get();
         $this->cont = 20;
@@ -30,11 +29,12 @@ class EstimasiHpp extends Component
         $this->dari = 'PELABUHAN SURABAYA';
         $this->tujuan = 'JAYAPURA';
         $this->pelayaran = 3;
-        $this->active = false;
         $this->lokasiPelayaran = Lokasi::orderBy('nama')->get();
         $this->agens = Agen::where('kota',$this->tujuan)->get();
         $this->agen = 1;
         $this->customers = Customer::orderBy('nama')->get(['id','nama']);
+        $this->hitung();
+        $this->active = false;
     }
 
     public function changeCont()
@@ -69,12 +69,21 @@ class EstimasiHpp extends Component
                     })->whereHas('tujuanInfo',function($q){
                         $q->where('nama',$this->tujuan);
                     })->where('is_active',1)->first();
-        $pelayarant = TarifPelayaran::where('pelayaran_id',$this->pelayaran)
-                    ->whereHas('tujuanInfo',function($q){
-                        $q->where('nama',$this->tujuan);
-                    })->whereHas('shipment', function($q){
-                        $q->where('nama','LIKE','%'.$this->cont.'%');
-                    })->where('is_active',1)->first();
+
+$pelayarant = TarifPelayaran::where('pelayaran_id',$this->pelayaran)
+    ->whereHas('tujuanInfo',function($q){
+        $q->where('nama',$this->tujuan);
+    })
+     ->whereHas('port',function($q){
+        $q->where('name',$this->dari);
+    })
+    ->whereHas('shipment', function($q){
+        $q->where('nama','LIKE','%'.$this->cont.'%');
+    })
+    ->whereNull('deleted_at')
+    ->where('is_active',1)
+    ->first(); // lihat SQL mentahnya
+
         $stuffing = $this->stuffing == 'dalam' ? 'luar' : 'dalam';
         $lain = Lain::where('nama','NOT LIKE','%'.$stuffing.'%')->get();
         $data['TRUCKING'] = $this->stuffing=='dalam'? 0 : ($truk->tarif??0);

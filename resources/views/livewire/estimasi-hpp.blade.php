@@ -115,3 +115,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('livewire:load', function () {
+    function initSelect2() {
+        $('#pelayaran, #stuffing, #cont, #dari, #tujuan, #agen, #pembayar_id').select2({
+            width: '100%'
+        }).off('change').on('change', function () {
+            let model = $(this).attr('wire:model');
+            if (model) {
+                @this.set(model, $(this).val());
+            }
+        });
+    }
+
+    initSelect2();
+
+    Livewire.hook('message.processed', () => {
+        initSelect2();
+        // sinkronkan value dari Livewire ke Select2
+        $('#pelayaran').val(@this.get('pelayaran') || '').trigger('change.select2');
+        $('#stuffing').val(@this.get('stuffing') || '').trigger('change.select2');
+        $('#cont').val(@this.get('cont') || '').trigger('change.select2');
+        $('#dari').val(@this.get('dari') || '').trigger('change.select2');
+        $('#tujuan').val(@this.get('tujuan') || '').trigger('change.select2');
+        $('#agen').val(@this.get('agen') || '').trigger('change.select2');
+        $('#pembayar_id').val(@this.get('pembayar_id') || '').trigger('change.select2');
+    });
+});
+
+</script>
