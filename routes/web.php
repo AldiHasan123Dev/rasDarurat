@@ -195,7 +195,6 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
     Route::resource('port', PortController::class);
 
-    Route::view('hutang-pelayaran/cetak-voucher', 'admin.hutangpelayaran.invoice');
     Route::get('data-customer', [CustomerController::class, 'data_customer'])->name('data-customer.list');
     Route::get('data-harga-of', [LapPelayaranController::class, 'data'])->name('data-lap-pelayaran.list');
     Route::post('harga-of/store', [LapPelayaranController::class, 'store'])->name('lap-pelayaran.store');
@@ -205,10 +204,11 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('hutang-agen-print', [HutangAgenController::class, 'print'])->name('hutang-agen.print');
     Route::post('hutang-agen/draf', [HutangAgenController::class, 'draf'])->name('hutang-agen.draf');
     Route::post('hutang-agen/jurnal', [HutangAgenController::class, 'generate_jurnal'])->name('hutang-agen.jurnal');
-    Route::post('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
+    Route::post('hutang-pelayaran/cetak-voucher-post', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
+Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::class, 'cetak_invoice_get'])->name('hutang-pelayaran.cetak.voucher.get');
+
     Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');
     Route::post('hutang-pelayaran/tarik', [HutangPelayaranController::class, 'tarik'])->name('hutang-pelayaran.tarik');
-    Route::get('hutang-pelayaran/cetak-voucher', [HutangPelayaranController::class, 'cetak_invoice_get'])->name('hutang-pelayaran.cetak.voucher.get');
     Route::get('hutang-pelayaran-print', [HutangPelayaranController::class, 'print'])->name('hutang-pelayaran.print');
     Route::get('hutang-pelayaran-cetak', [HutangPelayaranController::class, 'cetak'])->name('hutang-pelayaran.cetak');
 

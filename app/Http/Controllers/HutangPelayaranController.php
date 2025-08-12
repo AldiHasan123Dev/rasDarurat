@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Illuminate\Support\Facades\DB;
 use App\Models\Pelayaran;
 use Illuminate\Http\Request;
 use App\Models\TarifPelayaran;
@@ -66,289 +67,413 @@ class HutangPelayaranController extends Controller
         return view('admin.hutangpelayaran.cetak', compact('data'));
     }
 
-    public function store(Request $request)
-    {
-        $data = $request->all();
-        $ids = array();
-        $n = HutangPelayaran::max('no') + 1;
-        $code = 'HP/'.date('ymd').'/'.sprintf('%02d',$n);
-        $c31 = COA::where('coa_ras',31)->first()->id ?? 31;
-        $c28 = COA::where('coa_ras',24)->first()->id ?? 24;
-        $c73 = COA::where('coa_ras',73)->first()->id ?? 73;
-        $c130 = COA::where('coa_ras',130)->first()->id ?? 130;
-        $c62 = COA::where('coa_ras',62)->first()->id ?? 62;
-        $c23 = COA::where('coa_ras',23)->first()->id ?? 23;
-        foreach ($data['data'] as $id => $item) {
-            $prop = $item;
-          
-            $prop['no'] = $n;
-            $prop['invoice'] = $code;
-            $prop['tgl_invoice'] = date('Y-m-d');
-            $prop['tgl_bg_opp'] = $data['tanggal_bg_opp'];
-            $prop['tgl_bg_opt'] = $data['tanggal_bg_opt'];
-            $prop['tgl_bg_ut'] = $data['tanggal_bg_ut'];
-            $prop['no_bg_opp'] = $data['no_bg_opp'];
-            $prop['no_bg_opt'] = $data['no_bg_opt'];
-            $prop['no_bg_ut'] = $data['no_bg_ut'];
-            $prop['nominal_bg_opp'] = $data['nominal_bg_opp'] ?? 0;
-            $prop['nominal_bg_opt'] = $data['nominal_bg_opt'] ?? 0;
-            $prop['nominal_bg_ut'] = $data['nominal_bg_ut'] ?? 0;
-            $prop['pph'] = $data['pph'];
-            $prop['pembulatan'] = $data['pembulatan'];
-            $prop['penambahan'] = $data['penambahan'];
-            $prop['penambahan_nominal'] = $data['penambahan_nominal'];
-            $prop['status'] = 1;
-            $hp =  HutangPelayaran::where('order_id',$id)->first();
-            $hp->update($prop);
-            array_push($ids,$hp->id);
-        }
+public function store(Request $request)
+{
+    $data = $request->all();
+    $ids = [];
+    $n = HutangPelayaran::max('no') + 1;
+    $code = 'HP/' . date('ymd') . '/' . sprintf('%02d', $n);
 
-        $tgl = [$data['no_bg_opp'],$data['no_bg_opt'],$data['no_bg_ut']];
-        $tgl_group = array_filter(array_unique($tgl));
-        $data_nomor = array();
-        $no = Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
-        foreach($tgl_group as $tg){
-            $nomor = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no).'/'.($this->sno == 'ALB' ? 'ALB/' : '').date('y');
-            $data_nomor[$tg] = ['no'=>$no,'nomor'=>$nomor];
-            $no++;
-        }
+    // Ambil ID COA
+    $c31 = COA::where('coa_ras', 31)->value('id') ?? 31;
+    $c28 = COA::where('coa_ras', 24)->value('id') ?? 24;
+    $c73 = COA::where('coa_ras', 73)->value('id') ?? 73;
+    $c130 = COA::where('coa_ras', 130)->value('id') ?? 130;
+    $c62 = COA::where('coa_ras', 62)->value('id') ?? 62;
+    $c23 = COA::where('coa_ras', 23)->value('id') ?? 23;
 
-        $opp_total = 0;
-        $opt_total = 0;
-        $ut_total = 0;
-        $hp = HutangPelayaran::whereIn('id',$ids)->first();
-        $lists = HutangPelayaran::with(['order','order.tarif','order.tarif.shipmentInfo','order.tarif.customer'])->whereIn('id',$ids)->get()->toArray();
-        foreach ($lists as $item) {
-            $opp = ['opp','apbs','cleaning','thc','lss','opp_stamp','hp_seal'];
-            $opt = ['opt','opt_stamp'];
-            $ut = ['ut','ut_stamp','bl','ut_cleaning'];
-            foreach($opp as $a){
-                $coa_id = $c31;
-                if($a=='thc'){
-                    $title = 'THC LOLO';
-                }else if($a=='opp_stamp'){
-                    $title = 'STAMP OPP';
-                }else if($a=='hp_seal'){
-                    $title = 'SEAL';
-                }else{
-                    $title = strtoupper($a);
-                }
-                if ($a === 'lss') {
-    $customer_id = (int) ($item['order']['tarif']['customer_id'] ?? 0);
-    if ($customer_id === 318 || $customer_id === 3134) {
-        $coa_id = $c28;
-    } 
+    // Update hutang pelayaran (masih di luar transaction)
+    foreach ($data['data'] as $id => $item) {
+        $prop = $item;
+        $prop['no'] = $n;
+        $prop['invoice'] = $code;
+        $prop['tgl_invoice'] = date('Y-m-d');
+        $prop['tgl_bg_opp'] = $data['tanggal_bg_opp'] ?? null;
+        $prop['tgl_bg_opt'] = $data['tanggal_bg_opt'] ?? null;
+        $prop['tgl_bg_ut'] = $data['tanggal_bg_ut'] ?? null;
+        $prop['no_bg_opp'] = $data['no_bg_opp'] ?? null;
+        $prop['no_bg_opt'] = $data['no_bg_opt'] ?? null;
+        $prop['no_bg_ut'] = $data['no_bg_ut'] ?? null;
+        $prop['nominal_bg_opp'] = $data['nominal_bg_opp'] ?? 0;
+        $prop['nominal_bg_opt'] = $data['nominal_bg_opt'] ?? 0;
+        $prop['nominal_bg_ut'] = $data['nominal_bg_ut'] ?? 0;
+        $prop['pph'] = $data['pph'] ?? 0;
+        $prop['pembulatan'] = $data['pembulatan'] ?? 0;
+        $prop['penambahan'] = $data['penambahan'] ?? null;
+        $prop['penambahan_nominal'] = $data['penambahan_nominal'] ?? 0;
+        $prop['status'] = 1;
 
-}
+        $hp = HutangPelayaran::where('order_id', $id)->first();
+        $hp->update($prop);
+        $ids[] = $hp->id;
+    }
 
+    // Siapkan nomor jurnal (atomic dan aman)
+    try {
+        DB::transaction(function () use ($data, &$ids, $c31, $c28, $c73, $c130, $c62, $c23, $code) {
+            // Ambil semua hutang yang diupdate
+            $lists = HutangPelayaran::with([
+                'order',
+                'order.tarif',
+                'order.tarif.shipmentInfo',
+                'order.tarif.customer',
+                'order.jadwal_kapal.kapal'
+            ])->whereIn('id', $ids)->get();
 
-                
-                $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
-                if($item[$a]>0 && !is_null($item['no_bg_opp'])){
-                    $check_double = Jurnal::where('tipe','JNL')->where('coa_id',$coa_id)->where('nama',$name)->first();
-                    if(!is_null($check_double)){
-                        return back()->with('danger', 'Gagal, hutang pelayaran sudah dijurnal');
+            // Ambil daftar no_bg dari request (unique, non-null)
+            $tgl = [$data['no_bg_opp'] ?? null, $data['no_bg_opt'] ?? null, $data['no_bg_ut'] ?? null];
+            $tgl_group = array_values(array_filter(array_unique($tgl)));
+
+            // Jika sudah ada jurnal untuk salah satu no_bg, batalkan (keamanan & konsistensi)
+            // if (!empty($tgl_group)) {
+            //     $exists = Jurnal::where('tipe', 'JNL')->whereIn('no_bg', $tgl_group)->exists();
+            //     if ($exists) {
+            //         // lempar exception agar transaction rollback
+            //         throw new \Exception('Gagal, hutang pelayaran sudah dijurnal (salah satu BG sudah ada pada jurnal).');
+            //     }
+            // }
+
+            // Ambil last no + lock untuk menghindari duplikasi nomor jika paralel
+            $lastNo = Jurnal::where('tipe', 'JNL')
+                ->whereMonth('created_at', date('m'))
+                ->whereYear('created_at', date('Y'))
+                ->orderByDesc('no')
+                ->lockForUpdate()
+                ->value('no');
+
+            $no = ($lastNo ? $lastNo + 1 : 1);
+
+            // Buat mapping nomor per no_bg (key sebagai string)
+            $data_nomor = [];
+            foreach ($tgl_group as $tg) {
+                $key = (string)$tg;
+                $nomor = sprintf('%02d', date('m')) . '-' . sprintf('%03d', $no) . '/' . ($this->sno == 'ALB' ? 'ALB/' : '') . date('y');
+                $data_nomor[$key] = ['no' => $no, 'nomor' => $nomor];
+                $no++;
+            }
+
+            $jurnalData = [];
+            $opp_total = 0;
+            $opt_total = 0;
+            $ut_total = 0;
+            $now = now();
+
+            foreach ($lists as $item) {
+                // relasi asli memakai snake_case (sesuaikan dengan project)
+                $shipQty = preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ?? '');
+
+                $oppFields = ['opp', 'apbs', 'cleaning', 'thc', 'lss', 'opp_stamp', 'hp_seal'];
+                $optFields = ['opt', 'opt_stamp'];
+                $utFields = ['ut', 'ut_stamp', 'bl', 'ut_cleaning'];
+
+                // OPP
+                foreach ($oppFields as $a) {
+                    $coa_id = $c31;
+                    if ($a === 'thc') $title = 'THC LOLO';
+                    elseif ($a === 'opp_stamp') $title = 'STAMP OPP';
+                    elseif ($a === 'hp_seal') $title = 'SEAL';
+                    else $title = strtoupper($a);
+
+                    if ($a === 'lss') {
+                        $customer_id = (int)($item->order->tarif->customer_id ?? 0);
+                        if ($customer_id === 318 || $customer_id === 3134) $coa_id = $c28;
                     }
-                    Jurnal::create([
+
+                    $name = $title . ' ' .
+                        ($item->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($item->order->jadwal_kapal->voyage ?? '') .
+                        ' (1X' . $shipQty . ' )  ' . ($item->order->tarif->customer->nama ?? '') .
+                        ' ( ' . ($item->order->job ?? '') . '-' . sprintf('%02d', ($item->order->no_job ?? 0)) . ')';
+
+                    if (!empty($item->{$a}) && !is_null($item->no_bg_opp)) {
+                        $key = (string)$item->no_bg_opp;
+                        if (!isset($data_nomor[$key])) {
+                            // safety fallback (seharusnya sudah ada)
+                            throw new \Exception("Nomor jurnal untuk BG OPP {$item->no_bg_opp} belum disiapkan.");
+                        }
+                        $jurnalData[] = [
+                            'tipe' => 'JNL',
+                            'no_bg' => $item->no_bg_opp,
+                            'tgl_bg' => $item->tgl_bg_opp,
+                            'nominal_bg' => $item->nominal_bg_opp,
+                            'coa_id' => $coa_id,
+                            'order_id' => $item->order_id,
+                            'nomor' => $data_nomor[$key]['nomor'],
+                            'relasi' => $data_nomor[$key]['nomor'],
+                            'no' => $data_nomor[$key]['no'],
+                            'nama' => $name,
+                            'debit' => $item->{$a},
+                            'credit' => 0,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                        $opp_total += $item->{$a};
+                    }
+                }
+
+                // OPT
+                foreach ($optFields as $a) {
+                    $title = $a == 'opt_stamp' ? 'STAMP OPT' : strtoupper($a);
+                    $name = $title . ' ' .
+                        ($item->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($item->order->jadwal_kapal->voyage ?? '') .
+                        ' (1X' . $shipQty . ' )  ' . ($item->order->tarif->customer->nama ?? '') .
+                        ' ( ' . ($item->order->job ?? '') . '-' . sprintf('%02d', ($item->order->no_job ?? 0)) . ')';
+
+                    if (!empty($item->{$a}) && !is_null($item->no_bg_opt)) {
+                        $key = (string)$item->no_bg_opt;
+                        if (!isset($data_nomor[$key])) {
+                            throw new \Exception("Nomor jurnal untuk BG OPT {$item->no_bg_opt} belum disiapkan.");
+                        }
+                        $jurnalData[] = [
+                            'tipe' => 'JNL',
+                            'no_bg' => $item->no_bg_opt,
+                            'tgl_bg' => $item->tgl_bg_opt,
+                            'nominal_bg' => $item->nominal_bg_opt,
+                            'coa_id' => $c31,
+                            'order_id' => $item->order_id,
+                            'nomor' => $data_nomor[$key]['nomor'],
+                            'relasi' => $data_nomor[$key]['nomor'],
+                            'no' => $data_nomor[$key]['no'],
+                            'nama' => $name,
+                            'debit' => $item->{$a},
+                            'credit' => 0,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                        $opt_total += $item->{$a};
+                    }
+                }
+
+                // UT
+                foreach ($utFields as $a) {
+                    if ($a == 'ut_stamp') $title = 'STAMP UT';
+                    elseif ($a == 'ut_cleaning') $title = 'CLEANING';
+                    else $title = strtoupper($a);
+
+                    $name = $title . ' ' .
+                        ($item->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($item->order->jadwal_kapal->voyage ?? '') .
+                        ' (1X' . $shipQty . ' )  ' . ($item->order->tarif->customer->nama ?? '') .
+                        ' ( ' . ($item->order->job ?? '') . '-' . sprintf('%02d', ($item->order->no_job ?? 0)) . ')';
+
+                    if (!empty($item->{$a}) && !is_null($item->no_bg_ut)) {
+                        $key = (string)$item->no_bg_ut;
+                        if (!isset($data_nomor[$key])) {
+                            throw new \Exception("Nomor jurnal untuk BG UT {$item->no_bg_ut} belum disiapkan.");
+                        }
+                        $jurnalData[] = [
+                            'tipe' => 'JNL',
+                            'no_bg' => $item->no_bg_ut,
+                            'tgl_bg' => $item->tgl_bg_ut,
+                            'nominal_bg' => $item->nominal_bg_ut,
+                            'coa_id' => $c31,
+                            'order_id' => $item->order_id,
+                            'nomor' => $data_nomor[$key]['nomor'],
+                            'relasi' => $data_nomor[$key]['nomor'],
+                            'no' => $data_nomor[$key]['no'],
+                            'nama' => $name,
+                            'debit' => $item->{$a},
+                            'credit' => 0,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                        $ut_total += $item->{$a};
+                    }
+                }
+            } // end foreach lists
+
+            // Tambah jurnal tambahan: PPH / pembulatan / hutang total (sama logika seperti kode lama)
+            // Ambil salah satu hp untuk referensi nilai pph/pembulatan/penambahan
+            $hp_ref = HutangPelayaran::whereIn('id', $ids)->first();
+
+            if ($hp_ref) {
+                // PPH (potongan)
+                if ($hp_ref->pph > 0 && !is_null($hp_ref->no_bg_opp)) {
+                    $key = (string)$hp_ref->no_bg_opp;
+                    if (!isset($data_nomor[$key])) {
+                        throw new \Exception("Nomor jurnal untuk BG OPP {$hp_ref->no_bg_opp} belum disiapkan (PPH).");
+                    }
+                    $jurnalData[] = [
                         'tipe' => 'JNL',
-                        'no_bg' => $item['no_bg_opp'],
-                        'tgl_bg' => $item['tgl_bg_opp'],
-                        'nominal_bg' => $item['nominal_bg_opp'],
-                        'coa_id' => $coa_id,
-                        'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['no_bg_opp']]['nomor'],
-                        'relasi' => $data_nomor[$item['no_bg_opp']]['nomor'],
-                        'no' => $data_nomor[$item['no_bg_opp']]['no'],
-                        'nama' => $name,
-                        'debit' => $item[$a],
-                        'credit' => 0,
-                    ]);
-                    $opp_total += $item[$a];
+                        'no_bg' => $hp_ref->no_bg_opp,
+                        'tgl_bg' => $hp_ref->tgl_bg_opp,
+                        'nominal_bg' => $hp_ref->nominal_bg_opp,
+                        'coa_id' => $c73,
+                        'order_id' => null,
+                        'nomor' => $data_nomor[$key]['nomor'],
+                        'relasi' => $data_nomor[$key]['nomor'],
+                        'no' => $data_nomor[$key]['no'],
+                        'nama' => 'Potongan PPH 23 ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? ''),
+                        'debit' => 0,
+                        'credit' => $hp_ref->pph,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
                 }
-            }
-            foreach($opt as $a){
-                if($a=='opt_stamp'){
-                    $title = 'STAMP OPT';
-                }else{
-                    $title = strtoupper($a);
-                }
-                $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
-                if($item[$a]>0 && !is_null($item['no_bg_opt'])){
-                    Jurnal::create([
+
+                // Pembulatan (ikut ke OPP)
+                if ($hp_ref->pembulatan != 0 && !is_null($hp_ref->no_bg_opp)) {
+                    $key = (string)$hp_ref->no_bg_opp;
+                    if (!isset($data_nomor[$key])) {
+                        throw new \Exception("Nomor jurnal untuk BG OPP {$hp_ref->no_bg_opp} belum disiapkan (Pembulatan).");
+                    }
+                    $jurnalData[] = [
                         'tipe' => 'JNL',
-                        'no_bg' => $item['no_bg_opt'],
-                        'tgl_bg' => $item['tgl_bg_opt'],
-                        'nominal_bg' => $item['nominal_bg_opt'],
-                        'coa_id' => $c31,
-                        'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['no_bg_opt']]['nomor'],
-                        'relasi' => $data_nomor[$item['no_bg_opt']]['nomor'],
-                        'no' => $data_nomor[$item['no_bg_opt']]['no'],
-                        'nama' => $name,
-                        'debit' => $item[$a],
+                        'no_bg' => $hp_ref->no_bg_opp,
+                        'tgl_bg' => $hp_ref->tgl_bg_opp,
+                        'nominal_bg' => $hp_ref->nominal_bg_opp,
+                        'coa_id' => $c130,
+                        'order_id' => null,
+                        'nomor' => $data_nomor[$key]['nomor'],
+                        'relasi' => $data_nomor[$key]['nomor'],
+                        'no' => $data_nomor[$key]['no'],
+                        'nama' => 'Pembulatan OPP ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? ''),
+                        'debit' => $hp_ref->pembulatan,
                         'credit' => 0,
-                    ]);
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                    $opp_total += $hp_ref->pembulatan;
+                }
 
-                    $opt_total += $item[$a];
-                }
-            }
-            foreach($ut as $a){
-                if($a=='ut_stamp'){
-                    $title = 'STAMP UT';
-                }elseif($a=='ut_cleaning'){
-                    $title = 'CLEANING';
-                }else{
-                    $title = strtoupper($a);
-                }
-                $name = $title.' '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' (1X'.preg_replace("/[^0-9]/", "", $item['order']['tarif']['shipment_info']['nama'] ).' )  '.$item['order']['tarif']['customer']['nama'].' ( '.$item['order']['job'].'-'.sprintf('%02d',$item['order']['no_job']).')';
-                if($item[$a]>0 && !is_null($item['no_bg_ut'])){
-                    Jurnal::create([
+                // Hutang OPP (credit = opp_total - pph)
+                if (!is_null($hp_ref->no_bg_opp)) {
+                    $key = (string)$hp_ref->no_bg_opp;
+                    if (!isset($data_nomor[$key])) {
+                        throw new \Exception("Nomor jurnal untuk BG OPP {$hp_ref->no_bg_opp} belum disiapkan (Hutang OPP).");
+                    }
+                    $jurnalData[] = [
                         'tipe' => 'JNL',
-                        'no_bg' => $item['no_bg_ut'],
-                        'tgl_bg' => $item['tgl_bg_ut'],
-                        'nominal_bg' => $item['nominal_bg_ut'],
-                        'coa_id' => $c31,
-                        'order_id' => $item['order_id'],
-                        'nomor' => $data_nomor[$item['no_bg_ut']]['nomor'],
-                        'relasi' => $data_nomor[$item['no_bg_ut']]['nomor'],
-                        'no' => $data_nomor[$item['no_bg_ut']]['no'],
-                        'nama' => $name,
-                        'debit' => $item[$a],
-                        'credit' => 0,
-                    ]);
-
-                    $ut_total += $item[$a];
+                        'no_bg' => $hp_ref->no_bg_opp,
+                        'tgl_bg' => $hp_ref->tgl_bg_opp,
+                        'nominal_bg' => $hp_ref->nominal_bg_opp,
+                        'coa_id' => $c62,
+                        'order_id' => null,
+                        'nomor' => $data_nomor[$key]['nomor'],
+                        'relasi' => $data_nomor[$key]['nomor'],
+                        'no' => $data_nomor[$key]['no'],
+                        'nama' => 'Hutang OPP ' . ($hp_ref->order->jadwal_kapal->pelayaran->nama ?? '') . ' : ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? '') . ' BG: ' . $hp_ref->no_bg_opp . ' (' . date('d/m/y', strtotime($hp_ref->tgl_bg_opp)) . ')',
+                        'debit' => 0,
+                        'credit' => max(0, $opp_total - ($hp_ref->pph ?? 0)),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
                 }
-            }
-        }
 
-        if($hp->pph>0){
-            Jurnal::create([
-                'tipe' => 'JNL',
-                'no_bg' => $hp->no_bg_opp,
-                'tgl_bg' => $hp->tgl_bg_opp,
-                'nominal_bg' => $hp->nominal_bg_opp,
-                'coa_id' => $c73,
-                'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
-                'relasi' => $data_nomor[$hp->no_bg_opp]['nomor'],
-                'no' => $data_nomor[$hp->no_bg_opp]['no'],
-                'nama' => 'Potongan PPH 23 '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage,
-                'debit' => 0,
-                'credit' => $hp->pph,
-            ]);
-        }
-        if($hp->pembulatan!=0){
-            $opp_total += $hp->pembulatan;
-            Jurnal::create([
-                'tipe' => 'JNL',
-                'no_bg' => $hp->no_bg_opp,
-                'tgl_bg' => $hp->tgl_bg_opp,
-                'nominal_bg' => $hp->nominal_bg_opp,
-                'coa_id' => $c130,
-                'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
-                'relasi' => $data_nomor[$hp->no_bg_opp]['nomor'],
-                'no' => $data_nomor[$hp->no_bg_opp]['no'],
-                'nama' => 'Pembulatan OPP '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage,
-                'debit' => $hp->pembulatan,
-                'credit' => 0,
-            ]);
-        }
-        if (!is_null($hp->no_bg_opp)){
-            Jurnal::create([
-                'tipe' => 'JNL',
-                'no_bg' => $hp->no_bg_opp,
-                'tgl_bg' => $hp->tgl_bg_opp,
-                'nominal_bg' => $hp->nominal_bg_opp,
-                'coa_id' => $c62,
-                'nomor' => $data_nomor[$hp->no_bg_opp]['nomor'],
-                'relasi' => $data_nomor[$hp->no_bg_opp]['nomor'],
-                'no' => $data_nomor[$hp->no_bg_opp]['no'],
-                'nama' => 'Hutang OPP '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opp.' ('.date('d/m/y',strtotime($hp->tgl_bg_opp)).')',
-                'debit' => 0,
-                'credit' => $opp_total - $hp->pph,
-            ]);
-        }
-        if (!is_null($hp->no_bg_opt)) {
-            Jurnal::create([
-                'tipe' => 'JNL',
-                'no_bg' => $hp->no_bg_opt,
-                'tgl_bg' => $hp->tgl_bg_opt,
-                'nominal_bg' => $hp->nominal_bg_opt,
-                'coa_id' => $c62,
-                'nomor' => $data_nomor[$hp->no_bg_opt]['nomor'],
-                'relasi' => $data_nomor[$hp->no_bg_opt]['nomor'],
-                'no' => $data_nomor[$hp->no_bg_opt]['no'],
-                'nama' => 'Hutang OPT '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_opt.' ('.date('d/m/y',strtotime($hp->tgl_bg_opt)).')',
-                'debit' => 0,
-                'credit' => $opt_total,
-            ]);
-        }
-        if (!is_null($hp->no_bg_ut)) {
-            Jurnal::create([
-                'tipe' => 'JNL',
-                'no_bg' => $hp->no_bg_ut,
-                'tgl_bg' => $hp->tgl_bg_ut,
-                'nominal_bg' => $hp->nominal_bg_ut,
-                'coa_id' => $c62,
-                'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                'nama' => 'Hutang UT '.$hp->order->jadwal_kapal->pelayaran->nama.' : '.$hp->order->jadwal_kapal->kapal->nama.' V. '.$hp->order->jadwal_kapal->voyage.' BG: '.$hp->no_bg_ut.' ('.date('d/m/y',strtotime($hp->tgl_bg_ut)).')',
-                'debit' => 0,
-                'credit' => $ut_total + $hp->penambahan_nominal,
-            ]);
-                    if (!is_null($hp->penambahan)) {
-                        if ($hp->penambahan_nominal != 0) {
-                            $coa = (stripos($hp->penambahan, 'pph 23') !== false) ? 73 : $c23;
+                // Hutang OPT
+                if (!is_null($hp_ref->no_bg_opt)) {
+                    $key = (string)$hp_ref->no_bg_opt;
+                    if (!isset($data_nomor[$key])) {
+                        throw new \Exception("Nomor jurnal untuk BG OPT {$hp_ref->no_bg_opt} belum disiapkan (Hutang OPT).");
+                    }
+                    $jurnalData[] = [
+                        'tipe' => 'JNL',
+                        'no_bg' => $hp_ref->no_bg_opt,
+                        'tgl_bg' => $hp_ref->tgl_bg_opt,
+                        'nominal_bg' => $hp_ref->nominal_bg_opt,
+                        'coa_id' => $c62,
+                        'order_id' => null,
+                        'nomor' => $data_nomor[$key]['nomor'],
+                        'relasi' => $data_nomor[$key]['nomor'],
+                        'no' => $data_nomor[$key]['no'],
+                        'nama' => 'Hutang OPT ' . ($hp_ref->order->jadwal_kapal->pelayaran->nama ?? '') . ' : ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? '') . ' BG: ' . $hp_ref->no_bg_opt . ' (' . date('d/m/y', strtotime($hp_ref->tgl_bg_opt)) . ')',
+                        'debit' => 0,
+                        'credit' => $opt_total,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
 
+                // Hutang UT + penambahan_nominal
+                if (!is_null($hp_ref->no_bg_ut)) {
+                    $key = (string)$hp_ref->no_bg_ut;
+                    if (!isset($data_nomor[$key])) {
+                        throw new \Exception("Nomor jurnal untuk BG UT {$hp_ref->no_bg_ut} belum disiapkan (Hutang UT).");
+                    }
+                    $jurnalData[] = [
+                        'tipe' => 'JNL',
+                        'no_bg' => $hp_ref->no_bg_ut,
+                        'tgl_bg' => $hp_ref->tgl_bg_ut,
+                        'nominal_bg' => $hp_ref->nominal_bg_ut,
+                        'coa_id' => $c62,
+                        'order_id' => null,
+                        'nomor' => $data_nomor[$key]['nomor'],
+                        'relasi' => $data_nomor[$key]['nomor'],
+                        'no' => $data_nomor[$key]['no'],
+                        'nama' => 'Hutang UT ' . ($hp_ref->order->jadwal_kapal->pelayaran->nama ?? '') . ' : ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? '') . ' BG: ' . $hp_ref->no_bg_ut . ' (' . date('d/m/y', strtotime($hp_ref->tgl_bg_ut)) . ')',
+                        'debit' => 0,
+                        'credit' => $ut_total + ($hp_ref->penambahan_nominal ?? 0),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
 
-                            if ($hp->penambahan_nominal > 0) {
-                                Jurnal::create([
-                                    'tipe' => 'JNL',
-                                    'no_bg' => $hp->no_bg_ut,
-                                    'tgl_bg' => $hp->tgl_bg_ut,
-                                    'nominal_bg' => $hp->nominal_bg_ut,
-                                    'coa_id' => $coa,
-                                    'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                                    'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                                    'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                                    'nama' => $hp->penambahan,
-                                    'debit' => $hp->penambahan_nominal,
-                                    'credit' => 0,
-                                ]);
-                            } else {
-                                Jurnal::create([
-                                    'tipe' => 'JNL',
-                                    'no_bg' => $hp->no_bg_ut,
-                                    'tgl_bg' => $hp->tgl_bg_ut,
-                                    'nominal_bg' => $hp->nominal_bg_ut,
-                                    'coa_id' => $coa,
-                                    'nomor' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                                    'relasi' => $data_nomor[$hp->no_bg_ut]['nomor'],
-                                    'no' => $data_nomor[$hp->no_bg_ut]['no'],
-                                    'nama' => $hp->penambahan,
-                                    'debit' => 0,
-                                    'credit' => $hp->penambahan_nominal * -1,
-                                ]);
-                            }
+                    // Penambahan (jika ada)
+                    if (!empty($hp_ref->penambahan) && ($hp_ref->penambahan_nominal ?? 0) != 0) {
+                        $coa_for_penambahan = (stripos($hp_ref->penambahan, 'pph 23') !== false) ? $c73 : $c23;
+                        if ($hp_ref->penambahan_nominal > 0) {
+                            $jurnalData[] = [
+                                'tipe' => 'JNL',
+                                'no_bg' => $hp_ref->no_bg_ut,
+                                'tgl_bg' => $hp_ref->tgl_bg_ut,
+                                'nominal_bg' => $hp_ref->nominal_bg_ut,
+                                'coa_id' => $coa_for_penambahan,
+                                'order_id' => null,
+                                'nomor' => $data_nomor[$key]['nomor'],
+                                'relasi' => $data_nomor[$key]['nomor'],
+                                'no' => $data_nomor[$key]['no'],
+                                'nama' => $hp_ref->penambahan,
+                                'debit' => $hp_ref->penambahan_nominal,
+                                'credit' => 0,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
+                        } else {
+                            $jurnalData[] = [
+                                'tipe' => 'JNL',
+                                'no_bg' => $hp_ref->no_bg_ut,
+                                'tgl_bg' => $hp_ref->tgl_bg_ut,
+                                'nominal_bg' => $hp_ref->nominal_bg_ut,
+                                'coa_id' => $coa_for_penambahan,
+                                'order_id' => null,
+                                'nomor' => $data_nomor[$key]['nomor'],
+                                'relasi' => $data_nomor[$key]['nomor'],
+                                'no' => $data_nomor[$key]['no'],
+                                'nama' => $hp_ref->penambahan,
+                                'debit' => 0,
+                                'credit' => $hp_ref->penambahan_nominal * -1,
+                                'created_at' => $now,
+                                'updated_at' => $now,
+                            ];
                         }
                     }
                 }
+            }
 
-        $data = HutangPelayaran::whereIn('id',$ids)->get();
-        foreach ($data as $item) {
-            $opp = Jurnal::where('no_bg',$item->no_bg_opp)->whereIn('tipe',['JNL'])->where('order_id',$item->order_id)->first()->nomor ?? null;
-            $opt = Jurnal::where('no_bg',$item->no_bg_opt)->whereIn('tipe',['JNL'])->where('order_id',$item->order_id)->first()->nomor ?? null;
-            $ut = Jurnal::where('no_bg',$item->no_bg_ut)->whereIn('tipe',['JNL'])->where('order_id',$item->order_id)->first()->nomor ?? null;
-            $item->update([
-                'jurnal_opp' => $opp,
-                'jurnal_opt' => $opt,
-                'jurnal_ut' => $ut,
-            ]);
-        }
+            // Insert bulk semua jurnal
+            if (!empty($jurnalData)) {
+                Jurnal::insert($jurnalData);
+            }
 
-        return redirect()->route('hutang-pelayaran.print',['invoice'=>$code]);
+            // Update field jurnal_opp/opt/ut pada tiap HutangPelayaran (mirip kode lama)
+            $dataHp = HutangPelayaran::whereIn('id', $ids)->get();
+            foreach ($dataHp as $hpItem) {
+                $opp = Jurnal::where('no_bg', $hpItem->no_bg_opp)->where('tipe', 'JNL')->where('order_id', $hpItem->order_id)->first()->nomor ?? null;
+                $opt = Jurnal::where('no_bg', $hpItem->no_bg_opt)->where('tipe', 'JNL')->where('order_id', $hpItem->order_id)->first()->nomor ?? null;
+                $ut = Jurnal::where('no_bg', $hpItem->no_bg_ut)->where('tipe', 'JNL')->where('order_id', $hpItem->order_id)->first()->nomor ?? null;
+                $hpItem->update([
+                    'jurnal_opp' => $opp,
+                    'jurnal_opt' => $opt,
+                    'jurnal_ut' => $ut,
+                ]);
+            }
+        }); // end transaction
+    } catch (\Exception $e) {
+        // Kembalikan error ke user (sama pola return sebelumnya)
+      return redirect()
+    ->route('hutang-pelayaran.index');
     }
+
+    return redirect()->route('hutang-pelayaran.print', ['invoice' => $code]);
+}
+
 
     public function delete(Request $request)
     {
