@@ -8,6 +8,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BTTBController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\COAController;
+use App\Models\Agen;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerTruckingController;
 use App\Http\Controllers\EstimasiController;
@@ -61,6 +62,7 @@ use App\Http\Controllers\UpdateDataController;
 use App\Http\Controllers\LapPelayaranController;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -313,6 +315,13 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('pindah-kapal', [OrderController::class, 'pindah_kapal'])->name('order.pindah_kapal');
     Route::post('order-import', [OrderController::class, 'import'])->name('order.import');
     Route::get('estimasi-biaya', [EstimasiController::class, 'biaya'])->name('estimasi.biaya');
+    Route::get('estimasi-biaya-hpp', [EstimasiController::class, 'hpp'])->name('estimasi.hpp');
+    Route::post('hitung-estimasi-hpp', [EstimasiController::class, 'hitung'])->name('estimasi.hpp.hitung');
+   Route::get('/get-agens', function (Request $request) {
+    return Agen::where('kota', $request->input('lokasi_pelayaran'))
+        ->orderBy('nama')
+        ->get(['id', 'nama']);
+})->name('get.agens');
 
     Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
     Route::get('jurnal/cek-coa', [JurnalController::class, 'j_cekcoa'])->name('jurnal.cekcoa');

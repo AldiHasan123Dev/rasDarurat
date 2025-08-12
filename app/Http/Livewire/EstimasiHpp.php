@@ -44,7 +44,7 @@ class EstimasiHpp extends Component
 
     public function changeTujuan()
     {
-        $this->agens = Agen::where('kota','LIKE','%'.$this->tujuan.'%')->get();
+        $this->agens = Agen::where('kota',$this->tujuan)->get();
         $this->agen = '';
     }
 

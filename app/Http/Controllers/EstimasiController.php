@@ -3,11 +3,172 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Agen;
+use App\Models\Customer;
+use App\Models\Lain;
+use App\Models\Lokasi;
+use App\Models\LSS;
+use App\Models\Pelayaran;
+use App\Models\TarifAgen;
+use App\Models\TarifPelayaran;
+use App\Models\TarifTrucking;
+use App\Models\THC;
 
 class EstimasiController extends Controller
 {
     public function biaya()
     {
         return view('admin.estimasi.biaya');
+    }
+
+    public function hpp(Request $request)
+{
+    $lokasi = Lokasi::orderBy('nama')->get();
+    $pelayarans = Pelayaran::orderBy('nama')->get();
+    $lokasiPelayaran = Lokasi::orderBy('nama')->get();
+    $customers = Customer::orderBy('nama')->get(['id','nama']);
+
+    // Nilai default
+    $cont = 20;
+    $stuffing = 'dalam';
+    $dari = 'PELABUHAN JAYAPURA';
+    $tujuan = 'JAYAPURA';
+    $pelayaranId = 3;
+    $agenId = 1;
+
+    // Filter agen berdasarkan request lokasi_pelayaran (jika ada)
+    $agens = collect(); // kosong default
+    if ($request->filled('lokasi_pelayaran')) {
+        $agens = Agen::where('kota', $request->lokasi_pelayaran)
+            ->orderBy('nama')
+            ->get();
+    }
+
+    return view('admin.estimasi.hpp', compact(
+        'lokasi',
+        'pelayarans',
+        'lokasiPelayaran',
+        'agens',
+        'customers',
+        'cont',
+        'stuffing',
+        'dari',
+        'tujuan',
+        'pelayaranId',
+        'agenId'
+    ));
+}
+
+   public function hitung(Request $request)
+    {
+        $cont       = $request->cont;
+        $stuffing   = $request->stuffing;
+        $dari       = $request->dari;
+        $tujuan     = $request->tujuan;
+        $pelayaran  = $request->pelayaran;
+        $agenId     = $request->agen;
+        $pembayarId = $request->pembayar_id;
+
+        $truk = TarifTrucking::find($dari);
+
+        $lss = LSS::whereHas('lokasi', function ($q) use ($tujuan) {
+            $q->where('nama', 'like', '%' . $tujuan . '%');
+        })->first();
+
+        $thc = THC::whereHas('lokasi', function ($q) use ($tujuan) {
+            $q->where('nama', 'like', '%' . $tujuan . '%');
+        })->first();
+
+        $agen = TarifAgen::where('agen_id', $agenId)
+            ->where('pembayar_id', $pembayarId)
+            ->whereHas('dariInfo', function ($q) use ($dari) {
+                $q->where('nama', $dari);
+            })
+            ->whereHas('tujuanInfo', function ($q) use ($tujuan) {
+                $q->where('nama', $tujuan);
+            })
+            ->where('is_active', 1)
+            ->first();
+
+        $pelayarant = TarifPelayaran::where('pelayaran_id', $pelayaran)
+            ->whereHas('tujuanInfo', function ($q) use ($tujuan) {
+                $q->where('nama', $tujuan);
+            })
+            ->whereHas('port', function ($q) use ($dari) {
+                $q->where('name', $dari);
+            })
+            ->whereHas('shipment', function ($q) use ($cont) {
+                $q->where('nama', 'LIKE', '%' . $cont . '%');
+            })
+            ->whereNull('deleted_at')
+            ->where('is_active', 1)
+            ->first();
+
+        // Stuffing lawan kata
+        $stuffingLawan = $stuffing == 'dalam' ? 'luar' : 'dalam';
+
+        $lain = Lain::where('nama', 'NOT LIKE', '%' . $stuffingLawan . '%')->whereNotNull('urutan')->orderBy('urutan')->get();
+
+        foreach ($lain as $item) {
+    switch ($item->nama) {
+        case 'TRUCKING':
+            $data['TRUCKING'] = $stuffing == 'dalam' ? 0 : ($truk->tarif ?? 0);
+            break;
+
+        case 'AGEN':
+            $data['AGEN'] = $agen->tarif ?? 0;
+            break;
+
+        case 'PELAYARAN':
+            $data['PELAYARAN'] = $pelayarant->tarif ?? 0;
+            break;
+        //  case 'PELAYARAN':
+        //     $data['PELAYARAN'] = $pelayarant->tarif ?? 0;
+        //     break;
+        case 'UT':
+            $data['UT'] = $pelayarant->tarif ?? 0;
+            break;
+        case 'LSS':
+            $data['LSS'] = $cont == 20 ? ($lss->cont_20??0) : ($lss->cont_40??0);
+            break;
+        case 'THC TUJUAN':
+            $data['THC TUJUAN'] = $cont == 20 ? ($thc->cont_20??0) : ($thc->cont_40??0);
+            break;
+        case 'THC STUFF DALAM (SBY)':
+            if (stripos($dari, 'SURABAYA') !== false) {
+                // Kalau ada kata "surabaya" di $dari
+                $data['THC STUFF DALAM (SBY)'] = $cont == 20 ? ($item->cont_20 ?? 0) : ($item->cont_40 ?? 0);
+            } else {
+                // Kalau tidak ada kata "surabaya"
+                $data['THC STUFF DALAM (SBY)'] = 0;
+            }
+        break;
+        default:
+            $data[$item->nama] = $cont == 20 ? ($item->cont_20 ?? 0) : ($item->cont_40 ?? 0);
+            break;
+    }
+}
+
+        $hpp = array_sum($data);
+        $r   = $cont == 20 ? 600000 : 1300000;
+        $margin = $hpp > 0 ? ($r / $hpp * 100) : 0;
+        $total  = $r + $hpp;
+        $pph    = $total * 0.02;
+        $totalPph = $pph + $total;
+        $ppn    = $totalPph * 0.01;
+        $totalPpn = $ppn + $totalPph;
+
+        return response()->json([
+            'active'      => true,
+            'data'        => $data,
+            'hpp'         => $hpp,
+            'r'           => $r,
+            'margin'      => $margin,
+            'total'       => $total,
+            'pph'         => $pph,
+            'total_pph'   => $totalPph,
+            'ppn'         => $ppn,
+            'total_ppn'   => $totalPpn,
+        ]);
     }
 }

@@ -17,6 +17,7 @@ class Lain extends Model
         'cont_20',
         'cont_40',
         'keterangan',
+        'urutan',
     ];
 
     protected static function booted()
