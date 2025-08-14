@@ -120,7 +120,7 @@ class EstimasiController extends Controller
             break;
 
         case 'Door/ Agen':
-            $data['Door/Agen'] = $agen->tarif ?? 0;
+            $data['Door/ Agen'] = $agen->tarif ?? 0;
             break;
 
         case 'Kirim Dokumen':
