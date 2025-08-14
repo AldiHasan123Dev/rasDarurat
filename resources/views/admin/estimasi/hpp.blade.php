@@ -305,7 +305,7 @@ function updateTableHpp(res, r) {
     let total = r + res.hpp;
     let pph = Math.round(total * 0.02);
     let total_pph = Math.round(total + pph);
-    let ppn = Math.round(total_pph * 0.01);
+    let ppn = Math.round(total_pph * 1.1);
     let total_ppn = Math.round(total_pph + ppn);
 
     $("#hpp-val").html(`<b>${res.hpp.toLocaleString()}</b>`);
