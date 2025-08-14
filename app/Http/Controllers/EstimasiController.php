@@ -119,12 +119,12 @@ class EstimasiController extends Controller
             $data['TRUCKING'] = $stuffing == 'dalam' ? 0 : ($truk->tarif ?? 0);
             break;
 
-        case 'Door/Agen':
+        case 'Door/ Agen':
             $data['Door/Agen'] = $agen->tarif ?? 0;
             break;
 
-        case 'KIRIM DOKUMEN':
-            $data['KIRIM DOKUMEN'] = $kirimDok->harga ?? 0;
+        case 'Kirim Dokumen':
+            $data['Kirim Dokumen'] = $kirimDok->harga ?? 0;
             break;
 
         case 'PELAYARAN':
@@ -139,8 +139,8 @@ class EstimasiController extends Controller
         case 'LSS':
             $data['LSS'] = $cont == 20 ? ($lss->cont_20??0) : ($lss->cont_40??0);
             break;
-        case 'THC TUJUAN':
-            $data['THC TUJUAN'] = $cont == 20 ? ($thc->cont_20??0) : ($thc->cont_40??0);
+        case 'THC Tujuan':
+            $data['THC Tujuan'] = $cont == 20 ? ($thc->cont_20??0) : ($thc->cont_40??0);
             break;
         case 'THC STUFF DALAM (SBY)':
             if (stripos($dari, 'SURABAYA') !== false) {
