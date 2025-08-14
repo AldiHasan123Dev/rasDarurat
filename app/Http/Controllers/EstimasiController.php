@@ -83,9 +83,6 @@ class EstimasiController extends Controller
         $agen = TarifAgen::where('agen_id', $agenId)
             ->where('pembayar_id', (int)$pembayarId)
             ->where('penerima_id', (int)$penerimaId)
-            ->whereHas('dariInfo', function ($q) use ($dari) {
-                $q->where('nama', $dari);
-            })
             ->whereHas('tujuanInfo', function ($q) use ($tujuan) {
                 $q->where('nama', $tujuan);
             })
