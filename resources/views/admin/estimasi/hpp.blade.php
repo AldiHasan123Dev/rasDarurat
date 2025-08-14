@@ -34,6 +34,15 @@
                         <option value="40">40'</option>
                     </select>
                 </div>
+                 <div class="mb-2">
+                    <label>Pelayaran</label>
+                    <select class="form-control" id="pelayaran">
+                        <option value="">Pilih Pelayaran</option>
+                        @foreach ($pelayarans as $item)
+                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="mb-2">
                     <label>Stuffing</label>
                     <select class="form-control" id="stuffing">
@@ -60,15 +69,6 @@
                     </select>
                 </div>
                 <div class="mb-2">
-                    <label>Pelayaran</label>
-                    <select class="form-control" id="pelayaran">
-                        <option value="">Pilih Pelayaran</option>
-                        @foreach ($pelayarans as $item)
-                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="mb-2">
                     <label>Agen</label>
                     <select class="form-control" id="agen">
                         <option value="">Pilih Agen</option>
@@ -77,19 +77,19 @@
                         @endforeach
                     </select>
                 </div>
-              <div class="mb-2">
-                    <label>Penerima</label>
-                    <select class="form-control" id="penerima_id">
-                        <option value="">Pilih Penerima</option>
+                 <div class="mb-2">
+                    <label>Pembayar</label>
+                    <select class="form-control" id="pembayar_id">
+                        <option value="">Pilih Pembayar</option>
                         @foreach ($customers as $item)
                             <option value="{{ $item->id }}">{{ $item->nama }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="mb-2">
-                    <label>Pembayar</label>
-                    <select class="form-control" id="pembayar_id">
-                        <option value="">Pilih Pembayar</option>
+              <div class="mb-2">
+                    <label>Penerima</label>
+                    <select class="form-control" id="penerima_id">
+                        <option value="">Pilih Penerima</option>
                         @foreach ($customers as $item)
                             <option value="{{ $item->id }}">{{ $item->nama }}</option>
                         @endforeach
@@ -192,12 +192,13 @@ function renderTabelKiriSplit(res) {
     let keys = Object.keys(res.data);
     let half = 14; // ambil 14 item di kolom kiri
 
-    // TABEL KIRI (tidak ada jumlah)
+    // TABEL KIRI
     let tableLeft = `<table class="table table-sm table-bordered border border-dark">`;
     for (let i = 0; i < Math.min(half, keys.length); i++) {
         let key = keys[i];
+        let highlight = key.toUpperCase().includes("POD") ? 'style="background-color: yellow;"' : "";
         tableLeft += `
-            <tr>
+            <tr ${highlight}>
                 <td>${key}</td>
                 <td>
                     <input type="number" class="px-3 py-1 text-end biaya-input" 
@@ -209,12 +210,13 @@ function renderTabelKiriSplit(res) {
     tableLeft += `</table>`;
     $("#col-data-left").html(tableLeft);
 
-    // TABEL KANAN (ada jumlah total semua item)
+    // TABEL KANAN
     let tableRight = `<table class="table table-sm table-bordered border border-dark">`;
     for (let i = half; i < keys.length; i++) {
         let key = keys[i];
+        let highlight = key.toUpperCase().includes("POD") ? 'style="background-color: yellow;"' : "";
         tableRight += `
-            <tr>
+            <tr ${highlight}>
                 <td>${key}</td>
                 <td>
                     <input type="number" class="px-3 py-1 text-end biaya-input" 
@@ -241,6 +243,7 @@ function renderTabelKiriSplit(res) {
 
     updateJumlah();
 }
+
 
 function updateJumlah() {
     let keys = Object.keys(window.hppData.data);
