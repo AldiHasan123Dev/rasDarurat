@@ -71,6 +71,7 @@ class EstimasiController extends Controller
         $penerimaId = $request->penerima_id;
 
         $truk = TarifTrucking::find($dari);
+       $conts = ($cont == 20) ? '20' : (($cont == 40) ? '40' : $cont);
 
         $lss = LSS::whereHas('lokasi', function ($q) use ($tujuan) {
             $q->where('nama', 'like', '%' . $tujuan . '%');
@@ -79,7 +80,7 @@ class EstimasiController extends Controller
         $thc = THC::whereHas('lokasi', function ($q) use ($tujuan) {
             $q->where('nama', 'like', '%' . $tujuan . '%');
         })->first();
-
+        
         $agen = TarifAgen::where('agen_id', $agenId)
             ->where('pembayar_id', (int)$pembayarId)
             ->where('penerima_id', (int)$penerimaId)
@@ -88,6 +89,9 @@ class EstimasiController extends Controller
             })
             ->whereHas('tujuanInfo', function ($q) use ($tujuan) {
                 $q->where('nama', $tujuan);
+            })
+             ->whereHas('shipment', function ($q) use ($cont) {
+                $q->where('nama', 'LIKE', '%' . $cont . '%');
             })
             ->where('is_active', 1)
             ->first();
