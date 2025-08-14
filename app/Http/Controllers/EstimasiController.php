@@ -44,8 +44,21 @@ class EstimasiController extends Controller
             ->get();
     }
 
+    $penerima = collect(); // kosong default
+    if ($request->filled('penerima')) {
+       $agenIds = TarifAgen::where('agen_id', $request->input('penerima'))
+        ->whereNotNull('penerima_id')
+        ->where('is_active', 1)
+        ->pluck('penerima_id');
+
+    // Ambil data penerima dari tabel customers
+    $penerima = Customer::whereIn('id', $agenIds)
+        ->get(['id', 'nama']);
+    }
+
     return view('admin.estimasi.hpp', compact(
         'lokasi',
+        'penerima',
         'pelayarans',
         'lokasiPelayaran',
         'agens',
@@ -166,8 +179,8 @@ class EstimasiController extends Controller
         $total  = $r + $hpp;
         $pph    = $total * 0.02;
         $totalPph = $pph + $total;
-        $ppn    = $totalPph * 1.1;
-        $totalPpn = $ppn + $totalPph;
+        $ppn    = round($totalPph * 0.011);
+        $totalPpn =round($ppn + $totalPph);
 
         return response()->json([
             'active'      => true,

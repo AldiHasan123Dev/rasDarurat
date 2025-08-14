@@ -90,7 +90,7 @@
                     <label>Penerima</label>
                     <select class="form-control" id="penerima_id">
                         <option value="">Pilih Penerima</option>
-                        @foreach ($customers as $item)
+                        @foreach ($penerima as $item)
                             <option value="{{ $item->id }}">{{ $item->nama }}</option>
                         @endforeach
                     </select>
@@ -308,7 +308,7 @@ function updateTableHpp(res, r) {
     let total = r + res.hpp;
     let pph = Math.round(total * 0.02);
     let total_pph = Math.round(total + pph);
-    let ppn = Math.round(total_pph * 1.1);
+    let ppn = Math.round(total_pph * 0.011 );
     let total_ppn = Math.round(total_pph + ppn);
 
     $("#hpp-val").html(`<b>${res.hpp.toLocaleString()}</b>`);
