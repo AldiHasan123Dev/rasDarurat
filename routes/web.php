@@ -54,6 +54,8 @@ use App\Http\Controllers\TemplateJurnalItemController;
 use App\Http\Controllers\THCController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\TruckingController;
+use App\Models\Customer;
+use App\Models\TarifAgen;
 use App\Http\Controllers\TrukController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderBiayaController;
@@ -322,6 +324,20 @@ Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::cla
         ->orderBy('nama')
         ->get(['id', 'nama']);
 })->name('get.agens');
+
+Route::get('/get-penerima-agens', function (Request $request) {
+    // Ambil semua penerima_id dari agen di kota tertentu
+    $agenIds = TarifAgen::where('agen_id', $request->input('penerima'))
+        ->whereNotNull('penerima_id')
+        ->where('is_active', 1)
+        ->pluck('penerima_id');
+
+    // Ambil data penerima dari tabel customers
+    $penerima = Customer::whereIn('id', $agenIds)
+        ->get(['id', 'nama']);
+
+    return $penerima;
+})->name('get.penerima');
 
     Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
     Route::get('jurnal/cek-coa', [JurnalController::class, 'j_cekcoa'])->name('jurnal.cekcoa');

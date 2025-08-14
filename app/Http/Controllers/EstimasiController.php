@@ -68,6 +68,7 @@ class EstimasiController extends Controller
         $pelayaran  = $request->pelayaran;
         $agenId     = $request->agen;
         $pembayarId = $request->pembayar_id;
+        $penerimaId = $request->penerima_id;
 
         $truk = TarifTrucking::find($dari);
 
@@ -80,7 +81,8 @@ class EstimasiController extends Controller
         })->first();
 
         $agen = TarifAgen::where('agen_id', $agenId)
-            ->where('pembayar_id', $pembayarId)
+            ->where('pembayar_id', (int)$pembayarId)
+            ->where('penerima_id', (int)$penerimaId)
             ->whereHas('dariInfo', function ($q) use ($dari) {
                 $q->where('nama', $dari);
             })
@@ -89,6 +91,8 @@ class EstimasiController extends Controller
             })
             ->where('is_active', 1)
             ->first();
+        
+        $kirimDok = Lokasi::where('nama', $tujuan)->first();
 
         $pelayarant = TarifPelayaran::where('pelayaran_id', $pelayaran)
             ->whereHas('tujuanInfo', function ($q) use ($tujuan) {
@@ -115,8 +119,12 @@ class EstimasiController extends Controller
             $data['TRUCKING'] = $stuffing == 'dalam' ? 0 : ($truk->tarif ?? 0);
             break;
 
-        case 'AGEN':
-            $data['AGEN'] = $agen->tarif ?? 0;
+        case 'Door/Agen':
+            $data['Door/Agen'] = $agen->tarif ?? 0;
+            break;
+
+        case 'KIRIM DOKUMEN':
+            $data['KIRIM DOKUMEN'] = $kirimDok->harga ?? 0;
             break;
 
         case 'PELAYARAN':

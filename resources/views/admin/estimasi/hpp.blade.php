@@ -5,6 +5,18 @@
             font-size: .8rem;
             padding: 3px 4px !important;
         }
+
+        #hpp-container {
+    display: flex;
+    gap: 20px; /* jarak antar kolom */
+    align-items: flex-start; /* biar sejajar di atas */
+}
+#col-data-left, #col-data-right, #col-hpp {
+    flex: 1;
+}
+.table-sm td, .table-sm th {
+    padding: 0.3rem;
+}
     </style>
 @endsection
 @section('content')
@@ -65,6 +77,15 @@
                         @endforeach
                     </select>
                 </div>
+              <div class="mb-2">
+                    <label>Penerima</label>
+                    <select class="form-control" id="penerima_id">
+                        <option value="">Pilih Penerima</option>
+                        @foreach ($customers as $item)
+                            <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="mb-2">
                     <label>Pembayar</label>
                     <select class="form-control" id="pembayar_id">
@@ -77,9 +98,14 @@
                 <button type="button" id="btnHitung" class="btn btn-primary btn-sm w-100">Hitung</button>
             </div>
 
-            <!-- Hasil -->
-            <div class="col-md-4" id="col-data"></div>
-            <div class="col-md-4" id="col-hpp"></div>
+    <!-- Kolom kiri (form + tabel kiri) -->
+    <div id="col-data-left"></div>
+    
+    <!-- Kolom kanan untuk sisa biaya -->
+    <div id="col-data-right"></div>
+    
+    <!-- Kolom HPP -->
+    <div id="col-hpp"></div>
         </div>
     </div>
 </div>
@@ -95,21 +121,35 @@
         $("#tujuan").select2();
         $("#agen").select2();
         $("#pembayar_id").select2();
+        $("#penerima_id").select2();
 
         $('#tujuan').on('change', function() {
     let lokasi = $(this).val();
 
     $.get("{{ route('get.agens') }}", { lokasi_pelayaran: lokasi }, function(data) {
-        let options = '';
+        let options = '<option value="">Pilih Agen</option>';
         data.forEach(function(agen) {
             options += `<option value="${agen.id}">${agen.nama}</option>`;
         });
         $('#agen').html(options);
     });
 });
-let hppTableRendered = false; // cek apakah tabel HPP sudah pernah dibuat
-let lastR = 0; // simpan nilai R terakhir
-let lastMargin = 0; // simpan margin terakhir
+
+$('#agen').on('change', function() {
+let agen = $(this).val();
+
+   $.get("{{ route('get.penerima') }}", { penerima: agen }, function(data) {
+       let options = '';
+       data.forEach(function(penerima) {
+           options += `<option value="${penerima.id}">${penerima.nama}</option>`;
+       });
+       $('#penerima_id').html(options);
+   });
+   });
+
+let hppTableRendered = false;
+let lastR = 0;
+let lastMargin = 0;
 
 $("#btnHitung").on("click", function () {
     $.ajax({
@@ -123,31 +163,19 @@ $("#btnHitung").on("click", function () {
             tujuan: $("#tujuan").val(),
             pelayaran: $("#pelayaran").val(),
             agen: $("#agen").val(),
-            pembayar_id: $("#pembayar_id").val()
+            pembayar_id: $("#pembayar_id").val(),
+            penerima_id: $("#penerima_id").val()
         },
         success: function (res) {
             if (res.active) {
-                // render tabel data kiri
-                let tableData = `<table class="table table-sm table-bordered border border-dark">`;
-                for (let key in res.data) {
-                    tableData += `
-                        <tr>
-                            <td>${key}</td>
-                            <td><input type="number" class="px-3 py-1 text-end" value="${res.data[key]}"></td>
-                        </tr>`;
-                }
-                tableData += `<tr class="text-end"><td><b>Jumlah</b></td><td><b>${res.total.toLocaleString()}</b></td></tr>`;
-                tableData += `</table>`;
-                $("#col-data").html(tableData);
-
-                // simpan data awal
                 window.hppData = res;
+
+                renderTabelKiriSplit(res);
 
                 if (!hppTableRendered) {
                     renderTableHppInitial(res);
                     hppTableRendered = true;
                 } else {
-                    // update nilai R dari server hanya jika user belum mengisi
                     if (!$("#inputR").is(":focus")) {
                         $("#inputR").val(res.r ?? lastR ?? 0);
                     }
@@ -159,6 +187,75 @@ $("#btnHitung").on("click", function () {
         }
     });
 });
+
+function renderTabelKiriSplit(res) {
+    let keys = Object.keys(res.data);
+    let half = 14; // ambil 14 item di kolom kiri
+
+    // TABEL KIRI (tidak ada jumlah)
+    let tableLeft = `<table class="table table-sm table-bordered border border-dark">`;
+    for (let i = 0; i < Math.min(half, keys.length); i++) {
+        let key = keys[i];
+        tableLeft += `
+            <tr>
+                <td>${key}</td>
+                <td>
+                    <input type="number" class="px-3 py-1 text-end biaya-input" 
+                           data-key="${key}" 
+                           value="${res.data[key]}">
+                </td>
+            </tr>`;
+    }
+    tableLeft += `</table>`;
+    $("#col-data-left").html(tableLeft);
+
+    // TABEL KANAN (ada jumlah total semua item)
+    let tableRight = `<table class="table table-sm table-bordered border border-dark">`;
+    for (let i = half; i < keys.length; i++) {
+        let key = keys[i];
+        tableRight += `
+            <tr>
+                <td>${key}</td>
+                <td>
+                    <input type="number" class="px-3 py-1 text-end biaya-input" 
+                           data-key="${key}" 
+                           value="${res.data[key]}">
+                </td>
+            </tr>`;
+    }
+    tableRight += `<tr class="text-end">
+        <td><b>Jumlah</b></td>
+        <td id="jumlah-val-right"><b>0</b></td>
+    </tr>`;
+    tableRight += `</table>`;
+    $("#col-data-right").html(tableRight);
+
+    // Listener dinamis
+    $(".biaya-input").on("input", function () {
+        let key = $(this).data("key");
+        let val = parseFloat($(this).val()) || 0;
+        window.hppData.data[key] = val;
+        updateJumlah();
+        updateTableHpp(window.hppData, lastR);
+    });
+
+    updateJumlah();
+}
+
+function updateJumlah() {
+    let keys = Object.keys(window.hppData.data);
+    let totalAll = 0;
+
+    for (let i = 0; i < keys.length; i++) {
+        totalAll += parseFloat(window.hppData.data[keys[i]]) || 0;
+    }
+
+    // Hanya update jumlah di tabel kanan
+    $("#jumlah-val-right").html(`<b>${totalAll.toLocaleString()}</b>`);
+
+    // Simpan ke HPP supaya perhitungan lanjut tetap benar
+    window.hppData.hpp = totalAll;
+}
 
 function renderTableHppInitial(res) {
     let tableHpp = `
@@ -182,13 +279,13 @@ function renderTableHppInitial(res) {
                 <td><b>PPH (2%)</b></td><td id="pph-val"><b>${res.pph.toLocaleString()}</b></td>
             </tr>
             <tr class="text-end bg-light-warning">
-                <td><b>Include PPH</b></td><td id="total-pph-val"><b>${res.total_pph.toLocaleString()}</b></td>
+                <td><b>Include PPH (Tarif Excl. PPN)</b></td><td id="total-pph-val"><b>${res.total_pph.toLocaleString()}</b></td>
             </tr>
             <tr class="text-end bg-light-danger">
-                <td><b>PPN (1%)</b></td><td id="ppn-val"><b>${res.ppn.toLocaleString()}</b></td>
+                <td><b>PPN (1.1%)</b></td><td id="ppn-val"><b>${res.ppn.toLocaleString()}</b></td>
             </tr>
             <tr class="text-end bg-light-danger">
-                <td><b>Include PPN</b></td><td id="total-ppn-val"><b>${res.total_ppn.toLocaleString()}</b></td>
+                <td><b>Tarif Include PPN</b></td><td id="total-ppn-val"><b>${res.total_ppn.toLocaleString()}</b></td>
             </tr>
         </table>
     `;
