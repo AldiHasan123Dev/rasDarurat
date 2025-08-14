@@ -162,7 +162,7 @@ class EstimasiController extends Controller
         $total  = $r + $hpp;
         $pph    = $total * 0.02;
         $totalPph = $pph + $total;
-        $ppn    = $totalPph * 0.01;
+        $ppn    = $totalPph * 1.1;
         $totalPpn = $ppn + $totalPph;
 
         return response()->json([
