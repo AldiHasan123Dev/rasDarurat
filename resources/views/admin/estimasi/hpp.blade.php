@@ -163,21 +163,18 @@
 
     // Ambil data dari tabel kiri
     if ($("#col-data-left").length) {
-        allData.push(["=== Biaya Kiri ==="]);
         allData = allData.concat(tableToArray("#col-data-left"));
         allData.push([]); // baris kosong pemisah
     }
 
     // Ambil data dari tabel kanan
     if ($("#col-data-right").length) {
-        allData.push(["=== Biaya Kanan ==="]);
         allData = allData.concat(tableToArray("#col-data-right"));
         allData.push([]);
     }
 
     // Ambil data dari tabel HPP
     if ($("#col-hpp").length) {
-        allData.push(["=== HPP ==="]);
         allData = allData.concat(tableToArray("#col-hpp"));
         allData.push([]);
     }
