@@ -654,10 +654,10 @@
                                     </p>
                                     @if ($allin['total'] >= 5000000)
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                             style="width: 200px; height:104px; margin-left: 1px;">
+                                             style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
                                     @else
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                             style="width: 200px; height:104px; margin-left: 1px;">
+                                             style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
                                     @endif
                                     <br>
                                     ({{ $invoice_name }})
@@ -1453,10 +1453,10 @@
                                     </p>
                                     @if ($invoice['total'] >= 5000000)
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                            style="width: 200px; height:104px; margin-left: 1px;">
+                                            style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
                                     @else
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                            style="width: 200px; height:104px; margin-left: 1px;">
+                                            style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
                                     @endif
                                     <br>
                                     ({{ $invoice_name }})

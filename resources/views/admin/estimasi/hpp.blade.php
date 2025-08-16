@@ -50,19 +50,22 @@
                         <option value="luar">LUAR</option>
                     </select>
                 </div>
-                <div class="mb-2">
-                    <label>Dari</label>
+               <div class="mb-2">
+                    <label>Pelabuhan Awal</label>
                     <select class="form-control" id="dari">
-                        <option value="">Pilih Lokasi Dari</option>
+                        <option value="">Pilih Pelabuhan Awal</option>
                         @foreach ($lokasi as $item)
-                            <option value="{{ $item->nama }}">{{ $item->nama }}</option>
+                            <option value="{{ $item->nama }}" 
+                                {{ strtolower($item->nama) == 'surabaya' ? 'selected' : '' }}>
+                                {{ $item->nama }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
                 <div class="mb-2">
-                    <label>Tujuan</label>
+                    <label>Pelabuhan Tujuan</label>
                     <select class="form-control" id="tujuan">
-                        <option value="">Pilih Tujuan</option>
+                        <option value="">Pilih Pelabuhan Tujuan</option>
                         @foreach ($lokasiPelayaran as $item)
                             <option value="{{ $item->nama }}">{{ $item->nama }}</option>
                         @endforeach
@@ -113,213 +116,236 @@
 @endsection
 
 @section('script')
-    <script>
-        $("#pelayaran").select2();
-        $("#stuffing").select2();
-        $("#cont").select2();
-        $("#dari").select2();
-        $("#tujuan").select2();
-        $("#agen").select2();
-        $("#pembayar_id").select2();
-        $("#penerima_id").select2();
+<script>
+    $("#pelayaran").select2();
+    $("#stuffing").select2();
+    $("#cont").select2();
+    $("#dari").select2();
+    $("#tujuan").select2();
+    $("#agen").select2();
+    $("#pembayar_id").select2();
+    $("#penerima_id").select2();
 
-        $('#tujuan').on('change', function() {
-    let lokasi = $(this).val();
-
-    $.get("{{ route('get.agens') }}", { lokasi_pelayaran: lokasi }, function(data) {
-        let options = '<option value="">Pilih Agen</option>';
-        data.forEach(function(agen) {
-            options += `<option value="${agen.id}">${agen.nama}</option>`;
+    $('#tujuan').on('change', function() {
+        let lokasi = $(this).val();
+        $.get("{{ route('get.agens') }}", { lokasi_pelayaran: lokasi }, function(data) {
+            let options = '<option value="">Pilih Agen</option>';
+            data.forEach(function(agen) {
+                options += `<option value="${agen.id}">${agen.nama}</option>`;
+            });
+            $('#agen').html(options);
         });
-        $('#agen').html(options);
     });
-});
 
-$('#agen').on('change', function() {
-let agen = $(this).val();
+    $('#agen').on('change', function() {
+        let agen = $(this).val();
+        $.get("{{ route('get.penerima') }}", { penerima: agen }, function(data) {
+            let options = '';
+            data.forEach(function(penerima) {
+                options += `<option value="${penerima.id}">${penerima.nama}</option>`;
+            });
+            $('#penerima_id').html(options);
+        });
+    });
 
-   $.get("{{ route('get.penerima') }}", { penerima: agen }, function(data) {
-       let options = '';
-       data.forEach(function(penerima) {
-           options += `<option value="${penerima.id}">${penerima.nama}</option>`;
-       });
-       $('#penerima_id').html(options);
-   });
-   });
+    let hppTableRendered = false;
+    let lastR = 0;
+    let lastMargin = 0;
 
-let hppTableRendered = false;
-let lastR = 0;
-let lastMargin = 0;
+    $("#btnHitung").on("click", function () {
+        $.ajax({
+            url: "{{ route('estimasi.hpp.hitung') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                cont: $("#cont").val(),
+                stuffing: $("#stuffing").val(),
+                dari: $("#dari").val(),
+                tujuan: $("#tujuan").val(),
+                pelayaran: $("#pelayaran").val(),
+                agen: $("#agen").val(),
+                pembayar_id: $("#pembayar_id").val(),
+                penerima_id: $("#penerima_id").val()
+            },
+            success: function (res) {
+                if (res.active) {
+                    window.hppData = res;
 
-$("#btnHitung").on("click", function () {
-    $.ajax({
-        url: "{{ route('estimasi.hpp.hitung') }}",
-        method: "POST",
-        data: {
-            _token: "{{ csrf_token() }}",
-            cont: $("#cont").val(),
-            stuffing: $("#stuffing").val(),
-            dari: $("#dari").val(),
-            tujuan: $("#tujuan").val(),
-            pelayaran: $("#pelayaran").val(),
-            agen: $("#agen").val(),
-            pembayar_id: $("#pembayar_id").val(),
-            penerima_id: $("#penerima_id").val()
-        },
-        success: function (res) {
-            if (res.active) {
-                window.hppData = res;
+                    renderTabelKiriSplit(res);
 
-                renderTabelKiriSplit(res);
-
-                if (!hppTableRendered) {
-                    renderTableHppInitial(res);
-                    hppTableRendered = true;
-                } else {
-                    if (!$("#inputR").is(":focus")) {
-                        $("#inputR").val(res.r ?? lastR ?? 0);
+                    if (!hppTableRendered) {
+                        renderTableHppInitial(res);
+                        hppTableRendered = true;
+                    } else {
+                        if (!$("#inputR").is(":focus")) {
+                            $("#inputR").val(formatNumber(res.r ?? lastR ?? 0));
+                        }
+                        let currentR = parseFloat(removeFormat($("#inputR").val())) || lastR || 0;
+                        lastR = currentR;
+                        updateTableHpp(res, currentR);
                     }
-                    let currentR = parseFloat($("#inputR").val()) || lastR || 0;
-                    lastR = currentR;
-                    updateTableHpp(res, currentR);
                 }
             }
+        });
+    });
+
+    // --- Utility untuk format angka ---
+    function formatNumber(num) {
+        return Number(num).toLocaleString();
+    }
+    function removeFormat(str) {
+        return str.toString().replace(/,/g, "");
+    }
+
+    function renderTabelKiriSplit(res) {
+        let keys = Object.keys(res.data);
+        let half = 14; // ambil 14 item di kolom kiri
+
+        // TABEL KIRI
+        let tableLeft = `<table class="table table-sm table-bordered border border-dark">`;
+        for (let i = 0; i < Math.min(half, keys.length); i++) {
+            let key = keys[i];
+            let highlight = key.toUpperCase().includes("POD") ? 'style="background-color: yellow;"' : "";
+            tableLeft += `
+                <tr ${highlight}>
+                    <td>${key}</td>
+                    <td>
+                        <input type="text" class="px-3 py-1 text-end biaya-input" 
+                               data-key="${key}" 
+                               value="${formatNumber(res.data[key])}">
+                    </td>
+                </tr>`;
         }
-    });
-});
+        tableLeft += `</table>`;
+        $("#col-data-left").html(tableLeft);
 
-function renderTabelKiriSplit(res) {
-    let keys = Object.keys(res.data);
-    let half = 14; // ambil 14 item di kolom kiri
+        // TABEL KANAN
+        let tableRight = `<table class="table table-sm table-bordered border border-dark">`;
+        for (let i = half; i < keys.length; i++) {
+            let key = keys[i];
+            let highlight = key.toUpperCase().includes("POD") ? 'style="background-color: yellow;"' : "";
+            tableRight += `
+                <tr ${highlight}>
+                    <td>${key}</td>
+                    <td>
+                        <input type="text" class="px-3 py-1 text-end biaya-input" 
+                               data-key="${key}" 
+                               value="${formatNumber(res.data[key])}">
+                    </td>
+                </tr>`;
+        }
+        tableRight += `<tr class="text-end">
+            <td><b>Jumlah</b></td>
+            <td id="jumlah-val-right"><b>0</b></td>
+        </tr>`;
+        tableRight += `</table>`;
+        $("#col-data-right").html(tableRight);
 
-    // TABEL KIRI
-    let tableLeft = `<table class="table table-sm table-bordered border border-dark">`;
-    for (let i = 0; i < Math.min(half, keys.length); i++) {
-        let key = keys[i];
-        let highlight = key.toUpperCase().includes("POD") ? 'style="background-color: yellow;"' : "";
-        tableLeft += `
-            <tr ${highlight}>
-                <td>${key}</td>
-                <td>
-                    <input type="number" class="px-3 py-1 text-end biaya-input" 
-                           data-key="${key}" 
-                           value="${res.data[key]}">
-                </td>
-            </tr>`;
-    }
-    tableLeft += `</table>`;
-    $("#col-data-left").html(tableLeft);
+        // Listener dinamis format angka
+        $(".biaya-input").on("focus", function () {
+            $(this).val(removeFormat($(this).val())); // tampilkan angka mentah
+        });
 
-    // TABEL KANAN
-    let tableRight = `<table class="table table-sm table-bordered border border-dark">`;
-    for (let i = half; i < keys.length; i++) {
-        let key = keys[i];
-        let highlight = key.toUpperCase().includes("POD") ? 'style="background-color: yellow;"' : "";
-        tableRight += `
-            <tr ${highlight}>
-                <td>${key}</td>
-                <td>
-                    <input type="number" class="px-3 py-1 text-end biaya-input" 
-                           data-key="${key}" 
-                           value="${res.data[key]}">
-                </td>
-            </tr>`;
-    }
-    tableRight += `<tr class="text-end">
-        <td><b>Jumlah</b></td>
-        <td id="jumlah-val-right"><b>0</b></td>
-    </tr>`;
-    tableRight += `</table>`;
-    $("#col-data-right").html(tableRight);
+        $(".biaya-input").on("blur", function () {
+            let val = parseFloat(removeFormat($(this).val())) || 0;
+            $(this).val(formatNumber(val));
+        });
 
-    // Listener dinamis
-    $(".biaya-input").on("input", function () {
-        let key = $(this).data("key");
-        let val = parseFloat($(this).val()) || 0;
-        window.hppData.data[key] = val;
+        $(".biaya-input").on("input", function () {
+            let key = $(this).data("key");
+            let val = parseFloat(removeFormat($(this).val())) || 0;
+            window.hppData.data[key] = val;
+            updateJumlah();
+            updateTableHpp(window.hppData, lastR);
+        });
+
         updateJumlah();
-        updateTableHpp(window.hppData, lastR);
-    });
-
-    updateJumlah();
-}
-
-
-function updateJumlah() {
-    let keys = Object.keys(window.hppData.data);
-    let totalAll = 0;
-
-    for (let i = 0; i < keys.length; i++) {
-        totalAll += parseFloat(window.hppData.data[keys[i]]) || 0;
     }
 
-    // Hanya update jumlah di tabel kanan
-    $("#jumlah-val-right").html(`<b>${totalAll.toLocaleString()}</b>`);
+    function updateJumlah() {
+        let keys = Object.keys(window.hppData.data);
+        let totalAll = 0;
 
-    // Simpan ke HPP supaya perhitungan lanjut tetap benar
-    window.hppData.hpp = totalAll;
-}
+        for (let i = 0; i < keys.length; i++) {
+            totalAll += parseFloat(window.hppData.data[keys[i]]) || 0;
+        }
 
-function renderTableHppInitial(res) {
-    let tableHpp = `
-        <table class="table table-sm table-bordered border border-dark">
-            <tr class="text-end bg-light-info">
-                <td><b>HPP</b></td><td id="hpp-val"><b>${res.hpp.toLocaleString()}</b></td>
-            </tr>
-            <tr class="text-end bg-light-info">
-                <td><b>Margin</b></td><td id="margin-val"><b>${res.margin.toFixed(2)}</b></td>
-            </tr>
-            <tr class="text-end bg-light-info">
-                <td></td>
-                <td>
-                    <input type="number" id="inputR" class="py-1 w-100 text-end" value="${res.r ?? 0}">
-                </td>
-            </tr>
-            <tr class="text-end">
-                <td><b>TOTAL</b></td><td id="total-val"><b>${res.total.toLocaleString()}</b></td>
-            </tr>
-            <tr class="text-end bg-light-warning">
-                <td><b>PPH (2%)</b></td><td id="pph-val"><b>${res.pph.toLocaleString()}</b></td>
-            </tr>
-            <tr class="text-end bg-light-warning">
-                <td><b>Include PPH (Tarif Excl. PPN)</b></td><td id="total-pph-val"><b>${res.total_pph.toLocaleString()}</b></td>
-            </tr>
-            <tr class="text-end bg-light-danger">
-                <td><b>PPN (1.1%)</b></td><td id="ppn-val"><b>${res.ppn.toLocaleString()}</b></td>
-            </tr>
-            <tr class="text-end bg-light-danger">
-                <td><b>Tarif Include PPN</b></td><td id="total-ppn-val"><b>${res.total_ppn.toLocaleString()}</b></td>
-            </tr>
-        </table>
-    `;
-    $("#col-hpp").html(tableHpp);
+        // Hanya update jumlah di tabel kanan
+        $("#jumlah-val-right").html(`<b>${formatNumber(totalAll)}</b>`);
 
-    $("#inputR").off("input").on("input", function () {
-        let rVal = parseFloat($(this).val()) || 0;
-        lastR = rVal;
-        updateTableHpp(window.hppData, rVal);
-    });
-}
+        // Simpan ke HPP supaya perhitungan lanjut tetap benar
+        window.hppData.hpp = totalAll;
+    }
 
-function updateTableHpp(res, r) {
-    let margin = res.hpp > 0 ? (r / res.hpp) * 100 : lastMargin;
-    if (r > 0) lastMargin = margin;
+    function renderTableHppInitial(res) {
+        let tableHpp = `
+            <table class="table table-sm table-bordered border border-dark">
+                <tr class="text-end bg-light-info">
+                    <td><b>HPP</b></td><td id="hpp-val"><b>${formatNumber(res.hpp)}</b></td>
+                </tr>
+                <tr class="text-end bg-light-info">
+                    <td><b>Margin</b></td><td id="margin-val"><b>${res.margin.toFixed(2)}</b></td>
+                </tr>
+                <tr class="text-end bg-light-info">
+                    <td></td>
+                    <td>
+                        <input type="text" id="inputR" class="py-1 w-100 text-end" value="${formatNumber(res.r ?? 0)}">
+                    </td>
+                </tr>
+                <tr class="text-end">
+                    <td><b>TOTAL</b></td><td id="total-val"><b>${formatNumber(res.total)}</b></td>
+                </tr>
+                <tr class="text-end bg-light-warning">
+                    <td><b>PPH (2%)</b></td><td id="pph-val"><b>${formatNumber(res.pph)}</b></td>
+                </tr>
+                <tr class="text-end bg-light-warning">
+                    <td><b>Include PPH (Tarif Excl. PPN)</b></td><td id="total-pph-val"><b>${formatNumber(res.total_pph)}</b></td>
+                </tr>
+                <tr class="text-end bg-light-danger">
+                    <td><b>PPN (1.1%)</b></td><td id="ppn-val"><b>${formatNumber(res.ppn)}</b></td>
+                </tr>
+                <tr class="text-end bg-light-danger">
+                    <td><b>Tarif Include PPN</b></td><td id="total-ppn-val"><b>${formatNumber(res.total_ppn)}</b></td>
+                </tr>
+            </table>
+        `;
+        $("#col-hpp").html(tableHpp);
 
-    let total = r + res.hpp;
-    let pph = Math.round(total * 0.02);
-    let total_pph = Math.round(total + pph);
-    let ppn = Math.round(total_pph * 0.011 );
-    let total_ppn = Math.round(total_pph + ppn);
+        // Format inputR dengan pemisah ribuan
+        $("#inputR").on("focus", function () {
+            $(this).val(removeFormat($(this).val()));
+        });
 
-    $("#hpp-val").html(`<b>${res.hpp.toLocaleString()}</b>`);
-    $("#margin-val").html(`<b>${margin.toFixed(2)}</b>`);
-    $("#total-val").html(`<b>${total.toLocaleString()}</b>`);
-    $("#pph-val").html(`<b>${pph.toLocaleString()}</b>`);
-    $("#total-pph-val").html(`<b>${total_pph.toLocaleString()}</b>`);
-    $("#ppn-val").html(`<b>${ppn.toLocaleString()}</b>`);
-    $("#total-ppn-val").html(`<b>${total_ppn.toLocaleString()}</b>`);
-}
+        $("#inputR").on("blur", function () {
+            let val = parseFloat(removeFormat($(this).val())) || 0;
+            $(this).val(formatNumber(val));
+        });
 
-    </script>
+        $("#inputR").off("input").on("input", function () {
+            let rVal = parseFloat(removeFormat($(this).val())) || 0;
+            lastR = rVal;
+            updateTableHpp(window.hppData, rVal);
+        });
+    }
+
+    function updateTableHpp(res, r) {
+        let margin = res.hpp > 0 ? (r / res.hpp) * 100 : lastMargin;
+        if (r > 0) lastMargin = margin;
+
+        let total = r + res.hpp;
+        let pph = Math.round(total * 0.02);
+        let total_pph = Math.round(total + pph);
+        let ppn = Math.round(total_pph * 0.011 );
+        let total_ppn = Math.round(total_pph + ppn);
+
+        $("#hpp-val").html(`<b>${formatNumber(res.hpp)}</b>`);
+        $("#margin-val").html(`<b>${margin.toFixed(2)}</b>`);
+        $("#total-val").html(`<b>${formatNumber(total)}</b>`);
+        $("#pph-val").html(`<b>${formatNumber(pph)}</b>`);
+        $("#total-pph-val").html(`<b>${formatNumber(total_pph)}</b>`);
+        $("#ppn-val").html(`<b>${formatNumber(ppn)}</b>`);
+        $("#total-ppn-val").html(`<b>${formatNumber(total_ppn)}</b>`);
+    }
+</script>
 @endsection
 
