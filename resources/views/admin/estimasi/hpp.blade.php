@@ -99,6 +99,7 @@
                     </select>
                 </div>
                 <button type="button" id="btnHitung" class="btn btn-primary btn-sm w-100">Hitung</button>
+                 <button type="button" id="btnExport" class="btn btn-success btn-sm w-100 mt-2">Export Excel</button>
             </div>
 
     <!-- Kolom kiri (form + tabel kiri) -->
@@ -116,6 +117,7 @@
 @endsection
 
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
     $("#pelayaran").select2();
     $("#stuffing").select2();
@@ -125,6 +127,71 @@
     $("#agen").select2();
     $("#pembayar_id").select2();
     $("#penerima_id").select2();
+
+   $("#btnExport").on("click", function () {
+    if (typeof XLSX === "undefined") {
+        alert("Library XLSX belum ter-load.");
+        return;
+    }
+
+    // Fungsi untuk ambil isi tabel (dengan input diganti value) → array of arrays
+    function tableToArray(selector) {
+        let table = document.querySelector(selector);
+        if (!table) return [];
+
+        let data = [];
+        table.querySelectorAll("tr").forEach(tr => {
+            let row = [];
+            tr.querySelectorAll("th, td").forEach(td => {
+                let input = td.querySelector("input, select, textarea");
+                if (input) {
+                    if (input.type === "checkbox") {
+                        row.push(input.checked ? "✔" : "");
+                    } else {
+                        row.push(input.value || "");
+                    }
+                } else {
+                    row.push(td.innerText.trim());
+                }
+            });
+            data.push(row);
+        });
+        return data;
+    }
+
+    let allData = [];
+
+    // Ambil data dari tabel kiri
+    if ($("#col-data-left").length) {
+        allData.push(["=== Biaya Kiri ==="]);
+        allData = allData.concat(tableToArray("#col-data-left"));
+        allData.push([]); // baris kosong pemisah
+    }
+
+    // Ambil data dari tabel kanan
+    if ($("#col-data-right").length) {
+        allData.push(["=== Biaya Kanan ==="]);
+        allData = allData.concat(tableToArray("#col-data-right"));
+        allData.push([]);
+    }
+
+    // Ambil data dari tabel HPP
+    if ($("#col-hpp").length) {
+        allData.push(["=== HPP ==="]);
+        allData = allData.concat(tableToArray("#col-hpp"));
+        allData.push([]);
+    }
+
+    // Buat workbook & worksheet
+    let wb = XLSX.utils.book_new();
+    let ws = XLSX.utils.aoa_to_sheet(allData);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Estimasi HPP");
+
+    // Simpan file
+    XLSX.writeFile(wb, "Estimasi_HPP.xlsx");
+});
+
 
     $('#tujuan').on('change', function() {
         let lokasi = $(this).val();
