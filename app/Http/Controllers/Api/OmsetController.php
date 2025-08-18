@@ -870,11 +870,11 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     $ids = array_slice($id, request('start'), request('end'));
     $end = request('start') + request('end');
 
-    $orders = Order::whereIn('id', $ids)
+    $orders = Order::whereIn('id', $id)
         ->where('lock_omset', 1)
         ->get();
 
-    $jurnals = Jurnal::whereIn('order_id', $ids)
+    $jurnals = Jurnal::whereIn('order_id', $id)
                 ->where('debit', '>', 0)
                 ->pluck('id');
     $month = request('month');
