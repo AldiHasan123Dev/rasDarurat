@@ -823,15 +823,11 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                         foreach ($j_->jurnal_balik_data as $item) {
                             if ($item->credit == 0) {
                                 $item->update([
-                                    'debit' => $j_->credit,
-                                    'no' => $balik->no,
-                                    'nomor' => $balik->nomor
+                                    'debit' => $j_->credit
                                 ]);
                             } else {
                                 $item->update([
-                                    'credit' => $j_->credit,
-                                    'no' => $balik->no,
-                                    'nomor' => $balik->nomor
+                                    'credit' => $j_->credit
                                 ]);
                                 $col_id[] = $item->id;
                             }
@@ -980,14 +976,10 @@ $valid_jurnal_ids = array_combine($ids, $ids);
                             if ($item->debit == 0) {
                                 $item->update([
                                     'credit' => $j_->debit,
-                                    'no'     => $balik->no,
-                                    'nomor'  => $balik->nomor
                                 ]);
                             } else {
                                 $item->update([
                                     'debit' => $j_->debit,
-                                    'no'    => $balik->no,
-                                    'nomor' => $balik->nomor
                                 ]);
                                 $col_id[] = $item->id;
                             }
