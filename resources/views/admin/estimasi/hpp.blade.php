@@ -342,55 +342,63 @@
     }
 
     function renderTableHppInitial(res) {
-        let tableHpp = `
-            <table class="table table-sm table-bordered border border-dark">
-                <tr class="text-end bg-light-info">
-                    <td><b>HPP</b></td><td id="hpp-val"><b>${formatNumber(res.hpp)}</b></td>
-                </tr>
-                <tr class="text-end bg-light-info">
-                    <td><b>Margin</b></td><td id="margin-val"><b>${res.margin.toFixed(2)}</b></td>
-                </tr>
-                <tr class="text-end bg-light-info">
-                    <td></td>
-                    <td>
-                        <input type="text" id="inputR" class="py-1 w-100 text-end" value="${formatNumber(res.r ?? 0)}">
-                    </td>
-                </tr>
-                <tr class="text-end">
-                    <td><b>TOTAL</b></td><td id="total-val"><b>${formatNumber(res.total)}</b></td>
-                </tr>
-                <tr class="text-end bg-light-warning">
-                    <td><b>PPH (2%)</b></td><td id="pph-val"><b>${formatNumber(res.pph)}</b></td>
-                </tr>
-                <tr class="text-end bg-light-warning">
-                    <td><b>Include PPH (Tarif Excl. PPN)</b></td><td id="total-pph-val"><b>${formatNumber(res.total_pph)}</b></td>
-                </tr>
-                <tr class="text-end bg-light-danger">
-                    <td><b>PPN (1.1%)</b></td><td id="ppn-val"><b>${formatNumber(res.ppn)}</b></td>
-                </tr>
-                <tr class="text-end bg-light-danger">
-                    <td><b>Tarif Include PPN</b></td><td id="total-ppn-val"><b>${formatNumber(res.total_ppn)}</b></td>
-                </tr>
-            </table>
-        `;
-        $("#col-hpp").html(tableHpp);
+    let tableHpp = `
+        <table class="table table-sm table-bordered border border-dark">
+            <tr class="text-end bg-light-info">
+                <td><b>HPP</b></td><td id="hpp-val"><b>${formatNumber(res.hpp)}</b></td>
+            </tr>
+            <tr class="text-end bg-light-info">
+                <td><b>Margin</b></td><td id="margin-val"><b>${res.margin.toFixed(2)}</b></td>
+            </tr>
+            <tr class="text-end bg-light-info">
+                <td></td>
+                <td>
+                    <input type="text" id="inputR" class="py-1 w-100 text-end" 
+                           value="${formatNumber(res.r ?? 0)}">
+                </td>
+            </tr>
+            <tr class="text-end">
+                <td><b>TOTAL</b></td><td id="total-val"><b>${formatNumber(res.total)}</b></td>
+            </tr>
+            <tr class="text-end bg-light-warning">
+                <td><b>PPH (2%)</b></td><td id="pph-val"><b>${formatNumber(res.pph)}</b></td>
+            </tr>
+            <tr class="text-end bg-light-warning">
+                <td><b>Include PPH (Tarif Excl. PPN)</b></td><td id="total-pph-val"><b>${formatNumber(res.total_pph)}</b></td>
+            </tr>
+            <tr class="text-end bg-light-danger">
+                <td><b>PPN (1.1%)</b></td><td id="ppn-val"><b>${formatNumber(res.ppn)}</b></td>
+            </tr>
+            <tr class="text-end bg-light-danger">
+                <td><b>Tarif Include PPN</b></td><td id="total-ppn-val"><b>${formatNumber(res.total_ppn)}</b></td>
+            </tr>
+        </table>
+    `;
+    $("#col-hpp").html(tableHpp);
 
-        // Format inputR dengan pemisah ribuan
-        $("#inputR").on("focus", function () {
-            $(this).val(removeFormat($(this).val()));
-        });
+    // 🟢 FIX: set nilai awal lastR
+    lastR = parseFloat(removeFormat($("#inputR").val())) || 0;
 
-        $("#inputR").on("blur", function () {
-            let val = parseFloat(removeFormat($(this).val())) || 0;
-            $(this).val(formatNumber(val));
-        });
+    // Format inputR
+    $("#inputR").on("focus", function () {
+        $(this).val(removeFormat($(this).val()));
+    });
 
-        $("#inputR").off("input").on("input", function () {
-            let rVal = parseFloat(removeFormat($(this).val())) || 0;
-            lastR = rVal;
-            updateTableHpp(window.hppData, rVal);
-        });
-    }
+    $("#inputR").on("blur", function () {
+        let val = parseFloat(removeFormat($(this).val())) || 0;
+        $(this).val(formatNumber(val));
+    });
+
+    $("#inputR").off("input").on("input", function () {
+        let rVal = parseFloat(removeFormat($(this).val())) || 0;
+        lastR = rVal;
+        updateTableHpp(window.hppData, rVal);
+    });
+
+    // 🟢 FIX: langsung update margin & total pertama kali
+    updateTableHpp(res, lastR);
+}
+
 
     function updateTableHpp(res, r) {
         let margin = res.hpp > 0 ? (r / res.hpp) * 100 : lastMargin;
