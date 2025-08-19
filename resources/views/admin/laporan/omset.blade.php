@@ -443,7 +443,7 @@ table.dataTable tbody > tr.selected1 td {
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops_pod ?? '[]')) }}
                                                 </a>
-                                            </td>
+                                            </td> 
                                             <td id="j_truck_pod-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_truck_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->truck_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_truck_pod ?? '[]')) }}
