@@ -49,10 +49,16 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         return 'DetailFaktur'; // ganti sesuai kebutuhan
     }
 
-   public function array(): array
+  public function array(): array
 {
     $data = [];
-    $transaksis = Transaksi::with('pembayar', 'orderInfo.tarif.shipmentInfo', 'orderInfo.tarif.tujuan_lokasi', 'orderInfo.tarif.dari_lokasi', 'orderInfo.tarif.kondisiInfo')
+    $transaksis = Transaksi::with([
+            'pembayar',
+            'orderInfo.tarif.shipmentInfo',
+            'orderInfo.tarif.tujuan_lokasi',
+            'orderInfo.tarif.dari_lokasi',
+            'orderInfo.tarif.kondisiInfo'
+        ])
         ->whereBetween('created_at', [$this->start, $this->end])
         ->orderBy('created_at')
         ->get();
@@ -60,76 +66,91 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
     $rowNumber = 1;
 
     foreach ($transaksis as $item) {
-        $kondisi = $item->orderInfo->tarif->kondisiInfo->id ?? null;
-        $kodeBarangJasa = $item->keterangan;
         $Invoice = $item->invoice;
-        $countInvoice = Order::where('invoice', $Invoice)->count();
-        $tarifAsli = $item->orderInfo->tarif->tarif ?? 0;
 
-        // Atur harga satuan: kurangi 500000 jika kondisi BUKAN 1 atau 6
-        if (in_array($kondisi, [1, 6])) {
-            $hargaSatuan = $tarifAsli - 500000;
-            $dpp = $hargaSatuan * $countInvoice;
-            $ppn = number_format($dpp * 1.1 / 100 , 2, '.', '');
-        } else {
-            $hargaSatuan = $tarifAsli;
-            $dpp = number_format($item->sub_total, 2, '.', '');
-            $ppn = number_format($dpp * 1.1 / 100, 2, '.', '');
-        }
-        $NamaSatuan =  'UM.0030';
-        $shipments = $item->orderInfo->tarif->shipmentInfo->id ?? 0;
-        if ($shipments === 19 || $shipments === 13 || $shipments === 11 ){
-             $NamaSatuan =  'UM.0033';
-        }
+        // Ambil semua order per invoice, group by tarif_id
+        $orders = Order::with('tarif.shipmentInfo', 'tarif.kondisiInfo')
+            ->where('invoice', $Invoice)
+            ->get()
+            ->groupBy('tarif_id');
 
-        $row = [
-            $rowNumber,
-            'B',
-            '060000',
-            $kodeBarangJasa,
-            $NamaSatuan,
-            $hargaSatuan,
-            $countInvoice,
-            '0.00',
-            $dpp,
-            $dpp,
-            12,
-            $ppn,
-            '0.00',
-            '0.00',
-        ];
+        foreach ($orders as $tarifId => $ordersGroup) {
+            $firstOrder = $ordersGroup->first();
+            $kondisi    = $firstOrder->tarif->kondisiInfo->id ?? null;
+            $kodeBarangJasa = $item->keterangan;
+            $tarifAsli  = $firstOrder->tarif->tarif ?? 0;
+            $jumlahContainer = $ordersGroup->count();
 
-        $data[] = $row;
+            // Atur harga satuan
+            if (in_array($kondisi, [1, 6])) {
+                $hargaSatuan = $tarifAsli - 500000;
+                $dpp = $hargaSatuan * $jumlahContainer;
+                $ppn = number_format($dpp * 0.11, 2, '.', ''); 
+            } else {
+                $hargaSatuan = $tarifAsli;
+                $dpp = $hargaSatuan * $jumlahContainer;
+                $ppn = number_format($dpp * 0.11, 2, '.', '');
+            }
 
-        // Tambahkan baris kedua jika kondisi terpenuhi
-        if (in_array($kondisi, [1, 6])) {
-            $hargaSatuan = 500000;
-            $dpp1 = $hargaSatuan * $countInvoice;
-            $ppn1 = number_format($dpp1 * 1.1 / 100 , 2, '.', '');
-            $extraRow = [
-                $rowNumber,
+            // Tentukan Nama Satuan berdasarkan shipment
+            $NamaSatuan = 'UM.0030';
+            $shipments = $firstOrder->tarif->shipmentInfo->id ?? 0;
+            if (in_array($shipments, [19, 13, 11])) {
+                $NamaSatuan = 'UM.0033';
+            }
+
+            // Row utama
+            $row = [
+                $rowNumber, // nomor sama untuk semua tarif_id dalam invoice ini
                 'B',
                 '060000',
-                'Jasa Ekspedisi', // misalnya beri pembeda
+                $kodeBarangJasa,
                 $NamaSatuan,
                 $hargaSatuan,
-                $countInvoice,
+                $jumlahContainer,
                 '0.00',
-                $dpp1,
-                $dpp1,
+                $dpp,
+                $dpp,
                 12,
-                $ppn1,
+                $ppn,
                 '0.00',
                 '0.00',
             ];
-            $data[] = $extraRow;
+            $data[] = $row;
+
+            // Tambahkan baris kedua jika kondisi [1,6]
+            if (in_array($kondisi, [1, 6])) {
+                $hargaSatuan = 500000;
+                $dpp1 = $hargaSatuan * $jumlahContainer;
+                $ppn1 = number_format($dpp1 * 0.11, 2, '.', '');
+                $extraRow = [
+                    $rowNumber,
+                    'B',
+                    '060000',
+                    'Jasa Ekspedisi',
+                    $NamaSatuan,
+                    $hargaSatuan,
+                    $jumlahContainer,
+                    '0.00',
+                    $dpp1,
+                    $dpp1,
+                    12,
+                    $ppn1,
+                    '0.00',
+                    '0.00',
+                ];
+                $data[] = $extraRow;
+            }
         }
 
+        // setelah selesai semua tarif_id di invoice ini → naikkan nomor
         $rowNumber++;
     }
+
     $data[] = ['END'];
     return $data;
 }
+
 
 
 
