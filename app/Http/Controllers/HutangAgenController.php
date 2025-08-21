@@ -350,9 +350,10 @@ class HutangAgenController extends Controller
     $firstRecord = $invoice_group->first();
 
     // Hitung ulang total_tagihan_agen hanya untuk invoice ini
-    $total_tagihan_agen = $tagihan_agen
-        ->where('order_id', $firstRecord->order_id)
-        ->sum('jumlah') ?? 0;
+$order_ids = $invoice_group->pluck('order_id'); // semua order_id dalam invoice ini
+$total_tagihan_agen = $tagihan_agen
+    ->whereIn('order_id', $order_ids)
+    ->sum('jumlah') ?? 0;
 
     // PPH 23
     Jurnal::create([
