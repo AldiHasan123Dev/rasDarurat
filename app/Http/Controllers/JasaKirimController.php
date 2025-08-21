@@ -111,7 +111,7 @@ class JasaKirimController extends Controller
     public function generateJurnal(Request $request)
     {
         $no1 = $request->nomor;
-        $no = explode('/', $no1)[0];
+        $no = $request->no;
         $jasa_kirim_id = JasaKirim::where('invoice',$request->invoice)->pluck('id')->toArray();
         $order_id = Order::whereIn('jasa_kirim_id',$jasa_kirim_id)->pluck('id')->toArray();
         $generate_jurnal = $this->check_omset($order_id);

@@ -64,17 +64,19 @@
                                 @endphp
                                 <div>
                                     @csrf
-                                    <input type="hidden" name="no" id="no" value="{{ old('no', '') }}">
                                     <input type="hidden" name="invoice" value="{{ request('invoice') }}">
                                     <div class="d-flex gap-3">
                                         <div class="mb-2">
                                             <label for="nomor">Nomor Jurnal</label>
-                                            <select name="nomor" id="nomor" class="form-select" required>
-                                                <option value="" selected>Pilih Nomor Jurnal</option>
-                                                <option value="{{ $no1 }}">{{ $no1 }}</option>
-                                                <option value="{{ $no2 }}">{{ $no2 }}</option>
-                                                <option value="{{ $no3 }}">{{ $no3 }}</option>
-                                            </select>
+                                           <select name="nomor" id="nomor" class="form-select" required>
+    <option value="{{ $no1 }}" data-raw="{{ $no_1 }}" selected>{{ $no1 }}</option>
+<option value="{{ $no2 }}" data-raw="{{ $no_2 }}">{{ $no2 }}</option>
+<option value="{{ $no3 }}" data-raw="{{ $no_3 }}">{{ $no3 }}</option>
+
+</select>
+
+<input type="hidden" name="no" id="no" value="">
+
                                         </div>
                                         <div class="mb-2">
                                             <label for="created_at">Tanggal Jurnal</label>
@@ -161,21 +163,20 @@
         </div>
     </div>
 </div>
-<script>
-   $(document).ready(function () {
-        // Pastikan untuk menangani event 'change' pada dropdown #nomor
-        $('#nomor').on('change', function () {
-            var selectedNomor = $(this).val();  // Ambil nilai yang dipilih
-            console.log('Selected Nomor:', selectedNomor);  // Untuk debugging
-            $('#no').val(selectedNomor);  // Update nilai hidden input 'no' sesuai pilihan
-        });
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        // Untuk memastikan nilai input hidden 'no' tetap sesuai ketika halaman dimuat
-        var selectedValue = $('#nomor').val();
-        if (selectedValue) {
-            $('#no').val(selectedValue);
-        }
+<script>
+$(document).ready(function () {
+    $('#nomor').on('change', function () {
+        var rawNo = $(this).find(':selected').data('raw');
+        $('#no').val(rawNo);
     });
+
+    // Trigger sekali di awal supaya default langsung masuk
+    $('#nomor').trigger('change');
+});
+
+
 </script>
 
 @endsection
