@@ -18,6 +18,7 @@
                                 <th>Agen</th>
                                 <th>#</th>
                                 <th>JOB</th>
+                                <th>Invoice</th>
                                 <th>Pembayar</th>
                                 <th>Container</th>
                                 <th>Seal</th>
@@ -30,10 +31,15 @@
                                 @foreach ($agen_id as $order)
                                     <tr>
                                         @if ($loop->first)
-                                        <td class="fw-bold" rowspan="{{ $agen_id->count() }}">{{ $agen_id->first()->agent->nama }}</td>
+                                            <td class="fw-bold" rowspan="{{ $agen_id->count() }}">
+                                                {{ $agen_id->first()->agent->nama }}
+                                            </td>
                                         @endif
-                                        <td><input type="checkbox" name="order_id[]" id="{{ $order->id }}" value="{{ $order->id }}"></td>
-                                        <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
+                                        <td>
+                                            <input type="checkbox" name="order_id[]" id="order-{{ $order->id }}" value="{{ $order->id }}">
+                                        </td>
+                                        <td>{{ $order->job }}-{{ sprintf('%02d', $order->no_job) }}</td>
+                                        <td>{{ $order->invoice ?? '-' }}</td>
                                         <td>{{ $order->tarif->customer->nama }}</td>
                                         <td>{{ $order->container }}</td>
                                         <td>{{ $order->seal }}</td>
