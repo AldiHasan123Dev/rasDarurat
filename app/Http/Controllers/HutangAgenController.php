@@ -31,7 +31,7 @@ class HutangAgenController extends Controller
         $q->whereIn('id', [5, 7]); // filter kondisi lewat tarif
     })
     ->whereNull('invoice_agen')
-    ->whereYear('created_at', '>=', 2024)
+    ->whereYear('created_at', '>=', 2025)
     ->with(['agent', 'tarif.kondisiInfo']) // eager load relasi biar efisien
     ->get()
     ->groupBy('agen_id');
