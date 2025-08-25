@@ -229,6 +229,21 @@
         .select2-selection__arrow {
             height: 36px !important;
         }
+
+        .card .card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.card .fw-bold {
+    font-size: 1.3rem;
+}
+
+#total-tarif {
+    transition: all 0.3s ease-in-out;
+}
+
     </style>
 @endsection
 @section('content')
@@ -241,12 +256,13 @@
                         <button class="py-2 px-3 btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit" id="btn-edit"><i class="fas fa-pencil"></i> Edit</button>
                     </div> --}}
                 </div>
-                <div class="card-body">
-                    {{-- <div class="d-flex justify-content-center">
-                        <img src="{{ asset('assets/img/loading.gif') }}" alt="Loading" class="img-fluid" id="loading" style="height:300px">
-                    </div> --}}
-                    <div class="card-select-container">
-                        <div>
+                <div class="row mb-3">
+    <!-- Filter -->
+    <div class="col-md-9">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="row g-2 align-items-end">
+   <div class="col-md-3">
                             <label for="lokasi" class="label-biru">Tujuan</label>
                             <select id="lokasi" name="lokasi" class="select2 input-select">
                                 <option value="">-- Pilih Tujuan --</option>
@@ -255,7 +271,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div>
+                          <div class="col-md-3">
                            <label for="lokasi" class="label-biru">Pembayar</label>
                            <select id="pembayar" name="pembayar" class="select2 input-select">
                                <option value="">-- Pilih Pembayar --</option>
@@ -264,18 +280,7 @@
                                @endforeach
                            </select>
                        </div>
-
-                       <div>
-                           <label for="lokasi" class="label-biru">CS</label>
-                           <select id="cs" name="cs" class="select2 input-select">
-                               <option value="">-- Pilih CS --</option>
-                               @foreach ($role as $row)
-                                   <option value="{{ $row->name }}">{{ $row->name }}</option>
-                               @endforeach
-                           </select>
-                       </div>
-
-                        <div>
+                         <div class="col-md-2">
                            <label for="lokasi" class="label-biru">Marketing</label>
                            <select id="marketing" name="marketing" class="select2 input-select">
                                <option value="">-- Pilih Marketing --</option>
@@ -285,10 +290,37 @@
                            </select>
                        </div>
 
-                        <button class="btn btn-primary h-100" type="button" id="btn-filter">
-                            <i class="fa fa-search"></i> Cari
+                         <div class="col-md-2">
+                           <label for="lokasi" class="label-biru">CS</label>
+                           <select id="cs" name="cs" class="select2 input-select">
+                               <option value="">-- Pilih CS --</option>
+                               @foreach ($role as $row)
+                                   <option value="{{ $row->name }}">{{ $row->name }}</option>
+                               @endforeach
+                           </select>
+                       </div>
+
+                    <div class="col-md-2 d-flex">
+                        <button id="btn-filter" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Cari
                         </button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Total Tarif -->
+<div class="col-md-3">
+        <div class="card-body text-center p-5">
+            <h6 class="text-muted mb-2" style="font-size: 1rem;">Total Tarif</h6>
+            <h3 class="fw-bold text-success mb-0" style="font-size: 1.6rem;">
+                Rp <span id="total-tarif" style="font-size: 1.5rem;">0</span>
+            </h3>
+        </div>
+</div>
+
+
                     <div class="table-responsives">
                         <table id="jqGrid"></table>
                         <div id="jqGridPager"></div>
@@ -437,24 +469,39 @@
                     label: 'ba_kembali'
                 },
                 {
-                    name: 'tarif',
-                    label: 'tarif'
+                    name: 'tarif1',
+                    label: 'tarif',
+                    align: 'right',
+                    formatter: 'number',
+                    formatoptions: {
+                        decimalSeparator: ".",
+                        thousandsSeparator: ",",
+                        decimalPlaces: 2,
+                        defaultValue: "0.00"
+                    }
                 },
             ],
             autowidth: true,
             shrinkToFit: true,
             oadonce: true,
             height: 'auto',
-            rowNum: 25,
-            rowList: [25, 100, 250, 500, 1000],
+  rowNum: 9999999,
+    pager: false,        // tidak pakai pager
+    pgbuttons: false,    // sembunyikan tombol prev/next
+    pginput: false,      // sembunyikan input halaman
             viewrecords: true,
             pager: "#jqGridPager",
             caption: "Job Belum Inv",
-            onCellSelect: function(rowId, iRow, iCol, e) {
-                id = $(this).jqGrid('getCell', rowId, 'id');
-                let no = $(this).jqGrid('getCell', rowId, 'no');
-                let jurnal_piutang = $(this).jqGrid('getCell', rowId, 'jurnal_piutang');
-            },
+             loadComplete: function(data) {
+        let sum = 0;
+        let ids = $(this).jqGrid('getDataIDs');
+        for (let i = 0; i < ids.length; i++) {
+            let rowData = $(this).jqGrid('getRowData', ids[i]);
+            let val = parseFloat(rowData.tarif1.replace(/,/g, '')) || 0;
+            sum += val;
+        }
+        $("#total-tarif").text(sum.toLocaleString('en-US'));
+    },
             rowattr: function(item) {
                 return {
                     "class": item.class
@@ -468,5 +515,7 @@
         const rp = (num) => {
             return num.toLocaleString('en-US');
         }
+
+
     </script>
 @endsection

@@ -240,30 +240,31 @@ if (request('ba_kembali_null')) {
             $query->where('order.komisi', '>', 0)->whereNull('order.tgl_komisi')->whereNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
 
-    if (request('inv_null')) {
-    $query->whereNull('order.invoice')
-    ->when(request('cs'), function ($q) {
-        $q->whereHas('tarif.customer.cs', function ($c) {
-            $c->where('name', 'like', '%' . request('cs') . '%');
+            if (request('inv_null')) {
+            $query->whereNull('order.invoice')
+            ->when(request('cs'), function ($q) {
+                $q->whereHas('tarif.customer.cs', function ($c) {
+                    $c->where('name', 'like', '%' . request('cs') . '%');
 
-        });
-    })
-    ->when(request('marketing'), function ($q) {
-        $q->whereHas('tarif.customer.marketing', function ($m) {
-            $m->where('name', 'like', '%' . request('marketing') . '%');
-        });
-    })
-    ->when(request('pembayars'), function ($q) {
-        $q->whereHas('tarif.customer', function ($p) {
-            $p->where('nama', 'like', '%' . request('pembayars') . '%');
-        });
-    })
-    ->when(request('tujuans'), function ($q) { 
-        $q->whereHas('tarif.tujuan_lokasi', function ($l) {
-            $l->where('nama', 'like', '%' . request('tujuans') . '%');
-        });
-    });
-}
+                });
+            })
+            ->when(request('marketing'), function ($q) {
+                $q->whereHas('tarif.customer.marketing', function ($m) {
+                    $m->where('name', 'like', '%' . request('marketing') . '%');
+                });
+            })
+            ->when(request('pembayars'), function ($q) {
+                $q->whereHas('tarif.customer', function ($p) {
+                    $p->where('nama', 'like', '%' . request('pembayars') . '%');
+                });
+            })
+            ->when(request('tujuans'), function ($q) { 
+                $q->whereHas('tarif.tujuan_lokasi', function ($l) {
+                    $l->where('nama', 'like', '%' . request('tujuans') . '%');
+                });
+            });
+            
+        }
 
 
         if (request('input_komisi')) {
@@ -491,18 +492,55 @@ if (request('ba_kembali_null')) {
             });
         }
 
-        if ($sidx) {
-            if ($sidx == 'pembayar') {
-                $query->select('order.*', 'customers.nama as pembayar');
-                $data = $query->orderBy('pembayar', $sord)->orderBy('order.job')->orderBy('order.no_job')->skip($start)->take($limit)->get();
-            } else {
-                $query->select('order.*');
-                $data = $query->orderBy('job')->orderBy('no_job')->skip($start)->take($limit)->get();
-            }
+       if ($sidx) {
+    if ($sidx == 'pembayar') {
+        $query->select('order.*', 'customers.nama as pembayar');
+
+        if ($request->has('inv_null')) {
+            // ambil semua data kalau ada inv_null
+            $data = $query->orderBy('pembayar', $sord)
+                          ->orderBy('order.job')
+                          ->orderBy('order.no_job')
+                          ->get();
         } else {
-            $query->select('order.*');
-            $data = $query->orderBy('job')->orderBy('no_job')->skip($start)->take($limit)->get();
+            $data = $query->orderBy('pembayar', $sord)
+                          ->orderBy('order.job')
+                          ->orderBy('order.no_job')
+                          ->skip($start)
+                          ->take($limit)
+                          ->get();
         }
+    } else {
+        $query->select('order.*');
+
+        if ($request->has('inv_null')) {
+            $data = $query->orderBy('job')
+                          ->orderBy('no_job')
+                          ->get();
+        } else {
+            $data = $query->orderBy('job')
+                          ->orderBy('no_job')
+                          ->skip($start)
+                          ->take($limit)
+                          ->get();
+        }
+    }
+} else {
+    $query->select('order.*');
+
+    if (request('inv_null')) {
+        $data = $query->orderBy('job')
+                      ->orderBy('no_job')
+                      ->get();
+    } else {
+        $data = $query->orderBy('job')
+                      ->orderBy('no_job')
+                      ->skip($start)
+                      ->take($limit)
+                      ->get();
+    }
+}
+
 
         // if($is_search){
         //     $count = $query->count();
@@ -571,18 +609,6 @@ if (request('ba_kembali_null')) {
         }
         if (request('inv_null')) {
             $count = Order::whereNull('invoice')
-            ->whereHas('tarif.customer.cs', function ($c) {
-                $c->where('id', request('cs'));
-            })
-            ->whereHas('tarif.customer.marketing', function ($m) {
-                $m->where('id', request('marketing'));
-            })
-            ->whereHas('tarif.customer', function ($p) {
-                $p->where('id', request('pembayars'));
-            })
-            ->whereHas('tarif.tujuan_lokasi', function ($l) {
-                $l->where('id', request('tujuans'));
-            })
             ->count();
         }
 

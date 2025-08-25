@@ -80,6 +80,7 @@ class OrderResource extends JsonResource
             'satuan' => $this->satuanInfo->nama ?? '-',
             'unit' => $this->tarif->satuanInfo->nama ?? '-',
             'tarif' => is_null($this->tarif) ? '-' :  number_format($this->tarif->tarif),
+            'tarif1' => is_null($this->tarif) ? '-' :  $this->tarif->tarif,
             'komisi' => is_null($this->komisi) ? '-' :  number_format($this->komisi),
             'agen' => $this->agen,
             'penerima_bl' => $this->agen=='AGEN'?($this->agent->nama??'-'):($this->penerima_bl->nama??'-'),
