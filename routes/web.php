@@ -235,7 +235,8 @@ Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::cla
     Route::post('/jurnal/export=jurnal-code-excel', [JurnalController::class, 'exportExcel'])->name('jurnal.exportExcel');
 
     Route::get('customer-tarif', [CustomerController::class, 'tarif'])->name('customer.tarif');
-     Route::get('harga-of', [LapPelayaranController::class, 'index'])->name('lap.pelayaran');
+    Route::get('harga-of', [LapPelayaranController::class, 'index'])->name('lap.pelayaran');
+    Route::get('order-blum-invoice', [OrderController::class,'order_blum_inv'])->name('order_blum_inv');
     Route::get('nsfp-cancel', [NSFPController::class, 'cancel'])->name('nsfp.cancel');
     Route::post('revisi-nsfp', [NSFPController::class, 'revisi'])->name('nsfp.revisi');
     Route::post('revisi-non-nsfp', [NSFPController::class, 'revisi_non_faktur'])->name('nsfp.revisi.non');

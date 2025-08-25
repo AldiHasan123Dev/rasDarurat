@@ -239,6 +239,33 @@ if (request('ba_kembali_null')) {
         if (request('input_invoice_bayar')) {
             $query->where('order.komisi', '>', 0)->whereNull('order.tgl_komisi')->whereNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
+
+    if (request('inv_null')) {
+    $query->whereNull('order.invoice')
+    ->when(request('cs'), function ($q) {
+        $q->whereHas('tarif.customer.cs', function ($c) {
+            $c->where('name', 'like', '%' . request('cs') . '%');
+
+        });
+    })
+    ->when(request('marketing'), function ($q) {
+        $q->whereHas('tarif.customer.marketing', function ($m) {
+            $m->where('name', 'like', '%' . request('marketing') . '%');
+        });
+    })
+    ->when(request('pembayars'), function ($q) {
+        $q->whereHas('tarif.customer', function ($p) {
+            $p->where('nama', 'like', '%' . request('pembayars') . '%');
+        });
+    })
+    ->when(request('tujuans'), function ($q) { 
+        $q->whereHas('tarif.tujuan_lokasi', function ($l) {
+            $l->where('nama', 'like', '%' . request('tujuans') . '%');
+        });
+    });
+}
+
+
         if (request('input_komisi')) {
             $query->where('order.komisi', '>', 0)->whereNull('order.tgl_komisi')->whereNotNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
@@ -542,6 +569,23 @@ if (request('ba_kembali_null')) {
         if (request('input_komisi')) {
             $count = Order::where('komisi', '>', 0)->whereNull('tgl_komisi')->whereNotNull('invoice_bayar')->count();
         }
+        if (request('inv_null')) {
+            $count = Order::whereNull('invoice')
+            ->whereHas('tarif.customer.cs', function ($c) {
+                $c->where('id', request('cs'));
+            })
+            ->whereHas('tarif.customer.marketing', function ($m) {
+                $m->where('id', request('marketing'));
+            })
+            ->whereHas('tarif.customer', function ($p) {
+                $p->where('id', request('pembayars'));
+            })
+            ->whereHas('tarif.tujuan_lokasi', function ($l) {
+                $l->where('id', request('tujuans'));
+            })
+            ->count();
+        }
+
         if (request('komisi_print')) {
             $count = Order::where('komisi', '>', 0)->whereNotNull('tgl_komisi')->whereNotNull('invoice_bayar')->count();
         }
