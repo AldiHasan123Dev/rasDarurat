@@ -28,7 +28,7 @@ class HutangAgenController extends Controller
           ->where('top', '>', 0);
     })
     ->whereHas('tarif.kondisiInfo', function ($q) {
-        $q->whereIn('id', [5, 7]); // filter kondisi lewat tarif
+        $q->whereIn('id', [5, 7, 8,9,10]); // filter kondisi lewat tarif
     })
     ->whereNull('invoice_agen')
     ->whereYear('created_at', '>=', 2025)

@@ -907,14 +907,25 @@ $('#table tbody').on('click', 'tr', function () {
                     let debit = 0;
                     let credit = 0;
                     let options = '';
-                    let arr = [
-                        'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
-                    ];
-                    if(type!='j_biaya'){
-                        $.each(arr, function (idx, item) {
-                            options += `<option value="${item}" ${ type==item?'selected':'' }>${substr(item,2)}</option>`;
-                        });
-                    }
+                  let arr = [
+    'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage',
+    'j_jasa_door','j_asuransi','j_ops','j_segel','j_buruh','j_checker','j_karantina','j_demmurage',
+    'j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod',
+    'j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
+];
+
+if(type != 'j_biaya'){
+    $.each(arr, function (idx, item) {
+        let label = item.substr(2); // default label tanpa "j_"
+
+        // kalau item 'j_opt_pod' → ganti label jadi 'job_slip'
+        if(item === 'j_opt_pod'){
+            label = 'job_slip';
+        }
+
+        options += `<option value="${item}" ${ type == item ? 'selected' : '' }>${label}</option>`;
+    });
+}
                     $.each(response, function (idx, item) {
                         debit += item.debit_num;
                         credit += item.credit_num;

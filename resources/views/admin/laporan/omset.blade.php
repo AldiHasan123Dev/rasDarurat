@@ -180,8 +180,8 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">ASURANSI</th>
                                         <th style="min-width:40px !important">OPS</th>
                                         <th style="min-width:40px !important">SEGEL</th>
-                                        <th style="min-width:40px !important">OPS & SEGEL</th>
-                                        <th style="min-width:40px !important">OPS & SEGEL & CLEANING</th>
+                                        {{-- <th style="min-width:40px !important">OPS & SEGEL</th>
+                                        <th style="min-width:40px !important">OPS & SEGEL & CLEANING</th> --}}
                                         <th style="min-width:40px !important">BURUH</th>
                                         <th style="min-width:40px !important">CHECKER</th>
                                         <th style="min-width:40px !important">KARANTINA</th>
@@ -389,7 +389,7 @@ table.dataTable tbody > tr.selected1 td {
                                                     {{ number_format(($order->omset->segel ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_segel ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_ops_seal-{{ $order->id }}">
+                                            {{-- <td id="j_ops_seal-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_seal ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_seal ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops_seal ?? '[]')) }}
                                                 </a>
@@ -398,7 +398,7 @@ table.dataTable tbody > tr.selected1 td {
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_ops_seal_cleaning',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_seal_cleaning ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_seal_cleaning ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops_seal_cleaning ?? '[]')) }}
                                                 </a>
-                                            </td>
+                                            </td> --}}
                                             <td id="j_buruh-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->omset->id ?? null }},'{{ $order->omset->j_buruh ?? '[]'}}')">
                                                     {{ number_format(($order->omset->buruh ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_buruh ?? '[]')) }}
@@ -841,14 +841,26 @@ $('#table tbody').on('click', 'tr', function () {
                     let debit = 0;
                     let credit = 0;
                     let options = '';
-                    let arr = [
-                        'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage','j_jasa_door','j_asuransi','j_ops','j_segel','j_ops_seal','j_ops_seal_cleaning','j_buruh','j_checker','j_karantina','j_demmurage','j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod','j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
-                    ];
-                    if(type!='j_biaya'){
-                        $.each(arr, function (idx, item) {
-                            options += `<option value="${item}" ${ type==item?'selected':'' }>${substr(item,2)}</option>`;
-                        });
-                    }
+                   let arr = [
+    'j_none','j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage',
+    'j_jasa_door','j_asuransi','j_ops','j_segel','j_buruh','j_checker','j_karantina','j_demmurage',
+    'j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod',
+    'j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya','j_biaya_lain',
+];
+
+if(type != 'j_biaya'){
+    $.each(arr, function (idx, item) {
+        let label = item.substr(2); // default label tanpa "j_"
+
+        // kalau item 'j_opt_pod' → ganti label jadi 'job_slip'
+        if(item === 'j_opt_pod'){
+            label = 'job_slip';
+        }
+
+        options += `<option value="${item}" ${ type == item ? 'selected' : '' }>${label}</option>`;
+    });
+}
+
                     $.each(response, function (idx, item) {
                         debit += item.debit_num;
                         credit += item.credit_num;
