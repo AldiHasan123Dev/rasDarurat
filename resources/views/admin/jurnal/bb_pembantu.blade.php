@@ -187,7 +187,12 @@
                                     <tr>
                                         @if ($subjek === 'relasi')
                                             <th class="text-center">No</th>
+                                            
+                                            @if ($coa_id == 65 || $coa_id == 66)
                                             <th class="text-center">No Jurnal</th>
+                                            @else
+                                             <th class="text-center">No Jurnal (D)</th>
+                                            @endif
                                             <th class="text-center">Invoice</th>
 
                                             @if ($coa_id == 65 || $coa_id == 66)
@@ -202,6 +207,7 @@
                                             <th class="text-center">Credit</th>
 
                                             @if (!in_array($coa_id, [65, 66]))
+                                             <th class = "text-center">Nomor Jurnal (C)</th>
                                                 <th class="text-center">Tgl (C)</th>
                                                 <th class="text-center">Ket (C)</th>
                                             @endif
@@ -241,7 +247,11 @@
     @endphp
 
     <td class="text-center">{{ $loop->iteration }}</td>
+    @if (in_array($coa_id, [65, 66]))
     <td>{{ $data['customer_name'] }}</td>
+     @else
+      <td>{!! $data['no_d']->implode('<br>') !!}</td>
+      @endif
     <td>{{ $data['invoice'] }}</td>
 
     {{-- Tanggal dan Keterangan --}}
@@ -264,6 +274,7 @@
 
     {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
     @unless(in_array($coa_id, [65, 66]))
+        <td>{!! $data['no_c']->implode('<br>') !!}</td>
         <td>{!! $data['tgl_c']->implode('<br>') !!}</td>
         <td>{!! $data['ket_c']->implode('<br>') !!}</td>
     @endunless

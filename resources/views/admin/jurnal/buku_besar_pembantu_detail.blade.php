@@ -164,9 +164,7 @@
                                                             <td class="text-center">{!! $j['tgl_d'] ?: '-' !!}</td>
                                                             <td class="text-center">
                                                                 @if($j['nomor_d'])
-                                                                    <a href="{{ url('admin/jurnal-edit?jurnal=' . $j['nomor_d']) }}" target="_blank">
-                                                                        {{ $j['nomor_d'] }}
-                                                                    </a>
+                                                                   {!! $j['nomor_d'] ?: '-' !!}
                                                                 @else
                                                                     -
                                                                 @endif

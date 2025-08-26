@@ -2339,6 +2339,7 @@ public function editOne(Jurnal $jurnal)
                 $invoice = $group->first()->invoice ?? $group->first()->invoice_external ?? $group->first()->invoice_vendor ?? $group->first()->invoice_trucking;            
                 // Ambil nama & tanggal untuk debit
                 $ket_d = $group->where('debit', '>', 0)->pluck('nama')->values();
+                $no_d = $group->where('debit', '>', 0)->pluck('nomor')->values();
                 $date_d = $group->where('debit', '>', 0)
                     ->pluck('created_at')
                     ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
@@ -2346,6 +2347,7 @@ public function editOne(Jurnal $jurnal)
             
                 // Ambil nama & tanggal untuk kredit
                 $ket_c = $group->where('credit', '>', 0)->pluck('nama')->values();
+                $no_c = $group->where('credit', '>', 0)->pluck('nomor')->values();
                 $date_c = $group->where('credit', '>', 0)
                     ->pluck('created_at')
                     ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
@@ -2363,8 +2365,10 @@ public function editOne(Jurnal $jurnal)
                 return [
                     'invoice' => $invoice,
                     'customer_name' => $customerName,
+                    'no_d' => $no_d,
                     'ket_d' => $ket_d,
                     'tgl_d' => $date_d,
+                    'no_c' => $no_c,
                     'ket_c' => $ket_c,
                     'tgl_c' => $date_c,
                     'total_debit' => $totalDebit,
@@ -2462,7 +2466,9 @@ public function editOne(Jurnal $jurnal)
         $groupedJurnal = $jurnal->groupBy('invoice')->map(function ($items) use ($transaksi, $subjek, $coa_id,$pph,$nomor) {
             $data = [
                 'no_pph' => $pph,
-                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')->first(),
+                'nomor_d' => $items->where('debit', '>', 0)->pluck('nomor')
+                    ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>')
+                    ->implode('<br>'),
                 'tgl_d' => implode('<br>', $items->where('debit', '>', 0)->pluck('created_at')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))->toArray()),
                 'nomor_k' => $items->where('credit', '>', 0)
                     ->pluck('nomor')
