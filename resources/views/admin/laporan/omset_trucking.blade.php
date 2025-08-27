@@ -93,7 +93,7 @@
     <input type="hidden" name="month" value="{{ $month }}">
     <input type="hidden" name="year" value="{{ $year }}">
     <input type="hidden" name="tipe" value="xpdc">
-    <button type="submit" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()">JURNAL BALIK TRUCK XPDC</button>
+    {{-- <button type="submit" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()">JURNAL BALIK TRUCK XPDC</button> --}}
 </form>
 @else
 <!-- Form untuk EXTERNAL -->
@@ -103,7 +103,8 @@
     <input type="hidden" name="month" value="{{ $month }}">
     <input type="hidden" name="year" value="{{ $year }}">
     <input type="hidden" name="tipe" value="ext">
-    <button type="submit" class="btn btn-sm btn-success" onclick="syncJurnalBalik()">JURNAL BALIK TRUCK EXTERNAL</button>
+    
+    {{-- <button type="submit" class="btn btn-sm btn-success" onclick="syncJurnalBalik()">JURNAL BALIK TRUCK EXTERNAL</button> --}}
 </form>
 @endif
 
