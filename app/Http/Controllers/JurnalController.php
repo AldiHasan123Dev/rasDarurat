@@ -1184,6 +1184,53 @@ $kode = $collection
         return view('admin.jurnal.create');
     }
 
+      public function kunci_jurnal()
+    {
+       $periodeJurnal = Jurnal::select(
+        DB::raw("DATE_FORMAT(created_at, '%M %Y') as periode"),
+        DB::raw("DATE_FORMAT(created_at, '%Y-%m') as periode_key"),
+        DB::raw("MAX(kunci) as kunci")
+    )
+    ->whereNull('deleted_at')
+    ->groupBy('periode','periode_key')
+    ->orderByRaw("MIN(created_at) ASC")
+    ->get();
+
+        return view('admin.jurnal.kunci_jurnal', compact('periodeJurnal'));
+    }
+
+  public function toggle(Request $request)
+{
+    $periode = $request->periode; // format: YYYY-MM
+
+    // Hitung awal & akhir bulan
+    $start = $periode . "-01 00:00:00";
+    $end   = date("Y-m-t 00:00:00", strtotime($start));
+
+    // Ambil satu jurnal untuk cek status awal
+    $jurnalPertama = Jurnal::whereBetween('created_at', [$start, $end])->first();
+
+    if (!$jurnalPertama) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Tidak ada jurnal pada periode ' . $periode
+        ], 404);
+    }
+
+    // Toggle status baru
+    $newStatus = $jurnalPertama->kunci == 1 ? 0 : 1;
+
+    // Update semua di periode tsb
+    $updated = Jurnal::whereBetween('created_at', [$start, $end])
+        ->update(['kunci' => $newStatus]);
+
+    return response()->json([
+        'status' => 'success',
+        'updatedRows' => $updated,
+        'newStatus' => $newStatus,
+        'message' => "Sebanyak $updated jurnal di periode $periode berhasil diubah menjadi " . ($newStatus ? 'Terkunci' : 'Belum Terkunci')
+    ]);
+}
     public function trucking()
     {
         return view('admin.jurnal.trucking');
@@ -1678,9 +1725,9 @@ public function editOne(Jurnal $jurnal)
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = $jurnal->invoice;
-            $data['no_bg'] = $jurnal->no_bg;
-            $data['invoice_agen'] = $jurnal->invoice_agen;
+            $data['invoice'] = null;
+            $data['no_bg'] = null;
+            $data['invoice_agen'] = null;
             $data['invoice_trucking'] = null;
             $data['invoice_vendor'] = null;
             $data['order_trucking_id'] = $jurnal->order_trucking_id;
