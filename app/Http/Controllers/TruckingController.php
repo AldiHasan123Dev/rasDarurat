@@ -465,7 +465,7 @@ class TruckingController extends Controller
                             Jurnal::create([
                                 'coa_id' => 31,
                                 'order_trucking_id' => $ord->id,
-                                'order_id' => $ore->order_id,
+                                'order_id' => $ord->order_id,
                                 'nomor' => $nomor,
                                 'nama' => 'Biaya Trucking ' . $pembayar . ' ' . $shipment . ' ' . $tujuan_trucking,
                                 'debit' => $ord->tarif_nominal,
@@ -482,7 +482,7 @@ class TruckingController extends Controller
                             JurnalSample::create([
                                 'coa_id' => 31,
                                 'order_trucking_id' => $ord->id,
-                                'order_id' => $ore->order_id,
+                                'order_id' => $ord->order_id,
                                 'nomor' => $nomor,
                                 'nama' => 'Pendapatan Trucking ' . $pembayar . ' ' . $shipment . ' ' . $tujuan_trucking,
                                 'credit' => $ord->tarif_nominal,
@@ -501,7 +501,7 @@ class TruckingController extends Controller
                                 Jurnal::create([
                                     'coa_id' => 31,
                                     'order_trucking_id' => $ord->id,
-                                    'order_id' => $ore->order_id,
+                                    'order_id' => $ord->order_id,
                                     'nomor' => $nomor,
                                     'nama' => $tag->nama,
                                     'debit' => $tag->jumlah,
@@ -518,7 +518,7 @@ class TruckingController extends Controller
                                 JurnalSample::create([
                                     'coa_id' => 31,
                                     'order_trucking_id' => $ord->id,
-                                    'order_id' => $ore->order_id,
+                                    'order_id' => $ord->order_id,
                                     'nomor' => $nomor,
                                     'nama' => $tag->nama,
                                     'credit' => $tag->jumlah,
