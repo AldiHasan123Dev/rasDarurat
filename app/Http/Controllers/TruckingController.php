@@ -399,7 +399,16 @@ class TruckingController extends Controller
                                         foreach ($ord->tagihans as $tag) {
 
                                             // Cek apakah nama tagihan mengandung "TB/TL"
-                                            $coa_id = str_contains($tag->nama, 'TB/TL') ? 87 : $item->coa_credit_id;
+                                           if (
+    str_contains($tag->nama, 'TB/TL') ||
+    str_contains($tag->nama, 'Ambil Empty') ||
+    str_contains($tag->nama, 'Bongkar Full')
+) {
+    $coa_id = 87;
+} else {
+    $coa_id = $item->coa_credit_id;
+}
+
 
                                             Jurnal::create([
                                                 'coa_id' => $coa_id,
@@ -456,6 +465,7 @@ class TruckingController extends Controller
                             Jurnal::create([
                                 'coa_id' => 31,
                                 'order_trucking_id' => $ord->id,
+                                'order_id' => $ore->order_id,
                                 'nomor' => $nomor,
                                 'nama' => 'Biaya Trucking ' . $pembayar . ' ' . $shipment . ' ' . $tujuan_trucking,
                                 'debit' => $ord->tarif_nominal,
@@ -472,6 +482,7 @@ class TruckingController extends Controller
                             JurnalSample::create([
                                 'coa_id' => 31,
                                 'order_trucking_id' => $ord->id,
+                                'order_id' => $ore->order_id,
                                 'nomor' => $nomor,
                                 'nama' => 'Pendapatan Trucking ' . $pembayar . ' ' . $shipment . ' ' . $tujuan_trucking,
                                 'credit' => $ord->tarif_nominal,
@@ -490,6 +501,7 @@ class TruckingController extends Controller
                                 Jurnal::create([
                                     'coa_id' => 31,
                                     'order_trucking_id' => $ord->id,
+                                    'order_id' => $ore->order_id,
                                     'nomor' => $nomor,
                                     'nama' => $tag->nama,
                                     'debit' => $tag->jumlah,
@@ -506,6 +518,7 @@ class TruckingController extends Controller
                                 JurnalSample::create([
                                     'coa_id' => 31,
                                     'order_trucking_id' => $ord->id,
+                                    'order_id' => $ore->order_id,
                                     'nomor' => $nomor,
                                     'nama' => $tag->nama,
                                     'credit' => $tag->jumlah,
