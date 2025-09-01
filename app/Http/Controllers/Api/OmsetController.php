@@ -1034,12 +1034,12 @@ $valid_jurnal_ids = array_combine($ids, $ids);
         $month = request('month');
         $year = request('year');
         $tipe = request('tipe');
-        $balik = JurnalBalik::where('bulan',$month)->where('tipe','trucking')->where('tahun',$year)->first();
+        $balik = JurnalBalik::where('bulan',$month)->where('tipe','Trucking Expdc')->where('tahun',$year)->first();
         $jurnal_id = json_decode(request('jurnal_id'));
         if(!$balik){
             $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
             $last = $c->endOfMonth()->format('Y-m-d');
-            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','OMZ')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
+            $no = 3;
             $nomor = 'OMZ-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
             $balik = JurnalBalik::create([
                 'tanggal' => $last,
@@ -1047,35 +1047,29 @@ $valid_jurnal_ids = array_combine($ids, $ids);
                 'tahun' => $year,
                 'nomor' => $nomor,
                 'no' => $no,
-                'tipe' => 'trucking',
+                'tipe' => 'Trucking Expdc',
             ]);
         }
-        $jurnal = Jurnal::whereIn('id',$jurnal_id)->get();
+        $jurnal = Jurnal::whereIn('order_trucking_id',$jurnal_id)->get()->whereNull('jurnal_balik');
         $res = [];
         foreach($jurnal as $j_biaya){
-            if($j_biaya->jurnal_balik_data()->count()>0){
+            if($j_biaya->jurnal_balik !== null){
                 foreach($j_biaya->jurnal_balik_data as $item){
                     if($item->debit==0){
                         $item->update([
-                            'credit' => $j_biaya->debit,
-                            'no' => $balik->no,
-                            'nomor' => $balik->nomor
+                            'credit' => $j_biaya->debit
                         ]);
                     }else{
                         $item->update([
-                            'debit' => $j_biaya->debit,
-                            'no' => $balik->no,
-                            'nomor' => $balik->nomor
+                            'debit' => $j_biaya->debit
                         ]);
                     }
                 }
-
-                array_push($res,$j_biaya->id);
             }else{
                 $data = $j_biaya->toArray();
                 unset($data['id']);
                 if ($tipe=='xpdc') {
-                    if ($j_biaya->coa_id===61 && $j_biaya->coa_id !=80) {
+                    if ($j_biaya->coa_id===61 && $j_biaya->coa_id !=80 && $j_biaya->jurnal_balik == null) {
                         $data['jurnal_balik'] = $j_biaya->id;
                         $data['coa_id'] = 100;
                         $data['debit'] = $j_biaya->debit;
@@ -1085,104 +1079,109 @@ $valid_jurnal_ids = array_combine($ids, $ids);
                         $data['relasi'] = $balik->nomor;
                         $data['no'] = $balik->no;
                         $data['created_at'] = $balik->tanggal;
-                        Jurnal::create($data);
+                        $jurnal_debit = Jurnal::create($data);
+                        $j_biaya->update([
+                                'jurnal_balik' => $jurnal_debit->id,
+                                'is_balik'     => 1
+                            ]);
 
                         $data['jurnal_balik'] = $j_biaya->id;
                         $data['coa_id'] = $j_biaya->coa_id;
                         $data['credit'] = $j_biaya->debit;
                         $data['debit'] = 0;
-                        $data['tipe'] = 'OMZ';
-                        $data['relasi'] = $balik->nomor;
-                        $data['nomor'] = $balik->nomor;
-                        $data['no'] = $balik->no;
-                        $data['created_at'] = $balik->tanggal;
-                        Jurnal::create($data);
+                        $jurnal_credit = Jurnal::create($data);
                     }
                 } 
-                array_push($res,$j_biaya->id);
             }
+            array_push($res,$j_biaya->id);
         }
 
         return back()->with('success','Data berhasil disimpan dengan nomor jurnal '.$balik->nomor);
     }
 
     public function jurnalBalikTruckingExt()
-    {
-        $month = request('month');
-        $year = request('year');
-        $tipe = request('tipe');
-        $balik = JurnalBalik::where('bulan',$month)->where('tipe','trucking')->where('tahun',$year)->first();
-        $jurnal_id = json_decode(request('jurnal_id'));
-        if(!$balik){
-            $c = new Carbon($year.'-'.sprintf('%02d',$month).'-01');
-            $last = $c->endOfMonth()->format('Y-m-d');
-            $no = Jurnal::whereNull('jurnal_balik')->where('tipe','OMZ')->whereMonth('created_at',$month)->whereYear('created_at',$year)->max('no') + 1;
-            $nomor = 'OMZ-'.sprintf('%02d',$month).'-'.sprintf('%03d',$no).'/'.date('y',strtotime($year.'-'.sprintf('%02d',$month).'-01'));
-            $balik = JurnalBalik::create([
-                'tanggal' => $last,
-                'bulan' => $month,
-                'tahun' => $year,
-                'nomor' => $nomor,
-                'no' => $no,
-                'tipe' => 'trucking',
+{
+    $month = request('month');
+    $year = request('year');
+    $tipe = request('tipe');
+    $jurnal_id = json_decode(request('jurnal_id'));
+
+    // cek apakah sudah ada jurnal balik untuk periode & tipe
+    $balik = JurnalBalik::where('bulan', $month)
+        ->where('tipe', 'Trucking Ext')
+        ->where('tahun', $year)
+        ->first();
+
+    if (!$balik) {
+        $c = new Carbon($year . '-' . sprintf('%02d', $month) . '-01');
+        $last = $c->endOfMonth()->format('Y-m-d');
+        $no = 4;
+        $nomor = 'OMZ-' . sprintf('%02d', $month) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($year . '-' . sprintf('%02d', $month) . '-01'));
+
+        $balik = JurnalBalik::create([
+            'tanggal' => $last,
+            'bulan' => $month,
+            'tahun' => $year,
+            'nomor' => $nomor,
+            'no' => $no,
+            'tipe' => 'Trucking Ext',
+        ]);
+    }
+
+    $jurnal = Jurnal::whereIn('order_trucking_id', $jurnal_id)->whereNull('jurnal_balik')->get();
+    $res = [];
+
+    foreach ($jurnal as $j_biaya) {
+    // Kalau BELUM ada jurnal balik → bikin baru
+    if ($j_biaya->jurnal_balik == null) {
+        if ($tipe == 'ext' && $j_biaya->coa_id === 80) {
+            $data = $j_biaya->toArray();
+            unset($data['id']);
+
+            // DEBIT
+            $data['jurnal_balik'] = $j_biaya->id;
+            $data['coa_id'] = 98;
+            $data['debit'] = $j_biaya->debit;
+            $data['credit'] = 0;
+            $data['tipe'] = 'OMZ';
+            $data['nomor'] = $balik->nomor;
+            $data['relasi'] = $balik->nomor;
+            $data['no'] = $balik->no;
+            $data['created_at'] = $balik->tanggal;
+            $jurnal_debit = Jurnal::create($data);
+
+            // CREDIT
+            $data['coa_id'] = $j_biaya->coa_id;
+            $data['debit'] = 0;
+            $data['credit'] = $j_biaya->debit;
+            $jurnal_credit = Jurnal::create($data);
+
+            $j_biaya->update([
+                'jurnal_balik' => $jurnal_debit->id,
+                'is_balik'     => 1
             ]);
         }
-        $jurnal = Jurnal::whereIn('id',$jurnal_id)->get();
-        $res = [];
-        foreach($jurnal as $j_biaya){
-            if($j_biaya->jurnal_balik_data()->count()>0){
-                foreach($j_biaya->jurnal_balik_data as $item){
-                    if($item->debit==0){
-                        $item->update([
-                            'credit' => $j_biaya->debit,
-                            'no' => $balik->no,
-                            'nomor' => $balik->nomor
-                        ]);
-                    }else{
-                        $item->update([
-                            'debit' => $j_biaya->debit,
-                            'no' => $balik->no,
-                            'nomor' => $balik->nomor
-                        ]);
-                    }
-                }
-
-                array_push($res,$j_biaya->id);
-            }else{
-                $data = $j_biaya->toArray();
-                unset($data['id']);
-                if ($tipe=='ext'){
-                    if ($j_biaya->coa_id===80 ) {
-                        $data['jurnal_balik'] = $j_biaya->id;
-                        $data['coa_id'] = 98;
-                        $data['debit'] = $j_biaya->debit;
-                        $data['credit'] = 0;
-                        $data['tipe'] = 'OMZ';
-                        $data['nomor'] = $balik->nomor;
-                        $data['relasi'] = $balik->nomor;
-                        $data['no'] = $balik->no;
-                        $data['created_at'] = $balik->tanggal;
-                        Jurnal::create($data);
-
-
-                        $data['jurnal_balik'] = $j_biaya->id;
-                        $data['coa_id'] = $j_biaya->coa_id;
-                        $data['credit'] = $j_biaya->debit;
-                        $data['debit'] = 0;
-                        $data['tipe'] = 'OMZ';
-                        $data['relasi'] = $balik->nomor;
-                        $data['nomor'] = $balik->nomor;
-                        $data['no'] = $balik->no;
-                        $data['created_at'] = $balik->tanggal;
-                        Jurnal::create($data);
-                    }
-                }
-                array_push($res,$j_biaya->id);
+    } else {
+        // Kalau SUDAH ada jurnal balik → update yang lama
+        foreach ($j_biaya->jurnal_balik_data as $item) {
+            if ($item->debit == 0) {
+                $item->update([
+                    'credit' => $j_biaya->debit
+                ]);
+            } else {
+                $item->update([
+                    'debit'  => $j_biaya->debit
+                ]);
             }
         }
-
-        return back()->with('success','Data berhasil disimpan dengan nomor jurnal '.$balik->nomor);
     }
+
+    $res[] = $j_biaya->id;
+}
+
+    return back()->with('success', 'Data berhasil disimpan dengan nomor jurnal ' . $balik->nomor);
+}
+
 
     public function syncOmset($order_id)
     {
