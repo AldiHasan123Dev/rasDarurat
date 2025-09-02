@@ -524,6 +524,8 @@
             @endif
         </div>
 
+        @if ($tipe === 'ext')
+            
         <div class="container my-2">
             <div class="card border-0 shadow-sm">
                 <div class="card-header py-2 px-3 text-white"
@@ -626,6 +628,7 @@
             </div>
         </div>
     </div>
+     @endif
 </div>
     </div>
 @endsection

@@ -804,6 +804,8 @@ public function data_total_rekap_piutang(Request $request)
             }
             $jurnal_id = Jurnal::whereIn('order_trucking_id',$get_id)->whereIn('coa_id',[61,81])->pluck('order_trucking_id')->toArray();
             $data = OrderTrucking::whereIn('id',$get_id)->get()->groupBy('seal');
+            $rekapPerBulan = null;
+            $rekapPerBulan1 = null;
         }else{
            $order_id = Jurnal::whereNotNull('order_trucking_id')
     ->whereMonth('created_at', $month)
