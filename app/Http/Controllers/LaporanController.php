@@ -806,6 +806,7 @@ public function data_total_rekap_piutang(Request $request)
             $data = OrderTrucking::whereIn('id',$get_id)->get()->groupBy('seal');
             $rekapPerBulan = null;
             $rekapPerBulan1 = null;
+            $rekapPerBulan2 = null;
         }else{
            $order_id = Jurnal::whereNotNull('order_trucking_id')
     ->whereMonth('created_at', $month)
@@ -876,43 +877,70 @@ public function data_total_rekap_piutang(Request $request)
         return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
     });
 
-    // Rekap data per bulan dengan pengurangan debit - kredit
-    $rekapPerBulan = $jurnalPerBulan->map(function ($items, $month) {
-                     return [
-                     'periode' => $month,
-                     'total_debit' => $items->sum('debit'),
-                     'list_jurnal_d' => $items->where('debit', '>', 0)
-                                              ->pluck('nomor')
-                                              ->unique()
-                                              ->values()
-                                              ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>'),
-                            ];
-                        })->sortBy('periode')->values();
+  $currentPeriod = \Carbon\Carbon::createFromDate($year, $month, 1)->format('Y-m');
 
-    $rekapPerBulan2 = $jurnalPerBulan2->map(function ($items, $month) {
-                      return [
-                      'periode' => $month,
-                      'total_debit' => $items->sum('debit'),
-                      'list_jurnal_d' => $items->where('debit', '>', 0)
-                                               ->pluck('nomor')
-                                               ->unique()
-                                               ->values()
-                                               ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>'),
-                            ];
-                        })->sortBy('periode') ->values();
+$rekapPerBulan = $jurnalPerBulan
+    ->map(function ($items, $periode) use ($currentPeriod) {
+        return [
+            'periode' => $periode,
+            'total_debit' => $items->sum('debit'),
+            'list_jurnal_d' => $items->where('debit', '>', 0)
+                ->groupBy('nomor')
+                ->map(function ($group, $nomor) use ($periode, $currentPeriod) {
+                    if ($periode === $currentPeriod) {
+                        // periode sama → hanya tampilkan nomor
+                        return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">'
+                               . $nomor
+                               . '</a>';
+                    } else {
+                        // periode lain → tampilkan nomor + id
+                        $ids = $group->pluck('id')->unique()->values()->implode(',');
+                        return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">'
+                               . $nomor . ' (' . $ids . ')'
+                               . '</a>';
+                    }
+                })
+                ->values()
+        ];
+    })
+    ->sortBy('periode')
+    ->values();
+
+
+  $rekapPerBulan2 = $jurnalPerBulan2->map(function ($items, $month) {
+    return [
+        'periode' => $month,
+        'total_debit' => $items->sum('debit'),
+        'list_jurnal_d' => $items->where('debit', '>', 0)
+            ->groupBy('nomor')
+            ->map(function ($group, $nomor) {
+                $ids = $group->pluck('id')->unique()->values()->implode(',');
+                return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">' 
+                       . $nomor . ' (' . $ids . ')' 
+                       . '</a>';
+            })
+            ->values()
+    ];
+})->sortBy('periode')->values();
+
                        
 
-    $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
-                      return [
-                      'periode' => $month,
-                      'total_debit' => $items->sum('debit'),
-                      'list_jurnal_d' => $items->where('debit', '>', 0)
-                                               ->pluck('nomor')
-                                               ->unique()
-                                               ->values()
-                                               ->map(fn($nomor) => '<a href="' . url('admin/jurnal-edit?jurnal=' . $nomor) . '" target="_blank">' . $nomor . '</a>'),
-                            ];
-                        })->sortBy('periode')->values();
+$rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
+    return [
+        'periode' => $month,
+        'total_debit' => $items->sum('debit'),
+        'list_jurnal_d' => $items->where('debit', '>', 0)
+            ->groupBy('nomor')
+            ->map(function ($group, $nomor) {
+                $ids = $group->pluck('id')->unique()->values()->implode(',');
+                return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">' 
+                       . $nomor . ' (' . $ids . ')' 
+                       . '</a>';
+            })
+            ->values()
+    ];
+})->sortBy('periode')->values();
+
         }
         return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id','rekapPerBulan','rekapPerBulan1','rekapPerBulan2'));
     }

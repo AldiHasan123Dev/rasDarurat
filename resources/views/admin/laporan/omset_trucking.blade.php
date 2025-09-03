@@ -634,7 +634,7 @@
                 <div class="card-header py-2 px-3 text-white"
                     style="background: linear-gradient(90deg, rgb(0, 179, 119), #00ff11);">
                     <h6 class="mb-0 fw-semibold text-white">
-                        <i class="bi bi-bar-chart-fill me-2"></i>Cek Jurnal yang harusnya memiliki COA 6.2.1
+                        <i class="bi bi-bar-chart-fill me-2"></i>Cek Jurnal yang harusnya pakai COA 6.2.1
                     </h6>
                 </div>
 
@@ -657,7 +657,7 @@
                                         <td class="text-end text-primary">
                                               @php
                                                   $items = $row['list_jurnal_d']->toArray();
-                                                  $chunks = array_chunk($items, 10); // pecah jadi per 10 item
+                                                  $chunks = array_chunk($items, 1); // pecah jadi per 10 item
                                               @endphp
   
                                               @foreach ($chunks as $chunk)

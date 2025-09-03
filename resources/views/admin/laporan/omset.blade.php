@@ -323,68 +323,129 @@ table.dataTable tbody > tr.selected1 td {
                                                     {{ number_format(($order->omset->none ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_none ?? '[]')) }}
                                                 </a>
                                             </td>
+
+                                            @php
+                                                $jOppCount = count(json_decode($order->omset->j_opp ?? '[]'));
+                                                $jKarantinaCount = count(json_decode($order->omset->j_karantina ?? '[]'));
+                                                $jOptCount = count(json_decode($order->omset->j_opt ?? '[]'));
+                                                $jUtCount = count(json_decode($order->omset->j_ut ?? '[]'));
+                                                $jBlCount = count(json_decode($order->omset->j_bl ?? '[]'));
+                                                $jApbsCount = count(json_decode($order->omset->j_apbs ?? '[]'));
+                                                $jCleaningCount = count(json_decode($order->omset->j_cleaning ?? '[]'));
+                                                $jLssCount = count(json_decode($order->omset->j_lss ?? '[]'));
+                                                $jStorageCount = count(json_decode($order->omset->j_strorage ?? '[]'));
+                                                $jJDCount = count(json_decode($order->omset->j_jasa_door ?? '[]'));
+                                                $jAsuransiCount = count(json_decode($order->omset->j_asuransi ?? '[]'));
+                                                $jOpsCount = count(json_decode($order->omset->j_ops ?? '[]'));
+                                                $jSegelCount = count(json_decode($order->omset->j_segel ?? '[]'));
+                                                $jOpsSealCount = count(json_decode($order->omset->j_ops_seal ?? '[]'));
+                                                $jBuruhCount = count(json_decode($order->omset->j_buruh ?? '[]'));
+                                                $jCheckerCount = count(json_decode($order->omset->j_checker ?? '[]'));
+                                                $jDemurageCount = count(json_decode($order->omset->j_demurage ?? '[]'));
+                                                $jJSPCount = count(json_decode($order->omset->j_job_slip_pod ?? '[]'));
+                                                $jOPTPCount = count(json_decode($order->omset->j_opt_pod ?? '[]'));
+                                                $jLPCount = count(json_decode($order->omset->j_lolo_pod ?? '[]'));
+                                                $jCLPCount = count(json_decode($order->omset->j_cleaning_pod ?? '[]'));
+                                                $jOPSPCount = count(json_decode($order->omset->j_ops_pod ?? '[]'));
+                                                $jTruckPCount = count(json_decode($order->omset->j_truck_pod ?? '[]'));
+                                                $jKuliPCount = count(json_decode($order->omset->j_kuli_pod ?? '[]'));
+                                                $jKirimDokCount = count(json_decode($order->omset->j_kirim_dokumen ?? '[]'));
+                                                $jBiayaLainCount = count(json_decode($order->omset->j_biaya_lain ?? '[]'));
+                                                $jFlexibagCount = count(json_decode($order->omset->j_flexibag ?? '[]'));
+                                                $jRCCount = count(json_decode($order->omset->j_rc ?? '[]'));
+
+                                                $styleOpp =$jOppCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleUt =$jUtCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleBl =$jBlCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOpt = $jOptCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleApbs =$jApbsCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleCleaning =$jCleaningCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleLss =$jLssCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleKarantina = $jKarantinaCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleStorage =$jStorageCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleJD =$jJDCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleAsuransi =$jAsuransiCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOps =$jOpsCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleSegel =$jSegelCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOpsSeal =$jOpsSealCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleBuruh =$jBuruhCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleChecker =$jCheckerCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleDemurage =$jDemurageCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleJSP =$jJSPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOPTP =$jOPTPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleLP =$jLPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleCLP =$jCLPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOPSP =$jOPSPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleTruckP =$jTruckPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleKuliP =$jKuliPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleKirimDok =$jKirimDokCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleBiayaLain =$jBiayaLainCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleFlexibag =$jFlexibagCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleRC =$jRCCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                            @endphp
+
                                             <td>{{ $order->truckingInfo->kendaraan->milik ?? '-' }}</td>
                                             <td id="j_trucking-{{ $order->id }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->omset->id ?? null }},'{{ $order->omset->j_trucking ?? '[]'}}')">
                                                     {{ number_format(($order->omset->trucking ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_trucking ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_opp-{{ $order->id }}">
+                                            <td id="j_opp-{{ $order->id }}" style="{{ $styleOpp }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_opp',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opp ?? '[]'}}')">
                                                     {{ number_format(($order->omset->opp ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_opp ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_opt-{{ $order->id }}">
+                                            <td id="j_opt-{{ $order->id }}" style="{{ $styleOpt }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_opt',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt ?? '[]'}}')">
                                                     {{ number_format(($order->omset->opt ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_opt ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_ut-{{ $order->id }}">
+                                            <td id="j_ut-{{ $order->id }}" style="{{ $styleUt }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_ut',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ut ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ut ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ut ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_bl-{{ $order->id }}">
+                                            <td id="j_bl-{{ $order->id }}" style="{{ $styleBl }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_bl',{{ $order->omset->id ?? null }},'{{ $order->omset->j_bl ?? '[]'}}')">
                                                     {{ number_format(($order->omset->bl ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_bl ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_apbs-{{ $order->id }}">
+                                            <td id="j_apbs-{{ $order->id }}" style="{{ $styleApbs }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_apbs',{{ $order->omset->id ?? null }},'{{ $order->omset->j_apbs ?? '[]'}}')">
                                                     {{ number_format(($order->omset->apbs ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_apbs ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_cleaning-{{ $order->id }}">
+                                            <td id="j_cleaning-{{ $order->id }}" style="{{ $styleCleaning }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_cleaning',{{ $order->omset->id ?? null }},'{{ $order->omset->j_cleaning ?? '[]'}}')">
                                                     {{ number_format(($order->omset->cleaning ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_cleaning ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_lss-{{ $order->id }}">
+                                            <td id="j_lss-{{ $order->id }}" style="{{ $styleLss }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_lss',{{ $order->omset->id ?? null }},'{{ $order->omset->j_lss ?? '[]'}}')">
                                                     {{ number_format(($order->omset->lss ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_lss ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_storage-{{ $order->id }}">
+                                            <td id="j_storage-{{ $order->id }}" style="{{ $styleStorage }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_storage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_storage ?? '[]'}}')">
                                                     {{ number_format(($order->omset->storage ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_storage ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_jasa_door-{{ $order->id }}">
+                                            <td id="j_jasa_door-{{ $order->id }}" style="{{ $styleJD }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_jasa_door',{{ $order->omset->id ?? null }},'{{ $order->omset->j_jasa_door ?? '[]'}}')">
                                                     {{ number_format(($order->omset->jasa_door ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_jasa_door ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_asuransi-{{ $order->id }}">
+                                            <td id="j_asuransi-{{ $order->id }}" style="{{ $styleAsuransi }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_asuransi',{{ $order->omset->id ?? null }},'{{ $order->omset->j_asuransi ?? '[]'}}')">
                                                     {{ number_format(($order->omset->asuransi ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_asuransi ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_ops-{{ $order->id }}">
+                                            <td id="j_ops-{{ $order->id }}" style="{{ $styleOps }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_ops',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_segel-{{ $order->id }}">
+                                            <td id="j_segel-{{ $order->id }}" style="{{ $styleSegel }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_segel',{{ $order->omset->id ?? null }},'{{ $order->omset->j_segel ?? '[]'}}')">
                                                     {{ number_format(($order->omset->segel ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_segel ?? '[]')) }}
                                                 </a>
@@ -399,77 +460,77 @@ table.dataTable tbody > tr.selected1 td {
                                                     {{ number_format(($order->omset->ops_seal_cleaning ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops_seal_cleaning ?? '[]')) }}
                                                 </a>
                                             </td> --}}
-                                            <td id="j_buruh-{{ $order->id }}">
+                                            <td id="j_buruh-{{ $order->id }}" style="{{ $styleBuruh }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->omset->id ?? null }},'{{ $order->omset->j_buruh ?? '[]'}}')">
                                                     {{ number_format(($order->omset->buruh ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_buruh ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_checker-{{ $order->id }}">
+                                            <td id="j_checker-{{ $order->id }}" style="{{ $styleChecker }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_checker',{{ $order->omset->id ?? null }},'{{ $order->omset->j_checker ?? '[]'}}')">
                                                     {{ number_format(($order->omset->checker ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_checker ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_karantina-{{ $order->id }}">
+                                            <td id="j_karantina-{{ $order->id }}" style="{{ $styleKarantina }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_karantina',{{ $order->omset->id ?? null }},'{{ $order->omset->j_karantina ?? '[]'}}')">
                                                     {{ number_format(($order->omset->karantina ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_karantina ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_demmurage-{{ $order->id }}">
+                                            <td id="j_demmurage-{{ $order->id }}" style="{{ $styleDemurage }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->omset->id ?? null }},'{{ $order->omset->j_demmurage ?? '[]'}}')">
                                                     {{ number_format(($order->omset->demmurage ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_demmurage ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_job_slip_pod-{{ $order->id }}">
+                                            <td id="j_job_slip_pod-{{ $order->id }}" style="{{ $styleJSP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_job_slip_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->job_slip_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_job_slip_pod ?? '[]')) }}
                                                 </a>
                                             </td>
-                                             <td id="j_opt_pod-{{ $order->id }}">
+                                             <td id="j_opt_pod-{{ $order->id }}" style="{{ $styleOPTP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_opt_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->opt_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_opt_pod ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_lolo_pod-{{ $order->id }}">
+                                            <td id="j_lolo_pod-{{ $order->id }}" style="{{ $styleLP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_lolo_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->lolo_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_lolo_pod ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_cleaning_pod-{{ $order->id }}">
+                                            <td id="j_cleaning_pod-{{ $order->id }}" style="{{ $styleCLP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_cleaning_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->cleaning_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_cleaning_pod ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_ops_pod-{{ $order->id }}">
+                                            <td id="j_ops_pod-{{ $order->id }}" style="{{ $styleOPSP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_ops_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->ops_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_ops_pod ?? '[]')) }}
                                                 </a>
                                             </td> 
-                                            <td id="j_truck_pod-{{ $order->id }}">
+                                            <td id="j_truck_pod-{{ $order->id }}" style="{{ $styleTruckP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_truck_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->truck_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_truck_pod ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_kuli_pod-{{ $order->id }}">
+                                            <td id="j_kuli_pod-{{ $order->id }}" style="{{ $styleKuliP }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->omset->id ?? null }},'{{ $order->omset->j_kuli_pod ?? '[]'}}')">
                                                     {{ number_format(($order->omset->kuli_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_kuli_pod ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_kirim_dokumen-{{ $order->id }}">
+                                            <td id="j_kirim_dokumen-{{ $order->id }}" style="{{ $styleKirimDok }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_kirim_dokumen',{{ $order->omset->id ?? null }},'{{ $order->omset->j_kirim_dokumen ?? '[]'}}')">
                                                     {{ number_format(($order->omset->kirim_dokumen ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_kirim_dokumen ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_biaya_lain-{{ $order->id }}">
+                                            <td id="j_biaya_lain-{{ $order->id }}" style="{{ $styleBiayaLain }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya_lain',{{ $order->omset->id ?? null }},'{{ $order->omset->j_biaya_lain ?? '[]'}}')">
                                                     {{ number_format(($order->omset->biaya_lain ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_biaya_lain ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_flexibag-{{ $order->id }}">
+                                            <td id="j_flexibag-{{ $order->id }}" style="{{ $styleFlexibag }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_flexibag',{{ $order->omset->id ?? null }},'{{ $order->omset->j_flexibag ?? '[]'}}')">
                                                     {{ number_format(($order->omset->flexibag ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_flexibag ?? '[]')) }}
                                                 </a>
                                             </td>
-                                            <td id="j_rc-{{ $order->id }}">
+                                            <td id="j_rc-{{ $order->id }}" style="{{ $styleRC }}">
                                                 <a href="#" onclick="showJurnal({{ $order->id }},'j_rc',{{ $order->omset->id ?? null }},'{{ $order->omset->j_rc ?? '[]'}}')">
                                                     {{ number_format(($order->omset->rc ?? 0),2,',','.') }} / {{ count(json_decode($order->omset->j_rc ?? '[]')) }}
                                                 </a>
