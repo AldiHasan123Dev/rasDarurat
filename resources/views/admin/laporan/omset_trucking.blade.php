@@ -51,6 +51,16 @@
             white-space: nowrap;
         }
 
+        #table {
+  table-layout: fixed; /* wajib biar width dari columnDefs kepakai */
+}
+
+.text-wrap {
+  white-space: normal !important;
+  word-wrap: break-word;
+}
+
+
         div.dataTables_wrapper {
             width: 100%;
             margin: 0 auto;
@@ -145,7 +155,7 @@
                     <div id="print">
                         <div class="mt-3">
                             <div class="table-responsive" style="height: 400px">
-                                <table class="table table-sm table-bordered mt-3" id="tables" style="font-size: .7rem">
+                                <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
                                     <thead>
                                         <tr>
                                             <th>Tanggal</th>
@@ -704,6 +714,7 @@
             // },
             autoWidth: false,
             paging: false,
+            ordering: false,
             scrollCollapse: true,
             fixedHeader: true,
             // select: true,
@@ -715,7 +726,14 @@
             }, ],
             search: {
                 return: true
-            }
+            },
+    columnDefs: [
+        {
+            targets: 4, // kolom ke-5 = "Keterangan"
+            width: "300px",
+            className: "text-wrap"
+        }
+    ]
         });
         // table.column( 0 ).visible( false );
         // table.column( 1 ).visible( false );
