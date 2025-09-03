@@ -52,13 +52,17 @@
         }
 
         #table {
-  table-layout: fixed; /* wajib biar width dari columnDefs kepakai */
-}
+        table-layout: fixed; /* wajib biar width dari columnDefs kepakai */
+        }
 
-.text-wrap {
-  white-space: normal !important;
-  word-wrap: break-word;
-}
+        .text-wrap {
+        white-space: normal !important;
+        word-wrap: break-word;
+        }
+        .text-end {
+            text-align: right !important;
+        }
+
 
 
         div.dataTables_wrapper {
@@ -164,13 +168,13 @@
                                             <th>Job</th>
                                             <th>Keterangan</th>
                                             @if ($tipe == 'xpdc')
-                                                <th>1.6.2.2</th>
-                                                <th>2.1.5.2.2</th>
-                                                <th>Total</th>
+                                                <th class="text-end">1.6.2.2</th>
+                                                <th class="text-end">2.1.5.2.2</th>
+                                                <th class="text-end">Total</th>
                                             @else
-                                                <th>6.2.1</th>
-                                                <th>2.1.5.2.1</th>
-                                                <th>5.1.2</th>
+                                                <th class="text-end">6.2.1</th>
+                                                <th class="text-end">2.1.5.2.1</th>
+                                                <th class="text-end">5.1.2</th>
                                             @endif
                                         </tr>
                                     </thead>
@@ -288,15 +292,15 @@
                                                     </td>
                                                     <td>{{ $order->jurnals()->where('nama', 'like', 'sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nama ?? 'Sangu Sopir -' }}
                                                     </td>
-                                                    <td>{{ number_format($order->jurnals()->where('nama', 'like', 'sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                    <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                     </td>
-                                                    <td>{{ number_format($order->jurnals()->where('nama', 'like', 'sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                    <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                     </td>
                                                     @if ($tipe == 'ext')
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'sangu sopir%')->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'sangu sopir%')->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                         </td>
                                                     @else
-                                                        <td>0</td>
+                                                        <td  class="text-end">0</td>
                                                     @endif
                                                 </tr>
                                                 <tr class="{{ $no % 2 == 0 ? 'table-primary' : '' }}">
@@ -342,27 +346,27 @@
                                                             $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
                                                         })->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nama ?? 'Biaya Kuli -' }}
                                                     </td>
-                                                    <td>{{ number_format(
+                                                    <td class="text-end">{{ number_format(
                                                         $order->jurnals()->where(function ($q) {
                                                                 $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
                                                             })->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0,
                                                     ) }}
                                                     </td>
-                                                    <td>{{ number_format(
+                                                    <td class="text-end">{{ number_format(
                                                         $order->jurnals()->where(function ($q) {
                                                                 $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
                                                             })->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0,
                                                     ) }}
                                                     </td>
                                                     @if ($tipe == 'ext')
-                                                        <td>{{ number_format(
+                                                        <td class="text-end">{{ number_format(
                                                             $order->jurnals()->where(function ($q) {
                                                                     $q->whereRaw('LOWER(nama) LIKE ?', ['biaya kuli%'])->orWhereRaw('LOWER(nama) LIKE ?', ['sangu kuli%']);
                                                                 })->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0,
                                                         ) }}
                                                         </td>
                                                     @else
-                                                        <td>0</td>
+                                                        <td  class="text-end">0</td>
                                                     @endif
                                                 </tr>
                                                 <tr class="{{ $no % 2 == 0 ? 'table-primary' : '' }}">
@@ -400,15 +404,15 @@
                                                     </td>
                                                     <td>{{ $order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nama ?? 'Simpanan Sangu Sopir -' }}
                                                     </td>
-                                                    <td>{{ number_format($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                    <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                     </td>
-                                                    <td>{{ number_format($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                    <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                     </td>
                                                     @if ($tipe == 'ext')
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'simpanan sangu sopir%')->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                         </td>
                                                     @else
-                                                        <td>{{ $tipe == 'ext' ? '0' : $total }}</td>
+                                                        <td  class="text-end">{{ $tipe == 'ext' ? '0' : number_format($total)}}</td>
                                                     @endif
                                                 </tr>
                                                 @if ($tipe == 'ext')
@@ -444,11 +448,11 @@
                                                         </td>
                                                         <td>{{ $order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('debit', '>', 0)->first()->nama ?? 'Biaya Oprasional Trucking -' }}
                                                         </td>
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                         </td>
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                         </td>
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'biaya operasional trucking%')->where('coa_id', 87)->where('debit', '>', 0)->first()->debit ?? 0) }}
                                                         </td>
                                                     </tr>
                                                     <tr class="table-danger">
@@ -485,11 +489,11 @@
                                                         </td>
                                                         <td>{{ $order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->whereIn('coa_id', $tipe == 'xpdc' ? [61, 81] : [98, 80, 87])->where('credit', '>', 0)->first()->nama ?? 'Pendapatan Trucking -' }}
                                                         </td>
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('credit', '>', 0)->first()->credit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->where('coa_id', $tipe == 'xpdc' ? 61 : 98)->where('credit', '>', 0)->first()->credit ?? 0) }}
                                                         </td>
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('credit', '>', 0)->first()->credit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->where('coa_id', $tipe == 'xpdc' ? 81 : 80)->where('credit', '>', 0)->first()->credit ?? 0) }}
                                                         </td>
-                                                        <td>{{ number_format($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->where('coa_id', 87)->where('credit', '>', 0)->first()->credit ?? 0) }}
+                                                        <td class="text-end">{{ number_format($order->jurnals()->where('nama', 'like', 'pendapatan trucking%')->where('coa_id', 87)->where('credit', '>', 0)->first()->credit ?? 0) }}
                                                         </td>
                                                     </tr>
                                                 @endif
@@ -728,10 +732,30 @@
                 return: true
             },
     columnDefs: [
+         {
+             className: "text-end",    // Bootstrap: text-end = rata kanan
+        width: "100px"    
+        },
         {
             targets: 4, // kolom ke-5 = "Keterangan"
             width: "300px",
             className: "text-wrap"
+        },
+        {
+            targets: 3, // kolom ke-5 = "Keterangan"
+            width: "100px"
+        },
+        {
+            targets: 2, // kolom ke-5 = "Keterangan"
+            width: "150px"
+        },
+         {
+            targets: 1, // kolom ke-5 = "Keterangan"
+            width: "100px"
+        },
+        {
+            targets: 0, // kolom ke-5 = "Keterangan"
+            width: "50px"
         }
     ]
         });
