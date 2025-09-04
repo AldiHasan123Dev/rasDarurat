@@ -330,14 +330,14 @@
                                                     {{ number_format($groupedData->sum('total_credit') - $groupedData->sum('total_debit'), 2, ',', '.') }}
                                                 </td>
                                             @else
-                                                <td colspan="6" class="text-center">Total</td>
+                                                <td colspan="5" class="text-center">Total</td>
                                                 <td class="text-end">
                                                     {{ number_format($groupedData->sum('total_debit'), 2, ',', '.') }}
                                                 </td>
                                                 <td class="text-end">
                                                     {{ number_format($groupedData->sum('total_credit'), 2, ',', '.') }}
                                                 </td>
-                                                <td colspan="3" class="text-end">
+                                                <td colspan="4" class="text-end">
                                                     {{ number_format($groupedData->sum('saldo'), 2, ',', '.') }}
                                                 </td>
                                             @endif
