@@ -72,6 +72,12 @@ class JurnalController extends Controller
     }
 
 
+    public function jNoJob(){
+          $month = request('month') ?? date('m');
+        $year = request('year') ?? date('Y');
+        $is_sample = request('is_sample') ?? 'real';
+        return view('admin.jurnal.jurnal-no-job', compact('month', 'year', 'is_sample'));
+    }
     public function j_cekcoa(){
         return view('admin.jurnal.jurnal-cek-coa', compact('month', 'unbalance', 'year', 'is_sample'));
     }

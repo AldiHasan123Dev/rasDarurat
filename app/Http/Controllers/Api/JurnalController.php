@@ -191,6 +191,7 @@ class JurnalController extends Controller
         $is_sample = request('is_sample');
         $kategori = request('kategori');
         $keterangan = request('keterangan');
+        $noJob = request('noJob');
         $year_is = request('year_is');
         $tahun = request('tahun');
         $month_is = request('month_is');
@@ -238,16 +239,40 @@ if ($nomor) {
     $hasFilter = true;
 }
 
-if ($nomorS && $nomorE) {
-    $query->whereBetween('nomor', [$nomorS, $nomorE])->whereYear('created_at', $tahun);
-    $hasFilter = true;
-} elseif ($nomorS) {
-    $query->where('nomor', 'like', '%' . $nomorS . '%')->whereYear('created_at', $tahun);;
-    $hasFilter = true;
-} elseif ($nomorE) {
-    $query->where('nomor', 'like', '%' . $nomorE . '%')->whereYear('created_at', $tahun);;
-    $hasFilter = true;
+if ($noJob) {
+    // Jika keduanya ada
+    if (!is_null($nomorS) && !is_null($nomorE)) {
+        $query->whereBetween('nomor', [$nomorS, $nomorE])
+              ->whereNull('order_id')
+              ->whereNull('order_trucking_id')
+              ->where('coa_id', 31)
+              ->whereYear('created_at', $tahun);
+
+    // Jika hanya $nomorS yang ada
+    } elseif (!is_null($nomorS)) {
+        $query->where('nomor', 'like', '%' . $nomorS . '%')
+              ->whereNull('order_id')
+              ->whereNull('order_trucking_id')
+              ->where('coa_id', 31)
+              ->whereYear('created_at', $tahun);
+
+    // Jika hanya $nomorE yang ada
+    } elseif (!is_null($nomorE)) {
+        $query->where('nomor', 'like', '%' . $nomorE . '%')
+              ->whereNull('order_id')
+              ->whereNull('order_trucking_id')
+              ->where('coa_id', 31)
+              ->whereYear('created_at', $tahun);
+
+    // Jika keduanya null → tidak ada where nomor, hanya filter tahun
+    } else {
+        $tes = $query->whereYear('created_at', date('Y'))
+              ->whereNull('order_id')
+              ->whereNull('order_trucking_id')
+              ->where('coa_id', 31);
+    }
 }
+
 
 
 if ($container && strlen($container) > 3) {
@@ -312,26 +337,30 @@ if ($page > $total_pages) {
 $start = max(0, $limit * ($page - 1));
 
 // Ambil data sesuai limit & offset
-if ($nomorS && $nomorE) {
-    $query->whereBetween('nomor', [$nomorS, $nomorE]);
-    $hasFilter = true;
+if (!is_null($nomorS) && !is_null($nomorE)) {
+    // Jika ada range nomor
+    $data = $query->orderBy('nomor', 'asc')
+                  ->skip($start)
+                  ->take($limit)
+                  ->get();
 
-    $data = $query
-    ->orderBy('nomor', 'asc')
-                 ->skip($start)
-                 ->take($limit)
-                 ->get();
 } elseif ($hasFilter) {
-    $data = $query
-    ->orderByDesc('created_at')
-    ->orderBy('nomor')
-                 ->skip($start)
-                 ->take($limit)
-                 ->get();
-} else {
+    // Jika hanya filter tahun atau filter lain
+    $data = $query->orderByDesc('created_at')
+                  ->orderBy('nomor')
+                  ->skip($start)
+                  ->take($limit)
+                  ->get();
+
+} else if ($noJob) {
+     $data = $query->orderBy('created_at', 'asc')
+                  ->skip($start)
+                  ->take($limit)
+                  ->get();
+}else {
+    // Jika sama sekali tidak ada filter
     $data = collect();
 }
-
 
 // Format response
 $response = JurnalResource::collection($data);

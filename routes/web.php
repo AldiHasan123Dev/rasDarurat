@@ -207,7 +207,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('hutang-agen/draf', [HutangAgenController::class, 'draf'])->name('hutang-agen.draf');
     Route::post('hutang-agen/jurnal', [HutangAgenController::class, 'generate_jurnal'])->name('hutang-agen.jurnal');
     Route::post('hutang-pelayaran/cetak-voucher-post', [HutangPelayaranController::class, 'cetak_invoice'])->name('hutang-pelayaran.cetak.voucher');
-Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::class, 'cetak_invoice_get'])->name('hutang-pelayaran.cetak.voucher.get');
+    Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::class, 'cetak_invoice_get'])->name('hutang-pelayaran.cetak.voucher.get');
 
     Route::post('hutang-pelayaran/delete', [HutangPelayaranController::class, 'delete'])->name('hutang-pelayaran.delete');
     Route::post('hutang-pelayaran/tarik', [HutangPelayaranController::class, 'tarik'])->name('hutang-pelayaran.tarik');
@@ -231,11 +231,13 @@ Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::cla
     Route::get('laporan/omset-customer', [LaporanController::class, 'omset_customer'])->name('laporan.omset_customer');
     Route::get('laporan/pra-omset', [LaporanController::class, 'praomset'])->name('laporan.praomset');
     Route::get('laporan/omset-trucking', [LaporanController::class, 'omset_trucking'])->name('laporan.omset_trucking');
+    Route::post('/kunci-jurnal/toggle', [JurnalController::class, 'toggle'])->name('kunci-jurnal.toggle');
 
     Route::post('/jurnal/export=jurnal-code-excel', [JurnalController::class, 'exportExcel'])->name('jurnal.exportExcel');
 
     Route::get('customer-tarif', [CustomerController::class, 'tarif'])->name('customer.tarif');
     Route::get('harga-of', [LapPelayaranController::class, 'index'])->name('lap.pelayaran');
+    Route::get('kunci-jurnal', [JurnalController::class, 'kunci_jurnal'])->name('kunci.jurnal');
     Route::get('order-blum-invoice', [OrderController::class,'order_blum_inv'])->name('order_blum_inv');
     Route::get('nsfp-cancel', [NSFPController::class, 'cancel'])->name('nsfp.cancel');
     Route::post('revisi-nsfp', [NSFPController::class, 'revisi'])->name('nsfp.revisi');
@@ -320,25 +322,25 @@ Route::get('hutang-pelayaran/cetak-voucher-get', [HutangPelayaranController::cla
     Route::get('estimasi-biaya', [EstimasiController::class, 'biaya'])->name('estimasi.biaya');
     Route::get('estimasi-biaya-hpp', [EstimasiController::class, 'hpp'])->name('estimasi.hpp');
     Route::post('hitung-estimasi-hpp', [EstimasiController::class, 'hitung'])->name('estimasi.hpp.hitung');
-   Route::get('/get-agens', function (Request $request) {
-    return Agen::where('kota', $request->input('lokasi_pelayaran'))
-        ->orderBy('nama')
-        ->get(['id', 'nama']);
-})->name('get.agens');
+    Route::get('/get-agens', function (Request $request) {
+        return Agen::where('kota', $request->input('lokasi_pelayaran'))
+            ->orderBy('nama')
+            ->get(['id', 'nama']);
+    })->name('get.agens');
 
-Route::get('/get-penerima-agens', function (Request $request) {
-    // Ambil semua penerima_id dari agen di kota tertentu
-    $agenIds = TarifAgen::where('agen_id', $request->input('penerima'))
-        ->whereNotNull('penerima_id')
-        ->where('is_active', 1)
-        ->pluck('penerima_id');
+    Route::get('/get-penerima-agens', function (Request $request) {
+        // Ambil semua penerima_id dari agen di kota tertentu
+        $agenIds = TarifAgen::where('agen_id', $request->input('penerima'))
+            ->whereNotNull('penerima_id')
+            ->where('is_active', 1)
+            ->pluck('penerima_id');
 
-    // Ambil data penerima dari tabel customers
-    $penerima = Customer::whereIn('id', $agenIds)
-        ->get(['id', 'nama']);
+        // Ambil data penerima dari tabel customers
+        $penerima = Customer::whereIn('id', $agenIds)
+            ->get(['id', 'nama']);
 
-    return $penerima;
-})->name('get.penerima');
+        return $penerima;
+    })->name('get.penerima');
 
     Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
     Route::get('jurnal/cek-coa', [JurnalController::class, 'j_cekcoa'])->name('jurnal.cekcoa');
@@ -354,6 +356,7 @@ Route::get('/get-penerima-agens', function (Request $request) {
     Route::post('jurnal-tampungan', [JurnalController::class, 'tampungan_store'])->name('jurnal.tampungan.store');
     Route::get('jurnal-edit-coa', [JurnalController::class, 'editCoa'])->name('jurnal.edit.coa');
     Route::get('jurnal-buat-code', [JurnalController::class, 'buatCode'])->name('jurnal.buat.code');
+    Route::get('jurnal-161-no-job', [JurnalController::class, 'jNoJob'])->name('jurnal.noJob');
     Route::put('jurnal-edit-coa-{jurnal}', [JurnalController::class, 'updateCoa'])->name('jurnal.update.coa');
 
     Route::get('jurnal-edit-{jurnal}', [JurnalController::class, 'editOne'])->name('jurnal.edit.one');
