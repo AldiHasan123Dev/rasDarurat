@@ -239,6 +239,20 @@ if ($nomor) {
     $hasFilter = true;
 }
 
+ if (($nomorS) && ($nomorE)) {
+        $query->whereBetween('nomor', [$nomorS, $nomorE])
+              ->whereYear('created_at', $tahun);
+
+    // Jika hanya $nomorS yang ada
+    } elseif (($nomorS)) {
+        $query->where('nomor', 'like', '%' . $nomorS . '%')
+              ->whereYear('created_at', $tahun);
+
+    // Jika hanya $nomorE yang ada
+    } elseif (($nomorE)) {
+        $query->where('nomor', 'like', '%' . $nomorE . '%')
+              ->whereYear('created_at', $tahun);
+    }
 if ($noJob) {
     // Jika keduanya ada
     if (!is_null($nomorS) && !is_null($nomorE)) {
@@ -266,7 +280,7 @@ if ($noJob) {
 
     // Jika keduanya null → tidak ada where nomor, hanya filter tahun
     } else {
-        $tes = $query->whereYear('created_at', date('Y'))
+        $tes = $query->whereYear('created_at', $tahun ?? date('Y'))
               ->whereNull('order_id')
               ->whereNull('order_trucking_id')
               ->where('coa_id', 31);
@@ -298,7 +312,7 @@ if ($bank) {
     $query->whereIn('tipe', ['BKK', 'BKM']);
     $hasFilter = true;
 } elseif ($jurnal) {
-    $query->where('tipe', 'JNL');
+   $data = $query->where('tipe', 'JNL');
     $hasFilter = true;
 }
 
@@ -337,7 +351,7 @@ if ($page > $total_pages) {
 $start = max(0, $limit * ($page - 1));
 
 // Ambil data sesuai limit & offset
-if (!is_null($nomorS) && !is_null($nomorE)) {
+if ($nomorS && $nomorE) {
     // Jika ada range nomor
     $data = $query->orderBy('nomor', 'asc')
                   ->skip($start)
