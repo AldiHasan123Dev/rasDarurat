@@ -19,7 +19,7 @@ class FortunaExport implements FromView
     {
         $orders = Order::where('job','LIKE',$this->text.'%')->whereHas('tarif', function($q){
             $q->where('customer_id',3532);
-        })->get();
+        })->orderBy('job')->get();
         $data = OrderResource::collection($orders);
         $data = $data->toArray(request());
         return view('exports.fortuna', compact('data'));
