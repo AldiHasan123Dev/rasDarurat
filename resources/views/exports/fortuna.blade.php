@@ -26,7 +26,7 @@
             @endphp
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item['job'] }}</td>
+                <td>{{ $item['no'] }}</td>
                 <td>{{ $item['invoice'] }}</td>
                 <td>{{ $item['kapal'] }}</td>
                 <td>{{ $item['etd'] }}</td>
