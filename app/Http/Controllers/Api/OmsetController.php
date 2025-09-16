@@ -723,7 +723,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     $order = $orders->pluck('id');
 
     // Ambil jurnal yang memenuhi syarat (credit > 0 dan belum punya jurnal balik)
-    $jurnals = Jurnal::whereIn('order_id', $id)
+    $jurnals = Jurnal::whereIn('order_id', $order)
         ->where('credit', '>', 0)
         ->pluck('id'); // ambil semua, pengecekan null akan dilakukan di loop
     $month = request('month');
@@ -873,8 +873,9 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     $orders = Order::whereIn('id', $id)
         ->where('lock_omset', 1)
         ->get();
+    $order = $orders->pluck('id');
 
-    $jurnals = Jurnal::whereIn('order_id', $id)
+    $jurnals = Jurnal::whereIn('order_id', $order)
                 ->where('debit', '>', 0)
                 ->pluck('id');
     $month = request('month');
@@ -925,9 +926,8 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                 if (!is_array($j_biaya)) {
                     $j_biaya = [];
                 }
-
              $ids = $jurnals->toArray(); 
-$valid_jurnal_ids = array_combine($ids, $ids);
+             $valid_jurnal_ids = array_combine($ids, $ids);
 
                 $biaya = Jurnal::whereIn('id', $valid_jurnal_ids)
                     ->where('debit', '>', 0)
