@@ -97,7 +97,7 @@ table.dataTable tbody > tr.selected1 td {
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-3">
                             <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
-                            {{-- <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button> --}}
+                            <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
                             {{-- <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button> --}}
                             @if ($is_pra)
