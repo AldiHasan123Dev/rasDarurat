@@ -1209,11 +1209,11 @@ $kode = $collection
 
   public function toggle(Request $request)
 {
-    $periode = $request->periode; // format: YYYY-MM
+    $periode = $request->periode; 
 
     // Hitung awal & akhir bulan
     $start = $periode . "-01 00:00:00";
-    $end   = date("Y-m-t 00:00:00", strtotime($start));
+    $end   = date("Y-m-t 23:59:59", strtotime($start));
 
     // Ambil satu jurnal untuk cek status awal
     $jurnalPertama = Jurnal::whereBetween('created_at', [$start, $end])->first();
@@ -1698,7 +1698,21 @@ public function editOne(Jurnal $jurnal)
             // $data['invoice_vendor'] = !str_contains($invoice, 'RAS-LT') ? $invoice : null;
             // $data['invoice_trucking'] = str_contains($invoice, 'RAS-LT') ? $invoice : null;
             $data['invoice_vendor'] = $jurnal->invoice_vendor;
+            if (!empty($data['inv_vendor'])) {
+                    if (!str_contains($order->invoice, 'RAS-LT')) {
+                        $data['invoice_vendor'] = $order->invoice;
+                    } else {
+                        $data['invoice_vendor'] = null;
+                    }
+            }
             $data['invoice_trucking'] = $jurnal->invoice_trucking;
+            if (!empty($data['inv_trucking'])) {
+                    if (str_contains($order->invoice, 'RAS-LT')) {
+                        $data['invoice_trucking'] = $order->invoice;
+                    } else {
+                        $data['invoice_trucking'] = null;
+                    }
+            }
             $data['order_trucking_id'] = $order_trucking;
             $data['order_id'] = $order->order_id;
             $data['no_bg'] = null;
@@ -1733,11 +1747,17 @@ public function editOne(Jurnal $jurnal)
             $name = str_replace('[8]', $customer, $name);
             $name = str_replace('[9]', $shipment_trucking, $name);
             $name = str_replace('[10]', $tujuan_trucking, $name);
-            $data['invoice'] = null;
-            $data['no_bg'] = null;
-            $data['invoice_agen'] = null;
-            $data['invoice_trucking'] = null;
-            $data['invoice_vendor'] = null;
+            $data['invoice'] = $jurnal->invoice;
+            if (!empty($data['inv_expdc'])){
+                $data['invoice'] = $order->invoice;
+            }
+            $data['no_bg'] = $jurnal->no_bg;
+            $data['invoice_agen'] = $jurnal->invoice_agen;
+            if (!empty($data['inv_agen'])){
+                $data['invoice_agen'] = $order->invoice_agen;
+            }
+            $data['invoice_trucking'] = $jurnal->invoice_trucking;
+            $data['invoice_vendor'] = $jurnal->invoice_vendor;
             $data['order_trucking_id'] = $jurnal->order_trucking_id;
             $data['order_id'] =$order_job;
             $data['nopol'] = $jurnal->nopol;
