@@ -552,7 +552,28 @@ table.dataTable tbody > tr.selected1 td {
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
                                             <td>{{ number_format(($order->omset->laba_kotor ?? 0),2,',','.') }}</td>
-                                            <td  style="{{ $order->pra_omset ? ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 || $order->omset->margin <= 0? 'background-color: #f3ff0dfc;' : ($order->omset->margin < 0 ? 'danger' : '')) : '' }}">{{ number_format((($order->omset->margin ?? 0) * 100),3,',','.') }}</td>
+                                           <td style="{{ $order->pra_omset 
+    ? (
+        ($order->omset && $order->omset->margin !== null) 
+            ? (
+                ($order->omset->margin <= 0.03 && $order->omset->margin >= 0 || $order->omset->margin <= 0
+                    ? 'background-color: #f3ff0dfc;' 
+                    : ($order->omset->margin < 0 ? 'danger' : '')
+                )
+            ) 
+            : '' 
+      ) 
+    : '' 
+}}">
+    {{ $order->omset && $order->omset->margin !== null 
+        ? (($order->omset->margin == 0) 
+            ? '-' 
+            : number_format($order->omset->margin * 100, 3, ',', '.')
+          ) 
+        : '-' 
+    }}
+</td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
