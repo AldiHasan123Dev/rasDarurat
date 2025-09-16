@@ -748,11 +748,13 @@
         },
         {
             targets: 2, // kolom ke-5 = "Keterangan"
-            width: "150px"
+            width: "150px",
+             className: "text-wrap"
         },
          {
             targets: 1, // kolom ke-5 = "Keterangan"
-            width: "100px"
+            width: "100px",
+             className: "text-wrap"
         },
         {
             targets: 0, // kolom ke-5 = "Keterangan"
