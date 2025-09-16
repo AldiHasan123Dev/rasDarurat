@@ -19,7 +19,7 @@
             }
             #print, #print * {
                 visibility: visible;
-                font-size: .6rem !important;
+                font-size: .7rem !important;
             }
             #print {
                 width: 100%;
@@ -106,11 +106,11 @@
                                     <th>ID JOB</th>
                                     <th>Invoice</th>
                                     <th>Pembayar</th>
-                                    <th>Pelayaran</th>
+                                    {{-- <th>Pelayaran</th> --}}
                                     <th>Shippment</th>
                                     <th>Kapal</th>
-                                    <th>Voyage</th>
-                                    <th>Container</th>
+                                    {{-- <th>Voyage</th> --}}
+                                    {{-- <th>Container</th> --}}
                                     <th>Tgl inv dibayar</th>
                                     <th>Tgl Komisi</th>
                                     <th>Fee</th>
@@ -121,21 +121,21 @@
                                     <td>{{ $item->job }}-{{ sprintf('%02d',$item->no_job) }}</td>
                                     <td>{{ $item->invoice ?? '-' }}</td>
                                     <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
-                                    <td>{{ $item->jadwal_kapal->pelayaran->nama ?? '-' }}</td>
+                                    {{-- <td>{{ $item->jadwal_kapal->pelayaran->nama ?? '-' }}</td> --}}
                                     <td>{{ $item->tarif->shipmentInfo->nama ?? '-' }}</td>
                                     <td>{{ $item->jadwal_kapal->kapal->nama ?? '-' }}</td>
-                                    <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td>
-                                    <td>{{ $item->container ?? '-' }}</td>
+                                    {{-- <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td> --}}
+                                    {{-- <td>{{ $item->container ?? '-' }}</td> --}}
                                     <td>{{ is_null($item->invoice_bayar) ? '-' : date('d/m/y',strtotime($item->invoice_bayar)) }}</td>
                                     <td>{{ is_null($item->tgl_komisi) ? '-' : date('d/m/y',strtotime($item->tgl_komisi)) }}</td>
                                     <td>{{ number_format($item->komisi) }}</td>
                                 </tr>
                             @endforeach
                             <tr style="height: 20px !important">
-                                <td colspan="9" style="border-bottom: 1px solid black"></td>
+                                <td colspan="7" style="border-bottom: 1px solid black"></td>
                             </tr>
                             <tr class="border-bottom border-dark">
-                                <td colspan="6"></td>
+                                <td colspan="4"></td>
                                 <td class="fw-bold text-center" colspan="2">TOTAL</td>
                                 <td class="fw-bold">
                                     <div class="price d-flex justify-content-between px-2">
