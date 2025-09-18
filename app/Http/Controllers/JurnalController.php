@@ -272,7 +272,6 @@ class JurnalController extends Controller
         $tipe = Cache::remember('jurnal_tipe', 600, function () {
             return Jurnal::pluck('tipe')->unique()->toArray();
         });
-    
         // Inisialisasi array untuk data
         $data1 = [];
         $data = [];
@@ -280,14 +279,14 @@ class JurnalController extends Controller
         // Menampilkan data berdasarkan tipe awal jika ada yang dipilih
         if ($tipeAwal = request('tipe_awal')) {
             $data = Cache::remember("jurnal_data_{$tipeAwal}", 600, function () use ($tipeAwal) {
-                return Jurnal::where('tipe', $tipeAwal)->pluck('nomor')->unique()->toArray();
+                return Jurnal::where('tipe', $tipeAwal)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
             });
         }
     
         // Menampilkan data berdasarkan tipe tujuan jika ada yang dipilih
         if ($tipeTujuan = request('tipe_tujuan')) {
             $data1 = Cache::remember("jurnal_data_{$tipeTujuan}", 600, function () use ($tipeTujuan) {
-                return Jurnal::where('tipe', $tipeTujuan)->pluck('nomor')->unique()->toArray();
+                return Jurnal::where('tipe', $tipeTujuan)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
             });
         }
     
@@ -1163,28 +1162,58 @@ $kode = $collection
             return back()->with('danger', 'Data gagal disimpan');
         }
     
-        DB::beginTransaction(); // Mulai transaksi setelah data siap
-    
-        try {
-            foreach ($dataToInsert as $data) {
-                $j = Jurnal::create($data);
-    
-                // Update jurnal_balik jika ada
-                if (!empty($data['jurnal_balik'])) {
-                    Jurnal::where('id', $data['jurnal_balik'])
-                          ->update(['jurnal_balik' => $j->id]);
-                }
-            }
-    
-            DB::commit(); // Simpan semua data ke database
-            return redirect()->route('jurnal.balik.create')->with('success', 'Data berhasil disimpan');
-    
-        } catch (\Exception $e) {
-            DB::rollBack(); // Batalkan transaksi jika terjadi error
-            \Log::error('Gagal menyimpan jurnal:', ['error' => $e->getMessage()]);
-            return back()->with('danger', 'Terjadi kesalahan saat menyimpan data');
+      
+    DB::beginTransaction();
+
+    try {
+        /**
+         * Step 1: Insert semua data sekaligus
+         */
+        Jurnal::insert($dataToInsert);
+
+        /**
+         * Step 2: Update field jurnal_balik dari jurnal lama
+         * Kita ambil ulang data yang baru dimasukkan berdasarkan nomor dan is_balik
+         */
+        $insertedJurnal = Jurnal::where('nomor', $request->nomor)
+                                ->where('is_balik', 1)
+                                ->orderBy('id', 'asc')
+                                ->get();
+
+        // Pastikan jumlah data sama agar tidak error saat mapping
+        if ($insertedJurnal->count() !== count($dataToInsert)) {
+            throw new \Exception('Jumlah data yang dimasukkan tidak sesuai.');
         }
-    }    
+
+        /**
+         * Step 3: Mapping antara data lama dan data baru
+         * Update jurnal lama berdasarkan jurnal_balik yang diinput
+         */
+        foreach ($insertedJurnal as $index => $j) {
+            $original = $dataToInsert[$index];
+            if (!empty($original['jurnal_balik'])) {
+                Jurnal::where('id', $original['jurnal_balik'])
+                      ->update(['jurnal_balik' => $j->id]);
+            }
+        }
+
+        DB::commit();
+        return redirect()
+            ->route('jurnal.balik.create')
+            ->with('success', 'Data berhasil disimpan');
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        // Log error untuk debugging
+        \Log::error('Gagal menyimpan jurnal balik', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+
+        return back()->with('danger', 'Terjadi kesalahan saat menyimpan data: ' . $e->getMessage());
+    }
+}
     
 
     public function create()
