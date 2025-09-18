@@ -279,14 +279,15 @@ class JurnalController extends Controller
         // Menampilkan data berdasarkan tipe awal jika ada yang dipilih
         if ($tipeAwal = request('tipe_awal')) {
             $data = Cache::remember("jurnal_data_{$tipeAwal}", 600, function () use ($tipeAwal) {
-                return Jurnal::where('tipe', $tipeAwal)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
+                // return Jurnal::where('tipe', $tipeAwal)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
+                  return Jurnal::where('tipe', $tipeAwal)->pluck('nomor')->unique()->toArray();
             });
         }
     
         // Menampilkan data berdasarkan tipe tujuan jika ada yang dipilih
         if ($tipeTujuan = request('tipe_tujuan')) {
             $data1 = Cache::remember("jurnal_data_{$tipeTujuan}", 600, function () use ($tipeTujuan) {
-                return Jurnal::where('tipe', $tipeTujuan)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
+                return Jurnal::where('tipe', $tipeTujuan)->pluck('nomor')->unique()->toArray();
             });
         }
     
