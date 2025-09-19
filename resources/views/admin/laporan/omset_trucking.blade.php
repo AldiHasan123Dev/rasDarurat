@@ -545,7 +545,7 @@
                 <div class="card-header py-2 px-3 text-white"
                     style="background: linear-gradient(90deg, #007bff, #0056b3);">
                     <h6 class="mb-0 fw-semibold text-white">
-                        <i class="bi bi-bar-chart-fill me-2"></i>Sangu yang bukan 1.6.2.2 atau 2.1.5.2.2
+                        <i class="bi bi-bar-chart-fill me-2"></i>Cek COA 6.2.1 at periode
                     </h6>
                 </div>
 
@@ -700,7 +700,7 @@
                 <div class="card-header py-2 px-3 text-white"
                     style="background: linear-gradient(90deg, #007bff, #0056b3);">
                     <h6 class="mb-0 fw-semibold text-white">
-                        <i class="bi bi-bar-chart-fill me-2"></i>Cek COA 6.2.1 at periode
+                        <i class="bi bi-bar-chart-fill me-2"></i>Sangu yang bukan 1.6.2.2 atau 2.1.5.2.2
                     </h6>
                 </div>
 
