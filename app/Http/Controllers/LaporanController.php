@@ -804,7 +804,36 @@ public function data_total_rekap_piutang(Request $request)
             }
             $jurnal_id = Jurnal::whereIn('order_trucking_id',$get_id)->whereIn('coa_id',[61,81])->pluck('order_trucking_id')->toArray();
             $data = OrderTrucking::whereIn('id',$get_id)->get()->groupBy('seal');
-            $rekapPerBulan = null;
+            $jurnalMiss = Jurnal::whereIn('order_trucking_id', $get_id)
+                        ->whereNotIn('coa_id', [61, 81])
+                        ->where(function ($query) {
+                            $query->where('nama', 'like', '%sangu kuli%')
+                                ->orWhere('nama', 'like', '%sangu sopir%');
+                        })
+                        ->get();
+
+            $jurnalPerBulan = $jurnalMiss->groupBy(function ($jurnal) {
+                    return Carbon::parse($jurnal->created_at)->format('Y-m'); 
+            });
+
+            $rekapPerBulan = $jurnalPerBulan
+                            ->map(function ($items, $periode) {
+                                return [
+                                    'periode' => $periode,
+                                    'total_debit' => $items->sum('debit'),
+                                    'list_jurnal_d' => $items->where('debit', '>', 0)
+                                        ->groupBy('nomor')
+                                        ->map(function ($group, $nomor) {
+                                            $ids = $group->pluck('id')->unique()->values()->implode(',');
+                                            return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">'
+                                                . $nomor . ' (' . $ids . ')'
+                                                . '</a>';
+                                        })
+                                        ->values()
+                                ];
+                            })
+                            ->sortBy('periode')
+                            ->values();
             $rekapPerBulan1 = null;
             $rekapPerBulan2 = null;
         }else{
@@ -863,7 +892,6 @@ public function data_total_rekap_piutang(Request $request)
                      });
                  })
     ->get();
-
     $jurnalPerBulan1 = $jurnalNull->groupBy(function ($jurnal) {
         return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
     });
@@ -884,27 +912,22 @@ $rekapPerBulan = $jurnalPerBulan
         return [
             'periode' => $periode,
             'total_debit' => $items->sum('debit'),
-            'list_jurnal_d' => $items->where('debit', '>', 0)
-                ->groupBy('nomor')
-                ->map(function ($group, $nomor) use ($periode, $currentPeriod) {
-                    if ($periode === $currentPeriod) {
-                        // periode sama → hanya tampilkan nomor
-                        return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">'
-                               . $nomor
-                               . '</a>';
-                    } else {
-                        // periode lain → tampilkan nomor + id
+            'list_jurnal_d' => $periode === $currentPeriod
+                ? collect([]) // array kosong kalau periode sama
+                : $items->where('debit', '>', 0)
+                    ->groupBy('nomor')
+                    ->map(function ($group, $nomor) {
                         $ids = $group->pluck('id')->unique()->values()->implode(',');
                         return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">'
                                . $nomor . ' (' . $ids . ')'
                                . '</a>';
-                    }
-                })
-                ->values()
+                    })
+                    ->values()
         ];
     })
     ->sortBy('periode')
     ->values();
+
 
 
   $rekapPerBulan2 = $jurnalPerBulan2->map(function ($items, $month) {
