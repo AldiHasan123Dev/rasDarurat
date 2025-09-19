@@ -279,8 +279,7 @@ class JurnalController extends Controller
         // Menampilkan data berdasarkan tipe awal jika ada yang dipilih
         if ($tipeAwal = request('tipe_awal')) {
             $data = Cache::remember("jurnal_data_{$tipeAwal}", 600, function () use ($tipeAwal) {
-                // return Jurnal::where('tipe', $tipeAwal)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
-                  return Jurnal::where('tipe', $tipeAwal)->pluck('nomor')->unique()->toArray();
+                return Jurnal::where('tipe', $tipeAwal)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
             });
         }
     
@@ -1147,6 +1146,8 @@ $kode = $collection
         foreach ($jurnal as $item) {
             if (!empty($item['nama'])) {
                 $item['created_at'] = now();
+                $item['debit'] = isset($item['debit']) ? $item['debit'] : 0;
+                $item['credit'] = isset($item['credit']) ? $item['credit'] : 0;
                 $item['jurnal_balik'] = empty($item['jurnal_balik']) ? null : $item['jurnal_balik'];
                 $item['is_balik'] = 1;
                 $item['relasi'] = $request->nomor;
@@ -1158,7 +1159,6 @@ $kode = $collection
                 $r++;
             }
         }
-    
         if ($r == 0) {
             return back()->with('danger', 'Data gagal disimpan');
         }
