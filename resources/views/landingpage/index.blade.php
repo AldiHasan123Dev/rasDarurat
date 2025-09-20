@@ -456,7 +456,7 @@
                                     <div class="fa-social">
                                         <a href="https://wa.me/6281230162999"><i class="fa fa-whatsapp"></i></a>
                                         <a href="mailto:dwi@ptras.id"><i class="fa fa-envelope"></i></a>
-                                        <a href="https://maps.app.goo.gl/vGJpjFyxBmEtK33t8"><i class="fa fa-map"></i></a>
+                                        <a href="https://maps.app.goo.gl/TYVPApe1GyqD1ML59"><i class="fa fa-map"></i></a>
                                     </div>
                                 </div>
                         </div>

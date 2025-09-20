@@ -112,26 +112,25 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
                  * Pecah keterangan menjadi beberapa baris
                  * Jika ada tanda ";" → buat baris baru untuk setiap keterangan
                  */
-                $keteranganList = array_filter(explode(';', $kodeBarangJasa));
-                foreach ($keteranganList as $ket) {
-                    $data[] = [
-                        $rowNumber,       // Nomor baris
-                        'B',              // Barang/Jasa
-                        '060000',         // Kode Barang Jasa
-                        trim($ket),       // Nama Barang/Jasa
-                        $NamaSatuan,      // Satuan
-                        $hargaSatuan,     // Harga Satuan
-                        $jumlahContainer, // Jumlah
-                        '0.00',           // Total Diskon
-                        $dpp,             // DPP
-                        $dpp,             // DPP Nilai Lain
-                        12,               // Tarif PPN
-                        $ppn,             // PPN
-                        '0.00',           // Tarif PPnBM
-                        '0.00',           // PPnBM
-                    ];
-                }
+               $keteranganList = array_filter(explode(';', $kodeBarangJasa));
+               $keterangan = trim(reset($keteranganList)); // ambil hanya satu keterangan
 
+                $data[] = [
+                    $rowNumber,
+                    'B',
+                    '060000',
+                    $keterangan,
+                    $NamaSatuan,
+                    $hargaSatuan,
+                    $jumlahContainer,
+                    '0.00',
+                    $dpp,
+                    $dpp,
+                    12,
+                    $ppn,
+                    '0.00',
+                    '0.00',
+                ];
                 // Jika kondisi [1,6], tambahkan baris ekstra
                 if (in_array($kondisi, [1, 6])) {
                     $hargaSatuanTambahan = 500000;
