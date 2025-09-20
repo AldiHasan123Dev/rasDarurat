@@ -108,9 +108,9 @@
                                     <th>Pembayar</th>
                                     {{-- <th>Pelayaran</th> --}}
                                     <th>Shippment</th>
-                                    <th>Kapal</th>
+                                    {{-- <th>Kapal</th> --}}
                                     {{-- <th>Voyage</th> --}}
-                                    {{-- <th>Container</th> --}}
+                                    <th>Container</th>
                                     <th>Tgl inv dibayar</th>
                                     <th>Tgl Komisi</th>
                                     <th>Fee</th>
@@ -123,9 +123,9 @@
                                     <td>{{ $item->tarif->customer->nama ?? '-' }}</td>
                                     {{-- <td>{{ $item->jadwal_kapal->pelayaran->nama ?? '-' }}</td> --}}
                                     <td>{{ $item->tarif->shipmentInfo->nama ?? '-' }}</td>
-                                    <td>{{ $item->jadwal_kapal->kapal->nama ?? '-' }}</td>
+                                    {{-- <td>{{ $item->jadwal_kapal->kapal->nama ?? '-' }}</td> --}}
                                     {{-- <td>{{ $item->jadwal_kapal->voyage ?? '-' }}</td> --}}
-                                    {{-- <td>{{ $item->container ?? '-' }}</td> --}}
+                                    <td>{{ $item->container ?? '-' }}</td>
                                     <td>{{ is_null($item->invoice_bayar) ? '-' : date('d/m/y',strtotime($item->invoice_bayar)) }}</td>
                                     <td>{{ is_null($item->tgl_komisi) ? '-' : date('d/m/y',strtotime($item->tgl_komisi)) }}</td>
                                     <td>{{ number_format($item->komisi) }}</td>
