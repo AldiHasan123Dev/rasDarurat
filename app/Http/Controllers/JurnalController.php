@@ -362,39 +362,38 @@ class JurnalController extends Controller
     {
         $coa = COA::where('is_active', 1)->orderBy('kode')->get();
 
-$code = Jurnal::whereNotNull('kode')
-    ->whereNull('jurnal_balik')
-    ->select('kode', 'jurnal_balik')
-    ->distinct()
-    ->get()
-    ->toArray();
+        $code = Jurnal::whereNotNull('kode')
+            ->whereNull('jurnal_balik')
+            ->select('kode', 'jurnal_balik')
+            ->distinct()
+            ->get()
+            ->toArray();
 
-$uncode = Jurnal::whereNotNull('kode')
-    ->whereNotNull('jurnal_balik')
-    ->select('kode', 'jurnal_balik')
-    ->distinct()
-    ->get()
-    ->toArray();
+        $uncode = Jurnal::whereNotNull('kode')
+            ->whereNull('jurnal_balik')
+            ->select('kode', 'jurnal_balik')
+            ->distinct()
+            ->get()
+            ->toArray();
 
-// Gabungkan
-$combined = array_merge($code, $uncode);
+        // Gabungkan
+        $combined = array_merge($code, $uncode);
 
-// Konversi ke koleksi
-$collection = collect($combined);
+        // Konversi ke koleksi
+        $collection = collect($combined);
 
-// Ambil semua kode yang punya jurnal_balik tidak null
-$kodeDenganBalik = $collection
-    ->whereNotNull('jurnal_balik')
-    ->pluck('kode')
-    ->unique();
+        // Ambil semua kode yang punya jurnal_balik tidak null
+        $kodeDenganBalik = $collection
+            ->whereNotNull('jurnal_balik')
+            ->pluck('kode')
+            ->unique();
 
-// Filter hanya yang jurnal_balik null dan tidak ada di daftar kode dengan jurnal_balik
-$kode = $collection
-    ->filter(function ($item) use ($kodeDenganBalik) {
-        return is_null($item['jurnal_balik']) && !$kodeDenganBalik->contains($item['kode']);
-    })
-    ->values()
-    ->toArray();
+        // Filter hanya yang jurnal_balik null dan tidak ada di daftar kode dengan jurnal_balik
+        $kode = $collection->filter(function ($item) use ($kodeDenganBalik) {
+                    return is_null($item['jurnal_balik']) && !$kodeDenganBalik->contains($item['kode']);
+                })
+                ->values()
+                ->toArray();
 
 
 
