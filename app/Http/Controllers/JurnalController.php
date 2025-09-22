@@ -389,14 +389,7 @@ class JurnalController extends Controller
             ->unique();
 
         // Filter hanya yang jurnal_balik null dan tidak ada di daftar kode dengan jurnal_balik
-        $kode = $collection->filter(function ($item) use ($kodeDenganBalik) {
-                    return is_null($item['jurnal_balik']) && !$kodeDenganBalik->contains($item['kode']);
-                })
-                ->values()
-                ->toArray();
-
-
-
+        $kode = $uncode;
 
         $data = [];
         $new = [];
