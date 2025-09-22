@@ -437,6 +437,10 @@
                     label: 'kapal'
                 },
                 {
+                    name: 'container',
+                    label: 'container'
+                },
+                {
                     name: 'voyage',
                     label: 'voyage'
                 },
