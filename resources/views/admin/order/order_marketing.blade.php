@@ -545,7 +545,7 @@
         url: '{{ route('jqgrid.order') }}',
         mtype: 'GET',
         datatype: 'json',
-        postData: { marketing_id:  @json($marketing) },
+        postData: { marketing_id:  @json($idMarketing) },
         colModel: [
             {search:true, width:100, name: 'job', label : 'job', frozen:true},
             {search:true, width:100, name: 'no', label : 'no', frozen:true, sortable: false},
