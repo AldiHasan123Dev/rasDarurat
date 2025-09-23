@@ -197,7 +197,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
     Route::resource('port', PortController::class);
     Route::post('/tarif/datatable1', [TarifController::class, 'datatable1'])->name('tarif.datatable1');
-
+    Route::get('order-marketing',[OrderController::class,'orderMarketing'])->name('order.order_marketing');
     Route::get('data-customer', [CustomerController::class, 'data_customer'])->name('data-customer.list');
     Route::get('tarif/edit-marketing/{tarif}', [TarifController::class, 'editMarketing'])->name('tarif.edit_marketing');
     Route::get('data-harga-of', [LapPelayaranController::class, 'data'])->name('data-lap-pelayaran.list');
