@@ -120,6 +120,14 @@ class OrderTruckingController extends Controller
                 $q->where('job','LIKE','%'.request('job').'%');
             });
         }
+       if (request('invNull')) {
+    $query->whereNull('invoice')
+        ->whereHas('kendaraan', function ($q) {
+            $q->where('milik', 'R1');
+        })
+        ->where('customer_id', '<>', 2); // mengecualikan customer_id = 2
+}
+
         if(request('sopir')){
             $query->whereHas('sopir', function($q){
                 $q->where('nama','LIKE','%'.request('sopir').'%');
@@ -152,6 +160,11 @@ class OrderTruckingController extends Controller
         // }else{
         // }
         $count = OrderTrucking::get('id')->count();
+         if(request('invNull')){
+         $count = OrderTrucking::whereNull('invoice')->whereHas('kendaraan', function($q){
+                $q->where('milik', 'R1');
+            })->where('customer_id', '<>', 2)->get('id')->count();
+        }
 
         if ($count > 0 && $limit > 0) {
             $total_pages = ceil($count / $limit);
