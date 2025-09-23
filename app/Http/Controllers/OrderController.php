@@ -83,7 +83,6 @@ class OrderController extends Controller
                     ->where('customers.marketing_id',$idMarketing)
                     ->where('tarif.is_active',1)
                     ->get();
-        dd($tarifs);
         $barang = Barang::pluck('nama')->toArray();
         $satuan = Satuan::pluck('nama')->toArray();
         $agent = Agen::pluck('nama')->toArray();
