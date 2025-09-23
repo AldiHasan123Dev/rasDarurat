@@ -15,6 +15,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class CustomerController extends Controller
@@ -59,6 +60,23 @@ class CustomerController extends Controller
             $customer_options[$cus->id] = $cus->nama;
         }
         return view('admin.customer.tarif', compact('customer_options','pelayaran','customer','lokasi','satuan','kondisi','shipment'));
+    }
+
+    public function tarifMarketing()
+    {
+        $idMarketing = Auth::id();
+        $jadwal_kapal = JadwalKapal::whereHas('pelayaran')->where('is_active',1)->get();
+        $customer = Customer::where('marketing_id',$idMarketing)->get(['nama','id']);
+        $lokasi = Lokasi::pluck('nama','id');
+        $satuan = Satuan::pluck('nama','id');
+        $kondisi = Kondisi::pluck('nama','id');
+        $shipment = Shipment::pluck('nama','id');
+        $pelayaran = Pelayaran::pluck('nama','id');
+        $customer_options = [];
+        foreach ($customer as $cus) {
+            $customer_options[$cus->id] = $cus->nama;
+        }
+        return view('admin.customer.tarif_marketing', compact('customer_options','pelayaran','customer','lokasi','satuan','kondisi','shipment','idMarketing'));
     }
 
     public function create()
@@ -135,13 +153,20 @@ class CustomerController extends Controller
     {
         $limit = request('length');
         $start = request('start') * request('length');
+        $idMarketing = Auth::id();
         if(request('type')=='tarif'){
             $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
                 ->leftJoin('users as cs','cs.id','=','customers.cs_id')
                 ->whereHas('tarif')
                 ->select('customers.*')->limit($start)->offset($limit);
             $count = Customer::whereHas('tarif')->select('id')->count();
-        }else{
+        }else if(request('type')=='tarif_marketing'){
+            $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
+                ->leftJoin('users as cs','cs.id','=','customers.cs_id')
+                ->where('customers.marketing_id',$idMarketing)
+                ->select('customers.*')->limit($start)->offset($limit);
+                $count = Customer::select('id')->where('marketing_id', $idMarketing)->count();
+        } else{
             $data = Customer::leftJoin('users as marketing','marketing.id','=','customers.marketing_id')
                 ->leftJoin('users as cs','cs.id','=','customers.cs_id')
                 ->select('customers.*')->limit($start)->offset($limit);

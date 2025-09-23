@@ -196,8 +196,10 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('hutang-pelayaran', HutangPelayaranController::class)->except(['show']);
     Route::resource('mutasi-totalan-sopir', MutasiTotalanSopirController::class);
     Route::resource('port', PortController::class);
+    Route::post('/tarif/datatable1', [TarifController::class, 'datatable1'])->name('tarif.datatable1');
 
     Route::get('data-customer', [CustomerController::class, 'data_customer'])->name('data-customer.list');
+    Route::get('tarif/edit-marketing/{tarif}', [TarifController::class, 'editMarketing'])->name('tarif.edit_marketing');
     Route::get('data-harga-of', [LapPelayaranController::class, 'data'])->name('data-lap-pelayaran.list');
     Route::post('harga-of/store', [LapPelayaranController::class, 'store'])->name('lap-pelayaran.store');
     Route::get('/harga-of/show', [LapPelayaranController::class, 'show'])->name('lap-pelayaran.show');
@@ -236,6 +238,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('/jurnal/export=jurnal-code-excel', [JurnalController::class, 'exportExcel'])->name('jurnal.exportExcel');
 
     Route::get('customer-tarif', [CustomerController::class, 'tarif'])->name('customer.tarif');
+    Route::get('customer-tarif-marketing', [CustomerController::class, 'tarifMarketing'])->name('customer.tarif_marketing');
     Route::get('harga-of', [LapPelayaranController::class, 'index'])->name('lap.pelayaran');
     Route::get('kunci-jurnal', [JurnalController::class, 'kunci_jurnal'])->name('kunci.jurnal');
     Route::get('order-blum-invoice', [OrderController::class,'order_blum_inv'])->name('order_blum_inv');

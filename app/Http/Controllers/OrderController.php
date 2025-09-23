@@ -38,6 +38,7 @@ class OrderController extends Controller
         if($marketing){
             $marketing = Auth::id();
         }
+        $idMarketing = Auth::id();
         $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
         $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
                     ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
@@ -49,6 +50,19 @@ class OrderController extends Controller
                     ->select('tarif.*')
                     ->where('tarif.is_active',1)
                     ->get();
+        if($marketing) {
+                    $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
+                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
+                    ->join('lokasi as dari','dari.id','=','tarif.dari')
+                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
+                    ->join('satuan','satuan.id','=','tarif.satuan')
+                    ->select('tarif.*')
+                    ->where('tarif.is_active',1)
+                    ->where('customers.marketing_id',$idMarketing)
+                    ->get();
+        }
         $barang = Barang::pluck('nama')->toArray();
         $satuan = Satuan::pluck('nama')->toArray();
         $agent = Agen::pluck('nama')->toArray();

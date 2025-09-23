@@ -15,30 +15,54 @@ class CustomerController extends Controller
     }
 
     public function getPengirim(Request $request)
-    {
-        try {
-            $isPaging = $request->has('page');
-            $query = Customer::query();
-            if ($request->has('cari')) {
-                $query->where('nama', 'like', "%$request->cari%")->whereNotNull('npwp')->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(npwp, '.', ''), '-', ''), ' ', ''), '0', '') != ''");
-                $counts = $query->count();
-            } else {
-                $counts = $query->count();
-            }
-            $items = $query->limit(20)->offset($isPaging ? ($request->page - 1) * 20 : 0)->get(['id', 'nama as text']);
-            $res = [];
-            foreach ($items as $idx => $it) {
-                $res[$idx]['id'] = $it->id;
-                $res[$idx]['text'] = $it->text.' | '.$it->id ;
-            }
-        } catch (\Throwable $th) {
-            return response(['message' => 'Gagal mendapatkan data pengirim', 'system' => $th->getMessage()], 500);
+{
+    try {
+        $isPaging = $request->has('page');
+
+        // Debug untuk memastikan data terkirim
+        // dd($request->all());
+
+        $query = Customer::query();
+
+        if ($request->has('cari') || $request->has('marketing')) {
+            $query->where('nama', 'like', "%$request->cari%")
+                  ->where('marketing_id', $request->marketing)
+                  ->whereNotNull('npwp')
+                  ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(npwp, '.', ''), '-', ''), ' ', ''), '0', '') != ''");
+
+            $counts = $query->count();
+        } elseif ($request->has('cari')) {
+            $query->where('nama', 'like', "%$request->cari%")
+                  ->whereNotNull('npwp')
+                  ->whereRaw("REPLACE(REPLACE(REPLACE(REPLACE(npwp, '.', ''), '-', ''), ' ', ''), '0', '') != ''");
+
+            $counts = $query->count();
+        } else {
+            $counts = $query->count();
         }
+
+        $items = $query->limit(20)
+                       ->offset($isPaging ? ($request->page - 1) * 20 : 0)
+                       ->get(['id', 'nama as text']);
+
+        $res = [];
+        foreach ($items as $idx => $it) {
+            $res[$idx]['id'] = $it->id;
+            $res[$idx]['text'] = $it->text . ' | ' . $it->id;
+        }
+    } catch (\Throwable $th) {
         return response([
-            'items' => $res,
-            'counts' => $counts,
-        ], 200);
+            'message' => 'Gagal mendapatkan data pengirim',
+            'system'  => $th->getMessage(),
+        ], 500);
     }
+
+    return response([
+        'items'  => $res,
+        'counts' => $counts,
+    ], 200);
+}
+
 
     public function getCustomer()
     {

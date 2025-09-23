@@ -34,6 +34,7 @@
                     @if (!request('filter-order') && is_null($marketing))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     @endif
+                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-malindo">JOB Malindo</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-cheiljedang">JOB PT. CJ. CHEILJEDANG</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-fortuna">JOB FORTUNA LILY HALIM</button>
@@ -188,7 +189,13 @@
 <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasOrder" aria-labelledby="offcanvasOrderLabel"
     style="height:700px">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasOrderLabel">Form Order</h5>
+        <h5 class="offcanvas-title" id="offcanvasOrderLabel">
+            @if(is_null($marketing)) 
+            Form Order
+            @else
+            Form Order untuk Marketing
+            @endif
+        </h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
