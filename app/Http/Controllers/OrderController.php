@@ -50,19 +50,6 @@ class OrderController extends Controller
                     ->select('tarif.*')
                     ->where('tarif.is_active',1)
                     ->get();
-        if($marketing) {
-                    $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
-                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
-                    ->join('lokasi as dari','dari.id','=','tarif.dari')
-                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
-                    ->join('shipments','shipments.id','=','tarif.shipment')
-                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
-                    ->join('satuan','satuan.id','=','tarif.satuan')
-                    ->select('tarif.*')
-                    ->where('tarif.is_active',1)
-                    ->where('customers.marketing_id',$idMarketing)
-                    ->get();
-        }
         $barang = Barang::pluck('nama')->toArray();
         $satuan = Satuan::pluck('nama')->toArray();
         $agent = Agen::pluck('nama')->toArray();
@@ -76,6 +63,40 @@ class OrderController extends Controller
             $tarif[$item->id] = ($item->customer->nama??'-') .' | '.($item->customer->id??'-').' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing . ' || ' .($item->shipmentInfo->nama??'-');
         }
         return view('admin.order.index', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers','marketing'));
+    }
+
+    public function orderMarketing($marketing = null)
+    {
+        if($marketing){
+            $marketing = Auth::id();
+        }
+        $idMarketing = Auth::id();
+        $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
+        $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
+                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
+                    ->join('lokasi as dari','dari.id','=','tarif.dari')
+                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
+                    ->join('shipments','shipments.id','=','tarif.shipment')
+                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
+                    ->join('satuan','satuan.id','=','tarif.satuan')
+                    ->select('tarif.*')
+                    ->where('customers.marketing_id',$idMarketing)
+                    ->where('tarif.is_active',1)
+                    ->get();
+        dd($tarifs);
+        $barang = Barang::pluck('nama')->toArray();
+        $satuan = Satuan::pluck('nama')->toArray();
+        $agent = Agen::pluck('nama')->toArray();
+        $tarif = array();
+        $pelayaran = $jadwal_kapal->pluck('pelayaran_id')->toArray();
+        $lokasi = Tarif::whereIn('pelayaran_id',$pelayaran)->pluck('tujuan')->toArray();
+        $data_tarif_lokasi = array_unique($lokasi);
+        $data_lokasi = Lokasi::whereIn('id',$data_tarif_lokasi)->get();
+        $customers = Customer::pluck('nama')->toArray();
+        foreach ($tarifs as $id => $item ) {
+            $tarif[$item->id] = ($item->customer->nama??'-') .' | '.($item->customer->id??'-').' || '.($item->dari_lokasi->nama??'-') .' || '.($item->tujuan_lokasi->nama??'-') .' || '.($item->kondisiInfo->nama??'-') .' || '.($item->pelayaran->nama??'-') .' || '.($item->shipmentInfo->nama??'-') .' || '.($item->tarif??'-').' || '.$item->stuffing . ' || ' .($item->shipmentInfo->nama??'-');
+        }
+        return view('admin.order.order_marketing', compact('tarif','barang','satuan','agent','jadwal_kapal','data_lokasi','customers','marketing'));
     }
 
     public function order_blum_inv(){

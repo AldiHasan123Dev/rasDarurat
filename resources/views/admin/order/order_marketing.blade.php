@@ -28,43 +28,10 @@
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex flex-wrap" style="gap:10px;">
-                    @if (Auth::user()->role_id==1 || Auth::id()==5)
-                    <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export">Export Excel</button>
-                    @endif
-                    @if (!request('filter-order') && is_null($marketing))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
-                    @endif
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-malindo">JOB Malindo</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-cheiljedang">JOB PT. CJ. CHEILJEDANG</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-fortuna">JOB FORTUNA LILY HALIM</button>
-                    @if (is_null($marketing))
-                    <button type="button" onclick="modalEditOrder()" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
-                    @endif
-                    @if (is_null($marketing))
-                        <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
-                        <button onclick="printPackingListKubikasi()" id="packing-list-kubikasi" class="py-2 px-3 btn btn-sm btn-warning">Packing List Kubikasi</button>
-                        <button onclick="modalPindahKapal()" id="btn-pindah-kapal" class="py-2 px-3 btn btn-sm btn-info">Pindah Kapal</button>
-                        <form action="" id="copy-order" method="post" enctype="multipart/form-data">
-                            @csrf
-                            <button class="py-2 px-3 btn btn-sm btn-secondary" type="button" id="copy-order-btn" onclick="return confirm('Are you sure?')">Copy Order</button>
-                        </form>
-                        <form action="" id="delete-order" method="post" enctype="multipart/form-data">
-                            @csrf
-                            @method('DELETE')
-                            <button class="py-2 px-3 btn btn-sm btn-danger" type="submit" onclick="return confirm('Are you sure?')">Hapus Order</button>
-                        </form>
-                        <form action="" id="tarik-ba" method="post">
-                            @csrf
-                            @method('PUT')
-                            @if (is_null($marketing))
-                            <button class="py-2 px-3 btn btn-sm btn-warning" name="ba" value="2" type="submit" onclick="return confirm('Are you sure?')">Tarik BA kembali</button>
-                            @endif
-                        </form>
-                        <button data-bs-toggle="modal" data-bs-target="#tagihan" class="btn btn-sm btn-success" id="btn-tagihan">Tambah Tagihan</button>
-                    @endif
-                    @if (Auth::user()->role_id==1)
-                        <button class="py-2 px-3 btn btn-sm btn-light text-dark border border-dark" id="btn-lock">-</button>
-                    @endif
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
                 <div>
@@ -138,7 +105,7 @@
                             <b><b class="koli"></b> Koli</b>
                         </div>
                         <div class="p-2 d-flex" style="gap:10px" id="bttb-info">
-                            @if (is_null($marketing))
+                            {{-- @if (is_null($marketing))
                             <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBTTBCreate"><i class="fas fa-plus"></i> Tambah BTTB</button>
                             <button onclick="printBttb()" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB</button>
                             <button onclick="printBttb(true)" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-print"><i class="fas fa-print"></i> Print BTTB Inc Berat</button>
@@ -146,7 +113,7 @@
                             <button onclick="printBttbKubikasi(true)" class="py-2 px-3 btn btn-sm btn-secondary" style="font-size: .7rem" id="bttb-kubikasi-print"><i class="fas fa-print"></i> Print BTTB Kubikasi Inc Berat</button>
                             <a class="py-2 px-3 btn btn-sm btn-info" style="font-size: .7rem" id="edit-bttb"><i class="fas fa-pencil"></i> Edit</a>
                             <button class="py-2 px-3 btn btn-sm btn-danger" style="font-size: .7rem" id="delete-bttb"><i class="fas fa-trash"></i> Hapus</button>
-                            @endif
+                            @endif --}}
                         </div>
                     </div>
                     <div class="card-body">
@@ -189,11 +156,7 @@
     style="height:700px">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasOrderLabel">
-            @if(is_null($marketing)) 
-            Form Order
-            @else
             Form Order untuk Marketing
-            @endif
         </h5>
         <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
