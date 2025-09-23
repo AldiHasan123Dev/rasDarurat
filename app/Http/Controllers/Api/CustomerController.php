@@ -24,7 +24,7 @@ class CustomerController extends Controller
 
         $query = Customer::query();
 
-        if ($request->has('cari') || $request->has('marketing')) {
+        if ($request->has('cari') && $request->has('marketing')) {
             $query->where('nama', 'like', "%$request->cari%")
                   ->where('marketing_id', $request->marketing)
                   ->whereNotNull('npwp')
