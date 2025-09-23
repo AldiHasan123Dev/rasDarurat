@@ -29,9 +29,9 @@
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
                 <div class="d-flex flex-wrap" style="gap:10px;">
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
-                    <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-malindo">JOB Malindo</button>
+                    {{-- <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-malindo">JOB Malindo</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-cheiljedang">JOB PT. CJ. CHEILJEDANG</button>
-                    <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-fortuna">JOB FORTUNA LILY HALIM</button>
+                    <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-fortuna">JOB FORTUNA LILY HALIM</button> --}}
                     <b>N0. JOB (selected): <span class="nojob"></span></b>
                 </div>
                 <div>

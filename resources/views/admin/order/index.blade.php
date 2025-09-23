@@ -33,10 +33,10 @@
                     @endif
                     @if (!request('filter-order') && is_null($marketing))
                     <button class="py-2 px-3 btn btn-sm btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasOrder" aria-controls="offcanvasOrder">Tambah Order</button>
-                    @endif
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-malindo">JOB Malindo</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-cheiljedang">JOB PT. CJ. CHEILJEDANG</button>
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-fortuna">JOB FORTUNA LILY HALIM</button>
+                    @endif
                     @if (is_null($marketing))
                     <button type="button" onclick="modalEditOrder()" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
