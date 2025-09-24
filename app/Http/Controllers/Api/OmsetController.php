@@ -63,7 +63,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
             ->whereIn('coa_id', $coa_id)
             ->where(function ($q) {
                 $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
             })
             ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
@@ -72,7 +72,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
             ->whereIn('coa_id', $coa_id)
             ->where(function ($q) {
                 $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
             })
             ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
@@ -82,7 +82,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
             ->whereIn('coa_id', $coa_id)
             ->where(function ($q) {
                 $q->whereRaw("LOWER(nama) LIKE '%biaya truck luar%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%tb/tl%'");
             })
             ->whereRaw("LOWER(nama) NOT LIKE '%biaya trucking banjarmasin%'") 
