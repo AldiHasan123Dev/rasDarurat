@@ -314,7 +314,7 @@
             rowList:[10,25,50,100],
 			viewrecords: true,
             pager: "#jqGridPager1",
-            caption: "Order Trucking blum jadi invoice nopol R1",
+            caption: "Order Trucking belum invoice nopol R1",
             onCellSelect: function (rowId, iRow, iCol, e) {
                 id = $(this).jqGrid('getCell', rowId, 'id');
                 let nomor = $(this).jqGrid('getCell', rowId, 'jurnal_piutang');
