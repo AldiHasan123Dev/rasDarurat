@@ -153,7 +153,12 @@ class OrderTruckingController extends Controller
         //     $data = $query->orderBy($sidx,$sord)->orderBy('no_job')->skip($start)->take($limit)->get();
         // }else{
         // }
-        $data = $query->orderBy('tgl_muat','desc')->skip($start)->take($limit)->get();
+        if (request('invNull')) {
+    $data = $query->reorder()->orderBy('tgl_muat', 'asc')->skip($start)->take($limit)->get();
+} else {
+    $data = $query->reorder()->orderBy('tgl_muat', 'desc')->skip($start)->take($limit)->get();
+}
+
 
         // if($is_search){
         //     $count = $query->count();
