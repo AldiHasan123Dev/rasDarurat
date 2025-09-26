@@ -84,9 +84,9 @@
 @endsection
 @section('content')
     <div class="container">
-                <a href="{{ route('rekap_piutang.export') }}" class="btn btn-success mb-3">
+                {{-- <a href="{{ route('rekap_piutang.export') }}" class="btn btn-success mb-3">
                     <i class="fa fa-download"></i> Export Outstanding All (Tidak Termasuk Inv Manual)
-                </a>
+                </a> --}}
         <div class="card">
             <div class="card-body">
                 <div class="section-title">Rekap Piutang (Belum Bayar)</div>
