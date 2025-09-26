@@ -19,7 +19,7 @@
                 <form action="" id="delete" method="post">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Hapus</button>
+                    {{-- <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i> Hapus</button> --}}
                 </form>
                 <a style="font-size: .7rem" class="btn-sm btn btn-success" href="{{ route('customer.create') }}">Tambah Customer <i class="fas fa-plus"></i></a>
                 {{-- <form action="{{ route('customer.import.update') }}" method="post" enctype="multipart/form-data">
