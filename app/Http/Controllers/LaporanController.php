@@ -9,6 +9,8 @@ use App\Models\Jurnal;
 use Carbon\Carbon;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
+use App\Exports\RekapPiutangExport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Order;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Cache;
@@ -194,6 +196,158 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
     ]);
     // Tampilkan hasil akhir
 }
+
+public function getRekapData()
+{
+    $orders = Order::with([
+            'tarif.customer:id,nama,top,marketing_id,cs_id',
+            'transaksi' => function ($query) {
+                $query->whereNotNull('tanggal_kirim')
+                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+            },
+            'jurnals' => function ($query) {
+                $query->where('coa_id', 46)
+                      ->where('debit', '!=', 0)
+                      ->select('order_id', 'debit', 'coa_id');
+            },
+            'jadwal_kapal.kapal'
+        ])
+        ->select('id', 'no_job', 'jadwal_kapal_id', 'invoice','container', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->orderByDesc('created_at')
+        ->get()
+        ->map(function ($order) {
+            $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+            return $order;
+        });
+
+    // Ambil jurnal nilai invoice
+    $jurnalNilaiInv = Jurnal::withTrashed()
+        ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
+        ->where('coa_id', 46)
+        ->whereNull('deleted_at')
+        ->where('debit', '!=', 0)
+        ->whereNotNull('invoice')
+        ->groupBy('invoice')
+        ->get()
+        ->keyBy('invoice');
+
+    // Ambil jurnal credit
+    $jurnals = Jurnal::withTrashed()
+        ->where('coa_id', 46)
+        ->whereNull('deleted_at')
+        ->where('credit', '!=', 0)
+        ->whereNotNull('invoice')
+        ->select(
+            'invoice',
+            \DB::raw('SUM(credit) as total_credit'),
+            \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+        )
+        ->groupBy('invoice')
+        ->get()
+        ->keyBy('invoice');
+
+    // Langsung map ke setiap order tanpa groupBy
+    $rekapData = $orders->map(function ($order) use ($jurnalNilaiInv, $jurnals) {
+        $trans = $order->transaksi;
+        $cust = $order->tarif->customer ?? null;
+        $shipment = $order->tarif->shipmentInfo->nama ?? '-';
+        $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+        $voyage = $order->jadwal_kapal->voyage ?? '-';
+        $td = is_null($order->jadwal_kapal) ? '-' : (!$order->jadwal_kapal->td ? '-' : date('d-m-Y', strtotime($order->jadwal_kapal->td)));
+        $tarif = $order->tarif->tarif ?? null;
+        $ppn = $tarif * 0.011;
+        $total = $tarif + $ppn;
+        $cs = $order->tarif->customer->cs->name ?? '-';
+        $marketing = $order->tarif->customer->marketing->name ?? '-';
+
+        // Ambil subtotal dari jurnal
+        $jurnalN = $jurnalNilaiInv[$order->invoice]->total_debit ?? 0;
+        $subtotal = $jurnalN;
+
+        $pph = $trans->pph ?? 0;
+        $jumlah_harga = round($subtotal);
+        $top = (int) ($cust->top ?? 0);
+        $invoiceDate = $order->tanggal_kirim;
+
+        if (!$invoiceDate) {
+            return null; // skip kalau tanggal_kirim kosong
+        }
+
+        $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
+        $tempo = $tempo1->format('Y-m-d');
+
+        if ($jumlah_harga == 0) {
+            return null;
+        }
+
+        $jurnal = $jurnals[$order->invoice] ?? null;
+        $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
+        $sebesar = $jurnal->total_credit ?? 0;
+        $kurang_bayar = $jumlah_harga - $sebesar;
+        $no_job = ($order->job ?? '-') . '-' . sprintf('%02d',$order->no_job ?? '-');
+
+
+        $today = Carbon::now();
+        $daysDiff = $tempo1->diffInDays($today, false);
+        $warna_status = '';
+
+        if ($kurang_bayar == 0) {
+            $warna_status = 'hijau';
+        } elseif ($kurang_bayar < 0) {
+            $warna_status = 'biru';
+        } elseif (round($pph) == $kurang_bayar) {
+            $warna_status = 'oranye';
+        } elseif (Carbon::parse($tempo)->isFuture()) {
+            $daysDiff = Carbon::now()->diffInDays(Carbon::parse($tempo), false);
+            if ($daysDiff > 0 && $daysDiff <= 4) {
+                $warna_status = 'kuning';
+            }
+        } elseif ($daysDiff > 0) {
+            $warna_status = 'merah';
+        }
+
+        $tfMasuk = $kurang_bayar - round($pph);
+
+        return [
+            'cs' => $cust->cs->name ?? '-',
+            'no_job' => $no_job,
+            'marketing' => $cust->marketing->name ?? '-',
+            'customer' => $cust->nama ?? '-',
+            'invoice' => $order->invoice,
+            'shipment' => $shipment ?? '-',
+            'kapal' => $kapal ?? '-',
+            'voyage' => $voyage ?? '-',
+            'container' => $order->container ?? '-',
+            'td' => $td ?? '-',
+            'tarif' => $tarif ?? '-',
+            'jumlah_harga' => $jumlah_harga,
+            'ppn' => round($ppn),
+            'total' => round($total),
+            'kurang_bayar' => $kurang_bayar,
+            'tf_masuk' => (int) $tfMasuk,
+            'warna_status' => $warna_status,
+        ];
+    })
+    ->filter(function ($item) {
+        return $item !== null && $item['kurang_bayar'] != 0;
+    })
+    ->sortByDesc('invoice')
+    ->values();
+
+    // ✅ Tambahkan return di sini
+    return $rekapData;
+}
+
+
+public function exportRekapData()
+{
+    // Ambil data dari query yang sudah kamu buat
+    $rekapData = $this->getRekapData(); // Pindahkan query panjang kamu ke function ini
+
+    return Excel::download(new RekapPiutangExport($rekapData), 'rekap-piutang.xlsx');
+}
+
+
 
 
 public function data_rekap_piutang(Request $request)

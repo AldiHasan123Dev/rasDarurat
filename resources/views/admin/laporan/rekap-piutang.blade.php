@@ -83,12 +83,16 @@
     </style>
 @endsection
 @section('content')
- <div class="container">
+    <div class="container">
+                <a href="{{ route('rekap_piutang.export') }}" class="btn btn-success mb-3">
+                    <i class="fa fa-download"></i> Export Outstanding All (Tidak Termasuk Inv Manual)
+                </a>
         <div class="card">
             <div class="card-body">
                 <div class="section-title">Rekap Piutang (Belum Bayar)</div>
                 {{-- Filter Kedua --}}
                 <div class="col-md-3">
+
 
                     {{-- <div class="col-md-6 mb-5 text-end">
                         <label class="form-label d-block">&nbsp;</label> 
@@ -115,7 +119,7 @@
         </div>
     </div>
 
-     <div class="container mt-5">
+    <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -193,17 +197,17 @@
         </div>
     </div>
 
-    
+
     <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
                 {{-- Filter Kedua --}}
                 <div class="section-title">Rekap Piutang Invoice (Berdasarkan TF Masuk)</div>
-                    <div class="col-md-3">
-                        <label class="form-label">Cari Nominal TF Masuk</label>
-                        <input type="text" id="tf-masuk" name="tf-masuk" class="form-control" />
-                    </div>
+                <div class="col-md-3">
+                    <label class="form-label">Cari Nominal TF Masuk</label>
+                    <input type="text" id="tf-masuk" name="tf-masuk" class="form-control" />
+                </div>
                 {{-- Grid Kedua --}}
                 <div class="table-wrapper">
                     <table id="jqGrid5"></table>
@@ -215,7 +219,7 @@
 
 
 
-        <div class="container mt-5">
+    <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -384,35 +388,34 @@
         });
     </script>
 
-        <script>
-$(document).ready(function () {
-    function formatRibuan(angka) {
-        return angka.replace(/\D/g, '')  // hanya angka
+    <script>
+        $(document).ready(function() {
+            function formatRibuan(angka) {
+                return angka.replace(/\D/g, '') // hanya angka
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    }
+            }
 
-    function reloadGridWithFilters() {
-        const tfMasukVal = $('#tf-masuk').val().replace(/[^0-9]/g, '');
-        console.log("Memuat ulang grid dengan tf_masuk:", tfMasukVal);
+            function reloadGridWithFilters() {
+                const tfMasukVal = $('#tf-masuk').val().replace(/[^0-9]/g, '');
+                console.log("Memuat ulang grid dengan tf_masuk:", tfMasukVal);
 
-        $("#jqGrid5").jqGrid('setGridParam', {
-            datatype: 'json',
-            postData: {
-                tf_masuk: tfMasukVal
-            },
-            page: 1
-        }).trigger('reloadGrid');
-    }
+                $("#jqGrid5").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {
+                        tf_masuk: tfMasukVal
+                    },
+                    page: 1
+                }).trigger('reloadGrid');
+            }
 
-    $('#tf-masuk').on('input', function () {
-        let val = $(this).val();
-        let formatted = formatRibuan(val);
-        $(this).val(formatted);
-        reloadGridWithFilters();
-    });
-});
-
-</script>
+            $('#tf-masuk').on('input', function() {
+                let val = $(this).val();
+                let formatted = formatRibuan(val);
+                $(this).val(formatted);
+                reloadGridWithFilters();
+            });
+        });
+    </script>
 
 
     <script>
@@ -1565,7 +1568,7 @@ $(document).ready(function () {
             url: '{{ route('data-rekap.piutang') }}',
             mtype: 'GET',
             postData: {
-                
+
                 tf_masuk: function() {
                     return $('#tf-masuk').val();
                 }
