@@ -97,7 +97,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
             ($order->truckingInfo->tarif->tarif ?? 0) +
             ($order->truckingInfo->tb_tl ?? 0) +
             ($order->truckingInfo->tambah_isi ?? 0) +
-            ($order->truckingInfo->tambah_solar ?? 0) +
+            // ($order->truckingInfo->tambah_solar ?? 0) +
             ($order->truckingInfo->stappel ?? 0) +
             ($order->truckingInfo->lain_lain ?? 0);
         $data[$idx]['j_trucking'] = '[]';
