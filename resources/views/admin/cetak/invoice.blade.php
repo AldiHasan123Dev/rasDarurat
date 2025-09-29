@@ -1314,20 +1314,38 @@
                                     </td>
                                 </tr>
                             @endif
+                           @if ($item['jumlah'] < 1)
                             <tr style="height: 20px !important">
                                 <td colspan="4"></td>
                                 <td colspan="4" style="border-bottom: 1px solid black"></td>
                             </tr>
                             <tr>
-                                <td colspan="4"></td>
-                                <td colspan="3" style="border: 1px solid black">Sub Total</td>
-                                <td style="border: 1px solid black">
-                                    <div class="price d-flex justify-content-between px-2">
-                                        <span>Rp</span>
-                                        <span>{{ number_format($invoice['sub_total']) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
+                                <td colspan="4">
+                                    <b style="display: inline-block; border-bottom: 1px solid black;">Ket: Untuk tipe tarif LCL</b>
+                                    <br>                               
+                                    Jika volume barang kurang dari 1 CBM, maka akan dikenakan perhitungan minimum 1 CBM</td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($invoice['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                    @else
+                                    <tr style="height: 20px !important">
+                                        <td colspan="4"></td>
+                                        <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                    </tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($invoice['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endif
                             @if ($ppn > 0)
                                     <tr>
                                         <td colspan="4"></td>
