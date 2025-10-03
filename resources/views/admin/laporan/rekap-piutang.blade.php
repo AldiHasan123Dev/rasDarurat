@@ -293,60 +293,19 @@
             </div>
         </div>
     </div>
-    {{-- <div class="container">
 
+     <div class="container mt-5">
         <div class="card">
             <div class="card-body">
-                <div class="section-title">Summary Rekap Piutang</div>
-                <div class="row g-3">
-                    @php
-                        $year = date('Y');
-                    @endphp
-
-                    <div class="col-md-3">
-                        <label class="form-label">Pilih Periode Inv</label>
-                        <select name="thn_inv" id="thn_inv" class="form-control">
-                            @for ($i = $year - 5; $i <= $year + 5; $i++)
-                                <option value="{{ $i }}" {{ $i == $year ? 'selected' : '' }}>
-                                    {{ $i }}
-                                </option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    <div class="col-md-3 ms-auto text-end">
-                    </div>
-                </div>
-
-
-                <div class="table-wrapper">
-                    <table id="jqGrid1"></table>
-                    <div id="jqGridPager1"></div>
-                </div>
-                
-    <div class="card-footer py-2">
-                    <div class="d-flex gap-3 mt-2 justify-content-center">
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Grand Jumlah Invoice</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalInvoiceCount ?? 0),0,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Grand Total Nilai Invoice</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalNilaiInvoice ?? 0),0,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Grand Total Invoice Terbayarr</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalTelahBayar ?? 0),0,',','.') }}</li>
-                        </ul>
-                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Grand Total Belum Bayar</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalBelumBayar ?? 0),0,',','.') }}</li>
-                        </ul>
-                    </div>
+                {{-- Filter Kedua --}}
+                <div class="section-title">Rekap Piutang Invoice Baru</div>
+                 <div class="table-wrapper">
+                    <table id="jqGrid10"></table>
+                    <div id="jqGridPager10"></div>
                 </div>
             </div>
         </div>
-    </div> --}}
+     </div>
 @endsection
 
 
@@ -437,7 +396,6 @@
             });
         });
     </script>
-
 
     <script>
         $("#jqGrid").jqGrid({

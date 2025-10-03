@@ -224,6 +224,12 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
     ->get();
 
 
+     $orders = $orders->filter(function ($order) {
+        $debit  = $order->jurnals->sum('debit');
+        $credit = $order->jurnals->sum('credit');
+        return ($debit - $credit) != 0; // masih ada saldo
+    });
+
     $grouped = $orders->groupBy('invoice');
 
     $finalRows = collect();
@@ -250,8 +256,8 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
             'Voyage'    => $order->jadwal_kapal->voyage ?? '-',
             'Container' => $order->container ?? '-',
             'TD' => optional($order->jadwal_kapal)->td 
-          ? date('d-m-Y', strtotime($order->jadwal_kapal->td)) 
-          : '-',
+            ? date('d-m-Y', strtotime($order->jadwal_kapal->td)) 
+            : '-',
             'Tarif'     => $tarif,
             'PPN'       => round($ppn),
             'Total'     => round($total),
@@ -307,7 +313,7 @@ public function data_rekap_piutang(Request $request)
         ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
             $q->where('nama', 'like', "%$customersFilter%");
         })
-        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->select('id', 'invoice', 'invoice_date', 'job', 'no_job','tarif_id', 'created_at')
         ->orderByDesc('created_at')
         ->get()
         ->map(function ($order) {
@@ -329,7 +335,7 @@ public function data_rekap_piutang(Request $request)
                      ->select('order_id', 'debit','coa_id','created_at');
             },
         ])
-        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
         ->when($tglInvFilter, function ($q) use ($tglInvFilter) {
             $q->where('invoice_date', 'like', "%$tglInvFilter%");
         })
@@ -360,7 +366,7 @@ public function data_rekap_piutang(Request $request)
         ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
             $q->where('nama', 'like', "%$customersFilter%");
         })
-        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
         ->orderByDesc('created_at')
         ->get()
         ->map(function ($order) {
@@ -381,7 +387,7 @@ public function data_rekap_piutang(Request $request)
                       ->select('order_id', 'debit','coa_id');
             },
         ])
-        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
         ->orderByDesc('created_at')
         ->get()
         ->map(function ($order) {
@@ -405,7 +411,7 @@ elseif ($tfMasukVal) {
                       ->select('order_id', 'debit','coa_id');
             },
         ])
-        ->select('id', 'invoice', 'invoice_date', 'job', 'tarif_id', 'created_at')
+        ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
         ->orderByDesc('created_at')
         ->get()
         ->map(function ($order) {
@@ -413,7 +419,37 @@ elseif ($tfMasukVal) {
         return $order;
     });;
     // ❗ Semua filter kosong → kosongkan hasil
-} 
+} elseif ($request->input('job')){
+       $orders = Order::with([
+    'tarif.customer:id,nama,top,marketing_id', // ambil relasi customer + marketing_id
+    'tarif.customer.marketing:id,name',        // ambil relasi marketing
+    'transaksi' => function ($query) {
+        $query->whereNotNull('tanggal_kirim')
+              ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
+    },
+    'jurnals' => function ($query) {
+        $query->where('coa_id', 46)
+              ->where('debit', '!=', 0)
+              ->select('order_id', 'debit', 'coa_id');
+    },
+    'jadwal_kapal:id,td,kapal_id,voyage',
+    'jadwal_kapal.kapal:id,nama',
+])
+->select('id', 'invoice', 'invoice_date', 'container', 'job', 'no_job', 'tarif_id', 'jadwal_kapal_id', 'created_at')
+->orderByDesc('created_at')
+->get()
+->map(function ($order) {
+    $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+    $order->td = $order->jadwal_kapal->td ?? null;
+    $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
+    $order->voyage = $order->jadwal_kapal->voyage ?? null;
+
+    // ✅ aman dari error null
+    $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+
+    return $order;
+});
+}
 else {
     $orders = collect();
 }
@@ -455,6 +491,21 @@ else {
         $cust = $customers[$invoice] ?? null;
         $jurnalN = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
         $subtotal = $jurnalN;
+        $jobs = $group->pluck('job')->filter(); // ambil semua job
+
+        $noJobs = $group->map(function ($order) {
+            return ($order->job ?? '-') . '-' . str_pad($order->no_job ?? 0, 2, '0', STR_PAD_LEFT);
+        })->implode('<br>');
+
+        $td = $group->map(function ($order) {
+            return ($order->td ?? '-');
+        })->implode('<br>');
+        $container = $group->map(function ($order) {
+            return ($order->container ?? '-');
+        })->implode('<br>');
+        $marketing = $group->first()->marketing ?? '-';
+        $kapal = $group->pluck('kapal') ?? '-';
+        $voyage = $group->pluck('voyage') ?? '-';
 
                 // $subtotal = $trans->total ?? 0;
                 $pph = $trans->pph ?? 0;
@@ -506,6 +557,8 @@ else {
                 return [
                     'tanggal' => now()->toDateString(),
                     'invoice' => $invoice,
+                    'container' =>$container,
+                    'marketing' => $marketing,
                     'customer' => $cust->nama ?? '-',
                     'jumlah_harga' => $jumlah_harga,
                     'pph' => round($pph),
@@ -515,8 +568,10 @@ else {
                     'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top + 1),
                     'dibayar_tgl' => $dibayar_tgl,
                     'sebesar' => $sebesar,
+                    'td' => $td,
                     'kurang_bayar' => $kurang_bayar,
                     'tf_masuk' => (int)$tfMasuk,
+                    'no_job' => $noJobs,
                     'warna_status' => $warna_status, // <== TAMBAH DI SINI
                 ];
             })->filter()->sortByDesc('invoice')->values();
@@ -551,7 +606,9 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
     }
 } else {
     $rekapData = $rekapData->sortByDesc('invoice')->values();
-}
+} 
+
+
 
 
             // Filter berdasarkan tanggal ditagih jika ada
@@ -561,6 +618,8 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
                     return Str::contains($row['ditagih_tgl'], $ditagihFilter);
                 })->values();
             }
+
+        
 
             // Tambahkan filter dari jqGrid (khusus untuk warna_status)
         $filters = $request->input('filters');
@@ -573,6 +632,14 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
                 }
             }
         }
+        // setelah $rekapData selesai dihitung & sebelum pagination
+       if ($request->boolean('job')) {
+    $rekapData = $rekapData->filter(function ($row) {
+        return $row['kurang_bayar'] > 0; // bukan hanya > 0
+    })->values();
+}
+
+
 
 // ⬇⬇ Tambahkan di sini, sebelum filter warna_status
 
