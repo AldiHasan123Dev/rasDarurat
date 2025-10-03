@@ -83,12 +83,12 @@
     </style>
 @endsection
 @section('content')
-    <div class="container">
-                {{-- <a href="{{ route('rekap_piutang.export') }}" class="btn btn-success mb-3">
-                    <i class="fa fa-download"></i> Export Outstanding All (Tidak Termasuk Inv Manual)
-                </a> --}}
-        <div class="card">
-            <div class="card-body">
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+                <a href="{{ route('rekap_piutang.blum') }}" class="btn btn-success mb-3">
+                         <i class="fa fa-download"></i> Export Outstanding All (Tidak Termasuk Inv Manual)
+                     </a>
                 <div class="section-title">Rekap Piutang (Belum Bayar)</div>
                 {{-- Filter Kedua --}}
                 <div class="col-md-3">
@@ -105,7 +105,6 @@
                             <button class="btn btn-sm btn-primary" onclick="filterWarna2('biru')">Biru</button>
                             <button class="btn btn-sm btn-secondary" onclick="filterWarna2('')">Reset</button>
                         </div>
-
                     </div> --}}
                 </div>
 
@@ -138,7 +137,6 @@
                             <button class="btn btn-sm btn-primary" onclick="filterWarna3('biru')">Biru</button>
                             <button class="btn btn-sm btn-secondary" onclick="filterWarna3('')">Reset</button>
                         </div>
-
                     </div>
                 </div>
 

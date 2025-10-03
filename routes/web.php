@@ -256,7 +256,8 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jurnal-order', [JurnalController::class, 'order'])->name('jurnal.order');
     Route::get('jurnal-code', [JurnalController::class, 'code'])->name('jurnal.code');
     Route::get('jurnal-order-trucking', [JurnalController::class, 'order_trucking'])->name('jurnal.order_trucking');
-    Route::get('rekap-data-blum-bayar/export', [LaporanController::class, 'exportRekapData'])->name('rekap_piutang.export');
+    Route::get('rekap-data-blum-bayar', [LaporanController::class, 'exportRekapData'])->name('rekap_piutang.blum');
+    Route::get('rekap-blum-bayar', [LaporanController::class, 'lapOutstandingBlumInv'])->name('rekap_piutang.blum_inv');
     Route::get('trucking/monitoring', [TruckingController::class, 'monitoring'])->name('trucking.monitoring');
     Route::get('trucking/monitoring-invoice', [TruckingController::class, 'monitoring_invoice'])->name('trucking.monitoring.invoice');
     Route::get('trucking/pre-invoice', [TruckingController::class, 'preInvoice'])->name('trucking.pre-invoice');
