@@ -57,7 +57,7 @@
                                 <button class="btn btn-success btn-sm mx-2 mt-3" type="submit" onclick="return confirm('are you sure?')">Simpan Tanggal</button>
                             </div>
                             <div class="col-2">
-                                <button class="btn btn-info btn-sm mx-2 mt-3" type="button" onclick="addModal()">Tambah Baris</button>
+                                <button class="btn btn-info btn-sm mx-2 mt-3" type="button" onclick="addModal({{ $data->kunci }})">Tambah Baris</button>
                             </div>
                         </div>
                     </form>
@@ -523,23 +523,53 @@ function handleLainLainChange(select, rowId) {
             }
         });
 
-        function editModal(url){
-            var myModal = new bootstrap.Modal(document.getElementById('modal-edit'));
-            $('#iframe-edit').attr('src',url);
-            myModal.show();
-        }
+        function editModal(url, kunci) {
+    kunci = parseInt(kunci); // pastikan jadi angka
+
+    if (isNaN(kunci)) {
+        console.error('Parameter kunci tidak valid:', kunci);
+        return;
+    }
+
+    if (kunci === 1) {
+        alert('Data ini sudah terkunci dan tidak bisa diedit.');
+        return;
+    }
+
+    // Jika tidak terkunci, tampilkan modal
+    var myModal = new bootstrap.Modal(document.getElementById('modal-edit'));
+    $('#iframe-edit').attr('src', url);
+    myModal.show();
+}
+
+
 
         var modalBTTB = document.getElementById('modal-edit')
         modalBTTB.addEventListener('hidden.bs.modal', function (event) {
             getData()
         })
 
-        function addModal(url){
+        function addModal(kunci){
+             kunci = parseInt(kunci); // pastikan jadi angka
+
+    if (isNaN(kunci)) {
+        console.error('Parameter kunci tidak valid:', kunci);
+        return;
+    }
+
+    if (kunci === 1) {
+        alert('Data ini sudah terkunci dan tidak bisa ditambah baris.');
+        return;
+    }
             var myModal = new bootstrap.Modal(document.getElementById('modal-add'));
             myModal.show();
         }
 
-        function deleteData(id){
+        function deleteData(id, kunci){
+             if (kunci === 1) {
+        alert('Data ini sudah terkunci dan tidak bisa dihapus.');
+        return;
+    }
             if (confirm('Are you sure?')) {
                 $.ajax({
                     type: "DELETE",
@@ -564,8 +594,13 @@ function handleLainLainChange(select, rowId) {
                         html += `<tr>
                                         <td>
                                             <div class="d-flex">
-                                                <button onclick="deleteData(${ item.id })" type="button" style="border:none; background: transparent; color:red"><i class="fas fa-trash"></i></button>
-                                                <button onclick="editModal('jurnal-edit-${item.id}')" type="button" style="border:none; background: transparent; color:rgb(41, 51, 226)"><i class="fas fa-pencil"></i></button>
+                                                <button onclick="deleteData(${ item.id }, ${item.kunci})" type="button" style="border:none; background: transparent; color:red"><i class="fas fa-trash"></i></button>
+                                                <button 
+                                                    onclick="editModal('jurnal-edit-${item.id}', ${item.kunci})" 
+                                                    type="button" 
+                                                    style="border:none; background: transparent; color:rgb(41, 51, 226)">
+                                                    <i class="fas fa-pencil"></i>
+                                                </button>
                                             </div>
                                         </td>
                                         <td>${item.id}</td>

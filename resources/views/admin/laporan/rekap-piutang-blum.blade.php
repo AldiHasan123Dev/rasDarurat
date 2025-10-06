@@ -83,18 +83,22 @@
     </style>
 @endsection
 @section('content')
- <div class="container mt-5">
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-body">
+                <div class="section-title">Lap Rekap Outstanding</div>
+            </div>
+        </div>
         <div class="card">
             <div class="card-body">
                 {{-- Filter Kedua --}}
-                <div class="section-title">Rekap Piutang Invoice Baru</div>
-                 <div class="table-wrapper">
+                <div class="table-wrapper">
                     <table id="jqGrid10"></table>
                     <div id="jqGridPager10"></div>
                 </div>
             </div>
         </div>
-     </div>
+    </div>
 @endsection
 
 
@@ -107,7 +111,7 @@
     <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
     <script src="{{ asset('assets/js/resize-column.js') }}"></script>
     <script>
-                $("#jqGrid10").jqGrid({
+        $("#jqGrid10").jqGrid({
             url: '{{ route('data-rekap.piutang') }}',
             mtype: 'GET',
             postData: {
@@ -176,12 +180,6 @@
                     name: 'jumlah_harga',
                     width: 100,
                     align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
                     sortable: true
                 },
                 {
@@ -190,12 +188,6 @@
                     name: 'sebesar',
                     width: 100,
                     align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
                     sortable: true
                 },
                 {
@@ -204,12 +196,6 @@
                     name: 'pph',
                     width: 100,
                     align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
                     sortable: true
                 },
                 {
@@ -222,12 +208,6 @@
                     width: 100,
                     align: "right", // isi cell rata kanan
                     labelAlign: "right", // label header rata kanan
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
                     sortable: true
                 }
 
@@ -318,4 +298,4 @@
 
         // Live Search
     </script>
-    @endsection
+@endsection

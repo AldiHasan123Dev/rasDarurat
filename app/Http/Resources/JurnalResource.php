@@ -47,6 +47,7 @@ class JurnalResource extends JsonResource
             'nopol' => $this->nopol ?? '-',
             'debit' => number_format($this->debit, 2, '.', ','),
             'credit' => number_format($this->credit, 2, '.', ','),
+            'kunci' => $this->kunci,
             'debits' => $this->debit,
             'credits' => $this->credit,
             'created_at' => date('d/m/y', strtotime($this->created_at)),
