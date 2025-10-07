@@ -271,7 +271,20 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
 
  public function lapOutstandingBlumInv()
     {
-        return view('admin.laporan.rekap-piutang-blum');
+        $customers = Customer::select('nama')->distinct()->get();
+        $marketing = Customer::with('marketing:id,name')
+            ->select('marketing_id')
+            ->whereNotNull('marketing_id')
+            ->groupBy('marketing_id')
+            ->get()
+            ->map(function ($customer) {
+                return $customer->marketing->name ?? null;
+            })
+            ->filter()           // hapus null
+            ->unique()           // ambil hanya yang unik
+            ->values();          // reset index biar rapi
+
+        return view('admin.laporan.rekap-piutang-blum', compact('customers', 'marketing'));
     }
 
 
@@ -286,6 +299,8 @@ public function data_rekap_piutang(Request $request)
     $searchString = $request->input('searchString');
     $tglInvFilter = $request->input('tgl_inv');
     $customersFilter = $request->input('customers');
+    $customersFilter1 = $request->input('customers1');
+    $marketing = $request->input('marketing');
     $invFilter = $request->input('inv');
     $tfMasukVal = $request->input('tf_masuk');
     //  if ($tglInvFilter) {
@@ -418,37 +433,134 @@ elseif ($tfMasukVal) {
         $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
         return $order;
     });;
-    // ❗ Semua filter kosong → kosongkan hasil
-} elseif ($request->input('job')){
-       $orders = Order::with([
-    'tarif.customer:id,nama,top,marketing_id', // ambil relasi customer + marketing_id
-    'tarif.customer.marketing:id,name',        // ambil relasi marketing
-    'transaksi' => function ($query) {
-        $query->whereNotNull('tanggal_kirim')
-              ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
-    },
-    'jurnals' => function ($query) {
-        $query->where('coa_id', 46)
-              ->where('debit', '!=', 0)
-              ->select('order_id', 'debit', 'coa_id');
-    },
-    'jadwal_kapal:id,td,kapal_id,voyage',
-    'jadwal_kapal.kapal:id,nama',
-])
-->select('id', 'invoice', 'invoice_date', 'container', 'job', 'no_job', 'tarif_id', 'jadwal_kapal_id', 'created_at')
-->orderByDesc('created_at')
-->get()
-->map(function ($order) {
-    $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
-    $order->td = $order->jadwal_kapal->td ?? null;
-    $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
-    $order->voyage = $order->jadwal_kapal->voyage ?? null;
+}// ❗ Semua filter kosong → kosongkan hasil
+elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
+    // ❗ Filter berdasarkan job saja (tanpa customer & marketing)
+    $orders = Order::with([
+        'tarif.customer:id,nama,top,marketing_id',
+        'tarif.customer.marketing:id,name',
+        'transaksi' => function ($query) {
+            $query->whereNotNull('tanggal_kirim')
+                  ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
+        },
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 46)
+                  ->where('debit', '!=', 0)
+                  ->select('order_id', 'debit', 'coa_id');
+        },
+        'jadwal_kapal:id,td,kapal_id,voyage',
+        'jadwal_kapal.kapal:id,nama',
+    ])
+    ->select('id', 'invoice', 'invoice_date', 'container', 'job', 'no_job', 'tarif_id', 'jadwal_kapal_id', 'created_at')
+    ->orderByDesc('created_at')
+    ->get()
+    ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        $order->td = $order->jadwal_kapal->td ?? null;
+        $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
+        $order->voyage = $order->jadwal_kapal->voyage ?? null;
+        $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        return $order;
+    });
 
-    // ✅ aman dari error null
-    $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+} elseif ($request->input('job') && $marketing && !$customersFilter1) {
+    // ❗ Filter berdasarkan job + marketing
+    $orders = Order::with([
+        'tarif.customer:id,nama,top,marketing_id',
+        'tarif.customer.marketing:id,name',
+        'transaksi' => function ($query) {
+            $query->whereNotNull('tanggal_kirim')
+                  ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
+        },
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 46)
+                  ->where('debit', '!=', 0)
+                  ->select('order_id', 'debit', 'coa_id');
+        },
+        'jadwal_kapal:id,td,kapal_id,voyage',
+        'jadwal_kapal.kapal:id,nama',
+    ])
+    ->whereHas('tarif.customer.marketing', function ($q) use ($marketing) {
+        $q->where('name', 'like', "%$marketing%");
+    })
+    ->select('id', 'invoice', 'invoice_date', 'container', 'job', 'no_job', 'tarif_id', 'jadwal_kapal_id', 'created_at')
+    ->orderByDesc('created_at')
+    ->get()
+    ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        $order->td = $order->jadwal_kapal->td ?? null;
+        $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
+        $order->voyage = $order->jadwal_kapal->voyage ?? null;
+        $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        return $order;
+    });
 
-    return $order;
-});
+} elseif ($request->input('job') && $customersFilter1 && !$marketing) {
+    // ❗ Filter berdasarkan job + customer
+    $orders = Order::with([
+        'tarif.customer:id,nama,top,marketing_id',
+        'tarif.customer.marketing:id,name',
+        'transaksi' => function ($query) {
+            $query->whereNotNull('tanggal_kirim')
+                  ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
+        },
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 46)
+                  ->where('debit', '!=', 0)
+                  ->select('order_id', 'debit', 'coa_id');
+        },
+        'jadwal_kapal:id,td,kapal_id,voyage',
+        'jadwal_kapal.kapal:id,nama',
+    ])
+    ->whereHas('tarif.customer', function ($q) use ($customersFilter1) {
+        $q->where('nama', 'like', "%$customersFilter1%");
+    })
+    ->select('id', 'invoice', 'invoice_date', 'container', 'job', 'no_job', 'tarif_id', 'jadwal_kapal_id', 'created_at')
+    ->orderByDesc('created_at')
+    ->get()
+    ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        $order->td = $order->jadwal_kapal->td ?? null;
+        $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
+        $order->voyage = $order->jadwal_kapal->voyage ?? null;
+        $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        return $order;
+    });
+
+} elseif ($request->input('job') && $customersFilter1 && $marketing) {
+    // ❗ Filter berdasarkan job + customer + marketing
+    $orders = Order::with([
+        'tarif.customer:id,nama,top,marketing_id',
+        'tarif.customer.marketing:id,name',
+        'transaksi' => function ($query) {
+            $query->whereNotNull('tanggal_kirim')
+                  ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
+        },
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 46)
+                  ->where('debit', '!=', 0)
+                  ->select('order_id', 'debit', 'coa_id');
+        },
+        'jadwal_kapal:id,td,kapal_id,voyage',
+        'jadwal_kapal.kapal:id,nama',
+    ])
+    ->whereHas('tarif.customer', function ($q) use ($customersFilter1) {
+        $q->where('nama', 'like', "%$customersFilter1%");
+    })
+    ->whereHas('tarif.customer.marketing', function ($q) use ($marketing) {
+        $q->where('name', 'like', "%$marketing%");
+    })
+    ->select('id', 'invoice', 'invoice_date', 'container', 'job', 'no_job', 'tarif_id', 'jadwal_kapal_id', 'created_at')
+    ->orderByDesc('created_at')
+    ->get()
+    ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        $order->td = $order->jadwal_kapal->td ?? null;
+        $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
+        $order->voyage = $order->jadwal_kapal->voyage ?? null;
+        $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        return $order;
+    });
 }
 else {
     $orders = collect();
