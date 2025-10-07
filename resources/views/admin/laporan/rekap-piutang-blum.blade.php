@@ -281,6 +281,33 @@
                         search: true
                     },
                     {
+                        label: 'Voyage',
+                        align: "center",
+                        name: 'voyage',
+                        width: 120,
+                        align: "left",
+                        sortable: true,
+                        search: true
+                    },
+                    {
+                        label: 'Kapal',
+                        align: "center",
+                        name: 'kapal',
+                        width: 120,
+                        align: "left",
+                        sortable: true,
+                        search: true
+                    },
+                    {
+                        label: 'Shipment',
+                        align: "center",
+                        name: 'shipment',
+                        width: 120,
+                        align: "left",
+                        sortable: true,
+                        search: true
+                    },
+                    {
                         name: 'td',
                         align: "center",
                         label: 'TD',

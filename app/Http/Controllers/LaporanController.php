@@ -439,6 +439,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
     $orders = Order::with([
         'tarif.customer:id,nama,top,marketing_id',
         'tarif.customer.marketing:id,name',
+        'tarif.shipmentInfo:id,nama',
         'transaksi' => function ($query) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
@@ -460,6 +461,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
         $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
         $order->voyage = $order->jadwal_kapal->voyage ?? null;
         $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        $order->shipment = $order->tarif?->shipmentInfo?->nama ?? '-';
         return $order;
     });
 
@@ -468,6 +470,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
     $orders = Order::with([
         'tarif.customer:id,nama,top,marketing_id',
         'tarif.customer.marketing:id,name',
+        'tarif.shipmentInfo:id,nama',
         'transaksi' => function ($query) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
@@ -492,6 +495,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
         $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
         $order->voyage = $order->jadwal_kapal->voyage ?? null;
         $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        $order->shipment = $order->tarif?->shipmentInfo?->nama ?? '-';
         return $order;
     });
 
@@ -500,6 +504,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
     $orders = Order::with([
         'tarif.customer:id,nama,top,marketing_id',
         'tarif.customer.marketing:id,name',
+        'tarif.shipmentInfo:id,nama',
         'transaksi' => function ($query) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
@@ -524,6 +529,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
         $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
         $order->voyage = $order->jadwal_kapal->voyage ?? null;
         $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        $order->shipment = $order->tarif?->shipmentInfo?->nama ?? '-';
         return $order;
     });
 
@@ -532,6 +538,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
     $orders = Order::with([
         'tarif.customer:id,nama,top,marketing_id',
         'tarif.customer.marketing:id,name',
+        'tarif.shipmentInfo:id,nama',
         'transaksi' => function ($query) {
             $query->whereNotNull('tanggal_kirim')
                   ->select('id', 'job', 'total', 'pph', 'tanggal_kirim', 'order_id');
@@ -559,6 +566,7 @@ elseif ($request->input('job') && (!$customersFilter1 && !$marketing)) {
         $order->kapal = $order->jadwal_kapal->kapal->nama ?? null;
         $order->voyage = $order->jadwal_kapal->voyage ?? null;
         $order->marketing = $order->tarif?->customer?->marketing?->name ?? '-';
+        $order->shipment = $order->tarif?->shipmentInfo?->nama ?? '-';
         return $order;
     });
 }
@@ -612,12 +620,19 @@ else {
         $td = $group->map(function ($order) {
             return ($order->td ?? '-');
         })->implode('<br>');
+         $shipment = $group->map(function ($order) {
+            return ($order->shipment ?? '-');
+        })->implode('<br>');
         $container = $group->map(function ($order) {
             return ($order->container ?? '-');
         })->implode('<br>');
         $marketing = $group->first()->marketing ?? '-';
-        $kapal = $group->pluck('kapal') ?? '-';
-        $voyage = $group->pluck('voyage') ?? '-';
+       $kapal = $group->map(function ($order) {
+            return ($order->kapal ?? '-');
+        })->implode('<br>');
+        $voyage = $group->map(function ($order) {
+            return ($order->voyage ?? '-');
+        })->implode('<br>');
 
                 // $subtotal = $trans->total ?? 0;
                 $pph = $trans->pph ?? 0;
@@ -669,6 +684,9 @@ else {
                 return [
                     'tanggal' => now()->toDateString(),
                     'invoice' => $invoice,
+                    'shipment' => $shipment,
+                    'voyage' => $voyage,
+                    'kapal' => $kapal,
                     'container' =>$container,
                     'marketing' => $marketing,
                     'customer' => $cust->nama ?? '-',
