@@ -107,21 +107,6 @@
 
                     <div class="col-md-3">
                         <div class="col-md-12">
-                            <label class="form-label">Cari Berdasarkan Customers</label>
-                            <select id="customers" name="customers" class="form-control" style="width: 100%;">
-                                <option value="">-- Pilih Customer --</option>
-                                @foreach ($customers as $c)
-                                    <option value="{{ $c->nama }}"
-                                        {{ request('customers') == $c->nama ? 'selected' : '' }}>
-                                        {{ $c->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="col-md-12">
                             <label class="form-label">Cari Berdasarkan Marketing</label>
                             <select id="marketing" name="marketing" class="form-control" style="width: 100%;">
                                 <option value="">-- Pilih Marketing --</option>
@@ -131,6 +116,21 @@
                                     </option>
                                 @endforeach
 
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="col-md-12">
+                            <label class="form-label">Cari Berdasarkan Customers</label>
+                            <select id="customers" name="customers" class="form-control" style="width: 100%;">
+                                <option value="">-- Pilih Customer --</option>
+                                @foreach ($customers as $c)
+                                    <option value="{{ $c->nama }}"
+                                        {{ request('customers') == $c->nama ? 'selected' : '' }}>
+                                        {{ $c->nama }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                 rowNum: 9999,
                 viewrecords: true,
                 pager: "#jqGridPager10",
-                caption: "Rekap Piutang Periode Bulan",
+                caption: "Outstanding Piutang",
                 jsonReader: {
                     repeatitems: false,
                     root: "rows",
