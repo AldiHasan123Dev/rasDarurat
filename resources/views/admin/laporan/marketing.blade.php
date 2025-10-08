@@ -113,7 +113,7 @@
                                         @for ($i = 1; $i <= 24; $i++)
                                             @if ($i % 2 == 0)
                                                 @php
-                                                   $val = App\Models\User::find($item['id'])->laporanMarketing20Fit($month, $year);
+                                                   $val = App\Models\User::find($item['id'])->laporanMarketing40Fit($month, $year);
 
                                                     $fit20 += $val;
                                                     $sub[$i] = ($sub[$i] ?? 0) + $val;
