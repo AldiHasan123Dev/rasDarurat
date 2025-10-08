@@ -296,9 +296,13 @@
                                                 @if ($subjek != 'relasi')
                                                     <td class="text-center">
                                                         @php
-                                                            $pelayaranName =
-                                                                $data['pelayaran'] ?? $data['customer_name'];
-                                                        @endphp
+    if (($subjek ?? '') === 'customer_xpdc') {
+        $pelayaranName = $data['id_customer'] ;
+    } else {
+        $pelayaranName = $data['pelayaran'] ?? $data['customer_name'];
+    }
+@endphp
+
                                                         <a target="_blank"
                                                             href="{{ route('jurnal.buku_besar_pembantu_rincian', [
                                                                 'subjek' => $subjek,

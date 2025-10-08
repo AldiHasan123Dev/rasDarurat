@@ -2053,6 +2053,7 @@ public function editOne(Jurnal $jurnal)
             $finalData = $jurnal->map(function ($item) use ($customer) {
                 return [
                     'customer_name' => $customer[$item->order->tarif->customer_id] ?? 'Unknown',
+                    'id_customer' => $item->order->tarif->customer_id,
                     'debit' => $item->debit,
                     'credit' => $item->credit,
                 ];
@@ -2074,12 +2075,14 @@ public function editOne(Jurnal $jurnal)
             // Kelompokkan dan hitung total per customer
             $groupedData = $finalData->groupBy('customer_name')->map(function ($group) use ($tipe) {
                 $customerName = $group->first()['customer_name'];
+                $customerId = $group->first()['id_customer'];
                 $totalPPH = $group->sum('pph');
                 $totalDebit = $group->sum('debit');
                 $totalCredit = $group->sum('credit');
                 $saldo = $tipe == 'D' ? $totalDebit - $totalCredit : $totalCredit - $totalDebit;
             
                 return [
+                    'id_customer' => $customerId,
                     'customer_name' => $customerName,
                     'total_debit' => $totalDebit - $totalPPH,
                     'total_credit' => $totalCredit,
@@ -2539,6 +2542,8 @@ public function editOne(Jurnal $jurnal)
 
     if ($subjek == 'customer_xpdc') {
         // Ambil data terkait customer
+        $customerId= Customer::find($customer);
+        $customer = $customerId->nama;
         $customers = Customer::where('nama', $customer)->pluck('nama', 'id');
         $tarif = Tarif::whereIn('customer_id', $customers->keys())->pluck('id');
         $order = Order::whereIn('tarif_id', $tarif)->pluck('id');
