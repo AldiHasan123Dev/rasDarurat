@@ -949,7 +949,20 @@ public function data_total_rekap_piutang(Request $request)
     public function cs()
     {
         $year = request('year') ?? date('Y');
-        $data = User::where('role_id',2)->whereHas('cs')->get();
+       $data = Customer::with('marketing:id,name')
+        ->whereNotNull('marketing_id')
+        ->get()
+        ->map(function ($customer) {
+            return [
+                'id' => $customer->cs->id ?? null,
+                'name' => $customer->cs->name ?? null,
+            ];
+        })
+        ->filter(function ($item) {
+            return $item['id'] !== null && $item['name'] !== null;
+        })
+        ->unique('id') // pastikan hanya 1 per marketing_id
+        ->values();    // reset index biar 
         return view('admin.laporan.cs', compact('data','year'));
     }
     public function trucking()

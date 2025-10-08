@@ -107,28 +107,31 @@
                                     @endphp
                                     @foreach ($data as $idx => $item)
                                         <tr>
-                                            <td>{{ $item->name }}</td>
                                             @php
                                                 $month = 1;
                                                 $fit20 = 0;
                                                 $fit40 = 0;
                                             @endphp
-                                            @for ($i = 1; $i <=24; $i++)
-                                                @if ($i%2==0)
-                                                    <th class="text-center">{{ $item->laporanCs20Fit($month,$year) }}</th>
-                                                    @php
-                                                        $fit20 += $item->laporanCs20Fit($month,$year);
-                                                        $sub[$i] = ($sub[$i]??0) + $item->laporanCs20Fit($month,$year);
-                                                        $month++;
-                                                    @endphp
-                                                @else
-                                                    <th class="text-center">{{ $item->laporanCs40Fit($month,$year) }}</th>
-                                                    @php
-                                                        $fit40 += $item->laporanCs40Fit($month,$year);
-                                                        $sub[$i] = ($sub[$i]??0) + $item->laporanCs40Fit($month,$year);
-                                                    @endphp
-                                                @endif
-                                            @endfor
+                                                 <td>{{ $item['name'] }}</td>
+                                        @for ($i = 1; $i <= 24; $i++)
+                                            @if ($i % 2 == 0)
+                                                @php
+                                                   $val = App\Models\User::find($item['id'])->laporanCs20Fit($month, $year);
+
+                                                    $fit20 += $val;
+                                                    $sub[$i] = ($sub[$i] ?? 0) + $val;
+                                                    $month++;
+                                                @endphp
+                                                <td class="text-center">{{ $val }}</td>
+                                            @else
+                                                @php
+                                                    $val = App\Models\User::find($item['id'])->laporanCs40Fit($month, $year);
+                                                    $fit40 += $val;
+                                                    $sub[$i] = ($sub[$i] ?? 0) + $val;
+                                                @endphp
+                                                <td class="text-center">{{ $val }}</td>
+                                            @endif
+                                        @endfor
                                             <th class="text-center text-warning">{{ $fit40 }}</th>
                                             <th class="text-center text-warning">{{ $fit20 }}</th>
                                             <th class="text-center text-warning">{{ $fit20 + $fit40 }}</th>
