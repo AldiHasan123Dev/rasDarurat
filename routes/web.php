@@ -176,6 +176,8 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::resource('role-access', RoleAccessController::class);
     Route::resource('sangusopir', SanguSopirController::class);
     Route::resource('ordertrucking', OrderTruckingController::class);
+    Route::put('/admin/ordertrucking/mass-update-sj', [OrderTruckingController::class, 'massUpdateSJ'])
+    ->name('ordertrucking.massUpdateSJ');
     Route::resource('menu', MenuController::class);
     Route::post('/kendaraan/mass-update', [KendaraanController::class, 'massUpdate'])->name('kendaraan.mass-update');
     Route::resource('submenu', SubMenuController::class);

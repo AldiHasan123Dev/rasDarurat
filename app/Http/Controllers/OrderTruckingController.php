@@ -207,10 +207,41 @@ public function updateStappel(Request $request)
 
         return back()->with('success', 'Data berhasil disimpan');
     }
+  public function massUpdateSJ(Request $request)
+{
+    $request->validate([
+        'ids' => 'required|array',
+        'sj_kembali' => 'required',
+    ]);
+
+    // Ambil daftar container berdasarkan id
+    $containers = \App\Models\OrderTrucking::whereIn('id', $request->ids)
+        ->pluck('container')
+        ->filter() // hilangkan null/kosong
+        ->toArray();
+
+    // Update semua data yang dipilih
+    \App\Models\OrderTrucking::whereIn('id', $request->ids)
+        ->update(['sj_kembali' => $request->sj_kembali]);
+
+    // Gabungkan dengan newline
+    $containerList = implode("\n", $containers);
+
+    // Pesan dengan newline
+    $message = "Container berikut berhasil diperbarui:\n{$containerList}";
+
+    return response()->json([
+        'message' => $message
+    ]);
+}
+
+
+
 
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
         if (request('sj_kembali')) {
+            dd(request('sj_kembali'), $ordertrucking);
             $ordertrucking->update([
                 'sj_kembali' => request('sj_kembali')
             ]);
