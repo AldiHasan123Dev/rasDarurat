@@ -924,12 +924,28 @@ public function data_total_rekap_piutang(Request $request)
         $data = Customer::whereIn('id',$id)->get();
         return view('admin.laporan.omset_customer', compact('data','year'));
     }
-    public function marketing()
-    {
-        $year = request('year') ?? date('Y');
-        $data = User::where('role_id',2)->whereHas('marketing')->get();
-        return view('admin.laporan.marketing', compact('data','year'));
-    }
+   public function marketing()
+{
+    $year = request('year') ?? date('Y');
+
+    $data = Customer::with('marketing:id,name')
+        ->whereNotNull('marketing_id')
+        ->get()
+        ->map(function ($customer) {
+            return [
+                'id' => $customer->marketing->id ?? null,
+                'name' => $customer->marketing->name ?? null,
+            ];
+        })
+        ->filter(function ($item) {
+            return $item['id'] !== null && $item['name'] !== null;
+        })
+        ->unique('id') // pastikan hanya 1 per marketing_id
+        ->values();    // reset index biar 
+
+    return view('admin.laporan.marketing', compact('data', 'year'));
+}
+
     public function cs()
     {
         $year = request('year') ?? date('Y');

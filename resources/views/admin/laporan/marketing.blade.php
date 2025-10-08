@@ -59,140 +59,130 @@
     }
 </style>
 @endsection
+
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="card p-3">
-                    <div class="d-flex justify-content-between">
-                        <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
-                        <form action="{{ url()->current() }}" method="get">
-                            <select name="year" id="year" class="form-select" onchange="submit()">
-                                <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
-                                <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
-                                <option {{ $year=='2025'?'selected':'' }} value="2025">2025</option>
-                                <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
-                                <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
-                            </select>
-                        </form>
-                    </div>
-                    <div id="print">
-                        <div class="mt-3">
-                            <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
-                                <thead>
-                                    <tr>
-                                        <th rowspan="2" class="text-center">Marketing</th>
-                                        <th class="text-center" colspan="2">Jan</th>
-                                        <th class="text-center" colspan="2">Feb</th>
-                                        <th class="text-center" colspan="2">Mar</th>
-                                        <th class="text-center" colspan="2">Apr</th>
-                                        <th class="text-center" colspan="2">Mei</th>
-                                        <th class="text-center" colspan="2">Jun</th>
-                                        <th class="text-center" colspan="2">Jul</th>
-                                        <th class="text-center" colspan="2">Agu</th>
-                                        <th class="text-center" colspan="2">Sep</th>
-                                        <th class="text-center" colspan="2">Okt</th>
-                                        <th class="text-center" colspan="2">Nov</th>
-                                        <th class="text-center" colspan="2">Des</th>
-                                        <th class="text-center" colspan="3">Total</th>
-                                    </tr>
-                                    <tr>
-                                        {{-- <th>Marketing</th> --}}
-                                        @for ($i = 1; $i <=26; $i++)
-                                        <th class="text-center" style="min-width:40px !important">{{ $i%2==0?'20':40 }}</th>
-                                        @endfor
-                                        <th class="text-center">Sub Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $sub = array();
-                                        $total = 0;
-                                    @endphp
-                                    @foreach ($data as $idx => $item)
-                                        <tr>
-                                            <td>{{ $item->name }}</td>
-                                            @php
-                                                $month = 1;
-                                                $fit20 = 0;
-                                                $fit40 = 0;
-                                            @endphp
-                                            @for ($i = 1; $i <=24; $i++)
-                                                @if ($i%2==0)
-                                                    <th class="text-center">{{ $item->laporanMarketing20Fit($month,$year) }}</th>
-                                                    @php
-                                                        $fit20 += $item->laporanMarketing20Fit($month,$year);
-                                                        $sub[$i] = ($sub[$i]??0) + $item->laporanMarketing20Fit($month,$year);
-                                                        $month++;
-                                                    @endphp
-                                                @else
-                                                    <th class="text-center">{{ $item->laporanMarketing40Fit($month,$year) }}</th>
-                                                    @php
-                                                        $fit40 += $item->laporanMarketing40Fit($month,$year);
-                                                        $sub[$i] = ($sub[$i]??0) + $item->laporanMarketing40Fit($month,$year);
-                                                    @endphp
-                                                @endif
-                                            @endfor
-                                            <th class="text-center text-warning">{{ $fit40 }}</th>
-                                            <th class="text-center text-warning">{{ $fit20 }}</th>
-                                            <th class="text-center text-warning">{{ $fit20 + $fit40 }}</th>
-                                            @php
-                                                $sub[25] = ($sub[25]??0) + $fit40;
-                                                $sub[26] = ($sub[26]??0) + $fit20;
-                                                $total += $fit20 + $fit40;
-                                            @endphp
-                                        </tr>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card p-3">
+                <div class="d-flex justify-content-between">
+                    <button type="button" class="btn btn-sm btn-success" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <form action="{{ url()->current() }}" method="get">
+                        <select name="year" id="year" class="form-select" onchange="submit()">
+                            @for ($y = 2023; $y <= 2027; $y++)
+                                <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </form>
+                </div>
+
+                <div id="print">
+                    <div class="mt-3">
+                        <table class="table table-sm table-bordered mt-3" id="table" style="font-size: .7rem">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" class="text-center">Marketing</th>
+                                    @foreach (['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'] as $bulan)
+                                        <th class="text-center" colspan="2">{{ $bulan }}</th>
                                     @endforeach
-                                </tbody>
-                                <tfoot>
+                                    <th class="text-center" colspan="3">Total</th>
+                                </tr>
+                                <tr>
+                                    @for ($i = 1; $i <= 26; $i++)
+                                        <th class="text-center" style="min-width:40px !important">{{ $i%2==0 ? '20' : '40' }}</th>
+                                    @endfor
+                                    <th class="text-center">Sub Total</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @php
+                                    $sub = [];
+                                    $total = 0;
+                                @endphp
+                                @foreach ($data as $item)
+                                    @php
+                                        $month = 1;
+                                        $fit20 = 0;
+                                        $fit40 = 0;
+                                    @endphp
                                     <tr>
-                                        <th rowspan="2" class="align-middle text-center text-primary">Total</th>
-                                        @for ($i = 1; $i <=26; $i++)
-                                        <th class="text-center text-primary">{{ $sub[$i] }}</th>
+                                        <td>{{ $item['name'] }}</td>
+                                        @for ($i = 1; $i <= 24; $i++)
+                                            @if ($i % 2 == 0)
+                                                @php
+                                                   $val = App\Models\User::find($item['id'])->laporanMarketing20Fit($month, $year);
+
+                                                    $fit20 += $val;
+                                                    $sub[$i] = ($sub[$i] ?? 0) + $val;
+                                                    $month++;
+                                                @endphp
+                                                <td class="text-center">{{ $val }}</td>
+                                            @else
+                                                @php
+                                                    $val = App\Models\User::find($item['id'])->laporanMarketing20Fit($month, $year);
+
+                                                    $sub[$i] = ($sub[$i] ?? 0) + $val;
+                                                @endphp
+                                                <td class="text-center">{{ $val }}</td>
+                                            @endif
                                         @endfor
-                                        <th rowspan="2" class="align-middle text-center text-primary">{{ $total }}</th>
+                                        <td class="text-center text-warning">{{ $fit40 }}</td>
+                                        <td class="text-center text-warning">{{ $fit20 }}</td>
+                                        <td class="text-center text-warning">{{ $fit20 + $fit40 }}</td>
+
+                                        @php
+                                            $sub[25] = ($sub[25] ?? 0) + $fit40;
+                                            $sub[26] = ($sub[26] ?? 0) + $fit20;
+                                            $total += $fit20 + $fit40;
+                                        @endphp
                                     </tr>
-                                    <tr>
-                                        @for ($i = 1; $i <= 26; $i+=2)
-                                        <th class="text-center text-primary" colspan="2">{{ $sub[$i] + $sub[$i+1] }}</th>
-                                        @endfor
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                                @endforeach
+                            </tbody>
+
+                            <tfoot>
+                                <tr>
+                                    <th rowspan="2" class="align-middle text-center text-primary">Total</th>
+                                    @for ($i = 1; $i <= 26; $i++)
+                                        <th class="text-center text-primary">{{ $sub[$i] ?? 0 }}</th>
+                                    @endfor
+                                    <th rowspan="2" class="align-middle text-center text-primary">{{ $total }}</th>
+                                </tr>
+                                <tr>
+                                    @for ($i = 1; $i <= 26; $i+=2)
+                                        <th class="text-center text-primary" colspan="2">{{ ($sub[$i] ?? 0) + ($sub[$i+1] ?? 0) }}</th>
+                                    @endfor
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
+
 @section('script')
-    <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
-    <script>
-        $('#table').DataTable({
-            fixedColumns: {
-                left: 1,
-                right: 0
-            },
-            autoWidth:false,
-            paging: false,
-            scrollCollapse: true,
-            fixedHeader: true,
-            // scrollX:true,
-            // scrollY: 400,
-            dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend:'excel'
-                },
-            ],
-        });
-        jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
-    </script>
+<script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script>
+$('#table').DataTable({
+    fixedColumns: { left: 1 },
+    autoWidth:false,
+    paging: false,
+    scrollCollapse: true,
+    fixedHeader: true,
+    dom: 'Bfrtip',
+    buttons: [{ extend:'excel' }],
+});
+jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
+</script>
 @endsection
