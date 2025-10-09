@@ -38,11 +38,6 @@ class UserController extends Controller
             'email' => 'email|unique:users,email,'.$uservaleg55->id
         ]);
         $data = $request->all();
-         if (!$request->filled('password')) {
-        return back()
-            ->with('error', 'Password belum diubah. Harap isi password baru sebelum menyimpan.')
-            ->withInput();
-    }
         if (!is_null($request->password)) {
             $data['password'] = Hash::make($request->password);
         }else{
@@ -52,6 +47,7 @@ class UserController extends Controller
 
         return back()->with('success','Data berhasil diupdate');
     }
+    
 
     public function destroy(User $uservaleg55)
     {
@@ -98,7 +94,7 @@ class UserController extends Controller
             return $data->role->name ?? '-';
         })
         ->addColumn('action', function ($data) {
-            $view = view('admin.user.form', ['user' => $data])->render();
+            $view = view('admin.user.form1', ['uservaleg55' => $data])->render();
             $html = '<div class="d-flex gap-1">
                         <form action="'.route('uservaleg55.destroy', $data).'" method="post">
                             <input type="hidden" name="_token" value="'.csrf_token().'" />
