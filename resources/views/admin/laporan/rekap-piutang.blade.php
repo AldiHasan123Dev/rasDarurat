@@ -80,10 +80,86 @@
             padding: 5px;
             text-align: center !important;
         }
+
+        /* 🌊 Styling Khusus untuk Navbar Keuangan */
+    .navbar-keuangan {
+        background: linear-gradient(90deg, #6a7b94, #5f6a7a);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s ease-in-out;
+        border-radius: 4px;
+    }
+
+    .navbar-keuangan .navbar-nav .nav-link {
+        color: #f8f9fa !important;
+        font-weight: 500;
+        padding: 8px 18px;
+        border-radius: 8px;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .navbar-keuangan .navbar-nav .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #ffffff !important;
+        transform: translateY(-1px);
+    }
+
+    .navbar-keuangan .navbar-nav .nav-link.active {
+        background-color: #ffffff !important;
+        color: #526d96 !important;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-keuangan .navbar-toggler {
+        border: none;
+    }
+
+    .navbar-keuangan .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    @media (max-width: 991px) {
+        .navbar-keuangan .navbar-nav .nav-link {
+            margin-bottom: 6px;
+        }
+    }
     </style>
 @endsection
 @section('content')
 <div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-keuangan mb-4 shadow-sm">
+    <div class="container-fluid">
+        {{-- Toggle button (mobile) --}}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+            aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        {{-- Menu --}}
+        <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                {{-- Rekap Piutang --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/rekap-piutang*') ? 'active' : '' }}"
+                        href="{{ route('rekap.piutang') }}">
+                        💰 Rekap Piutang
+                    </a>
+                </li>
+
+                {{-- Lap Outstanding --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/rekap-blum-bayar*') ? 'active' : '' }}"
+                        href="{{ route('rekap_piutang.blum_inv') }}">
+                        📘 Lap Outstanding
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
     <div class="card">
         <div class="card-body">
                 {{-- <a href="{{ route('rekap_piutang.blum') }}" class="btn btn-success mb-3">
