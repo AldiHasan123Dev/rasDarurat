@@ -38,6 +38,11 @@ class UserController extends Controller
             'email' => 'email|unique:users,email,'.$uservaleg55->id
         ]);
         $data = $request->all();
+         if (!$request->filled('password')) {
+        return back()
+            ->with('error', 'Password belum diubah. Harap isi password baru sebelum menyimpan.')
+            ->withInput();
+    }
         if (!is_null($request->password)) {
             $data['password'] = Hash::make($request->password);
         }else{
