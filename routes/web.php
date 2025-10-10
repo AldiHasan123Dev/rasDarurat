@@ -217,6 +217,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('hutang-pelayaran/tarik', [HutangPelayaranController::class, 'tarik'])->name('hutang-pelayaran.tarik');
     Route::get('hutang-pelayaran-print', [HutangPelayaranController::class, 'print'])->name('hutang-pelayaran.print');
     Route::get('hutang-pelayaran-cetak', [HutangPelayaranController::class, 'cetak'])->name('hutang-pelayaran.cetak');
+    Route::get('get-data',[JadwalKapalController::class,'jqgrid'])->name('jqgrid.jadwalkapal');
 
     Route::get('marketing/{marketing}', [OrderController::class, 'index'])->name('order.index.marketing');
     Route::get('trucking/monitor_biaya_truck', [OrderTruckingController::class, 'monitoring_biaya_truck'])->name('monitoringBiayaTruck');

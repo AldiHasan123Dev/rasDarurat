@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Pelayaran;
 use App\Models\Tarif;
 use App\Models\TarifAgen;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Yajra\Datatables\Datatables;
@@ -69,6 +70,48 @@ class JadwalKapalController extends Controller
 
         return back()->with('success','Data berhasil dihapus');
     }
+
+    public function jqgrid(Request $request)
+{
+    $page = $request->input('page', 1);
+    $limit = $request->input('rows', 10);
+    $sidx = $request->input('sidx', 'etd');
+    $sord = $request->input('sord', 'asc');
+
+    // jika sidx kosong, gunakan default
+    if (empty($sidx)) {
+        $sidx = 'etd';
+    }
+
+  $query = JadwalKapal::join('kapal', 'kapal.id', '=', 'jadwal_kapal.kapal_id')
+    ->join('pelayaran', 'pelayaran.id', '=', 'jadwal_kapal.pelayaran_id')
+    ->select(
+        'jadwal_kapal.*',
+        'kapal.nama as nama_kapal',
+        'pelayaran.nama as nama_pelayaran'
+    )
+    ->whereNull('jadwal_kapal.td')
+    ->whereDate('jadwal_kapal.etd', '<', \Carbon\Carbon::today());
+
+
+    $count = $query->count();
+    $totalPages = $count > 0 ? ceil($count / $limit) : 0;
+
+    $rows = $query
+        ->orderBy($sidx, $sord)
+        ->skip(($page - 1) * $limit)
+        ->take($limit)
+        ->get();
+
+    return response()->json([
+        'page' => $page,
+        'total' => $totalPages,
+        'records' => $count,
+        'rows' => $rows,
+    ]);
+}
+
+
 
     public function datatable()
     {
