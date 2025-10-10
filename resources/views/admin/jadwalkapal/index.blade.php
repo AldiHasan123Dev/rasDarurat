@@ -57,7 +57,7 @@
     <div class="container mt-2">
         <div class="card shadow-sm">
             <div class="card-header bg-danger text-white fw-bold">
-                📅 Reminders Close TD(Tanggal ETD sudah berlalu)
+                📅 Reminders Close TD (Tanggal ETD sudah berlalu)
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
