@@ -162,6 +162,11 @@
                 },
                 {
                     search: true,
+                    name: 'container',
+                    label: 'Container'
+                },
+                {
+                    search: true,
                     name: 'invoice',
                     label: 'Invoice'
                 },
@@ -189,11 +194,6 @@
                     search: true,
                     name: 'nopol',
                     label: 'Nopol'
-                },
-                {
-                    search: true,
-                    name: 'container',
-                    label: 'Container'
                 },
                 {
                     search: true,
@@ -225,7 +225,7 @@
             shrinkToFit: false,
             height: 250,
             loadonce: true,
-            rowNum: 25,
+            rowNum: 100,
             rowList: [10, 25, 50, 100],
             viewrecords: true,
             pager: "#jqGridPager",
