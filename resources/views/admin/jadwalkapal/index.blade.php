@@ -56,7 +56,7 @@
     {{-- ✅ jqGrid untuk Monitoring ETD --}}
     <div class="container mt-2">
         <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white fw-bold">
+            <div class="card-header bg-danger text-white fw-bold">
                 📅 Reminders Close TD
             </div>
             <div class="card-body">
