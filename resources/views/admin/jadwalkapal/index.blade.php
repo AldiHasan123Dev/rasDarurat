@@ -57,13 +57,13 @@
     <div class="container mt-2">
         <div class="card shadow-sm">
             <div class="card-header bg-danger text-white fw-bold">
-                📅 Reminders Close TD
+                📅 Reminders Close TD(Tanggal ETD sudah berlalu)
             </div>
             <div class="card-body">
                 <p class="text-muted mb-3">
                     <em>
                         ⚠️ Tabel ini idealnya <strong>kosong</strong> supaya tidak menghambat proses penagihan,
-                        karena <strong>Close TD</strong> merupakan salah satu syarat untuk pembuatan
+                        karena <strong>Close TD</strong> merupakan salah satu syarat untuk
                         <strong>PRE-Invoice</strong>.
                     </em>
                 </p>
