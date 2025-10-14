@@ -225,7 +225,7 @@
             shrinkToFit: false,
             height: 250,
             loadonce: true,
-            rowNum: 100,
+            rowNum: 25,
             rowList: [10, 25, 50, 100],
             viewrecords: true,
             pager: "#jqGridPager",
