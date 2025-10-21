@@ -1032,16 +1032,16 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     }
 }
 
-     public function jurnalBalikTrucking()
+   public function jurnalBalikTrucking()
 {
     try {
-        // 🔹 Ambil dan validasi request
+        //  Ambil dan validasi request
         $month = request('month');
         $year = request('year');
         $tipe = request('tipe');
         $jurnal_id_raw = request('jurnal_id');
 
-        // 🔹 Normalisasi format jurnal_id (bisa JSON, bisa string)
+        //  Normalisasi format jurnal_id (bisa JSON, bisa string)
         if (is_string($jurnal_id_raw)) {
             $jurnal_id = json_decode($jurnal_id_raw, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -1051,7 +1051,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             $jurnal_id = $jurnal_id_raw;
         }
 
-        // 🔹 Logging parameter
+        //  Logging parameter
         \Log::info('PARAMETER JURNAL BALIK TRUCKING', [
             'month' => $month,
             'year' => $year,
@@ -1059,18 +1059,20 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             'jurnal_id' => $jurnal_id,
         ]);
 
-        // 🔹 Validasi awal
+        //  Validasi awal
         if (empty($month) || empty($year) || empty($jurnal_id)) {
             return back()->with('error', 'Parameter tidak lengkap (bulan, tahun, atau jurnal_id kosong)');
         }
 
-        // 🔹 Cari atau buat Jurnal Balik
+        // Cari atau buat Jurnal Balik
         $balik = \App\Models\JurnalBalik::where('bulan', $month)
             ->whereRaw('LOWER(tipe) = ?', [strtolower('Trucking Expdc')])
             ->where('tahun', $year)
             ->first();
 
-        if (!$balik) {
+        
+             if (!$balik) {
+            // Buat baru hanya jika belum ada
             $c = new \Carbon\Carbon($year . '-' . sprintf('%02d', $month) . '-01');
             $last = $c->endOfMonth()->format('Y-m-d');
             $no = 3;
@@ -1085,10 +1087,13 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                 'tipe' => 'Trucking Expdc',
             ]);
 
-            \Log::info('Membuat JurnalBalik baru', ['nomor' => $balik->nomor]);
+            \Log::info('🆕 Membuat JurnalBalik baru', ['nomor' => $balik->nomor]);
         } else {
-            \Log::info('Menggunakan JurnalBalik lama', ['nomor' => $balik->nomor]);
+            \Log::info('ℹ️ Menggunakan JurnalBalik yang sudah ada', ['nomor' => $balik->nomor]);
         }
+
+            \Log::info('Membuat JurnalBalik baru', ['nomor' => $balik->nomor]);
+            
 
         // 🔹 Ambil jurnal trucking
         $jurnal = \App\Models\Jurnal::whereIn('order_trucking_id', $jurnal_id)
@@ -1096,10 +1101,6 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             ->get();
 
         \Log::info('Jumlah jurnal ditemukan', ['count' => $jurnal->count()]);
-
-        if ($jurnal->isEmpty()) {
-            return back()->with('warning', 'Tidak ada data jurnal yang bisa diproses.');
-        }
 
         $res = [];
 
@@ -1116,12 +1117,11 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                 continue;
             }
 
-            // 🔹 Siapkan data baru
+            //  Siapkan data baru
             $data = $j_biaya->toArray();
             unset($data['id']);
 
-            if ($tipe === 'xpdc') {
-                // 🔹 Filter kondisi sesuai requirement
+                // Filter kondisi sesuai requirement
                 if ($j_biaya->coa_id === 61 && $j_biaya->coa_id != 80 && $j_biaya->jurnal_balik == null) {
                     // --- Debit ---
                     $data['jurnal_balik'] = $j_biaya->id;
@@ -1153,14 +1153,13 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
 
                     $jurnal_credit = \App\Models\Jurnal::create($data);
                 }
-            }
 
             $res[] = $j_biaya->id;
         }
 
         return back()->with('success', 'Data berhasil disimpan dengan nomor jurnal ' . $balik->nomor);
     } catch (\Throwable $e) {
-        // 🔹 Tangkap error dan log detail
+        // Tangkap error dan log detail
         \Log::error('Error di jurnalBalikTrucking', [
             'message' => $e->getMessage(),
             'file' => $e->getFile(),
@@ -1170,6 +1169,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
         return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
     }
 }
+
 
     public function jurnalBalikTruckingExt()
 {
