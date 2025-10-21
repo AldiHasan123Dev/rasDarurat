@@ -1113,7 +1113,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             unset($data['id']);
 
                 // Filter kondisi sesuai requirement
-                if ($j_biaya->coa_id === 61 && $j_biaya->jurnal_balik == null) {
+                if ((int) $j_biaya->coa_id === 61 && $j_biaya->jurnal_balik == null) {
                     // --- Debit ---
                     $data['jurnal_balik'] = $j_biaya->id;
                     $data['coa_id'] = 100;
