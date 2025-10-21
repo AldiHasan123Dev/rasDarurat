@@ -1071,7 +1071,6 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             ->first();
 
         
-             if (!$balik) {
             // Buat baru hanya jika belum ada
             $c = new \Carbon\Carbon($year . '-' . sprintf('%02d', $month) . '-01');
             $last = $c->endOfMonth()->format('Y-m-d');
@@ -1086,14 +1085,6 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                 'no' => $no,
                 'tipe' => 'Trucking Expdc',
             ]);
-
-            \Log::info('🆕 Membuat JurnalBalik baru', ['nomor' => $balik->nomor]);
-        } else {
-            \Log::info('ℹ️ Menggunakan JurnalBalik yang sudah ada', ['nomor' => $balik->nomor]);
-        }
-
-            \Log::info('Membuat JurnalBalik baru', ['nomor' => $balik->nomor]);
-            
 
         // 🔹 Ambil jurnal trucking
         $jurnal = \App\Models\Jurnal::whereIn('order_trucking_id', $jurnal_id)
