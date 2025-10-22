@@ -1110,14 +1110,7 @@ public function data_total_rekap_piutang(Request $request)
                         ->whereNotIn('coa_id', [61, 81])
                         ->where(function ($query) {
                             $query->where('nama', 'like', '%sangu kuli%')
-                                ->orWhere('nama', 'like', '%sangu sopir%')
-                                ->orWhere('nama', 'like', '%biaya kuli%')
-                                ->orWhere('nama', 'like', '%biaya ambil emty%')
-                                ->orWhere('nama', 'like', '%biaya ambil empty%')
-                                ->orWhere('nama', 'like', '%tb/tl%')
-                                ->orWhere('nama', 'like', '%stappel%')
-                                ->orWhere('nama', 'like', '%biaya tambah solar%')
-                                ->orWhere('nama', 'like', '%biaya tambah tol%');
+                                ->orWhere('nama', 'like', '%sangu sopir%');
                         })
                         ->get();
 
