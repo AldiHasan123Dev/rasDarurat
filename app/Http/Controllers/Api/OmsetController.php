@@ -1197,7 +1197,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     foreach ($jurnal as $j_biaya) {
     // Kalau BELUM ada jurnal balik → bikin baru
     if ($j_biaya->jurnal_balik == null) {
-        if ($tipe == 'ext' && $j_biaya->coa_id === 80) {
+        if ($tipe == 'ext' && (int) $j_biaya->coa_id === 80) {
             $data = $j_biaya->toArray();
             unset($data['id']);
 
