@@ -51,8 +51,8 @@ class JurnalResource extends JsonResource
             'debits' => $this->debit,
             'credits' => $this->credit,
             'created_at' => date('d/m/y', strtotime($this->created_at)),
-            'debit_num' => $this->debit,
-            'credit_num' => $this->credit,
+           'debit_num' => (float) $this->debit,
+            'credit_num' => (float) $this->credit,
             'kode' => $this->kode ?? '',
             'relasi' => $this->relasi ?? '-',
         ];
