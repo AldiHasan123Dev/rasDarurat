@@ -31,6 +31,9 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
         $data = Jurnal::where('coa_id', $this->coa)
             ->whereYear('created_at', $this->year)
             ->whereMonth('created_at', $this->month)
+            ->orderBy('created_at')
+            ->orderBy('tipe')
+            ->orderBy('nomor', 'asc')
             ->get();
         $tipe = 'D';
         $c = COA::find($this->coa);
