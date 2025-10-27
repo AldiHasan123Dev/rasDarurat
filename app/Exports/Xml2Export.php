@@ -6,7 +6,6 @@ use App\Models\Transaksi;
 use App\Models\Order;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
@@ -24,17 +23,11 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         $this->end   = $end;
     }
 
-    /**
-     * Judul sheet
-     */
     public function title(): string
     {
         return 'DetailFaktur';
     }
 
-    /**
-     * Header kolom
-     */
     public function headings(): array
     {
         return [
@@ -55,9 +48,6 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         ];
     }
 
-    /**
-     * Ambil data untuk export
-     */
     public function array(): array
     {
         $data = [];
@@ -78,114 +68,130 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
         foreach ($transaksis as $item) {
             $invoice = $item->invoice;
 
-            // Ambil semua order per invoice, group by tarif_id
+            // 🔹 Ambil semua order dengan invoice yang sama
             $orders = Order::with(['tarif.shipmentInfo', 'tarif.kondisiInfo'])
                 ->where('invoice', $invoice)
-                ->get()
-                ->groupBy('tarif_id');
+                ->get();
 
-            foreach ($orders as $tarifId => $ordersGroup) {
-                $firstOrder       = $ordersGroup->first();
-                $kondisi          = $firstOrder->tarif->kondisiInfo->id ?? null;
-                $kodeBarangJasa   = $item->keterangan ?? '';
-                $tarifAsli        = $firstOrder->tarif->tarif ?? 0;
-                $jumlahContainer  = $ordersGroup->count();
+            if ($orders->isEmpty()) {
+                continue;
+            }
 
-                // Atur harga satuan
+            $isTambahanEkspedisi = false;
+            $totalJumlahSemua = 0;
+            $totalEkspedisi = 0;
+            $totalPPNEkspedisi = 0;
+
+            // 🔹 Kelompokkan data per keterangan
+            $kodeBarangJasa = $item->keterangan ?? '';
+            $keteranganList = array_filter(array_map('trim', explode(';', $kodeBarangJasa)));
+            if (empty($keteranganList)) {
+                $keteranganList = [''];
+            }
+
+            $kelompokData = [];
+
+            foreach ($orders as $order) {
+                $tarifAsli = $order->tarif->tarif ?? 0;
+                $kondisi = $order->tarif->kondisiInfo->id ?? null;
+                $shipmentId = $order->tarif->shipmentInfo->id ?? 0;
+
+                $namaSatuan = in_array($shipmentId, [19, 13, 11]) ? 'UM.0033' : 'UM.0030';
+
+                // Hitung harga & DPP
+                $hargaPerOrder = in_array($kondisi, [1, 6])
+                    ? $tarifAsli - 500000
+                    : $tarifAsli;
+
+                $dppOrder = $hargaPerOrder;
+                $ppnOrder = $dppOrder * 0.11;
+
+                // ambil keterangan sesuai urutan
+                $keterangan = $keteranganList[min(count($kelompokData), count($keteranganList) - 1)];
+
+                if (!isset($kelompokData[$keterangan])) {
+                    $kelompokData[$keterangan] = [
+                        'nama_satuan' => $namaSatuan,
+                        'harga_satuan' => $hargaPerOrder,
+                        'jumlah' => 0,
+                        'total_dpp' => 0,
+                        'total_ppn' => 0,
+                    ];
+                }
+
+                $kelompokData[$keterangan]['jumlah']++;
+                $kelompokData[$keterangan]['total_dpp'] += $dppOrder;
+                $kelompokData[$keterangan]['total_ppn'] += $ppnOrder;
+                $totalJumlahSemua++;
+
+                // 🔹 Tambahan ekspedisi jika kondisi 1/6
                 if (in_array($kondisi, [1, 6])) {
-                    $hargaSatuan = $tarifAsli - 500000;
-                } else {
-                    $hargaSatuan = $tarifAsli;
+                    $isTambahanEkspedisi = true;
+                    $totalEkspedisi += 500000;
+                    $totalPPNEkspedisi += 500000 * 0.11;
                 }
+            }
 
-                $dpp = $hargaSatuan * $jumlahContainer;
-                $ppn = $dpp * 0.11;
-
-                // Tentukan Nama Satuan berdasarkan shipment
-                $NamaSatuan = 'UM.0030';
-                $shipmentId = $firstOrder->tarif->shipmentInfo->id ?? 0;
-                if (in_array($shipmentId, [19, 13, 11])) {
-                    $NamaSatuan = 'UM.0033';
-                }
-
-                /**
-                 * Pecah keterangan menjadi beberapa baris
-                 * Jika ada tanda ";" → buat baris baru untuk setiap keterangan
-                 */
-               $keteranganList = array_filter(explode(';', $kodeBarangJasa));
-               $keterangan = trim(reset($keteranganList)); // ambil hanya satu keterangan
-
+            // 🔹 Tampilkan hasil per kelompok (keterangan)
+            foreach ($kelompokData as $keterangan => $itemData) {
                 $data[] = [
                     $rowNumber,
                     'B',
                     '060000',
                     $keterangan,
-                    $NamaSatuan,
-                    $hargaSatuan,
-                    $jumlahContainer,
+                    $itemData['nama_satuan'],
+                    $itemData['harga_satuan'],
+                    $itemData['jumlah'],
                     '0.00',
-                    $dpp,
-                    $dpp,
+                    $itemData['total_dpp'],
+                    $itemData['total_dpp'],
                     12,
-                    $ppn,
+                    $itemData['total_ppn'],
                     '0.00',
                     '0.00',
                 ];
-                // Jika kondisi [1,6], tambahkan baris ekstra
-                if (in_array($kondisi, [1, 6])) {
-                    $hargaSatuanTambahan = 500000;
-                    $dppTambahan = $hargaSatuanTambahan * $jumlahContainer;
-                    $ppnTambahan = $dppTambahan * 0.11;
-
-                    $data[] = [
-                        $rowNumber,
-                        'B',
-                        '060000',
-                        'Jasa Ekspedisi',
-                        $NamaSatuan,
-                        $hargaSatuanTambahan,
-                        $jumlahContainer,
-                        '0.00',
-                        $dppTambahan,
-                        $dppTambahan,
-                        12,
-                        $ppnTambahan,
-                        '0.00',
-                        '0.00',
-                    ];
-                }
             }
 
-            // Setelah selesai semua tarif_id dalam invoice ini → naikkan nomor
-            $rowNumber++;
+            // 🔹 Tambahkan baris “Jasa Ekspedisi” terakhir jika perlu
+            if ($isTambahanEkspedisi) {
+                $data[] = [
+                    $rowNumber,
+                    'B',
+                    '060000',
+                    'Jasa Ekspedisi',
+                    'UM.0030',
+                    500000,
+                    $totalJumlahSemua,
+                    '0.00',
+                    $totalEkspedisi * $totalJumlahSemua,
+                    $totalEkspedisi * $totalJumlahSemua,
+                    12,
+                    $totalPPNEkspedisi * $totalJumlahSemua,
+                    '0.00',
+                    '0.00',
+                ];
+            }
+             $rowNumber++;
         }
 
-        // Tambahkan penanda akhir data
         $data[] = ['END'];
 
         return $data;
     }
 
-    /**
-     * Format kolom angka
-     */
     public function columnFormats(): array
     {
         return [
-            'H' => NumberFormat::FORMAT_NUMBER_00, // Total Diskon
-            'I' => NumberFormat::FORMAT_NUMBER_00, // DPP
-            'J' => NumberFormat::FORMAT_NUMBER_00, // DPP Nilai Lain
-            'M' => NumberFormat::FORMAT_NUMBER_00, // Tarif PPnBM
-            'N' => NumberFormat::FORMAT_NUMBER_00, // PPnBM
+            'H' => NumberFormat::FORMAT_NUMBER_00,
+            'I' => NumberFormat::FORMAT_NUMBER_00,
+            'J' => NumberFormat::FORMAT_NUMBER_00,
+            'M' => NumberFormat::FORMAT_NUMBER_00,
+            'N' => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
 
-    /**
-     * Styling header dan isi
-     */
     public function styles(Worksheet $sheet)
     {
-        // Styling header row
         $sheet->getStyle('A1:N1')->applyFromArray([
             'font' => [
                 'name' => 'Calibri',
@@ -194,7 +200,6 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
             ],
         ]);
 
-        // Styling data rows
         $highestRow = $sheet->getHighestRow();
         $sheet->getStyle("A2:N{$highestRow}")->applyFromArray([
             'font' => [
