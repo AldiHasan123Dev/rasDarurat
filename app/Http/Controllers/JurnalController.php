@@ -9,7 +9,7 @@ use App\Http\Resources\OrderResource;
 use App\Services\SyncService;
 use App\Imports\JurnalImport;
 use App\Models\COA;
-   use App\Exports\JurnalCodeExport;
+use App\Exports\JurnalCodeExport;
 use App\Models\Agen;
 use App\Models\HutangPelayaran;
 use App\Models\JasaKirim;
@@ -1877,9 +1877,25 @@ public function editOne(Jurnal $jurnal)
             $debit = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', [$now, $last])->sum('debit');
             $credit = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', [$now, $last])->sum('credit');
             $saldo['saldo_awal'][$idx] = $saldo_awal;
-            if ($tipe == 'D') {
+            $kode_awal = substr($coa->kode, 0, 1);
+            if (in_array($kode_awal, ['5', '6', '7'])) {
+                // Akun biaya (beban) → reset setiap bulan
+                $saldo['saldo_awal'][$idx] = 0;
+
+                // Default rumus saldo akhir untuk beban
+                $saldo['saldo_akhir'][$idx] = $debit - $credit;
+
+                // Jika akun kode 5 dan debit = 0 → gunakan credit - debit
+                if ($kode_awal == '5' && $debit == 0) {
+                    $saldo['saldo_akhir'][$idx] = $credit - $debit;
+                }
+            } 
+            elseif ($tipe == 'D') {
+                // Akun debit normal (aset, misal kas/bank/piutang)
                 $saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal) - $credit;
-            } else {
+            } 
+            else {
+                // Akun kredit normal (utang, modal, pendapatan)
                 $saldo['saldo_akhir'][$idx] = ($credit + $saldo_awal) - $debit;
             }
             $saldo['debit'][$idx] = $debit;
