@@ -44,7 +44,11 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
         $ca = new Carbon($this->year.'-'.sprintf('%02d',$this->month).'-01');
         $now = $ca->startOfMonth()->format('Y-m-d');
         $last = $ca->subMonth()->endOfMonth()->format('Y-m-d');
-        if($tipe=='D'){
+        $kode_awal = substr($c->kode, 0, 1);
+         if (in_array($kode_awal, ['5', '6', '7'])) {
+            $saldo = 0;
+         }
+        else if($tipe=='D'){
             $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit');
         }else{
             $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit');
