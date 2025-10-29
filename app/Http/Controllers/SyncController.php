@@ -860,10 +860,10 @@ class SyncController extends Controller
 
     public function order_trucking()
     {
-        $update = OrderTrucking::whereNull('invoice')->whereNull('order_id')->get();
+        $update = OrderTrucking::with('kendaraan')->whereNull('invoice')->whereNull('order_id')->get();
         $i = 0;
         foreach ($update as $item ) {
-            $order = Order::where('container',$item->container)->where('seal',$item->seal)->first();
+            $order = Order::where('container',$item->container)->where('seal',$item->seal)->where('nopol', $item->kendaraan->nopol)->first();
             if($order){
                 $item->update(['order_id'=>$order->id]);
                 $i++;
