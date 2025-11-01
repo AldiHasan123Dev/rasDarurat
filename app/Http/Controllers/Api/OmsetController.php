@@ -95,8 +95,8 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
     if ($tipe == 'R2') {
         $data[$idx]['trucking'] =
             ($order->truckingInfo->tarif->tarif ?? 0) +
-            ($order->truckingInfo->tb_tl ?? 0) +
-            ($order->truckingInfo->tambah_isi ?? 0) +
+            // ($order->truckingInfo->tb_tl ?? 0) +
+            // ($order->truckingInfo->tambah_isi ?? 0) +
             // ($order->truckingInfo->tambah_solar ?? 0) +
             ($order->truckingInfo->stappel ?? 0) +
             ($order->truckingInfo->lain_lain ?? 0);
@@ -1032,7 +1032,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
     }
 }
 
-   public function jurnalBalikTrucking()
+  public function jurnalBalikTrucking()
 {
     try {
         //  Ambil dan validasi request
