@@ -80,8 +80,7 @@ class User extends Authenticatable
 
     public function laporanCs20Fit($bulan, $thn = 2023)
     {
-        $thn = substr($thn,-2);
-        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
+        $job = $thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -98,8 +97,7 @@ class User extends Authenticatable
     }
     public function laporanCs40Fit($bulan, $thn = 2023)
     {
-        $thn = substr($thn,-2);
-        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
+        $job = $thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -116,8 +114,7 @@ class User extends Authenticatable
     }
     public function laporanMarketing20Fit($bulan, $thn = 2023)
     {
-        $thn = substr($thn,-2);
-        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
+        $job = $thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
@@ -134,8 +131,7 @@ class User extends Authenticatable
     }
     public function laporanMarketing40Fit($bulan, $thn = 2023)
     {
-        $thn = substr($thn,-2);
-        $job = '%'.$thn.sprintf('%02d',$bulan).'%';
+        $job = $thn.sprintf('%02d',$bulan).'%';
         $order = Order::join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id')
                     ->join('tarif','tarif.id','=','order.tarif_id')
                     ->join('customers','customers.id','=','tarif.customer_id')
