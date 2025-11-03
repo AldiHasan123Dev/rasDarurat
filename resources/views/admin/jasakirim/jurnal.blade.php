@@ -57,9 +57,9 @@
                                 @php
                                     $no_1 = App\Models\Jurnal::where('tipe','JNL')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
                                     $no1 = sprintf('%02d',date('m')).'-'.sprintf('%03d',$no_1).'/'.date('y');
-                                    $no_2 = App\Models\Jurnal::where('tipe','BBK')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+                                    $no_2 = App\Models\Jurnal::where('tipe','BBK')->whereYear('created_at',date('Y'))->max('no') + 1;
                                     $no2 = sprintf('%03d',$no_2) . '/' . 'BBK' . '-RAS/' . date('y');
-                                    $no_3 = App\Models\Jurnal::where('tipe','BKK')->whereMonth('created_at',date('m'))->whereYear('created_at',date('Y'))->max('no') + 1;
+                                    $no_3 = App\Models\Jurnal::where('tipe','BKK')->whereYear('created_at',date('Y'))->max('no') + 1;
                                     $no3 = sprintf('%03d',$no_3) . '/' . 'BKK' . '-RAS/' . date('y');
                                 @endphp
                                 <div>
