@@ -923,11 +923,12 @@ $('#table tbody').on('click', 'tr', function () {
                     let debit = 0;
                     let credit = 0;
                     let options = '';
-                   let arr = [
+                    let arr = [
     'j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage',
     'j_jasa_door','j_asuransi','j_ops','j_segel','j_buruh','j_checker','j_karantina','j_demmurage',
-    'j_job_slip_pod','j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod',
+    'j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod',
     'j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya_lain',
+    // 'j_job_slip_pod',
 ];
 
 if(type != 'j_biaya'){
