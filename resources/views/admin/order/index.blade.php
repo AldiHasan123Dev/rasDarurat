@@ -659,12 +659,8 @@
             $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#koli-info').show();
-            console.log("Auth ID:", user_id);
-            console.log("CS ID:", cs_id);
-            console.log("Marketing ID:", marketing_id);
 
             if (user_id == cs_id || user_id == marketing_id) {
-                 console.log("✅ User adalah CS atau Marketing pemilik order ini → tampilkan tombol edit");
                 $('#order-edit').show();
                 $('#copy-order').show();
                 if (invoice && invoice !== "-") {
@@ -1099,7 +1095,6 @@
     e.preventDefault();
 
     if (!confirm('Are you sure?')) {
-        console.log('❌ Dibatalkan oleh user');
         return; // hentikan fungsi jika user klik Cancel
     }
 
