@@ -38,7 +38,7 @@
                     <button class="py-2 px-3 btn btn-sm btn-success" type="button" data-bs-toggle="modal" data-bs-target="#modal-export-fortuna">JOB FORTUNA LILY HALIM</button>
                     @endif
                     @if (is_null($marketing))
-                    <button type="button" onclick="modalEditOrder()" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
+                    <button type="button" onclick="modalEditOrder()" id="order-edit" class="py-2 px-3 btn btn-sm btn-primary">Edit Order</button>
                     @endif
                     @if (is_null($marketing))
                         <button onclick="printPackingList()" id="packing-list" class="py-2 px-3 btn btn-sm btn-warning">Packing List</button>
@@ -493,7 +493,7 @@
     });
 </script>
 <script>
-    $('#edit-order').hide();
+    $('#order-edit').hide();
     $('#btn-tagihan').hide();
     $('#delete-order').hide();
     $('#btn-pindah-kapal').hide();
@@ -567,6 +567,7 @@
 <script>
     $('#koli-info').hide();
     $('#bttb-info').hide();
+    $('#edit-order').hide();
     $('#ag').hide();
     $('#copy-order').hide();
     $('#packing-list').hide();
@@ -633,6 +634,8 @@
             {search:true, width:100, name: 'penerima_bl', label : 'penerima_bl',sortable: false},
             {search:true, width:100, name: 'keterangan', label : 'keterangan'},
             {search:true, width:100, name: 'add_cost', label : 'Add Cost'},
+            {search:true, width:100, name: 'cs_id', label : 'cs_id', hidden:true},
+            {search:true, width:100, name: 'marketing_id', label : 'marketing_id', hidden:true},
         ],
         autowidth: true,
         shrinkToFit: false,
@@ -650,17 +653,32 @@
             var koli = $(this).jqGrid('getCell', rowId, 'koli');
             var invoice = $(this).jqGrid('getCell', rowId, 'invoice');
             lock_biaya = $(this).jqGrid('getCell', rowId, 'lock_biaya');
-            if (invoice && invoice !== "-") {
-        $('#btn-pindah-kapal').hide(); // Sembunyikan tombol jika invoice ada
-    } else {
-        $('#btn-pindah-kapal').show(); // Tampilkan tombol jika invoice kosong
-    }
+            var cs_id = $(this).jqGrid('getCell', rowId, 'cs_id');
+            var marketing_id = $(this).jqGrid('getCell', rowId, 'marketing_id');
+            var user_id = "{{ Auth::user()->id }}";
             $('#btn-tagihan').show();
             $('#bttb-info').show();
             $('#koli-info').show();
-            $('#edit-order').show();
+            console.log("Auth ID:", user_id);
+            console.log("CS ID:", cs_id);
+            console.log("Marketing ID:", marketing_id);
+
+            if (user_id == cs_id || user_id == marketing_id) {
+                 console.log("✅ User adalah CS atau Marketing pemilik order ini → tampilkan tombol edit");
+                $('#order-edit').show();
+                $('#copy-order').show();
+                if (invoice && invoice !== "-") {
+                $('#btn-pindah-kapal').hide(); // Sembunyikan tombol jika invoice ada
+            } else {
+                $('#btn-pindah-kapal').show(); // Tampilkan tombol jika invoice kosong
+            }
+            } else {
+                 $('#order-edit').hide();
+                 $('#copy-order').hide();
+                 $('#btn-pindah-kapal').hide();
+            }
+
             $('#delete-order').show();
-            $('#copy-order').show();
             $('#packing-list').show();
             $('#packing-list-kubikasi').show();
             $('#order_id_bttb').val(id);
@@ -1078,19 +1096,29 @@
         }
 
         $('#copy-order-btn').click(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: $('#copy-order').attr('action'),
-                data:{
-                    "_token": "{{ csrf_token() }}",
-                },
-                success: function (response) {
-                    alert(response);
-                    $('#jqGrid').trigger( 'reloadGrid' );
-                }
-            });
-        });
+    e.preventDefault();
+
+    if (!confirm('Are you sure?')) {
+        console.log('❌ Dibatalkan oleh user');
+        return; // hentikan fungsi jika user klik Cancel
+    }
+
+    $.ajax({
+        type: "POST",
+        url: $('#copy-order').attr('action'),
+        data: {
+            "_token": "{{ csrf_token() }}",
+        },
+        success: function (response) {
+            alert(response);
+            $('#jqGrid').trigger('reloadGrid');
+        },
+        error: function (xhr) {
+            alert("Terjadi kesalahan: " + xhr.responseText);
+        }
+    });
+});
+
 
         function deleteTagihan(id){
             $.ajax({
