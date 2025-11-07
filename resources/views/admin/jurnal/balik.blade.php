@@ -221,16 +221,6 @@
                                             <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['debit']->credit + $item['debit']->debit }}" checked></td>
                                             <td style="display: none;">
                                             <input type="hidden" value="{{ $item['debit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
-                                        <input type="hidden" value="{{ $item['debit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
-                                        <input type="hidden" value="{{ $item['debit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
-                                        <input type="hidden" value="{{ $item['debit']->debit }}" name="jurnal[{{ $k }}][credit]">
-                                        <input type="hidden" value="{{ $item['debit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
-                                        <input type="hidden" value="{{ $item['debit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
-                                        <input type="hidden" value="{{ $item['debit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
-                                        <input type="hidden" value="{{ $item['debit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
-                                        <input type="hidden" value="{{ $item['debit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
-                                        <input type="hidden" value="{{ $item['debit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
-                                        <input type="hidden" value="{{ $item['debit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                         </td>
                                             <td>{{ $k }}</td>
                                             @if ($item['debit']->order)
@@ -260,16 +250,6 @@
                                             <td><input type="checkbox" name="check[]" value="{{ $k }}" id="check-{{ $k }}" class="checkbox-name" data-amount="{{ $item['credit']->debit + $item['credit']->credit }}" checked></td>
                                             <td style="display: none;">
                                             <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
-                                            <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
-                                            <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
-                                            <input type="hidden" value="{{ $item['credit']->credit }}" name="jurnal[{{ $k }}][debit]">
-                                            <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
-                                            <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
-                                            <input type="hidden" value="{{ $item['credit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
-                                            <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
-                                            <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
-                                            <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
-                                            <input type="hidden" value="{{ $item['credit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                             </td>
                                             <td>{{ $k }}</td>
                                             @if ($item['credit']->order)
@@ -296,17 +276,6 @@
                                     @endforeach
                                     @if (request('credit_coa_id_tujuan'))
                                     <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
-                                    <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
-                                    <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
-                                    <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
-                                    <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
-                                    <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
-                                    <input type="hidden" value="{{ $item['credit']->kode }}" name="jurnal[{{ $k }}][kode]">
                                         {{-- <tr>
                                             <td></td>
                                             <td>{{ $k }}</td>
@@ -345,6 +314,7 @@
                                     <input type="hidden" name="order_id" value="{{ request('order_id') }}">
                                     <input type="hidden" name="debit_coa_id_tujuan" value="{{ request('debit_coa_id_tujuan') }}">
                                     <input type="hidden" name="credit_coa_id_tujuan" value="{{ request('credit_coa_id_tujuan') }}">
+                                     <input type="hidden" name="kode" value="{{ request('name') }}">
                                     <input type="hidden" name="no" id="no_jurnal">
                                     <input type="hidden" name="tipe" id="type_jurnal">
                                     <span class="border-bottom border-3 border-dark fw-bold" style="font-size: 1rem">Jurnal Valid</span>
@@ -366,17 +336,7 @@
                             </thead>
                             <tbody>
                                 @if (request('credit_coa_id_tujuan'))
-                                    <input type="hidden" value="{{ $item['credit']->order_trucking_id }}" name="jurnal[{{ $k }}][order_trucking_id]">
-                                    <input type="hidden" value="{{ $coa_credit->id }}" name="jurnal[{{ $k }}][coa_id]">
-                                    <input type="hidden" value="{{ $item['credit']->order_id }}" name="jurnal[{{ $k }}][order_id]">
-                                    <input type="hidden" value="{{ $item['credit']->debit }}" name="jurnal[{{ $k }}][credit]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice }}" name="jurnal[{{ $k }}][invoice]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_external }}" name="jurnal[{{ $k }}][invoice_external]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_trucking }}" name="jurnal[{{ $k }}][invoice_trucking]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_agen }}" name="jurnal[{{ $k }}][invoice_agen]">
-                                    <input type="hidden" value="{{ $item['credit']->invoice_vendor }}" name="jurnal[{{ $k }}][invoice_vendor]">
-                                    <input type="hidden" value="{{ $item['credit']->relasi }}" name="jurnal[{{ $k }}][relasi]">
-                                    <input type="hidden" value="{{ $item['credit']->kode }}" name="jurnal[{{ $k }}][kode]">
+                                    <input type="hidden" value="{{ $item['credit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                 <tr id="total-jurnal-row">
                                     <td></td>
                                     <td>{{ $k }}</td>
@@ -385,13 +345,13 @@
                                     <td>{{ $coa_credit->kode }} - {{ $coa_credit->nama }}</td>
                                     <td>-</td>
                                     <td id="value">{{ number_format($data->sum('credit')) }}</td>
-                                    <td><input type="text" name="jurnal[{{ $k }}][nama]" style="width: 100%" required></td>
+                                    <td><input type="text" name="new_keterangan" style="width: 100%" required></td>
                                 </tr>
                                 <!-- Data terpilih akan dipindahkan ke sini -->
                                 <input type="hidden" id="total-hidden" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
+                                <input type="hidden" id="coa-hidden" value="{{ $coa_credit->id }}" name="new_coa_id">
                                 @else
                                 <input type="hidden" id="total-hidden" value="{{ $data->sum('debit')  }}" name="jurnal[{{ $k }}][debit]">
-                                <input type="hidden" value="0" name="jurnal[{{ $k }}][credit]">
                                 <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                 <tr id="total-jurnal-row">
                                     <td>-</td>
@@ -399,9 +359,11 @@
                                     <td>-</td>
                                     <td>-</td>
                                     <td>{{ $coa_debit->kode }} - {{ $coa_debit->nama }}</td>
-                                    <td id="value">{{ number_format($data->sum('debit')) }}</td>
+                                    <td id="value"><input type="hidden" name="nama" value="{{ $data->sum('debit') }}" id="" style="width: 100%" required>{{ number_format($data->sum('debit')) }}</td>
                                     <td>-</td>
-                                    <td><input type="text" name="jurnal[{{ $k }}][nama]" id="" style="width: 100%" required></td>
+                                    <td><input type="text" name="new_keterangan" style="width: 100%" required></td>
+                                <input type="hidden" id="total-hidden" value="{{ $data->sum('debit') }}" name="jurnal[{{ $k }}][debit]">
+                                <input type="hidden" id="coa-hidden" value="{{ $coa_debit->id }}" name="new_coa_id">
                                 </tr>
 
                             @endif
@@ -415,8 +377,8 @@
                             <div>
                                 <label for="" class="form-label">Nomor Jurnal</label>
                                 <select name="nomor" id="nomor_jurnal" class="form-control" required>
-                                    <option data-no="{{ $no_1 }}" selected data-type="JNL" value="{{ $nomor_1 }}">{{ $nomor_1 }}</option>
-                                    <option data-no="{{ $no_2 }}" data-type="BBK" value="{{ $nomor_2 }}">{{ $nomor_2 }}</option>
+                                    {{-- <option data-no="{{ $no_1 }}" selected data-type="JNL" value="{{ $nomor_1 }}">{{ $nomor_1 }}</option>
+                                    <option data-no="{{ $no_2 }}" data-type="BBK" value="{{ $nomor_2 }}">{{ $nomor_2 }}</option> --}}
                                     {{-- <option data-no="{{ $no_3 }}" data-type="BBM" value="{{ $nomor_3 }}">{{ $nomor_3 }}</option> --}}
                                     <option data-no="{{ $no_4 }}" data-type="BKK" value="{{ $nomor_4 }}">{{ $nomor_4 }}</option>
                                     {{-- <option data-no="{{ $no_5 }}" data-type="BKM" value="{{ $nomor_5 }}">{{ $nomor_5 }}</option> --}}

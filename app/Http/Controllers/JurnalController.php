@@ -1124,64 +1124,129 @@ class JurnalController extends Controller
     }
 
     public function store_balik(Request $request)
-    {
-    
-        $dataToInsert = []; // Kumpulkan data sebelum transaksi
-        $r = 0;
-        $jurnal = $request->jurnal;
+{
+    $dataToInsert = [];
+    $r = 0;
+    $jurnal = $request->jurnal;
+    $tipe = $request->tipe ?? 'BKK';
+    $no = Jurnal::where('tipe', 'BKK')->whereYear('created_at', date('Y'))->max('no') + 1;
+    $nomor = $no . '/' . $tipe . '-' . 'RAS' . '/' . date('y');
+    $total = Jurnal::where('kode',$request->kode)->sum('credit');
+    $keterangan = $request->new_keterangan;
+    $new_coa = $request->new_coa_id;
+     if ($request->debit_coa_id_tujuan){
+         $total = Jurnal::where('kode',$request->kode)->sum('debit');
+     }
+    if (is_array($jurnal)) {
+        ksort($jurnal);
+    }
 
-        // Pastikan $jurnal adalah array sebelum mengurutkan
-        if (is_array($jurnal)) {
-            ksort($jurnal); // Mengurutkan array berdasarkan key (indeks)
-        }
-        // Loop pertama: Menyiapkan data
-        foreach ($jurnal as $item) {
-            if (!empty($item['nama'])) {
-                $item['created_at'] = now();
-                $item['debit'] = isset($item['debit']) ? $item['debit'] : 0;
-                $item['credit'] = isset($item['credit']) ? $item['credit'] : 0;
-                $item['jurnal_balik'] = empty($item['jurnal_balik']) ? null : $item['jurnal_balik'];
-                $item['is_balik'] = 1;
-                $item['relasi'] = $request->nomor;
-                $item['nomor'] = $request->nomor;
-                $item['no'] = $request->no;
-                $item['tipe'] = $request->tipe;
+   foreach ($jurnal as $item) {
+    if (empty($item['jurnal_balik'])) {
+        continue;
+    }
+
+    $jurnalLama = Jurnal::find($item['jurnal_balik']);
     
-                $dataToInsert[] = $item;
-                $r++;
-            }
-        }
-        if ($r == 0) {
-            return back()->with('danger', 'Data gagal disimpan');
-        }
-    
-      
+    if (!$jurnalLama) {
+        continue;
+    }
+
+    if ($request->credit_coa_id_tujuan) {
+        $dataToInsert[] = [
+            'coa_id'            => $jurnalLama->coa_id,
+            'created_at'        => now(),
+            'credit'            => $jurnalLama->debit,
+            'debit'             => $jurnalLama->credit,
+            'invoice'           => $jurnalLama->invoice,
+            'invoice_agen'      => $jurnalLama->invoice_agen,
+            'invoice_external'  => $jurnalLama->invoice_external,
+            'invoice_trucking'  => $jurnalLama->invoice_trucking,
+            'invoice_vendor'    => $jurnalLama->invoice_vendor,
+            'is_balik'          => 1,
+            'jurnal_balik'      => $jurnalLama->id,
+            'kode'              => $jurnalLama->kode,
+            'nama'              => $jurnalLama->nama,
+            'no'                => $request->no ?? $no,
+            'nomor'             => $request->nomor ?? $nomor,
+            'order_id'          => $jurnalLama->order_id,
+            'order_trucking_id' => $jurnalLama->order_trucking_id,
+            'relasi'            => $request->nomor ?? $nomor,
+            'tipe'              => $request->tipe ?? $tipe,
+        ];
+    } else {
+        $dataToInsert[] = [
+            'coa_id'            => $jurnalLama->coa_id,
+            'created_at'        => now(),
+            'credit'            => $jurnalLama->debit,
+            'debit'             => $jurnalLama->credit,
+            'invoice'           => $jurnalLama->invoice,
+            'invoice_agen'      => $jurnalLama->invoice_agen,
+            'invoice_external'  => $jurnalLama->invoice_external,
+            'invoice_trucking'  => $jurnalLama->invoice_trucking,
+            'invoice_vendor'    => $jurnalLama->invoice_vendor,
+            'is_balik'          => 1,
+            'jurnal_balik'      => $jurnalLama->id,
+            'kode'              => $jurnalLama->kode,
+            'nama'              => $jurnalLama->nama,
+            'no'                => $request->no ?? $no,
+            'nomor'             => $request->nomor ?? $nomor,
+            'order_id'          => $jurnalLama->order_id,
+            'order_trucking_id' => $jurnalLama->order_trucking_id,
+            'relasi'            => $request->nomor ?? $nomor,
+            'tipe'              => $request->tipe ?? $tipe,
+        ];
+    }
+
+    $r++;
+}
+
+// ✅ Baris terakhir credit = total, debit = 0
+ if ($request->credit_coa_id_tujuan) {
+if (!empty($dataToInsert)) {
+    $lastIndex = count($dataToInsert) - 1;
+    $dataToInsert[$lastIndex]['credit'] = $total;
+    $dataToInsert[$lastIndex]['debit']  = 0;
+    $dataToInsert[$lastIndex]['nama']  = $keterangan;
+    $dataToInsert[$lastIndex]['coa_id']  = $new_coa;
+}
+ }else {
+    if (!empty($dataToInsert)) {
+    $lastIndex = count($dataToInsert) - 1;
+    $dataToInsert[$lastIndex]['credit'] = 0;
+    $dataToInsert[$lastIndex]['debit']  = $total;
+    $dataToInsert[$lastIndex]['nama']  = $keterangan;
+    $dataToInsert[$lastIndex]['coa_id']  = $new_coa;
+}
+ }
+
+// Cek hasil sebelum insert
+
+
+
+    if ($r == 0) {
+        return back()->with('danger', 'Data gagal disimpan');
+    }
+
     DB::beginTransaction();
 
     try {
-        /**
-         * Step 1: Insert semua data sekaligus
-         */
-        Jurnal::insert($dataToInsert);
+        // Step 1: Insert data secara bertahap (hindari limit MySQL)
+        foreach (array_chunk($dataToInsert, 50) as $batch) {
+            Jurnal::insert($batch);
+        }
 
-        /**
-         * Step 2: Update field jurnal_balik dari jurnal lama
-         * Kita ambil ulang data yang baru dimasukkan berdasarkan nomor dan is_balik
-         */
-        $insertedJurnal = Jurnal::where('nomor', $request->nomor)
+        // Step 2: Ambil ulang data yang baru dimasukkan
+        $insertedJurnal = Jurnal::where('nomor', $request->nomor ?? $nomor)
                                 ->where('is_balik', 1)
                                 ->orderBy('id', 'asc')
                                 ->get();
 
-        // Pastikan jumlah data sama agar tidak error saat mapping
         if ($insertedJurnal->count() !== count($dataToInsert)) {
             throw new \Exception('Jumlah data yang dimasukkan tidak sesuai.');
         }
 
-        /**
-         * Step 3: Mapping antara data lama dan data baru
-         * Update jurnal lama berdasarkan jurnal_balik yang diinput
-         */
+        // Step 3: Update jurnal lama dengan referensi balik
         foreach ($insertedJurnal as $index => $j) {
             $original = $dataToInsert[$index];
             if (!empty($original['jurnal_balik'])) {
@@ -1191,14 +1256,13 @@ class JurnalController extends Controller
         }
 
         DB::commit();
+
         return redirect()
             ->route('jurnal.balik.create')
             ->with('success', 'Data berhasil disimpan');
-
     } catch (\Exception $e) {
         DB::rollBack();
 
-        // Log error untuk debugging
         \Log::error('Gagal menyimpan jurnal balik', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
