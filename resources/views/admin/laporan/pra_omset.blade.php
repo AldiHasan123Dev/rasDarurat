@@ -1,93 +1,108 @@
 @extends('layouts.admin')
 @section('style')
-<link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
-<link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
-<style>
-    @media print{
-        @page {
-            size: landscape
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/selectize.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/selectize.bootstrap5.css') }}">
+    <style>
+        @media print {
+            @page {
+                size: landscape
+            }
+
+            body * {
+                visibility: hidden;
+            }
+
+            body {
+                width: 100%;
+            }
+
+            #print,
+            #print * {
+                visibility: visible;
+                font-family: 'Open Sans', sans-serif;
+                font-size: .7rem !important;
+                color: black !important;
+            }
+
+            #print {
+                position: absolute;
+                top: -80px;
+            }
+
+            tr th,
+            tr {
+                border: 1px solid black;
+            }
         }
-        body * {
-            visibility: hidden;
+
+        thead {
+            position: sticky;
+            z-index: 12;
+            top: 0px;
+            background: white;
         }
-        body{
+
+        th {
+            text-transform: uppercase;
+        }
+
+        th,
+        td {
+            white-space: nowrap;
+        }
+
+        div.dataTables_wrapper {
             width: 100%;
+            margin: 0 auto;
         }
-        #print, #print * {
-            visibility: visible;
-            font-family: 'Open Sans', sans-serif;
-            font-size: .7rem !important;
-            color: black !important;
-        }
-        #print{
-            position: absolute;
-            top: -80px;
-        }
-        tr th, tr{
+
+        #table th,
+        #table td {
+            vertical-align: middle;
+            height: 20px;
+            padding: 0 5px !important;
             border: 1px solid black;
+            color: black;
         }
-    }
-    thead{
-        position: sticky;
-        z-index: 12;
-        top: 0px;
-        background: white;
-    }
-    th{
-        text-transform: uppercase;
-    }
-    th, td { white-space: nowrap; }
-    div.dataTables_wrapper {
-        width: 100%;
-        margin: 0 auto;
-    }
-    #table th,
-    #table td {
-        vertical-align: middle;
-        height: 20px;
-        padding: 0 5px!important;
-        border: 1px solid black;
-        color: black;
-    }
-    .dataTables_scroll
-    {
-        overflow:auto;
-        height: 400px;
-    }
-    .bg-warning1{
-        background-color: #f3ff0dfc;
-    }
-    thead input {
-        width: 100%;
-        padding: 0px;
-        box-sizing: border-box;
-    }
-    /* Untuk baris utama */
-#table tbody tr.selected1 > td {
-    /* Dikosongkan agar tidak ganggu inline style dari PHP */
-}
 
-#table tbody tr.selected1:hover > td {
-    /* Dikosongkan juga */
-}
+        .dataTables_scroll {
+            overflow: auto;
+            height: 400px;
+        }
 
-/* Tetap dipakai jika kamu butuh FixedColumns/FixedHeader */
-div.DTFC_LeftWrapper .DTFC_Cloned tbody tr.selected1 td,
-div.DTFC_RightWrapper .DTFC_Cloned tbody tr.selected1 td,
-table.dataTable.fixedHeader-floating tbody tr.selected1 td,
-table.dataTable tbody > tr.selected1,
-table.dataTable tbody > tr.selected1 td {
-    /* Ini bisa kamu hapus juga kalau mau full kontrol di JS */
-    /* background-color: #adf8dc !important; */
-}
+        .bg-warning1 {
+            background-color: #f3ff0dfc;
+        }
 
+        thead input {
+            width: 100%;
+            padding: 0px;
+            box-sizing: border-box;
+        }
 
+        /* Untuk baris utama */
+        #table tbody tr.selected1>td {
+            /* Dikosongkan agar tidak ganggu inline style dari PHP */
+        }
 
-</style>
+        #table tbody tr.selected1:hover>td {
+            /* Dikosongkan juga */
+        }
+
+        /* Tetap dipakai jika kamu butuh FixedColumns/FixedHeader */
+        div.DTFC_LeftWrapper .DTFC_Cloned tbody tr.selected1 td,
+        div.DTFC_RightWrapper .DTFC_Cloned tbody tr.selected1 td,
+        table.dataTable.fixedHeader-floating tbody tr.selected1 td,
+        table.dataTable tbody>tr.selected1,
+        table.dataTable tbody>tr.selected1 td {
+            /* Ini bisa kamu hapus juga kalau mau full kontrol di JS */
+            /* background-color: #adf8dc !important; */
+        }
+    </style>
 @endsection
 @section('content')
     <div class="container">
@@ -96,31 +111,38 @@ table.dataTable tbody > tr.selected1 td {
                 <div class="card p-3">
                     <div class="d-flex justify-content-between">
                         <div class="d-flex gap-3">
-                            <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i
+                                    class="fas fa-print"></i> PRINT</button>
                             <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
                             {{-- <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button> --}}
                             @if ($is_pra)
-                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK (161 DEBIT)</button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE JURNAL BALIK (161 CREDIT)</button>
+                                <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE
+                                    JURNAL BALIK (161 DEBIT)</button>
+                                <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE
+                                    JURNAL BALIK (161 CREDIT)</button>
                             @endif
                         </div>
                         <form action="{{ url()->current() }}" method="get">
                             <div class="d-flex gap-3">
-                                <select name="month" id="month" class="form-select" style="width: 150px" onchange="submit()">
-                                    @foreach ($months as $idx=> $item)
-                                    <option value="{{ $idx+1 }}" {{ ($idx+1)==$month?'selected':'' }}>{{ $item }}</option>
+                                <select name="month" id="month" class="form-select" style="width: 150px"
+                                    onchange="submit()">
+                                    @foreach ($months as $idx => $item)
+                                        <option value="{{ $idx + 1 }}" {{ $idx + 1 == $month ? 'selected' : '' }}>
+                                            {{ $item }}</option>
                                     @endforeach
                                 </select>
-                                <select name="year" id="year" class="form-select" style="width: 150px" onchange="submit()">
-                                    <option {{ $year=='2023'?'selected':'' }} value="2023">2023</option>
-                                    <option {{ $year=='2024'?'selected':'' }} value="2024">2024</option>
-                                    <option {{ $year=='2025'?'selected':'' }} value="2025">2025</option>
-                                    <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
-                                    <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
+                                <select name="year" id="year" class="form-select" style="width: 150px"
+                                    onchange="submit()">
+                                    <option {{ $year == '2023' ? 'selected' : '' }} value="2023">2023</option>
+                                    <option {{ $year == '2024' ? 'selected' : '' }} value="2024">2024</option>
+                                    <option {{ $year == '2025' ? 'selected' : '' }} value="2025">2025</option>
+                                    <option {{ $year == '2026' ? 'selected' : '' }} value="2026">2026</option>
+                                    <option {{ $year == '2027' ? 'selected' : '' }} value="2027">2027</option>
                                 </select>
                                 <div>
-                                        <input type="radio" name="tipe" id="radio1" hidden value="inv" {{ $tipe=='inv'?'checked':'' }} onchange="submit()">
+                                    <input type="radio" name="tipe" id="radio1" hidden value="inv"
+                                        {{ $tipe == 'inv' ? 'checked' : '' }} onchange="submit()">
                                 </div>
                             </div>
                         </form>
@@ -135,7 +157,7 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">#</th>
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">ID JOB</th>
-                                         <th style="min-width:40px !important">Shipment</th>
+                                        <th style="min-width:40px !important">Shipment</th>
                                         <th style="min-width:40px !important">Kondisi</th>
                                         <th style="min-width:40px !important">Group JOB</th>
                                         <th style="min-width:40px !important">Tanggal</th>
@@ -275,23 +297,30 @@ table.dataTable tbody > tr.selected1 td {
                                 </thead>
                                 <tbody>
                                     @php
-    $totalTarif = 0;
-@endphp
+                                        $totalTarif = 0;
+                                    @endphp
                                     @foreach ($data as $order)
-                                        <tr class="table-{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 ? 'secondary' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">
+                                        <tr
+                                            class="table-{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 ? 'secondary' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">
                                             <td>{{ $order->pra_omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
-                                            @if ($order->lock_omset==1 ||$order->lock_omset==2)
-                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="unlock({{ $order->id }})"><i class="fas fa-lock"></i></button></td>
+                                            @if ($order->lock_omset == 1 || $order->lock_omset == 2)
+                                                <td class="text-center" id="lock-{{ $order->id }}"><button
+                                                        class="text-danger bg-transparent" style="border: none"
+                                                        onclick="unlock({{ $order->id }})"><i
+                                                            class="fas fa-lock"></i></button></td>
                                             @else
-                                            <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="lock({{ $order->id }})"><i class="fas fa-unlock"></i></button></td>
+                                                <td class="text-center" id="lock-{{ $order->id }}"><button
+                                                        class="text-success bg-transparent" style="border: none"
+                                                        onclick="lock({{ $order->id }})"><i
+                                                            class="fas fa-unlock"></i></button></td>
                                             @endif
                                             <td>{{ $order->invoice }}</td>
-                                            <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
+                                            <td>{{ $order->job }}-{{ sprintf('%02d', $order->no_job) }}</td>
                                             <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->job }}</td>
-                                            <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
+                                            <td>{{ date('d/m/y', strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->asuransi }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->customer->marketing->name ?? '-' }}</td>
@@ -306,152 +335,269 @@ table.dataTable tbody > tr.selected1 td {
                                             <td>{{ $order->jadwal_kapal->voyage ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->etd ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->td ?? '-' }}</td>
-                                            <td>{{ is_null($order->ba_kirim)?'-':date('d-m-Y',strtotime($order->ba_kirim)) }}</td>
+                                            <td>{{ is_null($order->ba_kirim) ? '-' : date('d-m-Y', strtotime($order->ba_kirim)) }}
+                                            </td>
                                             <td>{{ $order->nopol }}</td>
                                             <td>{{ $order->trucking }}</td>
                                             <td>{{ $order->container }}</td>
                                             <td>{{ $order->seal }}</td>
-                                            <td>{{ is_null($order->stuffing)?'-':date('d-m-Y',strtotime($order->stuffing)) }}</td>
+                                            <td>{{ is_null($order->stuffing) ? '-' : date('d-m-Y', strtotime($order->stuffing)) }}
+                                            </td>
                                             <td>{{ $order->tarif->stuffing ?? '-' }}</td>
-                                            <td>{{ is_null($order->full)?'-':date('d-m-Y',strtotime($order->full)) }}</td>
-                                            <td>{{ is_null($order->barang_diantar)?'-':date('d-m-Y',strtotime($order->barang_diantar)) }}</td>
-                                            <td>{{ is_null($order->ba_kembali)?'-':date('d-m-Y',strtotime($order->ba_kembali)) }}</td>
+                                            <td>{{ is_null($order->full) ? '-' : date('d-m-Y', strtotime($order->full)) }}</td>
+                                            <td>{{ is_null($order->barang_diantar) ? '-' : date('d-m-Y', strtotime($order->barang_diantar)) }}
+                                            </td>
+                                            <td>{{ is_null($order->ba_kembali) ? '-' : date('d-m-Y', strtotime($order->ba_kembali)) }}
+                                            </td>
                                             <td>{{ $order->bttb->sum('qty') }}</td>
                                             <td>{{ $order->bttb->sum('vol') }}</td>
                                             <td>{{ $order->bttb->sum('berat') }}</td>
                                             <td>{{ $order->satuanInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->satuanInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->agen }}</td>
-                                            <td>{{ $order->agen=='AGEN'?($order->agent->nama??'-'):($order->penerima_bl->nama??'-') }}</td>
+                                            <td>{{ $order->agen == 'AGEN' ? $order->agent->nama ?? '-' : $order->penerima_bl->nama ?? '-' }}
+                                            </td>
                                             <td id="j_none-{{ $order->id }}">
-                                                <a href="#"  onclick="showJurnal({{ $order->id }},'j_none',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_none ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->none ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_none ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_none',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_none ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->none ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_none ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td>{{ $order->truckingInfo->kendaraan->milik ?? '-' }}</td>
                                             <td id="j_trucking-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_trucking ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->trucking ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_trucking ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_trucking',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_trucking ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->trucking ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_trucking ?? '[]')) }}
                                                 </a>
                                             </td>
                                             @php
                                                 $jOppCount = count(json_decode($order->pra_omset->j_opp ?? '[]'));
-                                                $jKarantinaCount = count(json_decode($order->pra_omset->j_karantina ?? '[]'));
+                                                $jKarantinaCount = count(
+                                                    json_decode($order->pra_omset->j_karantina ?? '[]'),
+                                                );
                                                 $jOptCount = count(json_decode($order->pra_omset->j_opt ?? '[]'));
                                                 $jUtCount = count(json_decode($order->pra_omset->j_ut ?? '[]'));
                                                 $jBlCount = count(json_decode($order->pra_omset->j_bl ?? '[]'));
                                                 $jApbsCount = count(json_decode($order->pra_omset->j_apbs ?? '[]'));
-                                                $jCleaningCount = count(json_decode($order->pra_omset->j_cleaning ?? '[]'));
+                                                $jCleaningCount = count(
+                                                    json_decode($order->pra_omset->j_cleaning ?? '[]'),
+                                                );
                                                 $jLssCount = count(json_decode($order->pra_omset->j_lss ?? '[]'));
-                                                $jStorageCount = count(json_decode($order->pra_omset->j_strorage ?? '[]'));
+                                                $jStorageCount = count(
+                                                    json_decode($order->pra_omset->j_strorage ?? '[]'),
+                                                );
                                                 $jJDCount = count(json_decode($order->pra_omset->j_jasa_door ?? '[]'));
-                                                $jAsuransiCount = count(json_decode($order->pra_omset->j_asuransi ?? '[]'));
+                                                $jAsuransiCount = count(
+                                                    json_decode($order->pra_omset->j_asuransi ?? '[]'),
+                                                );
                                                 $jOpsCount = count(json_decode($order->pra_omset->j_ops ?? '[]'));
                                                 $jSegelCount = count(json_decode($order->pra_omset->j_segel ?? '[]'));
-                                                $jOpsSealCount = count(json_decode($order->pra_omset->j_ops_seal ?? '[]'));
+                                                $jOpsSealCount = count(
+                                                    json_decode($order->pra_omset->j_ops_seal ?? '[]'),
+                                                );
                                                 $jBuruhCount = count(json_decode($order->pra_omset->j_buruh ?? '[]'));
-                                                $jCheckerCount = count(json_decode($order->pra_omset->j_checker ?? '[]'));
-                                                $jDemurageCount = count(json_decode($order->pra_omset->j_demurage ?? '[]'));
-                                                $jJSPCount = count(json_decode($order->pra_omset->j_job_slip_pod ?? '[]'));
+                                                $jCheckerCount = count(
+                                                    json_decode($order->pra_omset->j_checker ?? '[]'),
+                                                );
+                                                $jDemurageCount = count(
+                                                    json_decode($order->pra_omset->j_demurage ?? '[]'),
+                                                );
+                                                $jJSPCount = count(
+                                                    json_decode($order->pra_omset->j_job_slip_pod ?? '[]'),
+                                                );
                                                 $jOPTPCount = count(json_decode($order->pra_omset->j_opt_pod ?? '[]'));
                                                 $jLPCount = count(json_decode($order->pra_omset->j_lolo_pod ?? '[]'));
-                                                $jCLPCount = count(json_decode($order->pra_omset->j_cleaning_pod ?? '[]'));
+                                                $jCLPCount = count(
+                                                    json_decode($order->pra_omset->j_cleaning_pod ?? '[]'),
+                                                );
                                                 $jOPSPCount = count(json_decode($order->pra_omset->j_ops_pod ?? '[]'));
-                                                $jTruckPCount = count(json_decode($order->pra_omset->j_truck_pod ?? '[]'));
-                                                $jKuliPCount = count(json_decode($order->pra_omset->j_kuli_pod ?? '[]'));
-                                                $jKirimDokCount = count(json_decode($order->pra_omset->j_kirim_dokumen ?? '[]'));
-                                                $jBiayaLainCount = count(json_decode($order->pra_omset->j_biaya_lain ?? '[]'));
-                                                $jFlexibagCount = count(json_decode($order->pra_omset->j_flexibag ?? '[]'));
+                                                $jTruckPCount = count(
+                                                    json_decode($order->pra_omset->j_truck_pod ?? '[]'),
+                                                );
+                                                $jKuliPCount = count(
+                                                    json_decode($order->pra_omset->j_kuli_pod ?? '[]'),
+                                                );
+                                                $jKirimDokCount = count(
+                                                    json_decode($order->pra_omset->j_kirim_dokumen ?? '[]'),
+                                                );
+                                                $jBiayaLainCount = count(
+                                                    json_decode($order->pra_omset->j_biaya_lain ?? '[]'),
+                                                );
+                                                $jFlexibagCount = count(
+                                                    json_decode($order->pra_omset->j_flexibag ?? '[]'),
+                                                );
                                                 $jRCCount = count(json_decode($order->pra_omset->j_rc ?? '[]'));
 
-                                                $styleOpp =$jOppCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleUt =$jUtCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleBl =$jBlCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleOpt = $jOptCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleApbs =$jApbsCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleCleaning =$jCleaningCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleLss =$jLssCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleKarantina = $jKarantinaCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleStorage =$jStorageCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleJD =$jJDCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleAsuransi =$jAsuransiCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleOps =$jOpsCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleSegel =$jSegelCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleOpsSeal =$jOpsSealCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleBuruh =$jBuruhCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleChecker =$jCheckerCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleDemurage =$jDemurageCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleJSP =$jJSPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleOPTP =$jOPTPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleLP =$jLPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleCLP =$jCLPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleOPSP =$jOPSPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleTruckP =$jTruckPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleKuliP =$jKuliPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleKirimDok =$jKirimDokCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleBiayaLain =$jBiayaLainCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleFlexibag =$jFlexibagCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
-                                                $styleRC =$jRCCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOpp =
+                                                    $jOppCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleUt =
+                                                    $jUtCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleBl =
+                                                    $jBlCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOpt =
+                                                    $jOptCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleApbs =
+                                                    $jApbsCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleCleaning =
+                                                    $jCleaningCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleLss =
+                                                    $jLssCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleKarantina =
+                                                    $jKarantinaCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleStorage =
+                                                    $jStorageCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleJD =
+                                                    $jJDCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleAsuransi =
+                                                    $jAsuransiCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleOps =
+                                                    $jOpsCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleSegel =
+                                                    $jSegelCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleOpsSeal =
+                                                    $jOpsSealCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleBuruh =
+                                                    $jBuruhCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleChecker =
+                                                    $jCheckerCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleDemurage =
+                                                    $jDemurageCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleJSP =
+                                                    $jJSPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOPTP =
+                                                    $jOPTPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleLP =
+                                                    $jLPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleCLP =
+                                                    $jCLPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleOPSP =
+                                                    $jOPSPCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
+                                                $styleTruckP =
+                                                    $jTruckPCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleKuliP =
+                                                    $jKuliPCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleKirimDok =
+                                                    $jKirimDokCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleBiayaLain =
+                                                    $jBiayaLainCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleFlexibag =
+                                                    $jFlexibagCount > 1
+                                                        ? 'background-color: #f3ff0dfc; color: white;'
+                                                        : '';
+                                                $styleRC =
+                                                    $jRCCount > 1 ? 'background-color: #f3ff0dfc; color: white;' : '';
                                             @endphp
                                             <td id="j_opp-{{ $order->id }}" style="{{ $styleOpp }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opp',{{ $order->pra_omset->id ?? 'null' }},'{{ $order->pra_omset->j_opp ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->opp ?? 0),2,',','.') }} / {{ $jOppCount }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_opp',{{ $order->pra_omset->id ?? 'null' }},'{{ $order->pra_omset->j_opp ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->opp ?? 0, 2, ',', '.') }} /
+                                                    {{ $jOppCount }}
                                                 </a>
                                             </td>
 
                                             <td id="j_opt-{{ $order->id }}" style="{{ $styleOpt }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_opt',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->opt ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_opt ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_opt',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->opt ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_opt ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_ut-{{ $order->id }}" style="{{ $styleUt }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ut',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ut ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->ut ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_ut ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_ut',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ut ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->ut ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_ut ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_bl-{{ $order->id }}" style="{{ $styleBl }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_bl',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_bl ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->bl ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_bl ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_bl',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_bl ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->bl ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_bl ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_apbs-{{ $order->id }}" style="{{ $styleApbs }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_apbs',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_apbs ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->apbs ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_apbs ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_apbs',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_apbs ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->apbs ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_apbs ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_cleaning-{{ $order->id }}" style="{{ $styleCleaning }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_cleaning',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_cleaning ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->cleaning ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_cleaning ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_cleaning',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_cleaning ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->cleaning ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_cleaning ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_lss-{{ $order->id }}" style="{{ $styleLss }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_lss',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lss ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->lss ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_lss ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_lss',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lss ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->lss ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_lss ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_storage-{{ $order->id }}" style="{{ $styleStorage }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_storage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_storage ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->storage ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_storage ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_storage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_storage ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->storage ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_storage ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_jasa_door-{{ $order->id }}" style="{{ $styleJD }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_jasa_door',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_jasa_door ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->jasa_door ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_jasa_door ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_jasa_door',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_jasa_door ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->jasa_door ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_jasa_door ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_asuransi-{{ $order->id }}" style="{{ $styleAsuransi }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_asuransi',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_asuransi ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->asuransi ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_asuransi ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_asuransi',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_asuransi ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->asuransi ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_asuransi ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_ops-{{ $order->id }}" style="{{ $styleOps }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_ops',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->ops ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_ops ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_ops',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->ops ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_ops ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_segel-{{ $order->id }}" style="{{ $styleSegel }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_segel',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_segel ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->segel ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_segel ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_segel',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_segel ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->segel ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_segel ?? '[]')) }}
                                                 </a>
                                             </td>
                                             {{-- <td id="j_ops_seal-{{ $order->id }}" >
@@ -465,98 +611,138 @@ table.dataTable tbody > tr.selected1 td {
                                                 </a>
                                             </td> --}}
                                             <td id="j_buruh-{{ $order->id }}" style="{{ $styleBuruh }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_buruh ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->buruh ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_buruh ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_buruh',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_buruh ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->buruh ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_buruh ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_checker-{{ $order->id }}" style="{{ $styleChecker }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_checker',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_checker ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->checker ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_checker ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_checker',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_checker ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->checker ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_checker ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_karantina-{{ $order->id }}" style="{{ $styleKarantina }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_karantina',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_karantina ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->karantina ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_karantina ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_karantina',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_karantina ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->karantina ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_karantina ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_demmurage-{{ $order->id }}" style="{{ $styleDemurage }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_demmurage ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->demmurage ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_demmurage ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_demmurage',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_demmurage ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->demmurage ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_demmurage ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_job_slip_pod-{{ $order->id }}" style="{{ $styleJSP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_job_slip_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->job_slip_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_job_slip_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_job_slip_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->job_slip_pod ?? 0, 2, ',', '.') }}
+                                                    / {{ count(json_decode($order->pra_omset->j_job_slip_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_opt_pod-{{ $order->id }}" style="{{ $styleOPTP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->opt_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_opt_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_opt_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->opt_pod ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_opt_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_lolo_pod-{{ $order->id }}" style="{{ $styleLP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lolo_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->lolo_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_lolo_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_lolo_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->lolo_pod ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_lolo_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_cleaning_pod-{{ $order->id }}" style="{{ $styleCLP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_cleaning_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->cleaning_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_cleaning_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_cleaning_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->cleaning_pod ?? 0, 2, ',', '.') }}
+                                                    / {{ count(json_decode($order->pra_omset->j_cleaning_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_ops_pod-{{ $order->id }}" style="{{ $styleOPSP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->ops_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_ops_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_ops_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->ops_pod ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_ops_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_truck_pod-{{ $order->id }}" style="{{ $styleTruckP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_truck_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->truck_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_truck_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_truck_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->truck_pod ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_truck_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_kuli_pod-{{ $order->id }}" style="{{ $styleKuliP }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_kuli_pod ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->kuli_pod ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_kuli_pod ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_kuli_pod ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->kuli_pod ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_kuli_pod ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_kirim_dokumen-{{ $order->id }}" style="{{ $styleKirimDok }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_kirim_dokumen',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_kirim_dokumen ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->kirim_dokumen ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_kirim_dokumen ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_kirim_dokumen',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_kirim_dokumen ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->kirim_dokumen ?? 0, 2, ',', '.') }}
+                                                    / {{ count(json_decode($order->pra_omset->j_kirim_dokumen ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_biaya_lain-{{ $order->id }}" style="{{ $styleBiayaLain }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya_lain',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_biaya_lain ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->biaya_lain ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_biaya_lain ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_biaya_lain',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_biaya_lain ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->biaya_lain ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_biaya_lain ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_flexibag-{{ $order->id }}" style="{{ $styleFlexibag }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_flexibag',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_flexibag ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->flexibag ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_flexibag ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_flexibag',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_flexibag ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->flexibag ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_flexibag ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_rc-{{ $order->id }}" style="{{ $styleRC }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_rc',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_rc ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->rc ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_rc ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_rc',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_rc ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->rc ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_rc ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td id="j_biaya-{{ $order->id }}">
-                                                <a href="#" onclick="showJurnal({{ $order->id }},'j_biaya',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_biaya ?? '[]'}}')">
-                                                    {{ number_format(($order->pra_omset->biaya ?? 0),2,',','.') }} / {{ count(json_decode($order->pra_omset->j_biaya ?? '[]')) }}
+                                                <a href="#"
+                                                    onclick="showJurnal({{ $order->id }},'j_biaya',{{ $order->pra_omset->id ?? null }},'{{ $order->pra_omset->j_biaya ?? '[]' }}')">
+                                                    {{ number_format($order->pra_omset->biaya ?? 0, 2, ',', '.') }} /
+                                                    {{ count(json_decode($order->pra_omset->j_biaya ?? '[]')) }}
                                                 </a>
                                             </td>
                                             <td>
                                                 @php
                                                     $cbm = $order->tarif->satuanInfo->nama ?? '-';
                                                     $tarif = $order->tarif->tarif ?? 0;
-                                                    if($cbm=='CBM'){
-                                                        $tarif *= $order->bttb->sum('vol');
+                                                    if ($cbm == 'CBM') {
+                                                        $totalVol = $order->bttb->sum('vol');
+                                                        // Jika total volume kurang dari 1, set menjadi 1
+                                                        if ($totalVol < 1) {
+                                                            $totalVol = 1;
+                                                        }
+                                                        $tarif *= $totalVol;
                                                     }
-                                                    $totalTarif += $tarif; 
+
                                                 @endphp
-                                                {{ number_format(($tarif ?? 0),2,',','.') }}
+                                                {{ number_format($tarif ?? 0, 2, ',', '.') }}
                                             </td>
-                                            <td>{{ number_format(($order->pra_omset->laba_kotor ?? 0),2,',','.') }}</td>
-                                            <td  style="{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 || $order->pra_omset->margin <= 0? 'background-color: #f3ff0dfc;' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">{{ number_format((($order->pra_omset->margin ?? 0) * 100),3,',','.') }}</td>
+                                            <td>{{ number_format($order->pra_omset->laba_kotor ?? 0, 2, ',', '.') }}</td>
+                                            <td
+                                                style="{{ $order->pra_omset ? (($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0) || $order->pra_omset->margin <= 0 ? 'background-color: #f3ff0dfc;' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">
+                                                {{ number_format(($order->pra_omset->margin ?? 0) * 100, 3, ',', '.') }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -571,82 +757,83 @@ table.dataTable tbody > tr.selected1 td {
     </div>
 
     <div class="card-footer py-2">
-                    <div class="d-flex gap-3 mt-2 justify-content-center">
-                        @php
-                              $totalBiaya = $data->sum(function($o) {
-    return $o->pra_omset->biaya ?? 0;
-});
+        <div class="d-flex gap-3 mt-2 justify-content-center">
+            @php
+                $totalBiaya = $data->sum(function ($o) {
+                    return $o->pra_omset->biaya ?? 0;
+                });
 
-$totalLB = $data->sum(function($o) {
-    return $o->pra_omset->laba_kotor ?? 0;
-});
+                $totalLB = $data->sum(function ($o) {
+                    return $o->pra_omset->laba_kotor ?? 0;
+                });
 
-                        @endphp
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total 1.6.1</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($jurnal161 ?? 0),0,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total Biaya</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalBiaya ?? 0),0,',','.') }}</li>
-                        </ul>
-                        <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total Tarif</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalTarif ?? 0),0,',','.') }}</li>
-                        </ul>
-                         <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
-                            <li class="list-group-item fw-bold">Total Laba-Kotor</li>
-                            <li class="list-group-item fw-bold">{{  number_format(($totalLB ?? 0),0,',','.') }}</li>
-                        </ul>
-                    </div>
-                </div>
-
-               <div class="container my-2">
-    <div class="card border-0 shadow-sm">
-        <div class="card-header py-2 px-3 text-white" style="background: linear-gradient(90deg, #007bff, #0056b3);">
-            <h6 class="mb-0 fw-semibold">
-                <i class="bi bi-bar-chart-fill me-2"></i>Rincian Jurnal - COA 1.6.1
-            </h6>
+            @endphp
+            <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                <li class="list-group-item fw-bold">Total 1.6.1</li>
+                <li class="list-group-item fw-bold">{{ number_format($jurnal161 ?? 0, 0, ',', '.') }}</li>
+            </ul>
+            <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                <li class="list-group-item fw-bold">Total Biaya</li>
+                <li class="list-group-item fw-bold">{{ number_format($totalBiaya ?? 0, 0, ',', '.') }}</li>
+            </ul>
+            <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                <li class="list-group-item fw-bold">Total Tarif</li>
+                <li class="list-group-item fw-bold">{{ number_format($totalTarif ?? 0, 0, ',', '.') }}</li>
+            </ul>
+            <ul class="list-group list-group-horizontal border border-primary" style="font-size: .7rem">
+                <li class="list-group-item fw-bold">Total Laba-Kotor</li>
+                <li class="list-group-item fw-bold">{{ number_format($totalLB ?? 0, 0, ',', '.') }}</li>
+            </ul>
         </div>
+    </div>
 
-        <div class="card-body p-2">
-            <div class="table-responsive">
-                <table class="table table-sm table-bordered table-hover align-middle mb-0">
-                    <thead class="table-dark text-center small">
-                        <tr>
-                            <th style="width: 25%">Periode</th>
-                            <th style="width: 25%">Total Debit (Rp)</th>
-                            <th style="width: 25%">Total Kredit (Rp)</th>
-                            <th style="width: 25%">Net Total (Rp)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($rekapPerBulan as $row)
-                            <tr class="small">
-                                <td class="text-center fw-medium">
-                                    {{ \Carbon\Carbon::parse($row['periode'].'-01')->isoFormat('MMMM Y') }}
-                                </td>
-                                <td class="text-end text-primary">
-                                    {{ number_format($row['total_debit'], 0, ',', '.') }}
-                                </td>
-                                <td class="text-end text-danger">
-                                    {{ number_format($row['total_kredit'], 0, ',', '.') }}
-                                </td>
-                                <td class="text-end fw-bold {{ $row['net_total'] < 0 ? 'text-danger' : 'text-success' }}">
-                                    {{ number_format($row['net_total'], 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        @empty
+    <div class="container my-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header py-2 px-3 text-white" style="background: linear-gradient(90deg, #007bff, #0056b3);">
+                <h6 class="mb-0 fw-semibold">
+                    <i class="bi bi-bar-chart-fill me-2"></i>Rincian Jurnal - COA 1.6.1
+                </h6>
+            </div>
+
+            <div class="card-body p-2">
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered table-hover align-middle mb-0">
+                        <thead class="table-dark text-center small">
                             <tr>
-                                <td colspan="4" class="text-center text-muted py-2">Data tidak tersedia</td>
+                                <th style="width: 25%">Periode</th>
+                                <th style="width: 25%">Total Debit (Rp)</th>
+                                <th style="width: 25%">Total Kredit (Rp)</th>
+                                <th style="width: 25%">Net Total (Rp)</th>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($rekapPerBulan as $row)
+                                <tr class="small">
+                                    <td class="text-center fw-medium">
+                                        {{ \Carbon\Carbon::parse($row['periode'] . '-01')->isoFormat('MMMM Y') }}
+                                    </td>
+                                    <td class="text-end text-primary">
+                                        {{ number_format($row['total_debit'], 0, ',', '.') }}
+                                    </td>
+                                    <td class="text-end text-danger">
+                                        {{ number_format($row['total_kredit'], 0, ',', '.') }}
+                                    </td>
+                                    <td
+                                        class="text-end fw-bold {{ $row['net_total'] < 0 ? 'text-danger' : 'text-success' }}">
+                                        {{ number_format($row['net_total'], 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-2">Data tidak tersedia</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <div class="modal fade" id="modal-jurnal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -776,7 +963,7 @@ $totalLB = $data->sum(function($o) {
                 left: 5,
                 right: 0
             },
-            autoWidth:false,
+            autoWidth: false,
             paging: false,
             scrollCollapse: true,
             fixedHeader: true,
@@ -784,44 +971,42 @@ $totalLB = $data->sum(function($o) {
             // scrollX:true,
             // scrollY: 400,
             dom: 'Bfrtip',
-            buttons: [
-                {
-                    extend:'excel'
-                },
-            ],
+            buttons: [{
+                extend: 'excel'
+            }, ],
             search: {
                 return: true
             }
         });
 
-$('#table tbody').on('click', 'tr', function () {
-    // Hapus seleksi lama
-    $('#table tbody tr').removeClass('selected1');
-    $('#table tbody tr td').each(function () {
-        // Hapus background-color hanya jika ditambahkan via JS sebelumnya
-        if ($(this).data('clicked') === true) {
-            $(this).css('background-color', '');
-            $(this).removeData('clicked');
-        }
-    });
+        $('#table tbody').on('click', 'tr', function() {
+            // Hapus seleksi lama
+            $('#table tbody tr').removeClass('selected1');
+            $('#table tbody tr td').each(function() {
+                // Hapus background-color hanya jika ditambahkan via JS sebelumnya
+                if ($(this).data('clicked') === true) {
+                    $(this).css('background-color', '');
+                    $(this).removeData('clicked');
+                }
+            });
 
-    // Tambah seleksi baru
-    $(this).addClass('selected1');
-    $(this).find('td').each(function () {
-        const inlineStyle = $(this).attr('style') || '';
-        if (!inlineStyle.includes('background-color')) {
-            $(this).css('background-color', '#adf8dc');
-            $(this).data('clicked', true); // Flag sebagai td yang diwarnai via JS
-        }
-    });
-});
-
-
+            // Tambah seleksi baru
+            $(this).addClass('selected1');
+            $(this).find('td').each(function() {
+                const inlineStyle = $(this).attr('style') || '';
+                if (!inlineStyle.includes('background-color')) {
+                    $(this).css('background-color', '#adf8dc');
+                    $(this).data('clicked', true); // Flag sebagai td yang diwarnai via JS
+                }
+            });
+        });
 
 
-        table.column( 0 ).visible( false );
-        table.column( 1 ).visible( false );
-        table.column( 40 ).visible( false );
+
+
+        table.column(0).visible(false);
+        table.column(1).visible(false);
+        table.column(40).visible(false);
         jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
         $('.select2').select2({
@@ -829,76 +1014,76 @@ $('#table tbody').on('click', 'tr', function () {
         });
 
 
-        function sync(){
-            syncAction(0,50);
+        function sync() {
+            syncAction(0, 50);
         }
 
-        function syncJurnalBalik(){
-            syncJurnalBalikAction(0,50);
+        function syncJurnalBalik() {
+            syncJurnalBalikAction(0, 50);
         }
 
-         function syncJurnalBalik1(){
-            syncJurnalBalikAction1(0,50);
+        function syncJurnalBalik1() {
+            syncJurnalBalikAction1(0, 50);
         }
 
-        function syncAction(start,end){
+        function syncAction(start, end) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.sync') }}",
                 data: {
-                    id:@json($ids),
-                    start:start,
-                    end:end,
-                    is_pra:@json($is_pra)
+                    id: @json($ids),
+                    start: start,
+                    end: end,
+                    is_pra: @json($is_pra)
                 },
-                success: function (response) {
-                    if(response=='complete'){
+                success: function(response) {
+                    if (response == 'complete') {
                         alert("SINKRONISASI BERHASIL!");
                         location.reload();
-                    }else{
-                        syncAction(response,50)
+                    } else {
+                        syncAction(response, 50)
                     }
                 }
             });
         }
 
-        function syncJurnalBalikAction(start,end){
+        function syncJurnalBalikAction(start, end) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.sync.jurnal_balik') }}",
                 data: {
-                    id:@json($ids),
-                    start:start,
-                    end:end,
-                    month:@json($month),
-                    year:@json($year),
+                    id: @json($ids),
+                    start: start,
+                    end: end,
+                    month: @json($month),
+                    year: @json($year),
                 },
-                success: function (response) {
-                    if(response=='complete'){
+                success: function(response) {
+                    if (response == 'complete') {
                         alert("SINKRONISASI JURNAL BALIK BERHASIL!");
-                    }else{
-                        syncJurnalBalikAction(response,50)
+                    } else {
+                        syncJurnalBalikAction(response, 50)
                     }
                 }
             });
         }
 
-        function syncJurnalBalikAction1(start,end){
+        function syncJurnalBalikAction1(start, end) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.sync.jurnal_balik1') }}",
                 data: {
-                    id:@json($ids),
-                    start:start,
-                    end:end,
-                    month:@json($month),
-                    year:@json($year),
+                    id: @json($ids),
+                    start: start,
+                    end: end,
+                    month: @json($month),
+                    year: @json($year),
                 },
-                success: function (response) {
-                    if(response=='complete'){
+                success: function(response) {
+                    if (response == 'complete') {
                         alert("SINKRONISASI JURNAL BALIK BERHASIL!");
-                    }else{
-                        syncJurnalBalikAction1(response,50)
+                    } else {
+                        syncJurnalBalikAction1(response, 50)
                     }
                 }
             });
@@ -915,47 +1100,51 @@ $('#table tbody').on('click', 'tr', function () {
         var type = null;
         var order_id = null;
 
-        function showJurnal(order_id_,type_,omset_id_,id){
+        function showJurnal(order_id_, type_, omset_id_, id) {
             omset_id = omset_id_;
             type = type_;
             order_id = order_id_;
-            getJurnal(id,type);
+            getJurnal(id, type);
             modal_jurnal.show();
         }
 
-        function getJurnal(id,type){
+        function getJurnal(id, type) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.jurnal1') }}",
                 data: {
-                    id:id
+                    id: id
                 },
-                success: function (response) {
+                success: function(response) {
                     let html = '';
                     let debit = 0;
                     let credit = 0;
                     let options = '';
-                   let arr = [
-    'j_trucking','j_opp','j_opt','j_ut','j_bl','j_apbs','j_cleaning','j_lss','j_storage',
-    'j_jasa_door','j_asuransi','j_ops','j_segel','j_buruh','j_checker','j_karantina','j_demmurage',
-    'j_lolo_pod','j_cleaning_pod','j_ops_pod','j_opt_pod','j_truck_pod','j_kuli_pod',
-    'j_kirim_dokumen','j_biaya_lain','j_flexibag','j_rc','j_biaya_lain',
-    // 'j_job_slip_pod',
-];
+                    let arr = [
+                        'j_trucking', 'j_opp', 'j_opt', 'j_ut', 'j_bl', 'j_apbs', 'j_cleaning', 'j_lss',
+                        'j_storage',
+                        'j_jasa_door', 'j_asuransi', 'j_ops', 'j_segel', 'j_buruh', 'j_checker',
+                        'j_karantina', 'j_demmurage',
+                        'j_lolo_pod', 'j_cleaning_pod', 'j_ops_pod', 'j_opt_pod', 'j_truck_pod',
+                        'j_kuli_pod',
+                        'j_kirim_dokumen', 'j_biaya_lain', 'j_flexibag', 'j_rc', 'j_biaya_lain',
+                        // 'j_job_slip_pod',
+                    ];
 
-if(type != 'j_biaya'){
-    $.each(arr, function (idx, item) {
-        let label = item.substr(2); // default label tanpa "j_"
+                    if (type != 'j_biaya') {
+                        $.each(arr, function(idx, item) {
+                            let label = item.substr(2); // default label tanpa "j_"
 
-        // kalau item 'j_opt_pod' → ganti label jadi 'job_slip'
-        if(item === 'j_opt_pod'){
-            label = 'job_slip';
-        }
+                            // kalau item 'j_opt_pod' → ganti label jadi 'job_slip'
+                            if (item === 'j_opt_pod') {
+                                label = 'job_slip';
+                            }
 
-        options += `<option value="${item}" ${ type == item ? 'selected' : '' }>${label}</option>`;
-    });
-}
-                    $.each(response, function (idx, item) {
+                            options +=
+                                `<option value="${item}" ${ type == item ? 'selected' : '' }>${label}</option>`;
+                        });
+                    }
+                    $.each(response, function(idx, item) {
                         debit += item.debit_num;
                         credit += item.credit_num;
                         html += `<tr>
@@ -986,11 +1175,11 @@ if(type != 'j_biaya'){
             });
         }
 
-        function substr(string,num){
+        function substr(string, num) {
             return string.substr(num);
         }
 
-        function filterSearch(){
+        function filterSearch() {
             var coa = $('#coa').val();
             var nomor = $('#nomor').val();
             var nama = $('#nama').val();
@@ -1000,15 +1189,15 @@ if(type != 'j_biaya'){
                 type: "POST",
                 url: "{{ route('api.jurnal.filter') }}",
                 data: {
-                    coa_id:coa,
-                    nomor:nomor,
-                    nama:nama,
-                    tgl_awal:tgl_awal,
-                    tgl_akhir:tgl_akhir,
+                    coa_id: coa,
+                    nomor: nomor,
+                    nama: nama,
+                    tgl_awal: tgl_awal,
+                    tgl_akhir: tgl_akhir,
                 },
-                success: function (response) {
+                success: function(response) {
                     var html = '';
-                    $.each(response, function (idx, item) {
+                    $.each(response, function(idx, item) {
                         html += `<tr id="item-jurnal-${item.id}">
                                     <td>${idx+1}</td>
                                     <td>${item.created_at}</td>
@@ -1031,96 +1220,99 @@ if(type != 'j_biaya'){
             });
         }
 
-        function addItemJurnal(id, to){
-            if(confirm('Apakah anda yakin?')){
+        function addItemJurnal(id, to) {
+            if (confirm('Apakah anda yakin?')) {
                 $.ajax({
                     type: "POST",
                     url: "{{ route('omset.add.item') }}",
                     data: {
                         jurnal_id: id,
                         omset_id: omset_id,
-                        type : type,
-                        to:to,
-                        is_pra:@json($is_pra),
+                        type: type,
+                        to: to,
+                        is_pra: @json($is_pra),
                     },
-                    success: function (response) {
+                    success: function(response) {
                         alert(response.message);
                         getJurnal(response.jurnal);
-                        $('#item-jurnal-'+id).remove();
-                        if(response.reload){
+                        $('#item-jurnal-' + id).remove();
+                        if (response.reload) {
                             location.reload();
                         }
-                        if(response.status){
+                        if (response.status) {
                             let ke = `<a href="#" onclick="showJurnal(${order_id},'${to}',${omset_id},'${response.a_jurnal}')">
                                         ${rp(response.a_debit)}
                                     </a>`;
                             let dari = `<a href="#" onclick="showJurnal(${order_id},'${type}',${omset_id},'${response.b_jurnal}')">
                                         ${rp(response.b_debit)}
                                     </a>`;
-                            $('#'+to+'-'+order_id).html(ke);
-                            $('#'+type+'-'+order_id).html(dari);
+                            $('#' + to + '-' + order_id).html(ke);
+                            $('#' + type + '-' + order_id).html(dari);
                         }
                     }
                 });
             }
         }
 
-        function rp (num){
+        function rp(num) {
             return num.toLocaleString('id-ID');
         }
 
-        function lock(id){
+        function lock(id) {
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-request') }}",
                 data: {
-                    id:id,
-                    lock_omset:1,
+                    id: id,
+                    lock_omset: 1,
                 },
-                success: function (response) {
-                    var html = `<td class="text-center" id="lock-${id}"><button class="text-danger bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
-                    $('#lock-'+id).html(html);
+                success: function(response) {
+                    var html =
+                        `<td class="text-center" id="lock-${id}"><button class="text-danger bg-transparent" style="border: none" onclick="unlock(${id})"><i class="fas fa-lock"></i></button></td>`;
+                    $('#lock-' + id).html(html);
                     alert('Lock berhasil!')
                 }
             });
         }
 
-        function lockAll(){
+        function lockAll() {
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-lock-all') }}",
                 data: {
-                    id:@json($ids),
+                    id: @json($ids),
                 },
-                success: function (response) {
-                    location.reload();
-                }
-            });
-        }
-        function unlockAll(){
-            $.ajax({
-                type: "POST",
-                url: "{{ url('api/update-order-unlock-all') }}",
-                data: {
-                    id:@json($ids),
-                },
-                success: function (response) {
+                success: function(response) {
                     location.reload();
                 }
             });
         }
 
-        function unlock(id){
+        function unlockAll() {
+            $.ajax({
+                type: "POST",
+                url: "{{ url('api/update-order-unlock-all') }}",
+                data: {
+                    id: @json($ids),
+                },
+                success: function(response) {
+                    location.reload();
+                }
+            });
+        }
+
+        function unlock(id) {
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-request') }}",
                 data: {
-                    id:id,
-                    lock_omset:0,
+                    id: id,
+                    lock_omset: 0,
                 },
-                success: function (response) {
-                    var html = `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="lock(${id})"><i class="fas fa-unlock"></i></button></td>`;
-                    $('#lock-'+id).html(html);
+                success: function(response) {
+                    var html =
+                        `<td class="text-center" id="lock-${id}"><button class="text-success bg-transparent" style="border: none" onclick="lock(${id})"><i class="fas fa-unlock"></i></button></td>`;
+                    $('#lock-' + id).html(html);
                     alert('Unlock berhasil!')
                 }
             });

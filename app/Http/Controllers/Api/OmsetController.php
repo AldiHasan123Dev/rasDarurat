@@ -38,9 +38,15 @@ class OmsetController extends Controller
         foreach ($orders as $idx => $order) {
             $cbm = $order->tarif->satuanInfo->nama ?? '-';
             $tarif = $order->tarif->tarif ?? 0;
-            if($cbm=='CBM'){
-                $tarif *= $order->bttb->sum('vol');
+             if ($cbm == 'CBM') {
+            $totalVol = $order->bttb->sum('vol');
+            // Jika total volume kurang dari 1, set menjadi 1
+            if ($totalVol < 1) {
+                $totalVol = 1;
             }
+            $tarif *= $totalVol;
+            }
+
           $data[$idx]['order_id'] = $order->id;
           $data[$idx]['trucking'] = 0;
           $data[$idx]['j_trucking'] = '[]';

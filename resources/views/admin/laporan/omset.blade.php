@@ -544,10 +544,15 @@ table.dataTable tbody > tr.selected1 td {
                                                 @php
                                                     $cbm = $order->tarif->satuanInfo->nama ?? '-';
                                                     $tarif = $order->tarif->tarif ?? 0;
-                                                    if($cbm=='CBM'){
-                                                        $tarif *= $order->bttb->sum('vol');
-                                                    }
-                                                    $totalTarif += $tarif; 
+                                                     if ($cbm == 'CBM') {
+            $totalVol = $order->bttb->sum('vol');
+            // Jika total volume kurang dari 1, set menjadi 1
+            if ($totalVol < 1) {
+                $totalVol = 1;
+            }
+            $tarif *= $totalVol;
+        }
+
                                                 @endphp
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
                                             </td>
