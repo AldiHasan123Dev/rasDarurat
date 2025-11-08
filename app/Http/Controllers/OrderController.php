@@ -327,7 +327,7 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $cekJurnalTakTerhapus = Jurnal::where('order_id', $order->id)->whereNull('deleted_at')->count();
-        if ($cekJurnalTerhapus > 0) {
+        if ($cekJurnalTakTerhapus > 0) {
             return back()->with('danger','Data job ini tidak bisa dihapus karena biaya sudah tercatat!');
         }
         $order->delete();
