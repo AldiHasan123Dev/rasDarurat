@@ -1014,7 +1014,7 @@
                     success: function (response) {
                         if (response.status === 'success') {
                             alert(response.message);
-                            location.reload();
+                           $('#jqGrid').trigger('reloadGrid');
                         } else {
                             alert(response.message);
                         }

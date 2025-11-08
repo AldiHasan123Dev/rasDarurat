@@ -31,6 +31,10 @@ class OrderTruckingController extends Controller
             ], 400);
         }
         $orderTrucking->delete();
+          return response()->json([
+        'status' => 'success',
+        'message' => 'Data order trucking berhasil dihapus!'
+    ], 200);
         }
 
     public function getJurnal()
