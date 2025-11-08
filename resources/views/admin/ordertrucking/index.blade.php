@@ -1002,16 +1002,30 @@
 
         $('#delete').click(function (e) {
             e.preventDefault();
-            if(confirm('are you sure?')){
+
+            if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
                 $.ajax({
                     type: "DELETE",
                     url: "{{ route('order-trucking.delete') }}",
                     data: {
-                        id:$('#delete').val()
+                        id: $('#delete').val(),
+                        _token: "{{ csrf_token() }}" // penting kalau pakai Laravel
                     },
                     success: function (response) {
-                        alert('Hapus Data Berhasil!');
-                        location.reload();
+                        if (response.status === 'success') {
+                            alert(response.message);
+                            location.reload();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        // Jika ada error dari server (misalnya 400 / 404)
+                        let message = 'Terjadi kesalahan pada server.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        alert(message);
                     }
                 });
             }

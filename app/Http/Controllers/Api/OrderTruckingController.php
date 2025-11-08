@@ -13,10 +13,25 @@ use Illuminate\Http\Request;
 
 class OrderTruckingController extends Controller
 {
-    public function delete(Request $request)
-    {
-        OrderTrucking::find($request->id)->delete();
-    }
+    public function delete(Request $request) {
+        $orderTrucking = OrderTrucking::find($request->id);
+        if (!$orderTrucking) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan!'
+            ], 404);
+        }
+        $cekJurnalTerhapus = Jurnal::where('order_trucking_id', $orderTrucking->id)
+            ->whereNull('deleted_at')
+            ->count();
+        if ($cekJurnalTerhapus > 0) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data order trucking tidak bisa dihapus karena biaya sudah tercatat!'
+            ], 400);
+        }
+        $orderTrucking->delete();
+        }
 
     public function getJurnal()
     {
