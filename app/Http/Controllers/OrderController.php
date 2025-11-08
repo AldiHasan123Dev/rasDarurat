@@ -13,6 +13,7 @@ use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTruckingResource;
 use App\Imports\OrderImport;
 use App\Models\Agen;
+use App\Models\Jurnal;
 use App\Models\Barang;
 use App\Models\BTTB;
 use App\Models\User;
