@@ -9,6 +9,7 @@ use App\Models\Jurnal;
 use Carbon\Carbon;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
+use App\Models\Port;
 use App\Exports\RekapPiutangExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Order;
@@ -899,14 +900,41 @@ public function data_total_rekap_piutang(Request $request)
 
 
     public function tujuan()
-    {
-        $tarif = Tarif::pluck('tujuan')->toArray();
-        $id = array_unique($tarif);
-        $year = request('year') ?? date('Y');
-        $data = Lokasi::whereIn('id',$id)->get();
-        $count = Order::where('job','LIKE',$year.'%')->count();
-        return view('admin.laporan.tujuan', compact('data','year','count'));
-    }
+{
+    $tarif = Tarif::pluck('tujuan')->toArray();
+    $year = request('year') ?? date('Y');
+    $id = array_unique($tarif);
+    $port = Order::where('job','LIKE',$year.'%')->pluck('port_id')->toArray();
+    $port_id = array_unique($port);
+    $data1 = Port::whereIn('id',$port_id)->get();
+    $data = Lokasi::whereIn('id',$id)->get();
+    $count = Order::where('job','LIKE',$year.'%')->count();
+
+    // tambahkan variabel $port_id untuk dikirim ke view
+    $port_id = request('port_id') ?? null;
+
+    return view('admin.laporan.tujuan', compact('data','year','count','data1','port_id'));
+}
+
+
+    public function tujuanAjax(Request $request)
+{
+    $year = $request->year ?? date('Y');
+    $port_id = $request->port_id;
+
+    // Ambil semua ID tujuan dari tabel tarif
+    $tujuanIds = Tarif::pluck('tujuan')->unique()->toArray();
+
+    // Ambil data lokasi berdasarkan ID tujuan
+    $data = Lokasi::whereIn('id', $tujuanIds)->get();
+
+    // Hitung total order (per tahun & port jika ada)
+    $count = Order::when($port_id, fn($q) => $q->where('port_id', $port_id))
+                  ->where('job', 'LIKE', $year . '%')
+                  ->count();
+
+    return view('admin.laporan.tujuan-table', compact('data', 'year', 'count', 'port_id'));
+}
     public function customer()
     {
         $tarif = Tarif::pluck('customer_id')->toArray();

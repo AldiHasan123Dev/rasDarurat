@@ -237,7 +237,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('laporan/pra-omset', [LaporanController::class, 'praomset'])->name('laporan.praomset');
     Route::get('laporan/omset-trucking', [LaporanController::class, 'omset_trucking'])->name('laporan.omset_trucking');
     Route::post('/kunci-jurnal/toggle', [JurnalController::class, 'toggle'])->name('kunci-jurnal.toggle');
-
+    Route::get('laporan/tujuan/ajax', [LaporanController::class, 'tujuanAjax'])->name('laporan.tujuan.ajax');
     Route::post('/jurnal/export=jurnal-code-excel', [JurnalController::class, 'exportExcel'])->name('jurnal.exportExcel');
 
     Route::get('customer-tarif', [CustomerController::class, 'tarif'])->name('customer.tarif');
