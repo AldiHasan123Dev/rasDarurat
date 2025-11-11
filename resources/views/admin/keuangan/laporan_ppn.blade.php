@@ -373,27 +373,42 @@
         });
 
         $('#add-bupot').click(function (e) {
-            $.ajax({
-                type: "POST",
-                url: "{{ route('api.transaksi.update.bupot') }}",
-                data: {
-                    id:id,
-                    bupot:$('#bupot').val(),
-                    no_bupot:$('#no_bupot').val(),
-                    masa_bupot_bulan:$('#masa_bupot_bulan').val(),
-                    masa_bupot_tahun:$('#masa_bupot_tahun').val(),
-                    selisih_bupot:$('#selisih_bupot').val(),
-                    tanggal_bupot:$('#tanggal_bupot').val(),
-                },
-                success: function (response) {
-                    if(!response){
-                        alert('Data Tidak Ditemukan')
-                    }else{
-                        location.reload();
-                    };
-                }
-            });
-        });
+    e.preventDefault();
+
+    let $btn = $(this);
+    let originalText = $btn.text();
+
+    // Ubah tombol menjadi loading
+    $btn.prop('disabled', true).text('Memproses...');
+
+    $.ajax({
+        type: "POST",
+        url: "{{ route('api.transaksi.update.bupot') }}",
+        data: {
+            id: id,
+            bupot: $('#bupot').val(),
+            no_bupot: $('#no_bupot').val(),
+            masa_bupot_bulan: $('#masa_bupot_bulan').val(),
+            masa_bupot_tahun: $('#masa_bupot_tahun').val(),
+            selisih_bupot: $('#selisih_bupot').val(),
+            tanggal_bupot: $('#tanggal_bupot').val(),
+        },
+        success: function (response) {
+            if (!response) {
+                alert('Data Tidak Ditemukan');
+                $btn.prop('disabled', false).text(originalText);
+            } else {
+                alert('Data Bukpot berhasil disimpan!');
+                location.reload();
+            }
+        },
+        error: function () {
+            alert('Terjadi kesalahan saat menyimpan data.');
+            $btn.prop('disabled', false).text(originalText);
+        }
+    });
+});
+
 
         $('#bupot').keyup(function (e) {
             var val = $(this).val();
