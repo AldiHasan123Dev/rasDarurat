@@ -152,25 +152,31 @@ class KeuanganController extends Controller
         // Format data untuk jqGrid
         $rows = $paginatedOrders->map(function ($order) {
             return [
-                'order_id' => $order->id ?? '-',
-                'created_at' => $order->created_at->format('d/m/y'),
-                'marketing' => optional($order->tarif->customer->marketing)->name ?? '-',
-                'cs' => optional($order->tarif->customer->cs)->name ?? '-',
-                'job' => $order->job . '-' . sprintf('%02d', $order->no_job),
-                'invoice' => $order->invoice ?? '-',
-                'customer' => optional($order->tarif->customer)->nama ?? '-',
-                'barang' => optional($order->barang)->nama ?? '-',
-                'pengirim' => optional($order->pengirim)->nama ?? '-',
-                'penerima' => optional($order->penerima)->nama ?? '-',
-                'trucking' => $order->trucking ?? '-',
-                'seal' => $order->seal ?? '-',
-                'container' => $order->container ?? '-',
-                'nopol' => $order->nopol ?? '-',
-                'dari_lokasi' => optional($order->tarif->dari_lokasi)->nama ?? '-',
-                'kapal' => optional($order->jadwal_kapal->kapal)->nama ?? '-',
-                'voyage' => $order->jadwal_kapal->voyage ?? '-',
-                'shipment' => $order->tarif->shipmentInfo->nama ?? '-',
-                'is_draft' => $order->is_draft,
+                 'order_id' => $order->id ?? '-',
+    'created_at' => optional($order->created_at)->format('d/m/y') ?? '-',
+
+    'marketing' => optional(optional(optional($order->tarif)->customer)->marketing)->name ?? '-',
+    'cs' => optional(optional(optional($order->tarif)->customer)->cs)->name ?? '-',
+
+    'job' => ($order->job ?? '-') . '-' . sprintf('%02d', $order->no_job ?? 0),
+    'invoice' => $order->invoice ?? '-',
+
+    'customer' => optional(optional($order->tarif)->customer)->nama ?? '-',
+    'barang' => optional($order->barang)->nama ?? '-',
+    'pengirim' => optional($order->pengirim)->nama ?? '-',
+    'penerima' => optional($order->penerima)->nama ?? '-',
+
+    'trucking' => $order->trucking ?? '-',
+    'seal' => $order->seal ?? '-',
+    'container' => $order->container ?? '-',
+    'nopol' => $order->nopol ?? '-',
+
+    'dari_lokasi' => optional(optional($order->tarif)->dari_lokasi)->nama ?? '-',
+    'kapal' => optional(optional($order->jadwal_kapal)->kapal)->nama ?? '-',
+    'voyage' => optional($order->jadwal_kapal)->voyage ?? '-',
+    'shipment' => optional(optional($order->tarif)->shipmentInfo)->nama ?? '-',
+
+    'is_draft' => $order->is_draft ?? 0,
             ];
         });
 
