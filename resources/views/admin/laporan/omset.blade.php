@@ -552,6 +552,7 @@ table.dataTable tbody > tr.selected1 td {
             }
             $tarif *= $totalVol;
         }
+        $totalTarif += $tarif; 
 
                                                 @endphp
                                                 {{ number_format(($tarif ?? 0),2,',','.') }}
