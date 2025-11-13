@@ -152,11 +152,7 @@
         })
 
     // Aktifkan filterToolbar
-    $('#jqGrid').jqGrid('filterToolbar', {
-    stringResult: true,  // Menggunakan string hasil filter
-    searchOnEnter: false,  // Filter saat Enter ditekan
-    defaultSearch: 'bw'  // Menentukan tipe pencarian (misalnya 'bw' = begins with)
-});
+     $('#jqGrid').jqGrid('filterToolbar');
 
 $('#cetak-invoice').on('click', function (e) {
     var is_draft = $(this).data('is_draft');
