@@ -137,6 +137,17 @@ class KeuanganController extends Controller
             }
         }
 
+        if (request('job')) {
+            $orders->where('order.job', 'LIKE', '%' . request('job') . '%');
+        }
+         if (request('customer')) {
+            $orders->whereHas('tarif', function ($q) {
+                $q->whereHas('customer', function ($a) {
+                     $a->where('nama', 'LIKE', '%' . request('customer') . '%');
+                });
+            });
+        }
+
         // Paginasi
         $totalRecords = $orders->count();
         $page = (int)$request->input('page', 1);
