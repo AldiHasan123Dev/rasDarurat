@@ -734,6 +734,7 @@
                                                         }
                                                         $tarif *= $totalVol;
                                                     }
+                                                        $totalTarif += $tarif; 
 
                                                 @endphp
                                                 {{ number_format($tarif ?? 0, 2, ',', '.') }}
