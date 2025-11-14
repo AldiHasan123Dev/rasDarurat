@@ -350,7 +350,7 @@
                                             <td>{{ is_null($order->ba_kembali) ? '-' : date('d-m-Y', strtotime($order->ba_kembali)) }}
                                             </td>
                                             <td>{{ $order->bttb->sum('qty') }}</td>
-                                            <td>{{ $order->bttb->sum('vol') }}</td>
+                                            <td>{{ round($order->bttb->sum('vol'), 2) }}</td>
                                             <td>{{ $order->bttb->sum('berat') }}</td>
                                             <td>{{ $order->satuanInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->satuanInfo->nama ?? '-' }}</td>
@@ -726,15 +726,19 @@
                                                 @php
                                                     $cbm = $order->tarif->satuanInfo->nama ?? '-';
                                                     $tarif = $order->tarif->tarif ?? 0;
+
                                                     if ($cbm == 'CBM') {
-                                                        $totalVol = $order->bttb->sum('vol');
+                                                        $totalVol = round($order->bttb->sum('vol'), 2);
+
                                                         // Jika total volume kurang dari 1, set menjadi 1
                                                         if ($totalVol < 1) {
                                                             $totalVol = 1;
                                                         }
+
                                                         $tarif *= $totalVol;
+                                                        $tarif = round($tarif);
                                                     }
-                                                        $totalTarif += $tarif; 
+                                                    $totalTarif += $tarif;
 
                                                 @endphp
                                                 {{ number_format($tarif ?? 0, 2, ',', '.') }}
