@@ -2287,6 +2287,91 @@ public function editOne(Jurnal $jurnal)
     // Debugging untuk memastikan hasil data
 
 
+    if ($subjek == 'jurnal-balik') {
+    // 1️⃣ Ambil semua ID jurnal_balik berdasarkan coa_id dan periode
+    $jurnal_balik_ids = Jurnal::where('coa_id', $coa_id)
+        ->whereNotNull('jurnal_balik')
+        ->whereBetween('created_at', [$startYear, $endDate])
+        ->orderBy('created_at', 'asc')
+        ->pluck('jurnal_balik')
+        ->filter()
+        ->unique()
+        ->values();
+
+    // 2️⃣ Ambil data jurnal asli berdasarkan hasil pluck
+    $jurnal_asli = Jurnal::whereIn('id', $jurnal_balik_ids)
+        ->get([
+            'id', 'debit', 'credit', 'nama', 'nomor',
+            'created_at', 'relasi', 'invoice', 'invoice_trucking',
+            'invoice_external', 'invoice_vendor', 'jurnal_balik'
+        ])
+        ->keyBy('id'); // penting agar mudah dicari berdasarkan ID
+
+    // 3️⃣ Ambil data jurnal yang punya jurnal_balik
+    $jurnal = Jurnal::where('coa_id', $coa_id)
+        ->whereNotNull('jurnal_balik')
+        ->whereBetween('created_at', [$startYear, $endDate])
+        ->orderBy('created_at', 'asc')
+        ->get([
+            'debit', 'credit', 'nama', 'nomor',
+            'created_at', 'relasi', 'invoice', 'invoice_trucking',
+            'invoice_external', 'invoice_vendor', 'jurnal_balik'
+        ]);
+
+    // 4️⃣ Proses data dengan fallback ke jurnal_asli
+    $runningBalance = 0;
+
+    $groupedData = $jurnal->map(function ($row) use (&$runningBalance, $tipe, $jurnal_asli) {
+        // 🔁 Ambil jurnal asli berdasarkan ID yang direferensikan di jurnal_balik
+        $asli = $jurnal_asli->get($row->jurnal_balik);
+
+        // Ambil data invoice — jika kosong di jurnal balik, ambil dari jurnal asli
+        $invoice = $row->invoice ?? $row->invoice_external ?? $row->invoice_vendor ?? $row->invoice_trucking
+            ?? ($asli->invoice ?? $asli->invoice_external ?? $asli->invoice_vendor ?? $asli->invoice_trucking ?? '-');
+
+        // Nama, nomor, relasi juga fallback
+        $nama = $row->nama ?: ($asli->nama ?? '-');
+        $nomor = $row->nomor ?: ($asli->nomor ?? '-');
+        $relasi = $row->relasi ?: ($asli->relasi ?? '-');
+
+        // Debit & Kredit, jika di jurnal kosong, ambil dari jurnal asli
+        $debit = $row->debit ?: ($asli->debit ?? 0);
+        $credit = $row->credit ?: ($asli->credit ?? 0);
+
+        // Debit section
+        $no_d = $debit > 0 ? [$nomor] : ['-'];
+        $ket_d = $debit > 0 ? [$nama] : ['-'];
+        $tgl_d = $debit > 0 ? [Carbon::parse($row->created_at)->format('Y-m-d')] : ['-'];
+
+        // Kredit section
+        $no_c = $credit > 0 ? [$nomor] : ['-'];
+        $ket_c = $credit > 0 ? [$nama] : ['-'];
+        $tgl_c = $credit > 0 ? [Carbon::parse($row->created_at)->format('Y-m-d')] : ['-'];
+
+        // Hitung saldo berjalan
+        if ($tipe === 'D') {
+            $runningBalance += $debit - $credit;
+        } else {
+            $runningBalance += $credit - $debit;
+        }
+
+        return [
+            'invoice' => $invoice,
+            'customer_name' => $relasi,
+            'no_d' => $no_d,
+            'ket_d' => $ket_d,
+            'tgl_d' => $tgl_d,
+            'no_c' => $no_c,
+            'ket_c' => $ket_c,
+            'tgl_c' => $tgl_c,
+            'total_debit' => $debit,
+            'total_credit' => $credit,
+            'saldo' => $runningBalance,
+        ];
+    })->values(); // Reset index
+}
+
+
     if($subjek=='customer_trucking'){
             // Ambil data customer trucking
             $customer = CustomerTrucking::pluck('nama', 'id'); // Pastikan key adalah ID, value adalah nama

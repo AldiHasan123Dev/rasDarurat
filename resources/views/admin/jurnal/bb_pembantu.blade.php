@@ -122,6 +122,8 @@
                                                 Trucking</option>
                                             <option value="lain-lain" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>
                                                 Lain-lain (External Inv)</option>
+                                             <option value="jurnal-balik" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>
+                                                Jurnal Balik</option>
                                             {{-- <option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                         </select>
                                     </form>
@@ -185,13 +187,13 @@
                             <table class="table data table-bordered table-sm data-table" style="font-size: .8rem;">
                                 <thead>
                                     <tr>
-                                        @if ($subjek === 'relasi')
+                                        @if ($subjek === 'relasi' || $subjek === 'jurnal-balik')
                                             <th class="text-center">No</th>
-                                            
+
                                             @if ($coa_id == 65 || $coa_id == 66)
-                                            <th class="text-center">No Jurnal</th>
+                                                <th class="text-center">No Jurnal</th>
                                             @else
-                                             <th class="text-center">No Jurnal (D)</th>
+                                                <th class="text-center">No Jurnal (D)</th>
                                             @endif
                                             <th class="text-center">Invoice</th>
 
@@ -207,7 +209,7 @@
                                             <th class="text-center">Credit</th>
 
                                             @if (!in_array($coa_id, [65, 66]))
-                                             <th class = "text-center">Nomor Jurnal (C)</th>
+                                                <th class = "text-center">Nomor Jurnal (C)</th>
                                                 <th class="text-center">Tgl (C)</th>
                                                 <th class="text-center">Ket (C)</th>
                                             @endif
@@ -239,51 +241,51 @@
                                 <tbody>
                                     @foreach ($groupedData as $data)
                                         <tr>
-                                           @if ($subjek === 'relasi')
-    @php
-        $debit = $data['total_debit'];
-        $credit = $data['total_credit'];
-        $isMismatch = $debit !== $credit && !in_array($coa_id, [65, 66]);
-    @endphp
+                                            @if ($subjek === 'relasi' || $subjek === 'jurnal-balik')
+                                                @php
+                                                    $debit = $data['total_debit'];
+                                                    $credit = $data['total_credit'];
+                                                    $isMismatch = $debit !== $credit && !in_array($coa_id, [65, 66]);
+                                                @endphp
 
-    <td class="text-center">{{ $loop->iteration }}</td>
-    @if (in_array($coa_id, [65, 66]))
-    <td>{{ $data['customer_name'] }}</td>
-     @else
-      <td>{!! $data['no_d']->implode('<br>') !!}</td>
-      @endif
-    <td>{{ $data['invoice'] }}</td>
+                                                <td class="text-center">{{ $loop->iteration }}</td>
+                                                @if (in_array($coa_id, [65, 66]))
+                                                    <td>{{ $data['customer_name'] }}</td>
+                                                @else
+                                                    <td>{!! is_array($data['no_d']) ? implode('<br>', $data['no_d']) : $data['no_d'] !!}</td>
+                                                @endif
+                                                <td>{{ $data['invoice'] }}</td>
 
-    {{-- Tanggal dan Keterangan --}}
-    @if (in_array($coa_id, [65, 66]))
-        {{-- Tampilkan hanya satu kolom untuk tgl_d dan ket_d --}}
-        <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
-        <td>{!! $data['ket_d']->implode('<br>') !!}</td>
-    @else
-        <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
-        <td>{!! $data['ket_d']->implode('<br>') !!}</td>
-    @endif
+                                                {{-- Tanggal dan Keterangan --}}
+                                                @if (in_array($coa_id, [65, 66]))
+                                                    {{-- Tampilkan hanya satu kolom untuk tgl_d dan ket_d --}}
+                                                    <td>{!! is_array($data['tgl_d']) ? implode('<br>', $data['tgl_d']) : $data['tgl_d'] !!}</td>
+                                                    <td>{!! is_array($data['ket_d']) ? implode('<br>', $data['ket_d']) : $data['ket_d'] !!}</td>
+                                                @else
+                                                    <td>{!! is_array($data['tgl_d']) ? implode('<br>', $data['tgl_d']) : $data['tgl_d'] !!}</td>
+                                                    <td>{!! is_array($data['ket_d']) ? implode('<br>', $data['ket_d']) : $data['ket_d'] !!}</td>
+                                                @endif
 
-    {{-- Nominal Debit dan Kredit --}}
-    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
-        {{ number_format($debit, 2, ',', '.') }}
-    </td>
-    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
-        {{ number_format($credit, 2, ',', '.') }}
-    </td>
+                                                {{-- Nominal Debit dan Kredit --}}
+                                                <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                   {{ number_format((float) str_replace([',', ' '], '', $debit), 2, ',', '.') }}
+                                                </td>
+                                                <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                    {{ number_format((float) str_replace([',', ' '], '', $credit), 2, ',', '.') }}
+                                                </td>
 
-    {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
-    @unless(in_array($coa_id, [65, 66]))
-        <td>{!! $data['no_c']->implode('<br>') !!}</td>
-        <td>{!! $data['tgl_c']->implode('<br>') !!}</td>
-        <td>{!! $data['ket_c']->implode('<br>') !!}</td>
-    @endunless
+                                                {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
+                                                @unless (in_array($coa_id, [65, 66]))
+                                                    <td>{!! is_array($data['no_c']) ? implode('<br>', $data['no_c']) : $data['no_c'] !!}</td>
+                                                    <td>{!! is_array($data['tgl_c']) ? implode('<br>', $data['tgl_c']) : $data['tgl_c'] !!}</td>
+                                                    <td>{!! is_array($data['ket_c']) ? implode('<br>', $data['ket_c']) : $data['ket_c'] !!}</td>
+                                                @endunless
 
-    {{-- Saldo --}}
-    <td class="text-end">
-        {{ number_format($data['saldo'], 2, ',', '.') }}
-    </td>
 
+                                                {{-- Saldo --}}
+                                                <td class="text-end">
+                                                    {{ number_format($data['saldo'], 2, ',', '.') }}
+                                                </td>
                                             @else
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 <td>{{ $subjek === 'pelayaran' ? $data['pelayaran'] : $data['customer_name'] }}
@@ -296,10 +298,11 @@
                                                 @if ($subjek != 'relasi')
                                                     <td class="text-center">
                                                         @php
-    
-        $pelayaranName = $data['pelayaran'] ?? $data['customer_name'];
 
-@endphp
+                                                            $pelayaranName =
+                                                                $data['pelayaran'] ?? $data['customer_name'];
+
+                                                        @endphp
 
                                                         <a target="_blank"
                                                             href="{{ route('jurnal.buku_besar_pembantu_rincian', [
@@ -319,7 +322,7 @@
                                     @endforeach
                                 <tfoot>
                                     <tr class="fw-bold">
-                                        @if ($subjek === 'relasi')
+                                        @if ($subjek === 'relasi' || $subjek === 'jurnal-balik')
                                             @if ($coa_id == 65 || $coa_id == 66)
                                                 <td colspan="5" class="text-center">Total</td>
                                                 <td class="text-end">
