@@ -331,6 +331,7 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
         ->groupBy('invoice_trucking')
         ->get()
         ->keyBy('invoice_trucking');
+    dd($transaksiTrucking[200],$orderTruckings[200],$jurnals);
     }
 
 public function data_rekap_piutang(Request $request)
@@ -1125,12 +1126,12 @@ public function tujuan()
             ->get();
 
         $jurnalDebitLain = Jurnal::whereIn('order_id', $ids)
-    ->where('coa_id', '!=', 31)
+    ->where('coa_id', 31)
     ->sum('debit');
 
 // Total kredit untuk semua COA selain 31
 $jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
-    ->where('coa_id', '!=', 31)
+   ->where('coa_id', 31)
     ->sum('credit');
 
 // Selisih debit - kredit selain COA 31
