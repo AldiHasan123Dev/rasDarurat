@@ -9,11 +9,12 @@ use App\Models\Jurnal;
 use Carbon\Carbon;
 use App\Models\Kendaraan;
 use App\Models\Lokasi;
-use App\Models\Port;
 use App\Exports\RekapPiutangExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Order;
+use App\Models\Port;
 use App\Models\Transaksi;
+use App\Models\TransaksiTrucking;
 use Illuminate\Support\Facades\Cache;
 use App\Models\OrderTrucking;
 use App\Models\Pelayaran;
@@ -288,9 +289,49 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
         return view('admin.laporan.rekap-piutang-blum', compact('customers', 'marketing'));
     }
 
+    public function data_outstanding_trucking(Request $request){
+    $page = $request->input('page', 1);
+    $rows = $request->input('rows', 20);
+    $searchField = $request->input('searchField');
+    $searchString = $request->input('searchString');
+    $tglInvFilter = $request->input('tgl_inv');
+    $customersFilter = $request->input('customers');
+    $customersFilter1 = $request->input('customers1');
+    $marketing = $request->input('marketing');
+    $invFilter = $request->input('inv');
+    $tfMasukVal = $request->input('tf_masuk');
 
 
+    
+        $orderTruckings = OrderTrucking::with(['tarif.customer:id,nama',
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 47)
+                  ->where('debit', '!=', 0)
+                  ->select('order_trucking_id', 'debit','coa_id');
+        },
+    ])->get();
+    $orderTruckingId = OrderTrucking::with(['tarif.customer:id,nama',
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 47)
+                  ->where('debit', '!=', 0);
+        },
+    ])->pluck('id')->toArray();
+    $transaksiTrucking = TransaksiTrucking::whereIn('order_trucking_id', $orderTruckingId)->get();
+    $jurnals = Jurnal::withTrashed()
+        ->where('coa_id', 47)
+        ->whereNull('deleted_at')
+        ->where('credit', '!=', 0)
+        ->whereNotNull('invoice_trucking')
 
+        ->select(
+            'invoice_trucking',
+            \DB::raw('SUM(credit) as total_credit'),
+            \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+        )
+        ->groupBy('invoice_trucking')
+        ->get()
+        ->keyBy('invoice_trucking');
+    }
 
 public function data_rekap_piutang(Request $request)
     {
@@ -899,7 +940,7 @@ public function data_total_rekap_piutang(Request $request)
 }
 
 
-    public function tujuan()
+public function tujuan()
 {
     $tarif = Tarif::pluck('tujuan')->toArray();
     $year = request('year') ?? date('Y');
@@ -935,6 +976,9 @@ public function data_total_rekap_piutang(Request $request)
 
     return view('admin.laporan.tujuan-table', compact('data', 'year', 'count', 'port_id'));
 }
+
+
+
     public function customer()
     {
         $tarif = Tarif::pluck('customer_id')->toArray();
@@ -1080,6 +1124,19 @@ public function data_total_rekap_piutang(Request $request)
             ->where('coa_id', 31)
             ->get();
 
+        $jurnalDebitLain = Jurnal::whereIn('order_id', $ids)
+    ->where('coa_id', '!=', 31)
+    ->sum('debit');
+
+// Total kredit untuk semua COA selain 31
+$jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
+    ->where('coa_id', '!=', 31)
+    ->sum('credit');
+
+// Selisih debit - kredit selain COA 31
+$jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
+            
+
         // Kelompokkan berdasarkan bulan dari created_at
         $jurnalPerBulan = $jurnalList161->groupBy(function ($jurnal) {
             return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
@@ -1099,7 +1156,7 @@ public function data_total_rekap_piutang(Request $request)
         // Tampilkan hasil
         $coa = COA::where('is_active',1)->get();
         $is_pra = true;
-        return view('admin.laporan.pra_omset', compact('rekapPerBulan','is_pra','jurnal161','data','year','months','month','tipe','ids','coa'));
+        return view('admin.laporan.pra_omset', compact('rekapPerBulan','is_pra','jurnal161','data','year','months','month','tipe','ids','coa','jurnalSelain161'));
     }
     public function invoice()
     {
