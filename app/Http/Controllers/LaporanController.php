@@ -1126,12 +1126,12 @@ public function tujuan()
             ->get();
 
         $jurnalDebitLain = Jurnal::whereIn('order_id', $ids)
-    ->where('coa_id', 31)
+    ->where('coa_id', 140)
     ->sum('debit');
 
 // Total kredit untuk semua COA selain 31
 $jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
-   ->where('coa_id', 31)
+   ->where('coa_id', 140)
     ->sum('credit');
 
 // Selisih debit - kredit selain COA 31
