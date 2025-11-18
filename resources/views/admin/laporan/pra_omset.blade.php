@@ -95,14 +95,17 @@ table.dataTable tbody > tr.selected1 td {
             <div class="col-12">
                 <div class="card p-3">
                     <div class="d-flex justify-content-between">
-                        <div class="d-flex gap-3">
+                        <div class="d-flex gap-2">
                             <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i class="fas fa-print"></i> PRINT</button>
                             <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
                             {{-- <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button> --}}
-                            @if ($is_pra)
+                            @if ($tipe== 'inv')
                             <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK (161 DEBIT)</button>
                             <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE JURNAL BALIK (161 CREDIT)</button>
+                            @if ($jurnalSelain161>0)     
+                            <button type="button" class="btn btn-sm btn-danger" onclick="syncJurnalBalik2()"> GENERATE JURNAL BALIK (Selain COA 161 DEBIT)</button>
+                            @endif
                             @endif
                         </div>
                         <form action="{{ url()->current() }}" method="get">
@@ -119,8 +122,13 @@ table.dataTable tbody > tr.selected1 td {
                                     <option {{ $year=='2026'?'selected':'' }} value="2026">2026</option>
                                     <option {{ $year=='2027'?'selected':'' }} value="2027">2027</option>
                                 </select>
-                                <div>
-                                        <input type="radio" name="tipe" id="radio1" hidden value="inv" {{ $tipe=='inv'?'checked':'' }} onchange="submit()">
+                                                               <div>
+                                    <label for="radio1">
+                                        <input type="radio" name="tipe" id="radio1" value="inv" {{ $tipe=='inv'?'checked':'' }} onchange="submit()"> Periode Invoice
+                                    </label>
+                                    <label for="radio2">
+                                        <input type="radio" name="tipe" id="radio2" value="job" {{ $tipe=='job'?'checked':'' }} onchange="submit()"> Periode JOB
+                                    </label>
                                 </div>
                             </div>
                         </form>
@@ -281,10 +289,18 @@ table.dataTable tbody > tr.selected1 td {
                                         <tr class="table-{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 ? 'secondary' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">
                                             <td>{{ $order->pra_omset->id ?? null }}</td>
                                             <td>{{ $order->id }}</td>
+                                            @if ($tipe == 'inv')     
                                             @if ($order->lock_omset==1 ||$order->lock_omset==2)
                                             <td class="text-center" id="lock-{{ $order->id }}"><button class="text-danger bg-transparent" style="border: none" onclick="unlock({{ $order->id }})"><i class="fas fa-lock"></i></button></td>
                                             @else
                                             <td class="text-center" id="lock-{{ $order->id }}"><button class="text-success bg-transparent" style="border: none" onclick="lock({{ $order->id }})"><i class="fas fa-unlock"></i></button></td>
+                                            @endif
+                                            @else
+                                            @if ($order->lock_omset==1 ||$order->lock_omset==2)
+                                            <td class="text-center text-danger bg-transparent" disable id="lock-{{ $order->id }}"><i class="fas fa-lock"></i></td>
+                                            @else
+                                            <td class="text-center text-success bg-transparent" disable id="lock-{{ $order->id }}"><i class="fas fa-unlock"></i></td>
+                                            @endif
                                             @endif
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
@@ -809,27 +825,27 @@ $totalLB = $data->sum(function($o) {
             }
         });
 
-$('#table tbody').on('click', 'tr', function () {
-    // Hapus seleksi lama
-    $('#table tbody tr').removeClass('selected1');
-    $('#table tbody tr td').each(function () {
-        // Hapus background-color hanya jika ditambahkan via JS sebelumnya
-        if ($(this).data('clicked') === true) {
-            $(this).css('background-color', '');
-            $(this).removeData('clicked');
-        }
-    });
+    $('#table tbody').on('click', 'tr', function () {
+        // Hapus seleksi lama
+        $('#table tbody tr').removeClass('selected1');
+        $('#table tbody tr td').each(function () {
+            // Hapus background-color hanya jika ditambahkan via JS sebelumnya
+            if ($(this).data('clicked') === true) {
+                $(this).css('background-color', '');
+                $(this).removeData('clicked');
+            }
+        });
 
-    // Tambah seleksi baru
-    $(this).addClass('selected1');
-    $(this).find('td').each(function () {
-        const inlineStyle = $(this).attr('style') || '';
-        if (!inlineStyle.includes('background-color')) {
-            $(this).css('background-color', '#adf8dc');
-            $(this).data('clicked', true); // Flag sebagai td yang diwarnai via JS
-        }
+        // Tambah seleksi baru
+        $(this).addClass('selected1');
+        $(this).find('td').each(function () {
+            const inlineStyle = $(this).attr('style') || '';
+            if (!inlineStyle.includes('background-color')) {
+                $(this).css('background-color', '#adf8dc');
+                $(this).data('clicked', true); // Flag sebagai td yang diwarnai via JS
+            }
+        });
     });
-});
 
 
 
@@ -854,6 +870,10 @@ $('#table tbody').on('click', 'tr', function () {
 
          function syncJurnalBalik1(){
             syncJurnalBalikAction1(0,50);
+        }
+
+        function syncJurnalBalik2(){
+            syncJurnalBalikAction2(0,50);
         }
 
         function syncAction(start,end){
@@ -902,6 +922,27 @@ $('#table tbody').on('click', 'tr', function () {
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.sync.jurnal_balik1') }}",
+                data: {
+                    id:@json($ids),
+                    start:start,
+                    end:end,
+                    month:@json($month),
+                    year:@json($year),
+                },
+                success: function (response) {
+                    if(response=='complete'){
+                        alert("SINKRONISASI JURNAL BALIK BERHASIL!");
+                    }else{
+                        syncJurnalBalikAction1(response,50)
+                    }
+                }
+            });
+        }
+
+        function syncJurnalBalikAction2(start,end){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('omset.sync.jurnal_balik2') }}",
                 data: {
                     id:@json($ids),
                     start:start,
