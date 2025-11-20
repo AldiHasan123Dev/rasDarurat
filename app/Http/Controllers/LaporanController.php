@@ -17,6 +17,7 @@ use App\Models\Transaksi;
 use App\Models\TransaksiTrucking;
 use Illuminate\Support\Facades\Cache;
 use App\Models\OrderTrucking;
+use App\Models\CustomerTrucking;
 use App\Models\Pelayaran;
 use App\Models\Sopir;
 use App\Models\Tarif;
@@ -289,40 +290,70 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
         return view('admin.laporan.rekap-piutang-blum', compact('customers', 'marketing'));
     }
 
-    public function data_outstanding_trucking(Request $request){
+     public function lapOutstandingTrucking()
+    {
+        $customers = CustomerTrucking::select('nama')->distinct()->get();       // reset index biar rapi
+
+        return view('admin.laporan.lap-outstanding-trucking', compact('customers'));
+    }
+
+   public function data_outstanding_trucking(Request $request)
+{
     $page = $request->input('page', 1);
     $rows = $request->input('rows', 20);
-    $searchField = $request->input('searchField');
-    $searchString = $request->input('searchString');
-    $tglInvFilter = $request->input('tgl_inv');
-    $customersFilter = $request->input('customers');
-    $customersFilter1 = $request->input('customers1');
-    $marketing = $request->input('marketing');
-    $invFilter = $request->input('inv');
-    $tfMasukVal = $request->input('tf_masuk');
+    $customersFilter = $request->input('customers1');
 
-
-    
-        $orderTruckings = OrderTrucking::with(['tarif.customer:id,nama',
-        'jurnals' => function ($query) {
-            $query->where('coa_id', 47)
-                  ->where('debit', '!=', 0)
-                  ->select('order_trucking_id', 'debit','coa_id');
-        },
-    ])->get();
-    $orderTruckingId = OrderTrucking::with(['tarif.customer:id,nama',
+    // Ambil daftar invoice unik RAS-LT
+    $orderTruckingInv = OrderTrucking::with([
+        'tarif.customer:id,nama',
         'jurnals' => function ($query) {
             $query->where('coa_id', 47)
                   ->where('debit', '!=', 0);
         },
-    ])->pluck('id')->toArray();
-    $transaksiTrucking = TransaksiTrucking::whereIn('order_trucking_id', $orderTruckingId)->get();
-    $jurnals = Jurnal::withTrashed()
+    ])->where('invoice', 'like', '%RAS-LT%')
+      ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
+            $q->where('nama', 'like', "%$customersFilter%");
+        })
+        ->distinct()
+        ->pluck('invoice')
+        ->toArray();
+
+    // Ambil semua order trucking beserta relasi
+    $orderTrucking = OrderTrucking::with([
+        'tarif.customer:id,nama',
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 47)
+                  ->where('debit', '!=', 0);
+        },
+    ])
+    ->where('invoice', 'like', '%RAS-LT%')
+    ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
+            $q->where('nama', 'like', "%$customersFilter%");
+    })
+    ->get();
+
+    // Ambil transaksi trucking dan KEY berdasarkan invoice
+    $transaksiTrucking = TransaksiTrucking::whereIn('invoice', $orderTruckingInv)
+        ->get()
+        ->keyBy('invoice');
+
+    // Jurnal Debit = Nilai Invoice
+    $jurnalNilaiInv = Jurnal::withTrashed()
+        ->select('invoice_trucking', \DB::raw('SUM(debit) as total_debit'))
+        ->where('coa_id', 47)
+        ->whereNull('deleted_at')
+        ->where('debit', '!=', 0)
+        ->whereNotNull('invoice_trucking')
+        ->groupBy('invoice_trucking')
+        ->get()
+        ->keyBy('invoice_trucking');
+
+    // Jurnal Credit = Pembayaran
+    $jurnalsCredit = Jurnal::withTrashed()
         ->where('coa_id', 47)
         ->whereNull('deleted_at')
         ->where('credit', '!=', 0)
-        ->whereNotNull('invoice_trucking')
-
+        ->whereIn('invoice_trucking', $orderTruckingInv)
         ->select(
             'invoice_trucking',
             \DB::raw('SUM(credit) as total_credit'),
@@ -331,8 +362,65 @@ $invoiceDate = Carbon::parse($invoiceDates)->subDay();
         ->groupBy('invoice_trucking')
         ->get()
         ->keyBy('invoice_trucking');
-    dd($transaksiTrucking[200],$orderTruckings[200],$jurnals);
-    }
+
+    // Group order berdasarkan invoice
+    $ordersByInvoice = $orderTrucking->groupBy('invoice');
+
+    // Customer per invoice
+    $customers = $orderTrucking->pluck('tarif.customer', 'invoice');
+
+    // Rekap Per Invoice
+    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use (
+        $transaksiTrucking,
+        $customers,
+        $jurnalsCredit,
+        $jurnalNilaiInv
+    ) {
+        // Transaksi trucking yg terkait invoice ini
+        $trans = $transaksiTrucking[$invoice] ?? null;
+        $cust  = $customers[$invoice] ?? null;
+
+        $container = $group->map(function ($order) {
+            return ($order->container ?? '-');
+        })->implode('<br>');
+        $tglInv = optional($group->first())->tgl_invoice ?? '-';
+
+        // SUBTOTAL (Nilai invoice dari jurnal debit)
+        $subtotal = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
+        $subtotal = round($subtotal);
+
+        // PPH
+        $pph = $trans->pph ?? 0;
+
+        // JURNAL CREDIT (pembayaran)
+        $jurnalC = $jurnalsCredit[$invoice] ?? null;
+        $dibayar_tgl = $jurnalC->daftar_tanggal ?? null;
+        $sebesar     = $jurnalC->total_credit ?? 0;
+
+        // Hitung outstanding
+        $kurang_bayar = $subtotal - $sebesar;
+        $tfMasuk = $kurang_bayar - round($pph);
+
+        return [
+            'tanggal'       => now()->toDateString(),
+            'tgl_invoice'   => $tglInv,
+            'invoice'       => $invoice,
+            'customer'      => $cust->nama ?? '-',
+            'jumlah_harga'  => $subtotal,
+            'container'     => $container,
+            'pph'           => round($pph),
+            'dibayar_tgl'   => $dibayar_tgl ?? '-',
+            'sebesar'       => $sebesar,
+            'kurang_bayar'  => $kurang_bayar,
+            'tf_masuk'      => (int) $tfMasuk,
+        ];
+    })
+    ->filter(fn ($row) => $row['kurang_bayar'] > 0) 
+    ->sortBy('tgl_invoice')
+    ->values();
+
+    return response()->json($rekapData);
+}
 
 public function data_rekap_piutang(Request $request)
     {

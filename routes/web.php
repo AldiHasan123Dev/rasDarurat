@@ -235,11 +235,13 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('laporan/omset', [LaporanController::class, 'omset'])->name('laporan.omset');
     Route::get('laporan/omset-customer', [LaporanController::class, 'omset_customer'])->name('laporan.omset_customer');
     Route::get('laporan/pra-omset', [LaporanController::class, 'praomset'])->name('laporan.praomset');
+    Route::get('lap-outstanding-trucking', [LaporanController::class, 'lapOutstandingTrucking'])->name('lap_outstanding.trucking');
     Route::get('laporan/omset-trucking', [LaporanController::class, 'omset_trucking'])->name('laporan.omset_trucking');
     Route::post('/kunci-jurnal/toggle', [JurnalController::class, 'toggle'])->name('kunci-jurnal.toggle');
     Route::get('laporan/tujuan/ajax', [LaporanController::class, 'tujuanAjax'])->name('laporan.tujuan.ajax');
     Route::post('/jurnal/export=jurnal-code-excel', [JurnalController::class, 'exportExcel'])->name('jurnal.exportExcel');
 
+     Route::get('data-outstanding-trucking', [LaporanController::class, 'data_outstanding_trucking'])->name('data-outstanding.trucking');
     Route::get('customer-tarif', [CustomerController::class, 'tarif'])->name('customer.tarif');
     Route::get('customer-tarif-marketing', [CustomerController::class, 'tarifMarketing'])->name('customer.tarif_marketing');
     Route::get('harga-of', [LapPelayaranController::class, 'index'])->name('lap.pelayaran');
