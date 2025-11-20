@@ -148,8 +148,8 @@
                                         1. Inv. Manual</span>
                                     </li>
                                     <li class="mb-1">
-                                        2. Inv. Manual lama(CV. Keramik Papua, PT. Berkah Alam Selaras, Saga Supermarket Thn
-                                        2018)</span>
+                                        2. 2. Inv. Lama : 417.350.000 (Old - Ali (KJG) 2018, Old - RISNA 2018, Old - Japfa Stapel 2022, Old - Yansen 2017/18)
+                                    </span>
                                     </li>
                                 </ul>
                             </div>
