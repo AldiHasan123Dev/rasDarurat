@@ -328,7 +328,7 @@
                 </div>
                 <div class="mb-2 col-3 hide-total">
                     <label for="customer">Customer</label>
-                    <select name="customer_id" id="customer_id_edit" class="form-control" required>
+                    <select name="customer_id" id="customer_id_edit" disabled class="form-control" required>
                         @foreach ($customers as $cus)
                             <option {{ $loop->first?'selected':'' }} value="{{ $cus->id }}">{{ $cus->nama }}</option>
                         @endforeach
