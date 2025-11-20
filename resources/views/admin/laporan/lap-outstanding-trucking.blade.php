@@ -148,7 +148,7 @@
                                         1. Inv. Manual</span>
                                     </li>
                                     <li class="mb-1">
-                                        2. 2. Inv. Lama : 417.350.000 (Old - Ali (KJG) 2018, Old - RISNA 2018, Old - Japfa Stapel 2022, Old - Yansen 2017/18)
+                                        2. Inv. Lama : 417.350.000 (Old - Ali (KJG) 2018, Old - RISNA 2018, Old - Japfa Stapel 2022, Old - Yansen 2017/18)
                                     </span>
                                     </li>
                                 </ul>
