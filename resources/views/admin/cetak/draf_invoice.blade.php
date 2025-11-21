@@ -396,7 +396,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
-                                    <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                    <p>Surabaya, {{ date('d F Y') }}</p>
                                     </p>
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
                                             style="width: 151px; height:94px">
@@ -627,15 +627,10 @@
                             </div>
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
-                                    <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                    <p>Surabaya, {{ date('d F Y') }}</p>
                                     </p>
-                                    @if ($allin['total'] >= 5000000)
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
                                             style="width: 151px; height:94px">
-                                    @else
-                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                            style="width: 151px; height:94px">
-                                    @endif
                                     <br>
                                     ({{ $invoice_name }})
                                 </div>
@@ -897,7 +892,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
-                                    <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                    <p>Surabaya, {{ date('d F Y') }}</p>
                                     </p>
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
                                             style="width: 151px; height:94px">
@@ -1180,7 +1175,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
-                                    <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                    <p>Surabaya, {{ date('d F Y') }}</p>
                                     </p>
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
                                             style="width: 151px; height:94px">
@@ -1445,7 +1440,7 @@
                             </div>
                             <div class="col-3">
                                 <div class="text-center mt-3" style="font-size: .7rem">
-                                    <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                    <p>Surabaya, {{ date('d F Y') }}</p>
                                     </p>
                                     @if ($invoice['total'] >= 5000000)
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
