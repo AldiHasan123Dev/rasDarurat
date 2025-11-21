@@ -26,7 +26,10 @@ class OmsetController extends Controller
         if(count($coa_id) != 8){
             $coa_id = [93];
         }
-        $orders = Order::whereIn('id',$ids)->where('lock_omset',1)->get();
+        $orders = Order::whereIn('id',$ids)->where(function ($q) {
+        $q->where('lock_omset', 1)
+           ->orWhere('lock_omset', 2);
+               })->get();
         if(request('is_pra')){
             $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
             $coa_id = COA::whereIn('coa_ras', [38, 31, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
