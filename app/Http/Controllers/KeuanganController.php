@@ -124,7 +124,8 @@ class KeuanganController extends Controller
             'tarif.dari_lokasi',
             'jadwal_kapal.kapal',
             'tarif.shipmentInfo'
-        ])->whereNull('invoice');
+        ])->whereNull('invoice')
+        ->orderBy('created_at', 'DESC'); // ⬅️ URUTAN DESC;
 
         // Tambahkan pencarian berdasarkan parameter filter yang diterima
         $searchFilters = $request->input('_search') ? $request->only('searchField', 'searchString', 'searchOper') : [];
