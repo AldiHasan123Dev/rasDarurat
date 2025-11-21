@@ -398,7 +398,14 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
                                     </p>
-                                    <div style="height: 2.3cm"></div>
+                                     @if ($allin['total'] >= 5000000)
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
+                                            style="width: 151px; height:94px">
+                                    @else
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
+                                            style="width: 151px; height:94px">
+                                    @endif
+                                    <br>
                                     ({{ $invoice_name }})
                                 </div>
                             </div>
@@ -425,7 +432,7 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">No Invoice</td>
+                                        <td style="width: 120px">Proforma Invoice</td>
                                         <td>: {{ $order->job }} </td>
                                     </tr>
                                     <tr>
@@ -662,8 +669,8 @@
                             <div class="col-6">
                                 <table style="font-size: .7rem">
                                     <tr>
-                                        <td style="width: 120px">No Invoice</td>
-                                        <td>: - </td>
+                                        <td style="width: 120px">Proforma Invoice</td>
+                                        <td>: {{ $order->job }} </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
@@ -897,7 +904,14 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
                                     </p>
-                                    <div style="height: 2.3cm"></div>
+                                     @if ($allin['total'] >= 5000000)
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
+                                            style="width: 151px; height:94px">
+                                    @else
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
+                                            style="width: 151px; height:94px">
+                                    @endif
+                                   <br>
                                     ({{ $invoice_name }})
                                 </div>
                             </div>
@@ -1178,7 +1192,14 @@
                                 <div class="text-center mt-3" style="font-size: .7rem">
                                     <p>Surabaya, {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
                                     </p>
-                                    <div style="height: 2.3cm"></div>
+                                     @if ($allin['total'] >= 5000000)
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
+                                            style="width: 151px; height:94px">
+                                    @else
+                                        <img src="{{ asset('assets/img/ttd-ifa.png') }}"
+                                            style="width: 151px; height:94px">
+                                    @endif
+                                   <br>
                                     ({{ $invoice_name }})
                                 </div>
                             </div>
