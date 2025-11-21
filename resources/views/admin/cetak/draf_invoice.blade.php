@@ -426,7 +426,7 @@
                                 <table style="font-size: .7rem">
                                     <tr>
                                         <td style="width: 120px">No Invoice</td>
-                                        <td>: - </td>
+                                        <td>: {{ $order->job }} </td>
                                     </tr>
                                     <tr>
                                         <td>Kapal</td>
