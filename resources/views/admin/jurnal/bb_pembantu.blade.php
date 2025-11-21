@@ -251,31 +251,45 @@
                                                 <td class="text-center">{{ $loop->iteration }}</td>
                                                 @if (in_array($coa_id, [65, 66]))
                                                     <td>{{ $data['customer_name'] }}</td>
-                                                @else
+                                                @elseif($subjek === 'jurnal-balik')
                                                     <td>{!! is_array($data['no_d']) ? implode('<br>', $data['no_d']) : $data['no_d'] !!}</td>
+                                                @else
+                                                    <td>{!! $data['no_d']->implode('<br>') !!}</td>
                                                 @endif
                                                 <td>{{ $data['invoice'] }}</td>
 
                                                 {{-- Tanggal dan Keterangan --}}
                                                 @if (in_array($coa_id, [65, 66]))
                                                     {{-- Tampilkan hanya satu kolom untuk tgl_d dan ket_d --}}
+                                                    <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
+                                                    <td>{!! $data['ket_d']->implode('<br>') !!}</td>
+                                                    @elseif($subjek === 'jurnal-balik')
                                                     <td>{!! is_array($data['tgl_d']) ? implode('<br>', $data['tgl_d']) : $data['tgl_d'] !!}</td>
                                                     <td>{!! is_array($data['ket_d']) ? implode('<br>', $data['ket_d']) : $data['ket_d'] !!}</td>
-                                                @else
-                                                    <td>{!! is_array($data['tgl_d']) ? implode('<br>', $data['tgl_d']) : $data['tgl_d'] !!}</td>
-                                                    <td>{!! is_array($data['ket_d']) ? implode('<br>', $data['ket_d']) : $data['ket_d'] !!}</td>
+                                                    @else
+                                                     <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
+                                                    <td>{!! $data['ket_d']->implode('<br>') !!}</td>
                                                 @endif
 
                                                 {{-- Nominal Debit dan Kredit --}}
+                                                @if($subjek === 'jurnal-balik')
                                                 <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
                                                    {{ number_format((float) str_replace([',', ' '], '', $debit), 2, ',', '.') }}
                                                 </td>
                                                 <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
                                                     {{ number_format((float) str_replace([',', ' '], '', $credit), 2, ',', '.') }}
                                                 </td>
+                                                @else
+                                                  <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                    {{ number_format($debit, 2, ',', '.') }}
+                                                </td>
+                                                <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                    {{ number_format($credit, 2, ',', '.') }}
+                                                </td>
+                                                @endif
 
                                                 {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
-                                                @unless (in_array($coa_id, [65, 66]))
+                                                @unless ($subjek === 'relasi' && in_array($coa_id, [65, 66]))
                                                     <td>{!! is_array($data['no_c']) ? implode('<br>', $data['no_c']) : $data['no_c'] !!}</td>
                                                     <td>{!! is_array($data['tgl_c']) ? implode('<br>', $data['tgl_c']) : $data['tgl_c'] !!}</td>
                                                     <td>{!! is_array($data['ket_c']) ? implode('<br>', $data['ket_c']) : $data['ket_c'] !!}</td>
