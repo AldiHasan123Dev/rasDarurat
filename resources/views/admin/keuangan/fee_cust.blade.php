@@ -2,13 +2,17 @@
 @section('style')
     {{-- <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.1/css/select.dataTables.min.css"> --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css"
+        integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" type="text/css" media="screen" href="{{ asset('assets/css/ui.jqgrid-bootstrap5.css') }}" />
     <style>
         td:hover {
             cursor: pointer;
         }
-        table.dataTable tbody th, table.dataTable tbody td{
+
+        table.dataTable tbody th,
+        table.dataTable tbody td {
             padding: 0px 10px !important;
         }
     </style>
@@ -17,7 +21,8 @@
     <div class="container mt-3">
         <div class="card">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasInvBayar" aria-controls="offcanvasInvBayar">Input Tanggal Inv Dibayar</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasInvBayar"
+                    aria-controls="offcanvasInvBayar">Input Tanggal Inv Dibayar</button>
             </div>
             <div class="card-body">
                 <div class="table-responsives" id="jtable">
@@ -29,7 +34,8 @@
 
         <div class="card mt-3">
             <div class="card-header p-2 d-flex justify-content-between" style="gap:10px">
-                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKomisi" aria-controls="offcanvasKomisi">Input Tanggal Komisi</button>
+                <button class="py-2 px-3 btn btn-success" data-bs-toggle="offcanvas" data-bs-target="#offcanvasKomisi"
+                    aria-controls="offcanvasKomisi">Input Tanggal Komisi</button>
             </div>
             <div class="card-body">
                 <div class="table-responsives" id="jtable">
@@ -146,23 +152,24 @@
     <script src="https://cdn.datatables.net/select/1.6.1/js/dataTables.select.min.js"></script>
     <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
     <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
-    <script type="text/javascript" language="javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.20/build/pdfmake.min.js">	</script>
-	<script type="text/javascript" language="javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.20/build/vfs_fonts.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.20/build/pdfmake.min.js"></script>
+    <script type="text/javascript" language="javascript"
+        src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.20/build/vfs_fonts.js"></script>
     <script>
         let table = $('#table-print').DataTable({
-            scrollX : true,
+            scrollX: true,
             dom: 'Bfrtip',
-            buttons: [
-                {
+            buttons: [{
                     extend: 'print',
-                    title:'',
+                    title: '',
                     customize: function(win) {
                         $(win.document.body)
-                        .css('font-size', '.7rem');
+                            .css('font-size', '.7rem');
 
                         $(win.document.body).find('table')
-                        .addClass('compact')
-                        .css('font-size', '.7rem');
+                            .addClass('compact')
+                            .css('font-size', '.7rem');
                     },
                     exportOptions: {
                         columns: ':visible'
@@ -173,15 +180,13 @@
         });
 
         let table2 = $('#table-payment').DataTable({
-            scrollX : true,
-            select:true,
-            columnDefs: [
-                {
-                    target: 0,
-                    visible: false,
-                    searchable: false,
-                },
-            ],
+            scrollX: true,
+            select: true,
+            columnDefs: [{
+                target: 0,
+                visible: false,
+                searchable: false,
+            }, ],
         });
 
         let order_id;
@@ -191,48 +196,118 @@
             mtype: 'GET',
             datatype: 'json',
             rownumbers: true,
-            postData: { input_invoice_bayar: true },
-            colModel: [
-                {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
-                {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:100},
-                {search:true, name: 'id', label : 'id', hidden:true},
-                {search:true, name: 'pelayaran', label : 'pelayaran'},
-                {search:true, name: 'shipment', label : 'shipment'},
-                {search:true, name: 'container', label : 'container'},
-                {search:true, name: 'seal', label : 'seal'},
-                {search:true, name: 'kapal', label : 'kapal'},
-                {search:true, name: 'voyage', label : 'voyage'},
-                {search:true, name: 'komisi', label : 'komisi'},
-                {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
+            postData: {
+                input_invoice_bayar: true
+            },
+            colModel: [{
+                    search: true,
+                    name: 'no',
+                    label: 'ID JOB',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'pembayar',
+                    label: 'pembayar',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'id',
+                    label: 'id',
+                    hidden: true
+                },
+                {
+                    search: true,
+                    name: 'pelayaran',
+                    label: 'pelayaran'
+                },
+                {
+                    search: true,
+                    name: 'shipment',
+                    label: 'shipment'
+                },
+                {
+                    search: true,
+                    name: 'container',
+                    label: 'container'
+                },
+                {
+                    search: true,
+                    name: 'seal',
+                    label: 'seal'
+                },
+                {
+                    search: true,
+                    name: 'kapal',
+                    label: 'kapal'
+                },
+                {
+                    search: true,
+                    name: 'voyage',
+                    label: 'voyage'
+                },
+                {
+                    search: true,
+                    name: 'komisi',
+                    label: 'komisi'
+                },
+                {
+                    search: true,
+                    name: 'invoice_bayar',
+                    label: 'Tgl Inv Dibayar',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'tgl_komisi',
+                    label: 'Tgl Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'komisi_print',
+                    label: 'Tgl Print Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
             ],
             autowidth: true,
             shrinkToFit: false,
             height: 250,
             oadonce: true,
             rowNum: 25,
-            rowList:[10,25,50,100,250,500,1000],
+            rowList: [10, 25, 50, 100, 250, 500, 1000],
             viewrecords: true,
             pager: "#jqGridPager1",
             caption: "List Order Belum Input Tgl Inv Dibayar",
-            onCellSelect: function (rowId, iRow, iCol, e) {
+            onCellSelect: function(rowId, iRow, iCol, e) {
                 row_id = rowId;
                 order_id = $(this).jqGrid('getCell', rowId, 'id');
                 var no = $(this).jqGrid('getCell', rowId, 'no');
                 $('.id_job').val(no);
             },
-            rowattr: function (item) {
-                return { "class": item.class };
+            rowattr: function(item) {
+                return {
+                    "class": item.class
+                };
             }
         });
 
-        $('#jqGrid1').jqGrid('filterToolbar',{
-            beforeSearch: function (filters) {
-                $("#jqGrid1").jqGrid("setGridParam", { postData: {  input_invoice_bayar: true } });
+        $('#jqGrid1').jqGrid('filterToolbar', {
+            beforeSearch: function(filters) {
+                $("#jqGrid1").jqGrid("setGridParam", {
+                    postData: {
+                        input_invoice_bayar: true
+                    }
+                });
             },
         });
-        $('#jqGrid1').jqGrid('navGrid',"#jqGridPager", {
+        $('#jqGrid1').jqGrid('navGrid', "#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
             edit: false,
@@ -246,48 +321,118 @@
             mtype: 'GET',
             datatype: 'json',
             rownumbers: true,
-            postData: { input_komisi: true },
-            colModel: [
-                {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
-                {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:100},
-                {search:true, name: 'id', label : 'id', hidden:true},
-                {search:true, name: 'pelayaran', label : 'pelayaran'},
-                {search:true, name: 'shipment', label : 'shipment'},
-                {search:true, name: 'container', label : 'container'},
-                {search:true, name: 'seal', label : 'seal'},
-                {search:true, name: 'kapal', label : 'kapal'},
-                {search:true, name: 'voyage', label : 'voyage'},
-                {search:true, name: 'komisi', label : 'komisi'},
-                {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
+            postData: {
+                input_komisi: true
+            },
+            colModel: [{
+                    search: true,
+                    name: 'no',
+                    label: 'ID JOB',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'pembayar',
+                    label: 'pembayar',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'id',
+                    label: 'id',
+                    hidden: true
+                },
+                {
+                    search: true,
+                    name: 'pelayaran',
+                    label: 'pelayaran'
+                },
+                {
+                    search: true,
+                    name: 'shipment',
+                    label: 'shipment'
+                },
+                {
+                    search: true,
+                    name: 'container',
+                    label: 'container'
+                },
+                {
+                    search: true,
+                    name: 'seal',
+                    label: 'seal'
+                },
+                {
+                    search: true,
+                    name: 'kapal',
+                    label: 'kapal'
+                },
+                {
+                    search: true,
+                    name: 'voyage',
+                    label: 'voyage'
+                },
+                {
+                    search: true,
+                    name: 'komisi',
+                    label: 'komisi'
+                },
+                {
+                    search: true,
+                    name: 'invoice_bayar',
+                    label: 'Tgl Inv Dibayar',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'tgl_komisi',
+                    label: 'Tgl Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'komisi_print',
+                    label: 'Tgl Print Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
             ],
             autowidth: true,
             shrinkToFit: false,
             height: 250,
             oadonce: true,
             rowNum: 25,
-            rowList:[10,25,50,100,250,500,1000],
+            rowList: [10, 25, 50, 100, 250, 500, 1000],
             viewrecords: true,
             pager: "#jqGridPager2",
             caption: "List Order Belum Input Tgl Komisi",
-            onCellSelect: function (rowId, iRow, iCol, e) {
+            onCellSelect: function(rowId, iRow, iCol, e) {
                 row_id = rowId;
                 order_id = $(this).jqGrid('getCell', rowId, 'id');
                 var no = $(this).jqGrid('getCell', rowId, 'no');
                 $('.id_job').val(no);
             },
-            rowattr: function (item) {
-                return { "class": item.class };
+            rowattr: function(item) {
+                return {
+                    "class": item.class
+                };
             }
         });
 
         $('#jqGrid2').jqGrid('filterToolbar', {
-            beforeSearch: function (filters) {
-                $("#jqGrid2").jqGrid("setGridParam", { postData: {  input_komisi: true } });
+            beforeSearch: function(filters) {
+                $("#jqGrid2").jqGrid("setGridParam", {
+                    postData: {
+                        input_komisi: true
+                    }
+                });
             },
         });
-        $('#jqGrid2').jqGrid('navGrid',"#jqGridPager", {
+        $('#jqGrid2').jqGrid('navGrid', "#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
             edit: false,
@@ -301,54 +446,129 @@
             mtype: 'GET',
             datatype: 'json',
             rownumbers: true,
-            postData: { komisi_print: true },
-            colModel: [
-                {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
-                {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:100},
-                {search:true, name: 'id', label : 'id', hidden:true},
-                {search:true, name: 'pelayaran', label : 'pelayaran'},
-                {search:true, name: 'shipment', label : 'shipment'},
-                {search:true, name: 'container', label : 'container'},
-                {search:true, name: 'seal', label : 'seal'},
-                {search:true, name: 'kapal', label : 'kapal'},
-                {search:true, name: 'voyage', label : 'voyage'},
-                {search:true, name: 'komisi', label : 'komisi'},
-                {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
+            postData: {
+                komisi_print: true
+            },
+            colModel: [{
+                    search: true,
+                    name: 'no',
+                    label: 'ID JOB',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'pembayar',
+                    label: 'pembayar',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'id',
+                    label: 'id',
+                    hidden: true
+                },
+                {
+                    search: true,
+                    name: 'pelayaran',
+                    label: 'pelayaran'
+                },
+                {
+                    search: true,
+                    name: 'shipment',
+                    label: 'shipment'
+                },
+                {
+                    search: true,
+                    name: 'container',
+                    label: 'container'
+                },
+                {
+                    search: true,
+                    name: 'seal',
+                    label: 'seal'
+                },
+                {
+                    search: true,
+                    name: 'kapal',
+                    label: 'kapal'
+                },
+                {
+                    search: true,
+                    name: 'voyage',
+                    label: 'voyage'
+                },
+                {
+                    search: true,
+                    name: 'komisi',
+                    label: 'komisi'
+                },
+                {
+                    search: true,
+                    name: 'invoice_bayar',
+                    label: 'Tgl Inv Dibayar',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'tgl_komisi',
+                    label: 'Tgl Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'komisi_print',
+                    label: 'Tgl Print Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
             ],
             autowidth: true,
             shrinkToFit: false,
             height: 250,
             oadonce: true,
             rowNum: 25,
-            rowList:[10,25,50,100,250,500,1000],
+            rowList: [10, 25, 50, 100, 250, 500, 1000],
             viewrecords: true,
             multiPageSelection: true,
-            multiselect : true,
+            multiselect: true,
             pager: "#jqGridPager3",
             caption: "List Komisi yang Belum di Transfer",
-            onCellSelect: function (rowId, iRow, iCol, e) {
-                setTimeout(() => {
-                    var selectedRows =  $("#jqGrid3").jqGrid('getGridParam', 'selarrrow');
-                    $('#order_id_array').val(selectedRows);
-                }, 2000);
+            onSelectRow: function(rowId, isSelected) {
+                let selectedRows = $("#jqGrid3").jqGrid('getGridParam', 'selarrrow');
+                $('#order_id_array').val(selectedRows);
+
                 row_id = rowId;
                 order_id = $(this).jqGrid('getCell', rowId, 'id');
-                var no = $(this).jqGrid('getCell', rowId, 'no');
+                let no = $(this).jqGrid('getCell', rowId, 'no');
                 $('.id_job').val(no);
             },
-            rowattr: function (item) {
-                return { "class": item.class };
+
+            onSelectAll: function(rowIds, isSelected) {
+                let selectedRows = $("#jqGrid3").jqGrid('getGridParam', 'selarrrow');
+                $('#order_id_array').val(selectedRows);
+            },
+
+            rowattr: function(item) {
+                return {
+                    "class": item.class
+                };
             }
         });
 
-        $('#jqGrid3').jqGrid('filterToolbar',{
-            beforeSearch: function (filters) {
-                $("#jqGrid3").jqGrid("setGridParam", { postData: {  komisi_print: true } });
+        $('#jqGrid3').jqGrid('filterToolbar', {
+            beforeSearch: function(filters) {
+                $("#jqGrid3").jqGrid("setGridParam", {
+                    postData: {
+                        komisi_print: true
+                    }
+                });
             },
         });
-        $('#jqGrid3').jqGrid('navGrid',"#jqGridPager", {
+        $('#jqGrid3').jqGrid('navGrid', "#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
             edit: false,
@@ -362,36 +582,100 @@
             mtype: 'GET',
             datatype: 'json',
             rownumbers: true,
-            postData: { komisi_print_done: true },
-            colModel: [
-                {search:true, name: 'no', label : 'ID JOB', frozen:true, width:100},
-                {search:true, name: 'pembayar', label : 'pembayar', frozen:true, width:100},
-                {search:true, name: 'id', label : 'id', hidden:true},
-                {search:true, name: 'pelayaran', label : 'pelayaran'},
-                {search:true, name: 'shipment', label : 'shipment'},
-                {search:true, name: 'container', label : 'container'},
-                {search:true, name: 'seal', label : 'seal'},
-                {search:true, name: 'kapal', label : 'kapal'},
-                {search:true, name: 'voyage', label : 'voyage'},
-                {search:true, name: 'komisi', label : 'komisi'},
-                {search:true, name: 'invoice_bayar', label : 'Tgl Inv Dibayar',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'tgl_komisi', label : 'Tgl Komisi',sorttype: 'date', datefmt:'d/m/y'},
-                {search:true, name: 'komisi_print', label : 'Tgl Print Komisi',sorttype: 'date', datefmt:'d/m/y'},
+            postData: {
+                komisi_print_done: true
+            },
+            colModel: [{
+                    search: true,
+                    name: 'no',
+                    label: 'ID JOB',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'pembayar',
+                    label: 'pembayar',
+                    frozen: true,
+                    width: 100
+                },
+                {
+                    search: true,
+                    name: 'id',
+                    label: 'id',
+                    hidden: true
+                },
+                {
+                    search: true,
+                    name: 'pelayaran',
+                    label: 'pelayaran'
+                },
+                {
+                    search: true,
+                    name: 'shipment',
+                    label: 'shipment'
+                },
+                {
+                    search: true,
+                    name: 'container',
+                    label: 'container'
+                },
+                {
+                    search: true,
+                    name: 'seal',
+                    label: 'seal'
+                },
+                {
+                    search: true,
+                    name: 'kapal',
+                    label: 'kapal'
+                },
+                {
+                    search: true,
+                    name: 'voyage',
+                    label: 'voyage'
+                },
+                {
+                    search: true,
+                    name: 'komisi',
+                    label: 'komisi'
+                },
+                {
+                    search: true,
+                    name: 'invoice_bayar',
+                    label: 'Tgl Inv Dibayar',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'tgl_komisi',
+                    label: 'Tgl Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
+                {
+                    search: true,
+                    name: 'komisi_print',
+                    label: 'Tgl Print Komisi',
+                    sorttype: 'date',
+                    datefmt: 'd/m/y'
+                },
             ],
             autowidth: true,
             shrinkToFit: false,
             height: 250,
             oadonce: true,
             rowNum: 25,
-            rowList:[10,25,50,100,250,500,1000],
+            rowList: [10, 25, 50, 100, 250, 500, 1000],
             viewrecords: true,
             // multiPageSelection: true,
             // multiselect : true,
             pager: "#jqGridPager4",
             caption: "List Sudah Transfer",
-            onCellSelect: function (rowId, iRow, iCol, e) {
+            onCellSelect: function(rowId, iRow, iCol, e) {
                 setTimeout(() => {
-                    var selectedRows =  $("#jqGrid4").jqGrid('getGridParam', 'selarrrow');
+                    var selectedRows = $("#jqGrid4").jqGrid('getGridParam', 'selarrrow');
                     $('#order_id_array').val(selectedRows);
                 }, 2000);
                 row_id = rowId;
@@ -399,17 +683,23 @@
                 var no = $(this).jqGrid('getCell', rowId, 'no');
                 $('.id_job').val(no);
             },
-            rowattr: function (item) {
-                return { "class": item.class };
+            rowattr: function(item) {
+                return {
+                    "class": item.class
+                };
             }
         });
 
-        $('#jqGrid4').jqGrid('filterToolbar',{
-            beforeSearch: function (filters) {
-                $("#jqGrid4").jqGrid("setGridParam", { postData: {  komisi_print_done: true } });
+        $('#jqGrid4').jqGrid('filterToolbar', {
+            beforeSearch: function(filters) {
+                $("#jqGrid4").jqGrid("setGridParam", {
+                    postData: {
+                        komisi_print_done: true
+                    }
+                });
             },
         });
-        $('#jqGrid4').jqGrid('navGrid',"#jqGridPager", {
+        $('#jqGrid4').jqGrid('navGrid', "#jqGridPager", {
             search: false, // show search button on the toolbar
             add: false,
             edit: false,
@@ -423,46 +713,47 @@
                 type: "POST",
                 url: "{{ url('api/update-order-request') }}",
                 data: {
-                    id:order_id,
-                    invoice_bayar:$('#invoice_bayar').val()
+                    id: order_id,
+                    invoice_bayar: $('#invoice_bayar').val()
                 },
-                success: function (response) {
+                success: function(response) {
                     alert('Data berhasil disimpan!');
-                    $('#jqGrid1').trigger( 'reloadGrid' );
-                    $('#jqGrid2').trigger( 'reloadGrid' );
+                    $('#jqGrid1').trigger('reloadGrid');
+                    $('#jqGrid2').trigger('reloadGrid');
                     $('#invoice_bayar').val('');
                 }
             });
         }
+
         function simpanKomisi() {
             $.ajax({
                 type: "POST",
                 url: "{{ url('api/update-order-request') }}",
                 data: {
-                    id:order_id,
-                    tgl_komisi:$('#tgl_komisi').val()
+                    id: order_id,
+                    tgl_komisi: $('#tgl_komisi').val()
                 },
-                success: function (response) {
+                success: function(response) {
                     alert('Data berhasil disimpan!');
-                    $('#jqGrid2').trigger( 'reloadGrid' );
-                    $('#jqGrid3').trigger( 'reloadGrid' );
+                    $('#jqGrid2').trigger('reloadGrid');
+                    $('#jqGrid3').trigger('reloadGrid');
                     $('#tgl_komisi').val('');
                 }
             });
         }
 
-        $("#export").on("click", function(){
-			$("#jqGrid3").jqGrid("exportToPdf",{
-				title: '',
-				orientation: 'landscape',
-				pageSize: 'A4',
-				customSettings: null,
-				download: 'download',
-				includeLabels : true,
-				includeGroupHeader : true,
-				includeFooter: true,
-				fileName : "print_komisi.pdf"
-			})
-		})
+        $("#export").on("click", function() {
+            $("#jqGrid3").jqGrid("exportToPdf", {
+                title: '',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                customSettings: null,
+                download: 'download',
+                includeLabels: true,
+                includeGroupHeader: true,
+                includeFooter: true,
+                fileName: "print_komisi.pdf"
+            })
+        })
     </script>
 @endsection
