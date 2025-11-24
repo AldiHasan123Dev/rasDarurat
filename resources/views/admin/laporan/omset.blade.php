@@ -113,7 +113,7 @@
                         <div class="d-flex gap-3">
                             <button type="button" class="btn btn-sm btn-success" onclick="window.print()"><i
                                     class="fas fa-print"></i> PRINT</button>
-                            <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button>
+                            {{-- <button type="button" class="btn btn-sm btn-primary" onclick="sync()"> SYNC</button> --}}
                             @if ($is_pra)
                                 <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE
                                     JURNAL BALIK</button>
