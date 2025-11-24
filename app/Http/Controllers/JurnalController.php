@@ -632,6 +632,7 @@ class JurnalController extends Controller
                     $shipment = $order->tarif->shipmentInfo->nama;
                     $pembayar = $order->tarif->customer->nama ?? '-';
                     $kapal = $order->jadwal_kapal->kapal->nama ?? '-';
+                    $order_trucking_id = is_null($order->truckingInfo) ? null : $order->truckingInfo->id;
                     $voyage = $order->jadwal_kapal->voyage ?? '-';
                     $customer = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->customer->nama;
                     $shipment_trucking = is_null($order->truckingInfo) ? '-' : $order->truckingInfo->tipe;
@@ -655,6 +656,14 @@ class JurnalController extends Controller
                     $nomor = sprintf('%03d', $no) . '/' . $data['tipe'] . '-' . $this->sno . '/' . date('y', strtotime($data['created_at']));
                 }
                 if ($data['debit_coa_id'][$i] && $data['credit_coa_id'][$i]) {
+                    $isSangu = stripos($name, 'sangu sopir') !== false 
+                            || stripos($name, 'sangu kuli') !== false;
+
+
+                    $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                        ? $order_trucking_id
+                        : null;
+
                     $relasiDebit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null ? $nomor : $nomor);
                     $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
                     $jurnal_model->create([
@@ -664,6 +673,7 @@ class JurnalController extends Controller
                         'nopol' => $nopol,
                         'container' => $container,
                         'coa_id' => $data['debit_coa_id'][$i],
+                         'order_trucking_id' => $orderTruckingId ?? null,
                         'order_id' => $order_id ?? ($order_id1 ?? null),
                         'nomor' => $nomor,
                         'nama' => $name,
@@ -683,10 +693,11 @@ class JurnalController extends Controller
                         'container' => $container,
                         'coa_id' => $data['credit_coa_id'][$i],
                         'order_id' => $order_id ?? ($order_id1 ?? null),
+                        'order_trucking_id' => $orderTruckingId ?? null,
                         'nomor' => $nomor,
                         'nama' => $name,
                         'credit' => $data['amount'][$i],
-                        'created_at' => $data['created_at'],
+                        'created_at' => $data['created_at'], 
                         'relasi' => $relasiCredit ?? $nomor,
                         'no_bg' => $no_bg,
                         'invoice_external' => $jurnal_external,
@@ -694,6 +705,13 @@ class JurnalController extends Controller
                     ]);
                 } else {
                     if ($data['debit_coa_id'][$i]) {
+                        $isSangu = stripos($name, 'sangu sopir') !== false 
+                            || stripos($name, 'sangu kuli') !== false;
+
+
+                        $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                            ? $order_trucking_id
+                            : null;
                         $relasiDebit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null ? $nomor : $nomor);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
@@ -703,6 +721,7 @@ class JurnalController extends Controller
                             'container' => $container,
                             'coa_id' => $data['debit_coa_id'][$i],
                             'order_id' => $order_id ?? ($order_id1 ?? null),
+                            'order_trucking_id' => $orderTruckingId ?? null,
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
@@ -714,6 +733,13 @@ class JurnalController extends Controller
                         ]);
                     }
                     if ($data['credit_coa_id'][$i]) {
+                        $isSangu = stripos($name, 'sangu sopir') !== false 
+                            || stripos($name, 'sangu kuli') !== false;
+
+
+                        $orderTruckingId = ($data['debit_coa_id'][$i] == 61 && $isSangu)
+                            ? $order_trucking_id
+                            : null;
                         $relasiCredit = $data['relasi'][$i] ?? ($invoice_agen === null && $invoice === null  ? $nomor : $nomor);
                         $jurnal_model->create([
                             'tipe' => $data['tipe'],
@@ -724,6 +750,7 @@ class JurnalController extends Controller
                             'coa_id' => $data['credit_coa_id'][$i],
                             'order_id' => $order_id ?? ($order_id1 ?? null),
                             'nomor' => $nomor,
+                            'order_trucking_id' => $orderTruckingId ?? null,
                             'nama' => $name,
                             'credit' => $data['amount'][$i],
                             'created_at' => $data['created_at'],
