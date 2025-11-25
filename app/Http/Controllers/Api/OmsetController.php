@@ -40,7 +40,7 @@ class OmsetController extends Controller
         $tarif = $order->tarif->tarif ?? 0;
 
         if ($cbm == 'CBM') {
-            $totalVol = $order->bttb->sum('vol');
+            $totalVol = round($order->bttb->sum('vol'), 2);
             // Jika total volume kurang dari 1, set menjadi 1
             if ($totalVol < 1) {
                 $totalVol = 1;
