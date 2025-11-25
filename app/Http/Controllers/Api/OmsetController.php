@@ -26,10 +26,7 @@ class OmsetController extends Controller
         if(count($coa_id) != 8){
             $coa_id = [93];
         }
-        $orders = Order::whereIn('id',$ids)->where(function ($q) {
-        $q->where('lock_omset', 1)
-           ->orWhere('lock_omset', 2);
-               })->get();
+        $orders = Order::whereIn('id',$ids)->where('lock_omset', 1)->get();
         if(request('is_pra')){
             $orders = Order::whereIn('id',$ids)->where('lock_omset',0)->get();
             $coa_id = COA::whereIn('coa_ras', [38, 31, 133, 134, 135, 140, 76, 81])->pluck('id')->toArray();
@@ -877,32 +874,34 @@ public function syncJurnalBalik2()
     $ids = array_slice($id, request('start'), request('end'));
     $end = request('start') + request('end');
 
-    $orders = Order::whereIn('id', $id)    ->where(function ($q) {
-        $q->where('lock_omset', 1)
-           ->orWhere('lock_omset', 2);
-               })->get();
-    $order = $orders->pluck('id');
+    // Ambil order yang lock_omset 1 atau 2
+    $orders = Order::whereIn('id', $id)
+        ->whereIn('lock_omset', [1, 2])
+        ->get();
 
-    // Ambil jurnal yang memenuhi syarat (credit > 0 dan belum punya jurnal balik)
-    $jurnals = Jurnal::whereIn('order_id', $order)
+    $orderIds = $orders->pluck('id');
+
+    // Ambil jurnal debit tertentu
+    $jurnals = Jurnal::whereIn('order_id', $orderIds)
         ->where('debit', '>', 0)
-        ->whereIn('coa_id', [133, 134, 135, 140, 76, 81]) // <-- tambahkan ini
-        ->pluck('id'); // ambil semua, pengecekan null akan dilakukan di loop
+        ->whereIn('coa_id', [133, 134, 135, 140, 76, 81])
+        ->pluck('id');
+
     $month = request('month');
     $year = request('year');
 
+    // Buat atau ambil jurnal balik induk
     $balik = JurnalBalik::where('bulan', $month)
-        ->where('tipe', 'xpdc non 1.6.1 (D)')
         ->where('tahun', $year)
+        ->where('tipe', 'xpdc non 1.6.1 (D)')
         ->first();
 
     if (!$balik) {
-        $c = new Carbon($year . '-' . sprintf('%02d', $month) . '-01');
+        $c = Carbon::create($year, $month, 1);
         $last = $c->endOfMonth()->format('Y-m-d');
 
         $no = 5;
-
-        $nomor = 'OMZ-' . sprintf('%02d', $month) . '-' . sprintf('%03d', $no) . '/' . date('y', strtotime($year . '-' . sprintf('%02d', $month) . '-01'));
+        $nomor = "OMZ-" . sprintf('%02d', $month) . "-" . sprintf('%03d', $no) . "/" . date('y', strtotime("$year-$month-01"));
 
         $balik = JurnalBalik::create([
             'tanggal' => $last,
@@ -915,7 +914,9 @@ public function syncJurnalBalik2()
     }
 
     $res = [];
-    $column = [
+
+    // Semua kolom j_*
+    $columns = [
         'j_opp', 'j_opt', 'j_ut', 'j_bl', 'j_apbs', 'j_cleaning', 'j_lss', 'j_storage',
         'j_jasa_door', 'j_asuransi', 'j_ops', 'j_segel', 'j_ops_seal', 'j_ops_seal_cleaning',
         'j_buruh', 'j_checker', 'j_karantina', 'j_demmurage', 'j_kirim_dokumen', 'j_flexibag',
@@ -924,100 +925,123 @@ public function syncJurnalBalik2()
     ];
 
     foreach ($orders as $order) {
+
         $pra_omset = $order->pra_omset;
         $omset = $order->omset;
 
-        if ($pra_omset) {
-            for ($i = 0; $i < count($column); $i++) {
-                $col_id = [];
+        if (!$pra_omset) {
+            continue;
+        }
 
-                $col = $pra_omset[$column[$i]] ?? null;
-                $j_biaya = $col ? json_decode($col, true) : [];
+        // Loop semua kolom j_*
+        foreach ($columns as $colName) {
 
-                if (!is_array($j_biaya)) {
-                    $j_biaya = [];
-                }
+            $col_id = [];
 
-                $valid_jurnal_ids = array_intersect($j_biaya, $jurnals->toArray());
-                $biaya = Jurnal::whereIn('id', $valid_jurnal_ids)
-                    ->where('debit', '>', 0)
-                    ->get();
+            $col = $pra_omset->$colName ?? null;
+            $j_biaya = $col ? json_decode($col, true) : [];
 
-                foreach ($biaya as $j_) {
-                    // Jika jurnal_balik NULL → buat jurnal balik baru
-                    if (is_null($j_->jurnal_balik)) {
-                        if (in_array($j_->coa_id, [133,134,135,140,76,81])) {
-                            $data = $j_->toArray();
-                            unset($data['id']);
+            if (!is_array($j_biaya)) {
+                $j_biaya = [];
+            }
 
-                            // Jurnal debit
-                            $data['jurnal_balik'] = $j_->id;
-                            $data['coa_id'] = 93;
-                            $data['debit'] = $j_->debit;
-                            $data['credit'] = 0;
-                            $data['tipe'] = 'OMZ';
-                            $data['relasi'] = $balik->nomor;
-                            $data['nomor'] = $balik->nomor;
-                            $data['no'] = $balik->no;
-                            $data['created_at'] = $balik->tanggal;
-                            $jurnal = Jurnal::create($data);
-                            $j_->update(['jurnal_balik' => $jurnal->id,'is_balik' => 1]);
+            // Ambil jurnal debit valid
+            $valid_jurnal_ids = array_intersect($j_biaya, $jurnals->toArray());
 
-                            // Jurnal kredit
-                            $data['jurnal_balik'] = $j_->id;
-                            $data['coa_id'] = $j_->coa_id;
-                            $data['credit'] = $j_->debit;
-                            $data['debit'] = 0;
-                            Jurnal::create($data);
+            $biayaList = Jurnal::whereIn('id', $valid_jurnal_ids)
+                ->where('debit', '>', 0)
+                ->get();
 
-                            $col_id[] = $jurnal->id;
-                        }
-                        $res[] = $j_->id;
-                        continue;
+            foreach ($biayaList as $j_) {
+
+                if (is_null($j_->jurnal_balik)) {
+
+                    if (in_array($j_->coa_id, [133, 134, 135, 140, 76, 81])) {
+
+                        $data = $j_->toArray();
+                        unset($data['id']);
+
+                        // Debit
+                        $data['jurnal_balik'] = $j_->id;
+                        $data['coa_id'] = 93;
+                        $data['debit'] = $j_->debit;
+                        $data['credit'] = 0;
+                        $data['tipe'] = "OMZ";
+                        $data['relasi'] = $balik->nomor;
+                        $data['nomor'] = $balik->nomor;
+                        $data['no'] = $balik->no;
+                        $data['created_at'] = $balik->tanggal;
+
+                        $jurnalDebit = Jurnal::create($data);
+
+                        // Tandai jurnal asli
+                        $j_->update([
+                            'jurnal_balik' => $jurnalDebit->id,
+                            'is_balik' => 1
+                        ]);
+
+                        // Kredit
+                        $data['coa_id'] = $j_->coa_id;
+                        $data['credit'] = $j_->debit;
+                        $data['debit'] = 0;
+                        Jurnal::create($data);
+
+                        $col_id[] = $jurnalDebit->id;
                     }
 
-                    // Jika sudah ada jurnal balik → update
-                    if ($j_->jurnal_balik_data()->count() > 0) {
-                        foreach ($j_->jurnal_balik_data as $item) {
-                            if ($item->credit == 0) {
-                                $item->update([
-                                    'debit' => $j_->debit
-                                ]);
-                            } else {
-                                $item->update([
-                                    'credit' => $j_->debit
-                                ]);
-                                $col_id[] = $item->id;
-                            }
-                        }
-                        $res[] = $j_->id;
-                    }
+                    $res[] = $j_->id;
+                    continue;
                 }
+            }
 
-                // Simpan data omset
+            // --------------------------
+            // INSERT / UPDATE OMSET
+            // --------------------------
+
+            if (!empty($col_id)) {
+
                 if (!$omset) {
+
                     $omset_data = $pra_omset->toArray();
                     unset($omset_data['id']);
-                    $omset_data[$column[$i]] = json_encode($col_id);
+
+                    $omset_data[$colName] = json_encode($col_id);
+
                     $omset = Omset::create($omset_data);
+
                 } else {
-                    $omset_data = [];
-                    $omset_data[$column[$i]] = json_encode($col_id);
-                    $omset->update($omset_data);
+
+                    // Cek duplikasi
+                    $isDuplicate = false;
+
+                    foreach ($omset->getAttributes() as $key => $value) {
+                        if (str_starts_with($key, 'j_') && $value) {
+                            $decoded = json_decode($value, true) ?? [];
+                            if (array_intersect($decoded, $col_id)) {
+                                $isDuplicate = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!$isDuplicate) {
+                        $omset->update([
+                            $colName => json_encode($col_id)
+                        ]);
+                    }
                 }
             }
         }
-
-        // Sync omset final
-        $this->syncOmset($order->id);
     }
 
+    // --- Pagination sync ---
     if (count($id) > $end) {
         return response($end);
-    } else {
-        return response('complete');
     }
+
+    return response('complete');
 }
+
 
 
 
