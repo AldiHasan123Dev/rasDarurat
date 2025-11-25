@@ -10,6 +10,8 @@
             <th>Kapal</th>
             <th>Voyage</th>
             <th>TD</th>
+            <th>ETA</th>
+            <th>Barang Diantar</th>
             <th>RC Cust</th>
         </tr>
     </thead>
@@ -25,6 +27,8 @@
                 <td>{{ $item['kapal'] }}</td>
                 <td>{{ $item['voyage'] }}</td>
                 <td>{{ $item['td'] }}</td>
+                <td>{{ $item['eta'] }}</td>
+                <td>{{ $item['barang_diantar'] }}</td>
                 <td>{{ $item['komisi'] }}</td>
             </tr>
         @endforeach
