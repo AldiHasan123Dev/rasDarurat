@@ -331,6 +331,11 @@
                 stuffing : $('#stuffing').val(),
                 keterangan : $('#keterangan').val(),
             }
+            $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
             $.ajax({
                 type: "POST",
                 url: "{{ route('api-tarif.store') }}",

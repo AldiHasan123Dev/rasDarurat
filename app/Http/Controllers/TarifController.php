@@ -35,7 +35,7 @@ class TarifController extends Controller
         return view('admin.tarif.index', compact('kapal','customer','lokasi','satuan','kondisi','shipment'));
     }
 
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $data = $request->all();
         $shipment = Shipment::find($request->shipment);
@@ -65,6 +65,8 @@ class TarifController extends Controller
         $data['tujuan'] = $tujuan->id;
         $data['kondisi'] = $kondisi->id;
         $data['satuan'] = $satuan;
+        $data['created_by'] = Auth::id();
+        $data['updated_by'] = Auth::id();
         Tarif::create($data);
 
         return back()->with('success','Data berhasil disimpan');

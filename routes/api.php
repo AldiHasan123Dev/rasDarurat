@@ -95,7 +95,7 @@ Route::middleware(['web'])->post('api-bttb-add', [BTTBController::class, 'add'])
 Route::post('get-jurnal',[JurnalController::class,'index']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
 Route::post('order-trucking-get-jurnal',[OrderTruckingController::class,'getJurnal'])->name('order-trucking.getjurnal');
-Route::resource('api-tarif',TarifController::class)->except('update');
+Route::middleware(['web'])->resource('api-tarif',TarifController::class)->except('update');
 Route::put('api-tarif',[TarifController::class,'update'])->name('api.tarif.update');
 Route::resource('api-jasakirim',JasaKirimController::class)->only(['store']);
 Route::post('jasakirim-unmerge',[JasaKirimController::class,'unmerge'])->name('jasakirim.unmerge');

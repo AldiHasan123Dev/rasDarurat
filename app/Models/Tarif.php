@@ -27,6 +27,8 @@ class Tarif extends Model
         'stuffing',
         'customer_id',
         'is_active',
+        'created_by',
+        'updated_by',
     ];
 
     protected static function booted()

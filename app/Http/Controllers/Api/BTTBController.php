@@ -32,7 +32,6 @@ class BTTBController extends Controller
         if (!$userId) {
             try {
                 $userId = Auth::guard('sanctum')->id();
-                dd($userId);
             } catch (\Throwable $e) {
                 // guard might not exist or throw; ignore and continue
             }
