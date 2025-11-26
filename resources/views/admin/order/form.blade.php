@@ -2,6 +2,7 @@
     $ports = App\Models\Port::pluck('name', 'id');
 @endphp
 <div class="row">
+    @csrf
     @if (!empty($order))
         @if ($order->tarif)
             {{-- @if ($order->tarif->is_active == 0)

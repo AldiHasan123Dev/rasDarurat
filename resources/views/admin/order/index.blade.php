@@ -923,6 +923,13 @@
             $('#vol-'+i).val(vol);
         }
 
+        $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+
         $('#update-bttb').click(function (e) {
             $.ajax({
                 type: "POST",

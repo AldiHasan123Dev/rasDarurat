@@ -8,11 +8,13 @@ use App\Models\BTTB;
 use App\Models\Customer;
 use App\Models\Satuan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BTTBController extends Controller
 {
     public function store(Request $request)
     {
+        auth()->shouldUse('web'); // <-- Penting
         $data = $request->all();
         $barang = Barang::where('nama',$request->barang_id)->first();
         $satuan = Satuan::where('nama',$request->satuan_id)->first();
@@ -22,12 +24,31 @@ class BTTBController extends Controller
         if (!$barang) {
             $barang = Barang::create(['nama'=>$request->barang_id]);
         }
+        $userId = null;
+        $userId = auth()->id();
+        if (!$userId && $request->user()) {
+            $userId = $request->user()->id;
+        }
+        if (!$userId) {
+            try {
+                $userId = Auth::guard('sanctum')->id();
+                dd($userId);
+            } catch (\Throwable $e) {
+                // guard might not exist or throw; ignore and continue
+            }
+        }
+        if (!$userId && $request->filled('created_by')) {
+            $userId = $request->input('created_by');
+             $userId = $request->input('updated_by');
+        }
         $data['barang_id'] = $barang->id;
         $data['satuan_id'] = $satuan->id;
         if ($request->id&&$request->id>0) {
             $bttb = BTTB::find($request->id);
+            $data['updated_by'] = $userId;
             $bttb->update($data);
         }else{
+            $data['created_by'] = $userId;
             $bttb = BTTB::create($data);
         }
         return response([
@@ -39,7 +60,26 @@ class BTTBController extends Controller
 
     public function add(Request $request)
     {
+        auth()->shouldUse('web'); // <-- Penting
         $data = $request->all();
+
+        // determine the current user id from several possible sources so
+        // `created_by` can be saved even when this controller is in the API namespace
+        $userId = null;
+        $userId = auth()->id();
+        if (!$userId && $request->user()) {
+            $userId = $request->user()->id;
+        }
+        if (!$userId) {
+            try {
+                $userId = Auth::guard('sanctum')->id();
+            } catch (\Throwable $e) {
+                // guard might not exist or throw; ignore and continue
+            }
+        }
+        if (!$userId && $request->filled('created_by')) {
+            $userId = $request->input('created_by');
+        }
         for ($i=0; $i < 12; $i++) {
             $input = array();
             $customer = Customer::where('nama',$data['pengirim_id-'.$i])->first();
@@ -65,6 +105,7 @@ class BTTBController extends Controller
                 $input['tgl_masuk'] = $data['tgl_masuk-'.$i];
                 $input['keterangan'] = $data['keterangan-'.$i];
                 $input['pengirim_id'] = $customer->id;
+                $input['created_by'] = $userId;
                 $bttb = BTTB::create($input);
             }
         }
