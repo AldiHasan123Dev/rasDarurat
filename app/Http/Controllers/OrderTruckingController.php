@@ -273,6 +273,7 @@ public function updateStappel(Request $request)
             }
         } 
         $data['tipe'] = $ordertrucking->tipe;
+        $data['customer_id'] = $ordertrucking->customer_id;
         if (!empty($data['tujuan'])) {
             $sangu = SanguSopir::find($data['tujuan']);
             $milik = $ordertrucking->kendaraan->milik;
