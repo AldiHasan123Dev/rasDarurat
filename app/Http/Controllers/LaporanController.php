@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Jurnal;
 use Carbon\Carbon;
 use App\Models\Kendaraan;
+use Illuminate\Support\Facades\DB;
 use App\Models\Lokasi;
 use App\Exports\RekapPiutangExport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -1326,6 +1327,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
                             ->values();
             $rekapPerBulan1 = null;
             $rekapPerBulan2 = null;
+            $rekapTesPerBulan = null;
         }else{
            $order_id = Jurnal::whereNotNull('order_trucking_id')
     ->whereMonth('created_at', $month)
@@ -1454,7 +1456,52 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
     ];
 })->sortBy('periode')->values();
 
+
+
+
+// Ambil Jurnal berdasarkan order_trucking_id
+   $jurnalTes = DB::table('jurnal as j')
+    ->leftJoin('order_trucking as ot', function ($join) {
+        $join->on('j.order_trucking_id', '=', 'ot.id')
+             ->where('ot.invoice', 'like', '%/RAS-LT/VI/25%');
+    })
+    ->where('j.coa_id', 98)
+    ->whereBetween('j.created_at', [
+        '2025-06-01 00:00:00',
+        '2025-06-30 23:59:59'
+    ])
+    ->whereNotNull('j.order_trucking_id')
+    ->whereNull('ot.id')   // hasil left join tidak ketemu
+    ->select('j.*')
+    ->get();
+
+        $jurnalTesPerBulan = $jurnalTes->groupBy(function ($jurnal) {
+        return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
+    });
+
+    $rekapTesPerBulan = $jurnalTesPerBulan
+    ->map(function ($items, $periode) use ($currentPeriod) {
+        return [
+            'periode' => $periode,
+            'total_debit' => $items->sum('debit'),
+'list_jurnal_d' => $items->where('debit', '>', 0)
+            ->groupBy('nomor')
+            ->map(function ($group, $nomor) {
+                $ids = $group->pluck('id')->unique()->values()->implode(',');
+                return '<a href="' . url('admin/jurnal-edit-coa?jurnal=' . $nomor) . '" target="_blank">' 
+                       . $nomor . ' (' . $ids . ')' 
+                       . '</a>';
+            })
+            ->values()
+        ];
+    })
+    ->sortBy('periode')
+    ->values();
         }
-        return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id','rekapPerBulan','rekapPerBulan1','rekapPerBulan2'));
+
+
+
+
+        return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id','rekapPerBulan', 'rekapTesPerBulan','rekapPerBulan1','rekapPerBulan2'));
     }
 }

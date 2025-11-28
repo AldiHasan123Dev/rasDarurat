@@ -552,11 +552,11 @@
                 <div class="card-body p-2">
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered table-hover align-middle mb-0">
-                            <thead class="table-dark text-center small">
+                              <thead class="table text-center small" style="background-color: #515a62">
                                 <tr>
-                                    <th style="width: 25%">Periode</th>
-                                    <th style="width: 25%">No Jurnal (D)</th>
-                                    <th style="width: 25%">Total Debit (Rp)</th>
+                                    <th style="width: 25%; color: white">Periode</th>
+                                    <th  style="width: 25%; color: white">No Jurnal (D)</th>
+                                    <th  style="width: 25%; color: white">Total Debit (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -595,7 +595,7 @@
                 <div class="container my-2">
             <div class="card border-0 shadow-sm">
                 <div class="card-header py-2 px-3 text-white"
-                    style="background: linear-gradient(90deg,  #b38600, #fbc903);">
+                    style="background: linear-gradient(90deg, #007bff, #0056b3);">
                     <h6 class="mb-0 fw-semibold text-white">
                         <i class="bi bi-bar-chart-fill me-2"></i>Cek COA 6.2.1 yang tidak memiliki pendapatan
                     </h6>
@@ -603,11 +603,11 @@
                         <div class="card-body p-2">
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered table-hover align-middle mb-0">
-                            <thead class="table-dark text-center small">
+                              <thead class="table text-center small" style="background-color: #515a62">
                                 <tr>
-                                    <th style="width: 25%">Periode</th>
-                                    <th style="width: 25%">No Jurnal (D)</th>
-                                    <th style="width: 25%">Total Debit (Rp)</th>
+                                    <th style="width: 25%; color: white">Periode</th>
+                                    <th  style="width: 25%; color: white">No Jurnal (D)</th>
+                                    <th  style="width: 25%; color: white">Total Debit (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -643,10 +643,61 @@
         </div>
     </div>
 
+     <div class="container my-2">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header py-2 px-3 text-white"
+                   style="background: linear-gradient(90deg, #007bff, #0056b3);">
+                    <h6 class="mb-0 fw-semibold text-white">
+                        <i class="bi bi-bar-chart-fill me-2"></i>Cek COA 6.2.1 yang tidak memiliki pendapatan di bulan ini
+                    </h6>
+                </div>
+
+                <div class="card-body p-2">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered table-hover align-middle mb-0">
+                              <thead class="table text-center small" style="background-color: #515a62">
+                                <tr>
+                                    <th style="width: 25%; color: white">Periode</th>
+                                    <th  style="width: 25%; color: white">No Jurnal (D)</th>
+                                    <th  style="width: 25%; color: white">Total Debit (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($rekapTesPerBulan as $row)
+                                    <tr class="small">
+                                        <td class="text-center fw-medium">
+                                            {{ \Carbon\Carbon::parse($row['periode'] . '-01')->isoFormat('MMMM Y') }}
+                                        </td>
+                                        <td class="text-end text-primary">
+                                              @php
+                                                  $items = $row['list_jurnal_d']->toArray();
+                                                  $chunks = array_chunk($items, 1); // pecah jadi per 10 item
+                                              @endphp
+  
+                                              @foreach ($chunks as $chunk)
+                                                  {!! implode(', ', $chunk) !!}<br>
+                                              @endforeach
+                                         </td>
+                                        <td class="text-end text-primary">
+                                            {{ number_format($row['total_debit'], 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted py-2">Data tidak tersedia</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     <div class="container my-2">
             <div class="card border-0 shadow-sm">
                 <div class="card-header py-2 px-3 text-white"
-                    style="background: linear-gradient(90deg, rgb(0, 179, 119), #00ff11);">
+                    style="background: linear-gradient(90deg, #007bff, #0056b3);">
                     <h6 class="mb-0 fw-semibold text-white">
                         <i class="bi bi-bar-chart-fill me-2"></i>Cek Jurnal yang harusnya pakai COA 6.2.1
                     </h6>
@@ -655,11 +706,11 @@
                 <div class="card-body p-2">
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered table-hover align-middle mb-0">
-                            <thead class="table-dark text-center small">
+                            <thead class="table text-center small" style="background-color: #515a62">
                                 <tr>
-                                    <th style="width: 25%">Periode</th>
-                                    <th style="width: 25%">No Jurnal (D)</th>
-                                    <th style="width: 25%">Total Debit (Rp)</th>
+                                    <th style="width: 25%; color: white">Periode</th>
+                                    <th  style="width: 25%; color: white">No Jurnal (D)</th>
+                                    <th  style="width: 25%; color: white">Total Debit (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -693,6 +744,7 @@
                 </div>
             </div>
         </div>
+        
 
     @else
             <div class="container my-2">
@@ -707,11 +759,11 @@
                 <div class="card-body p-2">
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered table-hover align-middle mb-0">
-                            <thead class="table-dark text-center small">
+                            <thead class="table text-center small" style="background-color: #515a62">
                                 <tr>
-                                    <th style="width: 25%">Periode</th>
-                                    <th style="width: 25%">No Jurnal (D)</th>
-                                    <th style="width: 25%">Total Debit (Rp)</th>
+                                    <th style="width: 25%; color: white">Periode</th>
+                                    <th  style="width: 25%; color: white">No Jurnal (D)</th>
+                                    <th  style="width: 25%; color: white">Total Debit (Rp)</th>
                                 </tr>
                             </thead>
                             <tbody>
