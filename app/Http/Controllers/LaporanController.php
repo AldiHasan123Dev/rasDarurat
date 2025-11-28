@@ -1273,6 +1273,9 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
     {
         $year = request('year') ?? date('Y');
         $month = request('month') ?? date('m');
+        $startDate = date("Y-m-01 00:00:00", strtotime("$year-$month-01"));
+        $endDate = date("Y-m-t 23:59:59", strtotime("$year-$month-01"));
+
         $tipe = request('tipe') ?? 'xpdc';
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
         if($tipe=='xpdc'){
@@ -1467,8 +1470,8 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
     })
     ->where('j.coa_id', 98)
     ->whereBetween('j.created_at', [
-        '2025-06-01 00:00:00',
-        '2025-06-30 23:59:59'
+       $startDate,
+       $endDate
     ])
     ->whereNotNull('j.order_trucking_id')
     ->whereNull('ot.id')   // hasil left join tidak ketemu

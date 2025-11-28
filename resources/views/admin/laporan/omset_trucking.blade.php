@@ -597,7 +597,7 @@
                 <div class="card-header py-2 px-3 text-white"
                     style="background: linear-gradient(90deg, #007bff, #0056b3);">
                     <h6 class="mb-0 fw-semibold text-white">
-                        <i class="bi bi-bar-chart-fill me-2"></i>Cek COA 6.2.1 yang tidak memiliki pendapatan
+                        <i class="bi bi-bar-chart-fill me-2"></i>Cek COA 6.2.1 yang tidak memiliki pendapatan (kosongan)
                     </h6>
                 </div>
                         <div class="card-body p-2">
