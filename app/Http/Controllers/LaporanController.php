@@ -1275,6 +1275,22 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
         $month = request('month') ?? date('m');
         $startDate = date("Y-m-01 00:00:00", strtotime("$year-$month-01"));
         $endDate = date("Y-m-t 23:59:59", strtotime("$year-$month-01"));
+        $months  = str_pad($month, 2, '0', STR_PAD_LEFT); // pastikan jadi "07"
+        $romanMonths = [
+            '01' => 'I',
+            '02' => 'II',
+            '03' => 'III',
+            '04' => 'IV',
+            '05' => 'V',
+            '06' => 'VI',
+            '07' => 'VII',
+            '08' => 'VIII',
+            '09' => 'IX',
+            '10' => 'X',
+            '11' => 'XI',
+            '12' => 'XII',
+        ];
+        $monthRoman = $romanMonths[$months];
 
         $tipe = request('tipe') ?? 'xpdc';
         $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
@@ -1463,20 +1479,18 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
 
 
 // Ambil Jurnal berdasarkan order_trucking_id
-   $jurnalTes = DB::table('jurnal as j')
-    ->leftJoin('order_trucking as ot', function ($join) {
+  $jurnalTes = DB::table('jurnal as j')
+    ->leftJoin('order_trucking as ot', function ($join) use ($monthRoman) {
         $join->on('j.order_trucking_id', '=', 'ot.id')
-             ->where('ot.invoice', 'like', '%/RAS-LT/VI/25%');
+             ->where('ot.invoice', 'like', "%/RAS-LT/{$monthRoman}/25%");
     })
     ->where('j.coa_id', 98)
-    ->whereBetween('j.created_at', [
-       $startDate,
-       $endDate
-    ])
+    ->whereBetween('j.created_at', [$startDate, $endDate])
     ->whereNotNull('j.order_trucking_id')
     ->whereNull('ot.id')   // hasil left join tidak ketemu
     ->select('j.*')
     ->get();
+
 
         $jurnalTesPerBulan = $jurnalTes->groupBy(function ($jurnal) {
         return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
