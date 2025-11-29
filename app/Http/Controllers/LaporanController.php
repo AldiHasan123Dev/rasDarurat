@@ -1351,7 +1351,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
            $order_id = Jurnal::whereNotNull('order_trucking_id')
     ->whereMonth('created_at', $month)
     ->whereYear('created_at', $year)
-    ->whereIn('coa_id', [87])
+    ->whereIn('coa_id', [87,60])
     ->whereNull('jurnal_balik')
     ->pluck('order_trucking_id')
     ->toArray();
@@ -1485,6 +1485,7 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
              ->where('ot.invoice', 'like', "%/RAS-LT/{$monthRoman}/25%");
     })
     ->where('j.coa_id', 98)
+     ->where('j.tipe', '!=', 'OMZ')
     ->whereBetween('j.created_at', [$startDate, $endDate])
     ->whereNotNull('j.order_trucking_id')
     ->whereNull('ot.id')   // hasil left join tidak ketemu
