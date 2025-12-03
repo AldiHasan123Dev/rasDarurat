@@ -122,7 +122,7 @@
                                                 Trucking</option>
                                             <option value="lain-lain" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>
                                                 Lain-lain (External Inv)</option>
-                                             <option value="jurnal-balik" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>
+                                             <option value="jurnal-balik" {{ $subjek == 'jurnal-balik' ? 'selected' : '' }}>
                                                 Jurnal Balik</option>
                                             {{-- <option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                         </select>
@@ -290,9 +290,9 @@
 
                                                 {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
                                                 @unless ($subjek === 'relasi' && in_array($coa_id, [65, 66]))
-                                                    <td>{!! is_array($data['no_c']) ? implode('<br>', $data['no_c']) : $data['no_c'] !!}</td>
-                                                    <td>{!! is_array($data['tgl_c']) ? implode('<br>', $data['tgl_c']) : $data['tgl_c'] !!}</td>
-                                                    <td>{!! is_array($data['ket_c']) ? implode('<br>', $data['ket_c']) : $data['ket_c'] !!}</td>
+                                                    <td>{!! $data['no_c']->implode('<br>') !!}</td>
+                                                    <td>{!! $data['tgl_c']->implode('<br>') !!}</td>
+                                                    <td>{!! $data['ket_c']->implode('<br>') !!}</td>
                                                 @endunless
 
 
