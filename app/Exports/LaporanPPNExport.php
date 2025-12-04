@@ -16,12 +16,8 @@ class LaporanPPNExport implements FromView
         $this->end = $end;
     }
     public function view(): View
-{
-    dd(
-        $this->start,
-        $this->end,
-        Transaksi::whereBetween('created_at',[$this->start,$this->end])->count()
-    );
-}
-
+    {
+        $transaksi = Transaksi::whereBetween('created_at',[$this->start,$this->end])->orderBy('created_at')->get();
+        return view('exports.laporan_ppn', compact('transaksi'));
+    }
 }
