@@ -23,36 +23,47 @@
             <th>Selisih BUPOT</th>
         </tr>
     </thead>
+
     <tbody>
         @foreach ($transaksi as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
-                <td>{{ $item->invoice }}</td>
-                <td>{{ $item->pembayar->npwp }}'</td>
-                <td>{{ $item->pembayar->nik }}'</td>
-                <td>{{ $item->pembayar->nama }}</td>
-                <td>{{ $item->pembayar->nama_npwp }}</td>
-                <td>{{ $item->pembayar->alamat_npwp }}</td>
-                <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                <td>{{ $item->tujuan }}</td>
-                <td>{{ $item->keterangan }}</td>
-                <td>{{ $item->nsfp }}</td>
-                <td>{{ number_format(round($item->sub_total)) }}</td>
-                <td>{{ number_format(round($item->ppn)) }}</td>
-                <td>{{ number_format(round($item->ppn)+round($item->sub_total)) }}</td>
-                <td>{{ number_format($item->pph) }}</td>
-                <td>{{ $item->no_job() }}</td>
-                <td>{{ $item->no_bupot }}</td>
-                <td>{{ $item->masa_bupot }}</td>
-                <td>{{ number_format(round($item->bupot)) }}</td>
-                <td>{{ $item->selisih_bupot }}</td>
+
+                <td>{{ $item->invoice ?? '' }}</td>
+
+                <td>{{ $item->pembayar->npwp ?? '' }}</td>
+                <td>{{ $item->pembayar->nik ?? '' }}</td>
+                <td>{{ $item->pembayar->nama ?? '' }}</td>
+                <td>{{ $item->pembayar->nama_npwp ?? '' }}</td>
+                <td>{{ $item->pembayar->alamat_npwp ?? '' }}</td>
+
+                <td>{{ $item->created_at ? date('d/m/y', strtotime($item->created_at)) : '' }}</td>
+
+                <td>{{ $item->tujuan ?? '' }}</td>
+                <td>{{ $item->keterangan ?? '' }}</td>
+
+                <td>{{ $item->nsfp ?? '' }}</td>
+
+                <td>{{ number_format(round($item->sub_total ?? 0)) }}</td>
+                <td>{{ number_format(round($item->ppn ?? 0)) }}</td>
+                <td>{{ number_format(round(($item->sub_total ?? 0) + ($item->ppn ?? 0))) }}</td>
+                <td>{{ number_format(round($item->pph ?? 0)) }}</td>
+
+                <td>{{ $item->no_job() ?? '' }}</td>
+
+                <td>{{ $item->no_bupot ?? '' }}</td>
+                <td>{{ $item->masa_bupot ?? '' }}</td>
+                <td>{{ number_format(round($item->bupot ?? 0)) }}</td>
+                <td>{{ $item->selisih_bupot ?? '' }}</td>
             </tr>
         @endforeach
+
         <tr>
             <td colspan="11">JUMLAH</td>
+
             <td>{{ number_format(round($transaksi->sum('sub_total'))) }}</td>
             <td>{{ number_format(round($transaksi->sum('ppn'))) }}</td>
-            <td>{{ number_format(round($transaksi->sum('ppn')) + round($transaksi->sum('sub_total'))) }}</td>
+            <td>{{ number_format(round($transaksi->sum('ppn') + $transaksi->sum('sub_total'))) }}</td>
             <td>{{ number_format(round($transaksi->sum('pph'))) }}</td>
         </tr>
     </tbody>
