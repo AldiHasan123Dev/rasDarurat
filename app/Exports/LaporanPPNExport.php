@@ -2,22 +2,37 @@
 
 namespace App\Exports;
 
-use App\Models\Transaksi;
-use Maatwebsite\Excel\Concerns\FromView;
-use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class LaporanPPNExport implements FromView
+class LaporanPPNExport implements FromQuery, WithHeadings
 {
     private $start;
     private $end;
+
     public function __construct($start, $end)
     {
         $this->start = $start;
         $this->end = $end;
     }
-    public function view(): View
+
+    public function query()
     {
-        $transaksi = Transaksi::whereBetween('created_at',[$this->start,$this->end])->orderBy('created_at')->get();
-        return view('exports.laporan_ppn', compact('transaksi'));
+        return Transaksi::query()
+            ->whereBetween('created_at', [$this->start, $this->end])
+            ->orderBy('created_at');
+    }
+
+    public function headings(): array
+    {
+        return [
+            'Tanggal',
+            'No Transaksi',
+            'Customer',
+            'PPN',
+            'Total',
+            // sesuaikan
+        ];
     }
 }
+
