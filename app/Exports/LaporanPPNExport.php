@@ -8,11 +8,16 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class LaporanPPNExport implements 
-    FromQuery, WithMapping, WithHeadings, 
-    WithColumnFormatting, ShouldAutoSize
+class LaporanPPNExport implements
+    FromQuery,
+    WithMapping,
+    WithHeadings,
+    WithColumnFormatting,
+    ShouldAutoSize,
+    WithChunkReading
 {
     private $start;
     private $end;
@@ -26,7 +31,23 @@ class LaporanPPNExport implements
 
     public function query()
     {
-        return Transaksi::with([
+        return Transaksi::select([
+            'id',
+            'invoice',
+            'created_at',
+            'tujuan',
+            'keterangan',
+            'nsfp',
+            'sub_total',
+            'ppn',
+            'pph',
+            'pembayar_id',
+            'no_bupot',
+            'masa_bupot',
+            'bupot',
+            'selisih_bupot',
+        ])
+        ->with([
             'pembayar:id,npwp,nik,nama,nama_npwp,alamat_npwp'
         ])
         ->whereBetween('created_at', [$this->start, $this->end])
@@ -51,7 +72,7 @@ class LaporanPPNExport implements
             'PPN',
             'Total',
             'PPH',
-            'No.JOB',
+            'No. JOB',
             'No BUPOT',
             'Masa BUPOT',
             'BUPOT',
@@ -66,24 +87,27 @@ class LaporanPPNExport implements
         return [
             $this->iteration,
             $item->invoice,
-            $item->pembayar->npwp,
-            $item->pembayar->nik,
-            $item->pembayar->nama,
-            $item->pembayar->nama_npwp,
-            $item->pembayar->alamat_npwp,
+            $item->pembayar->npwp ?? '',
+            $item->pembayar->nik ?? '',
+            $item->pembayar->nama ?? '',
+            $item->pembayar->nama_npwp ?? '',
+            $item->pembayar->alamat_npwp ?? '',
             $item->created_at->format('d/m/y'),
             $item->tujuan,
             $item->keterangan,
             $item->nsfp,
             round($item->sub_total),
             round($item->ppn),
-            round($item->ppn + $item->sub_total),
+            round($item->sub_total + $item->ppn),
             round($item->pph),
-            $item->no_job(),
+
+            // Hapus accessor no_job() — akses langsung kolom
+             $item->no_job(),
+
             $item->no_bupot,
             $item->masa_bupot,
             round($item->bupot),
-            $item->selisih_bupot,
+            round($item->selisih_bupot),
         ];
     }
 
@@ -96,5 +120,10 @@ class LaporanPPNExport implements
             'O' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
             'S' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1,
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 1000; // proses bertahap, super efisien RAM
     }
 }
