@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\BAKembaliExport;
 use App\Exports\CheiljedangExport;
+use App\Exports\ExportSinarrBalado;
 use App\Exports\InvoiceRekapExport;
 use App\Exports\OrderExport;
 use App\Exports\MalindoExport;
@@ -381,6 +382,12 @@ class OrderController extends Controller
     {
         $text = str_replace('-','',$request->month);
         return Excel::download(new FortunaExport($text), 'laporan_order_fortuna.xlsx');
+    }
+    
+        public function exportSinarBalado(Request $request)
+    {
+        $text = str_replace('-','',$request->month);
+        return Excel::download(new ExportSinarrBalado($text), 'laporan_order_sinar-balado.xlsx');
     }
 
     public function exportCheiljedang(Request $request)

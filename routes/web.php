@@ -296,6 +296,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('export-laporan-xml', [KeuanganController::class, 'XmlExport'])->name('keuangan.xml.export');
     Route::post('export-order', [OrderController::class, 'export'])->name('order.export');
     Route::post('export-order-malindo', [OrderController::class, 'exportMalindo'])->name('order.export.malindo');
+    Route::post('export-order-sinar-balado', [OrderController::class, 'exportSinarBalado'])->name('order.export.sinar-balado');
      Route::post('export-order-fortuna', [OrderController::class, 'exportFortuna'])->name('order.export.fortuna');
     Route::post('export-order-cheiljedang', [OrderController::class, 'exportCheiljedang'])->name('order.export.cheiljedang');
     Route::post('export-order/ba_kembali', [OrderController::class, 'export_ba_kembali'])->name('order.export.ba_kembali');
@@ -345,6 +346,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
             ->whereNotNull('penerima_id')
             ->where('is_active', 1)
             ->pluck('penerima_id');
+
 
         // Ambil data penerima dari tabel customers
         $penerima = Customer::whereIn('id', $agenIds)
