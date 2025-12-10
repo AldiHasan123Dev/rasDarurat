@@ -1167,6 +1167,7 @@ class JurnalController extends Controller
     if (is_array($jurnal)) {
         ksort($jurnal);
     }
+    
 
    foreach ($jurnal as $item) {
     if (empty($item['jurnal_balik'])) {
