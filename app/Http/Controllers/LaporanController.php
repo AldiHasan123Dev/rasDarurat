@@ -1348,61 +1348,60 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
             $rekapPerBulan2 = null;
             $rekapTesPerBulan = null;
         }else{
-           $order_id = Jurnal::whereNotNull('order_trucking_id')
-    ->whereMonth('created_at', $month)
-    ->whereYear('created_at', $year)
-    ->whereIn('coa_id', [87,60])
-    ->whereNull('jurnal_balik')
-    ->pluck('order_trucking_id')
-    ->toArray();
+            $dataPokokCard = OrderTrucking::whereMonth('tgl_invoice', $month)
+            ->whereYear('tgl_invoice', $year)->pluck('id');
+            $order_id = Jurnal::whereIn('order_trucking_id', $dataPokokCard)
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->whereIn('coa_id', [87,60])
+                        ->whereNull('jurnal_balik')
+                        ->pluck('order_trucking_id')
+                        ->toArray();
 
 
-            $jurnal_id = Jurnal::whereIn('order_trucking_id', $order_id)
-    ->pluck('order_trucking_id')
-    ->toArray();
-            $data = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('seal');
-
-             $jurnalList521 = Jurnal::whereIn('order_trucking_id',$jurnal_id)->where('coa_id', 98)->get();
-
+             $jurnal_id = Jurnal::whereIn('order_trucking_id', $order_id)
+                        ->pluck('order_trucking_id')
+                        ->toArray();
+             $data = OrderTrucking::whereIn('id',$order_id)->get()->groupBy('seal');
+             $jurnalList521 = Jurnal::whereIn('order_trucking_id',$dataPokokCard)->where('coa_id', 98)->get();
              $jurnalNull = Jurnal::where(function ($q) {
-        // Kondisi kalau order_trucking_id null
-        $q->whereNull('order_trucking_id')
-          // Kondisi kalau order_trucking_id ada
-          ->orWhere(function ($q2) {
-              $q2->whereNotNull('order_trucking_id')
-                 ->whereNull('invoice_vendor')
-                 ->whereNull('invoice_trucking')
-                 // Filter orderTrucking yang invoice tidak ada LT
-                 ->whereHas('order_trucking', function ($sub) {
-                     $sub->where(function ($w) {
-                         $w->whereNull('invoice')
-                           ->orWhere('invoice', 'NOT LIKE', '%LT%');
-                     });
-                 });
-          });
-    })
-    ->where('tipe', 'BKK')
-    ->whereMonth('created_at', $month)
-    ->whereYear('created_at', $year)
-    ->whereIn('coa_id', [98])
-    ->get();
-
-  $jurnalHrs621 = Jurnal::where('coa_id', '!=', 98)
-    ->whereNotNull('order_trucking_id')
-    ->whereNull('order_id')
-     ->whereMonth('created_at', $month)
-     ->where('debit', '>', 0)
-    ->whereYear('created_at', $year)
-    ->where(function ($q) {
-        $q->whereRaw("LOWER(nama) LIKE 'sangu sopir%'")
-          ->orWhereRaw("LOWER(nama) LIKE 'sangu kuli%'");
-    })
-    ->whereHas('order_trucking', function ($sub) {
-                     $sub->where(function ($w) {
-                         $w->whereNull('order_id');
-                     });
-                 })
-    ->get();
+                            // Kondisi kalau order_trucking_id null
+                            $q->whereNull('order_trucking_id')
+                            // Kondisi kalau order_trucking_id ada
+                            ->orWhere(function ($q2) {
+                                $q2->whereNotNull('order_trucking_id')
+                                    ->whereNull('invoice_vendor')
+                                    ->whereNull('invoice_trucking')
+                                    // Filter orderTrucking yang invoice tidak ada LT
+                                    ->whereHas('order_trucking', function ($sub) {
+                                        $sub->where(function ($w) {
+                                            $w->whereNull('invoice')
+                                            ->orWhere('invoice', 'NOT LIKE', '%LT%');
+                                        });
+                                    });
+                            });
+                        })
+                        ->where('tipe', 'BKK')
+                        ->whereMonth('created_at', $month)
+                        ->whereYear('created_at', $year)
+                        ->whereIn('coa_id', [98])
+                        ->get();
+                    $jurnalHrs621 = Jurnal::where('coa_id', '!=', 98)
+                        ->whereNotNull('order_trucking_id')
+                        ->whereNull('order_id')
+                        ->whereMonth('created_at', $month)
+                        ->where('debit', '>', 0)
+                        ->whereYear('created_at', $year)
+                        ->where(function ($q) {
+                            $q->whereRaw("LOWER(nama) LIKE 'sangu sopir%'")
+                            ->orWhereRaw("LOWER(nama) LIKE 'sangu kuli%'");
+                        })
+                        ->whereHas('order_trucking', function ($sub) {
+                                        $sub->where(function ($w) {
+                                            $w->whereNull('order_id');
+                                        });
+                                    })
+                        ->get();
     $jurnalPerBulan1 = $jurnalNull->groupBy(function ($jurnal) {
         return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
     });
