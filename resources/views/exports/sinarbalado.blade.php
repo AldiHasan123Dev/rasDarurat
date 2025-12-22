@@ -3,6 +3,7 @@
         <tr>
             <th>No.</th>
             <th>JOB</th>
+            <th>No Job</th>
             <th>Carton</th>
             <th>Tgl Stuffing</th>
             <th>No. Cont</th>
@@ -20,6 +21,7 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item['job'] }}</td>
+                <td>{{ $item['no'] }}</td>
                 <td>{{ $item['koli'] }}</td>
                 <td>{{ $item['stuffing'] }}</td>
                 <td>{{ $item['container'] }}</td>
