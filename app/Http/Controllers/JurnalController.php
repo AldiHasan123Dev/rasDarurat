@@ -286,7 +286,7 @@ class JurnalController extends Controller
         // Menampilkan data berdasarkan tipe tujuan jika ada yang dipilih
         if ($tipeTujuan = request('tipe_tujuan')) {
             $data1 = Cache::remember("jurnal_data_{$tipeTujuan}", 600, function () use ($tipeTujuan) {
-                return Jurnal::where('tipe', $tipeTujuan)->pluck('nomor')->unique()->toArray();
+                return Jurnal::where('tipe', $tipeTujuan)->where('kunci', 0)->pluck('nomor')->unique()->toArray();
             });
         }
     
@@ -823,8 +823,20 @@ class JurnalController extends Controller
 
     public function store_merge(Request $request)
     {
-
         $tujuan = Jurnal::where('nomor', $request->tujuan)->first();
+        if (!$tujuan) {
+            return back()->with('error', 'Jurnal tujuan tidak ditemukan');
+        }
+        $awal = Jurnal::where('nomor', $request->awal)->first();
+        if (!$awal) {
+            return back()->with('error', 'Jurnal awal tidak ditemukan');
+        }
+        if ($tujuan->kunci == 1 || $awal->kunci == 1) {
+            return back()->with(
+                'error',
+                'Jurnal telah terkunci, proses tidak dapat dilanjutkan'
+            );
+        }
         $jasakirim = JasaKirim::where('jurnal',$request->awal)->get();
         if ($jasakirim->isNotEmpty()) {
             // Update data JasaKirim terkait
