@@ -133,7 +133,7 @@ Route::get('test', function () {
     $file = $result[0];
     $file = str_replace('public/', '', $file);
 });
-Auth::routes();
+Auth::routes(['register' => false]);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('bulk-update', function () {
     return view('bulk-update');
