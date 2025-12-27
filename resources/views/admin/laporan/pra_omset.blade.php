@@ -101,10 +101,10 @@ table.dataTable tbody > tr.selected1 td {
                             {{-- <button type="button" class="btn btn-sm btn-warning" onclick="lockAll()"> Lock All</button>
                             <button type="button" class="btn btn-sm btn-warning" onclick="unlockAll()"> Unlock All</button> --}}
                             @if ($tipe== 'inv')
-                            <button type="button" class="btn btn-sm btn-warning" onclick="syncJurnalBalik()"> GENERATE JURNAL BALIK (161 DEBIT)</button>
-                            <button type="button" class="btn btn-sm btn-success" onclick="syncJurnalBalik1()"> GENERATE JURNAL BALIK (161 CREDIT)</button>
+                            <button type="button" class="btn btn-sm btn-warning" onclick="disableJurnalBtn(this); syncJurnalBalik()"> GENERATE JURNAL BALIK (161 DEBIT)</button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="disableJurnalBtn(this); syncJurnalBalik1()"> GENERATE JURNAL BALIK (161 CREDIT)</button>
                             @if ($jurnalSelain161>0)     
-                            <button type="button" class="btn btn-sm btn-danger" onclick="syncJurnalBalik2()"> GENERATE JURNAL BALIK (Selain COA 161 DEBIT)</button>
+                            <button type="button" class="btn btn-sm btn-danger" onclick="disableJurnalBtn(this); syncJurnalBalik2()"> GENERATE JURNAL BALIK (Selain COA 161 DEBIT)</button>
                             @endif
                             @endif
                         </div>
@@ -283,8 +283,8 @@ table.dataTable tbody > tr.selected1 td {
                                 </thead>
                                 <tbody>
                                     @php
-    $totalTarif = 0;
-@endphp
+                                        $totalTarif = 0;
+                                    @endphp
                                     @foreach ($data as $order)
                                         <tr class="table-{{ $order->pra_omset ? ($order->pra_omset->margin <= 0.03 && $order->pra_omset->margin >= 0 ? 'secondary' : ($order->pra_omset->margin < 0 ? 'danger' : '')) : '' }}">
                                             <td>{{ $order->pra_omset->id ?? null }}</td>
@@ -1045,6 +1045,25 @@ if(type != 'j_biaya'){
         function substr(string,num){
             return string.substr(num);
         }
+
+        function disableJurnalBtn(clickedBtn) {
+
+    // Simpan teks asli
+    clickedBtn.dataset.text = clickedBtn.innerHTML;
+
+    // Ubah teks tombol yang diklik
+    clickedBtn.innerHTML = '⏳ Proses...';
+    clickedBtn.disabled = true;
+
+    // Disable tombol jurnal lain
+    document
+        .querySelectorAll('button[onclick*="syncJurnalBalik"]')
+        .forEach(btn => {
+            if (btn !== clickedBtn) {
+                btn.disabled = true;
+            }
+        });
+}
 
         function filterSearch(){
             var coa = $('#coa').val();
