@@ -1386,24 +1386,27 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
                         ->whereYear('created_at', $year)
                         ->whereIn('coa_id', [98])
                         ->get();
-                    $jurnalHrs621 = Jurnal::where('coa_id', '!=', 98)
-                        ->whereNotNull('order_trucking_id')
-                        ->whereNull('order_id')
-                        ->whereMonth('created_at', $month)
-                        ->where('debit', '>', 0)
-                        ->whereYear('created_at', $year)
-                        ->where(function ($q) {
-                            $q->whereRaw("LOWER(nama) LIKE 'sangu sopir%'")
-                            ->orWhereRaw("LOWER(nama) LIKE 'sangu kuli%'");
-                        })
-                        ->whereHas('order_trucking', function ($sub) {
-                                        $sub->where(function ($w) {
-                                            $w->whereNull('order_id');
-                                        });
+                    $jurnalHrs621 =  Jurnal::query()
+                                    ->where('coa_id', '!=', 98)
+                                    ->whereNotNull('order_trucking_id')
+                                    ->whereNull('order_id')
+                                    ->whereYear('created_at', $year)
+                                    ->whereMonth('created_at', $month)
+                                    ->where('debit', '>', 0)
+                                    ->where(function ($q) {
+                                        $q->whereRaw("LOWER(nama) LIKE 'sangu sopir%'")
+                                        ->orWhereRaw("LOWER(nama) LIKE 'sangu kuli%'");
                                     })
-                        ->get();
+                                    ->whereHas('order_trucking', function ($sub) use ($month, $year) {
+                                        $sub->whereNull('order_id')
+                                            ->whereYear('tgl_muat', $year)
+                                            ->whereMonth('tgl_muat', $month);
+                                    })
+                                    ->get();
+
     $jurnalPerBulan1 = $jurnalNull->groupBy(function ($jurnal) {
         return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
+        
     });
 
     $jurnalPerBulan2 = $jurnalHrs621->groupBy(function ($jurnal) {
