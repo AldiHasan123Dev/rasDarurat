@@ -897,68 +897,121 @@ $totalLB = $data->sum(function($o) {
             });
         }
 
-        function syncJurnalBalikAction(start,end){
+        function syncJurnalBalikAction(start, end) {
             $.ajax({
                 type: "POST",
                 url: "{{ route('omset.sync.jurnal_balik') }}",
                 data: {
-                    id:@json($ids),
-                    start:start,
-                    end:end,
-                    month:@json($month),
-                    year:@json($year),
+                    id: @json($ids),
+                    start: start,
+                    end: end,
+                    month: @json($month),
+                    year: @json($year),
                 },
                 success: function (response) {
-                    if(response=='complete'){
-                        alert("SINKRONISASI JURNAL BALIK BERHASIL!");
-                    }else{
-                        syncJurnalBalikAction(response,50)
+                    if (response === 'error') {
+                        alert("❌ Sinkronisasi jurnal balik GAGAL!");
+                        location.reload();
+                        return;
                     }
+                    if (response === 'complete') {
+                        alert("✅ SINKRONISASI JURNAL BALIK BERHASIL!");
+                        location.reload();
+                    }
+                    else {
+                        syncJurnalBalikAction(response, 50);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let msg = "❌ Terjadi kesalahan saat melakukan jurnal balik!";
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg += "\n\n" + xhr.responseJSON.message;
+                    }
+                    alert(msg);
+                    location.reload();
                 }
             });
         }
 
-        function syncJurnalBalikAction1(start,end){
-            $.ajax({
-                type: "POST",
-                url: "{{ route('omset.sync.jurnal_balik1') }}",
-                data: {
-                    id:@json($ids),
-                    start:start,
-                    end:end,
-                    month:@json($month),
-                    year:@json($year),
-                },
-                success: function (response) {
-                    if(response=='complete'){
-                        alert("SINKRONISASI JURNAL BALIK BERHASIL!");
-                    }else{
-                        syncJurnalBalikAction1(response,50)
-                    }
-                }
-            });
-        }
 
-        function syncJurnalBalikAction2(start,end){
-            $.ajax({
-                type: "POST",
-                url: "{{ route('omset.sync.jurnal_balik2') }}",
-                data: {
-                    id:@json($ids),
-                    start:start,
-                    end:end,
-                    month:@json($month),
-                    year:@json($year),
-                },
-                success: function (response) {
-                    if(response=='complete'){
-                        alert("SINKRONISASI JURNAL BALIK BERHASIL!");
-                    }else{
-                        syncJurnalBalikAction1(response,50)
-                    }
+        function syncJurnalBalikAction1(start, end) {
+        $.ajax({
+            type: "POST",
+            url: "{{ route('omset.sync.jurnal_balik1') }}",
+            data: {
+                id: @json($ids),
+                start: start,
+                end: end,
+                month: @json($month),
+                year: @json($year),
+            },
+            success: function (response) {
+
+                // ❌ Backend kirim gagal
+                if (response === 'error') {
+                    alert("❌ Sinkronisasi jurnal balik GAGAL!");
+                    location.reload();
+                    return;
                 }
-            });
+
+                // ✅ Selesai
+                if (response === 'complete') {
+                    alert("✅ SINKRONISASI JURNAL BALIK BERHASIL!");
+                    location.reload();
+                }
+                // 🔁 Lanjut batch
+                else {
+                    syncJurnalBalikAction1(response, 50);
+                }
+            },
+            error: function (xhr, status, error) {
+                let msg = "❌ Terjadi kesalahan saat sinkronisasi melakukan jurnal balik!";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg += "\n\n" + xhr.responseJSON.message;
+                }
+                alert(msg);
+                
+            }
+        });
+    }
+
+
+        function syncJurnalBalikAction2(start, end) {
+    $.ajax({
+        type: "POST",
+        url: "{{ route('omset.sync.jurnal_balik2') }}",
+        data: {
+            id: @json($ids),
+            start: start,
+            end: end,
+            month: @json($month),
+            year: @json($year),
+        },
+        success: function (response) {
+            if (response === 'error') {
+                alert("❌ Sinkronisasi jurnal balik GAGAL!");
+                location.reload();
+                return;
+            }
+            if (response === 'complete') {
+                alert("✅ SINKRONISASI JURNAL BALIK BERHASIL!");
+                location.reload();
+            }
+            else {
+                syncJurnalBalikAction2(response, 50);
+            }
+        },
+        error: function (xhr, status, error) {
+            let msg = "❌ Terjadi kesalahan saat melakukan jurnal balik!";
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                msg += "\n\n" + xhr.responseJSON.message;
+            }
+            alert(msg);
+            location.reload();
         }
+    });
+}
+
 
         // table.on('select', function (e, dt, type, indexes) {
         //     let rowData = table.rows(indexes).data().toArray();
