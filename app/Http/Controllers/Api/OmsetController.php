@@ -1133,6 +1133,8 @@ if (!$balik) {
 
                 if ($j_->coa_id != 31) continue;
 
+                $timestamp = Carbon::parse($balik->tanggal)->startOfDay()->format('Y-m-d H:i:s');
+
                 $base = $j_->toArray();
                 unset($base['id'], $base['created_at'], $base['updated_at']);
 
@@ -1140,14 +1142,16 @@ if (!$balik) {
                  * DEBIT
                  * ===================== */
                 $debit = array_merge($base, [
-                    'coa_id'     => 93,
-                    'debit'      => $j_->debit,
-                    'credit'     => 0,
-                    'tipe'       => 'OMZ',
-                    'nomor'      => $balik->nomor,
-                    'relasi'     => $balik->nomor,
-                    'no'         => $balik->no,
-                    'jurnal_balik' => $j_->id,
+                    'coa_id'        => 93,
+                    'debit'         => $j_->debit,
+                    'credit'        => 0,
+                    'tipe'          => 'OMZ',
+                    'nomor'         => $balik->nomor,
+                    'relasi'        => $balik->nomor,
+                    'no'            => $balik->no,
+                    'jurnal_balik'  => $j_->id,
+                    'created_at'    => $timestamp,
+                    'updated_at'    => $timestamp,
                 ]);
 
                 $jd = Jurnal::create($debit);
