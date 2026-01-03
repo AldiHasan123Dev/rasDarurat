@@ -19,6 +19,7 @@ use App\Models\OrderTrucking;
 use App\Models\Pengirim;
 use App\Models\SanguSopir;
 use App\Models\Sopir;
+use App\Models\Setting;
 use App\Models\TemplateJurnal;
 use App\Models\TransaksiSopir;
 use App\Models\TransaksiTrucking;
@@ -262,25 +263,29 @@ class TruckingController extends Controller
     public function generate_invoice(Request $request)
     {
         $lock = Cache::lock('invoice-trucking', 10);
+        $setting = Setting::first();
+        $tahunLompat = $setting->tahun_lompat; // contoh: 2025
+        $tahunLompaty = substr($tahunLompat, -2); // hasil: 25
         if ($lock->get()) {
             try {
-                $invoice = DB::transaction(function () use ($request) {
+                $invoice = DB::transaction(function () use ($request, $tahunLompat, $tahunLompaty) {
                     $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
-                    $month_number = date("n"); // mengambil nomor bulan dari tanggal
-                    $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
                     $order_id = explode(',', $request->order_id);
+                    $tgl_muat = OrderTrucking::whereIn('id', $order_id)->min('tgl_muat');
+                    $month_number = date('m', strtotime($tgl_muat));
+                    $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
                     $no1 = 0;
                     $no2 = 0;
                     $no3 = 0;
                     if ($request->tipe == 'R1') {
-                        $no1 = TransaksiTrucking::whereYear('tgl_invoice', date('Y'))->max('order_r1') + 1;
-                        $invoice = sprintf('%03d', $no1) . '/' . $month_roman . '/' . date('y');
+                        $no1 = TransaksiTrucking::whereYear('tgl_invoice', $tahunLompat)->max('order_r1') + 1;
+                        $invoice = sprintf('%03d', $no1) . '/' . $month_roman . '/' . $tahunLompaty;
                     } else if ($request->tipe == 'R2') {
-                        $no2 = TransaksiTrucking::whereYear('tgl_invoice', date('Y'))->max('order_r2') + 1;
-                        $invoice = sprintf('%03d', $no2) . '/RAS-LT/' . $month_roman . '/' . date('y');
+                        $no2 = TransaksiTrucking::whereYear('tgl_invoice', $tahunLompat)->max('order_r2') + 1;
+                        $invoice = sprintf('%03d', $no2) . '/RAS-LT/' . $month_roman . '/' . $tahunLompaty;
                     } else {
-                        $no3 = TransaksiTrucking::whereYear('tgl_invoice', date('Y'))->max('order_vendor') + 1;
-                        $invoice = sprintf('%03d', $no3) . '/VENDOR-' . $month_roman . '/' . date('y');
+                        $no3 = TransaksiTrucking::whereYear('tgl_invoice', $tahunLompat)->max('order_vendor') + 1;
+                        $invoice = sprintf('%03d', $no3) . '/VENDOR-' . $month_roman . '/' . $tahunLompaty;
                     }
 
                     $trx = TransaksiTrucking::create([
