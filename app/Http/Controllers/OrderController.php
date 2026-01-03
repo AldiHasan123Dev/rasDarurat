@@ -186,8 +186,15 @@ class OrderController extends Controller
             $data['agen_id'] = Agen::where('nama',$request->agen_id)->first()->id ?? null;
             $data['penerimabl'] = Agen::where('nama',$request->agen_id)->first()->nama ?? null;
         }
-        $num = Order::whereYear('created_at',date('Y'))->max('no');
         $setting = Setting::find(1);
+        $now = now();
+        $year = $now->year;
+        $lastOrder = Order::orderByDesc('created_at')->first();
+        if (!$lastOrder || $lastOrder->created_at->year != $year) {
+            $num = 0;
+        } else {
+            $num = (int) $lastOrder->no;
+        }
         $data['barang_id'] = $barang->id;
         $data['no'] = $num+1;
         if($setting->type_job_year=='y'){
