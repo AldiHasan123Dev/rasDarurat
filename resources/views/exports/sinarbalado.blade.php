@@ -9,8 +9,8 @@
             <th>No. Cont</th>
             <th>Nopol Truck</th>
             <th>Kapal</th>
-            <th>Kondisi</th>
             <th>Voyage</th>
+            <th>Kondisi</th>
             <th>TD</th>
             <th>ETA</th>
             <th>Barang Diantar</th>
@@ -28,8 +28,8 @@
                 <td>{{ $item['container'] }}</td>
                 <td>{{ $item['nopol'] }}</td>
                 <td>{{ $item['kapal'] }}</td>
-                <td>{{ $item['kondisi'] }}</td>
                 <td>{{ $item['voyage'] }}</td>
+                <td>{{ $item['kondisi'] }}</td>
                 <td>{{ $item['td'] }}</td>
                 <td>{{ $item['eta'] }}</td>
                 <td>{{ $item['barang_diantar'] }}</td>
