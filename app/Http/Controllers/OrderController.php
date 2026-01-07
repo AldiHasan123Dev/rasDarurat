@@ -429,7 +429,9 @@ class OrderController extends Controller
             $no_job = count($cek) + 1;
             $num = $cek[0]->no;
         }else{
-            $num = Order::whereYear('created_at',date('Y'))->max('no') + 1;
+            $year = date('Y');
+            $num = Order::whereRaw('LEFT(job, 4) = ?', [$year])
+            ->max('no');
             if($setting->type_job_year=='y'){
                 $job = date('ym').sprintf('%04d',$num);
             }else{
