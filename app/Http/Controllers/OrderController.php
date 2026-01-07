@@ -431,7 +431,7 @@ class OrderController extends Controller
         }else{
             $year = date('Y');
             $num = Order::whereRaw('LEFT(job, 4) = ?', [$year])
-            ->max('no');
+            ->max('no') + 1;
             if($setting->type_job_year=='y'){
                 $job = date('ym').sprintf('%04d',$num);
             }else{
