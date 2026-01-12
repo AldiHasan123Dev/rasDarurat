@@ -175,52 +175,47 @@ class TruckingController extends Controller
     ->whereNull('order_trucking.invoice')
 
     // =========================
-    // LOGIKA R1 vs VENDOR
+    // ATURAN PER JENIS KENDARAAN
     // =========================
     ->where(function ($q) {
 
-        // =====================
-        // R1 (lengkap)
-        // =====================
-        $q->where(function ($r1) {
-            $r1->where('kendaraan.milik', 'R1')
-               ->whereNotNull('order_trucking.tgl_total')
-               ->whereNotNull('order_trucking.sj_kembali_fa');
+        // R1 & R2 → WAJIB TOTAL & SJ
+        $q->where(function ($r) {
+            $r->whereIn('kendaraan.milik', ['R1', 'R2'])
+              ->whereNotNull('order_trucking.tgl_total')
+              ->whereNotNull('order_trucking.sj_kembali_fa');
         })
 
-        // =====================
-        // VENDOR (tidak ada totalan & SJ)
-        // =====================
-        ->orWhere(function ($vendor) {
-            $vendor->where('kendaraan.milik', 'vendor')
-                  ->whereNotNull('order_trucking.sj_kembali_fa');
-                   // sj_kembali_fa tidak dicek
+        // VENDOR → TANPA TOTAL & SJ
+        ->orWhere(function ($v) {
+            $v->where('kendaraan.milik', 'vendor')
+                ->whereNotNull('order_trucking.sj_kembali_fa');
         });
     })
 
     // =========================
-    // LOGIKA CUSTOMER
+    // ATURAN CUSTOMER
     // =========================
     ->where(function ($q) {
 
-        // r1 = 0 & r2 = 0 → hanya R1
-        $q->where(function ($q1) {
-            $q1->where('customer_trucking.r1', 0)
-               ->where('customer_trucking.r2', 0)
-               ->where('kendaraan.milik', 'R1');
+        // r1=0 r2=0 → hanya R1
+        $q->where(function ($c) {
+            $c->where('customer_trucking.r1', 0)
+              ->where('customer_trucking.r2', 0)
+              ->where('kendaraan.milik', 'R1');
         })
 
-        // r1 = 1 & r2 = 0 → R1 & vendor
-        ->orWhere(function ($q2) {
-            $q2->where('customer_trucking.r1', 1)
-               ->where('customer_trucking.r2', 0)
-               ->whereIn('kendaraan.milik', ['R1', 'vendor']);
+        // r1=1 r2=0 → R1, R2, vendor
+        ->orWhere(function ($c) {
+            $c->where('customer_trucking.r1', 1)
+              ->where('customer_trucking.r2', 0)
+              ->whereIn('kendaraan.milik', ['R1', 'R2', 'vendor']);
         })
 
-        // r1 = 1 & r2 = 1 → bebas
-        ->orWhere(function ($q3) {
-            $q3->where('customer_trucking.r1', 1)
-               ->where('customer_trucking.r2', 1);
+        // r1=1 r2=1 → bebas
+        ->orWhere(function ($c) {
+            $c->where('customer_trucking.r1', 1)
+              ->where('customer_trucking.r2', 1);
         });
     })
 
@@ -228,6 +223,7 @@ class TruckingController extends Controller
     ->orderBy('tgl_muat')
     ->get()
     ->groupBy('customer');
+
 
 
         $data2 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
