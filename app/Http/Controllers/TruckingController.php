@@ -161,39 +161,23 @@ class TruckingController extends Controller
         //     ->get()
         //     ->groupBy('customer');
 
-       $data1 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
-    ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
-    ->select(
-        'order_trucking.*',
-        'customer_trucking.nama as customer',
-        'customer_trucking.id as id_customer'
-    )
-
-    // GROUP kendaraan.milik
-    ->where(function ($q) {
-        $q->where('kendaraan.milik', 'R1')
-          ->orWhere('kendaraan.milik', 'VENDOR'); // ← OR VENDOR
-    })
-
-    // SYARAT UMUM (WAJIB SEMUA)
-    ->whereNull('order_trucking.invoice')
-    ->whereNotNull('order_trucking.tgl_total')
-    ->whereNotNull('order_trucking.sj_kembali_fa')
-
-    // GROUP customer
-    ->where(function ($q) {
-        $q->where(function ($q1) {
-                $q1->where('customer_trucking.r1', 0)
-                   ->where('customer_trucking.r2', 0);
-            })
-          ->orWhere('customer_trucking.r1', 1);
-    })
-
-    ->orderBy('customer')
-    ->orderBy('tgl_muat')
-    ->get()
-    ->groupBy('customer');
-
+        $data1 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
+            ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
+            ->select('order_trucking.*', 'customer_trucking.nama as customer', 'customer_trucking.id as id_customer')
+            ->where('kendaraan.milik', 'R1')
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.tgl_total')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->where('customer_trucking.r1', 0)
+            ->where('customer_trucking.r2', 0)
+            ->orWhere('customer_trucking.r1', 1)
+            ->whereNull('order_trucking.invoice')
+            ->whereNotNull('order_trucking.tgl_total')
+            ->whereNotNull('order_trucking.sj_kembali_fa')
+            ->orderBy('customer')
+            ->orderBy('tgl_muat')
+            ->get()
+            ->groupBy('customer');
 
         $data2 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
             ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
