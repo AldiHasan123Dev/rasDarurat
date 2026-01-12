@@ -217,12 +217,6 @@ class TruckingController extends Controller
                ->whereIn('kendaraan.milik', ['R1', 'vendor']);
         })
 
-        ->orWhere(function ($q2) {
-            $q2->where('customer_trucking.r1', 0)
-               ->where('customer_trucking.r2', 1)
-               ->whereIn('kendaraan.milik', ['R2', 'vendor']);
-        })
-
         // r1 = 1 & r2 = 1 → bebas
         ->orWhere(function ($q3) {
             $q3->where('customer_trucking.r1', 1)
