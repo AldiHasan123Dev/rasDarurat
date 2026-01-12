@@ -161,23 +161,74 @@ class TruckingController extends Controller
         //     ->get()
         //     ->groupBy('customer');
 
-        $data1 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
-            ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
-            ->select('order_trucking.*', 'customer_trucking.nama as customer', 'customer_trucking.id as id_customer')
-            ->where('kendaraan.milik', 'R1')
-            ->whereNull('order_trucking.invoice')
-            ->whereNotNull('order_trucking.tgl_total')
-            ->whereNotNull('order_trucking.sj_kembali_fa')
-            ->where('customer_trucking.r1', 0)
-            ->where('customer_trucking.r2', 0)
-            ->orWhere('customer_trucking.r1', 1)
-            ->whereNull('order_trucking.invoice')
-            ->whereNotNull('order_trucking.tgl_total')
-            ->whereNotNull('order_trucking.sj_kembali_fa')
-            ->orderBy('customer')
-            ->orderBy('tgl_muat')
-            ->get()
-            ->groupBy('customer');
+       $data1 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
+    ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
+    ->select(
+        'order_trucking.*',
+        'customer_trucking.nama as customer',
+        'customer_trucking.id as id_customer'
+    )
+
+    // =========================
+    // INVOICE WAJIB UNTUK SEMUA
+    // =========================
+    ->whereNull('order_trucking.invoice')
+
+    // =========================
+    // LOGIKA R1 vs VENDOR
+    // =========================
+    ->where(function ($q) {
+
+        // =====================
+        // R1 (lengkap)
+        // =====================
+        $q->where(function ($r1) {
+            $r1->where('kendaraan.milik', 'R1')
+               ->whereNotNull('order_trucking.tgl_total')
+               ->whereNotNull('order_trucking.sj_kembali_fa');
+        })
+
+        // =====================
+        // VENDOR (tidak ada totalan & SJ)
+        // =====================
+        ->orWhere(function ($vendor) {
+            $vendor->where('kendaraan.milik', 'vendor')
+                  ->whereNotNull('order_trucking.sj_kembali_fa');
+                   // sj_kembali_fa tidak dicek
+        });
+    })
+
+    // =========================
+    // LOGIKA CUSTOMER
+    // =========================
+    ->where(function ($q) {
+
+        // r1 = 0 & r2 = 0 → hanya R1
+        $q->where(function ($q1) {
+            $q1->where('customer_trucking.r1', 0)
+               ->where('customer_trucking.r2', 0)
+               ->where('kendaraan.milik', 'R1');
+        })
+
+        // r1 = 1 & r2 = 0 → R1 & vendor
+        ->orWhere(function ($q2) {
+            $q2->where('customer_trucking.r1', 1)
+               ->where('customer_trucking.r2', 0)
+               ->whereIn('kendaraan.milik', ['R1', 'vendor']);
+        })
+
+        // r1 = 1 & r2 = 1 → bebas
+        ->orWhere(function ($q3) {
+            $q3->where('customer_trucking.r1', 1)
+               ->where('customer_trucking.r2', 1);
+        });
+    })
+
+    ->orderBy('customer')
+    ->orderBy('tgl_muat')
+    ->get()
+    ->groupBy('customer');
+
 
         $data2 = OrderTrucking::join('customer_trucking', 'customer_trucking.id', '=', 'order_trucking.customer_id')
             ->join('kendaraan', 'kendaraan.id', '=', 'order_trucking.kendaraan_id')
