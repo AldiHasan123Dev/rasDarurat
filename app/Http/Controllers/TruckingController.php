@@ -319,8 +319,8 @@ class TruckingController extends Controller
                     $roman_numerals = array("", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"); // daftar angka Romawi
                     $order_id = explode(',', $request->order_id);
                     $tgl_muat = OrderTrucking::whereIn('id', $order_id)->min('tgl_muat');
-                    $month_number = date('m', strtotime($tgl_muat));
-                    $month_roman = $roman_numerals[$month_number]; // mengambil angka Romawi yang sesuai
+                   $month_number = (int) date('m', strtotime($tgl_muat));
+$month_roman  = $roman_numerals[$month_number];
                     $no1 = 0;
                     $no2 = 0;
                     $no3 = 0;

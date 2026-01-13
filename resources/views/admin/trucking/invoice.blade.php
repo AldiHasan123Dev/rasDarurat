@@ -619,7 +619,7 @@
                         $pph = 0;
                     @endphp
                     <div class="invoice-box first-page">
-                        @if ($order->kendaraan->milik=='vendor')
+                        {{-- @if ($order->kendaraan->milik=='vendor')
                         <div class="header d-flex" style="gap:5px; width:100%">
                             <img src="{{ asset('logo.png') }}" alt="logo" style="height: 60px; width: 30%" class="img-fluid">
                             <div style="width: 40%; margin-left:35px">
@@ -636,7 +636,7 @@
                                 </table>
                             </div>
                         </div>
-                        @endif
+                        @endif --}}
                         <div class="row mt-3">
                             <div class="col-6">
                                 <table style="font-size: .7rem">
