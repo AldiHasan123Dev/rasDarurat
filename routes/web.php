@@ -377,6 +377,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('jurnal-balik', [JurnalController::class, 'balik'])->name('jurnal.balik.create');
     Route::get('jurnal-neraca', [JurnalController::class, 'neraca'])->name('jurnal.neraca');
     Route::get('jurnal-lr', [JurnalController::class, 'laba_rugi'])->name('jurnal.laba_rugi');
+    Route::get('jurnal-lr-thn', [JurnalController::class, 'laba_rugiThn'])->name('jurnal.laba_rugiThn');
     Route::get('jurnal-buku-besar', [JurnalController::class, 'buku_besar'])->name('jurnal.buku_besar');
     Route::get('jurnal-buku-besar-pembantu', [JurnalController::class, 'buku_besar_pembantu'])->name('jurnal.buku_besar_pembantu');
     Route::get('jurnal-buku-besar-pembantu1', [JurnalController::class, 'bb_pembantu'])->name('jurnal.buku_besar_pembantu1');

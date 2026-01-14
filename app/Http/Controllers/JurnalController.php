@@ -1938,6 +1938,11 @@ public function editOne(Jurnal $jurnal)
         return view('admin.jurnal.laba_rugi');
     }
 
+    public function laba_rugiThn()
+    {
+        return view('admin.jurnal.laba_rugiThn');
+    }
+
     public function buku_besar()
     {
         $coas = COA::orderBy('kode')->get(['id', 'nama', 'kode']);
