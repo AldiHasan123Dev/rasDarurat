@@ -137,6 +137,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%lolo pod%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo jayapura%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya turun job empty / lolo banjarmasin%'");
                 })
                 ->sum('debit')
@@ -145,6 +146,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%lolo pod%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo jayapura%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya turun job empty / lolo banjarmasin%'");
                 })
                 ->sum('credit');
@@ -154,6 +156,7 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%lolo pod%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo banjarmasin%'")
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo jayapura%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya turun job empty / lolo banjarmasin%'");
                 })
                 ->pluck('id')->toJson();
@@ -175,7 +178,8 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%pelabuhan / job slip pod%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo stripping dalam banjarmasin%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'");
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'")
+                     ->orWhereRaw("LOWER(nama) LIKE '%job slip jayapura%'");
                 })
                 ->sum('debit') 
                 - Jurnal::where('order_id', $order->id)
@@ -183,7 +187,8 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%pelabuhan / job slip pod%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo stripping dalam banjarmasin%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'");
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'")
+                     ->orWhereRaw("LOWER(nama) LIKE '%job slip jayapura%'");
                 })
                 ->sum('credit');
 
@@ -192,7 +197,8 @@ if ($order->truckingInfo && $order->trucking == 'XPDC') {
                 ->where(function ($q) {
                     $q->whereRaw("LOWER(nama) LIKE '%pelabuhan / job slip pod%'")
                     ->orWhereRaw("LOWER(nama) LIKE '%biaya lolo stripping dalam banjarmasin%'")
-                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'");
+                    ->orWhereRaw("LOWER(nama) LIKE '%biaya job slip banjarmasin%'")
+                     ->orWhereRaw("LOWER(nama) LIKE '%job slip jayapura%'");
                 })
                 ->pluck('id')->toJson();
 
@@ -201,14 +207,16 @@ $data[$idx]['truck_pod'] = Jurnal::where('order_id', $order->id)
     ->whereIn('coa_id', $coa_id)
     ->where(function ($q) {
         $q->whereRaw("LOWER(nama) LIKE '%trucking pod%'")
-          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'");
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'")
+          ->orWhereRaw("LOWER(nama) LIKE '%truck jayapura%'");
     })
     ->sum('debit')
     - Jurnal::where('order_id', $order->id)
     ->whereIn('coa_id', $coa_id)
     ->where(function ($q) {
         $q->whereRaw("LOWER(nama) LIKE '%trucking pod%'")
-          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'");
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'")
+          ->orWhereRaw("LOWER(nama) LIKE '%truck jayapura%'");
     })
     ->sum('credit');
 
@@ -216,7 +224,8 @@ $data[$idx]['j_truck_pod'] = Jurnal::where('order_id', $order->id)
     ->whereIn('coa_id', $coa_id)
     ->where(function ($q) {
         $q->whereRaw("LOWER(nama) LIKE '%trucking pod%'")
-          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'");
+          ->orWhereRaw("LOWER(nama) LIKE '%biaya trucking banjarmasin%'")
+          ->orWhereRaw("LOWER(nama) LIKE '%truck jayapura%'");
     })
     ->pluck('id')->toJson();
 
@@ -358,7 +367,8 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                                     ->where(function ($q) {
                                     $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
                                     ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
-                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%'])
+                                    ->orWhereRaw("LOWER(nama) REGEXP '[[:<:]]seal[[:>:]]'");
                                 })
 
                                 ->sum('debit')
@@ -367,7 +377,8 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                             ->where(function ($q) {
                                 $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
                                 ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
-                                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
+                                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%'])
+                                ->orWhereRaw("LOWER(nama) REGEXP '[[:<:]]seal[[:>:]]'");
                             })
                                 ->sum('credit');
 
@@ -376,7 +387,8 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                 ->where(function ($q) {
                 $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
                 ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
-                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%'])
+                ->orWhereRaw("LOWER(nama) REGEXP '[[:<:]]seal[[:>:]]'");
             })
 
                 ->pluck('id')
@@ -436,6 +448,9 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             $data[$idx]['biaya'] += $data[$idx]['biaya_lain'];
             $data[$idx]['tarif'] = $tarif;
             $data[$idx]['laba_kotor'] = $data[$idx]['tarif'] - $data[$idx]['biaya'];
+            $tarif = (float) ($data[$idx]['tarif'] ?? 0);
+            $laba  = (float) ($data[$idx]['laba_kotor'] ?? 0);
+            $data[$idx]['margin'] = $tarif > 0 ? $laba / $tarif : 0;
             $data[$idx]['margin'] = $data[$idx]['laba_kotor'] / $data[$idx]['tarif'];
              if(request('is_pra')){
                 $biaya_lain = json_encode(
