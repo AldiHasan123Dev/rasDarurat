@@ -171,7 +171,7 @@ public function store(Request $request)
                     $coa_id = $c31;
                     if ($a === 'thc') $title = 'THC LOLO';
                     elseif ($a === 'opp_stamp') $title = 'STAMP OPP';
-                    elseif ($a === 'hp_seal') $title = 'SEAL';
+                    elseif ($a === 'hp_seal') $title = 'Pembelian SEAL';
                     else $title = strtoupper($a);
 
                     if ($a === 'lss') {
