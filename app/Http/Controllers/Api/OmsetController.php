@@ -367,8 +367,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                                     ->where(function ($q) {
                                     $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
                                     ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
-                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%'])
-                                    ->orWhereRaw("LOWER(nama) REGEXP '[[:<:]]seal[[:>:]]'");
+                                    ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
                                 })
 
                                 ->sum('debit')
@@ -377,8 +376,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                             ->where(function ($q) {
                                 $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
                                 ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
-                                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%'])
-                                ->orWhereRaw("LOWER(nama) REGEXP '[[:<:]]seal[[:>:]]'");
+                                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
                             })
                                 ->sum('credit');
 
@@ -387,8 +385,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
                 ->where(function ($q) {
                 $q->whereRaw('LOWER(nama) LIKE ?', ['%pembayaran seal%'])
                 ->orWhereRaw('LOWER(nama) LIKE ?', ['%pembelian seal%'])
-                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%'])
-                ->orWhereRaw("LOWER(nama) REGEXP '[[:<:]]seal[[:>:]]'");
+                ->orWhereRaw('LOWER(nama) LIKE ?', ['%biaya seal%']);
             })
 
                 ->pluck('id')
