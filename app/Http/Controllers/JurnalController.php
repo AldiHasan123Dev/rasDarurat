@@ -1288,6 +1288,10 @@ if (!empty($dataToInsert)) {
 
         // Step 3: Update jurnal lama dengan referensi balik
         foreach ($insertedJurnal as $index => $j) {
+             // ⛔ Skip baris terakhir (coa tujuan / penyeimbang)
+    if ($index === $lastIndex) {
+        continue;
+    }
             $original = $dataToInsert[$index];
             if (!empty($original['jurnal_balik'])) {
                 Jurnal::where('id', $original['jurnal_balik'])
