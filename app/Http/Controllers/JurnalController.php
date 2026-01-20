@@ -1167,18 +1167,19 @@ class JurnalController extends Controller
     $dataToInsert = [];
     $r = 0;
     $jurnal = $request->jurnal;
-    $tipe = $request->tipe ?? 'BKK';
-    $no = Jurnal::where('tipe', 'BKK')->whereYear('created_at', date('Y'))->max('no') + 1;
-    $nomor = $no . '/' . $tipe . '-' . 'RAS' . '/' . date('y');
-    $total = Jurnal::where('kode',$request->kode)->sum('credit');
-    $keterangan = $request->new_keterangan;
-    $new_coa = $request->new_coa_id;
-     if ($request->debit_coa_id_tujuan){
-         $total = Jurnal::where('kode',$request->kode)->sum('debit');
-     }
     if (is_array($jurnal)) {
         ksort($jurnal);
     }
+    $jurnalArray = collect($request->jurnal)->pluck('jurnal_balik')->toArray();
+    $tipe = $request->tipe ?? 'BKK';
+    $no = Jurnal::where('tipe', 'BKK')->whereYear('created_at', date('Y'))->max('no') + 1;
+    $nomor = $no . '/' . $tipe . '-' . 'RAS' . '/' . date('y');
+    $total = Jurnal::whereIn('id',$jurnalArray)->sum('credit');
+    $keterangan = $request->new_keterangan;
+    $new_coa = $request->new_coa_id;
+     if ($request->debit_coa_id_tujuan){
+         $total = Jurnal::where('id',$jurnalArray)->sum('debit');
+     }
     
 
    foreach ($jurnal as $item) {
