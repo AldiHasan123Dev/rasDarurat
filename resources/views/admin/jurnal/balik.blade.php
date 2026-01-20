@@ -238,7 +238,7 @@
                                             @endif
                                             <td>{{  $item['debit']->credit == 0 ? '-' : number_format($item['debit']->credit,2,'.',',') }}</td>
                                             <td>{{  $item['debit']->debit == 0 ? '-' : number_format($item['debit']->debit,2,'.',',') }}</td>
-                                            <td><input type="hidden" class="input-name" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%">{{ $item['credit']->nama }}</td>
+                                            <td><input type="hidden" class="input-name" name="jurnal[{{ $k }}][nama]" value="{{ $item['debit']->nama }}" required id="name-{{ $k }}"  style="width: 100%">{{ $item['debit']->nama }}</td>
                                         </tr>
                                         @php
                                             $k++;
@@ -351,6 +351,7 @@
                                 <input type="hidden" id="total-hidden" value="{{ $data->sum('credit') }}" name="jurnal[{{ $k }}][credit]">
                                 <input type="hidden" id="coa-hidden" value="{{ $coa_credit->id }}" name="new_coa_id">
                                 @else
+                                <input type="hidden" value="{{ $item['debit']->id }}" name="jurnal[{{ $k }}][jurnal_balik]">
                                 <input type="hidden" id="total-hidden" value="{{ $data->sum('debit')  }}" name="jurnal[{{ $k }}][debit]">
                                 <input type="hidden" value="{{ $coa_debit->id }}" name="jurnal[{{ $k }}][coa_id]">
                                 <tr id="total-jurnal-row">
@@ -362,7 +363,6 @@
                                     <td id="value"><input type="hidden" name="nama" value="{{ $data->sum('debit') }}" id="" style="width: 100%" required>{{ number_format($data->sum('debit')) }}</td>
                                     <td>-</td>
                                     <td><input type="text" name="new_keterangan" style="width: 100%" required></td>
-                                <input type="hidden" id="total-hidden" value="{{ $data->sum('debit') }}" name="jurnal[{{ $k }}][debit]">
                                 <input type="hidden" id="coa-hidden" value="{{ $coa_debit->id }}" name="new_coa_id">
                                 </tr>
 
