@@ -1178,7 +1178,7 @@ class JurnalController extends Controller
     $keterangan = $request->new_keterangan;
     $new_coa = $request->new_coa_id;
      if ($request->debit_coa_id_tujuan){
-         $total = Jurnal::where('id',$jurnalArray)->sum('debit');
+         $total = Jurnal::whereIn('id',$jurnalArray)->sum('debit');
      }
     
 
