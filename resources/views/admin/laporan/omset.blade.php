@@ -952,7 +952,7 @@
     <script>
         let table = $('#table').DataTable({
             fixedColumns: {
-                left: 5,
+                left: 6,
                 right: 0
             },
             autoWidth: false,
