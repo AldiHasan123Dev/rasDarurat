@@ -151,9 +151,9 @@
                                         <th style="min-width:40px !important">ID</th>
                                         <th style="min-width:40px !important">ORDER_ID</th>
                                         <th style="min-width:40px !important">#</th>
-                                        <th style="min-width:40px !important">Tanggal</th>
+                                        <th style="min-width:40px !important">Shipment</th>
+                                        <th style="min-width:40px !important">Kondisi</th>
                                         <th style="min-width:40px !important">Invoice</th>
-                                        <th style="min-width:40px !important">Group JOB</th>
                                         <th style="min-width:40px !important">ID JOB</th>
                                         <th style="min-width:40px !important">Asuransi</th>
                                         <th style="min-width:40px !important">Pembayar</th>
@@ -311,9 +311,9 @@
                                                         onclick="lock({{ $order->id }},2)"><i
                                                             class="fas fa-unlock"></i></button></td>
                                             @endif
-                                            <td>{{ date('d/m/y', strtotime($order->created_at)) }}</td>
+                                             <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
+                                            <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->invoice }}</td>
-                                            <td>{{ $order->job }}</td>
                                             <td>{{ $order->job }}-{{ sprintf('%02d', $order->no_job) }}</td>
                                             <td>{{ $order->asuransi }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
