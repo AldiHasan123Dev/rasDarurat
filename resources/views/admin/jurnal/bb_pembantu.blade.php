@@ -122,7 +122,7 @@
                                                 Trucking</option>
                                             <option value="lain-lain" {{ $subjek == 'lain-lain' ? 'selected' : '' }}>
                                                 Lain-lain (External Inv)</option>
-                                             <option value="jurnal-balik" {{ $subjek == 'jurnal-balik' ? 'selected' : '' }}>
+                                            <option value="jurnal-balik" {{ $subjek == 'jurnal-balik' ? 'selected' : '' }}>
                                                 Jurnal Balik</option>
                                             {{-- <option value="kendaraan" {{ $subjek == 'kendaraan' ? 'selected' : '' }}>Vendor</option> --}}
                                         </select>
@@ -263,30 +263,35 @@
                                                     {{-- Tampilkan hanya satu kolom untuk tgl_d dan ket_d --}}
                                                     <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
                                                     <td>{!! $data['ket_d']->implode('<br>') !!}</td>
-                                                    @elseif($subjek === 'jurnal-balik')
+                                                @elseif($subjek === 'jurnal-balik')
                                                     <td>{!! is_array($data['tgl_d']) ? implode('<br>', $data['tgl_d']) : $data['tgl_d'] !!}</td>
                                                     <td>{!! is_array($data['ket_d']) ? implode('<br>', $data['ket_d']) : $data['ket_d'] !!}</td>
-                                                    @else
-                                                     <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
+                                                @else
+                                                    <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
                                                     <td>{!! $data['ket_d']->implode('<br>') !!}</td>
                                                 @endif
 
                                                 {{-- Nominal Debit dan Kredit --}}
-                                                @if($subjek === 'jurnal-balik')
-                                                <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
-                                                   {{ number_format((float) str_replace([',', ' '], '', $debit), 2, ',', '.') }}
-                                                </td>
-                                                <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
-                                                    {{ number_format((float) str_replace([',', ' '], '', $credit), 2, ',', '.') }}
-                                                </td>
+                                                @if ($subjek === 'jurnal-balik')
+                                                    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                        {{ number_format((float) str_replace([',', ' '], '', $debit), 2, ',', '.') }}
+                                                    </td>
+                                                    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                        {{ number_format((float) str_replace([',', ' '], '', $credit), 2, ',', '.') }}
+                                                    </td>
                                                 @else
-                                                  <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
-                                                    {{ number_format($debit, 2, ',', '.') }}
-                                                </td>
-                                                <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
-                                                    {{ number_format($credit, 2, ',', '.') }}
-                                                </td>
+                                                    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                        {{ number_format($debit, 2, ',', '.') }}
+                                                    </td>
+                                                    <td class="text-end {!! $isMismatch ? 'bg-danger text-white fw-bold' : '' !!}">
+                                                        {{ number_format($credit, 2, ',', '.') }}
+                                                    </td>
                                                 @endif
+                                                 @if ($subjek === 'jurnal-balik')
+                                                 <td>{!! implode('<br>', $data['no_c'] ?? []) !!}</td>
+                                                 <td>{!! implode('<br>', $data['tgl_c'] ?? []) !!}</td>
+                                                 <td>{!! implode('<br>', $data['ket_c'] ?? []) !!}</td>
+                                                 @else
 
                                                 {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
                                                 @unless ($subjek === 'relasi' && in_array($coa_id, [65, 66]))
@@ -294,7 +299,7 @@
                                                     <td>{!! $data['tgl_c']->implode('<br>') !!}</td>
                                                     <td>{!! $data['ket_c']->implode('<br>') !!}</td>
                                                 @endunless
-
+@endif
 
                                                 {{-- Saldo --}}
                                                 <td class="text-end">
