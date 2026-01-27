@@ -42,16 +42,22 @@ class OrderController extends Controller
         }
         $idMarketing = Auth::id();
         $jadwal_kapal = JadwalKapal::all()->where('is_active',0);
-        $tarifs = Tarif::join('customers','customers.id','=','tarif.customer_id')
-                    ->join('pelayaran','pelayaran.id','=','tarif.pelayaran_id')
-                    ->join('lokasi as dari','dari.id','=','tarif.dari')
-                    ->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan')
-                    ->join('shipments','shipments.id','=','tarif.shipment')
-                    ->join('kondisi','kondisi.id','=','tarif.kondisi')
-                    ->join('satuan','satuan.id','=','tarif.satuan')
-                    ->select('tarif.*')
-                    ->where('tarif.is_active',1)
-                    ->get();
+        $user = Auth::id();
+
+        $tarifs = Tarif::join('customers', 'customers.id', '=', 'tarif.customer_id')
+            ->join('pelayaran', 'pelayaran.id', '=', 'tarif.pelayaran_id')
+            ->join('lokasi as dari', 'dari.id', '=', 'tarif.dari')
+            ->join('lokasi as tujuan', 'tujuan.id', '=', 'tarif.tujuan')
+            ->join('shipments', 'shipments.id', '=', 'tarif.shipment')
+            ->join('kondisi', 'kondisi.id', '=', 'tarif.kondisi')
+            ->join('satuan', 'satuan.id', '=', 'tarif.satuan')
+            ->where('tarif.is_active', 1)
+            ->where(function ($q) use ($user) {
+                $q->where('customers.cs_id', $user)
+                ->orWhere('customers.marketing_id', $user);
+            })
+            ->select('tarif.*')
+            ->get();
         $barang = Barang::pluck('nama')->toArray();
         $satuan = Satuan::pluck('nama')->toArray();
         $agent = Agen::pluck('nama')->toArray();
