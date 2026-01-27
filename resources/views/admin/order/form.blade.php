@@ -1,5 +1,10 @@
 @php
     $ports = App\Models\Port::pluck('name', 'id');
+    $user = auth()->user();
+    $pembayarValue =
+        $order->tarif_id
+        ?? ($user->cs_id ?? $user->marketing_id)
+        ?? old('tarif_id');
 @endphp
 <div class="row">
     @csrf
@@ -10,18 +15,18 @@
                 <x-input :value="$order->jadwal_kapal->kapal.' || '.$order->jadwal_kapal->pelayaran->nama.' || VOY. '.$order->jadwal_kapal->voyage" :col="6" :label="'Kapal'" :type="'text'" :name="'null'" :disabled="true" ></x-input>
             @else
             @endif --}}
-            <x-input :value="$order->tarif_id ?? old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif"
+            <x-input :value="$pembayarValue ?? old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif"
                 :name="'tarif_id'" :required="true"></x-input>
             <x-input :value="$order->jadwal_kapal_id ?? old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]"
                 :name="'jadwal_kapal_id'" :required="true"></x-input>
         @else
-            <x-input :value="$order->tarif_id ?? old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif"
+            <x-input :value="$pembayarValue ?? old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif"
                 :name="'tarif_id'" :required="true"></x-input>
             <x-input :value="$order->jadwal_kapal_id ?? old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]"
                 :name="'jadwal_kapal_id'" :required="true"></x-input>
         @endif
     @else
-        <x-input :value="$order->tarif_id ?? old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif"
+        <x-input :value="$pembayarValue ?? old('tarif_id')" :col="6" :label="'Pembayar'" :type="'select'" :options="$tarif"
             :name="'tarif_id'" :required="true"></x-input>
         <x-input :value="$order->jadwal_kapal_id ?? old('jadwal_kapal_id')" :col="6" :label="'Kapal'" :type="'select'" :options="[]"
             :name="'jadwal_kapal_id'" :required="true"></x-input>
