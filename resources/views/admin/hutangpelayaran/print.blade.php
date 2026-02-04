@@ -289,6 +289,21 @@
                             </tr>
                         @endif
                     @endforeach
+                      @foreach ($list->where('vgm','!=',0)->groupBy('vgm') as $item)
+                        @if ($item->count()>1)
+                            <tr>
+                                <td></td>
+                                <td colspan="2">VGM Terminal</td>
+                                <td class="text-end">{{ number_format($item->first()->vgm * $item->count(),2,',','.') }}</td>
+                            </tr>
+                        @else
+                            <tr>
+                                <td></td>
+                                <td colspan="2">VGM Terminal</td>
+                                <td class="text-end">{{ number_format($item->first()->vgm,2,',','.') }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
                     <tr style="height:12px">
                         <td></td>
                         <td colspan="2"></td>

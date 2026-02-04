@@ -135,7 +135,7 @@
                                                 @foreach ($data as $job)
                                                     @foreach ($job as $item)
                                                         <tr>
-                                                            <td rowspan="7" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
+                                                            <td rowspan="8" class="vertical">{{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }}</td>
                                                             <td>OPP (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
                                                             <td><input type="number" onkeyup="hitung('opp',this.value)" onclick="this.select()" value="{{ $item->opp ?? 0 }}"  class="opp-opp" name="data[{{ $item->id }}][opp]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
@@ -162,6 +162,10 @@
                                                         <tr>
                                                             <td>LSS  (1X{{ preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ) }}) {{ $item->order->tarif->customer->nama }} ({{ $item->order->job }}-{{ sprintf('%02d',$item->order->no_job) }})</td>
                                                             <td><input type="number" onkeyup="hitung('lss',this.value)" onclick="this.select()" value="{{ $item->lss }}"  class="opp-lss" name="data[{{ $item->id }}][lss]" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                        </tr>
+                                                         <tr>
+                                                            <td>VGM</td>
+                                                            <td><input type="number" onkeyup="hitung('vgm',this.value)" onclick="this.select()" value="{{ $item->vgm }}"  class="opp-vgm" name="data[{{ $item->id }}][vgm]" style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                         </tr>
                                                     @endforeach
                                                 @endforeach
@@ -456,6 +460,11 @@ function hitung(tipe, val) {
                 $(this).val(val);
             });
         }
+        if (tipe == 'vgm') {
+            $('input[type="number"].opp-vgm').each(function () {
+                $(this).val(val);
+            });
+        }
         if (tipe == 'lss') {
             $('input[type="number"].opp-lss').each(function () {
                 $(this).val(val);
@@ -491,12 +500,16 @@ function hitung(tipe, val) {
     let cleaning = 0;
     let stamp = 0;
     let jumlah = 0;
+    let vgm = 0;
 
     let pph = parseFloat($('#pph').val()) || 0;
     let pembulatan = parseFloat($('#pembulatan').val()) || 0;
 
     $('input[type="number"].opp-opp').each(function () {
         opp += parseFloat($(this).val()) || 0;
+    });
+    $('input[type="number"].opp-vgm').each(function () {
+        vgm += parseFloat($(this).val()) || 0;
     });
     $('input[type="number"].opp-lss').each(function () {
         lss += parseFloat($(this).val()) || 0;
@@ -517,7 +530,7 @@ function hitung(tipe, val) {
         hp_seal += parseFloat($(this).val()) || 0;
     });
 
-    jumlah = (opp + lss + thc + apbs + cleaning + stamp + pembulatan + hp_seal) - pph;
+    jumlah = (opp + lss + thc + apbs + cleaning + stamp + pembulatan + hp_seal + vgm) - pph;
 
     $('.nominal_bg_opp').val(jumlah);
     $('.nominal_bg_opp').text(jumlah.toLocaleString('en-US'));

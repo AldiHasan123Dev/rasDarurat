@@ -162,7 +162,7 @@ public function store(Request $request)
                 // relasi asli memakai snake_case (sesuaikan dengan project)
                 $shipQty = preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ?? '');
 
-                $oppFields = ['opp', 'apbs', 'cleaning', 'thc', 'lss', 'opp_stamp', 'hp_seal'];
+                $oppFields = ['opp', 'apbs', 'cleaning', 'thc', 'lss', 'opp_stamp', 'hp_seal','vgm'];
                 $optFields = ['opt', 'opt_stamp'];
                 $utFields = ['ut', 'ut_stamp', 'bl', 'ut_cleaning'];
 
@@ -172,6 +172,7 @@ public function store(Request $request)
                     if ($a === 'thc') $title = 'THC LOLO';
                     elseif ($a === 'opp_stamp') $title = 'STAMP OPP';
                     elseif ($a === 'hp_seal') $title = 'Pembelian SEAL';
+                    elseif ($a === 'vgm') $title = 'Biaya VGM Terminal';
                     else $title = strtoupper($a);
 
                     if ($a === 'lss') {
