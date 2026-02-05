@@ -98,6 +98,7 @@ public function store(Request $request)
         $prop['nominal_bg_opt'] = $data['nominal_bg_opt'] ?? 0;
         $prop['nominal_bg_ut'] = $data['nominal_bg_ut'] ?? 0;
         $prop['pph'] = $data['pph'] ?? 0;
+        $prop['opt_pph'] = $data['opt_pph'] ?? 0;
         $prop['pembulatan'] = $data['pembulatan'] ?? 0;
         $prop['penambahan'] = $data['penambahan'] ?? null;
         $prop['penambahan_nominal'] = $data['penambahan_nominal'] ?? 0;
@@ -305,6 +306,28 @@ public function store(Request $request)
                         'nama' => 'Potongan PPH 23 ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? ''),
                         'debit' => 0,
                         'credit' => $hp_ref->pph,
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ];
+                }
+                 if ($hp_ref->opt_pph > 0 && !is_null($hp_ref->no_bg_opt)) {
+                    $key = (string)$hp_ref->no_bg_opt;
+                    if (!isset($data_nomor[$key])) {
+                        throw new \Exception("Nomor jurnal untuk BG OPT {$hp_ref->no_bg_opt} belum disiapkan (PPH).");
+                    }
+                    $jurnalData[] = [
+                        'tipe' => 'JNL',
+                        'no_bg' => $hp_ref->no_bg_opt,
+                        'tgl_bg' => $hp_ref->tgl_bg_opt,
+                        'nominal_bg' => $hp_ref->nominal_bg_opt,
+                        'coa_id' => $c73,
+                        'order_id' => null,
+                        'nomor' => $data_nomor[$key]['nomor'],
+                        'relasi' => $data_nomor[$key]['nomor'],
+                        'no' => $data_nomor[$key]['no'],
+                        'nama' => 'Potongan PPH 23 ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? ''),
+                        'debit' => 0,
+                        'credit' => $hp_ref->opt_pph,
                         'created_at' => $now,
                         'updated_at' => $now,
                     ];

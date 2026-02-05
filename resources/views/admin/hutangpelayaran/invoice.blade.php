@@ -234,6 +234,10 @@
                                                     <td colspan="2" class="text-end fw-bold">NOMINAL BG</td>
                                                     <td><input type="text" class="nominal_bg_opt" name="nominal_bg_opt" id="nominal_bg_opt" value="{{ $hp->nominal_bg_opt }}" readonly style="width: 100%; padding:5px; border:1px solid gray"></td>
                                                 </tr>
+                                                 <tr>
+                                                    <td colspan="2" class="text-end fw-bold">OPT PPH 2%</td>
+                                                    <td><input type="number" onkeyup="hitungOpt()" onclick="this.select()" id="opt_pph" name="opt_pph" value="{{ $hp->opt_pph }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
+                                                </tr>
                                                 <tr>
                                                     <td colspan="2" class="text-end fw-bold">NO. BG</td>
                                                     <td><input type="text" id="no_bg_opt" name="no_bg_opt" value="{{ $hp->no_bg_opt }}" style="width: 100%; padding:5px; border:1px solid gray"></td>
@@ -534,10 +538,6 @@ function hitung(tipe, val) {
 
     $('.nominal_bg_opp').val(jumlah);
     $('.nominal_bg_opp').text(jumlah.toLocaleString('en-US'));
-
-    // 🔍 Log ke konsol
-    console.log('Seal:', tipe);
-    console.log('Jumlah:', jumlah);
 }
 
 
@@ -560,6 +560,7 @@ function hitung(tipe, val) {
         }
         let opt = 0;
         let stamp = 0;
+        let opt_pph = parseFloat($('#opt_pph').val()) || 0;
         $('input[type="number"].opt-opt').each(function () {
             opt+=parseFloat($(this).val());
         });
@@ -567,7 +568,7 @@ function hitung(tipe, val) {
             stamp+=parseFloat($(this).val());
         });
 
-        jumlah = opt + stamp;
+        jumlah = (opt + stamp) - opt_pph;
         $('.nominal_bg_opt').val(jumlah);
         $('.nominal_bg_opt').text(jumlah.toLocaleString('en-US'));
     }

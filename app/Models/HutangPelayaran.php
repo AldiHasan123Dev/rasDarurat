@@ -51,6 +51,9 @@ class HutangPelayaran extends Model
         'is_lock',
         'no',
         'hp_seal',
+        'vgm',
+        'opt_pph',
+        'kodongan',
     ];
 
     public function pelayaran()

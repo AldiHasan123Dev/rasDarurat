@@ -16,7 +16,6 @@
                 position: absolute;
                 top: -180px;
             }
-
             .first-page2 {
                 width: 100%;
                 height: 100%;
@@ -104,6 +103,7 @@
 @endsection
 @section('content')
 @php
+if (!function_exists('terbilang')) {
     function terbilang($angka) {
         $angka = (float)$angka;
         $bilangan = array(
@@ -152,6 +152,7 @@
                 return 'Angka terlalu besar';
             }
         }
+}
 @endphp
     <div id="print">
         <table class="w-100 table">
@@ -443,6 +444,13 @@
                         </tr>
                     @endforeach
                 @endforeach --}}
+                @if ($hp->opt_pph>0)
+                <tr>
+                    <td></td>
+                    <td colspan="2">PPh OPT (2%)</td>
+                    <td class="text-end text-danger">- {{ number_format($hp->opt_pph,2,',','.') }}</td>
+                </tr>
+                @endif
                 <tr style="border: 2px solid red">
                     <td style="color:red" colspan="2">Ch/ BG. No :</td>
                     <td class="fw-bold" colspan="2">{{ $hp->no_bg_opt }} ({{ date('d-m-Y',strtotime($hp->tgl_bg_opt)) }})</td>
