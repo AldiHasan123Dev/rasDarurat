@@ -973,6 +973,7 @@ class JurnalController extends Controller
                             'nopol' => $nopol,
                             'container' => $container,
                             'order_trucking_id' => $order_trucking ?? $order_vendor,
+                            'order_id' => (($data['debit_coa_id'][$i] == 31 && $order_trucking) || $order_vendor) ? $order_ids : null,
                             'nomor' => $nomor,
                             'nama' => $name,
                             'debit' => $data['amount'][$i],
