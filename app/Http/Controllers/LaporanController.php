@@ -1235,6 +1235,13 @@ $jurnalKreditLain = Jurnal::whereIn('order_id', $ids)
           ->orWhere('coa_id',81); // tambahkan orWhere di sini
     })
     ->sum('credit');
+        $triggerOmz = Jurnal::whereIn('order_id', $ids)
+    ->whereIn('coa_id', [140,133,134,135,76,81])
+    ->where('debit', '>', 0)
+    ->distinct('order_id')
+    ->count('order_id'); // lebih tepat hitung order_id
+
+    $showGenerateOmzBtn = $triggerOmz;
 
 
 // Selisih debit - kredit selain COA 31
@@ -1260,7 +1267,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
         // Tampilkan hasil
         $coa = COA::where('is_active',1)->get();
         $is_pra = true;
-        return view('admin.laporan.pra_omset', compact('rekapPerBulan','is_pra','jurnal161','data','year','months','month','tipe','ids','coa','jurnalSelain161'));
+        return view('admin.laporan.pra_omset', compact('rekapPerBulan','showGenerateOmzBtn','is_pra','jurnal161','data','year','months','month','tipe','ids','coa','jurnalSelain161'));
     }
     public function invoice()
     {

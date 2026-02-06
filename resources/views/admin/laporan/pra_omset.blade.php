@@ -103,9 +103,12 @@ table.dataTable tbody > tr.selected1 td {
                             @if ($tipe== 'inv')
                             <button type="button" class="btn btn-sm btn-warning" onclick="disableJurnalBtn(this); syncJurnalBalik()"> GENERATE JURNAL BALIK (161 DEBIT)</button>
                             <button type="button" class="btn btn-sm btn-success" onclick="disableJurnalBtn(this); syncJurnalBalik1()"> GENERATE JURNAL BALIK (161 CREDIT)</button>
-                            @if ($jurnalSelain161>0)     
-                            <button type="button" class="btn btn-sm btn-danger" onclick="disableJurnalBtn(this); syncJurnalBalik2()"> GENERATE JURNAL BALIK (Selain COA 161 DEBIT)</button>
-                            @endif
+                        @if ($showGenerateOmzBtn > 0)
+                            <button type="button" class="btn btn-sm btn-danger"
+                                    onclick="disableJurnalBtn(this); syncJurnalBalik2()">
+                                    GENERATE JURNAL BALIK (Selain COA 161 DEBIT)
+                            </button>
+                        @endif
                             @endif
                         </div>
                         <form action="{{ url()->current() }}" method="get">

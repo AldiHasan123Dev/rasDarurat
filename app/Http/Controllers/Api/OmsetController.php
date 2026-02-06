@@ -491,7 +491,7 @@ $data[$idx]['j_ut'] = Jurnal::where('order_id', $order->id)
             $tarif = (float) ($data[$idx]['tarif'] ?? 0);
             $laba  = (float) ($data[$idx]['laba_kotor'] ?? 0);
             $data[$idx]['margin'] = $tarif > 0 ? $laba / $tarif : 0;
-            $data[$idx]['margin'] = $data[$idx]['laba_kotor'] / $data[$idx]['tarif'];
+            $data[$idx]['margin'] = $data[$idx]['laba_kotor'] / $data[$idx]['biaya'];
              if(request('is_pra')){
                 $biaya_lain = json_encode(
                     array_merge(
