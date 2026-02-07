@@ -637,6 +637,7 @@ public function store(Request $request)
             $k = $list->where('ut_stamp','>',0)->groupBy('ut_stamp')->count();
             $l = $list->where('ut_cleaning','>',0)->groupBy('ut_cleaning')->count();
             $m = $list->where('hp_seal','>',0)->groupBy('hp_seal')->count();
+            $n = $list->where('vgm','>',0)->groupBy('vgm')->count();
             if($a>0){
                 $opp+=$a;
             }
@@ -675,6 +676,9 @@ public function store(Request $request)
             }
             if($m>0){
                 $opp+=$m;
+            }
+             if($n>0){
+                $opp+=$n;
             }
         }
         // dd($jobs->count());
