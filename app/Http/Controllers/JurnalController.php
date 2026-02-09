@@ -2683,25 +2683,64 @@ public function editOne(Jurnal $jurnal)
 }
 
     if ($subjek == 'relasi') {
-    $jurnal = Jurnal::where('coa_id', $coa_id)
+    $jurnal = Jurnal::with('order')
+        ->where('coa_id', $coa_id)
         ->whereNotNull('relasi')
         ->whereBetween('created_at', [$startDate, $endDate])
         ->orderBy('created_at', 'asc') // Pastikan urut tanggal
-        ->get(['debit', 'credit', 'nama', 'nomor', 'created_at', 'relasi', 'invoice', 'invoice_trucking', 'invoice_external', 'invoice_vendor']);
+        ->get(['debit', 'credit','coa_id', 'nama', 'nomor', 'created_at', 'relasi', 'invoice', 'invoice_trucking', 'invoice_external', 'invoice_vendor','order_id']);
 
     $runningBalance = 0;
     $groupedData = $jurnal->groupBy('relasi')->map(function ($group) use ($tipe) {
                 $customerName = $group->first()->relasi;
                 $invoice = $group->first()->invoice ?? $group->first()->invoice_external ?? $group->first()->invoice_vendor ?? $group->first()->invoice_trucking;            
                 // Ambil nama & tanggal untuk debit
-                $ket_d = $group->where('debit', '>', 0)->pluck('nama')->values();
+                $first = $group->first();
+                $prefix = '';
+                if (($first->coa_id ?? null) == 134) {
+                    $prefix = trim(($first->order->no_job ?? 'gk ada') . ' ' . ($first->order->job ?? 'gk ada'));
+                }
+$ket_d = $group->where('debit', '>', 0)
+    ->map(function ($row) {
+
+        if ($row->coa_id == 134 && $row->order) {
+
+            $prefix = trim(
+                ($row->order->job ?? '') . '-' .
+                sprintf('%02d', $row->order->no_job ?? 0)
+            );
+
+            $uang = number_format($row->debit, 0, ',', '.');
+
+            return "({$prefix}) Rp {$uang} - {$row->nama}";
+        }
+
+        return $row->nama;
+    })
+    ->values();
+
+$ket_c = $group->where('credit', '>', 0)
+    ->map(function ($row) {
+
+        if ($row->coa_id == 134 && $row->order) {
+
+            $prefix = trim(
+                ($row->order->job ?? '') . '-' .
+                sprintf('%02d', $row->order->no_job ?? 0)
+            );
+
+            $uang = number_format($row->credit, 0, ',', '.');
+
+            return "({$prefix}) Rp {$uang} - {$row->nama}";
+        }
+
+        return $row->nama;
+    })
+    ->values();
                 $date_d = $group->where('debit', '>', 0)
                     ->pluck('created_at')
                     ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
                     ->values();
-            
-                // Ambil nama & tanggal untuk kredit
-                $ket_c = $group->where('credit', '>', 0)->pluck('nama')->values();
                 $date_c = $group->where('credit', '>', 0)
                     ->pluck('created_at')
                     ->map(fn($date) => Carbon::parse($date)->format('Y-m-d'))
@@ -2736,7 +2775,50 @@ public function editOne(Jurnal $jurnal)
                 $customerName = $group->first()->relasi;
                 $invoice = $group->first()->invoice ?? $group->first()->invoice_external ?? $group->first()->invoice_vendor ?? $group->first()->invoice_trucking;            
                 // Ambil nama & tanggal untuk debit
-                $ket_d = $group->where('debit', '>', 0)->pluck('nama')->values();
+                $first = $group->first();
+                $prefix = '';
+                $uang = '';
+                if (($first->coa_id ?? null) == 134) {
+                    $prefix = trim(($first->order->no_job ?? 'gk ada') . ' ' . ($first->order->job ?? 'gk ada'));
+                    $uang = trim($first->debit ?? $first->credit);
+                }
+$ket_d = $group->where('debit', '>', 0)
+    ->map(function ($row) {
+
+        if ($row->coa_id == 134 && $row->order) {
+
+            $prefix = trim(
+                ($row->order->job ?? '') . '-' .
+                sprintf('%02d', $row->order->no_job ?? 0)
+            );
+
+            $uang = number_format($row->debit, 0, ',', '.');
+
+            return "({$prefix}) Rp {$uang} - {$row->nama}";
+        }
+
+        return $row->nama;
+    })
+    ->values();
+
+$ket_c = $group->where('credit', '>', 0)
+    ->map(function ($row) {
+
+        if ($row->coa_id == 134 && $row->order) {
+
+            $prefix = trim(
+                ($row->order->job ?? '') . '-' .
+                sprintf('%02d', $row->order->no_job ?? 0)
+            );
+
+            $uang = number_format($row->credit, 0, ',', '.');
+
+            return "({$prefix}) Rp {$uang} - {$row->nama}";
+        }
+
+        return $row->nama;
+    })
+    ->values();
                 $no_d = $group->where('debit', '>', 0)->pluck('nomor')->values();
                 $date_d = $group->where('debit', '>', 0)
                     ->pluck('created_at')
@@ -2744,7 +2826,6 @@ public function editOne(Jurnal $jurnal)
                     ->values();
             
                 // Ambil nama & tanggal untuk kredit
-                $ket_c = $group->where('credit', '>', 0)->pluck('nama')->values();
                 $no_c = $group->where('credit', '>', 0)->pluck('nomor')->values();
                 $date_c = $group->where('credit', '>', 0)
                     ->pluck('created_at')
