@@ -24,8 +24,7 @@ class JurnalBatchExport implements WithMultipleSheets
 
         $coas = COA::where('is_active',1)->orderBy('kode')->get();
         foreach ($coas as $coa) {
-            // $sheets[] = new JurnalCoaExport($coa->id, $this->year, $this->month);
-             $sheets[] = new JurnalCoaQueryExport($coa->id, $this->year, $this->month);
+            $sheets[] = new JurnalCoaExport($coa->id, $this->year, $this->month);
         }
 
         return $sheets;

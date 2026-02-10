@@ -45,30 +45,21 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
         $now = $ca->startOfMonth()->format('Y-m-d');
         $last = $ca->subMonth()->endOfMonth()->format('Y-m-d');
         $kode_awal = substr($c->kode, 0, 1);
-        if (in_array($kode_awal, ['5', '6', '7'])) {
+         if (in_array($kode_awal, ['5', '6', '7'])) {
             $saldo = 0;
-        } else {
-            $rangeStart = '2022-12-01';
-            $rangeEnd = $last;
-            $totals = Jurnal::where('coa_id', $this->coa)
-                ->whereBetween('created_at', [$rangeStart, $rangeEnd])
-                ->selectRaw('COALESCE(SUM(debit),0) as sum_debit, COALESCE(SUM(credit),0) as sum_credit')
-                ->first();
-
-            $sum_debit = $totals->sum_debit ?? 0;
-            $sum_credit = $totals->sum_credit ?? 0;
-
-            if ($tipe == 'D') {
-                $saldo = $sum_debit - $sum_credit;
-            } else {
-                $saldo = $sum_credit - $sum_debit;
-            }
+         }
+        else if($tipe=='D'){
+            $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit');
+        }else{
+            $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit');
         }
         return view('exports.jurnal', compact('data','tipe','c','saldo','last'));
     }
+
     public function title(): string
     {
         $coa = COA::find($this->coa);
         return $coa->kode.' '.$coa->nama;
     }
+
 }
