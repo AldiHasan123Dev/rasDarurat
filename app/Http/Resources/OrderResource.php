@@ -45,7 +45,9 @@ class OrderResource extends JsonResource
             'pembayar' => $this->tarif->customer->nama ?? '-',
             'marketing' => $this->tarif->customer->marketing->name ?? '-',
             'marketing_id' => $this->tarif->customer->marketing->id ?? '-',
-            'syarat_ba' => $this->tarif->customer->ba_kembali === 1 ? 'Iya' : ($this->tarif->customer->ba_kembali === 0 ? 'Tidak' : '-'),
+            'syarat_ba' => (int) $this->tarif->customer->ba_kembali === 1 
+            ? 'Iya' 
+            : ((int) $this->tarif->customer->ba_kembali === 0 ? 'Tidak' : '-'),
             'cs' => $this->tarif->customer->cs->name ?? '-',
             'cs_id' => $this->tarif->customer->cs->id ?? '-',
             'pengirim' => $this->pengirim->nama ?? '-',
