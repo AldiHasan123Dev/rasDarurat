@@ -1476,8 +1476,7 @@ $voucher = abs($voucherDeb - $voucherCre);
 
     public function editCoa(Request $request) {
     $nomor = $request->query('jurnal');
-    $data = Jurnal::with('order')->where('nomor',$nomor)->get();
-
+    $data = Jurnal::with('order','order_trucking')->where('nomor',$nomor)->get();
     $coa = COA::where('is_active', 1)->orderBy('kode')->get();
     $now = Carbon::now()->addMonths(1)->format('Y-m-d');
     $last = Carbon::now()->subMonths(9)->format('Y-m-d');

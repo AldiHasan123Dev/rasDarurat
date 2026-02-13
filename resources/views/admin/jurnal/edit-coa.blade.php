@@ -60,6 +60,7 @@
             <th>COA</th>
             <th>No JOB</th>
             <th>Container</th>
+            <th>Nopol</th>
             <th>Keterangan</th>
             <th>Debit</th>
             <th>Credit</th>
@@ -97,6 +98,13 @@
 </td>
 
             <td>{{ $j->container ?? '-' }}</td>
+            <td>
+                {{
+                    $j->order_trucking?->kendaraan
+                        ? $j->order_trucking->kendaraan->nopol . ' | ' . $j->order_trucking->kendaraan->milik
+                        : ($j->nopol . ' | ' . '-' ?? '-')
+                }}
+            </td>
             <td>{{ $j->nama }}</td>
             <td>{{ number_format($j->debit) }}</td>
             <td>{{ number_format($j->credit) }}</td>
