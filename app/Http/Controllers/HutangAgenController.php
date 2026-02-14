@@ -41,15 +41,37 @@ class HutangAgenController extends Controller
 
 public function list(Request $request)
 {
-    $year = $request->year ?? date('Y'); // default tahun ini
+    $year = $request->year ?? now()->year;
 
-    $query = HutangAgen::whereNotNull('jurnal')
-                ->whereNull('deleted_at')
-                ->whereYear('created_at', $year);
+    $query = HutangAgen::with([
+        'order.tarif.customer',
+        'order.penerima',
+        'order.tarif.shipmentInfo',
+        'order.tarif.dari_lokasi',
+        'order.tarif.tujuan_lokasi',
+    ])
+    ->whereNotNull('jurnal')
+    ->whereNull('deleted_at')
+    ->whereYear('created_at', $year);
 
-    $data = $query->get()->groupBy('draf');
+    $hutang = $query->get();
 
-    return view('admin.hutangagen.list', compact('data', 'year'));
+    $data = $hutang->groupBy('draf');
+
+    // ambil semua order_id
+    $orderIds = $hutang->pluck('order_id');
+
+    // ambil semua tagihan SEKALI SAJA
+    $tagihanAll = TagihanAgen::with('order')
+                    ->whereIn('order_id', $orderIds)
+                    ->get()
+                    ->groupBy('order_id');
+
+    return view('admin.hutangagen.list', compact(
+        'data',
+        'year',
+        'tagihanAll'
+    ));
 }
     public function draf(Request $request)
     {
