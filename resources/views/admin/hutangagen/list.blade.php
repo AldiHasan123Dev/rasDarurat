@@ -6,6 +6,42 @@
                 <a href="{{ route('hutang-agen.index') }}" class="py-2 px-3 btn btn-primary">Kembali</a>
                 <h5>List Hutang Agen</h5>
             </div>
+           <div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-body py-3">
+                <form method="GET" action="{{ route('hutang-agen.list') }}">
+                    
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="fas fa-calendar-alt text-primary me-1"></i>
+                        Filter Tahun
+                    </label>
+
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="fas fa-calendar"></i>
+                        </span>
+
+                        <select name="year" class="form-select">
+                            @for ($i = date('Y'); $i >= date('Y') - 5; $i--)
+                                <option value="{{ $i }}" 
+                                    {{ ($year ?? date('Y')) == $i ? 'selected' : '' }}>
+                                    {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+
+                        <button class="btn btn-primary px-4">
+                            <i class="fas fa-filter me-1"></i>
+                           Klik
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
             <div class="card-body">
                 <div class="table-responsive" style="height: 450px">
                     <table class="table table-sm" style="font-size:.7rem">

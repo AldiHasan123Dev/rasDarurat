@@ -39,13 +39,18 @@ class HutangAgenController extends Controller
         return view('admin.hutangagen.index', compact('data'));
     }
 
-    public function list()
-    {
-        $data = HutangAgen::all()->whereNotNull('jurnal')->whereNull('deleted_at')->groupBy('draf');
-        // dd($data);
-        return view('admin.hutangagen.list', compact('data'));
-    }
+public function list(Request $request)
+{
+    $year = $request->year ?? date('Y'); // default tahun ini
 
+    $query = HutangAgen::whereNotNull('jurnal')
+                ->whereNull('deleted_at')
+                ->whereYear('created_at', $year);
+
+    $data = $query->get()->groupBy('draf');
+
+    return view('admin.hutangagen.list', compact('data', 'year'));
+}
     public function draf(Request $request)
     {
         $ids = $request->order_id;
