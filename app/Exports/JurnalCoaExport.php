@@ -4,62 +4,95 @@ namespace App\Exports;
 
 use App\Models\COA;
 use App\Models\Jurnal;
-use Maatwebsite\Excel\Concerns\WithTitle;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
 {
-    private $month;
-    private $year;
-    private $coa;
+    private int $month;
+    private int $year;
+    private int $coa;
+
+    private $coaModel;
 
     public function __construct(int $coa, int $year, int $month)
     {
-        $this->coa = $coa;
+        $this->coa   = $coa;
         $this->month = $month;
         $this->year  = $year;
+
+        $this->coaModel = COA::findOrFail($coa);
     }
 
     public function view(): View
     {
-        $data = Jurnal::where('coa_id', $this->coa)
+        $c = $this->coaModel;
+        /*
+        |--------------------------------------------------------------------------
+        | DATA JURNAL BULAN BERJALAN (FIX MEMORY)
+        |--------------------------------------------------------------------------
+        */
+        $data = new Collection();
+
+        Jurnal::where('coa_id', $this->coa)
             ->whereYear('created_at', $this->year)
             ->whereMonth('created_at', $this->month)
             ->orderBy('created_at')
             ->orderBy('tipe')
-            ->orderBy('nomor', 'asc')
-            ->get();
-        $tipe = 'D';
-        $c = COA::find($this->coa);
-        if(substr($c->kode,0,1)=='2'||substr($c->kode,0,1)=='3'||substr($c->kode,0,1)=='5'){
-            $tipe = 'C';
-        }
+            ->orderBy('nomor')
+            ->chunk(1000, function ($rows) use (&$data) {
 
-        $ca = new Carbon($this->year.'-'.sprintf('%02d',$this->month).'-01');
-        $now = $ca->startOfMonth()->format('Y-m-d');
-        $last = $ca->subMonth()->endOfMonth()->format('Y-m-d');
+                foreach ($rows as $row) {
+
+                    $data->push($row);
+
+                }
+
+            });
+
         $kode_awal = substr($c->kode, 0, 1);
-         if (in_array($kode_awal, ['5', '6', '7'])) {
+        $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
+        $carbon = Carbon::create($this->year, $this->month, 1);
+        $last = $carbon->copy()
+            ->subMonth()
+            ->endOfMonth()
+            ->format('Y-m-d');
+        if (in_array($kode_awal, ['5','6','7'])) {
+
             $saldo = 0;
-         }
-        else if($tipe=='D'){
-            $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit');
+
         }else{
-            $saldo = Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('credit') - Jurnal::where('coa_id',$this->coa)->whereBetween('created_at',['2022-12-01',$last])->sum('debit');
+
+            $saldoData = Jurnal::where('coa_id', $this->coa)
+                ->whereBetween('created_at', ['2022-12-01', $last])
+                ->selectRaw('SUM(debit) as debit, SUM(credit) as credit')
+                ->first();
+
+            $totalDebit  = $saldoData->debit ?? 0;
+            $totalCredit = $saldoData->credit ?? 0;
+
+            $saldo = $tipe == 'D'
+                ? $totalDebit - $totalCredit
+                : $totalCredit - $totalDebit;
         }
-        return view('exports.jurnal', compact('data','tipe','c','saldo','last'));
+        return view('exports.jurnal', compact(
+            'data',
+            'tipe',
+            'c',
+            'saldo',
+            'last'
+        ));
+
     }
+
 
     public function title(): string
     {
-        $coa = COA::find($this->coa);
-        return $coa->kode.' '.$coa->nama;
+        return $this->coaModel->kode.' '.$this->coaModel->nama;
     }
 
 }

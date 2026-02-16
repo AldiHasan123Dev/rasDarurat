@@ -47,16 +47,16 @@
         @endphp
             <tr>
                 <td>{{ date('d/m/y', strtotime($item->created_at)) }}</td>
-                <td>{{ $item->nomor }}</td>
-                <td>{{ $item->container }}</td>
-                <td>{{ $item->nopol }}</td>
+                <td>{{ $item->nomor ?? '-' }}</td>
+                <td>{{ $item->container ?? '-' }}</td>
+                <td>{{ $item->nopol ?? '-' }}</td>
                 <td>{{ $item->order ? $item->order->job.'-'.sprintf('%02d',$item->order->no_job) : '-' }}</td>
-                <td>{{ $item->invoice }}</td>
-                <td>{{ $item->nama }}</td>
+                <td>{{ $item->invoice ?? '-' }}</td>
+                <td>{{ $item->nama ?? '-' }}</td>
                 <td>{{ number_format($item->debit,2,',','.') }}</td>
                 <td>{{ number_format($item->credit,2,',','.') }}</td>
                     <td>{{ number_format($saldo,2,',','.') }}</td>
-                <td>{{ $item->no_bg }}</td>
+                <td>{{ $item->no_bg ?? '-' }}</td>
             </tr>
         @endforeach
         <tr>
