@@ -86,7 +86,6 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
             'saldo',
             'last'
         ));
-
     }
 
 
