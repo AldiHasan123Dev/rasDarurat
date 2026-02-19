@@ -1038,11 +1038,12 @@
 
                 if (user_id == cs_id || user_id == marketing_id) {
                     $('#order-edit').show();
-                    $('#copy-order').show();
                     if (invoice && invoice !== "-") {
                         $('#btn-pindah-kapal').hide(); // Sembunyikan tombol jika invoice ada
+                        $('#copy-order').hide();
                     } else {
                         $('#btn-pindah-kapal').show(); // Tampilkan tombol jika invoice kosong
+                        $('#copy-order').hide();
                     }
                 } else {
                     $('#order-edit').hide();
