@@ -1043,7 +1043,7 @@
                         $('#copy-order').hide();
                     } else {
                         $('#btn-pindah-kapal').show(); // Tampilkan tombol jika invoice kosong
-                        $('#copy-order').hide();
+                        $('#copy-order').show();
                     }
                 } else {
                     $('#order-edit').hide();
