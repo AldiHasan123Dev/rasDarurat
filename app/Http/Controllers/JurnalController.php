@@ -3325,11 +3325,13 @@ $ket_c = $group->where('credit', '>', 0)
             ->make(true);
     }
 
-    public function exportJurnalBatch()
-    {
-        (new JurnalBatchExport(request('year'), request('month')))->queue('buku-besar.xlsx', 'public');
-        return back()->with('success', 'Request Export telah dibuat, silahkan tunggu beberapa saat hingga proses export selesai. refresh halaman secara berkala untuk melihat proses export. Process kurang lebih 3-5 menit.');
-    }
+   public function exportJurnalBatch()
+{
+    return Excel::download(
+        new JurnalBatchExport(request('year'), request('month')),
+        'buku-besar.xlsx'
+    );
+}
 
     public function exportMonth(Request $request)
     {
