@@ -93,7 +93,7 @@ td::selection, th::selection {
                         @csrf
                         <input type="hidden" name="month" value="{{ $month }}">
                         <input type="hidden" name="year" value="{{ $year }}">
-                        <button type="submit" class="btn btn-warning btn-success my-2"><i class="fas fa-print"></i> Request Export</button>
+                        <button type="submit" class="btn btn-warning btn-success my-2"><i class="fas fa-print"></i> Export Excel</button>
                     </form>
             </div>
             <div id="print">
