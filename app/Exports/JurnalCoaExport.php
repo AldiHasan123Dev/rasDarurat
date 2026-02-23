@@ -29,64 +29,84 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
     }
 
     public function view(): View
-    {
-        $c = $this->coaModel;
-        /*
-        |--------------------------------------------------------------------------
-        | DATA JURNAL BULAN BERJALAN (FIX MEMORY)
-        |--------------------------------------------------------------------------
-        */
-        $data = new Collection();
+{
+    $c = $this->coaModel;
 
-        Jurnal::where('coa_id', $this->coa)
-            ->whereYear('created_at', $this->year)
-            ->whereMonth('created_at', $this->month)
-            ->orderBy('created_at')
-            ->orderBy('tipe')
-            ->orderBy('nomor')
-            ->chunk(1000, function ($rows) use (&$data) {
-
-                foreach ($rows as $row) {
-
-                    $data->push($row);
-
-                }
-
-            });
-
-        $kode_awal = substr($c->kode, 0, 1);
-        $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
-        $carbon = Carbon::create($this->year, $this->month, 1);
-        $last = $carbon->copy()
-            ->subMonth()
-            ->endOfMonth()
-            ->format('Y-m-d');
-        if (in_array($kode_awal, ['5','6','7'])) {
-
-            $saldo = 0;
-
-        }else{
-
-            $saldoData = Jurnal::where('coa_id', $this->coa)
-                ->whereBetween('created_at', ['2022-12-01', $last])
-                ->selectRaw('SUM(debit) as debit, SUM(credit) as credit')
-                ->first();
-
-            $totalDebit  = $saldoData->debit ?? 0;
-            $totalCredit = $saldoData->credit ?? 0;
-
-            $saldo = $tipe == 'D'
-                ? $totalDebit - $totalCredit
-                : $totalCredit - $totalDebit;
-        }
-        return view('exports.jurnal', compact(
-            'data',
+    $data = Jurnal::query()
+        ->where('coa_id', $this->coa)
+        ->whereYear('created_at', $this->year)
+        ->whereMonth('created_at', $this->month)
+        ->orderBy('created_at')
+        ->orderBy('tipe')
+        ->orderBy('nomor')
+        ->select([
+            'id',
+            'created_at',
             'tipe',
-            'c',
-            'saldo',
-            'last'
-        ));
+            'nomor',
+            'debit',
+            'credit',
+            'nama'
+        ])
+        ->cursor(); // 🔥 STREAMING SUPER HEMAT MEMORY
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SALDO AWAL (OPTIMASI)
+    |--------------------------------------------------------------------------
+    */
+
+    $kode_awal = substr($c->kode, 0, 1);
+
+    $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
+
+
+    $last = Carbon::create($this->year, $this->month)
+        ->subMonth()
+        ->endOfMonth();
+
+
+    if (in_array($kode_awal, ['5','6','7'])) {
+
+        $saldo = 0;
+
+    } else {
+
+        $saldoData = Jurnal::query()
+
+            ->where('coa_id', $this->coa)
+
+            ->where('created_at', '<=', $last)
+
+            ->selectRaw('
+                SUM(debit) as debit,
+                SUM(credit) as credit
+            ')
+            ->first();
+
+
+        $totalDebit  = $saldoData->debit ?? 0;
+
+        $totalCredit = $saldoData->credit ?? 0;
+
+
+        $saldo = $tipe == 'D'
+
+            ? $totalDebit - $totalCredit
+
+            : $totalCredit - $totalDebit;
     }
+
+
+    return view('exports.jurnal', compact(
+        'data',
+        'tipe',
+        'c',
+        'saldo',
+        'last'
+    ));
+}
 
 
     public function title(): string
