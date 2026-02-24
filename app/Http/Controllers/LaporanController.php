@@ -1273,7 +1273,10 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
     public function invoice()
     {
         $year = request('year') ?? date('Y');
-        $data = Order::whereNull('invoice')->get();
+        $data = Order::whereNull('invoice')
+                ->whereNull('deleted_at')
+                ->where('created_at', '>=', '2025-01-01')
+                ->get();
         $data = OrderResource::collection($data);
         return view('admin.laporan.preinvoice', compact('data','year'));
     }
@@ -1512,7 +1515,7 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
         return [
             'periode' => $periode,
             'total_debit' => $items->sum('debit'),
-'list_jurnal_d' => $items->where('debit', '>', 0)
+            'list_jurnal_d' => $items->where('debit', '>', 0)
             ->groupBy('nomor')
             ->map(function ($group, $nomor) {
                 $ids = $group->pluck('id')->unique()->values()->implode(',');
@@ -1532,4 +1535,98 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
 
         return view('admin.laporan.omset_trucking', compact('data','year','months','month','tipe','jurnal_id','rekapPerBulan', 'rekapTesPerBulan','rekapPerBulan1','rekapPerBulan2'));
     }
+
+    public function MonitorSubjekBB()
+{
+
+    $year = request('year') ?? date('Y');
+    $month = request('month') ?? date('m');
+
+    $startDate = '2022-01-01';
+    $endDate = Carbon::create($year, $month)->endOfMonth()->endOfDay();
+
+
+    $coaSubjek = COA::whereIn('id',[46,47,48])->get();
+
+
+    $result = [];
+
+
+    foreach($coaSubjek as $coa)
+{
+
+    $xpdc = 0;
+    $trucking = 0;
+    $pelayaran = 0;
+
+    if($coa->id == 46)
+    {
+
+        $xpdc = Jurnal::where('coa_id',46)
+        ->whereNull('order_trucking_id')
+                        ->whereNull('invoice_trucking')
+                        ->whereNull('invoice_vendor')
+                        ->whereNull('invoice_agen')
+                         ->whereNotNull('invoice')
+            ->whereBetween('created_at',[$startDate,$endDate])
+            ->selectRaw('SUM(debit)-SUM(credit) as saldo')
+            ->value('saldo') ?? 0;
+
+    }
+
+    elseif($coa->id == 47)
+    {
+
+        $trucking = Jurnal::where('coa_id',47)
+            ->whereBetween('created_at',[$startDate,$endDate])
+            ->selectRaw('SUM(debit)-SUM(credit) as saldo')
+            ->value('saldo') ?? 0;
+
+    }
+
+    elseif($coa->id == 48)
+    {
+
+        $pelayaran = Jurnal::where('coa_id',48)
+            ->whereBetween('created_at',[$startDate,$endDate])
+            ->selectRaw('SUM(debit)-SUM(credit) as saldo')
+            ->value('saldo') ?? 0;
+
+    }
+
+
+    $result[]=[
+
+        'coa_nama'=>$coa->nama,
+
+        'detail'=>[
+
+            [
+                'nama'=>'Customer XPDC',
+                'saldo'=>$xpdc
+            ],
+
+            [
+                'nama'=>'Customer Trucking',
+                'saldo'=>$trucking
+            ],
+
+            [
+                'nama'=>'Pelayaran',
+                'saldo'=>$pelayaran
+            ]
+
+        ]
+
+    ];
+
+}
+
+
+    return view(
+        'admin.laporan.monitoring-subjek-bb',
+        compact('result')
+    );
+
+}
 }
