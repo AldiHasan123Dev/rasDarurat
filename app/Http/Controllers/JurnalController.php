@@ -2859,21 +2859,16 @@ $ket_c = $group->where('credit', '>', 0)
         $groupedData = $jurnal->map(function ($row) use (&$runningBalance, $tipe) {
             $customerName = $row->relasi;
             $invoice = $row->invoice ?? $row->invoice_external ?? $row->invoice_vendor ?? $row->invoice_trucking;
-    
-            // Tanggal dan keterangan tunggal karena ini per baris
             $ket_d = [$row->nama];
             $tgl_d = $row->debit > 0
                 ? [Carbon::parse($row->created_at)->format('Y-m-d')]
                 : ($row->credit > 0 ? [Carbon::parse($row->created_at)->format('Y-m-d')] : []);
-    
             $ket_c = $row->nama;
             $tgl_c = $row->credit > 0
                 ? [Carbon::parse($row->created_at)->format('Y-m-d')]
                 : [];
-    
             $totalDebit = $row->debit;
             $totalCredit = $row->credit;
-    
             // Tambahkan ke saldo berjalan
             $runningBalance += $tipe === 'D'
                 ? ($totalDebit - $totalCredit)
