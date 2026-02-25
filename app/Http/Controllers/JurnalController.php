@@ -2696,13 +2696,13 @@ public function editOne(Jurnal $jurnal)
                 // Ambil nama & tanggal untuk debit
                 $first = $group->first();
                 $prefix = '';
-                if (($first->coa_id ?? null) == 134) {
+                if (in_array(($first->coa_id ?? null), [134, 25])) {
                     $prefix = trim(($first->order->no_job ?? 'gk ada') . ' ' . ($first->order->job ?? 'gk ada'));
                 }
 $ket_d = $group->where('debit', '>', 0)
     ->map(function ($row) {
 
-        if ($row->coa_id == 134 && $row->order) {
+        if (in_array($row->coa_id, [134, 25]) && $row->order) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2721,7 +2721,7 @@ $ket_d = $group->where('debit', '>', 0)
 $ket_c = $group->where('credit', '>', 0)
     ->map(function ($row) {
 
-        if ($row->coa_id == 134 && $row->order) {
+        if (in_array($row->coa_id, [134, 25]) && $row->order) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2777,14 +2777,14 @@ $ket_c = $group->where('credit', '>', 0)
                 $first = $group->first();
                 $prefix = '';
                 $uang = '';
-                if (($first->coa_id ?? null) == 134) {
+                if (in_array($first->coa_id, [134, 25]) && $first->order) {
                     $prefix = trim(($first->order->no_job ?? 'gk ada') . ' ' . ($first->order->job ?? 'gk ada'));
                     $uang = trim($first->debit ?? $first->credit);
                 }
 $ket_d = $group->where('debit', '>', 0)
     ->map(function ($row) {
 
-        if ($row->coa_id == 134 && $row->order) {
+        if (in_array($row->coa_id, [134, 25]) && $row->order) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2803,7 +2803,7 @@ $ket_d = $group->where('debit', '>', 0)
 $ket_c = $group->where('credit', '>', 0)
     ->map(function ($row) {
 
-        if ($row->coa_id == 134 && $row->order) {
+        if (in_array($row->coa_id, [134, 25]) && $row->order) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
