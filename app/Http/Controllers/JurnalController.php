@@ -2696,13 +2696,13 @@ public function editOne(Jurnal $jurnal)
                 // Ambil nama & tanggal untuk debit
                 $first = $group->first();
                 $prefix = '';
-                if (in_array(($first->coa_id ?? null), [134, 25])) {
+                if (in_array(($first->coa_id ?? null), [134, 25,27])) {
                     $prefix = trim(($first->order->no_job ?? 'gk ada') . ' ' . ($first->order->job ?? 'gk ada'));
                 }
 $ket_d = $group->where('debit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25]) && $row->order) {
+        if (in_array($row->coa_id, [134, 25,27])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2721,7 +2721,7 @@ $ket_d = $group->where('debit', '>', 0)
 $ket_c = $group->where('credit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25]) && $row->order) {
+        if (in_array($row->coa_id, [134, 25,27])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2784,7 +2784,7 @@ $ket_c = $group->where('credit', '>', 0)
 $ket_d = $group->where('debit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25]) && $row->order) {
+        if (in_array($row->coa_id, [134, 25,27])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2803,7 +2803,7 @@ $ket_d = $group->where('debit', '>', 0)
 $ket_c = $group->where('credit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25]) && $row->order) {
+        if (in_array($row->coa_id, [134, 25,27])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2892,7 +2892,7 @@ $ket_c = $group->where('credit', '>', 0)
             ];
         });
     }
-
+ 
 
     // Gunakan $groupedData sesuai kebutuhan (misal kirim ke view)
 }
