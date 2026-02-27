@@ -146,9 +146,10 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">#</th>
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">ID JOB</th>
-                                         <th style="min-width:40px !important">Shipment</th>
+                                        <th style="min-width:40px !important">Shipment</th>
                                         <th style="min-width:40px !important">Kondisi</th>
                                         <th style="min-width:40px !important">Asuransi</th>
+                                        <th style="min-width:40px !important">Komisi</th>
                                         <th style="min-width:40px !important">Group JOB</th>
                                         <th style="min-width:40px !important">Tanggal</th>
                                         <th style="min-width:40px !important">Pembayar</th>
@@ -310,6 +311,7 @@ table.dataTable tbody > tr.selected1 td {
                                             <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->asuransi }}</td>
+                                            <td>{{ number_format(($order->komisi ?? 0),2,',','.') }}</td>
                                             <td>{{ $order->job }}</td>
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
@@ -807,7 +809,7 @@ $totalLB = $data->sum(function($o) {
     <script>
         let table = $('#table').DataTable({
             fixedColumns: {
-                left: 6,
+                left: 7,
                 right: 0
             },
             autoWidth:false,

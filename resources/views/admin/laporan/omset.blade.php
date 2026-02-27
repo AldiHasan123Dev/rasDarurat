@@ -156,6 +156,7 @@
                                         <th style="min-width:40px !important">Invoice</th>
                                         <th style="min-width:40px !important">ID JOB</th>
                                         <th style="min-width:40px !important">Asuransi</th>
+                                        <th style="min-width:40px !important">Komisi</th>
                                         <th style="min-width:40px !important">Pembayar</th>
                                         <th style="min-width:40px !important">Marketing</th>
                                         <th style="min-width:40px !important">CS</th>
@@ -316,6 +317,7 @@
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}-{{ sprintf('%02d', $order->no_job) }}</td>
                                             <td>{{ $order->asuransi }}</td>
+                                            <td>{{ number_format(($order->komisi ?? 0),2,',','.')  }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->customer->marketing->name ?? '-' }}</td>
                                             <td>{{ $order->tarif->customer->cs->name ?? '-' }}</td>
@@ -952,7 +954,7 @@
     <script>
         let table = $('#table').DataTable({
             fixedColumns: {
-                left: 6,
+                left: 7,
                 right: 0
             },
             autoWidth: false,
