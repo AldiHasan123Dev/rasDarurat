@@ -1538,95 +1538,100 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
 
     public function MonitorSubjekBB()
 {
-
-    $year = request('year') ?? date('Y');
+    $year  = request('year') ?? date('Y');
     $month = request('month') ?? date('m');
 
     $startDate = '2022-01-01';
-    $endDate = Carbon::create($year, $month)->endOfMonth()->endOfDay();
+    $endDate   = Carbon::create($year, $month)->endOfMonth()->endOfDay();
 
-
-    $coaSubjek = COA::whereIn('id',[46,47,48])->get();
-
+    $coaSubjek = COA::whereIn('id', [46,47,62,63,49,131,65,66])->get();
 
     $result = [];
 
+    foreach ($coaSubjek as $coa) {
 
-    foreach($coaSubjek as $coa)
-{
+        // Base query
+        $baseQuery = Jurnal::where('coa_id', $coa->id)
+            ->whereBetween('created_at', [$startDate, $endDate]);
 
-    $xpdc = 0;
-    $trucking = 0;
-    $pelayaran = 0;
+        // Function hitung saldo biar gak ulang2 query structure
+        $getSaldo = function ($query) {
+            return $query
+                ->selectRaw('COALESCE(SUM(debit),0) - COALESCE(SUM(credit),0) as saldo')
+                ->value('saldo') ?? 0;
+        };
 
-    if($coa->id == 46)
-    {
+        $xpdc = $getSaldo(
+            (clone $baseQuery)
+                ->whereNotNull('order_id')
+                ->whereNull('order_trucking_id')
+                ->whereNull('invoice_trucking')
+                ->whereNull('invoice_vendor')
+                ->whereNull('invoice_agen')
+                ->whereNotNull('invoice')
+        );
 
-        $xpdc = Jurnal::where('coa_id',46)
-        ->whereNull('order_trucking_id')
-                        ->whereNull('invoice_trucking')
-                        ->whereNull('invoice_vendor')
-                        ->whereNull('invoice_agen')
-                         ->whereNotNull('invoice')
-            ->whereBetween('created_at',[$startDate,$endDate])
-            ->selectRaw('SUM(debit)-SUM(credit) as saldo')
-            ->value('saldo') ?? 0;
+        $agen = $getSaldo(
+            (clone $baseQuery)
+                ->whereNull('order_trucking_id')
+                ->whereNull('invoice_trucking')
+                ->whereNull('invoice_vendor')
+                ->whereNotNull('invoice_agen')
+                ->whereNull('invoice')
+        );
 
-    }
+        $lainLain = $getSaldo((clone $baseQuery)
+        ->where(function ($query){
+            $query->whereNotNull('order_id')
+                  ->orWhereNull('order_id');
+        })
+        ->whereNotNull('invoice_external')
+        );
 
-    elseif($coa->id == 47)
-    {
+        $pelayaran = $getSaldo(
+            (clone $baseQuery)
+                ->whereNotNull('no_bg')
+        );
 
-        $trucking = Jurnal::where('coa_id',47)
-            ->whereBetween('created_at',[$startDate,$endDate])
-            ->selectRaw('SUM(debit)-SUM(credit) as saldo')
-            ->value('saldo') ?? 0;
+        $trucking = $getSaldo(
+            (clone $baseQuery)
+                ->whereNotNull('order_trucking_id')
+                ->whereNotNull('invoice_trucking')
+                ->whereNull('invoice_vendor')
+        );
 
-    }
+        $vendor = $getSaldo(
+            (clone $baseQuery)
+                ->whereNotNull('order_trucking_id')
+                ->whereNull('invoice_trucking')
+                ->whereNotNull('invoice_vendor')
+        );
 
-    elseif($coa->id == 48)
-    {
+        $jurnalBalik = $getSaldo(
+            (clone $baseQuery)
+                ->whereNotNull('jurnal_balik')
+        );
 
-        $pelayaran = Jurnal::where('coa_id',48)
-            ->whereBetween('created_at',[$startDate,$endDate])
-            ->selectRaw('SUM(debit)-SUM(credit) as saldo')
-            ->value('saldo') ?? 0;
+        $relasi = $getSaldo(
+            (clone $baseQuery)
+                ->whereNotNull('relasi')
+        );
 
-    }
-
-
-    $result[]=[
-
-        'coa_nama'=>$coa->nama,
-
-        'detail'=>[
-
-            [
-                'nama'=>'Customer XPDC',
-                'saldo'=>$xpdc
-            ],
-
-            [
-                'nama'=>'Customer Trucking',
-                'saldo'=>$trucking
-            ],
-
-            [
-                'nama'=>'Pelayaran',
-                'saldo'=>$pelayaran
+        $result[] = [
+            'coa_nama' => $coa->kode . ' - ' . $coa->nama,
+            'detail' => [
+                ['nama' => 'Customer XPDC', 'saldo' => $xpdc],
+                ['nama' => 'Customer Trucking', 'saldo' => $trucking],
+                ['nama' => 'Pelayaran', 'saldo' => $pelayaran],
+                ['nama' => 'Agen', 'saldo' => $agen],
+                ['nama' => 'Vendor', 'saldo' => $vendor],
+                ['nama' => 'Lain Lain (External Inv)', 'saldo' => $lainLain],
+                ['nama' => 'Relasi', 'saldo' => $relasi],
+                ['nama' => 'Jurnal Balik', 'saldo' => $jurnalBalik],
             ]
+        ];
+    }
 
-        ]
-
-    ];
-
-}
-
-
-    return view(
-        'admin.laporan.monitoring-subjek-bb',
-        compact('result')
-    );
-
+    return view('admin.laporan.monitoring-subjek-bb', compact('result'));
 }
 }
