@@ -29,6 +29,7 @@
                 <a href="{{ route('jurnal.tampungan') }}" class="py-2 px-3 btn-sm btn btn-secondary">Jurnal Tampungan</a>
                 <a href="{{ route('jurnal.totalan_sopir') }}" class="py-2 px-3 btn-sm btn btn-secondary">Jurnal Totalan Sopir</a>
                 <a href="{{ route('kunci.jurnal') }}" class="py-2 px-3 btn-sm btn btn-danger">Kunci Jurnal</a>
+                 <a href="{{ route('monitoring-subjek-bb') }}" class="py-2 px-3 btn-sm btn btn-secondary">Monitoring BB Pembantu</a>
                 @if (Auth::user()->role_id==1)
                     <form action="{{ route('jurnal.import') }}" method="post" enctype="multipart/form-data">
                         @csrf
