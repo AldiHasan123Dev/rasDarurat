@@ -1602,7 +1602,6 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
 
         $vendor = $getSaldo(
             (clone $baseQuery)
-                ->whereNotNull('order_trucking_id')
                 ->whereNull('invoice_trucking')
                 ->whereNotNull('invoice_vendor')
         );
