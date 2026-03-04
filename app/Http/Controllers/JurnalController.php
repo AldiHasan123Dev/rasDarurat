@@ -1961,105 +1961,60 @@ public function editOne(Jurnal $jurnal)
             $tipe = 'C';
         }
         $saldo = array();
-foreach ($months as $idx => $item) {
+ foreach ($months as $idx => $item) {
+            $bln = $idx + 1;
+            $c = new Carbon($year . '-' . sprintf('%02d', $bln) . '-01');
+            $now = $c->startOfMonth()->format('Y-m-d');
+            $last = Carbon::parse($year . '-' . sprintf('%02d', $bln) . '-01')->endOfMonth()->format('Y-m-d 23:59:59');
+            $start = $c->subMonth()->startOfMonth()->format('Y-m-d');
+            // $start = '2022-12-01';
+            $des = $c->endOfMonth()->format('Y-m-d');
+            // dd($start,$des,$last);
+            if ($idx == 0) {
+                if ($tipe == 'D') {
+                    $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('debit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('credit');
+                } else {
+                    $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('credit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('debit');
+                }
+            } else {
+                // if ($tipe=='D') {
+                //     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
+                // } else {
+                //     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit');
+                // }
+                // if($saldo_awal>0){
+                // }
+                $start = $now;
+                $saldo_awal =  $saldo['saldo_akhir'][$idx - 1];
+                // dd($start,$last,$saldo_awal);
+            }
+            $debit = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', [$now, $last])->sum('debit');
+            $credit = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', [$now, $last])->sum('credit');
+            $saldo['saldo_awal'][$idx] = $saldo_awal;
+            $kode_awal = substr($coa->kode, 0, 1);
+            if (in_array($kode_awal, ['5', '6', '7'])) {
+                // Akun biaya (beban) → reset setiap bulan
+                $saldo['saldo_awal'][$idx] = 0;
 
-    $bln = $idx + 1;
+                // Default rumus saldo akhir untuk beban
+                $saldo['saldo_akhir'][$idx] = $debit - $credit;
 
-    $startOfMonth = Carbon::create($year, $bln, 1)->startOfMonth();
-    $endOfMonth   = Carbon::create($year, $bln, 1)->endOfMonth();
-
-    // ================================
-    // 1️⃣ HITUNG SALDO AWAL
-    // ================================
-
-    if ($idx == 0) {
-
-        // Januari → ambil saldo akhir Desember tahun lalu
-        $lastDesember = Carbon::create($year - 1, 12, 1)
-            ->endOfMonth()
-            ->format('Y-m-d 23:59:59');
-
-        if ($tipe == 'D') {
-            $saldo_awal = Jurnal::where('coa_id', $coa_id)
-                ->where('created_at', '<=', $lastDesember)
-                ->sum('debit')
-                -
-                Jurnal::where('coa_id', $coa_id)
-                ->where('created_at', '<=', $lastDesember)
-                ->sum('credit');
-        } else {
-            $saldo_awal = Jurnal::where('coa_id', $coa_id)
-                ->where('created_at', '<=', $lastDesember)
-                ->sum('credit')
-                -
-                Jurnal::where('coa_id', $coa_id)
-                ->where('created_at', '<=', $lastDesember)
-                ->sum('debit');
+                // Jika akun kode 5 dan debit = 0 → gunakan credit - debit
+                if ($kode_awal == '5' && $debit == 0) {
+                    $saldo['saldo_akhir'][$idx] = $credit - $debit;
+                }
+            } 
+            elseif ($tipe == 'D') {
+                // Akun debit normal (aset, misal kas/bank/piutang)
+                $saldo['saldo_akhir'][$idx] = ($debit + $saldo_awal) - $credit;
+            } 
+            else {
+                // Akun kredit normal (utang, modal, pendapatan)
+                $saldo['saldo_akhir'][$idx] = ($credit + $saldo_awal) - $debit;
+            }
+            $saldo['debit'][$idx] = $debit;
+            $saldo['credit'][$idx] = $credit;
         }
-
-    } else {
-
-        // Bulan berikutnya → carry forward
-        $saldo_awal = $saldo['saldo_akhir'][$idx - 1];
-
-    }
-
-    // ================================
-    // 2️⃣ HITUNG MUTASI BULAN INI
-    // ================================
-
-    $debit = Jurnal::where('coa_id', $coa_id)
-        ->whereBetween('created_at', [
-            $startOfMonth->format('Y-m-d'),
-            $endOfMonth->format('Y-m-d 23:59:59')
-        ])
-        ->sum('debit');
-
-    $credit = Jurnal::where('coa_id', $coa_id)
-        ->whereBetween('created_at', [
-            $startOfMonth->format('Y-m-d'),
-            $endOfMonth->format('Y-m-d 23:59:59')
-        ])
-        ->sum('credit');
-
-    // ================================
-    // 3️⃣ HITUNG SALDO AKHIR
-    // ================================
-
-    $kode_awal = substr($coa->kode, 0, 1);
-
-    // 🔹 Akun Beban & Pendapatan (5,6,7) → reset tiap bulan
-    if (in_array($kode_awal, ['5', '6', '7'])) {
-
-        $saldo_awal = 0;
-        $saldo['saldo_awal'][$idx] = 0;
-
-        if ($tipe == 'D') {
-            $saldo_akhir = $debit - $credit;
-        } else {
-            $saldo_akhir = $credit - $debit;
-        }
-
-    } else {
-
-        // 🔹 Akun Neraca → carry forward
-        if ($tipe == 'D') {
-            $saldo_akhir = $saldo_awal + $debit - $credit;
-        } else {
-            $saldo_akhir = $saldo_awal + $credit - $debit;
-        }
-
-        $saldo['saldo_awal'][$idx] = $saldo_awal;
-    }
-
-    // ================================
-    // 4️⃣ SIMPAN KE ARRAY
-    // ================================
-
-    $saldo['saldo_akhir'][$idx] = $saldo_akhir;
-    $saldo['debit'][$idx] = $debit;
-    $saldo['credit'][$idx] = $credit;
-}
         $m = (int)$month;
         $saldo_awal = $saldo['saldo_awal'][$m - 1];
         $search = null;
