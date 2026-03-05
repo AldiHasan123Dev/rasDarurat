@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\OrderResource;
 use App\Models\COA;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Jurnal;
 use Carbon\Carbon;
 use App\Models\Kendaraan;
@@ -54,8 +55,7 @@ class LaporanController extends Controller
         'totalInvoiceCount','totalBelumBayar','customers'));
     }
 
-    public function data_rekap_piutang_addcost(Request $request)
-{
+    public function data_rekap_piutang_addcost(Request $request) {
     $page = $request->input('page', 1);
     $rows = $request->input('rows', 20);
     $searchField = $request->input('searchField');
@@ -1186,6 +1186,70 @@ public function tujuan()
         $is_pra = false;
         return view('admin.laporan.omset', compact('rekapPerBulan','jurnal61','is_pra','data','year','months','month','tipe','ids','coa'));
     }
+
+        public function omsetMarketing()
+    {
+        $year = request('year') ?? date('Y');
+        $month = request('month') ?? date('m');
+        $tipe = request('tipe') ?? 'inv';
+        $startDate = Carbon::create(2025, 11, 1)->startOfMonth();
+$endDate = Carbon::create($year, $month, 1)->endOfMonth();
+        $months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+        $job = $year.sprintf('%02d',$month);
+       $userId = Auth::id();
+
+if ($tipe == 'inv') {
+    $data = Order::whereMonth('invoice_date', $month)
+        ->where('lock_omset', '!=', 0)
+         ->whereBetween('invoice_date', [$startDate, $endDate])
+        ->whereHas('tarif.customer.marketing', function ($q) use ($userId) {
+            $q->where('id', $userId);
+        })
+        ->get();
+} else {
+    $data = Order::where('job', 'like', $job.'%')
+     ->whereBetween('invoice_date', [$startDate, $endDate])
+        ->whereHas('tarif.customer.marketing', function ($q) use ($userId) {
+            $q->where('id', $userId);
+        })
+        ->get();
+}
+        $ids = $data->pluck('id')->toArray();
+        $coa = COA::where('is_active',1)->get();
+        $jurnal61 = Jurnal::whereIn('order_id',$ids)->where('coa_id',93)->sum('debit');
+        $jurnalDebit = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 93)
+            ->sum('debit');
+
+        $jurnalKredit = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 93)
+            ->sum('credit');
+
+        $jurnal61 = $jurnalDebit - $jurnalKredit;
+
+        // Ambil data jurnal
+        $jurnalList61 = Jurnal::whereIn('order_id', $ids)
+            ->where('coa_id', 93)
+            ->get();
+
+        // Kelompokkan berdasarkan bulan dari created_at
+        $jurnalPerBulan = $jurnalList61->groupBy(function ($jurnal) {
+            return Carbon::parse($jurnal->created_at)->format('Y-m'); // contoh: "2025-07"
+        });
+
+        // Rekap data per bulan dengan pengurangan debit - kredit
+        $rekapPerBulan = $jurnalPerBulan->map(function ($items, $bulan) {
+            return [
+                'periode' => $bulan,
+                'total_debit' => $items->sum('debit'),
+                'total_kredit' => $items->sum('credit'),
+                'net_total' => $items->sum('debit') - $items->sum('credit'), // net = debit - kredit
+            ];
+        })->values();
+        $is_pra = false;
+        return view('admin.laporan.omset_marketing', compact('rekapPerBulan','jurnal61','is_pra','data','year','months','month','tipe','ids','coa'));
+    }
+
     public function praomset()
     {
         $year = request('year') ?? date('Y');
