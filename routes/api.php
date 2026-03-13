@@ -122,3 +122,6 @@ Route::get('jqgrid-order',[OrderController::class,'jqgrid'])->name('jqgrid.order
 Route::get('jqgrid-order-trucking',[OrderTruckingController::class,'jqgrid'])->name('jqgrid.ordertrucking');
 Route::get('jqgrid-order-trucking1',[OrderTruckingController::class,'jqgrid1'])->name('jqgrid1.ordertrucking');
 Route::post('sync-order-trucking',[SyncController::class,'order_trucking'])->name('api.sync.ordertrucking');
+Route::post('order-update-ops',[OrderController::class,'updateOps'])->name('order.update.ops');
+Route::post('order-update-checker',[OrderController::class,'updateChecker'])->name('order.update.checker');
+Route::post('order-update-kuli',[OrderController::class,'updateKuli'])->name('order.update.kuli');

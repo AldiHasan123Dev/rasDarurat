@@ -110,6 +110,63 @@ class OrderController extends Controller
         return response('success');
     }
 
+    public function updateOps(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'cek_ops' => 'nullable|string|max:255'
+    ]);
+
+    $order = Order::findOrFail($request->id);
+
+    $order->update([
+        'cek_ops' => $request->cek_ops
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Cek OPS berhasil diupdate'
+    ]);
+}
+
+    public function updateChecker(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'cek_checker' => 'nullable|string|max:255'
+    ]);
+
+    $order = Order::findOrFail($request->id);
+
+    $order->update([
+        'cek_checker' => $request->cek_checker
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Cek Checker berhasil diupdate'
+    ]);
+}
+
+    public function updateKuli(Request $request)
+{
+    $request->validate([
+        'id' => 'required',
+        'cek_kuli' => 'nullable|string|max:255'
+    ]);
+
+    $order = Order::findOrFail($request->id);
+
+    $order->update([
+        'cek_kuli' => $request->cek_kuli
+    ]);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Cek Kuli berhasil diupdate'
+    ]);
+}
+
     public function pre_invoice()
     {
         $ids = array();
@@ -491,6 +548,12 @@ if (request('ba_kembali_null')) {
                 });
             });
         }
+if (request('cek')) {
+    $query->whereBetween('order.created_at', [
+        '2026-01-01 00:00:00',
+        now()
+    ]);
+}
 
        if ($sidx) {
     if ($sidx == 'pembayar') {
@@ -547,6 +610,12 @@ if (request('ba_kembali_null')) {
         // }else{
         // }
         $count = Order::whereBetween('order.created_at', [$last, $now])->get('id')->count();
+        if (request('cek')) {
+    $count = Order::whereBetween('order.created_at', [
+        '2026-01-01 00:00:00',
+        now()
+    ])->count();
+}
         if (request('marketing_id')) {
             $count = Order::whereBetween('order.created_at', [$last, $now])->whereHas('tarif', function ($q) {
                 $q->whereHas('customer', function ($a) {

@@ -1250,6 +1250,100 @@ if ($tipe == 'inv') {
         return view('admin.laporan.omset_marketing', compact('rekapPerBulan','jurnal61','is_pra','data','year','months','month','tipe','ids','coa'));
     }
 
+    public function dashMonitor(){
+         $currentMonth = now()->month;
+    $currentYear = now()->year;
+
+    // Get the month and year from the request, or use the current month and year as defaults
+    $bulan = date('m');
+    $tahun = date('Y');
+
+    // Define the start date as January 2023
+    $startDate = '2022-01-01';
+    $tahunCo = $tahun;
+    $dateCo = now()->create($tahunCo . '-' . '01' . '-01')->startOfMonth()->toDateString();
+    // Define the end date based on the selected month and year
+    $endDate = now()->create($tahun . '-' . $bulan . '-01')->endOfMonth()->toDateString();
+
+    // Get COA data based on account numbers
+    $coa1 = Coa::whereIn('id',[46,47,31])->orderBy('kode')->get();
+    $coa2 = Coa::whereIn('id',[62,63,131])->orderBy('kode')->get();
+
+    $coa3 = Coa::whereIn('id',[49])->orderBy('kode')->get();
+    $coa4 = Coa::whereIn('id',[66,190,191])->orderBy('kode')->get();
+
+    // Initialize totals array
+    $totals = [];
+    $coaId1 = $coa1->pluck('id')->toArray();
+    $coaId2 = $coa2->pluck('id')->toArray();
+
+    $totals1 = [];
+    $coaId3 = $coa3->pluck('id')->toArray();
+    $coaId4 = $coa4->pluck('id')->toArray();
+
+    // Merge all COA IDs into a single array
+    $allCoaIds = array_merge($coaId1, $coaId2);
+    $allCoaIds1 = array_merge($coaId3, $coaId4);
+
+    foreach ($allCoaIds as $coaId) {
+        // Calculate debit and credit totals within the date range
+        $debit = Jurnal::where('coa_id', $coaId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('debit');
+
+        $kredit = Jurnal::where('coa_id', $coaId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('credit');
+        if (in_array($coaId, $coaId1)) {
+            $selisih = $debit - $kredit;
+        } else {
+            $selisih = $kredit - $debit;
+        }
+        // Store the totals in the array
+        $totals[$coaId] = [
+            'debit' => $debit,
+            'kredit' => $kredit,
+            'selisih' => $selisih,
+        ];
+        }
+
+        foreach ($allCoaIds1 as $coaId) {
+        // Calculate debit and credit totals within the date range
+        $debit = Jurnal::where('coa_id', $coaId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('debit');
+
+        $kredit = Jurnal::where('coa_id', $coaId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->sum('credit');
+        if (in_array($coaId, $coaId1)) {
+            $selisih = $debit - $kredit;
+        } else {
+            $selisih = $kredit - $debit;
+        }
+        // Store the totals in the array
+        $totals1[$coaId] = [
+            'debit' => $debit,
+            'kredit' => $kredit,
+            'selisih' => $selisih,
+        ];
+        }
+
+         return view('admin.jurnal.dash-monitor', [
+        'coa1' => $coa1,
+        'coa2' => $coa2,
+        'coa3' => $coa3,
+        'coa4' => $coa4,
+        'totals' => $totals,
+        'totals1' => $totals1,
+        'bulan' => $bulan,
+        'tahun' => $tahun,
+        'startDate' => $startDate,
+        'endDate' => $endDate
+    ]);
+        dd($totals);
+    }
+
     public function praomset()
     {
         $year = request('year') ?? date('Y');

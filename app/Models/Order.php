@@ -63,6 +63,9 @@ class Order extends Model
         'lock_omset',
         'jasa_kirim_id',
         'is_draft',
+        'cek_ops',
+        'cek_checker',
+        'cek_kuli'
     ];
 
     protected static function booted()

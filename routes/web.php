@@ -232,6 +232,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('laporan/trucking', [LaporanController::class, 'trucking'])->name('laporan.trucking');
     Route::get('laporan/sopir', [LaporanController::class, 'sopir'])->name('laporan.sopir');
     Route::get('laporan/invoice', [LaporanController::class, 'invoice'])->name('laporan.invoice');
+      Route::get('laporan/dashmonitor', [LaporanController::class, 'dashmonitor'])->name('laporan.dashmonitor');
     Route::get('laporan/omset', [LaporanController::class, 'omset'])->name('laporan.omset');
     Route::get('laporan/omset-customer', [LaporanController::class, 'omset_customer'])->name('laporan.omset_customer');
     Route::get('laporan/pra-omset', [LaporanController::class, 'praomset'])->name('laporan.praomset');
@@ -260,6 +261,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'jurnal'])->name('jasakirim.draf.jurnal');
     Route::post('draf-jurnal-jasa-kirim', [JasaKirimController::class, 'generateJurnal'])->name('jasakirim.generate.jurnal');
     Route::get('jurnal-order', [JurnalController::class, 'order'])->name('jurnal.order');
+    Route::get('monitoring-kasir', [JurnalController::class, 'moniOps'])->name('jurnal.MoniOps');
     Route::get('jurnal-code', [JurnalController::class, 'code'])->name('jurnal.code');
     Route::get('jurnal-order-trucking', [JurnalController::class, 'order_trucking'])->name('jurnal.order_trucking');
     Route::get('rekap-data-blum-bayar', [LaporanController::class, 'exportRekapData'])->name('rekap_piutang.blum');

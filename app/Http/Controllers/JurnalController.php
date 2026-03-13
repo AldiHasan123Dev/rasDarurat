@@ -265,6 +265,11 @@ class JurnalController extends Controller
     {
         return view('admin.jurnal.manual');
     }
+
+      public function moniOps()
+    {
+        return view('admin.jurnal.monitoring-ops');
+    }
     
     public function merge()
     {
