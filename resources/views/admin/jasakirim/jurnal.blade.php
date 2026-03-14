@@ -116,8 +116,11 @@
                                                         @foreach ($data as $idx => $item)
                                                             @foreach ($item->orders as $order)
                                                                 <tr>
-                                                                    <td>{{ $order->checkOmset() ? '2.1.5.1' : '1.6.1' }}</td>
-                                                                    <td>{{ $order->checkOmset() ? 'Hutang Biaya Operasional Ekspedisi' : 'Uang Muka Biaya Oprasional Ekspedisi' }}</td>
+                                                                    @php
+                                                                        $isOmset = $order ? $order->checkOmset() : null;
+                                                                    @endphp
+                                                                    <td>{{ is_null($isOmset) ? '-' : ($isOmset ? '2.1.5.1' : '1.6.1') }}</td>
+                                                                    <td>{{ is_null($isOmset) ? '-' : ($isOmset ? 'Hutang Biaya Operasional Ekspedisi' : 'Uang Muka Biaya Oprasional Ekspedisi') }}</td>
                                                                     <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
                                                                     <td>Biaya Pengiriman Dokumen {{ $order->agent->nama ?? '-' }} ({{ $order->agent->lokasi->nama ?? '-' }})</td>
                                                                     <td>{{ number_format($item->split_nominal()) }}</td>
