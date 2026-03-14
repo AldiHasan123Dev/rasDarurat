@@ -2225,28 +2225,55 @@ public function editOne(Jurnal $jurnal)
         }
         if ($subjek == 'pelayaran') {
             // Gunakan cache untuk jurnal berdasarkan filter
-            $customer = Cache::remember('pelayaran_list', 60, function () {
-                return Pelayaran::pluck('nama', 'id');
-            });
-            $tarif = Cache::remember("hutang_pelayaran_list_{$customer->keys()->implode('_')}", 60, function () use ($customer){
-                return HutangPelayaran::whereNotNull('no_bg_opt')
-                    ->whereIn('pelayaran_id', $customer->keys())
-                    ->orWhereNotNull('no_bg_opp')
-                    ->orWhereNotNull('no_bg_ut')
-                    ->pluck('id');
-            });
-            $order = Cache::remember("order_pelayaran_list_{$tarif->implode('_')}", 60, function () use ($tarif) {
-                return Order::whereIn('tarif_id', $tarif)->pluck('id');
-            });
-            $jurnal = Cache::remember("jurnal_{$coa_id}_{$startDate}_{$endDate}_{$order->implode('_')}", 60, function () use ($coa_id, $order, $endDate, $startDate) {
-                return Jurnal::with(['order.hutang_pelayaran.pelayaran' => function($query) {
-                        $query->select('id', 'nama'); // Pilih kolom 'id' dan 'nama' dari tabel 'pelayaran'
-                    }])
-                    ->where('coa_id', $coa_id)
-                    ->whereNotNull('no_bg')
-                    ->whereBetween('created_at', [$startDate, $endDate])
-                    ->get();
-            });
+           $customer = Cache::remember('pelayaran_list', 60, function () {
+    return Pelayaran::pluck('nama', 'id');
+});
+
+$customerIds = $customer->keys();
+
+$tarif = Cache::remember(
+    'hutang_pelayaran_list_' . md5($customerIds->implode(',')),
+    60,
+    function () use ($customerIds) {
+        return HutangPelayaran::whereNotNull('no_bg_opt')
+            ->whereIn('pelayaran_id', $customerIds)
+            ->orWhereNotNull('no_bg_opp')
+            ->orWhereNotNull('no_bg_ut')
+            ->pluck('id');
+    }
+);
+
+
+$tarifIds = $tarif->values();
+
+$order = Cache::remember(
+    'order_pelayaran_list_' . md5($tarifIds->implode(',')),
+    60,
+    function () use ($tarifIds) {
+        if ($tarifIds->isEmpty()) {
+            return collect();
+        }
+
+        return Order::whereIn('tarif_id', $tarifIds)->pluck('id');
+    }
+);
+
+$orderIds = $order->values();
+
+$jurnal = Cache::remember(
+    "jurnal_{$coa_id}_{$startDate}_{$endDate}_" . md5($orderIds->implode(',')),
+    60,
+    function () use ($coa_id, $endDate, $startDate) {
+        return Jurnal::with([
+                'order.hutang_pelayaran.pelayaran:id,nama'
+            ])
+            ->select('id', 'order_id', 'debit', 'credit', 'no_bg', 'coa_id', 'created_at')
+            ->where('coa_id', $coa_id)
+            ->whereNotNull('no_bg')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->get();
+    }
+);
 
 
             // Gunakan cache untuk proses mapping dan pengelompokan
