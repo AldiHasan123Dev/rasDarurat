@@ -2223,92 +2223,84 @@ public function editOne(Jurnal $jurnal)
                 ];
             })->sortByDesc('saldo');            
         }
-        if ($subjek == 'pelayaran') {
-            // Gunakan cache untuk jurnal berdasarkan filter
-           $customer = Cache::remember('pelayaran_list', 60, function () {
-    return Pelayaran::pluck('nama', 'id');
-});
+       if ($subjek == 'pelayaran') {
 
-$customerIds = $customer->keys();
+    // Cache daftar pelayaran
+    $customer = Cache::remember('pelayaran_list', 60, function () {
+        return Pelayaran::pluck('nama', 'id');
+    });
 
-$tarif = Cache::remember(
-    'hutang_pelayaran_list_' . md5($customerIds->implode(',')),
-    60,
-    function () use ($customerIds) {
-        return HutangPelayaran::whereNotNull('no_bg_opt')
-            ->whereIn('pelayaran_id', $customerIds)
-            ->orWhereNotNull('no_bg_opp')
-            ->orWhereNotNull('no_bg_ut')
-            ->pluck('id');
-    }
-);
+    $customerIds = $customer->keys();
 
-
-$tarifIds = $tarif->values();
-
-$order = Cache::remember(
-    'order_pelayaran_list_' . md5($tarifIds->implode(',')),
-    60,
-    function () use ($tarifIds) {
-        if ($tarifIds->isEmpty()) {
-            return collect();
+    // Cache hutang pelayaran (tetap ada, tapi hanya untuk menjaga logic lama)
+    $tarif = Cache::remember(
+        'hutang_pelayaran_list_' . md5($customerIds->implode(',')),
+        60,
+        function () use ($customerIds) {
+            return HutangPelayaran::whereIn('pelayaran_id', $customerIds)
+                ->where(function ($q) {
+                    $q->whereNotNull('no_bg_opt')
+                      ->orWhereNotNull('no_bg_opp')
+                      ->orWhereNotNull('no_bg_ut');
+                })
+                ->pluck('id');
         }
+    );
 
-        return Order::whereIn('tarif_id', $tarifIds)->pluck('id');
-    }
-);
-
-$orderIds = $order->values();
-
-$jurnal = Cache::remember(
-    "jurnal_{$coa_id}_{$startDate}_{$endDate}_" . md5($orderIds->implode(',')),
-    60,
-    function () use ($coa_id, $endDate, $startDate) {
-        return Jurnal::with([
-                'order.hutang_pelayaran.pelayaran:id,nama'
-            ])
-            ->select('id', 'order_id', 'debit', 'credit', 'no_bg', 'coa_id', 'created_at')
-            ->where('coa_id', $coa_id)
-            ->whereNotNull('no_bg')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
-    }
-);
-
-
-            // Gunakan cache untuk proses mapping dan pengelompokan
-            $groupedData = Cache::remember("grouped_pelayaran_{$coa_id}_{$year}_{$month}", 60, function () use ($jurnal, $tipe) {
-                // Mapping data jurnal untuk menyesuaikan format yang diinginkan
-                $finalData = $jurnal->map(function ($item) {
-                    // Mengambil nama pelayaran dari relasi yang sudah dimuat
-                    $pelayaranName = $item->order->hutang_pelayaran->pelayaran->nama ?? $item->bg_pelayaran();
-            
-                    return [
-                        'pelayaran' => $pelayaranName,  // Ambil nama pelayaran
-                        'debit' => $item->debit,
-                        'credit' => $item->credit,
-                        'no_bg' => $item->no_bg,
-                    ];
-                });
-            
-                // Kelompokkan data berdasarkan nama pelayaran dan hitung total debit, kredit, dan saldo
-                return $finalData->groupBy('pelayaran')->map(function ($group) use ($tipe) {
-                    $totalDebit = $group->sum('debit');
-                    $totalCredit = $group->sum('credit');
-                    $saldo = $tipe == 'D'
-                        ? $totalDebit - $totalCredit  // Jika tipe adalah 'D'
-                        : $totalCredit - $totalDebit; // Jika tipe bukan 'D'
-            
-                    return [
-                        'pelayaran' => $group->first()['pelayaran'], // Nama pelayaran (satu saja karena sudah dikelompokkan)
-                        'total_debit' => $totalDebit,
-                        'total_credit' => $totalCredit,
-                        'no_bg_list' => $group->pluck('no_bg'), // Nilai no_bg yang unik sebagai koleksi
-                        'saldo' => $saldo, // Hitung saldo
-                    ];
-                })->sortByDesc('saldo');
-            });            
+    // Cache jurnal (TANPA whereIn order_id)
+    $jurnal = Cache::remember(
+        "jurnal_pelayaran_{$coa_id}_{$startDate}_{$endDate}",
+        60,
+        function () use ($coa_id, $startDate, $endDate) {
+            return Jurnal::with([
+                    'order.hutang_pelayaran.pelayaran:id,nama'
+                ])
+                ->select('id', 'order_id', 'debit', 'credit', 'no_bg', 'coa_id', 'created_at')
+                ->where('coa_id', $coa_id)
+                ->whereNotNull('no_bg')
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->get();
         }
+    );
+
+    // Cache hasil grouping
+    $groupedData = Cache::remember(
+        "grouped_pelayaran_{$coa_id}_{$year}_{$month}",
+        60,
+        function () use ($jurnal, $tipe) {
+
+            $finalData = $jurnal->map(function ($item) {
+                // Aman jika relasi null
+                $pelayaranName = optional(optional(optional($item->order)->hutang_pelayaran)->pelayaran)->nama
+                    ?? $item->bg_pelayaran();
+
+                return [
+                    'pelayaran' => $pelayaranName ?: '-',
+                    'debit' => (float) $item->debit,
+                    'credit' => (float) $item->credit,
+                    'no_bg' => $item->no_bg,
+                ];
+            });
+
+            return $finalData->groupBy('pelayaran')->map(function ($group) use ($tipe) {
+                $totalDebit = $group->sum('debit');
+                $totalCredit = $group->sum('credit');
+
+                $saldo = $tipe == 'D'
+                    ? $totalDebit - $totalCredit
+                    : $totalCredit - $totalDebit;
+
+                return [
+                    'pelayaran' => $group->first()['pelayaran'],
+                    'total_debit' => $totalDebit,
+                    'total_credit' => $totalCredit,
+                    'no_bg_list' => $group->pluck('no_bg')->unique()->values(),
+                    'saldo' => $saldo,
+                ];
+            })->sortByDesc('saldo')->values();
+        }
+    );
+}
         if ($subjek== 'agen'){
             $customer = Cache::remember('agen_list', 60, function () {
                 return Agen::pluck('id'); // Mengambil semua agen (ID sebagai key, Nama sebagai value)
