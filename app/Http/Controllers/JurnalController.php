@@ -2223,19 +2223,20 @@ public function editOne(Jurnal $jurnal)
                 ];
             })->sortByDesc('saldo');            
         }
-       if ($subjek == 'pelayaran') {
+
+        if ($subjek == 'pelayaran') {
 
     // Cache daftar pelayaran
-    $customer = Cache::remember('pelayaran_list', 60, function () {
+    $customer = Cache::remember('pelayaran_list', 3600, function () {
         return Pelayaran::pluck('nama', 'id');
     });
 
     $customerIds = $customer->keys();
 
-    // Cache hutang pelayaran (tetap ada, tapi hanya untuk menjaga logic lama)
+    // Cache hutang pelayaran (jika masih dipakai di logic lain, biarkan)
     $tarif = Cache::remember(
         'hutang_pelayaran_list_' . md5($customerIds->implode(',')),
-        60,
+        3600,
         function () use ($customerIds) {
             return HutangPelayaran::whereIn('pelayaran_id', $customerIds)
                 ->where(function ($q) {
@@ -2247,32 +2248,31 @@ public function editOne(Jurnal $jurnal)
         }
     );
 
-    // Cache jurnal (TANPA whereIn order_id)
-    $jurnal = Cache::remember(
-        "jurnal_pelayaran_{$coa_id}_{$startDate}_{$endDate}",
-        60,
-        function () use ($coa_id, $startDate, $endDate) {
-            return Jurnal::with([
-                    'order.hutang_pelayaran.pelayaran:id,nama'
-                ])
-                ->select('id', 'order_id', 'debit', 'credit', 'no_bg', 'coa_id', 'created_at')
-                ->where('coa_id', $coa_id)
-                ->whereNotNull('no_bg')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->get();
-        }
-    );
-
-    // Cache hasil grouping
+    // Cache hasil final
     $groupedData = Cache::remember(
-        "grouped_pelayaran_{$coa_id}_{$year}_{$month}",
-        60,
-        function () use ($jurnal, $tipe) {
+        "grouped_pelayaran_{$coa_id}_{$startDate}_{$endDate}_{$tipe}",
+        300,
+        function () use ($coa_id, $startDate, $endDate, $tipe) {
 
-            $finalData = $jurnal->map(function ($item) {
-                // Aman jika relasi null
-                $pelayaranName = optional(optional(optional($item->order)->hutang_pelayaran)->pelayaran)->nama
-                    ?? $item->bg_pelayaran();
+            $rows = Jurnal::query()
+                ->leftJoin('order as o', 'o.id', '=', 'jurnal.order_id')
+                ->leftJoin('hutang_pelayaran as hp', 'hp.order_id', '=', 'o.id')
+                ->leftJoin('pelayaran as p', 'p.id', '=', 'hp.pelayaran_id')
+                ->where('jurnal.coa_id', $coa_id)
+                ->whereNotNull('jurnal.no_bg')
+                ->whereBetween('jurnal.created_at', [$startDate, $endDate])
+                ->select([
+                    'jurnal.id',
+                    'jurnal.order_id',
+                    'jurnal.debit',
+                    'jurnal.credit',
+                    'jurnal.no_bg',
+                    DB::raw('p.nama as pelayaran_nama'),
+                ])
+                ->get();
+
+            $result = $rows->map(function ($item) {
+                $pelayaranName = $item->pelayaran_nama ?: $item->bg_pelayaran();
 
                 return [
                     'pelayaran' => $pelayaranName ?: '-',
@@ -2280,9 +2280,7 @@ public function editOne(Jurnal $jurnal)
                     'credit' => (float) $item->credit,
                     'no_bg' => $item->no_bg,
                 ];
-            });
-
-            return $finalData->groupBy('pelayaran')->map(function ($group) use ($tipe) {
+            })->groupBy('pelayaran')->map(function ($group) use ($tipe) {
                 $totalDebit = $group->sum('debit');
                 $totalCredit = $group->sum('credit');
 
@@ -2298,6 +2296,8 @@ public function editOne(Jurnal $jurnal)
                     'saldo' => $saldo,
                 ];
             })->sortByDesc('saldo')->values();
+
+            return $result; // <-- WAJIB ADA
         }
     );
 }
