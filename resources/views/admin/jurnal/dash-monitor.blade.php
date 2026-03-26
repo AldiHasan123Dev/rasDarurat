@@ -114,8 +114,6 @@
                     <tr>
                         <th>No Akun</th>
                         <th>Nama Akun</th>
-                        <th class="text-right">Debit</th>
-                        <th class="text-right">Credit</th>
                         <th class="text-right">Saldo</th>
                     </tr>
                 </thead>
@@ -133,14 +131,6 @@
 
                             <td>{{ $item->nama }}</td>
 
-                            <td class="text-right">
-                                {{ number_format($total['debit'], 2, ',', '.') }}
-                            </td>
-
-                            <td class="text-right">
-                                {{ number_format($total['credit'], 2, ',', '.') }}
-                            </td>
-
                             <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
                                 {{ number_format($total['selisih'], 2, ',', '.') }}
                             </td>
@@ -155,14 +145,6 @@
                     <tr class="table-total">
 
                         <td colspan="2">TOTAL</td>
-
-                        <td class="text-right">
-                            {{ number_format($totalDebitA, 2, ',', '.') }}
-                        </td>
-
-                        <td class="text-right">
-                            {{ number_format($totalCreditA, 2, ',', '.') }}
-                        </td>
 
                         <td class="text-right">
                             {{ number_format($totalSaldoA, 2, ',', '.') }}
@@ -186,8 +168,6 @@
                     <tr>
                         <th>No Akun</th>
                         <th>Nama Akun</th>
-                        <th class="text-right">Debit</th>
-                        <th class="text-right">Credit</th>
                         <th class="text-right">Saldo</th>
                     </tr>
                 </thead>
@@ -205,14 +185,6 @@
 
                             <td>{{ $item->nama }}</td>
 
-                            <td class="text-right">
-                                {{ number_format($total['debit'], 2, ',', '.') }}
-                            </td>
-
-                            <td class="text-right">
-                                {{ number_format($total['credit'], 2, ',', '.') }}
-                            </td>
-
                             <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
                                 {{ number_format($total['selisih'], 2, ',', '.') }}
                             </td>
@@ -227,14 +199,6 @@
                     <tr class="table-total">
 
                         <td colspan="2">TOTAL</td>
-
-                        <td class="text-right">
-                            {{ number_format($totalDebitB, 2, ',', '.') }}
-                        </td>
-
-                        <td class="text-right">
-                            {{ number_format($totalCreditB, 2, ',', '.') }}
-                        </td>
 
                         <td class="text-right">
                             {{ number_format($totalSaldoB, 2, ',', '.') }}
@@ -258,8 +222,6 @@
                     <tr>
                         <th>No Akun</th>
                         <th>Nama Akun</th>
-                        <th class="text-right">Debit</th>
-                        <th class="text-right">Credit</th>
                         <th class="text-right">Saldo</th>
                     </tr>
                 </thead>
@@ -277,14 +239,6 @@
 
                             <td>{{ $item->nama }}</td>
 
-                            <td class="text-right">
-                                {{ number_format($total['debit'], 2, ',', '.') }}
-                            </td>
-
-                            <td class="text-right">
-                                {{ number_format($total['credit'], 2, ',', '.') }}
-                            </td>
-
                             <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
                                 {{ number_format($total['selisih'], 2, ',', '.') }}
                             </td>
@@ -299,14 +253,6 @@
                     <tr class="table-total">
 
                         <td colspan="2">TOTAL</td>
-
-                        <td class="text-right">
-                            {{ number_format($totalDebitC, 2, ',', '.') }}
-                        </td>
-
-                        <td class="text-right">
-                            {{ number_format($totalCreditC, 2, ',', '.') }}
-                        </td>
 
                         <td class="text-right">
                             {{ number_format($totalSaldoC, 2, ',', '.') }}
@@ -330,8 +276,6 @@
                     <tr>
                         <th>No Akun</th>
                         <th>Nama Akun</th>
-                        <th class="text-right">Debit</th>
-                        <th class="text-right">Credit</th>
                         <th class="text-right">Saldo</th>
                     </tr>
                 </thead>
@@ -349,13 +293,6 @@
 
                             <td>{{ $item->nama }}</td>
 
-                            <td class="text-right">
-                                {{ number_format($total['debit'], 2, ',', '.') }}
-                            </td>
-
-                            <td class="text-right">
-                                {{ number_format($total['credit'], 2, ',', '.') }}
-                            </td>
 
                             <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
                                 {{ number_format($total['selisih'], 2, ',', '.') }}
@@ -371,14 +308,6 @@
                     <tr class="table-total">
 
                         <td colspan="2">TOTAL</td>
-
-                        <td class="text-right">
-                            {{ number_format($totalDebitD, 2, ',', '.') }}
-                        </td>
-
-                        <td class="text-right">
-                            {{ number_format($totalCreditD, 2, ',', '.') }}
-                        </td>
 
                         <td class="text-right">
                             {{ number_format($totalSaldoD, 2, ',', '.') }}

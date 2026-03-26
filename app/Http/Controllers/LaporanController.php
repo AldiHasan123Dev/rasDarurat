@@ -1296,7 +1296,7 @@ if ($tipe == 'inv') {
 
         // Khusus COA ID 31
         if ($coaId == 31) {
-            $debitQuery->where('tipe', '!=', 'JNL')
+            $debitQuery
                 ->whereHas('order', function ($q) {
                     $q->whereNull('invoice');
                 });
@@ -1309,7 +1309,7 @@ if ($tipe == 'inv') {
 
         // Khusus COA ID 31
         if ($coaId == 31) {
-            $kreditQuery->where('tipe', '!=', 'JNL')
+            $kreditQuery
                 ->whereHas('order', function ($q) {
                     $q->whereNull('invoice');
                 });
