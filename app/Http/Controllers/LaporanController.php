@@ -1296,11 +1296,16 @@ if ($tipe == 'inv') {
 
         // Khusus COA ID 31
         if ($coaId == 31) {
-            $debitQuery
-                ->whereHas('order', function ($q) {
-                    $q->whereNull('invoice');
-                });
+           $debitQuery->whereNull('jurnal_balik')
+    ->where(function ($q) {
+        $q->whereHas('order', function ($subQ) {
+            $subQ->whereNull('invoice');
+        })
+        ->orWhereNull('order_id');
+    });
         }
+
+        
 
         $debit = $debitQuery->sum('debit');
 
@@ -1309,10 +1314,13 @@ if ($tipe == 'inv') {
 
         // Khusus COA ID 31
         if ($coaId == 31) {
-            $kreditQuery
-                ->whereHas('order', function ($q) {
-                    $q->whereNull('invoice');
-                });
+            $kreditQuery->whereNull('jurnal_balik')
+    ->where(function ($q) {
+        $q->whereHas('order', function ($subQ) {
+            $subQ->whereNull('invoice');
+        })
+        ->orWhereNull('order_id');
+    });
         }
         // Query kredit (tetap normal)
         $kredit = $kreditQuery->sum('credit');
