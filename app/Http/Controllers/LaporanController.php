@@ -1298,7 +1298,7 @@ if ($tipe == 'inv') {
         if ($coaId == 31) {
             $debitQuery->whereNull('jurnal_balik')
                 ->whereHas('order', function ($q) {
-                    $q->whereNull('invoice');
+                    $q->whereNull('jurnal_piutang');
                 });
         }
 
@@ -1313,7 +1313,7 @@ if ($tipe == 'inv') {
         if ($coaId == 31) {
             $kreditQuery->whereNull('jurnal_balik')
                 ->whereHas('order', function ($q) {
-                    $q->whereNull('invoice');
+                    $q->whereNull('jurnal_piutang');
                 });
         }
         // Query kredit (tetap normal)
