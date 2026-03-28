@@ -151,10 +151,10 @@
         <td>
             @if ($item->id == 46 && $coa74)
                 {{ $item->nama }}<br>
-                <span class="saldo-minus">{{ $coa74->nama }}</span>
+                <span class="saldo-minus">{{ $coa74->nama }}  (Belum Teridentifikasi)</span>
             @elseif ($item->id == 47 && $coa75)
                 {{ $item->nama }}<br>
-                <span class="saldo-minus">{{ $coa75->nama }}</span>
+                <span class="saldo-minus">{{ $coa75->nama }} (Belum Teridentifikasi)</span>
             @else
                 {{ $item->nama }}
             @endif
