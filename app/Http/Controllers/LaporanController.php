@@ -1267,7 +1267,7 @@ if ($tipe == 'inv') {
     $endDate = now()->create($tahun . '-' . $bulan . '-01')->endOfMonth()->toDateString();
 
     // COA
-    $coa1 = Coa::whereIn('id', [46, 47, 31])->orderBy('kode')->get();
+    $coa1 = Coa::whereIn('id', [46, 47, 31,74,75])->orderBy('kode')->get();
     $coa2 = Coa::whereIn('id', [62, 63, 131])->orderBy('kode')->get();
 
     $coa3 = Coa::whereIn('id', [49])->orderBy('kode')->get();

@@ -119,24 +119,72 @@
                 </thead>
 
                 <tbody>
+@php
+    $coa74 = $coa1->firstWhere('id', 74);
+    $coa75 = $coa1->firstWhere('id', 75);
+@endphp
 
-                    @foreach ($coa1 as $item)
-                        @php
-                            $total = $totals[$item->id] ?? ['debit' => 0, 'credit' => 0, 'selisih' => 0];
-                        @endphp
+@foreach ($coa1 as $item)
+    @if (in_array($item->id, [74, 75]))
+        @continue
+    @endif
 
-                        <tr>
+    @php
+        $total = $totals[$item->id] ?? ['debit' => 0, 'credit' => 0, 'selisih' => 0];
+        $total74 = $totals[74] ?? ['debit' => 0, 'credit' => 0, 'selisih' => 0];
+        $total75 = $totals[75] ?? ['debit' => 0, 'credit' => 0, 'selisih' => 0];
+    @endphp
 
-                            <td>{{ $item->kode }}</td>
+    <tr>
+        <td>
+            @if ($item->id == 46 && $coa74)
+                {{ $item->kode }}<br>
+                <span class="saldo-minus">{{ $coa74->kode }}</span>
+            @elseif ($item->id == 47 && $coa75)
+                {{ $item->kode }}<br>
+                <span class="saldo-minus">{{ $coa75->kode }}</span>
+            @else
+                {{ $item->kode }}
+            @endif
+        </td>
 
-                            <td>{{ $item->nama }}</td>
+        <td>
+            @if ($item->id == 46 && $coa74)
+                {{ $item->nama }}<br>
+                <span class="saldo-minus">{{ $coa74->nama }}</span>
+            @elseif ($item->id == 47 && $coa75)
+                {{ $item->nama }}<br>
+                <span class="saldo-minus">{{ $coa75->nama }}</span>
+            @else
+                {{ $item->nama }}
+            @endif
+        </td>
 
-                            <td class="text-right {{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
-                                {{ number_format($total['selisih'], 2, ',', '.') }}
-                            </td>
+        <td class="text-right">
+            @if ($item->id == 46 && $coa74)
+                <span>
+                    {{ number_format($total['selisih'], 2, ',', '.') }}
+                </span><br>
+                <span class="saldo-minus">
+                    {{ number_format($total74['selisih'], 2, ',', '.') }}
+                </span>
 
-                        </tr>
-                    @endforeach
+            @elseif ($item->id == 47 && $coa75)
+                <span>
+                    {{ number_format($total['selisih'], 2, ',', '.') }}
+                </span><br>
+                <span class="saldo-minus">
+                    {{ number_format($total75['selisih'], 2, ',', '.') }}
+                </span>
+
+            @else
+                <span class="{{ $total['selisih'] < 0 ? 'saldo-minus' : '' }}">
+                    {{ number_format($total['selisih'], 2, ',', '.') }}
+                </span>
+            @endif
+        </td>
+    </tr>
+@endforeach
 
                 </tbody>
 
