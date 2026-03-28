@@ -1292,24 +1292,32 @@ if ($tipe == 'inv') {
     foreach ($allCoaIds as $coaId) {
 
         // Query debit
+        $debitQuery = Jurnal::where('coa_id', $coaId);
 
-       $baseQuery = Jurnal::where('coa_id', $coaId)
-    ->whereBetween('created_at', [$startDate, $endDate]);
-
-// Khusus COA ID 31
-if ($coaId == 31) {
-    $baseQuery->whereNull('jurnal_balik')
-        ->whereHas('order', function ($q) use ($startDate1, $endDate) {
-            $q->whereNull('jurnal_piutang')
-              ->whereBetween('created_at', [$startDate1, $endDate]);
+        // Khusus COA ID 31
+        if ($coaId == 31) {
+            $debitQuery->whereBetween('created_at', [$startDate, $endDate])->whereNull('jurnal_balik')
+                 ->whereHas('order', function ($q) use ($startDate1, $endDate) {
+            $q->whereNull('jurnal_piutang');
         });
-}
+        }
 
-// Debit
-$debit = (clone $baseQuery)->sum('debit');
+        
 
-// Kredit
-$kredit = (clone $baseQuery)->sum('credit');
+        $debit = $debitQuery->sum('debit');
+
+         $kreditQuery = Jurnal::where('coa_id', $coaId)
+            ->whereBetween('created_at', [$startDate, $endDate]);
+
+        // Khusus COA ID 31
+        if ($coaId == 31) {
+            $kreditQuery->whereBetween('created_at', [$startDate, $endDate])->whereNull('jurnal_balik')
+                ->whereHas('order', function ($q) use ($startDate1, $endDate) {
+            $q->whereNull('jurnal_piutang');
+        });
+        }
+        // Query kredit (tetap normal)
+        $kredit = $kreditQuery->sum('credit');
 
         // Selisih
         if (in_array($coaId, $coaId1)) {
