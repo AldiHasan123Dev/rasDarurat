@@ -171,7 +171,6 @@
                                             value="" id="relasi1-{{ $i }}">
                                     </td>
                                     <td class="dynamic-column" hidden id="dynamic-column-{{ $i }}"></td>
-                                </td>
                                 </tr>
                             @endfor
                         </table>
