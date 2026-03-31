@@ -503,7 +503,7 @@ $('#doc-' + debit).select2();
                 $('#keterangan-' + id).attr('disabled', false)
                 $('#amount-' + id).attr('disabled', false)
                 $('#doc-' + id).attr('disabled', false)
-                $('#dynamic-column' + id).attr('disabled', false)
+                $('#dynamic-column-' + id).attr('disabled', false)
                 $('#invoice_external1-' + id).attr('disabled', false)
                 $('#invoice1-' + id).attr('disabled', false)
                 $('#invoice_agen1-' + id).attr('disabled', false)
