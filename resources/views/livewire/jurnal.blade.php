@@ -171,6 +171,7 @@
                                             value="" id="relasi1-{{ $i }}">
                                     </td>
                                     <td class="dynamic-column" hidden id="dynamic-column-{{ $i }}"></td>
+                                </td>
                                 </tr>
                             @endfor
                         </table>
@@ -222,6 +223,7 @@
         inv.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
+            <td>
                 <select class="form-control select3" onchange="total()"
                     id="invoice-${rowId}" name="invoice[]"
                     style="font-size:.9rem !important; width:170px">
@@ -232,6 +234,7 @@
                         </option>
                     @endforeach
                 </select>
+            </td>
         `;
         $(dynamicColumn.querySelector('.select3')).select2();
 
@@ -240,6 +243,7 @@
         inv_agen.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
+            <td>
                 <select class="form-control select3" onchange="total()"
                     id="invoice-${rowId}" name="invoice_agen[]"
                     style="font-size:.9rem !important; width:170px">
@@ -250,6 +254,7 @@
                         </option>
                     @endforeach
                 </select>
+            </td>
         `;
         $(dynamicColumn.querySelector('.select3')).select2();
 
@@ -258,6 +263,7 @@
         noBg.remove();
         dynamicColumn.removeAttribute('hidden'); // Tampilkan kolom dinamis
         dynamicColumn.innerHTML = `
+        <td>
             <select class="form-control select3" id="bg-${rowId}" name="no_bg[]"
                 style="font-size:.9rem !important; width:170px">
                 <option value="">Pilih No BG</option>
@@ -265,6 +271,7 @@
                     <option value="{{ $bg }}">{{ $bg }}</option>
                 @endforeach
             </select>
+        </td>
         `;
         $(dynamicColumn.querySelector('.select3')).select2();
     } else if (selectedValue === "lain-lain") {
@@ -272,11 +279,13 @@
         invx.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
+            <td style="width: 170px">
                 <select class="form-control select3" id="lain-${rowId}" style="width: 170px" onchange="handleLainLainChange(this, ${rowId})">
                     <option value="">Pilih Opsi</option>
                     <option value="buat-baru">Buat Baru</option>
                     <option value="pilih-invoice-external">Pilih Invoice External</option>
                 </select>
+            </td>
         `;
         $(dynamicColumn.querySelector('.select3')).select2();
 
@@ -285,6 +294,7 @@
         relasi.remove();
         dynamicColumn.removeAttribute('hidden');
         dynamicColumn.innerHTML = `
+            <td>
                 <select class="form-control select3" onchange="total()"
                     id="relasi-${rowId}" name="relasi[]"
                     style="font-size:.9rem !important; width:170px">
@@ -293,6 +303,7 @@
                         <option value="{{ $item }}">{{ $item }}</option>
                     @endforeach
                 </select>
+            </td>
         `;
         $(dynamicColumn.querySelector('.select3')).select2();
 
@@ -309,18 +320,20 @@ function handleLainLainChange(select, rowId) {
 
     if (newValue === "buat-baru") {
         dynamicColumn.innerHTML = `
-<input name="invoice_external[]"
+ <td><input name="invoice_external[]"
                                             id="invoice_external-${rowId}" style="width: 170px" type="text">
-                                   
+                                    </td>
         `;
     } else if (newValue === "pilih-invoice-external") {
         dynamicColumn.innerHTML = `
+            <td>
                 <select class="form-control select3" name="invoice_external[]" id="invoice_external-${rowId}" style="width: 170px">
                     <option value="">Pilih Invoice External</option>
                      @foreach ($invx as $item)
                         <option value="{{ $item }}">{{ $item }}</option>
                     @endforeach
                 </select>
+            </td>
         `;
         $(dynamicColumn.querySelector('.select3')).select2(); // Inisialisasi Select2
     }
@@ -490,7 +503,7 @@ $('#doc-' + debit).select2();
                 $('#keterangan-' + id).attr('disabled', false)
                 $('#amount-' + id).attr('disabled', false)
                 $('#doc-' + id).attr('disabled', false)
-                $('#dynamic-column-' + id).attr('disabled', false)
+                $('#dynamic-column' + id).attr('disabled', false)
                 $('#invoice_external1-' + id).attr('disabled', false)
                 $('#invoice1-' + id).attr('disabled', false)
                 $('#invoice_agen1-' + id).attr('disabled', false)
