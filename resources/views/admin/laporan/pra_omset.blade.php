@@ -310,7 +310,7 @@ table.dataTable tbody > tr.selected1 td {
                                             <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
                                             <td>{{ $order->tarif->shipmentInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
-                                            <td>{{ $order->asuransi }}</td>
+                                            <td>{{ $order->asuransi }}{{ $order->asuransi_id ? ' (1)' : '(0)' }}</td>
                                             <td>{{ number_format(($order->komisi ?? 0),2,',','.') }}</td>
                                             <td>{{ $order->job }}</td>
                                             <td>{{ date('d/m/y',strtotime($order->created_at)) }}</td>
@@ -995,12 +995,10 @@ $totalLB = $data->sum(function($o) {
         success: function (response) {
             if (response === 'error') {
                 alert("❌ Sinkronisasi jurnal balik GAGAL!");
-                location.reload();
                 return;
             }
             if (response === 'complete') {
                 alert("✅ SINKRONISASI JURNAL BALIK BERHASIL!");
-                location.reload();
             }
             else {
                 syncJurnalBalikAction2(response, 50);
@@ -1012,7 +1010,6 @@ $totalLB = $data->sum(function($o) {
                 msg += "\n\n" + xhr.responseJSON.message;
             }
             alert(msg);
-            location.reload();
         }
     });
 }
