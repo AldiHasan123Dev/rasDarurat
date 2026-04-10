@@ -275,7 +275,7 @@
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->invoice }}</td>
                                             <td>{{ $order->job }}-{{ sprintf('%02d', $order->no_job) }}</td>
-                                            <td>{{ $order->asuransi }}</td>
+                                            <td>{{ $order->asuransi }}{{ $order->asuransi_id ? ' (1)' : '(0)' }}</td>
                                             <td>{{ number_format(($order->komisi ?? 0),2,',','.')  }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
                                             <td>{{ $order->tarif->customer->marketing->name ?? '-' }}</td>
