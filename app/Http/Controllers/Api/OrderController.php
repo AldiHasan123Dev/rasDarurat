@@ -539,6 +539,16 @@ if (request('ba_kembali_null')) {
                 });
             });
         }
+
+        if (request('cek_checker')) {
+    $query->where('order.cek_checker', 'LIKE', '%' . request('cek_checker') . '%');
+        }
+        if (request('cek_kuli')) {
+            $query->where('order.cek_kuli', 'LIKE', '%' . request('cek_kuli') . '%');
+}
+ if (request('cek_ops')) {
+            $query->where('order.cek_ops', 'LIKE', '%' . request('cek_ops') . '%');
+}
         if (request('cs')) {
             $query->whereHas('tarif', function ($q) {
                 $q->whereHas('customer', function ($a) {
