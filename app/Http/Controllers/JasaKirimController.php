@@ -311,120 +311,120 @@ class JasaKirimController extends Controller
         return redirect()->route('jasakirim.index',['role'=>'jurnal'])->with('success','Jurnal berhasil disinkronisasi!');
     }
 
-  public function datatable()
-{
-    $role = request('role');
-
-    $query = JasaKirim::with(['lokasi', 'agen.lokasi', 'orders'])
-        ->join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
-        ->select('jasa_kirim.*','lokasi.nama');
-
-    if(request('nominal') == 1){
-
-        $query->whereNull('merger')
-              ->whereNotNull('nominal')
-              ->where('nominal','>',0);
-
-        if(request('start_date') && request('end_date')){
-            $query->whereBetween('tgl_kirim',[request('start_date'),request('end_date')]);
+    public function datatable()
+    {
+        $role = request('role');
+        if(request('nominal')==1){
+            $query = JasaKirim::query();
+            $query->join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id');
+            $query->select('jasa_kirim.*','lokasi.nama');
+            $query->whereNull('merger');
+            $query->whereNotNull('nominal');
+            $query->where('nominal','>',0);
+            if(!is_null(request('start_date')) && !is_null(request('end_date'))){
+                $query->whereBetween('tgl_kirim',[request('start_date'),request('end_date')]);
+            }
+            if(!is_null(request('tujuan'))){
+                $query->where('lokasi_id',request('tujuan'));
+            }
+            if(request('role')=='cs'){
+                $query->whereNull('tgl_terima');
+            }
+            if(request('role')=='kasir'){
+                $query->whereNull('jurnal');
+                $query->whereNull('invoice');
+            }
+            if(!is_null(request('searching'))){
+                $query = JasaKirim::query();
+                $full_job = explode('-',request('searching'));
+                $query->orWhereHas('orders', function($q) use($full_job){
+                    $q->where('job','like','%'.$full_job[0].'%');
+                    if(!empty($full_job[1])){
+                        $q->where('no_job','like','%'.(int)$full_job[1].'%');
+                    }
+                });
+            }
+            if(!is_null(request('barcode'))){
+                $query->where('barcode','LIKE','%'.request('barcode').'%');
+            }
+            $query->orderBy('tgl_kirim','desc');
+            $data = $query->get();
+        }else{
+            $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
+                    ->select('jasa_kirim.*','lokasi.nama')
+                    ->whereNull('nominal')
+                    ->orWhere('nominal',0)
+                    ->orderBy('lokasi.nama')
+                    ->get();
         }
 
-        if(request('tujuan')){
-            $query->where('lokasi_id',request('tujuan'));
-        }
+        return Datatables::of($data)
+            ->addColumn('lokasi_id', function($data){
+                return $data->lokasi->nama;
+            })
+            ->addColumn('kota', function($data){
+                return $data->agen->lokasi->nama ?? '-';
+            })
+            ->addColumn('nominal', function($data){
+                return $data->nominal ? number_format($data->nominal) : '-';
+            })
+            ->addColumn('orders', function($data){
+                // $name = '';
+                // foreach ($data->orders as $item ) {
+                //     $name .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
+                // }
+                return $data->order_name();
+            })
+            ->addColumn('action', function ($data) use($role) {
+                $view = view('admin.jasakirim.form',['jasakirim'=>$data,'role'=>$role])->render();
+                if($role=='kasir'){
+                    $html = '<div class="d-flex gap-1">
+                                <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirimUpdate'.$data->id.'" aria-controls="offcanvasJasaKirimUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            </div>
 
-        if($role == 'cs'){
-            $query->whereNull('tgl_terima');
-        }
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJasaKirimUpdate'.$data->id.'" aria-labelledby="offcanvasJasaKirimUpdate'.$data->id.'Label">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasJasaKirimUpdate'.$data->id.'Label">Form JasaKirim</h5>
+                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <form action="'.route('jasakirim.update',$data).'" method="post">
+                                    <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <input type="hidden" name="_method" value="PUT" />
+                                        '.$view.'
+                                    </form>
+                                </div>
+                            </div>';
+                }else{
+                    // <form action="'.route('jasakirim.destroy',$data).'" method="post">
+                    //                 <input type="hidden" name="_token" value="'.csrf_token().'" />
+                    //                 <input type="hidden" name="_method" value="delete" />
+                    //                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                    //             </form>
+                    $html = '<div class="d-flex gap-1">
 
-        if($role == 'kasir'){
-            $query->whereNull('jurnal')
-                  ->whereNull('invoice');
-        }
+                                <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirimUpdate'.$data->id.'" aria-controls="offcanvasJasaKirimUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                                <a href="'.route('cetak.dooring',['jadwal_kapal_id'=>$data->jadwal_kapal_id,'tujuan'=>$data->lokasi_id,'agent'=>$data->agen_id]).'" class="text-success"><i class="fas fa-print"></i></a>
+                            </div>
 
-        // ✅ SEARCH (tidak reset query)
-        if(request('searching')){
-            $full_job = explode('-', request('searching'));
-
-            $query->whereHas('orders', function($q) use ($full_job){
-                $q->where('job','like','%'.$full_job[0].'%');
-
-                if(!empty($full_job[1])){
-                    $q->where('no_job','like','%'.(int)$full_job[1].'%');
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJasaKirimUpdate'.$data->id.'" aria-labelledby="offcanvasJasaKirimUpdate'.$data->id.'Label">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasJasaKirimUpdate'.$data->id.'Label">Form JasaKirim</h5>
+                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <form action="'.route('jasakirim.update',$data).'" method="post">
+                                    <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <input type="hidden" name="_method" value="PUT" />
+                                        '.$view.'
+                                    </form>
+                                </div>
+                            </div>';
                 }
-            });
-        }
-
-        if(request('barcode')){
-            $query->where('barcode','LIKE','%'.request('barcode').'%');
-        }
-
-        $query->orderBy('tgl_kirim','desc');
-
-    } else {
-
-        $query->where(function($q){
-            $q->whereNull('nominal')
-              ->orWhere('nominal',0);
-        })
-        ->orderBy('lokasi.nama');
-
+                return $html;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
-
-    return Datatables::of($query) // ✅ langsung query, bukan get()
-        ->addColumn('lokasi_id', fn($data) => $data->lokasi->nama ?? '-')
-        ->addColumn('kota', fn($data) => $data->agen->lokasi->nama ?? '-')
-        ->addColumn('nominal', fn($data) => $data->nominal ? number_format($data->nominal) : '-')
-        ->addColumn('orders', fn($data) => $data->order_name())
-
-        ->addColumn('action', function ($data) use ($role) {
-
-            $view = view('admin.jasakirim.form',[
-                'jasakirim'=>$data,
-                'role'=>$role
-            ])->render();
-
-            $buttonEdit = '
-                <button class="no-attr text-primary" title="Edit"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#offcanvasJasaKirimUpdate'.$data->id.'">
-                    <i class="fas fa-pencil"></i>
-                </button>';
-
-            $buttonPrint = $role != 'kasir'
-                ? '<a href="'.route('cetak.dooring',[
-                        'jadwal_kapal_id'=>$data->jadwal_kapal_id,
-                        'tujuan'=>$data->lokasi_id,
-                        'agent'=>$data->agen_id
-                    ]).'" class="text-success">
-                        <i class="fas fa-print"></i>
-                   </a>'
-                : '';
-
-            return '
-                <div class="d-flex gap-1">
-                    '.$buttonEdit.'
-                    '.$buttonPrint.'
-                </div>
-
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJasaKirimUpdate'.$data->id.'">
-                    <div class="offcanvas-header">
-                        <h5>Form JasaKirim</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <form action="'.route('jasakirim.update',$data).'" method="post">
-                            '.csrf_field().'
-                            '.method_field('PUT').'
-                            '.$view.'
-                        </form>
-                    </div>
-                </div>
-            ';
-        })
-
-        ->rawColumns(['action'])
-        ->make(true);
-}
 
 }
