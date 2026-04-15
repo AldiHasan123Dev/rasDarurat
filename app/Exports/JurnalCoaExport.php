@@ -6,7 +6,6 @@ use App\Models\COA;
 use App\Models\Jurnal;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -29,89 +28,82 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
     }
 
     public function view(): View
-{
-    $c = $this->coaModel;
+    {
+        // 🔥 ANTI TIMEOUT
+        ini_set('max_execution_time', 300);
+        ini_set('memory_limit', '512M');
 
-    $data = Jurnal::query()
-        ->where('coa_id', $this->coa)
-        ->whereYear('created_at', $this->year)
-        ->whereMonth('created_at', $this->month)
-        ->orderBy('created_at')
-        ->orderBy('tipe')
-        ->orderBy('nomor')
-        ->select([
-            'id',
-            'created_at',
-            'tipe',
-            'nomor',
-            'debit',
-            'credit',
-            'nama'
-        ])
-        ->cursor(); // 🔥 STREAMING SUPER HEMAT MEMORY
+        $c = $this->coaModel;
 
+        /*
+        |--------------------------------------------------------------------------
+        | 🔥 RANGE TANGGAL (LEBIH CEPAT DARI whereMonth)
+        |--------------------------------------------------------------------------
+        */
+        $start = Carbon::create($this->year, $this->month, 1)->startOfDay();
+        $end   = Carbon::create($this->year, $this->month, 1)->endOfMonth();
 
-    /*
-    |--------------------------------------------------------------------------
-    | SALDO AWAL (OPTIMASI)
-    |--------------------------------------------------------------------------
-    */
-
-    $kode_awal = substr($c->kode, 0, 1);
-
-    $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
-
-
-    $last = Carbon::create($this->year, $this->month)
-        ->subMonth()
-        ->endOfMonth();
-
-
-    if (in_array($kode_awal, ['5','6','7'])) {
-
-        $saldo = 0;
-
-    } else {
-
-        $saldoData = Jurnal::query()
-
+        /*
+        |--------------------------------------------------------------------------
+        | 🔥 QUERY DATA (OPTIMAL)
+        |--------------------------------------------------------------------------
+        */
+        $data = Jurnal::query()
             ->where('coa_id', $this->coa)
+            ->whereBetween('created_at', [$start, $end]) // 🔥 lebih cepat
+            ->orderBy('created_at')
+            ->orderBy('tipe')
+            ->orderBy('nomor')
+            ->select([
+                'created_at',
+                'tipe',
+                'nomor',
+                'debit',
+                'credit',
+                'nama'
+            ])
+            ->cursor(); // tetap streaming
 
-            ->where('created_at', '<=', $last)
+        /*
+        |--------------------------------------------------------------------------
+        | 🔥 SALDO AWAL (OPTIMASI)
+        |--------------------------------------------------------------------------
+        */
+        $kode_awal = substr($c->kode, 0, 1);
 
-            ->selectRaw('
-                SUM(debit) as debit,
-                SUM(credit) as credit
-            ')
-            ->first();
+        $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
 
+        $last = $start->copy()->subDay(); // 🔥 lebih akurat dari subMonth
 
-        $totalDebit  = $saldoData->debit ?? 0;
+        if (in_array($kode_awal, ['5','6','7'])) {
 
-        $totalCredit = $saldoData->credit ?? 0;
+            $saldo = 0;
 
+        } else {
 
-        $saldo = $tipe == 'D'
+            // 🔥 SUPER OPTIMAL (1 kolom saja)
+            $saldoRaw = Jurnal::where('coa_id', $this->coa)
+                ->where('created_at', '<=', $last)
+                ->selectRaw('SUM(debit - credit) as saldo')
+                ->value('saldo');
 
-            ? $totalDebit - $totalCredit
+            $saldo = $tipe == 'D'
+                ? ($saldoRaw ?? 0)
+                : -($saldoRaw ?? 0);
+        }
 
-            : $totalCredit - $totalDebit;
+        return view('exports.jurnal', compact(
+            'data',
+            'tipe',
+            'c',
+            'saldo',
+            'start',
+            'last'
+        ));
     }
-
-
-    return view('exports.jurnal', compact(
-        'data',
-        'tipe',
-        'c',
-        'saldo',
-        'last'
-    ));
-}
-
 
     public function title(): string
     {
-        return $this->coaModel->kode.' '.$this->coaModel->nama;
+        return $this->coaModel->kode . ' ' . $this->coaModel->nama;
     }
-
 }
