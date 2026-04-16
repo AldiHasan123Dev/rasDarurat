@@ -27,80 +27,88 @@ class JurnalCoaExport implements WithTitle, FromView, ShouldAutoSize
         $this->coaModel = COA::findOrFail($coa);
     }
 
-    public function view(): View
-    {
-        // 🔥 ANTI TIMEOUT
-        ini_set('max_execution_time', 300);
-        ini_set('memory_limit', '512M');
+public function view(): View
+{
+    // 🔥 anti timeout + hemat memory
+    ini_set('max_execution_time', 300);
+    ini_set('memory_limit', '512M');
+    \DB::connection()->disableQueryLog();
 
-        $c = $this->coaModel;
+    $c = $this->coaModel;
 
-        /*
-        |--------------------------------------------------------------------------
-        | 🔥 RANGE TANGGAL (LEBIH CEPAT DARI whereMonth)
-        |--------------------------------------------------------------------------
-        */
-        $start = Carbon::create($this->year, $this->month, 1)->startOfDay();
-        $end   = Carbon::create($this->year, $this->month, 1)->endOfMonth();
+    $start = Carbon::create($this->year, $this->month, 1)->startOfDay();
+    $end   = Carbon::create($this->year, $this->month, 1)->endOfMonth();
 
-        /*
-        |--------------------------------------------------------------------------
-        | 🔥 QUERY DATA (OPTIMAL)
-        |--------------------------------------------------------------------------
-        */
-        $data = Jurnal::query()
-            ->where('coa_id', $this->coa)
-            ->whereBetween('created_at', [$start, $end]) // 🔥 lebih cepat
-            ->orderBy('created_at')
-            ->orderBy('tipe')
-            ->orderBy('nomor')
-            ->select([
-                'created_at',
-                'tipe',
-                'nomor',
-                'debit',
-                'credit',
-                'nama'
-            ])
-            ->cursor(); // tetap streaming
-
-        /*
-        |--------------------------------------------------------------------------
-        | 🔥 SALDO AWAL (OPTIMASI)
-        |--------------------------------------------------------------------------
-        */
-        $kode_awal = substr($c->kode, 0, 1);
-
-        $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
-
-        $last = $start->copy()->subDay(); // 🔥 lebih akurat dari subMonth
-
-        if (in_array($kode_awal, ['5','6','7'])) {
-
-            $saldo = 0;
-
-        } else {
-
-            // 🔥 SUPER OPTIMAL (1 kolom saja)
-            $saldoRaw = Jurnal::where('coa_id', $this->coa)
-                ->where('created_at', '<=', $last)
-                ->selectRaw('SUM(debit - credit) as saldo')
-                ->value('saldo');
-
-            $saldo = $tipe == 'D'
-                ? ($saldoRaw ?? 0)
-                : -($saldoRaw ?? 0);
-        }
-
-        return view('exports.jurnal', compact(
-            'data',
+    /*
+    |--------------------------------------------------------------------------
+    | 🔥 QUERY UTAMA (FIX N+1 + OPTIMAL)
+    |--------------------------------------------------------------------------
+    */
+    $data = Jurnal::query()
+        ->with(['order:id,job,no_job']) // 🔥 FIX N+1
+        ->where('coa_id', $this->coa)
+        ->whereBetween('created_at', [$start, $end])
+        ->orderBy('created_at')
+        ->orderBy('tipe')
+        ->orderBy('nomor')
+        ->select([
+            'id',
+            'created_at',
             'tipe',
-            'c',
-            'saldo',
-            'start',
-            'last'
-        ));
+            'nomor',
+            'container',
+            'nopol',
+            'invoice',
+            'no_bg',
+            'nama',
+            'debit',
+            'credit',
+            'order_id'
+        ])
+        ->cursor();
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🔥 TOTAL (JANGAN DI BLADE!)
+    |--------------------------------------------------------------------------
+    */
+    $total = Jurnal::where('coa_id', $this->coa)
+        ->whereBetween('created_at', [$start, $end])
+        ->selectRaw('SUM(debit) as debit, SUM(credit) as credit')
+        ->first();
+
+    /*
+    |--------------------------------------------------------------------------
+    | 🔥 SALDO AWAL (OPTIMAL)
+    |--------------------------------------------------------------------------
+    */
+    $kode_awal = substr($c->kode, 0, 1);
+    $tipe = in_array($kode_awal, ['2','3','5']) ? 'C' : 'D';
+
+    $last = $start->copy()->subDay();
+
+    if (in_array($kode_awal, ['5','6','7'])) {
+        $saldo = 0;
+    } else {
+        $saldoRaw = Jurnal::where('coa_id', $this->coa)
+            ->where('created_at', '<=', $last)
+            ->selectRaw('SUM(debit - credit) as saldo')
+            ->value('saldo');
+
+        $saldo = $tipe == 'D'
+            ? ($saldoRaw ?? 0)
+            : -($saldoRaw ?? 0);
     }
+
+    return view('exports.jurnal', compact(
+        'data',
+        'tipe',
+        'c',
+        'saldo',
+        'last',
+        'total'
+    ));
+}
 
     public function title(): string
     {
