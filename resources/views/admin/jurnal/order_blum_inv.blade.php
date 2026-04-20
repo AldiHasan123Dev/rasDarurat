@@ -231,19 +231,18 @@
         }
 
         .card .card-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
 
-.card .fw-bold {
-    font-size: 1.3rem;
-}
+        .card .fw-bold {
+            font-size: 1.3rem;
+        }
 
-#total-tarif {
-    transition: all 0.3s ease-in-out;
-}
-
+        #total-tarif {
+            transition: all 0.3s ease-in-out;
+        }
     </style>
 @endsection
 @section('content')
@@ -257,68 +256,90 @@
                     </div> --}}
                 </div>
                 <div class="row mb-3">
-    <!-- Filter -->
-    <div class="col-md-9">
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <div class="row g-2 align-items-end">
-   <div class="col-md-3">
-                            <label for="lokasi" class="label-biru">Tujuan</label>
-                            <select id="lokasi" name="lokasi" class="select2 input-select">
-                                <option value="">-- Pilih Tujuan --</option>
-                                @foreach ($lokasi as $row)
-                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
-                                @endforeach
-                            </select>
+                    <!-- Filter -->
+                    <div class="row justify-content-center mb-4">
+                        <div class="col-md-15">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body">
+                                    <div class="row g-5 align-items-end justify-content-center">
+
+                                        <div class="col-md-3">
+                                            <label for="lokasi" class="label-biru">Tujuan</label>
+                                            <select id="lokasi" name="lokasi" class="select2 input-select">
+                                                <option value="">-- Pilih Tujuan --</option>
+                                                @foreach ($lokasi as $row)
+                                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="lokasi" class="label-biru">Pembayar</label>
+                                            <select id="pembayar" name="pembayar" class="select2 input-select">
+                                                <option value="">-- Pilih Pembayar --</option>
+                                                @foreach ($pembayar as $row)
+                                                    <option value="{{ $row->nama }}">{{ $row->nama }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="lokasi" class="label-biru">Marketing</label>
+                                            <select id="marketing" name="marketing" class="select2 input-select">
+                                                <option value="">-- Pilih Marketing --</option>
+                                                @foreach ($role as $row)
+                                                    <option value="{{ $row->name }}">{{ $row->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <label for="lokasi" class="label-biru">CS</label>
+                                            <select id="cs" name="cs" class="select2 input-select">
+                                                <option value="">-- Pilih CS --</option>
+                                                @foreach ($role as $row)
+                                                    <option value="{{ $row->name }}">{{ $row->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-2 d-flex">
+                                            <button id="btn-filter" class="btn btn-primary w-100">
+                                                Cari
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                          <div class="col-md-3">
-                           <label for="lokasi" class="label-biru">Pembayar</label>
-                           <select id="pembayar" name="pembayar" class="select2 input-select">
-                               <option value="">-- Pilih Pembayar --</option>
-                               @foreach ($pembayar as $row)
-                                   <option value="{{ $row->nama }}">{{ $row->nama }}</option>
-                               @endforeach
-                           </select>
-                       </div>
-                         <div class="col-md-2">
-                           <label for="lokasi" class="label-biru">Marketing</label>
-                           <select id="marketing" name="marketing" class="select2 input-select">
-                               <option value="">-- Pilih Marketing --</option>
-                               @foreach ($role as $row)
-                                   <option value="{{ $row->name }}">{{ $row->name }}</option>
-                               @endforeach
-                           </select>
-                       </div>
-
-                         <div class="col-md-2">
-                           <label for="lokasi" class="label-biru">CS</label>
-                           <select id="cs" name="cs" class="select2 input-select">
-                               <option value="">-- Pilih CS --</option>
-                               @foreach ($role as $row)
-                                   <option value="{{ $row->name }}">{{ $row->name }}</option>
-                               @endforeach
-                           </select>
-                       </div>
-
-                    <div class="col-md-2 d-flex">
-                        <button id="btn-filter" class="btn btn-primary w-100">
-                            <i class="bi bi-search"></i> Cari
-                        </button>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Card Total Tarif -->
-<div class="col-md-3">
-        <div class="card-body text-center p-5">
-            <h6 class="text-muted mb-2" style="font-size: 1rem;">Total Tarif</h6>
-            <h3 class="fw-bold text-success mb-0" style="font-size: 1.6rem;">
-                Rp <span id="total-tarif" style="font-size: 1.5rem;">0</span>
-            </h3>
-        </div>
-</div>
+                    <!-- Card Total Tarif -->
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-md-6">
+                            <div class="row g-3">
+
+                                <!-- Total Tarif -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm border-0 text-center py-3">
+                                        <h6 class="text-muted mb-1">Total Tarif</h6>
+                                        <h4 class="fw-bold text-success mb-0">
+                                            Rp <span id="total-tarif" style="font-size: 1.5rem;">0</span>
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <!-- Total Tarif TD -->
+                                <div class="col-md-6">
+                                    <div class="card shadow-sm border-0 text-center py-3">
+                                        <h6 class="text-muted mb-1">Total Tarif TD</h6>
+                                        <h4 class="fw-bold text-primary mb-0">
+                                            Rp <span id="total-tarif-td" style="font-size: 1.5rem;">0</span>
+                                        </h4>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div class="table-responsives">
@@ -359,27 +380,27 @@
         });
     </script>
     <script>
-         $('#btn-filter').on('click', function(e) {
-    e.preventDefault(); // Biar tidak reload halaman jika tombol type="submit"
+        $('#btn-filter').on('click', function(e) {
+            e.preventDefault(); // Biar tidak reload halaman jika tombol type="submit"
 
-    let selectedTujuan = $('#lokasi').val();
-    let selectedMarketing = $('#marketing').val();
-    let selectedPembayar = $('#pembayar').val();
-    let selectedCs = $('#cs').val();
+            let selectedTujuan = $('#lokasi').val();
+            let selectedMarketing = $('#marketing').val();
+            let selectedPembayar = $('#pembayar').val();
+            let selectedCs = $('#cs').val();
 
-    $("#jqGrid").setGridParam({
-        url: '{{ route('jqgrid.order') }}',
-        datatype: 'json',
-        postData: {
-            inv_null: true,
-            tujuans: selectedTujuan,
-            marketing: selectedMarketing,
-            cs : selectedCs,
-            pembayars: selectedPembayar
-        },
-        page: 1
-    }).trigger("reloadGrid");
-});
+            $("#jqGrid").setGridParam({
+                url: '{{ route('jqgrid.order') }}',
+                datatype: 'json',
+                postData: {
+                    inv_null: true,
+                    tujuans: selectedTujuan,
+                    marketing: selectedMarketing,
+                    cs: selectedCs,
+                    pembayars: selectedPembayar
+                },
+                page: 1
+            }).trigger("reloadGrid");
+        });
         let data = [];
         let id;
 
@@ -489,23 +510,39 @@
             shrinkToFit: true,
             oadonce: true,
             height: 'auto',
-  rowNum: 9999999,
-    pager: false,        // tidak pakai pager
-    pgbuttons: false,    // sembunyikan tombol prev/next
-    pginput: false,      // sembunyikan input halaman
+            rowNum: 9999999,
+            pager: false, // tidak pakai pager
+            pgbuttons: false, // sembunyikan tombol prev/next
+            pginput: false, // sembunyikan input halaman
             viewrecords: true,
             pager: "#jqGridPager",
             caption: "Job Belum Inv",
-             loadComplete: function(data) {
-        let sum = 0;
-        let ids = $(this).jqGrid('getDataIDs');
-        for (let i = 0; i < ids.length; i++) {
-            let rowData = $(this).jqGrid('getRowData', ids[i]);
-            let val = parseFloat(rowData.tarif1.replace(/,/g, '')) || 0;
-            sum += val;
-        }
-        $("#total-tarif").text(sum.toLocaleString('en-US'));
-    },
+            loadComplete: function(data) {
+                let sum = 0;
+                let sumTdNotNull = 0;
+
+                let ids = $(this).jqGrid('getDataIDs');
+
+                for (let i = 0; i < ids.length; i++) {
+                    let rowData = $(this).jqGrid('getRowData', ids[i]);
+
+                    let tarif = parseFloat(rowData.tarif1.replace(/,/g, '')) || 0;
+
+                    // total semua
+                    sum += tarif;
+
+                    // total hanya jika td tidak null / tidak kosong
+                    if (rowData.td && rowData.td !== '-') {
+                        sumTdNotNull += tarif;
+                    }
+                }
+
+                // total lama
+                $("#total-tarif").text(sum.toLocaleString('en-US'));
+
+                // total baru (yang td tidak null)
+                $("#total-tarif-td").text(sumTdNotNull.toLocaleString('en-US'));
+            },
             rowattr: function(item) {
                 return {
                     "class": item.class
@@ -519,7 +556,5 @@
         const rp = (num) => {
             return num.toLocaleString('en-US');
         }
-
-
     </script>
 @endsection
