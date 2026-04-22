@@ -223,7 +223,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('trucking/monitor_biaya_truck', [OrderTruckingController::class, 'monitoring_biaya_truck'])->name('monitoringBiayaTruck');
     Route::post('trucking/monitor_biaya_truck/update-sangu-kuli', [OrderTruckingController::class, 'updateSangu'])->name('monitoringBiayaTruck.update');
     Route::post('trucking/monitor_biaya_truck/update-tb-tl', [OrderTruckingController::class, 'updateTbtl'])->name('monitoringBiayaTruck.update1');
-    Route::post('trucking/monitor_biaya_truck/update-stappel', [OrderTruckingController::class, 'updateStappel'])->name('monitoringBiayaTruck.update2');
+    Route::post('trucking/monitor_biaya_truck/update-stappel', [OrderTruckingController::class, 'updateStappel '])->name('monitoringBiayaTruck.update2');
     Route::get('laporan/pelayaran', [LaporanController::class, 'pelayaran'])->name('laporan.pelayaran');
     Route::get('laporan/tujuan', [LaporanController::class, 'tujuan'])->name('laporan.tujuan');
     Route::get('laporan/customer', [LaporanController::class, 'customer'])->name('laporan.customer');
@@ -243,7 +243,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('laporan/tujuan/ajax', [LaporanController::class, 'tujuanAjax'])->name('laporan.tujuan.ajax');
     Route::post('/jurnal/export=jurnal-code-excel', [JurnalController::class, 'exportExcel'])->name('jurnal.exportExcel');
 
-     Route::get('data-outstanding-trucking', [LaporanController::class, 'data_outstanding_trucking'])->name('data-outstanding.trucking');
+    Route::get('data-outstanding-trucking', [LaporanController::class, 'data_outstanding_trucking'])->name('data-outstanding.trucking');
     Route::get('customer-tarif', [CustomerController::class, 'tarif'])->name('customer.tarif');
     Route::get('customer-tarif-marketing', [CustomerController::class, 'tarifMarketing'])->name('customer.tarif_marketing');
     Route::get('harga-of', [LapPelayaranController::class, 'index'])->name('lap.pelayaran');
@@ -300,7 +300,8 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::post('export-order', [OrderController::class, 'export'])->name('order.export');
     Route::post('export-order-malindo', [OrderController::class, 'exportMalindo'])->name('order.export.malindo');
     Route::post('export-order-sinar-balado', [OrderController::class, 'exportSinarBalado'])->name('order.export.sinar-balado');
-     Route::post('export-order-fortuna', [OrderController::class, 'exportFortuna'])->name('order.export.fortuna');
+    Route::post('export-order-logisted', [OrderController::class, 'exportLogisted'])->name('order.export.logisted');
+    Route::post('export-order-fortuna', [OrderController::class, 'exportFortuna'])->name('order.export.fortuna');
     Route::post('export-order-cheiljedang', [OrderController::class, 'exportCheiljedang'])->name('order.export.cheiljedang');
     Route::post('export-order/ba_kembali', [OrderController::class, 'export_ba_kembali'])->name('order.export.ba_kembali');
     Route::post('export-order-trucking', [OrderTruckingController::class, 'export'])->name('ordertrucking.export');

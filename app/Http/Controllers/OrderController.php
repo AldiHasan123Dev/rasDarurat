@@ -8,6 +8,7 @@ use App\Exports\ExportSinarrBalado;
 use App\Exports\InvoiceRekapExport;
 use App\Exports\OrderExport;
 use App\Exports\MalindoExport;
+use App\Exports\ExportLogised;
 use App\Exports\FortunaExport;
 use App\Exports\SIExport;
 use App\Http\Resources\OrderResource;
@@ -396,6 +397,12 @@ class OrderController extends Controller
     {
         $text = str_replace('-','',$request->month);
         return Excel::download(new ExportSinarrBalado($text), 'laporan_order_sinar-balado.xlsx');
+    }
+
+     public function exportLogisted(Request $request)
+    {
+        $text = str_replace('-','',$request->month);
+        return Excel::download(new ExportLogised($text), 'laporan_order_logisted.xlsx');
     }
 
     public function exportCheiljedang(Request $request)
