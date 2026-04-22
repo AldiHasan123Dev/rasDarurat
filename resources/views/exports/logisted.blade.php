@@ -11,6 +11,8 @@
             <th>Kapal</th>
             <th>Voyage</th>
             <th>Kondisi</th>
+            <th>Penerima</th>
+            <th>Tujuan</th>
             <th>TD</th>
             <th>ETA</th>
             <th>Barang Diantar</th>
@@ -30,6 +32,8 @@
                 <td>{{ $item['kapal'] }}</td>
                 <td>{{ $item['voyage'] }}</td>
                 <td>{{ $item['kondisi'] }}</td>
+                <td>{{ $item['penerima'] }}</td>
+                <td>{{ $item['tujuan'] }}</td>
                 <td>{{ $item['td'] }}</td>
                 <td>{{ $item['eta'] }}</td>
                 <td>{{ $item['barang_diantar'] }}</td>
