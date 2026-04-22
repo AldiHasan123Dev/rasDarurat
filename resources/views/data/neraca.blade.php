@@ -126,7 +126,7 @@
                 @endphp
                 @foreach ($modal as $item)
                 @php
-                    if ($item->kode=='3.2') {
+                    if ($item->kode=='3.3') {
                         $total_modal+=$lr;
                     } else {
                         $total_modal += $item->jurnals()->whereBetween('created_at',[$start,$end])->sum('credit') - $item->jurnals()->whereBetween('created_at',[$start,$end])->sum('debit');
@@ -135,7 +135,7 @@
                 <tr>
                     <td>{{ $item->kode }}</td>
                     <td>{{ $item->nama }}</td>
-                    @if ($item->kode=='3.2')
+                    @if ($item->kode=='3.3')
                     <td>{{ number_format($lr,2,',','.') }}</td>
                     @else
                     <td>{{ number_format($item->jurnals()->whereBetween('created_at',[$start,$end])->sum('credit') - $item->jurnals()->whereBetween('created_at',[$start,$end])->sum('debit'),2,',','.') }}</td>
