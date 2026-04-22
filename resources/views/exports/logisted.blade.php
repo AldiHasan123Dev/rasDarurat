@@ -7,6 +7,7 @@
             <th>Carton</th>
             <th>Tgl Stuffing</th>
             <th>No. Cont</th>
+            <th>Seal</th>
             <th>Nopol Truck</th>
             <th>Kapal</th>
             <th>Voyage</th>
@@ -28,6 +29,7 @@
                 <td>{{ $item['koli'] }}</td>
                 <td>{{ $item['stuffing'] }}</td>
                 <td>{{ $item['container'] }}</td>
+                <td>{{ $item['seal'] }}</td>
                 <td>{{ $item['nopol'] }}</td>
                 <td>{{ $item['kapal'] }}</td>
                 <td>{{ $item['voyage'] }}</td>
