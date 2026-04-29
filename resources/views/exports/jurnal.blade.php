@@ -34,13 +34,21 @@
 
         {{-- DATA --}}
         @foreach ($data as $item)
-            @php
-                if ($tipe == 'D') {
-                    $saldoJalan += ($item->debit - $item->credit);
+             @php
+            if ($tipe=='D') {
+                if ($item->debit>0) {
+                    $saldoJalan += $item->debit;
                 } else {
-                    $saldoJalan += ($item->credit - $item->debit);
+                    $saldoJalan -= $item->credit;
                 }
-            @endphp
+            } else {
+                if ($item->debit>0) {
+                    $saldoJalan -= $item->debit;
+                } else {
+                    $saldoJalan += $item->credit;
+                }
+            }
+        @endphp
 
             <tr>
                 <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/y') }}</td>
