@@ -318,7 +318,7 @@
                             <div class="row g-3">
 
                                 <!-- Total Tarif -->
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="card shadow-sm border-0 text-center py-3">
                                         <h6 class="text-muted mb-1">Total Tarif</h6>
                                         <h4 class="fw-bold text-success mb-0">
@@ -328,7 +328,7 @@
                                 </div>
 
                                 <!-- Total Tarif TD -->
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="card shadow-sm border-0 text-center py-3">
                                         <h6 class="text-muted mb-1">Total Tarif TD</h6>
                                         <h4 class="fw-bold text-primary mb-0">
@@ -336,6 +336,17 @@
                                         </h4>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="card shadow-sm border-0 text-center py-3">
+                                        <h6 class="text-muted mb-1">Total Tarif Ready Inv</h6>
+                                        <h4 class="fw-bold text-primary mb-0">
+                                            Rp <span id="total-tarif-ready" style="font-size: 1.5rem;">0</span>
+                                        </h4>
+                                    </div>
+                                </div>
+
+
 
                             </div>
                         </div>
@@ -520,6 +531,8 @@
             loadComplete: function(data) {
                 let sum = 0;
                 let sumTdNotNull = 0;
+                let sumReadyInv = 0;
+                let sumReadyInv1 = 0;
 
                 let ids = $(this).jqGrid('getDataIDs');
 
@@ -535,6 +548,14 @@
                     if (rowData.td && rowData.td !== '-') {
                         sumTdNotNull += tarif;
                     }
+
+                     if (rowData.td && rowData.td !== '-' && rowData.ba_kembali == '-' && rowData.syarat_ba == 'Iya') {
+                         sumReadyInv += tarif;
+                    }
+                     if (rowData.td && rowData.td !== '-' && rowData.ba_kembali == '-' && rowData.syarat_ba == 'Tidak') {
+                         sumReadyInv1 += tarif;
+                    }
+                    
                 }
 
                 // total lama
@@ -542,6 +563,7 @@
 
                 // total baru (yang td tidak null)
                 $("#total-tarif-td").text(sumTdNotNull.toLocaleString('en-US'));
+                $("#total-tarif-ready-inv").text((sumReadyInv - sumReadyInv1).toLocaleString('en-US'));
             },
             rowattr: function(item) {
                 return {
