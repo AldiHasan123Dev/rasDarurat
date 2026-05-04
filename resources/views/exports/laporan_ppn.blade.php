@@ -17,6 +17,9 @@
             <th>Total</th>
             <th>PPH</th>
             <th>No.JOB</th>
+            <th>Jurnal BUPOT</th>
+            <th>No BUPOT</th>
+            <th>Tanggal BUPOT</th>
             <th>No BUPOT</th>
             <th>Masa BUPOT</th>
             <th>BUPOT</th>
@@ -42,7 +45,9 @@
                 <td>{{ number_format(round($item->ppn)+round($item->sub_total)) }}</td>
                 <td>{{ number_format($item->pph) }}</td>
                 <td>{{ $item->no_job() }}</td>
+                <td>{{ $item->jurnal_bupot }}</td>
                 <td>{{ $item->no_bupot }}</td>
+                <td>{{ $item->tanggal_bupot }}</td>
                 <td>{{ $item->masa_bupot }}</td>
                 <td>{{ number_format(round($item->bupot)) }}</td>
                 <td>{{ $item->selisih_bupot }}</td>
