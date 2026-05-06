@@ -337,14 +337,14 @@
                                     </div>
                                 </div>
 
-                                {{-- <div class="col-md-4">
+                                <div class="col-md-4">
                                     <div class="card shadow-sm border-0 text-center py-3">
                                         <h6 class="text-muted mb-1">Total Tarif Ready Inv</h6>
                                         <h4 class="fw-bold text-primary mb-0">
                                             Rp <span id="total-tarif-ready" style="font-size: 1.5rem;">0</span>
                                         </h4>
                                     </div>
-                                </div> --}}
+                                </div>
 
 
 
@@ -532,13 +532,14 @@
                 let sum = 0;
                 let sumTdNotNull = 0;
                 let sumReadyInv = 0;
-                let sumReadyInv1 = 0;
+                
 
                 let ids = $(this).jqGrid('getDataIDs');
 
                 for (let i = 0; i < ids.length; i++) {
                     let rowData = $(this).jqGrid('getRowData', ids[i]);
-
+                    let syaratBa = (rowData.syarat_ba || '').toString().trim().toLowerCase();
+                    let baKembali = rowData.ba_kembali;
                     let tarif = parseFloat(rowData.tarif1.replace(/,/g, '')) || 0;
 
                     // total semua
@@ -548,14 +549,12 @@
                     if (rowData.td && rowData.td !== '-') {
                         sumTdNotNull += tarif;
                     }
-
-                     if (rowData.td && rowData.td !== '-' && rowData.ba_kembali == '-' && rowData.syarat_ba == 'Iya') {
-                         sumReadyInv += tarif;
+                    if (
+                        syaratBa === 'iya' &&
+                        (!baKembali || baKembali == 0 || baKembali === '-')
+                    ) {
+                        sumReadyInv += tarif;
                     }
-                     if (rowData.td && rowData.td !== '-' && rowData.ba_kembali == '-' && rowData.syarat_ba == 'Tidak') {
-                         sumReadyInv1 += tarif;
-                    }
-                    
                 }
 
                 // total lama
@@ -563,7 +562,7 @@
 
                 // total baru (yang td tidak null)
                 $("#total-tarif-td").text(sumTdNotNull.toLocaleString('en-US'));
-                $("#total-tarif-ready-inv").text((sumReadyInv - sumReadyInv1).toLocaleString('en-US'));
+                $("#total-tarif-ready").text((sumTdNotNull - sumReadyInv ).toLocaleString('en-US'));
             },
             rowattr: function(item) {
                 return {
