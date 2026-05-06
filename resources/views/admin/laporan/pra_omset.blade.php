@@ -174,6 +174,7 @@ table.dataTable tbody > tr.selected1 td {
                                         <th style="min-width:40px !important">Tipe Stuffing</th>
                                         <th style="min-width:40px !important">Tgl Full</th>
                                         <th style="min-width:40px !important">Barang Diantar</th>
+                                        <th style="min-width:40px !important">Syarat BA</th>
                                         <th style="min-width:40px !important">BA Kembali</th>
                                         <th style="min-width:40px !important">Koli</th>
                                         <th style="min-width:40px !important">M3</th>
@@ -336,6 +337,7 @@ table.dataTable tbody > tr.selected1 td {
                                             <td>{{ $order->tarif->stuffing ?? '-' }}</td>
                                             <td>{{ is_null($order->full)?'-':date('d-m-Y',strtotime($order->full)) }}</td>
                                             <td>{{ is_null($order->barang_diantar)?'-':date('d-m-Y',strtotime($order->barang_diantar)) }}</td>
+                                            <td>{{ optional(optional($order->tarif)->customer)->ba_kembali == 1 ? 'Iya' : (optional(optional($order->tarif)->customer)->ba_kembali == 0 ? 'Tidak' : '-') }}</td>
                                             <td>{{ is_null($order->ba_kembali)?'-':date('d-m-Y',strtotime($order->ba_kembali)) }}</td>
                                             <td>{{ $order->bttb->sum('qty') }}</td>
                                             <td>{{  round($order->bttb->sum('vol'), 2) }}</td>
