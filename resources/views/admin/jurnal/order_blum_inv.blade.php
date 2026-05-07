@@ -337,11 +337,29 @@
                                     </div>
                                 </div>
 
+                                {{-- <div class="col-md-4">
+                                    <div class="card shadow-sm border-0 text-center py-3">
+                                        <h6 class="text-muted mb-1">Total Tarif BA Ya (Null)</h6>
+                                        <h4 class="fw-bold text-primary mb-0">
+                                            Rp <span id="total-tarif-baya" style="font-size: 1.5rem;">0</span>
+                                        </h4>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card shadow-sm border-0 text-center py-3">
+                                        <h6 class="text-muted mb-1">Total Tarif BA Ya (Ada)</h6>
+                                        <h4 class="fw-bold text-primary mb-0">
+                                            Rp <span id="total-tarif-baya1" style="font-size: 1.5rem;">0</span>
+                                        </h4>
+                                    </div>
+                                </div> --}}
+
                                 <div class="col-md-4">
                                     <div class="card shadow-sm border-0 text-center py-3">
                                         <h6 class="text-muted mb-1">Total Tarif Ready Inv</h6>
                                         <h4 class="fw-bold text-primary mb-0">
-                                            Rp <span id="total-tarif-ready" style="font-size: 1.5rem;">0</span>
+                                            Rp <span id="total-tarif-batidak" style="font-size: 1.5rem;">0</span>
                                         </h4>
                                     </div>
                                 </div>
@@ -529,41 +547,56 @@
             pager: "#jqGridPager",
             caption: "Job Belum Inv",
             loadComplete: function(data) {
-                let sum = 0;
-                let sumTdNotNull = 0;
-                let sumReadyInv = 0;
-                
+    let sum = 0;
+    let sumTdNotNull = 0;
+    let sumBaYa = 0;
+    let sumBaYa1 = 0;
+    let sumBaTidak = 0;
 
-                let ids = $(this).jqGrid('getDataIDs');
+    let ids = $(this).jqGrid('getDataIDs');
 
-                for (let i = 0; i < ids.length; i++) {
-                    let rowData = $(this).jqGrid('getRowData', ids[i]);
-                    let syaratBa = (rowData.syarat_ba || '').toString().trim().toLowerCase();
-                    let baKembali = rowData.ba_kembali;
-                    let tarif = parseFloat(rowData.tarif1.replace(/,/g, '')) || 0;
+    for (let i = 0; i < ids.length; i++) {
+        let rowData = $(this).jqGrid('getRowData', ids[i]);
 
-                    // total semua
-                    sum += tarif;
+        let syaratBa = (rowData.syarat_ba || '').toString().trim().toLowerCase();
+        let baKembali = (rowData.ba_kembali || '').toString().trim();
+        let tarif = parseFloat((rowData.tarif1 || '0').replace(/,/g, '')) || 0;
 
-                    // total hanya jika td tidak null / tidak kosong
-                    if (rowData.td && rowData.td !== '-') {
-                        sumTdNotNull += tarif;
-                    }
-                    if (
-                        syaratBa === 'iya' &&
-                        (!baKembali || baKembali == 0 || baKembali === '-')
-                    ) {
-                        sumReadyInv += tarif;
-                    }
-                }
+        // total semua
+        sum += tarif;
 
-                // total lama
-                $("#total-tarif").text(sum.toLocaleString('en-US'));
+        // total jika td terisi
+        if (rowData.td && rowData.td !== '-') {
+            sumTdNotNull += tarif;
+        }
 
-                // total baru (yang td tidak null)
-                $("#total-tarif-td").text(sumTdNotNull.toLocaleString('en-US'));
-                $("#total-tarif-ready").text((sumTdNotNull - sumReadyInv ).toLocaleString('en-US'));
-            },
+        // BA Ya -> syarat_ba = iya dan ba_kembali = "-"
+        if (syaratBa === 'iya' && baKembali === '-') {
+            sumBaYa += tarif;
+        }
+
+        // BA Ya (Ada) -> syarat_ba = iya dan ba_kembali terisi
+        if (
+            syaratBa === 'iya' &&
+            baKembali !== '' &&
+            baKembali !== '-' &&
+            baKembali !== '0'
+        ) {
+            sumBaYa1 += tarif;
+        }
+
+        // BA Tidak -> syarat_ba = tidak dan ba_kembali = "-"
+        if (syaratBa === 'tidak' && baKembali === '-') {
+            sumBaTidak += tarif;
+        }
+    }
+
+    $("#total-tarif").text(sum.toLocaleString('en-US'));
+    $("#total-tarif-td").text(sumTdNotNull.toLocaleString('en-US'));
+    $("#total-tarif-baya").text(sumBaYa.toLocaleString('en-US'));
+    $("#total-tarif-baya1").text(sumBaYa1.toLocaleString('en-US'));
+    $("#total-tarif-batidak").text((sumBaTidak - sumBaYa1).toLocaleString('en-US'));
+},
             rowattr: function(item) {
                 return {
                     "class": item.class
