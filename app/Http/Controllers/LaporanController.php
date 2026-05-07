@@ -1473,6 +1473,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
     public function omset_trucking()
     {
         $year = request('year') ?? date('Y');
+        $year1 = substr(request('year') ?? date('Y'), -2);
         $month = request('month') ?? date('m');
         $startDate = date("Y-m-01 00:00:00", strtotime("$year-$month-01"));
         $endDate = date("Y-m-t 23:59:59", strtotime("$year-$month-01"));
@@ -1683,9 +1684,9 @@ $rekapPerBulan1 = $jurnalPerBulan1->map(function ($items, $month) {
 
 // Ambil Jurnal berdasarkan order_trucking_id
   $jurnalTes = DB::table('jurnal as j')
-    ->leftJoin('order_trucking as ot', function ($join) use ($monthRoman) {
+    ->leftJoin('order_trucking as ot', function ($join) use ($monthRoman, $year1) {
         $join->on('j.order_trucking_id', '=', 'ot.id')
-             ->where('ot.invoice', 'like', "%/RAS-LT/{$monthRoman}/25%");
+             ->where('ot.invoice', 'like', "%/RAS-LT/{$monthRoman}/{$year1}%");
     })
     ->where('j.coa_id', 98)
      ->where('j.tipe', '!=', 'OMZ')
