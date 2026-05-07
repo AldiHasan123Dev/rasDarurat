@@ -336,36 +336,14 @@
                                         </h4>
                                     </div>
                                 </div>
-
-                                {{-- <div class="col-md-4">
+                                <div class="col-md-4">
                                     <div class="card shadow-sm border-0 text-center py-3">
-                                        <h6 class="text-muted mb-1">Total Tarif BA Ya (Null)</h6>
+                                        <h6 class="text-muted mb-1">Total Tarif Ready Inv</h6>
                                         <h4 class="fw-bold text-primary mb-0">
                                             Rp <span id="total-tarif-baya" style="font-size: 1.5rem;">0</span>
                                         </h4>
                                     </div>
                                 </div>
-
-                                <div class="col-md-4">
-                                    <div class="card shadow-sm border-0 text-center py-3">
-                                        <h6 class="text-muted mb-1">Total Tarif BA Ya (Ada)</h6>
-                                        <h4 class="fw-bold text-primary mb-0">
-                                            Rp <span id="total-tarif-baya1" style="font-size: 1.5rem;">0</span>
-                                        </h4>
-                                    </div>
-                                </div> --}}
-
-                                <div class="col-md-4">
-                                    <div class="card shadow-sm border-0 text-center py-3">
-                                        <h6 class="text-muted mb-1">Total Tarif Ready Inv</h6>
-                                        <h4 class="fw-bold text-primary mb-0">
-                                            Rp <span id="total-tarif-batidak" style="font-size: 1.5rem;">0</span>
-                                        </h4>
-                                    </div>
-                                </div>
-
-
-
                             </div>
                         </div>
                     </div>
@@ -586,16 +564,16 @@
         }
 
         // BA Tidak -> syarat_ba = tidak dan ba_kembali = "-"
-        if (syaratBa === 'tidak' && baKembali === '-') {
+        if (rowData.td && rowData.td !== '-' &&syaratBa === 'tidak' && baKembali === '-') {
             sumBaTidak += tarif;
         }
     }
 
     $("#total-tarif").text(sum.toLocaleString('en-US'));
     $("#total-tarif-td").text(sumTdNotNull.toLocaleString('en-US'));
-    $("#total-tarif-baya").text(sumBaYa.toLocaleString('en-US'));
+    $("#total-tarif-baya").text((sumBaYa1+sumBaTidak).toLocaleString('en-US'));
     $("#total-tarif-baya1").text(sumBaYa1.toLocaleString('en-US'));
-    $("#total-tarif-batidak").text((sumBaTidak - sumBaYa1).toLocaleString('en-US'));
+    $("#total-tarif-batidak").text(sumBaTidak.toLocaleString('en-US'));
 },
             rowattr: function(item) {
                 return {
