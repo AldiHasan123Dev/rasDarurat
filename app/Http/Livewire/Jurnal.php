@@ -6,6 +6,7 @@ use App\Models\COA;
 use App\Models\Jurnal as ModelsJurnal;
 use App\Models\Order;
 use App\Models\Setting;
+use Illuminate\Support\Facades\Cache;
 use App\Models\TemplateJurnal;
 use App\Models\TemplateJurnalItem;
 use Illuminate\Support\Carbon;
@@ -54,12 +55,16 @@ class Jurnal extends Component
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active', 1)->orderBy('kode')->get();
-        $this->orders = Order::query()
+       $this->orders = Cache::remember(
+    'orders_recent',
+    300,
+    fn() => Order::query()
         ->select('id', 'no_job', 'job', 'seal', 'invoice', 'container')
         ->whereBetween('created_at', [$last, $now])
         ->orderBy('job')
         ->orderBy('no_job')
-        ->cursor();
+        ->get()
+);
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();
