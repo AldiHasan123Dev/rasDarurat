@@ -293,6 +293,19 @@ if (request('ba_kembali_null')) {
             });
         }
 
+        if (request('ba_diantar_sby_makassar_null') ) {
+            $query->whereNull('order.ba_diantar_sby');
+             $query->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
+            });
+            $query->whereHas('tarif', function ($a) {
+               $a->whereIn('kondisi', [5, 7,10,8,9])
+              ->whereHas('tujuan_lokasi', function ($t3) {
+                  $t3->where('nama', 'like', '%makassar%');
+              });
+            });
+        }
+
         if (request('input_invoice_bayar')) {
             $query->where('order.komisi', '>', 0)->whereNull('order.tgl_komisi')->whereNull('order.invoice_bayar')->whereNull('order.komisi_print');
         }
@@ -675,6 +688,18 @@ if (request('cek')) {
                 $a->whereIn('kondisi', [5, 7, 10])
               ->whereHas('tujuan_lokasi', function ($t3) {
                   $t3->where('nama', 'like', '%banjarmasin%');
+              });
+            })->whereHas('jadwal_kapal',function ($j){
+                 $j->whereNotNull('eta');
+            })->count();
+        }
+
+        if (request('ba_diantar_sby_makassar_null')) {
+            $count = Order::whereNull('ba_diantar_sby')->whereHas('tarif', function ($a) {
+                $a->whereIn('kondisi', [5, 7, 10]);
+                $a->whereIn('kondisi', [5, 7, 10])
+              ->whereHas('tujuan_lokasi', function ($t3) {
+                  $t3->where('nama', 'like', '%makassar%');
               });
             })->whereHas('jadwal_kapal',function ($j){
                  $j->whereNotNull('eta');

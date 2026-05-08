@@ -133,6 +133,7 @@ Route::get('test', function () {
     $file = $result[0];
     $file = str_replace('public/', '', $file);
 });
+
 Auth::routes(['register' => false]);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('bulk-update', function () {
@@ -232,7 +233,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('laporan/trucking', [LaporanController::class, 'trucking'])->name('laporan.trucking');
     Route::get('laporan/sopir', [LaporanController::class, 'sopir'])->name('laporan.sopir');
     Route::get('laporan/invoice', [LaporanController::class, 'invoice'])->name('laporan.invoice');
-      Route::get('laporan/dashmonitor', [LaporanController::class, 'dashmonitor'])->name('laporan.dashmonitor');
+    Route::get('laporan/dashmonitor', [LaporanController::class, 'dashmonitor'])->name('laporan.dashmonitor');
     Route::get('laporan/omset', [LaporanController::class, 'omset'])->name('laporan.omset');
     Route::get('laporan/omset-customer', [LaporanController::class, 'omset_customer'])->name('laporan.omset_customer');
     Route::get('laporan/pra-omset', [LaporanController::class, 'praomset'])->name('laporan.praomset');
@@ -311,6 +312,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('ba-kembali', [OrderController::class, 'baKembali'])->name('order.ba-kembali');
     Route::get('barang-diantar', [OrderController::class, 'barangDiantar'])->name('order.barang_diantar');
     Route::get('ba-diantar-sby', [OrderController::class, 'baDiantarSBY'])->name('order.ba_diantar_sby');
+    Route::get('ba-diantar-sby-makassar', [OrderController::class, 'baDiantarSBYMakassar'])->name('order.ba_diantar_sby_makassar');
     Route::get('closing', [OrderController::class, 'closing'])->name('order.closing');
     Route::get('sj-kembali', [OrderController::class, 'sj_kembali'])->name('order.sj-kembali');
     Route::get('order-asuransi', [OrderController::class, 'asuransi'])->name('order.asuransi');

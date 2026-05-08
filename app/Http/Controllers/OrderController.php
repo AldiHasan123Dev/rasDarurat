@@ -141,6 +141,15 @@ class OrderController extends Controller
         return view('admin.order.ba_antar_sby');
     }
 
+        public function baDiantarSBYMakassar()
+    {
+        // $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
+        //     $a->whereIn('kondisi',[5,7]);
+        // })->orderBy('job')->orderBy('no_job')->get();
+        // $data = OrderResource::collection($data);
+        return view('admin.order.ba_antar_sby-makassar');
+    }
+
      public function barangDiantar()
     {
         // $data = Order::whereNull('ba_kembali')->whereHas('tarif', function($a){
