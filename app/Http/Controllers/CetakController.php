@@ -310,10 +310,12 @@ class CetakController extends Controller
                 $is_allin = true;
                 $invoice = $this->FCL($order,1);
                 $inv_tonase = null;
+                 $invoice_m3 = null;
                 $inv_qty = null;
             }else{
                 $invoice = $this->FCL($order);
                 $inv_tonase = null;
+                 $invoice_m3 = null;
                 $inv_qty = null;
             }
             $validate = $this->FCL($order)['validate'];
