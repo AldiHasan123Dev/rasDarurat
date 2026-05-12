@@ -45,15 +45,15 @@
             }
 
             /* .table tr td{
-                        padding: 0px 2px;
-                        border-left: 1px solid !important;
-                        border-right: 1px solid !important;
-                        border-bottom: none;
-                        border-top: none;
-                    }
-                    .table>tbody>tr>td:first-child{
-                        padding: 0px 2px !important;
-                    } */
+                                    padding: 0px 2px;
+                                    border-left: 1px solid !important;
+                                    border-right: 1px solid !important;
+                                    border-bottom: none;
+                                    border-top: none;
+                                }
+                                .table>tbody>tr>td:first-child{
+                                    padding: 0px 2px !important;
+                                } */
             .page-break {
                 page-break-after: always;
                 overflow: hidden;
@@ -74,102 +74,83 @@
 @section('content')
     @php
         $addCost = 0;
-        function terbilang($angka)
-        {
-            $angka = (float) $angka;
-            $bilangan = [
-                '',
-                'satu',
-                'dua',
-                'tiga',
-                'empat',
-                'lima',
-                'enam',
-                'tujuh',
-                'delapan',
-                'sembilan',
-                'sepuluh',
-                'sebelas',
-            ];
-            if ($angka < 12) {
-                return $bilangan[$angka];
-            } elseif ($angka < 20) {
-                return $bilangan[$angka - 10] . ' belas';
-            } elseif ($angka < 100) {
-                $hasil_bagi = (int) ($angka / 10);
-                $hasil_mod = $angka % 10;
-                return trim(sprintf('%s puluh %s', $bilangan[$hasil_bagi], $bilangan[$hasil_mod]));
-            } elseif ($angka < 200) {
-                return 'seratus ' . terbilang($angka - 100);
-            } elseif ($angka < 1000) {
-                $hasil_bagi = (int) ($angka / 100);
-                $hasil_mod = $angka % 100;
-                return trim(sprintf('%s ratus %s', $bilangan[$hasil_bagi], terbilang($hasil_mod)));
-            } elseif ($angka < 2000) {
-                return 'seribu ' . terbilang($angka - 1000);
-            } elseif ($angka < 1000000) {
-                $hasil_bagi = (int) ($angka / 1000);
-                $hasil_mod = $angka % 1000;
-                return trim(sprintf('%s ribu %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
-            } elseif ($angka < 1000000000) {
-                $hasil_bagi = (int) ($angka / 1000000);
-                $hasil_mod = $angka % 1000000;
-                return trim(sprintf('%s juta %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
-            } elseif ($angka < 1000000000000) {
-                $hasil_bagi = (int) ($angka / 1000000000);
-                $hasil_mod = fmod($angka, 1000000000);
-                return trim(sprintf('%s miliar %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
-            } else {
-                return 'Angka terlalu besar';
+        if (!function_exists('terbilang')) {
+            function terbilang($angka)
+            {
+                $angka = (float) $angka;
+                $bilangan = [
+                    '',
+                    'satu',
+                    'dua',
+                    'tiga',
+                    'empat',
+                    'lima',
+                    'enam',
+                    'tujuh',
+                    'delapan',
+                    'sembilan',
+                    'sepuluh',
+                    'sebelas',
+                ];
+
+                if ($angka < 12) {
+                    return $bilangan[$angka];
+                } elseif ($angka < 20) {
+                    return $bilangan[$angka - 10] . ' belas';
+                } elseif ($angka < 100) {
+                    $hasil_bagi = (int) ($angka / 10);
+                    $hasil_mod = $angka % 10;
+                    return trim(sprintf('%s puluh %s', $bilangan[$hasil_bagi], $bilangan[$hasil_mod]));
+                } elseif ($angka < 200) {
+                    return 'seratus ' . terbilang($angka - 100);
+                } elseif ($angka < 1000) {
+                    $hasil_bagi = (int) ($angka / 100);
+                    $hasil_mod = $angka % 100;
+                    return trim(sprintf('%s ratus %s', $bilangan[$hasil_bagi], terbilang($hasil_mod)));
+                } elseif ($angka < 2000) {
+                    return 'seribu ' . terbilang($angka - 1000);
+                } elseif ($angka < 1000000) {
+                    $hasil_bagi = (int) ($angka / 1000);
+                    $hasil_mod = $angka % 1000;
+                    return trim(sprintf('%s ribu %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
+                } elseif ($angka < 1000000000) {
+                    $hasil_bagi = (int) ($angka / 1000000);
+                    $hasil_mod = $angka % 1000000;
+                    return trim(sprintf('%s juta %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
+                } elseif ($angka < 1000000000000) {
+                    $hasil_bagi = (int) ($angka / 1000000000);
+                    $hasil_mod = fmod($angka, 1000000000);
+                    return trim(sprintf('%s miliar %s', terbilang($hasil_bagi), terbilang($hasil_mod)));
+                } else {
+                    return 'Angka terlalu besar';
+                }
             }
         }
 
-        function tanggal($date)
-        {
-            $tanggal = date('d', strtotime($date));
-            $bulan = date('m', strtotime($date));
-            $tahun = date('Y', strtotime($date));
+        if (!function_exists('tanggal')) {
+            function tanggal($date)
+            {
+                $bulanList = [
+                    '01' => 'Januari',
+                    '02' => 'Februari',
+                    '03' => 'Maret',
+                    '04' => 'April',
+                    '05' => 'Mei',
+                    '06' => 'Juni',
+                    '07' => 'Juli',
+                    '08' => 'Agustus',
+                    '09' => 'September',
+                    '10' => 'Oktober',
+                    '11' => 'November',
+                    '12' => 'Desember',
+                ];
 
-            $nama_bulan = '';
-            switch ($bulan) {
-                case '01':
-                    $nama_bulan = 'Januari';
-                    break;
-                case '02':
-                    $nama_bulan = 'Februari';
-                    break;
-                case '03':
-                    $nama_bulan = 'Maret';
-                    break;
-                case '04':
-                    $nama_bulan = 'April';
-                    break;
-                case '05':
-                    $nama_bulan = 'Mei';
-                    break;
-                case '06':
-                    $nama_bulan = 'Juni';
-                    break;
-                case '07':
-                    $nama_bulan = 'Juli';
-                    break;
-                case '08':
-                    $nama_bulan = 'Agustus';
-                    break;
-                case '09':
-                    $nama_bulan = 'September';
-                    break;
-                case '10':
-                    $nama_bulan = 'Oktober';
-                    break;
-                case '11':
-                    $nama_bulan = 'November';
-                    break;
-                case '12':
-                    $nama_bulan = 'Desember';
-                    break;
+                $tanggal = date('d', strtotime($date));
+                $bulan = date('m', strtotime($date));
+                $tahun = date('Y', strtotime($date));
+
+                return $tanggal . ' ' . ($bulanList[$bulan] ?? '-') . ' ' . $tahun;
             }
-            return $tanggal . ' ' . $nama_bulan . ' ' . $tahun;
         }
     @endphp
     <div class="container">
@@ -196,7 +177,7 @@
                             <input type="hidden" name="tujuan" value="{{ $order->tarif->tujuan_lokasi->nama }}">
                             <input type="hidden" name="tagihan" value="{{ $cas->sum('jumlah') }}">
                             <input type="hidden" name="admin" value="{{ $invoice['admin'] }}">
-                            <input type="hidden" name="pph" value="{{ ($invoice['pph']) }}">
+                            <input type="hidden" name="pph" value="{{ $invoice['pph'] }}">
                             <button type="submit" name="tipe_invoice" value="global"
                                 onclick="return confirm('Apa anda yakin?')" class="btn btn-sm btn-success mb-3">Submit
                                 Invoice</button>
@@ -654,10 +635,10 @@
                                     </p>
                                     @if ($allin['total'] >= 5000000)
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                             style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
+                                            style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
                                     @else
                                         <img src="{{ asset('assets/img/ttd-ifa.png') }}"
-                                             style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
+                                            style="width: 120px; height:64px; margin-left: 15px; margin-bottom: 20px;">
                                     @endif
                                     <br>
                                     ({{ $invoice_name }})
@@ -795,20 +776,20 @@
                                 </td>
                             </tr>
                             @if ($ppn > 0)
-                            <tr>
-                                <td colspan="4"></td>
-                                <td colspan="3" style="border: 1px solid black;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span>1,1%:</span>
-                                    </div>
-                                </td>
-                                <td colspan="1" style="border: 1px solid black;">
-                                    <div  class="price d-flex justify-content-between px-2"> 
-                                        <span>Rp</span>
-                                        <span>{{ number_format((int) $invoice['ppn']) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span>1,1%:</span>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="border: 1px solid black;">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format((int) $invoice['ppn']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
                             @endif
                             @if ($invoice['asuransi_total'] > 0)
                                 <tr>
@@ -923,6 +904,922 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- LCL customer all in --}}
+                    @if ($order->tarif->shipmentInfo->nama[0] == 'L')
+                        {{-- lcl Tonase customer all in --}}
+                        <div class="page-break"></div>
+                        <div class="invoice-box">
+                            <x-header-cop>
+                                <div style="width:30%; ">
+                                    <table
+                                        style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                        <tr>
+                                            <td class="text-center" style="line-spacing: 1rem">INVOICE LCL TONASE</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </x-header-cop>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 120px">No. Invoice</td>
+                                            <td>: {{ $order->invoice ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kapal</td>
+                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY.
+                                                {{ $order->jadwal_kapal->voyage }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pelabuhan Tujuan</td>
+                                            <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buat Pembayaran (Jenis)</td>
+                                            <td style="vertical-align: top">:
+                                                {{ $nama_barang }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 60px">Customer</td>
+                                            <td style="width:5px">:</td>
+                                            <td>{{ $order->tarif->customer->nama }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">Alamat</td>
+                                            <td style="vertical-align: top">:</td>
+                                            <td>{{ $order->tarif->customer->alamat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $order->tarif->customer->kota }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                                <thead>
+                                    <tr class="heading">
+                                        <td>No</td>
+                                        <td>Uraian</td>
+                                        <td>Satuan</td>
+                                        <td>Tonase</td>
+                                        <td>Tipe Tarif</td>
+                                        <td>X</td>
+                                        <td>Tarif</td>
+                                        <td>Sub Total</td>
+                                    </tr>
+                                </thead>
+                                @foreach ($inv_tonase['items'] as $idx => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item['keterangan'] }}</td>
+                                        <td class="text-center">{{ $item['koli'] }}</td>
+                                        <td class="text-center">{{ $item['jumlah'] }} </td>
+                                        <td class="text-center">{{ $item['si'] }}</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end tarif-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['tarif'])) }}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end sub-total-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['sub_total'])) }}"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($order->tarif->kondisi == 1 || $order->tarif->kondisi == 6)
+                                    <tr>
+                                        <td class="text-center">2.</td>
+                                        <td>JASA EKSPEDISI</td>
+                                        <td class="text-center">{{ $inv_tonase['doc_count'] }} Doc</td>
+                                        <td class="text-center">{{ $inv_tonase['doc_count'] }} </td>
+                                        <td class="text-center">Doc</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>500.000</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($inv_tonase['doc_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($inv_tonase['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                @if ($ppn > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span>PPN 1,1%:</span>
+                                            </div>
+                                        </td>
+                                        <td colspan="1" style="border: 1px solid black;">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format((int) $inv_tonase['ppn']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+
+                                @if ($inv_tonase['asuransi_total'] > 0 || $cas->sum('jumlah') > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span
+                                                    class="subtotal">{{ number_format($inv_tonase['sub_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($inv_tonase['asuransi_total'] > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Asuransi
+                                                {{ $inv_tonase['asuransi'] }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['asuransi_total']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @foreach ($cas as $tagihan)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tagihan->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span
+                                                    class="total">{{ number_format(ceil($inv_tonase['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['total'] - number_format($inv_tonase['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @else
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span
+                                                    class="total">{{ number_format(ceil($inv_tonase['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['total'] - number_format($inv_tonase['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endif
+                                {{-- <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr> --}}
+
+                            </table>
+
+                            <div class="row mt-3">
+                                <div class="col-9">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 100px">Terbilang</td>
+                                            <td class="terbilang">:
+                                                {{ strtoupper(terbilang(ceil($inv_tonase['total']))) }}
+                                                RUPIAH
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Container</td>
+                                            <td>: {{ implode(', ', $orders->pluck('container')->toArray()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Group Job</td>
+                                            <td>:
+                                                @foreach ($orders as $item)
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="mt-3">
+                                        <span>Pembayaran dapat dilakukan melalui:</span>
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 150px">Rekening No.</td>
+                                                <td>: {{ $no_rek }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atas Nama</td>
+                                                <td>: {{ $bank_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank</td>
+                                                <td>: {{ $bank }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center mt-3" style="font-size: .7rem">
+                                        <p>Surabaya,
+                                            {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                        </p>
+                                        <div style="height: 2.3cm"></div>
+                                        ({{ $invoice_name }})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end lcl Tonase customer all in --}}
+
+                        {{-- lcl QTY customer all in --}}
+                        <div class="page-break"></div>
+                        <div class="invoice-box">
+                            <x-header-cop>
+                                <div style="width:30%; ">
+                                    <table
+                                        style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                        <tr>
+                                            <td class="text-center" style="line-spacing: 1rem">INVOICE LCL QTY</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </x-header-cop>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 120px">No. Invoice</td>
+                                            <td>: {{ $order->invoice ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kapal</td>
+                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY.
+                                                {{ $order->jadwal_kapal->voyage }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pelabuhan Tujuan</td>
+                                            <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buat Pembayaran (Jenis)</td>
+                                            <td style="vertical-align: top">:
+                                                {{ $nama_barang }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 60px">Customer</td>
+                                            <td style="width:5px">:</td>
+                                            <td>{{ $order->tarif->customer->nama }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">Alamat</td>
+                                            <td style="vertical-align: top">:</td>
+                                            <td>{{ $order->tarif->customer->alamat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $order->tarif->customer->kota }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                                <thead>
+                                    <tr class="heading">
+                                        <td>No</td>
+                                        <td>Uraian</td>
+                                        <td>Satuan</td>
+                                        <td>QTY</td>
+                                        <td>Tipe Tarif</td>
+                                        <td>X</td>
+                                        <td>Tarif</td>
+                                        <td>Sub Total</td>
+                                    </tr>
+                                </thead>
+                                @foreach ($inv_qty['items'] as $idx => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item['keterangan'] }}</td>
+                                        <td class="text-center">{{ $item['koli'] }}</td>
+                                        <td class="text-center">{{ $item['jumlah'] }} </td>
+                                        <td class="text-center">{{ $item['si'] }}</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end tarif-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['tarif'])) }}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end sub-total-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['sub_total'])) }}"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($inv_qty['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                @if ($ppn > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span>PPN 1,1%:</span>
+                                            </div>
+                                        </td>
+                                        <td colspan="1" style="border: 1px solid black;">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format((int) $inv_qty['ppn']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($inv_qty['asuransi_total'] > 0 || $cas->sum('jumlah') > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span class="subtotal">{{ number_format($allin['sub_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($inv_qty['asuransi_total'] > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Asuransi
+                                                {{ $allin['asuransi'] }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['asuransi_total']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @foreach ($cas as $tagihan)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tagihan->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span class="total">{{ number_format(ceil($inv_qty['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['total'] - number_format($inv_qty['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @else
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span class="total">{{ number_format(ceil($inv_qty['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['total'] - number_format($inv_tonase['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endif
+                                {{-- <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr> --}}
+
+                            </table>
+
+                            <div class="row mt-3">
+                                <div class="col-9">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 100px">Terbilang</td>
+                                            <td class="terbilang">: {{ strtoupper(terbilang(ceil($inv_qty['total']))) }}
+                                                RUPIAH
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Container</td>
+                                            <td>: {{ implode(', ', $orders->pluck('container')->toArray()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Group Job</td>
+                                            <td>:
+                                                @foreach ($orders as $item)
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="mt-3">
+                                        <span>Pembayaran dapat dilakukan melalui:</span>
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 150px">Rekening No.</td>
+                                                <td>: {{ $no_rek }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atas Nama</td>
+                                                <td>: {{ $bank_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank</td>
+                                                <td>: {{ $bank }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center mt-3" style="font-size: .7rem">
+                                        <p>Surabaya,
+                                            {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                        </p>
+                                         <div style="height: 2.3cm"></div>
+                                        ({{ $invoice_name }})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end lcl QTY customer all in --}}
+
+                        {{-- LCL Kubik customer all in --}}
+                        <div class="page-break"></div>
+
+                        <div class="invoice-box">
+                            <x-header-cop>
+                                <div style="width:30%; ">
+                                    <table
+                                        style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                        <tr>
+                                            <td class="text-center" style="line-spacing: 1rem">INVOICE LCL M3</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </x-header-cop>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 120px">No. Invoice</td>
+                                            <td>: {{ $order->invoice ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kapal</td>
+                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY.
+                                                {{ $order->jadwal_kapal->voyage }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pelabuhan Tujuan</td>
+                                            <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buat Pembayaran (Jenis)</td>
+                                            <td style="vertical-align: top">:
+                                                {{ $nama_barang }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 60px">Customer</td>
+                                            <td style="width:5px">:</td>
+                                            <td>{{ $order->tarif->customer->nama }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">Alamat</td>
+                                            <td style="vertical-align: top">:</td>
+                                            <td>{{ $order->tarif->customer->alamat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $order->tarif->customer->kota }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                                <thead>
+                                    <tr class="heading">
+                                        <td>No</td>
+                                        <td>Uraian</td>
+                                        <td>M3</td>
+                                        <td>Jumlah</td>
+                                        <td>Tipe Tarif</td>
+                                        <td>X</td>
+                                        <td>Tarif</td>
+                                        <td>Sub Total</td>
+                                    </tr>
+                                </thead>
+                                @foreach ($invoice_m3['items'] as $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item['keterangan'] }}</td>
+                                        <td class="text-center">{{ $item['koli'] }}</td>
+                                        <td class="text-center">{{ $item['jumlah'] }} </td>
+                                        <td class="text-center">{{ $item['si'] }}</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($item['tarif']) }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($item['sub_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($order->tarif->kondisi == 1 || $order->tarif->kondisi == 6)
+                                    <tr>
+                                        <td class="text-center">2.</td>
+                                        <td>JASA EKSPEDISI</td>
+                                        <td class="text-center">{{ $invoice_m3['doc_count'] }} Doc</td>
+                                        <td class="text-center">{{ $invoice_m3['doc_count'] }} </td>
+                                        <td class="text-center">Doc</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>500.000</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice_m3['doc_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($invoice_m3['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @if ($ppn > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span>PPN 1,1%:</span>
+                                            </div>
+                                        </td>
+                                        <td colspan="1" style="border: 1px solid black;">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format((int) $invoice_m3['ppn']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($invoice_m3['asuransi_total'] > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Asuransi
+                                            {{ $invoice['asuransi'] }}</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice['asuransi_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @foreach ($cas as $tagihan)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($tagihan->jumlah) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr>
+                                    <td class="fw-bold" colspan="7" style="border: 1px solid black; text-align:right">
+                                        TOTAL</td>
+                                    <td class="fw-bold" style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($invoice_m3['total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @if ($pph > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak
+                                            24-104-56)</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice_m3['pph']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($order->tarif->customer->id == 318)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice['total'] - number_format($invoice['pph'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+
+                            </table>
+
+                            <div class="row mt-3">
+                                <div class="col-9">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 100px">Terbilang</td>
+                                            <td>: {{ strtoupper(terbilang($invoice_m3['total'])) }} RUPIAH</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Container</td>
+                                            <td>: {{ implode(', ', $orders->pluck('container')->toArray()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Group Job</td>
+                                            <td>:
+                                                @foreach ($orders as $item)
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="mt-3">
+                                        <span>Pembayaran dapat dilakukan melalui:</span>
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 150px">Rekening No.</td>
+                                                <td>: {{ $no_rek }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atas Nama</td>
+                                                <td>: {{ $bank_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank</td>
+                                                <td>: {{ $bank }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center mt-3" style="font-size: .7rem">
+                                        <p>Surabaya,
+                                            {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                        </p>
+                                        <div style="height: 2.3cm"></div>
+                                        ({{ $invoice_name }})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end lcl Kubik customer all in --}}
+                    @endif
+                    {{-- end lcl customer all in --}}
                 @else
                     <div class="invoice-box first-page">
                         <x-header-cop>
@@ -1035,17 +1932,19 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endif 
+                            @endif
                             @if ($item['jumlah'] < 1)
-                            <tr style="height: 20px !important">
-                                <td colspan="4"></td>
-                                <td colspan="4" style="border-bottom: 1px solid black"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <b style="display: inline-block; border-bottom: 1px solid black;">Ket: Untuk tipe tarif LCL</b>
-                                    <br>                               
-                                    Jika volume barang kurang dari 1 CBM, maka akan dikenakan perhitungan minimum 1 CBM</td>
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <b style="display: inline-block; border-bottom: 1px solid black;">Ket: Untuk tipe
+                                            tarif LCL</b>
+                                        <br>
+                                        Jika volume barang kurang dari 1 CBM, maka akan dikenakan perhitungan minimum 1 CBM
+                                    </td>
                                     <td colspan="3" style="border: 1px solid black">Sub Total</td>
                                     <td style="border: 1px solid black">
                                         <div class="price d-flex justify-content-between px-2">
@@ -1053,38 +1952,37 @@
                                             <span>{{ number_format($invoice['sub_total']) }}</span>
                                         </div>
                                     </td>
-                                    @else
-                                    <tr style="height: 20px !important">
-                                        <td colspan="4"></td>
-                                        <td colspan="4" style="border-bottom: 1px solid black"></td>
-                                    </tr>
+                                @else
+                                <tr style="height: 20px !important">
                                     <td colspan="4"></td>
-                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
-                                    <td style="border: 1px solid black">
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($invoice['sub_total']) }}</span>
+                                    </div>
+                                </td>
+                                </tr>
+                            @endif
+                            @if ($ppn > 0)
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span>PPN 1,1%:</span>
+                                            {{-- <span>PPN 1.2%:</span> --}}
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="border: 1px solid black;">
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($invoice['sub_total']) }}</span>
+                                            <span>{{ number_format((int) $invoice['ppn']) }}</span>
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
-                            @if ($ppn > 0)
-                            <tr>
-                                <td colspan="4"></td>
-                                <td colspan="3" style="border: 1px solid black;">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <span>PPN 1,1%:</span>
-                                        {{-- <span>PPN 1.2%:</span> --}}
-                                    </div>
-                                </td>
-                                <td colspan="1" style="border: 1px solid black;">
-                                    <div  class="price d-flex justify-content-between px-2"> 
-                                        <span>Rp</span>
-                                        <span>{{ number_format((int) $invoice['ppn']) }}</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            
                             @endif
                             @if ($invoice['asuransi_total'] > 0)
                                 <tr>
@@ -1314,16 +2212,18 @@
                                     </td>
                                 </tr>
                             @endif
-                           @if ($item['jumlah'] < 1)
-                            <tr style="height: 20px !important">
-                                <td colspan="4"></td>
-                                <td colspan="4" style="border-bottom: 1px solid black"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <b style="display: inline-block; border-bottom: 1px solid black;">Ket: Untuk tipe tarif LCL</b>
-                                    <br>                               
-                                    Jika volume barang kurang dari 1 CBM, maka akan dikenakan perhitungan minimum 1 CBM</td>
+                            @if ($item['jumlah'] < 1)
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <b style="display: inline-block; border-bottom: 1px solid black;">Ket: Untuk tipe
+                                            tarif LCL</b>
+                                        <br>
+                                        Jika volume barang kurang dari 1 CBM, maka akan dikenakan perhitungan minimum 1 CBM
+                                    </td>
                                     <td colspan="3" style="border: 1px solid black">Sub Total</td>
                                     <td style="border: 1px solid black">
                                         <div class="price d-flex justify-content-between px-2">
@@ -1331,36 +2231,36 @@
                                             <span>{{ number_format($invoice['sub_total']) }}</span>
                                         </div>
                                     </td>
-                                    @else
-                                    <tr style="height: 20px !important">
-                                        <td colspan="4"></td>
-                                        <td colspan="4" style="border-bottom: 1px solid black"></td>
-                                    </tr>
+                                @else
+                                <tr style="height: 20px !important">
                                     <td colspan="4"></td>
-                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
-                                    <td style="border: 1px solid black">
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($invoice['sub_total']) }}</span>
+                                    </div>
+                                </td>
+                                </tr>
+                            @endif
+                            @if ($ppn > 0)
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span>PPN 1,1%:</span>
+                                        </div>
+                                    </td>
+                                    <td colspan="1" style="border: 1px solid black;">
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($invoice['sub_total']) }}</span>
+                                            <span>{{ number_format((int) $invoice['ppn']) }}</span>
                                         </div>
                                     </td>
                                 </tr>
-                                @endif
-                            @if ($ppn > 0)
-                                    <tr>
-                                        <td colspan="4"></td>
-                                        <td colspan="3" style="border: 1px solid black;">
-                                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                <span>PPN 1,1%:</span>
-                                            </div>
-                                        </td>
-                                        <td colspan="1" style="border: 1px solid black;">
-                                            <div  class="price d-flex justify-content-between px-2"> 
-                                                <span>Rp</span>
-                                                <span>{{ number_format((int) $invoice['ppn']) }}</span>
-                                            </div>
-                                        </td>
-                                    </tr>
                             @endif
                             @if ($invoice['asuransi_total'] > 0)
                                 <tr>
@@ -1417,7 +2317,7 @@
                                     <td style="border: 1px solid black">
                                         <div class="price d-flex justify-content-between px-2">
                                             <span>Rp</span>
-                                            <span>{{ number_format($invoice['total'] - number_format($invoice['pph']) ) }}</span>
+                                            <span>{{ number_format($invoice['total'] - number_format($invoice['pph'])) }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -1482,12 +2382,923 @@
                             </div>
                         </div>
                     </div>
+                    {{-- LCL tonase customer non all in --}}
+                    @if ($order->tarif->shipmentInfo->nama[0] == 'L')
+                        <div class="page-break"></div>
+                        <div class="invoice-box">
+                            <x-header-cop>
+                                <div style="width:30%; ">
+                                    <table
+                                        style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                        <tr>
+                                            <td class="text-center" style="line-spacing: 1rem">INVOICE LCL TONASE</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </x-header-cop>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 120px">No. Invoice</td>
+                                            <td>: {{ $order->invoice ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kapal</td>
+                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY.
+                                                {{ $order->jadwal_kapal->voyage }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pelabuhan Tujuan</td>
+                                            <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buat Pembayaran (Jenis)</td>
+                                            <td style="vertical-align: top">:
+                                                {{ $nama_barang }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 60px">Customer</td>
+                                            <td style="width:5px">:</td>
+                                            <td>{{ $order->tarif->customer->nama }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">Alamat</td>
+                                            <td style="vertical-align: top">:</td>
+                                            <td>{{ $order->tarif->customer->alamat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $order->tarif->customer->kota }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                                <thead>
+                                    <tr class="heading">
+                                        <td>No</td>
+                                        <td>Uraian</td>
+                                        <td>Satuan</td>
+                                        <td>Tonase</td>
+                                        <td>Tipe Tarif</td>
+                                        <td>X</td>
+                                        <td>Tarif</td>
+                                        <td>Sub Total</td>
+                                    </tr>
+                                </thead>
+                                @foreach ($inv_tonase['items'] as $idx => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item['keterangan'] }}</td>
+                                        <td class="text-center">{{ $item['koli'] }}</td>
+                                        <td class="text-center">{{ $item['jumlah'] }} </td>
+                                        <td class="text-center">{{ $item['si'] }}</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end tarif-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['tarif'])) }}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end sub-total-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['sub_total'])) }}"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($order->tarif->kondisi == 1 || $order->tarif->kondisi == 6)
+                                    <tr>
+                                        <td class="text-center">2.</td>
+                                        <td>JASA EKSPEDISI</td>
+                                        <td class="text-center">{{ $inv_tonase['doc_count'] }} Doc</td>
+                                        <td class="text-center">{{ $inv_tonase['doc_count'] }} </td>
+                                        <td class="text-center">Doc</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>500.000</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($inv_tonase['doc_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($inv_tonase['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @if ($ppn > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span>PPN 1,1%:</span>
+                                            </div>
+                                        </td>
+                                        <td colspan="1" style="border: 1px solid black;">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format((int) $inv_tonase['ppn']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+
+                                @if ($inv_tonase['asuransi_total'] > 0 || $cas->sum('jumlah') > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span
+                                                    class="subtotal">{{ number_format($inv_tonase['sub_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($inv_tonase['asuransi_total'] > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Asuransi
+                                                {{ $allin['asuransi'] }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['asuransi_total']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @foreach ($cas as $tagihan)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tagihan->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($inv_tonase['total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['total'] - number_format($inv_tonase['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @else
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span
+                                                    class="total">{{ number_format(ceil($inv_tonase['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_tonase['total'] - number_format($inv_tonase['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endif
+                                {{-- <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr> --}}
+
+                            </table>
+
+                            <div class="row mt-3">
+                                <div class="col-9">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 100px">Terbilang</td>
+                                            <td class="terbilang">:
+                                                {{ strtoupper(terbilang(ceil($inv_tonase['total']))) }} RUPIAH
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Container</td>
+                                            <td>: {{ implode(', ', $orders->pluck('container')->toArray()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Group Job</td>
+                                            <td>:
+                                                @foreach ($orders as $item)
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="mt-3">
+                                        <span>Pembayaran dapat dilakukan melalui:</span>
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 150px">Rekening No.</td>
+                                                <td>: {{ $no_rek }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atas Nama</td>
+                                                <td>: {{ $bank_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank</td>
+                                                <td>: {{ $bank }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center mt-3" style="font-size: .7rem">
+                                        <p>Surabaya,
+                                            {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                        </p>
+                                        <div style="height: 2.3cm"></div>
+                                        ({{ $invoice_name }})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- lcl QTY customer all in --}}
+                        <div class="page-break"></div>
+                        <div class="invoice-box">
+                            <x-header-cop>
+                                <div style="width:30%; ">
+                                    <table
+                                        style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                        <tr>
+                                            <td class="text-center" style="line-spacing: 1rem">INVOICE LCL QTY</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </x-header-cop>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 120px">No. Invoice</td>
+                                            <td>: {{ $order->invoice ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kapal</td>
+                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY.
+                                                {{ $order->jadwal_kapal->voyage }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pelabuhan Tujuan</td>
+                                            <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buat Pembayaran (Jenis)</td>
+                                            <td style="vertical-align: top">:
+                                                {{ $nama_barang }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 60px">Customer</td>
+                                            <td style="width:5px">:</td>
+                                            <td>{{ $order->tarif->customer->nama }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">Alamat</td>
+                                            <td style="vertical-align: top">:</td>
+                                            <td>{{ $order->tarif->customer->alamat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $order->tarif->customer->kota }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                                <thead>
+                                    <tr class="heading">
+                                        <td>No</td>
+                                        <td>Uraian</td>
+                                        <td>Satuan</td>
+                                        <td>QTY</td>
+                                        <td>Tipe Tarif</td>
+                                        <td>X</td>
+                                        <td>Tarif</td>
+                                        <td>Sub Total</td>
+                                    </tr>
+                                </thead>
+                                @foreach ($inv_qty['items'] as $idx => $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item['keterangan'] }}</td>
+                                        <td class="text-center">{{ $item['koli'] }}</td>
+                                        <td class="text-center">{{ $item['jumlah'] }} </td>
+                                        <td class="text-center">{{ $item['si'] }}</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end tarif-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['tarif'])) }}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span><input type="text" readonly
+                                                        class="text-right text-end sub-total-{{ $idx }}"
+                                                        style="border:none"
+                                                        value="{{ number_format(ceil($item['sub_total'])) }}"></span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($inv_qty['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                @if ($ppn > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span>PPN 1,1%:</span>
+                                            </div>
+                                        </td>
+                                        <td colspan="1" style="border: 1px solid black;">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format((int) $inv_qty['ppn']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($inv_qty['asuransi_total'])
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span class="subtotal">{{ number_format($allin['sub_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($inv_qty['asuransi_total'])
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Asuransi
+                                                {{ $allin['asuransi'] }}</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['asuransi_total']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @foreach ($cas as $tagihan)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}
+                                            </td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($tagihan->jumlah) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span class="total">{{ number_format(ceil($inv_qty['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['total'] - number_format($inv_qty['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @else
+                                    <tr>
+                                        <td class="fw-bold" colspan="7"
+                                            style="border: 1px solid black; text-align:right">
+                                            TOTAL</td>
+                                        <td class="fw-bold" style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span class="total">{{ number_format(ceil($inv_qty['total'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @if ($pph > 0)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek
+                                                Pajak
+                                                24-104-56)</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['pph']) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($order->tarif->customer->id == 318)
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                            <td style="border: 1px solid black">
+                                                <div class="price d-flex justify-content-between px-2">
+                                                    <span>Rp</span>
+                                                    <span>{{ number_format($inv_qty['total'] - number_format($inv_qty['pph'])) }}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endif
+                                @endif
+                                {{-- <tr>
+                                <td colspan="4"></td>
+                                <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak 24-104-56)</td>
+                                <td style="border: 1px solid black">
+                                    <div class="price d-flex justify-content-between px-2">
+                                        <span>Rp</span>
+                                        <span>{{ number_format($pph) }}</span>
+                                    </div>
+                                </td>
+                            </tr> --}}
+
+                            </table>
+
+                            <div class="row mt-3">
+                                <div class="col-9">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 100px">Terbilang</td>
+                                            <td class="terbilang">: {{ strtoupper(terbilang(ceil($inv_qty['total']))) }}
+                                                RUPIAH
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Container</td>
+                                            <td>: {{ implode(', ', $orders->pluck('container')->toArray()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Group Job</td>
+                                            <td>:
+                                                @foreach ($orders as $item)
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="mt-3">
+                                        <span>Pembayaran dapat dilakukan melalui:</span>
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 150px">Rekening No.</td>
+                                                <td>: {{ $no_rek }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atas Nama</td>
+                                                <td>: {{ $bank_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank</td>
+                                                <td>: {{ $bank }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center mt-3" style="font-size: .7rem">
+                                        <p>Surabaya,
+                                            {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                        </p>
+                                         <div style="height: 2.3cm"></div>
+                                        ({{ $invoice_name }})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end lcl QTY customer all in --}}
+                        {{-- LCL Kubik customer all in --}}
+                        <div class="page-break"></div>
+
+                        <div class="invoice-box">
+                            <x-header-cop>
+                                <div style="width:30%; ">
+                                    <table
+                                        style="width: 100%; font-size: .7rem; font-weight:bold; border: 2px solid black">
+                                        <tr>
+                                            <td class="text-center" style="line-spacing: 1rem">INVOICE LCL M3</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </x-header-cop>
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 120px">No. Invoice</td>
+                                            <td>: {{ $order->invoice ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kapal</td>
+                                            <td>: {{ $order->jadwal_kapal->kapal->nama }} VOY.
+                                                {{ $order->jadwal_kapal->voyage }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pelabuhan Tujuan</td>
+                                            <td>: {{ $order->tarif->tujuan_lokasi->nama }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Buat Pembayaran (Jenis)</td>
+                                            <td style="vertical-align: top">:
+                                                {{ $nama_barang }}
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-6">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 60px">Customer</td>
+                                            <td style="width:5px">:</td>
+                                            <td>{{ $order->tarif->customer->nama }} </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="vertical-align: top">Alamat</td>
+                                            <td style="vertical-align: top">:</td>
+                                            <td>{{ $order->tarif->customer->alamat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{{ $order->tarif->customer->kota }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <table class="mt-2 w-100 tables" style="font-size: .7rem">
+                                <thead>
+                                    <tr class="heading">
+                                        <td>No</td>
+                                        <td>Uraian</td>
+                                        <td>M3</td>
+                                        <td>Jumlah</td>
+                                        <td>Tipe Tarif</td>
+                                        <td>X</td>
+                                        <td>Tarif</td>
+                                        <td>Sub Total</td>
+                                    </tr>
+                                </thead>
+                                @foreach ($invoice_m3['items'] as $item)
+                                    <tr>
+                                        <td class="text-center">{{ $loop->iteration }}</td>
+                                        <td>{{ $item['keterangan'] }}</td>
+                                        <td class="text-center">{{ $item['koli'] }} M3</td>
+                                        <td class="text-center">{{ $item['jumlah'] }} </td>
+                                        <td class="text-center">{{ $item['si'] }}</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($item['tarif']) }}</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($item['sub_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                @if ($order->tarif->kondisi == 1 || $order->tarif->kondisi == 6)
+                                    <tr>
+                                        <td class="text-center">2.</td>
+                                        <td>JASA EKSPEDISI</td>
+                                        <td class="text-center">{{ $invoice_m3['doc_count'] }} Doc</td>
+                                        <td class="text-center">{{ $invoice_m3['doc_count'] }} </td>
+                                        <td class="text-center">Doc</td>
+                                        <td class="text-center">X</td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>500.000</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice_m3['doc_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                <tr style="height: 20px !important">
+                                    <td colspan="4"></td>
+                                    <td colspan="4" style="border-bottom: 1px solid black"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4"></td>
+                                    <td colspan="3" style="border: 1px solid black">Sub Total</td>
+                                    <td style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($invoice_m3['sub_total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @if ($ppn > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center;">
+                                                <span>PPN 1,1%:</span>
+                                            </div>
+                                        </td>
+                                        <td colspan="1" style="border: 1px solid black;">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format((int) $invoice_m3['ppn']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($invoice_m3['asuransi_total'] > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Asuransi
+                                            {{ $invoice['asuransi'] }}</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice['asuransi_total']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @foreach ($cas as $tagihan)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">{{ $tagihan->nama }}</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($tagihan->jumlah) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                <tr>
+                                    <td class="fw-bold" colspan="7"
+                                        style="border: 1px solid black; text-align:right">
+                                        TOTAL</td>
+                                    <td class="fw-bold" style="border: 1px solid black">
+                                        <div class="price d-flex justify-content-between px-2">
+                                            <span>Rp</span>
+                                            <span>{{ number_format($invoice_m3['total']) }}</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @if ($pph > 0)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">PPh (dengan Kode Objek Pajak
+                                            24-104-56)</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice_m3['pph']) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+                                @if ($order->tarif->customer->id == 318)
+                                    <tr>
+                                        <td colspan="4"></td>
+                                        <td colspan="3" style="border: 1px solid black">Total dikurangi PPh</td>
+                                        <td style="border: 1px solid black">
+                                            <div class="price d-flex justify-content-between px-2">
+                                                <span>Rp</span>
+                                                <span>{{ number_format($invoice_m3['total'] - number_format($invoice_m3['pph'])) }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endif
+
+                            </table>
+
+                            <div class="row mt-3">
+                                <div class="col-9">
+                                    <table style="font-size: .7rem">
+                                        <tr>
+                                            <td style="width: 100px">Terbilang</td>
+                                            <td>: {{ strtoupper(terbilang($invoice_m3['total'])) }} RUPIAH</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Container</td>
+                                            <td>: {{ implode(', ', $orders->pluck('container')->toArray()) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>No. Group Job</td>
+                                            <td>:
+                                                @foreach ($orders as $item)
+                                                    {{ $item->job }}-{{ sprintf('%02d', $item->no_job) }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
+                                                @endforeach
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="mt-3">
+                                        <span>Pembayaran dapat dilakukan melalui:</span>
+                                        <table style="font-size: .7rem">
+                                            <tr>
+                                                <td style="width: 150px">Rekening No.</td>
+                                                <td>: {{ $no_rek }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Atas Nama</td>
+                                                <td>: {{ $bank_name }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank</td>
+                                                <td>: {{ $bank }}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center mt-3" style="font-size: .7rem">
+                                        <p>Surabaya,
+                                            {{ is_null($order->invoice_date) ? '-' : tanggal($order->invoice_date) }}
+                                        </p>
+                                        <div style="height: 2.3cm"></div>
+                                        ({{ $invoice_name }})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- end lcl Kubik customer all in --}}
+                    @endif
+                    {{-- end LCL tonase customer non all in --}}
 
                 @endif
             </div>
         </div>
     </div>
-
     @if ($order->tarif->customer->all_in == 1)
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
@@ -1495,7 +3306,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Edit Tarif All In</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <table class="mt-2 w-100 table" style="font-size: .7rem">

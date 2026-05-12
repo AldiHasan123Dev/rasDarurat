@@ -65,6 +65,7 @@ class TarifController extends Controller
         $data['tujuan'] = $tujuan->id;
         $data['kondisi'] = $kondisi->id;
         $data['satuan'] = $satuan;
+        $data['satuan_inv'] = $request->satuan_inv;
         $data['created_by'] = Auth::id();
         $data['updated_by'] = Auth::id();
         Tarif::create($data);
@@ -83,11 +84,13 @@ class TarifController extends Controller
             if($cek>0){
                 return back()->with('danger','Data tidak bisa diedit!');
             }
+            
             $shipment = Shipment::find($request->shipment);
             $dari = Lokasi::find($request->dari);
             $tujuan = Lokasi::find($request->tujuan);
             $kondisi = Kondisi::find($request->kondisi);
             $satuan = Satuan::find($request->satuan);
+            $satuan_inv = Satuan::find($request->satuan_inv);
             if(!$shipment){
                 $shipment = Shipment::create(['nama'=>$request->shipment]);
             }
@@ -107,8 +110,9 @@ class TarifController extends Controller
                 $satuan = 2;
             }
             $data['shipment'] = $shipment->id;
-            $data['dari'] = $dari->id;
+            $data['dari'] = $dari->id; 
             $data['tujuan'] = $tujuan->id;
+             $data['satuan_inv'] = $satuan_inv->nama;
             $data['kondisi'] = $kondisi->id;
             $data['satuan'] = $satuan;
         }
@@ -126,10 +130,9 @@ class TarifController extends Controller
 
     public function edit(Tarif $tarif)
     {
-
         $jadwal_kapal = JadwalKapal::where('is_active',1)->get();
         $customer = Customer::pluck('nama','id');
-        $lokasi = Lokasi::pluck('nama','id');
+        $lokasi = Lokasi::pluck('nama','id'); 
         $satuan = Satuan::pluck('nama','id');
         $kondisi = Kondisi::pluck('nama','id');
         $shipment = Shipment::pluck('nama','id');
@@ -250,9 +253,9 @@ class TarifController extends Controller
         $idMarketing = Auth::id();
         $start = request('start') * request('length');
         $q = Tarif::query();
-$q->join('lokasi', 'lokasi.id', '=', 'tarif.tujuan')
-  ->join('customers', 'customers.id', '=', 'tarif.customer_id')
-  ->where('customers.marketing_id',$idMarketing);
+        $q->join('lokasi', 'lokasi.id', '=', 'tarif.tujuan')
+        ->join('customers', 'customers.id', '=', 'tarif.customer_id')
+        ->where('customers.marketing_id',$idMarketing);
         $data = $q->limit($start)->offset($limit);
         $count =  Tarif::query()->join('lokasi','lokasi.id','=','tarif.tujuan')->join('customers', 'customers.id', '=', 'tarif.customer_id') ->where('customers.marketing_id',$idMarketing)->select('tarif.id')->count();
         if(request('customer_id')||!is_null(request('customer_id'))){

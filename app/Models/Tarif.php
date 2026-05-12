@@ -29,11 +29,12 @@ class Tarif extends Model
         'is_active',
         'created_by',
         'updated_by',
+        'satuan_inv',
     ];
 
     protected static function booted()
     {
-        static::creating(function ($model) {
+        static::creating(function ($model) {   
             $model->created_by = Auth::id();
             $model->updated_by = Auth::id();
         });

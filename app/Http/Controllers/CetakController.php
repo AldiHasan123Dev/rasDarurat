@@ -309,8 +309,12 @@ class CetakController extends Controller
                 $allin = $this->allinFCL($order);
                 $is_allin = true;
                 $invoice = $this->FCL($order,1);
+                $inv_tonase = null;
+                $inv_qty = null;
             }else{
                 $invoice = $this->FCL($order);
+                $inv_tonase = null;
+                $inv_qty = null;
             }
             $validate = $this->FCL($order)['validate'];
         }else{
@@ -319,8 +323,14 @@ class CetakController extends Controller
                 $allin = $this->allinLCL($order);
                 $is_allin = true;
                 $invoice = $this->LCL($order,1);
+                $invoice_m3 = $this->M3LCL($order,1);
+                $inv_tonase = $this->tonaseLCL($order,1);
+                $inv_qty = $this->qtyLCL($order,1);
             }else{
                 $invoice = $this->LCL($order);
+                 $invoice_m3 = $this->M3LCL($order,1);
+                $inv_tonase = $this->tonaseLCL($order,1);
+                $inv_qty = $this->qtyLCL($order,1);
             }
             $validate = $this->LCL($order)['validate'];
         }
@@ -335,7 +345,8 @@ class CetakController extends Controller
         $bank = $this->bank;
         $no_rek = $this->no_rek;
         $bank_name = $this->bank_name;
-        return view('admin.cetak.invoice',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin','bank','no_rek','bank_name'));
+        return view('admin.cetak.invoice',compact('invoice_name','ppn','pph','order','orders','cas','validate','nama_barang','allin','invoice','is_allin',
+        'bank','no_rek','bank_name','inv_tonase', 'inv_qty','invoice_m3'));
     }
 
     public function invoiceCont()
@@ -647,6 +658,249 @@ class CetakController extends Controller
             $keterangan .= $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama.'; ';
             $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
             $items[$idx]['koli'] = $koli;
+            $items[$idx]['jumlah'] = round($jumlah,2);
+            $items[$idx]['jumlah_cont'] = $tar->count();
+            $items[$idx]['si'] = 'M3 '.$tar->first()->tarif->shipmentInfo->nama;
+            $items[$idx]['tarif'] = $tar->first()->tarif->tarif;
+            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * max(1, round($jumlah, 2));
+            $sub_total += $tar->first()->tarif->tarif * max(1, round($jumlah, 2))    ;
+        }
+        $sub_total += $doc_total;
+        $asuransi += $admin;
+        if ($asuransi>0&&$order->tipe_asuransi=='job') {
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
+        }
+        if($doc_total>0){
+            $pph = $doc_total * $this->pph;
+        }else{
+            $pph = $sub_total * $this->pph;
+        }
+        $ppn = round($sub_total * $this->ppn);
+        $total = round($sub_total )+ $asuransi + $ppn + $cas->sum('jumlah');
+        return [
+            'items' => $items,
+            'sub_total' => $sub_total,
+            'doc_count' => $doc_count,
+            'doc_total' => $doc_total,
+            'ppn' => $ppn,
+            'pph' => $pph,
+            'admin' => $admin,
+            'total' => $total,
+            'asuransi' => $asuransi_name,
+            'asuransi_total' => $asuransi,
+            'validate' => $validate,
+            'keterangan' => $keterangan,
+        ];
+    }
+
+        public function tonaseLCL(Order $order)
+    {
+        $orders = Order::where('job',$order->job)->get();
+        $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+        $asuransi = 0;
+        $admin = 0;
+        $doc = 0;
+        $doc_count = 0;
+        $doc_total = 0;
+        $sub_total = 0;
+        $validate = array();
+        $items = array();
+        $asuransi_name = '';
+        $keterangan = '';
+        foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
+            $doc = 0;
+            $koli = 0;
+            $jumlah = 0;
+            if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
+                $doc = 500000;
+                $doc_total += $tar->count() * 500000;
+                $doc_count += $tar->count();
+            }
+            foreach ($tar as $or ) {
+                $koli += $or->bttb->sum('qty');
+                $jumlah += $or->bttb->sum('berat');
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
+                    }
+                }
+                if(is_null($or->tarif->customer->nik)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+                }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+                }
+            }
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama.'; ';
+            $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
+            $items[$idx]['koli'] = $koli . ' ' . $or->tarif->satuan_inv;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            $items[$idx]['jumlah'] = round($jumlah,2);
+            $items[$idx]['jumlah_cont'] = $tar->count();
+            $items[$idx]['si'] = 'Tonase '.$tar->first()->tarif->shipmentInfo->nama;
+            $items[$idx]['tarif'] = $tar->first()->tarif->tarif;
+            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * max(1, round($jumlah, 2));
+            $sub_total += $tar->first()->tarif->tarif * max(1, round($jumlah, 2))    ;
+        }
+        $sub_total += $doc_total;
+        $asuransi += $admin;
+        if ($asuransi>0&&$order->tipe_asuransi=='job') {
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
+        }
+        if($doc_total>0){
+            $pph = $doc_total * $this->pph;
+        }else{
+            $pph = $sub_total * $this->pph;
+        }
+        $ppn = round($sub_total * $this->ppn);
+        $total = round($sub_total )+ $asuransi + $ppn + $cas->sum('jumlah');
+        return [
+            'items' => $items,
+            'sub_total' => $sub_total,
+            'doc_count' => $doc_count,
+            'doc_total' => $doc_total,
+            'ppn' => $ppn,
+            'pph' => $pph,
+            'admin' => $admin,
+            'total' => $total,
+            'asuransi' => $asuransi_name,
+            'asuransi_total' => $asuransi,
+            'validate' => $validate,
+            'keterangan' => $keterangan,
+        ];
+    }
+
+    public function qtyLCL(Order $order)
+    {
+        $orders = Order::where('job',$order->job)->get();
+        $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+        $asuransi = 0;
+        $admin = 0;
+        $doc = 0;
+        $doc_count = 0;
+        $doc_total = 0;
+        $sub_total = 0;
+        $validate = array();
+        $items = array();
+        $asuransi_name = '';
+        $keterangan = '';
+        foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
+            $doc = 0;
+            $koli = 0;
+            $jumlah = 0;
+            if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
+                $doc = 500000;
+                $doc_total += $tar->count() * 500000;
+                $doc_count += $tar->count();
+            }
+            foreach ($tar as $or ) {
+                $koli += $or->bttb->sum('qty');
+                $jumlah += $or->bttb->sum('qty');
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
+                    }
+                }
+                if(is_null($or->tarif->customer->nik)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+                }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+                }
+            }
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama.'; ';
+            $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
+            $items[$idx]['koli'] = $koli . ' ' . $or->tarif->satuan_inv;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+            $items[$idx]['jumlah'] = round($jumlah,2);
+            $items[$idx]['jumlah_cont'] = $tar->count();
+            $items[$idx]['si'] = 'Koli '.$tar->first()->tarif->shipmentInfo->nama;
+            $items[$idx]['tarif'] = $tar->first()->tarif->tarif;
+            $items[$idx]['sub_total'] = $tar->first()->tarif->tarif * max(1, round($jumlah, 2));
+            $sub_total += $tar->first()->tarif->tarif * max(1, round($jumlah, 2))    ;
+        }
+        $sub_total += $doc_total;
+        $asuransi += $admin;
+        if ($asuransi>0&&$order->tipe_asuransi=='job') {
+            $asuransi = round((($order->asuransiInfo->rate/100) * $order->pertanggungan + $order->asuransiInfo->admin));
+        }
+        if($doc_total>0){
+            $pph = $doc_total * $this->pph;
+        }else{
+            $pph = $sub_total * $this->pph;
+        }
+        $ppn = round($sub_total * $this->ppn);
+        $total = round($sub_total )+ $asuransi + $ppn + $cas->sum('jumlah');
+        return [
+            'items' => $items,
+            'sub_total' => $sub_total,
+            'doc_count' => $doc_count,
+            'doc_total' => $doc_total,
+            'ppn' => $ppn,
+            'pph' => $pph,
+            'admin' => $admin,
+            'total' => $total,
+            'asuransi' => $asuransi_name,
+            'asuransi_total' => $asuransi,
+            'validate' => $validate,
+            'keterangan' => $keterangan,
+        ];
+    }
+
+      public function M3LCL(Order $order)
+    {
+        $orders = Order::where('job',$order->job)->get();
+        $cas = Tagihan::whereIn('order_id',$orders->pluck('id')->toArray())->get();
+        $asuransi = 0;
+        $admin = 0;
+        $doc = 0;
+        $doc_count = 0;
+        $doc_total = 0;
+        $sub_total = 0;
+        $validate = array();
+        $items = array();
+        $asuransi_name = '';
+        $keterangan = '';
+        foreach ($orders->groupBy('tarif_id') as $idx => $tar ) {
+            $doc = 0;
+            $koli = 0;
+            $jumlah = 0;
+            if ($tar->first()->tarif->kondisi==1||$tar->first()->tarif->kondisi==6) {
+                $doc = 500000;
+                $doc_total += $tar->count() * 500000;
+                $doc_count += $tar->count();
+            }
+            foreach ($tar as $or ) {
+                $koli += $or->bttb->sum('qty');
+                $jumlah += $or->bttb->sum('vol');
+                if($or->asuransi=='ADA EXC'){
+                    if(is_null($or->asuransi_id)){
+                        array_push($validate,'Asuransi Job '.$or->job.'-'.sprintf('%02d',$or->no_job).' belum diinput!');
+                    }
+                    if (!is_null($or->asuransi_id)) {
+                        $asuransi += ($or->asuransiInfo->rate/100) * $or->pertanggungan;
+                        $asuransi_name = $or->asuransiInfo->nama;
+                        $admin += $or->asuransiInfo->admin;
+                    }
+                }
+                if(is_null($or->tarif->customer->nik)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NIK Belum diinput!');
+                }
+                if(is_null($or->tarif->customer->npwp)){
+                    array_push($validate,'Customer '.$or->tarif->customer->nama.' NPWP Belum diinput!');
+                }
+            }
+            $keterangan .= $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama.'; ';
+            $items[$idx]['keterangan'] = $tar->first()->tarif->kondisiInfo->nama.', '.$tar->first()->tarif->dari_lokasi->nama.' - '.$tar->first()->tarif->tujuan_lokasi->nama;
+            $items[$idx]['koli'] = $koli . ' ' . $or->tarif->satuan_inv;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
             $items[$idx]['jumlah'] = round($jumlah,2);
             $items[$idx]['jumlah_cont'] = $tar->count();
             $items[$idx]['si'] = 'M3 '.$tar->first()->tarif->shipmentInfo->nama;

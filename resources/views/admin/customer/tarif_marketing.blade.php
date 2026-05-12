@@ -294,6 +294,10 @@
         $("select[name=kondisi]").select2({
             dropdownParent: $('#offcanvasTarif')
         });
+        $("select[name=satuan_inv]").select2({
+            dropdownParent: $('#offcanvasTarif'),
+            tags:true
+        });
         // $("select[name=satuan]").select2({
         //     dropdownParent: $('#offcanvasTarif'),
         //     tags:true

@@ -107,12 +107,10 @@ class CustomerController extends Controller
         $kondisi = Kondisi::pluck('nama','id');
         $shipment = Shipment::pluck('nama','id');
         $users = User::get();
-
         $kapal = array();
         foreach ($jadwal_kapal as $id => $item ) {
             $kapal[$item->id] = $item->pelayaran->nama;
         }
-
         return view('admin.customer.edit', compact('kapal','customer','lokasi','satuan','kondisi','shipment','users','cus'));
     }
 

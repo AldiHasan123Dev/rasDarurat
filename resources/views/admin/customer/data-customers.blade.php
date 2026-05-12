@@ -203,6 +203,7 @@
                 { data: 'shipment', name: 'shipment' },
                 { data: 'kondisi', name: 'kondisi' },
                 { data: 'satuan', name: 'satuan' },
+                { data: 'satuan_inv', name: 'satuan_inv' },
                 { data: 'tarif', name: 'tarif' },
                 { data: 'stuffing', name: 'stuffing' },
                 { data: 'keterangan', name: 'keterangan' },
@@ -262,6 +263,10 @@
         $("select[name=kondisi]").select2({
             dropdownParent: $('#offcanvasTarif')
         });
+        $("select[name=satuan_inv]").select2({
+            dropdownParent: $('#offcanvasTarif'),
+            tags:true
+        });
         // $("select[name=satuan]").select2({
         //     dropdownParent: $('#offcanvasTarif'),
         //     tags:true
@@ -283,6 +288,33 @@
                 $('#satuan').val(2);
             }
         });
+
+         $('#shipment').change(function () {
+
+    var text = $(this).find(':selected').text().trim();
+    var val = text.substr(0, 3).toUpperCase();
+
+    console.log(val);
+
+    if (val == 'FCL') {
+
+        // set value
+
+        // disable
+        $('#satuan_inv')
+            .prop('disabled', true);
+
+    } else {
+
+        // set value
+        // enable
+        $('#satuan_inv')
+            .prop('disabled', false);
+    }
+
+    // refresh jika pakai select2
+    $('#satuan_inv').trigger('change');
+});
 
         $('#add-tarif-form').click(function (e) {
             var data = {

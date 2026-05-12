@@ -20,7 +20,7 @@
                         <div class="table-responsive">
                             <table class="table table-sm" id="table-1" style="font-size:.7rem">
                                 <thead>
-                                    <tr>
+                                    <tr> 
                                         <th>ID.</th>
                                         <th>Tujuan</th>
                                         <th>Kota</th>
@@ -314,7 +314,7 @@
 
 @section('script')
     @if ($role!='cs')
-        <script>
+        <script> 
             let table = $('#table-1').DataTable({
             processing: true,
             serverSide: true,

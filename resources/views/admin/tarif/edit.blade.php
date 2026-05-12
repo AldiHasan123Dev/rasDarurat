@@ -57,6 +57,9 @@
         $("select[name=tujuan]").select2({
             tags:true
         });
+        $("select[name=satuan_inv]").select2({
+            tags:true
+        });
         $('#shipment').change(function (e) {
             var text = $(this).find(":selected").text();
             var val = text.substr(0,3);
