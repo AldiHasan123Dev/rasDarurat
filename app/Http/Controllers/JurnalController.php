@@ -1956,6 +1956,11 @@ public function editOne(Jurnal $jurnal)
     public function buku_besar()
     {
         $coas = COA::orderBy('kode')->get(['id', 'nama', 'kode']);
+        $coasCode = $coas->pluck('kode')
+            ->map(fn($item) => substr($item, 0, 2))
+            ->unique()
+            ->values();
+        $codeSelect = request('coas_code') ?? 1;
         $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
         $coa_id = request('coa_id') ?? 45;
         $coa = COA::find($coa_id);
@@ -2039,7 +2044,8 @@ public function editOne(Jurnal $jurnal)
             $lastModif = Storage::disk('public')->lastModified('buku-besar.xlsx');
             $dateExport = date('d/m/Y H:i:s', $lastModif);
         }
-        return view('admin.jurnal.buku_besar', compact('coas', 'months', 'month', 'saldo', 'saldo_awal', 'coa', 'coa_id', 'data', 'tipe', 'year', 'dateExport', 'job_sync'));
+        return view('admin.jurnal.buku_besar', compact('coas', 'months', 'month', 'saldo', 'saldo_awal', 'coa', 'coa_id', 
+        'data', 'tipe', 'year', 'dateExport', 'job_sync', 'coasCode','codeSelect'));
     }
 
     public function buku_besar_pembantu()
@@ -3347,7 +3353,7 @@ $ket_c = $group->where('credit', '>', 0)
    public function exportJurnalBatch()
 {
     return Excel::download(
-        new JurnalBatchExport(request('year'), request('month')),
+        new JurnalBatchExport(request('year'), request('month'),request('coaGroup')),
         'buku-besar.xlsx'
     );
 }
