@@ -30,7 +30,7 @@ class Jurnal extends Component
         $no_6 = ModelsJurnal::where('tipe', 'BBKT')->whereYear('created_at', date('Y'))->max('no') + 1;
         $no_7 = ModelsJurnal::where('tipe', 'BBMT')->whereYear('created_at', date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(5)->format('Y-m-d'); 
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d'); 
         $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
         $setting = Setting::find(1);
         $this->invx = ModelsJurnal::whereBetween('created_at', [$last, $now])
