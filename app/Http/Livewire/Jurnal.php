@@ -30,7 +30,7 @@ class Jurnal extends Component
         $no_6 = ModelsJurnal::where('tipe', 'BBKT')->whereYear('created_at', date('Y'))->max('no') + 1;
         $no_7 = ModelsJurnal::where('tipe', 'BBMT')->whereYear('created_at', date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(5)->format('Y-m-d');
+        $last = Carbon::now()->subMonths(5)->format('Y-m-d'); 
         $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
         $setting = Setting::find(1);
         $this->invx = ModelsJurnal::whereBetween('created_at', [$last, $now])
@@ -55,16 +55,7 @@ class Jurnal extends Component
         $this->is_apply = false;
         $this->templates = TemplateJurnal::all();
         $this->coa = COA::where('is_active', 1)->orderBy('kode')->get();
-       $this->orders = Cache::remember(
-    'orders_recent',
-    300,
-    fn() => Order::query()
-        ->select('id', 'no_job', 'job', 'seal', 'invoice', 'container')
-        ->whereBetween('created_at', [$last, $now])
-        ->orderBy('job')
-        ->orderBy('no_job')
-        ->get()
-);
+       $this->orders = $this->orders = Order::whereBetween('created_at',[$last,$now])->select('id', 'no_job', 'job', 'seal', 'invoice', 'container')->orderBy('job')->orderBy('no_job')->get();
         $this->debit_idx = 2;
         $this->credit_idx = 2;
         $this->form = array();
