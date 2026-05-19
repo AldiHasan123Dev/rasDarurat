@@ -404,8 +404,12 @@ function handleLainLainChange(select, rowId) {
             let html = `<tr>
                         <td><input type="checkbox" name="id[]" onchange="uncheck(this,${debit})" checked id="${debit}" value="${debit}"></td>
                         <td>
-                           <select class="form-control job-select" id="job-${debit}" name="order_id[]">
-</select>
+                            <select style="font-size: 0.9rem !important; width: 170px;" class="form-control select2" id="job-${debit}" onchange="getOrder()" name="order_id[]">
+                                <option value=""></option>
+                                @foreach ($orders as $item)
+                                <option value="{{ $item->id }}">{{ $item->job }}-{{ sprintf('%02d', $item->no_job) }} / {{ $item->container }} - {{ $item->seal }} / {{ $item->invoice }}</option>
+                                @endforeach
+                            </select>
                         </td>
                         <td>
                             <select style="font-size: 0.9rem !important; width: 170px;" class="form-control select2" onchange="total()" id="debit-${debit}" name="debit_coa_id[]">
@@ -454,29 +458,6 @@ $('#debit-' + debit).select2();
 $('#credit-' + debit).select2();
 $('#doc-' + debit).select2();
         }
-
-        function initJobSelect(el) {
-    $(el).select2({
-        placeholder: 'Pilih Job',
-        minimumInputLength: 2,
-        ajax: {
-            url: '/api/orders/select2',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return {
-                    q: params.term
-                };
-            },
-            processResults: function(data) {
-                return {
-                    results: data
-                };
-            },
-            cache: true
-        }
-    });
-}
 
 
         function getOrder() {
