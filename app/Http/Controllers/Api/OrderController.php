@@ -756,6 +756,45 @@ if (request('cek')) {
         return response($data);
     }
 
+    public function getOrders(Request $request)
+{
+    $search = $request->q;
+
+    $orders = Order::select(
+            'id',
+            'job',
+            'no_job',
+            'container',
+            'seal',
+            'invoice'
+        )
+        ->where(function ($q) use ($search) {
+            $q->where('job', 'like', "%{$search}%")
+              ->orWhere('container', 'like', "%{$search}%")
+              ->orWhere('seal', 'like', "%{$search}%")
+              ->orWhere('invoice', 'like', "%{$search}%");
+        })
+        ->limit(30)
+        ->get();
+
+    return response()->json(
+        $orders->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'text' =>
+                    $item->job . '-' .
+                    sprintf('%02d', $item->no_job) .
+                    ' / ' .
+                    $item->container .
+                    ' - ' .
+                    $item->seal .
+                    ' / ' .
+                    $item->invoice
+            ];
+        })
+    );
+}
+
     public function updateLockAll(Request $request)
     {
         $id = $request->id;

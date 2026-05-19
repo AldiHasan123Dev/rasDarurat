@@ -91,9 +91,10 @@ Route::post('get-array-id-trucking', [OrderTruckingController::class,'getArrayId
 Route::get('get-jadwal-kapal-pelayaran/{id}', [JadwalKapalController::class,'getByPelayaran']);
 Route::middleware(['web'])->resource('api-bttb', BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
-Route::middleware(['web'])->post('api-bttb-add', [BTTBController::class, 'add']);
+Route::middleware(['web'])->post('api-bttb-add', [BTTBController::class, 'add']);  
 Route::post('get-jurnal',[JurnalController::class,'index']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
+Route::delete('orders/select2',[OrderTruckingController::class,'getOrders'])->name('orders');
 Route::post('order-trucking-get-jurnal',[OrderTruckingController::class,'getJurnal'])->name('order-trucking.getjurnal');
 Route::middleware(['web'])->resource('api-tarif',TarifController::class)->except('update');
 Route::put('api-tarif',[TarifController::class,'update'])->name('api.tarif.update');
