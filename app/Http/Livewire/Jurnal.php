@@ -72,7 +72,7 @@ class Jurnal extends Component
         $this->no_5 = sprintf('%03d', $no_5) . '/BKM-' . $setting->short_name . '/' . date('y');
         $this->no_6 = sprintf('%03d', $no_6) . '/BBKT-' . $setting->short_name . '/' . date('y');
         $this->no_7 = sprintf('%03d', $no_7) . '/BBMT-' . $setting->short_name . '/' . date('y');
-        $bgs = ModelsJurnal::whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
+        $bgs = ModelsJurnal::whereBetween('created_at',[$last,$now])->whereNotNull('no_bg')->orderBy('no_bg')->pluck('no_bg')->toArray();
         $this->bgs = array_unique($bgs);
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
