@@ -347,6 +347,11 @@ function handleLainLainChange(select, rowId) {
         $('#reset').click(function(e) {
             location.reload();
         });
+        $('#template_id').click(function(e) {
+            setTimeout(() => {
+                $('.select2').select2();
+            }, 2000);
+        });
 
         function simpan_jurnal(name) {
             $('#simpan').val(name);
@@ -643,6 +648,9 @@ $('#doc-' + debit).select2();
                     });
                 }
             });
+            setTimeout(() => {
+                $('.select2').select2();
+            }, 2000);
         }
 
         function reloadRelasi() {
