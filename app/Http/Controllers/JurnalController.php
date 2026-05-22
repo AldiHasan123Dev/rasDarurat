@@ -1980,13 +1980,36 @@ public function editOne(Jurnal $jurnal)
             // $start = '2022-12-01';
             $des = $c->endOfMonth()->format('Y-m-d');
             // dd($start,$des,$last);
-            if ($idx == 0) {
-                if ($tipe == 'D') {
-                    $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('debit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('credit');
-                } else {
-                    $saldo_awal = Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('credit') - Jurnal::where('coa_id', $coa_id)->whereBetween('created_at', ['2022-12-01', $des])->sum('debit');
-                }
-            } else {
+           if ($idx == 0) {
+
+    // akhir tahun sebelumnya
+    $lastYearEnd = Carbon::parse(($year - 1) . '-12-31')
+        ->endOfDay()
+        ->format('Y-m-d H:i:s');
+
+    if ($tipe == 'D') {
+
+        $saldo_awal =
+            Jurnal::where('coa_id', $coa_id)
+                ->where('created_at', '<=', $lastYearEnd)
+                ->sum('debit')
+            -
+            Jurnal::where('coa_id', $coa_id)
+                ->where('created_at', '<=', $lastYearEnd)
+                ->sum('credit');
+
+    } else {
+
+        $saldo_awal =
+            Jurnal::where('coa_id', $coa_id)
+                ->where('created_at', '<=', $lastYearEnd)
+                ->sum('credit')
+            -
+            Jurnal::where('coa_id', $coa_id)
+                ->where('created_at', '<=', $lastYearEnd)
+                ->sum('debit');
+    }
+} else {
                 // if ($tipe=='D') {
                 //     $saldo_awal = Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('debit') - Jurnal::where('coa_id',$coa_id)->whereBetween('created_at',[$start,$last])->sum('credit');
                 // } else {
