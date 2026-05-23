@@ -13,7 +13,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use Yajra\DataTables\Facades\DataTables;
+use Yajra\Datatables\Datatables;
 
 class JasaKirimController extends Controller
 {
@@ -312,231 +312,119 @@ class JasaKirimController extends Controller
     }
 
     public function datatable()
-{
-    $role = request('role');
-
-    if (request('nominal') == 1) {
-
-        $query = JasaKirim::query()
-
-            ->with([
-                'lokasi:id,nama',
-                'agen:id,lokasi_id',
-                'agen.lokasi:id,nama',
-            ])
-
-            ->select([
-                'id',
-                'lokasi_id',
-                'agen_id',
-                'jadwal_kapal_id',
-                'barcode',
-                'nominal',
-                'tgl_kirim',
-                'tgl_terima',
-                'ekspedisi',
-                'invoice',
-                'jurnal',
-            ])
-
-            ->whereNull('merger')
-
-            ->whereNotNull('nominal')
-
-            ->where('nominal', '>', 0);
-
-        $query->when(
-
-            request('start_date') && request('end_date'),
-
-            function ($q) {
-
-                $q->whereBetween(
-                    'tgl_kirim',
-                    [
-                        request('start_date'),
-                        request('end_date')
-                    ]
-                );
+    {
+        $role = request('role');
+        if(request('nominal')==1){
+            $query = JasaKirim::query();
+            $query->join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id');
+            $query->select('jasa_kirim.*','lokasi.nama');
+            $query->whereNull('merger');
+            $query->whereNotNull('nominal');
+            $query->where('nominal','>',0);
+            if(!is_null(request('start_date')) && !is_null(request('end_date'))){
+                $query->whereBetween('tgl_kirim',[request('start_date'),request('end_date')]);
             }
-        );
-
-        $query->when(
-
-            request('tujuan'),
-
-            function ($q) {
-
-                $q->where(
-                    'lokasi_id',
-                    request('tujuan')
-                );
+            if(!is_null(request('tujuan'))){
+                $query->where('lokasi_id',request('tujuan'));
             }
-        );
-
-        $query->when(
-
-            request('role') == 'cs',
-
-            function ($q) {
-
-                $q->whereNull('tgl_terima');
+            if(request('role')=='cs'){
+                $query->whereNull('tgl_terima');
             }
-        );
-
-        $query->when(
-
-            request('role') == 'kasir',
-
-            function ($q) {
-
-                $q->whereNull('jurnal')
-                    ->whereNull('invoice');
+            if(request('role')=='kasir'){
+                $query->whereNull('jurnal');
+                $query->whereNull('invoice');
             }
-        );
-
-        $query->when(
-
-            request('searching'),
-
-            function ($q) {
-
-                $full_job = explode('-', request('searching'));
-
-                $q->whereHas('orders', function ($sub) use ($full_job) {
-
-                    $sub->where(
-                        'job',
-                        'like',
-                        '%' . trim($full_job[0]) . '%'
-                    );
-
-                    if (!empty($full_job[1])) {
-
-                        $sub->where(
-                            'no_job',
-                            'like',
-                            '%' . (int) $full_job[1] . '%'
-                        );
+            if(!is_null(request('searching'))){
+                $query = JasaKirim::query();
+                $full_job = explode('-',request('searching'));
+                $query->orWhereHas('orders', function($q) use($full_job){
+                    $q->where('job','like','%'.$full_job[0].'%');
+                    if(!empty($full_job[1])){
+                        $q->where('no_job','like','%'.(int)$full_job[1].'%');
                     }
                 });
             }
-        );
-
-        $query->when(
-
-            request('barcode'),
-
-            function ($q) {
-
-                $q->where(
-                    'barcode',
-                    'like',
-                    '%' . request('barcode') . '%'
-                );
+            if(!is_null(request('barcode'))){
+                $query->where('barcode','LIKE','%'.request('barcode').'%');
             }
-        );
+            $query->orderBy('tgl_kirim','desc');
+            $data = $query->get();
+        }else{
+            $data = JasaKirim::join('lokasi','lokasi.id','=','jasa_kirim.lokasi_id')
+                    ->select('jasa_kirim.*','lokasi.nama')
+                    ->whereNull('nominal')
+                    ->orWhere('nominal',0)
+                    ->orderBy('lokasi.nama')
+                    ->get();
+        }
 
-        $query->orderByDesc('tgl_kirim');
-
-    } else {
-
-        $query = JasaKirim::query()
-
-            ->with([
-                'lokasi:id,nama',
-                'agen:id,lokasi_id',
-                'agen.lokasi:id,nama',
-            ])
-
-            ->select([
-                'id',
-                'lokasi_id',
-                'agen_id',
-                'jadwal_kapal_id',
-                'barcode',
-                'nominal',
-                'tgl_kirim',
-                'tgl_terima',
-                'ekspedisi',
-            ])
-
-            ->where(function ($q) {
-
-                $q->whereNull('nominal')
-                    ->orWhere('nominal', 0);
+        return Datatables::of($data)
+            ->addColumn('lokasi_id', function($data){
+                return $data->lokasi->nama;
             })
+            ->addColumn('kota', function($data){
+                return $data->agen->lokasi->nama ?? '-';
+            })
+            ->addColumn('nominal', function($data){
+                return $data->nominal ? number_format($data->nominal) : '-';
+            })
+            ->addColumn('orders', function($data){
+                // $name = '';
+                // foreach ($data->orders as $item ) {
+                //     $name .= $item->job.'-'.sprintf('%02d',$item->no_job).'; ';
+                // }
+                return $data->order_name();
+            })
+            ->addColumn('action', function ($data) use($role) {
+                $view = view('admin.jasakirim.form',['jasakirim'=>$data,'role'=>$role])->render();
+                if($role=='kasir'){
+                    $html = '<div class="d-flex gap-1">
+                                <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirimUpdate'.$data->id.'" aria-controls="offcanvasJasaKirimUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                            </div>
 
-            ->orderBy('lokasi_id');
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJasaKirimUpdate'.$data->id.'" aria-labelledby="offcanvasJasaKirimUpdate'.$data->id.'Label">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasJasaKirimUpdate'.$data->id.'Label">Form JasaKirim</h5>
+                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <form action="'.route('jasakirim.update',$data).'" method="post">
+                                    <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <input type="hidden" name="_method" value="PUT" />
+                                        '.$view.'
+                                    </form>
+                                </div>
+                            </div>';
+                }else{
+                    // <form action="'.route('jasakirim.destroy',$data).'" method="post">
+                    //                 <input type="hidden" name="_token" value="'.csrf_token().'" />
+                    //                 <input type="hidden" name="_method" value="delete" />
+                    //                 <button type="submit" onclick="return confirm(\'Are you sure?\')" class="no-attr text-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Hapus"><i class="fas fa-trash"></i></button>
+                    //             </form>
+                    $html = '<div class="d-flex gap-1">
+
+                                <button class="no-attr text-primary" title="Edit" data-bs-toggle="offcanvas" data-bs-target="#offcanvasJasaKirimUpdate'.$data->id.'" aria-controls="offcanvasJasaKirimUpdate'.$data->id.'"><i class="fas fa-pencil"></i></button>
+                                <a href="'.route('cetak.dooring',['jadwal_kapal_id'=>$data->jadwal_kapal_id,'tujuan'=>$data->lokasi_id,'agent'=>$data->agen_id]).'" class="text-success"><i class="fas fa-print"></i></a>
+                            </div>
+
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasJasaKirimUpdate'.$data->id.'" aria-labelledby="offcanvasJasaKirimUpdate'.$data->id.'Label">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasJasaKirimUpdate'.$data->id.'Label">Form JasaKirim</h5>
+                                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <form action="'.route('jasakirim.update',$data).'" method="post">
+                                    <input type="hidden" name="_token" value="'.csrf_token().'" />
+                                        <input type="hidden" name="_method" value="PUT" />
+                                        '.$view.'
+                                    </form>
+                                </div>
+                            </div>';
+                }
+                return $html;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
-
-    return DataTables::eloquent($query)
-
-        ->addIndexColumn()
-
-        ->editColumn('lokasi_id', function ($data) {
-
-            return $data->lokasi->nama ?? '-';
-        })
-
-        ->addColumn('kota', function ($data) {
-
-            return $data->agen->lokasi->nama ?? '-';
-        })
-
-        ->editColumn('nominal', function ($data) {
-
-            return $data->nominal
-                ? number_format($data->nominal)
-                : '-';
-        })
-
-        ->addColumn('orders', function ($data) {
-
-            return $data->order_name();
-        })
-
-        ->addColumn('action', function ($data) use ($role) {
-
-            $editBtn = '
-                <button
-                    class="btn btn-sm btn-primary btn-edit"
-                    data-id="' . $data->id . '">
-                    <i class="fas fa-pencil"></i>
-                </button>
-            ';
-
-            $printBtn = '';
-
-            if ($role != 'kasir') {
-
-                $printBtn = '
-                    <a
-                        href="' . route('cetak.dooring', [
-                            'jadwal_kapal_id' => $data->jadwal_kapal_id,
-                            'tujuan' => $data->lokasi_id,
-                            'agent' => $data->agen_id
-                        ]) . '"
-
-                        class="btn btn-sm btn-success">
-
-                        <i class="fas fa-print"></i>
-
-                    </a>
-                ';
-            }
-
-            return '
-                <div class="d-flex gap-1">
-                    ' . $editBtn . '
-                    ' . $printBtn . '
-                </div>
-            ';
-        })
-
-        ->rawColumns(['action'])
-
-        ->make(true);
-}
 
 }
