@@ -74,7 +74,7 @@
 
                     <!-- Modal -->
                         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <form action="{{ route('jasakirim.index') }}" method="get" class="modal-dialog">
+                           <form id="filterForm" class="modal-dialog">
                                 <input type="hidden" name="role" value="{{ $role }}">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -87,32 +87,28 @@
                                                 <div class="col-6">
                                                     <div class="mb-2">
                                                         <label for="start_date">Tanggal Kirim Dari</label>
-                                                        <input type="date" class="form-control" name="start_date" value="{{ $start_date }}">
+                                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ $start_date }}">
                                                     </div>
                                                     <div class="mb-2">
                                                         <label for="end_date">Tanggal Kirim Ke</label>
-                                                        <input type="date" class="form-control" name="end_date" value="{{ $end_date }}">
+                                                       <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $end_date }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-6">
                                                     <div class="mb-2">
                                                         <label for="tujuan">Tujuan</label>
-                                                        <select name="tujuan" id="tujuan" class="form-select">
-                                                            <option value=""></option>
-                                                            @foreach ($lokasi as $loc)
-                                                            <option value="{{ $loc->id }}" {{ $tujuan==$loc->id?'selected':'' }}>{{ $loc->nama }}</option>
-                                                            @endforeach
+                                                       <select name="tujuan" id="tujuan" class="form-select">
                                                         </select>
                                                     </div>
                                                     <div class="mb-2">
                                                         <label for="search">ID JOB</label>
-                                                        <input type="text" class="form-control" name="searching" value="{{ $search }}">
+                                                        <input type="text" class="form-control" id="searching" name="searching" value="{{ $search }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-12">
                                                     <div class="mb-2">
                                                         <label for="barcode">Barcode</label>
-                                                        <input type="text" class="form-control" name="barcode" value="{{ $barcode }}">
+                                                        <input type="text" class="form-control" id="barcode" name="barcode" value="{{ $barcode }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -120,7 +116,9 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Cari</button>
+                                        <button type="button" id="btnFilter" class="btn btn-primary">
+                                            Cari
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -348,21 +346,30 @@
             processing: true,
             serverSide: true,
             paging: false,
+            searchDelay: 500,
+            deferRender:true,
             scrollCollapse: true,
             scrollY: '50vh',
             searching:false,
             ajax:{
                 url: '{{ route('jasakirim.data') }}',
                 method:'POST',
-                data:{
-                    nominal:1,
-                    role:@json($role),
-                    start_date:@json($start_date),
-                    end_date:@json($end_date),
-                    tujuan:@json($tujuan),
-                    searching:@json($search),
-                    barcode:@json($barcode),
-                },
+               data: function(d){
+
+                d.nominal = 1;
+
+                d.role = @json($role);
+
+                d.start_date = $('#start_date').val();
+
+                d.end_date = $('#end_date').val();
+
+                d.tujuan = $('#tujuan').val();
+
+                d.searching = $('#searching').val();
+
+                d.barcode = $('#barcode').val();
+            },
                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
             },
             columns: [
@@ -388,6 +395,13 @@
             $('#nominal-selected').html('Rp. '+nominal.toLocaleString('id-ID')+'('+table1.rows('.selected').data().length+')');
         });
 
+        $('#btnFilter').click(function(){
+
+    table1.ajax.reload();
+
+    $('#exampleModal').modal('hide');
+});
+
         $('#unmerge').click(function (e) {
             let arr = []
             for (let i = 0; i < table1.rows('.selected').data().length; i++) {
@@ -404,6 +418,40 @@
                 }
             });
         });
+
+        $('#tujuan').select2({
+
+    dropdownParent: $('#exampleModal'),
+
+    placeholder: 'Pilih Tujuan',
+
+    allowClear: true,
+
+    width: '100%',
+
+    ajax: {
+
+        url: "{{ url('api/lokasi/select2') }}",
+
+        dataType: 'json',
+
+        delay: 250,
+
+        data: function(params){
+            return {
+                search: params.term
+            };
+        },
+
+        processResults: function(data){
+            return {
+                results: data
+            };
+        },
+
+        cache: true
+    }
+});
 
         $(".selectAll").on( "click", function(e) {
             if ($(this).is( ":checked" )) {
