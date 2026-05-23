@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Satuan;
+use App\Models\Lokasi;
 use App\Models\Tarif;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -755,6 +756,24 @@ if (request('cek')) {
         }
         return response($data);
     }
+
+    public function select2Tujuan(Request $request)
+{
+    $search = $request->search;
+
+    $data = Lokasi::query()
+        ->when($search, function ($q) use ($search) {
+            $q->where('nama', 'like', '%' . $search . '%');
+        })
+        ->orderBy('nama')
+        ->limit(20)
+        ->get([
+            'id',
+            'nama as text'
+        ]);
+
+    return response()->json($data);
+}
 
     public function getOrders(Request $request)
 {

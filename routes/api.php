@@ -93,6 +93,7 @@ Route::middleware(['web'])->resource('api-bttb', BTTBController::class);
 Route::delete('api-bttb-delete',[BTTBController::class,'delete']);
 Route::middleware(['web'])->post('api-bttb-add', [BTTBController::class, 'add']);  
 Route::post('get-jurnal',[JurnalController::class,'index']);
+Route::get('lokasi/select2', [OrderController::class, 'select2Tujuan']);
 Route::delete('delete-order-trucking',[OrderTruckingController::class,'delete'])->name('order-trucking.delete');
 Route::delete('orders/select2',[OrderTruckingController::class,'getOrders'])->name('orders');
 Route::post('order-trucking-get-jurnal',[OrderTruckingController::class,'getJurnal'])->name('order-trucking.getjurnal');
