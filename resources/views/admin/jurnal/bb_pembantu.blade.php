@@ -245,7 +245,7 @@
                                                 @php
                                                     $debit = $data['total_debit'];
                                                     $credit = $data['total_credit'];
-                                                    $isMismatch = $debit !== $credit && !in_array($coa_id, [65, 66]);
+                                                    $isMismatch = $debit !== $credit && !in_array($coa_id, [65, 66,28]);
                                                 @endphp
 
                                                 <td class="text-center">{{ $loop->iteration }}</td>
@@ -342,7 +342,7 @@
                                 <tfoot>
                                     <tr class="fw-bold">
                                         @if ($subjek === 'relasi' || $subjek === 'jurnal-balik')
-                                            @if ($coa_id == 65 || $coa_id == 66)
+                                            @if ($coa_id == 65 || $coa_id == 66 || $coa_id == 28)
                                                 <td colspan="5" class="text-center">Total</td>
                                                 <td class="text-end">
                                                     {{ number_format($groupedData->sum('total_debit'), 2, ',', '.') }}

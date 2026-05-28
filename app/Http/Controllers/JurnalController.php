@@ -2908,7 +2908,7 @@ $ket_c = $group->where('credit', '>', 0)
                 ];
             })->sortByDesc('tgl_d')->values();
 
-    if($coa_id == 65 || $coa_id == 66){
+    if($coa_id == 65 || $coa_id == 66 || $coa_id == 28){
         $groupedData = $jurnal->map(function ($row) use (&$runningBalance, $tipe) {
             $customerName = $row->relasi;
             $invoice = $row->invoice ?? $row->invoice_external ?? $row->invoice_vendor ?? $row->invoice_trucking;
