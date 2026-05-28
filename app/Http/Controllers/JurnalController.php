@@ -2755,7 +2755,7 @@ public function editOne(Jurnal $jurnal)
 $ket_d = $group->where('debit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49])) {
+        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49,28])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2774,7 +2774,7 @@ $ket_d = $group->where('debit', '>', 0)
 $ket_c = $group->where('credit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49])) {
+        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49,28])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2837,7 +2837,7 @@ $ket_c = $group->where('credit', '>', 0)
 $ket_d = $group->where('debit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49])) {
+        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49,28])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
@@ -2856,7 +2856,7 @@ $ket_d = $group->where('debit', '>', 0)
 $ket_c = $group->where('credit', '>', 0)
     ->map(function ($row) {
 
-        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49])) {
+        if (in_array($row->coa_id, [134, 25,27,37,38,39,165,176,169,36,30,182,33,8,26,49,28])) {
 
             $prefix = trim(
                 ($row->order->job ?? '') . '-' .
