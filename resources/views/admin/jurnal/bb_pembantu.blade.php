@@ -190,14 +190,14 @@
                                         @if ($subjek === 'relasi' || $subjek === 'jurnal-balik')
                                             <th class="text-center">No</th>
 
-                                            @if ($coa_id == 65 || $coa_id == 66)
+                                            @if ($coa_id == 65 || $coa_id == 66 || $coa_id == 28)
                                                 <th class="text-center">No Jurnal</th>
                                             @else
                                                 <th class="text-center">No Jurnal (D)</th>
                                             @endif
                                             <th class="text-center">Invoice</th>
 
-                                            @if ($coa_id == 65 || $coa_id == 66)
+                                            @if ($coa_id == 65 || $coa_id == 66 || $coa_id == 28)
                                                 <th class="text-center">Tanggal</th>
                                                 <th class="text-center">Keterangan</th>
                                             @else
@@ -208,7 +208,7 @@
                                             <th class="text-center">Debit</th>
                                             <th class="text-center">Credit</th>
 
-                                            @if (!in_array($coa_id, [65, 66]))
+                                            @if (!in_array($coa_id, [65, 66,28]))
                                                 <th class = "text-center">Nomor Jurnal (C)</th>
                                                 <th class="text-center">Tgl (C)</th>
                                                 <th class="text-center">Ket (C)</th>
@@ -249,7 +249,7 @@
                                                 @endphp
 
                                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                                @if (in_array($coa_id, [65, 66]))
+                                                @if (in_array($coa_id, [65, 66,28]))
                                                     <td>{{ $data['customer_name'] }}</td>
                                                 @elseif($subjek === 'jurnal-balik')
                                                     <td>{!! is_array($data['no_d']) ? implode('<br>', $data['no_d']) : $data['no_d'] !!}</td>
@@ -259,7 +259,7 @@
                                                 <td>{{ $data['invoice'] }}</td>
 
                                                 {{-- Tanggal dan Keterangan --}}
-                                                @if (in_array($coa_id, [65, 66]))
+                                                @if (in_array($coa_id, [65, 66,28]))
                                                     {{-- Tampilkan hanya satu kolom untuk tgl_d dan ket_d --}}
                                                     <td>{!! $data['tgl_d']->implode('<br>') !!}</td>
                                                     <td>{!! $data['ket_d']->implode('<br>') !!}</td>
@@ -294,7 +294,7 @@
                                                  @else
 
                                                 {{-- Tanggal dan Keterangan Kredit (jika bukan coa 65/66) --}}
-                                                @unless ($subjek === 'relasi' && in_array($coa_id, [65, 66]))
+                                                @unless ($subjek === 'relasi' && in_array($coa_id, [65, 66,28]))
                                                     <td>{!! $data['no_c']->implode('<br>') !!}</td>
                                                     <td>{!! $data['tgl_c']->implode('<br>') !!}</td>
                                                     <td>{!! $data['ket_c']->implode('<br>') !!}</td>
