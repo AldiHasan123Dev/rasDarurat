@@ -908,6 +908,7 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
 
 
         // Pagination
+        $totalKurangBayar = $rekapData->sum('kurang_bayar');
             $totalRecords = $rekapData->count();
             $indexStart = ($page - 1) * $rows;
             $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
@@ -921,6 +922,7 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
         'last_page' => ceil($totalRecords / $rows),
         'total' => $totalRecords,
         'records' => $totalRecords,
+        'total_kurang_bayar' => $totalKurangBayar,
     ]);
 }
 

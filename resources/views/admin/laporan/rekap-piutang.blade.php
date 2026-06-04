@@ -82,86 +82,86 @@
         }
 
         /* 🌊 Styling Khusus untuk Navbar Keuangan */
-    .navbar-keuangan {
-        background: linear-gradient(90deg, #6a7b94, #5f6a7a);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        transition: background 0.3s ease-in-out;
-        border-radius: 4px;
-    }
-
-    .navbar-keuangan .navbar-nav .nav-link {
-        color: #f8f9fa !important;
-        font-weight: 500;
-        padding: 8px 18px;
-        border-radius: 8px;
-        transition: all 0.2s ease-in-out;
-    }
-
-    .navbar-keuangan .navbar-nav .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        color: #ffffff !important;
-        transform: translateY(-1px);
-    }
-
-    .navbar-keuangan .navbar-nav .nav-link.active {
-        background-color: #ffffff !important;
-        color: #526d96 !important;
-        font-weight: 600;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-keuangan .navbar-toggler {
-        border: none;
-    }
-
-    .navbar-keuangan .navbar-toggler:focus {
-        box-shadow: none;
-    }
-
-    @media (max-width: 991px) {
-        .navbar-keuangan .navbar-nav .nav-link {
-            margin-bottom: 6px;
+        .navbar-keuangan {
+            background: linear-gradient(90deg, #6a7b94, #5f6a7a);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease-in-out;
+            border-radius: 4px;
         }
-    }
+
+        .navbar-keuangan .navbar-nav .nav-link {
+            color: #f8f9fa !important;
+            font-weight: 500;
+            padding: 8px 18px;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .navbar-keuangan .navbar-nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff !important;
+            transform: translateY(-1px);
+        }
+
+        .navbar-keuangan .navbar-nav .nav-link.active {
+            background-color: #ffffff !important;
+            color: #526d96 !important;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-keuangan .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-keuangan .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        @media (max-width: 991px) {
+            .navbar-keuangan .navbar-nav .nav-link {
+                margin-bottom: 6px;
+            }
+        }
     </style>
 @endsection
 @section('content')
-<div class="container">
-<nav class="navbar navbar-expand-lg navbar-dark navbar-keuangan mb-4 shadow-sm">
-    <div class="container-fluid">
-        {{-- Toggle button (mobile) --}}
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
-            aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-keuangan mb-4 shadow-sm">
+            <div class="container-fluid">
+                {{-- Toggle button (mobile) --}}
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMenu"
+                    aria-controls="navbarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        {{-- Menu --}}
-        <div class="collapse navbar-collapse" id="navbarMenu">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {{-- Menu --}}
+                <div class="collapse navbar-collapse" id="navbarMenu">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                {{-- Rekap Piutang --}}
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/rekap-piutang*') ? 'active' : '' }}"
-                        href="{{ route('rekap.piutang') }}">
-                        💰 Rekap Piutang
-                    </a>
-                </li>
+                        {{-- Rekap Piutang --}}
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('admin/rekap-piutang*') ? 'active' : '' }}"
+                                href="{{ route('rekap.piutang') }}">
+                                💰 Rekap Piutang
+                            </a>
+                        </li>
 
-                {{-- Lap Outstanding --}}
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->is('admin/rekap-blum-bayar*') ? 'active' : '' }}"
-                        href="{{ route('rekap_piutang.blum_inv') }}">
-                        📘 Lap Outstanding
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+                        {{-- Lap Outstanding --}}
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is('admin/rekap-blum-bayar*') ? 'active' : '' }}"
+                                href="{{ route('rekap_piutang.blum_inv') }}">
+                                📘 Lap Outstanding
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
 
-    <div class="card">
-        <div class="card-body">
+        <div class="card">
+            <div class="card-body">
                 {{-- <a href="{{ route('rekap_piutang.blum') }}" class="btn btn-success mb-3">
                          <i class="fa fa-download"></i> Export Outstanding All (Tidak Termasuk Inv Manual)
                      </a> --}}
@@ -183,7 +183,18 @@
                         </div>
                     </div> --}}
                 </div>
-
+<div class="card shadow-sm border-0 mb-3">
+    <div class="card-body py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="fw-bold text-muted">
+                Total Kurang Bayar
+            </span>
+            <span id="total-kurang-bayar" class="fw-bold text-danger fs-4">
+                Rp 0
+            </span>
+        </div>
+    </div>
+</div>
 
                 {{-- Grid Kedua --}}
                 <div class="table-wrapper">
@@ -369,19 +380,6 @@
             </div>
         </div>
     </div>
-
-     <div class="container mt-5">
-        <div class="card">
-            <div class="card-body">
-                {{-- Filter Kedua --}}
-                <div class="section-title">Rekap Piutang Invoice Baru</div>
-                 <div class="table-wrapper">
-                    <table id="jqGrid10"></table>
-                    <div id="jqGridPager10"></div>
-                </div>
-            </div>
-        </div>
-     </div>
 @endsection
 
 
@@ -995,21 +993,24 @@
                 full: true,
             },
             datatype: 'json',
+
+            footerrow: true,
+            userDataOnFooter: true,
+
             colModel: [{
                     name: 'id',
                     hidden: true
                 },
                 {
                     label: 'Invoice',
-                    align: "center",
                     name: 'invoice',
                     width: 80,
+                    align: "center",
                     sortable: true,
                     search: true
                 },
                 {
                     label: 'Nama Customer',
-                    align: "center",
                     name: 'customer',
                     width: 120,
                     align: "left",
@@ -1018,7 +1019,6 @@
                 },
                 {
                     label: 'Harga (INC.PPN)',
-                    align: "right",
                     name: 'jumlah_harga',
                     width: 100,
                     align: "right",
@@ -1031,9 +1031,8 @@
                     sortable: true
                 },
                 {
-                    name: 'tanggal',
-                    align: "center",
                     label: 'Tanggal',
+                    name: 'tanggal',
                     width: 50,
                     align: "center",
                     formatter: 'date',
@@ -1045,7 +1044,6 @@
                 },
                 {
                     label: 'TGL Kirim Inv',
-                    align: "center",
                     name: 'ditagih_tgl',
                     width: 50,
                     align: "center",
@@ -1058,7 +1056,6 @@
                 },
                 {
                     label: 'TOP',
-                    align: "center",
                     name: 'top',
                     width: 30,
                     align: "center",
@@ -1067,7 +1064,6 @@
                 },
                 {
                     label: 'Jatuh Tempo TGL',
-                    align: "center",
                     name: 'tempo',
                     width: 80,
                     align: "center",
@@ -1080,7 +1076,6 @@
                 },
                 {
                     label: 'Dibayar TGL',
-                    align: "center",
                     name: 'dibayar_tgl',
                     width: 50,
                     align: "center",
@@ -1089,7 +1084,6 @@
                 },
                 {
                     label: 'Dibayar',
-                    align: "right",
                     name: 'sebesar',
                     width: 100,
                     align: "right",
@@ -1103,7 +1097,6 @@
                 },
                 {
                     label: 'PPH',
-                    align: "right",
                     name: 'pph',
                     width: 100,
                     align: "right",
@@ -1123,8 +1116,7 @@
                     label: 'Kurang Bayar',
                     name: 'kurang_bayar',
                     width: 100,
-                    align: "right", // isi cell rata kanan
-                    labelAlign: "right", // label header rata kanan
+                    align: "right",
                     formatter: 'currency',
                     formatoptions: {
                         thousandsSeparator: ',',
@@ -1133,8 +1125,8 @@
                     },
                     sortable: true
                 }
-
             ],
+
             autowidth: true,
             shrinkToFit: true,
             height: 'auto',
@@ -1144,6 +1136,7 @@
             viewrecords: true,
             pager: "#jqGridPager2",
             caption: "Rekap Piutang Belum Bayar",
+
             jsonReader: {
                 repeatitems: false,
                 root: "rows",
@@ -1151,55 +1144,66 @@
                 total: "total",
                 records: "records"
             },
+
             onCellSelect: function(rowId, iRow, iCol, e) {
                 let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
             },
-            rowattr: function(rowData) {
-                if (!rowData.tempo) return {}; // Jika tidak ada tempo, tidak ada warna
 
-                let today = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+loadComplete: function(response) {
+
+    $('#total-kurang-bayar').text(
+        'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
+    );
+
+},
+
+            rowattr: function(rowData) {
+
+                if (!rowData.tempo) return {};
+
+                let today = new Date().toISOString().split('T')[0];
                 let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
 
-                let selisih = rowData.pph - rowData.kurang_bayar;
+                let selisih = parseFloat(rowData.pph || 0) -
+                    parseFloat(rowData.kurang_bayar || 0);
 
                 let timeDiff = new Date(rowData.tempo) - new Date();
                 let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-                // Jika kurang bayar = 0, semua kondisi tetap hijau
                 if (parseFloat(rowData.kurang_bayar) === 0) {
                     return {
-                        "style": "background-color: #3fae43; color: white;"
+                        style: "background-color:#3fae43;color:white;"
                     };
                 }
 
                 if (parseFloat(rowData.kurang_bayar) < 0) {
                     return {
-                        "style": "background-color: #0099ff;; color: white;"
+                        style: "background-color:#0099ff;color:white;"
                     };
                 }
 
                 if (selisih === 0) {
                     return {
-                        "style": "background-color: #ff9d00; color: white;"
+                        style: "background-color:#ff9d00;color:white;"
                     };
                 }
 
-                // Jika TOP = 0 dan jatuh tempo hari ini, tidak diberi warna
-                if (parseInt(rowData.top) === 0 && tempoDate === today) {
+                if (
+                    parseInt(rowData.top) === 0 &&
+                    tempoDate === today
+                ) {
                     return {};
                 }
 
-                // Warna oranye untuk jatuh tempo dalam 1-3 hari
                 if (daysDiff > 0 && daysDiff <= 4) {
                     return {
-                        "style": "background-color: #ffd503; color: white;"
+                        style: "background-color:#ffd503;color:white;"
                     };
                 }
 
-                // Warna merah jika sudah jatuh tempo atau jatuh tempo hari ini
                 if (daysDiff < 0) {
                     return {
-                        "style": "background-color: red; color: white;"
+                        style: "background-color:red;color:white;"
                     };
                 }
 
