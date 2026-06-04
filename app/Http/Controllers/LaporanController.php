@@ -520,7 +520,7 @@ public function data_rekap_piutang(Request $request)
         $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
         return $order;
         });
-} elseif (request('full')) {
+} elseif (request('full') || request('overdue30') || request('overdue60') || request('overdue90_lebih') || request('overdue90')) {
 
     $orders = Order::with([
             'tarif.customer:id,nama,top',
@@ -540,7 +540,7 @@ public function data_rekap_piutang(Request $request)
         ->map(function ($order) {
         $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
         return $order;
-    });;
+    });
     // ❗ Semua filter kosong → kosongkan hasil
 } 
 
@@ -776,7 +776,6 @@ else {
                 if ($jumlah_harga == 0) {
                 return null;
                 }
-
                 $jurnal = $jurnals[$invoice] ?? null;
                 $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
                 $sebesar = $jurnal->total_credit ?? 0;
@@ -831,6 +830,7 @@ else {
                     'dibayar_tgl' => $dibayar_tgl,
                     'sebesar' => $sebesar,
                     'td' => $td,
+                    'daysDiff' => $daysDiff,
                     'kurang_bayar' => $kurang_bayar,
                     'tf_masuk' => (int)$tfMasuk,
                     'no_job' => $noJobs,
@@ -870,8 +870,36 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
     $rekapData = $rekapData->sortByDesc('invoice')->values();
 } 
 
+if (request()->filled('overdue30')) {
 
+    $rekapData = $rekapData->filter(function ($row) {
+        return $row['warna_status'] === 'merah'
+            && $row['daysDiff'] > 30;
+    })->values();
+}
 
+if (request()->filled('overdue60')) {
+    $rekapData = $rekapData->filter(function ($row) {
+        return $row['warna_status'] === 'merah'
+            && $row['daysDiff'] >= 30
+            && $row['daysDiff'] < 60;
+    })->values();
+}
+
+if (request()->filled('overdue90')) {
+    $rekapData = $rekapData->filter(function ($row) {
+        return $row['warna_status'] === 'merah'
+            && $row['daysDiff'] >= 60
+            && $row['daysDiff'] < 90;
+    })->values();
+}
+
+if (request()->filled('overdue90_lebih')) {
+    $rekapData = $rekapData->filter(function ($row) {
+        return $row['warna_status'] === 'merah'
+            && $row['daysDiff'] >= 90;
+    })->values();
+}
 
             // Filter berdasarkan tanggal ditagih jika ada
             $ditagihFilter = $request->input('ditagih_tgl');
