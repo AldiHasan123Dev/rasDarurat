@@ -206,10 +206,9 @@
     </div>
 
     <div class="container mt-5">
-
+{{-- 
         <div class="card">
             <div class="card-body">
-                {{-- Grid Kedua --}}
                 <div class="section-title">Rekap Piutang (Overdue 0 - 30 hari)</div>
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-body py-2">
@@ -229,13 +228,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
-                {{-- Grid Kedua --}}
                 <div class="section-title">Rekap Piutang (Overdue 30 - 60 hari)</div>
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-body py-2">
@@ -255,13 +253,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
-                {{-- Grid Kedua --}}
                 <div class="section-title">Rekap Piutang (Overdue 60 - 90 hari)</div>
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-body py-2">
@@ -281,13 +278,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-     <div class="container mt-5">
+     {{-- <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
-                {{-- Grid Kedua --}}
                 <div class="section-title">Rekap Piutang (Overdue 90 hari ++)</div>
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-body py-2">
@@ -307,7 +303,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
 
     <div class="container mt-5">
