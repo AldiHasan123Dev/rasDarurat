@@ -874,7 +874,7 @@ if (request()->filled('overdue30')) {
 
     $rekapData = $rekapData->filter(function ($row) {
         return $row['warna_status'] === 'merah'
-            && $row['daysDiff'] > 30;
+            && $row['daysDiff'] < 30;
     })->values();
 }
 
