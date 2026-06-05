@@ -205,7 +205,7 @@
         </div>
     </div>
 
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -228,9 +228,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -253,9 +253,9 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-    <div class="container mt-5">
+    {{-- <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -278,9 +278,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 
-     <div class="container mt-5">
+     {{--
+    <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -304,7 +305,7 @@
             </div>
         </div>
     </div>
-
+    --}}
 
     <div class="container mt-5">
 
@@ -2121,6 +2122,7 @@
         }
 
 
+        {{--
         $("#overdue90-lebih").jqGrid({
             url: '{{ route('data-rekap.piutang') }}',
             mtype: 'GET',
@@ -2378,6 +2380,7 @@
                 postData: postData
             }).trigger("reloadGrid");
         }
+        }}
 
 
         $("#jqGrid3").jqGrid({
