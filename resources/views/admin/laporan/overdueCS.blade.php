@@ -135,7 +135,7 @@
         </div>
         <div class="card-body">
             <ul class="mb-0">
-                <li>Piutang Overdue adalah Piutang yang belum Lunas dan telah melewati tanggal bayar sesuai TOP-nya.</li>
+                <li>Piutang Overdue adalah Piutang yang belum Lunas dan telah melewati batas tanggal bayar sesuai TOP-nya.</li>
                 <li>Data bersifat UPDATED, namun memungkinkan belum Full Realtime karena faktor jeda/kebutuhan waktu di penginputan jurnal.</li>
             </ul>
         </div>
