@@ -55,6 +55,12 @@ class LaporanController extends Controller
         'totalInvoiceCount','totalBelumBayar','customers'));
     }
 
+    public function overdueCS()
+    {
+        $userId = Auth::id();   
+        return view('admin.laporan.overdueCS', compact('userId'));
+    }
+
     public function data_rekap_piutang_addcost(Request $request) {
     $page = $request->input('page', 1);
     $rows = $request->input('rows', 20);
@@ -435,6 +441,7 @@ public function data_rekap_piutang(Request $request)
     $marketing = $request->input('marketing');
     $invFilter = $request->input('inv');
     $tfMasukVal = $request->input('tf_masuk');
+    $userId = request('userId');
     //  if ($tglInvFilter) {
     //     $tahun = (int) substr($tglInvFilter, 0, 4);
     //     if ($tahun < 2025) {
@@ -522,22 +529,31 @@ public function data_rekap_piutang(Request $request)
         });
 } elseif (request('full') || request('overdue30') || request('overdue60') || request('overdue90_lebih') || request('overdue90')) {
 
-    $orders = Order::with([
-            'tarif.customer:id,nama,top',
-            'transaksi' => function ($query) {
-                $query->whereNotNull('tanggal_kirim')
-                      ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
-            },
-            'jurnals' => function ($query) {
-                $query->where('coa_id', 46)
-                      ->where('debit', '!=', 0)
-                      ->select('order_id', 'debit','coa_id');
-            },
-        ])
-        ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
-        ->orderByDesc('created_at')
-        ->get()
-        ->map(function ($order) {
+    $query = Order::with([
+    'tarif.customer:id,nama,top,cs_id,marketing_id',
+    'transaksi' => function ($query) {
+        $query->whereNotNull('tanggal_kirim')
+              ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+    },
+    'jurnals' => function ($query) {
+        $query->where('coa_id', 46)
+              ->where('debit', '!=', 0)
+              ->select('order_id', 'debit', 'coa_id');
+    },
+]);
+
+if (!empty($userId)) {
+    $query->whereHas('tarif.customer', function ($q) use ($userId) {
+        $q->where('cs_id', $userId)
+          ->orWhere('marketing_id', $userId);
+    });
+}
+
+$orders = $query
+    ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
+    ->orderByDesc('created_at')
+    ->get()
+    ->map(function ($order) {
         $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
         return $order;
     });

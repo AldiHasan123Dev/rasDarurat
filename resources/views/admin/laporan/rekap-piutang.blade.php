@@ -165,7 +165,7 @@
                 {{-- <a href="{{ route('rekap_piutang.blum') }}" class="btn btn-success mb-3">
                          <i class="fa fa-download"></i> Export Outstanding All (Tidak Termasuk Inv Manual)
                      </a> --}}
-                <div class="section-title">Rekap Piutang (Belum Bayar)</div>
+                <div class="section-title">Rekap Piutang (Overdue Total)</div>
                 {{-- Filter Kedua --}}
                 <div class="col-md-3">
 
@@ -187,7 +187,7 @@
                     <div class="card-body py-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold text-muted">
-                                Total Kurang Bayar
+                                Total Kurang Bayar (Overdue Total)
                             </span>
                             <span id="total-kurang-bayar" class="fw-bold text-danger fs-4">
                                 Rp 0
@@ -209,12 +209,12 @@
 
         <div class="card">
             <div class="card-body">
-                <div class="section-title">Rekap Piutang (Overdue 0 - 30 hari)</div>
+                <div class="section-title">Rekap Piutang (Overdue 1 - 30 hari)</div>
                 <div class="card shadow-sm border-0 mb-3">
                     <div class="card-body py-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold text-muted">
-                                Total Kurang Bayar (Overdue 0 - 30 hari)
+                                Total Kurang Bayar (Overdue 1 - 30 hari)
                             </span>
                             <span id="total-kurang-bayar-overdue30" class="fw-bold text-danger fs-4">
                                 Rp 0
