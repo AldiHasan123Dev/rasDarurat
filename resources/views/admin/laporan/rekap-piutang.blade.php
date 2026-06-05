@@ -205,8 +205,8 @@
         </div>
     </div>
 
-    <div class="container mt-5">
-{{-- 
+    {{-- <div class="container mt-5">
+
         <div class="card">
             <div class="card-body">
                 <div class="section-title">Rekap Piutang (Overdue 0 - 30 hari)</div>
@@ -311,7 +311,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="section-title">Rekap Piutang Add Cost (Invoice External)</div>
-                {{-- Filter Kedua --}}
+                {{-- Filter Kedua
                 <div class="col-md-3">
 
                     <div class="col-md-6 mb-5 text-end">
