@@ -228,9 +228,9 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
-    {{-- <div class="container mt-5">
+    <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -253,9 +253,9 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
-    {{-- <div class="container mt-5">
+    <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -278,10 +278,9 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 
-     {{--
-    <div class="container mt-5">
+     <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
@@ -304,19 +303,17 @@
                 </div>
             </div>
         </div>
-    </div>
-    --}}
+    </div> --}}
+
 
     <div class="container mt-5">
 
         <div class="card">
             <div class="card-body">
                 <div class="section-title">Rekap Piutang Add Cost (Invoice External)</div>
-                {{-- Filter Kedua
                 <div class="col-md-3">
 
                     <div class="col-md-6 mb-5 text-end">
-                        <label class="form-label d-block">&nbsp;</label> {{-- spacing --}}
                         <div class="d-flex gap-2 mb-2">
                             <button class="btn btn-sm btn-danger" onclick="filterWarna3('merah')">Merah</button>
                             <button class="btn btn-sm btn-warning" onclick="filterWarna3('kuning')">Kuning</button>
@@ -1346,1041 +1343,1039 @@
             }).trigger("reloadGrid");
         }
 
-        $("#overdue30").jqGrid({
-            url: '{{ route('data-rekap.piutang') }}',
-            mtype: 'GET',
-            postData: {
-                overdue30: true,
-            },
-            datatype: 'json',
-
-            footerrow: true,
-            userDataOnFooter: true,
-
-            colModel: [{
-                    name: 'id',
-                    hidden: true
-                },
-                {
-                    label: 'Invoice',
-                    name: 'invoice',
-                    width: 80,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Nama Customer',
-                    name: 'customer',
-                    width: 120,
-                    align: "left",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Harga (INC.PPN)',
-                    name: 'jumlah_harga',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'Tanggal',
-                    name: 'tanggal',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    hidden: true
-                },
-                {
-                    label: 'TGL Kirim Inv',
-                    name: 'ditagih_tgl',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'TOP',
-                    name: 'top',
-                    width: 30,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Jatuh Tempo TGL',
-                    name: 'tempo',
-                    width: 80,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar TGL',
-                    name: 'dibayar_tgl',
-                    width: 50,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar',
-                    name: 'sebesar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'PPH',
-                    name: 'pph',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    name: 'warna_status',
-                    hidden: true
-                },
-                {
-                    label: 'Kurang Bayar',
-                    name: 'kurang_bayar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                }
-            ],
-
-            autowidth: true,
-            shrinkToFit: true,
-            height: 'auto',
-            loadonce: false,
-            rowNum: 150,
-            rowList: [150, 500, 1000],
-            viewrecords: true,
-            pager: "#overdue30Pager",
-            caption: "Rekap Piutang Belum Bayar",
-
-            jsonReader: {
-                repeatitems: false,
-                root: "rows",
-                page: "page",
-                total: "total",
-                records: "records"
-            },
-
-            onCellSelect: function(rowId, iRow, iCol, e) {
-                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
-            },
-
-            loadComplete: function(response) {
-
-                $('#total-kurang-bayar-overdue30').text(
-                    'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
-                );
-
-            },
-
-            rowattr: function(rowData) {
-
-                if (!rowData.tempo) return {};
-
-                let today = new Date().toISOString().split('T')[0];
-                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
-
-                let selisih = parseFloat(rowData.pph || 0) -
-                    parseFloat(rowData.kurang_bayar || 0);
-
-                let timeDiff = new Date(rowData.tempo) - new Date();
-                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                if (parseFloat(rowData.kurang_bayar) === 0) {
-                    return {
-                        style: "background-color:#3fae43;color:white;"
-                    };
-                }
-
-                if (parseFloat(rowData.kurang_bayar) < 0) {
-                    return {
-                        style: "background-color:#0099ff;color:white;"
-                    };
-                }
-
-                if (selisih === 0) {
-                    return {
-                        style: "background-color:#ff9d00;color:white;"
-                    };
-                }
-
-                if (
-                    parseInt(rowData.top) === 0 &&
-                    tempoDate === today
-                ) {
-                    return {};
-                }
-
-                if (daysDiff > 0 && daysDiff <= 4) {
-                    return {
-                        style: "background-color:#ffd503;color:white;"
-                    };
-                }
-
-                if (daysDiff < 0) {
-                    return {
-                        style: "background-color:red;color:white;"
-                    };
-                }
-
-                return {};
-            }
-        });
-
-
-        // Navigation
-        $('#overdue30').jqGrid('navGrid', "#overdue30Pager", {
-            search: false,
-            add: false,
-            edit: false,
-            del: false,
-            refresh: true
-        });
-
-        // Frozen columns
-        $("#overdue30").jqGrid('setFrozenColumns');
-
-        // Live Search
-        function filterWarna2(warna) {
-            let grid = $("#overdue30");
-            let postData = grid.jqGrid('getGridParam', 'postData');
-
-            postData.filters = JSON.stringify({
-                groupOp: "AND",
-                rules: warna ? [{
-                    field: "warna_status",
-                    op: "eq",
-                    data: warna
-                }] : []
-            });
-
-            grid.jqGrid('setGridParam', {
-                search: true,
-                postData: postData
-            }).trigger("reloadGrid");
-        }
-
-
-        $("#overdue60").jqGrid({
-            url: '{{ route('data-rekap.piutang') }}',
-            mtype: 'GET',
-            postData: {
-                overdue60: true,
-            },
-            datatype: 'json',
-
-            footerrow: true,
-            userDataOnFooter: true,
-
-            colModel: [{
-                    name: 'id',
-                    hidden: true
-                },
-                {
-                    label: 'Invoice',
-                    name: 'invoice',
-                    width: 80,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Nama Customer',
-                    name: 'customer',
-                    width: 120,
-                    align: "left",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Harga (INC.PPN)',
-                    name: 'jumlah_harga',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'Tanggal',
-                    name: 'tanggal',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    hidden: true
-                },
-                {
-                    label: 'TGL Kirim Inv',
-                    name: 'ditagih_tgl',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'TOP',
-                    name: 'top',
-                    width: 30,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Jatuh Tempo TGL',
-                    name: 'tempo',
-                    width: 80,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar TGL',
-                    name: 'dibayar_tgl',
-                    width: 50,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar',
-                    name: 'sebesar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'PPH',
-                    name: 'pph',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    name: 'warna_status',
-                    hidden: true
-                },
-                {
-                    label: 'Kurang Bayar',
-                    name: 'kurang_bayar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                }
-            ],
-
-            autowidth: true,
-            shrinkToFit: true,
-            height: 'auto',
-            loadonce: false,
-            rowNum: 150,
-            rowList: [150, 500, 1000],
-            viewrecords: true,
-            pager: "#overdue60Pager",
-            caption: "Rekap Piutang Belum Bayar",
-
-            jsonReader: {
-                repeatitems: false,
-                root: "rows",
-                page: "page",
-                total: "total",
-                records: "records"
-            },
-
-            onCellSelect: function(rowId, iRow, iCol, e) {
-                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
-            },
-
-            loadComplete: function(response) {
-
-                $('#total-kurang-bayar-overdue60').text(
-                    'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
-                );
-
-            },
-
-            rowattr: function(rowData) {
-
-                if (!rowData.tempo) return {};
-
-                let today = new Date().toISOString().split('T')[0];
-                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
-
-                let selisih = parseFloat(rowData.pph || 0) -
-                    parseFloat(rowData.kurang_bayar || 0);
-
-                let timeDiff = new Date(rowData.tempo) - new Date();
-                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                if (parseFloat(rowData.kurang_bayar) === 0) {
-                    return {
-                        style: "background-color:#3fae43;color:white;"
-                    };
-                }
-
-                if (parseFloat(rowData.kurang_bayar) < 0) {
-                    return {
-                        style: "background-color:#0099ff;color:white;"
-                    };
-                }
-
-                if (selisih === 0) {
-                    return {
-                        style: "background-color:#ff9d00;color:white;"
-                    };
-                }
-
-                if (
-                    parseInt(rowData.top) === 0 &&
-                    tempoDate === today
-                ) {
-                    return {};
-                }
-
-                if (daysDiff > 0 && daysDiff <= 4) {
-                    return {
-                        style: "background-color:#ffd503;color:white;"
-                    };
-                }
-
-                if (daysDiff < 0) {
-                    return {
-                        style: "background-color:red;color:white;"
-                    };
-                }
-
-                return {};
-            }
-        });
-
-
-        // Navigation
-        $('#overdue60').jqGrid('navGrid', "#overdue60Pager", {
-            search: false,
-            add: false,
-            edit: false,
-            del: false,
-            refresh: true
-        });
-
-        // Frozen columns
-        $("#overdue60").jqGrid('setFrozenColumns');
-
-        // Live Search
-        function filterWarna2(warna) {
-            let grid = $("#overdue60");
-            let postData = grid.jqGrid('getGridParam', 'postData');
-
-            postData.filters = JSON.stringify({
-                groupOp: "AND",
-                rules: warna ? [{
-                    field: "warna_status",
-                    op: "eq",
-                    data: warna
-                }] : []
-            });
-
-            grid.jqGrid('setGridParam', {
-                search: true,
-                postData: postData
-            }).trigger("reloadGrid");
-        }
-
-        $("#overdue90").jqGrid({
-            url: '{{ route('data-rekap.piutang') }}',
-            mtype: 'GET',
-            postData: {
-                overdue90: true,
-            },
-            datatype: 'json',
-
-            footerrow: true,
-            userDataOnFooter: true,
-
-            colModel: [{
-                    name: 'id',
-                    hidden: true
-                },
-                {
-                    label: 'Invoice',
-                    name: 'invoice',
-                    width: 80,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Nama Customer',
-                    name: 'customer',
-                    width: 120,
-                    align: "left",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Harga (INC.PPN)',
-                    name: 'jumlah_harga',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'Tanggal',
-                    name: 'tanggal',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    hidden: true
-                },
-                {
-                    label: 'TGL Kirim Inv',
-                    name: 'ditagih_tgl',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'TOP',
-                    name: 'top',
-                    width: 30,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Jatuh Tempo TGL',
-                    name: 'tempo',
-                    width: 80,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar TGL',
-                    name: 'dibayar_tgl',
-                    width: 50,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar',
-                    name: 'sebesar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'PPH',
-                    name: 'pph',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    name: 'warna_status',
-                    hidden: true
-                },
-                {
-                    label: 'Kurang Bayar',
-                    name: 'kurang_bayar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                }
-            ],
-
-            autowidth: true,
-            shrinkToFit: true,
-            height: 'auto',
-            loadonce: false,
-            rowNum: 150,
-            rowList: [150, 500, 1000],
-            viewrecords: true,
-            pager: "#overdue90Pager",
-            caption: "Rekap Piutang Belum Bayar",
-
-            jsonReader: {
-                repeatitems: false,
-                root: "rows",
-                page: "page",
-                total: "total",
-                records: "records"
-            },
-
-            onCellSelect: function(rowId, iRow, iCol, e) {
-                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
-            },
-
-            loadComplete: function(response) {
-
-                $('#total-kurang-bayar-overdue90').text(
-                    'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
-                );
-
-            },
-
-            rowattr: function(rowData) {
-
-                if (!rowData.tempo) return {};
-
-                let today = new Date().toISOString().split('T')[0];
-                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
-
-                let selisih = parseFloat(rowData.pph || 0) -
-                    parseFloat(rowData.kurang_bayar || 0);
-
-                let timeDiff = new Date(rowData.tempo) - new Date();
-                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                if (parseFloat(rowData.kurang_bayar) === 0) {
-                    return {
-                        style: "background-color:#3fae43;color:white;"
-                    };
-                }
-
-                if (parseFloat(rowData.kurang_bayar) < 0) {
-                    return {
-                        style: "background-color:#0099ff;color:white;"
-                    };
-                }
-
-                if (selisih === 0) {
-                    return {
-                        style: "background-color:#ff9d00;color:white;"
-                    };
-                }
-
-                if (
-                    parseInt(rowData.top) === 0 &&
-                    tempoDate === today
-                ) {
-                    return {};
-                }
-
-                if (daysDiff > 0 && daysDiff <= 4) {
-                    return {
-                        style: "background-color:#ffd503;color:white;"
-                    };
-                }
-
-                if (daysDiff < 0) {
-                    return {
-                        style: "background-color:red;color:white;"
-                    };
-                }
-
-                return {};
-            }
-        });
-
-
-        // Navigation
-        $('#overdue90').jqGrid('navGrid', "#overdue90Pager", {
-            search: false,
-            add: false,
-            edit: false,
-            del: false,
-            refresh: true
-        });
-
-        // Frozen columns
-        $("#overdue90").jqGrid('setFrozenColumns');
-
-        // Live Search
-        function filterWarna2(warna) {
-            let grid = $("#overdue90");
-            let postData = grid.jqGrid('getGridParam', 'postData');
-
-            postData.filters = JSON.stringify({
-                groupOp: "AND",
-                rules: warna ? [{
-                    field: "warna_status",
-                    op: "eq",
-                    data: warna
-                }] : []
-            });
-
-            grid.jqGrid('setGridParam', {
-                search: true,
-                postData: postData
-            }).trigger("reloadGrid");
-        }
-
-
-        {{--
-        $("#overdue90-lebih").jqGrid({
-            url: '{{ route('data-rekap.piutang') }}',
-            mtype: 'GET',
-            postData: {
-                overdue90_lebih: true,
-            },
-            datatype: 'json',
-
-            footerrow: true,
-            userDataOnFooter: true,
-
-            colModel: [{
-                    name: 'id',
-                    hidden: true
-                },
-                {
-                    label: 'Invoice',
-                    name: 'invoice',
-                    width: 80,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Nama Customer',
-                    name: 'customer',
-                    width: 120,
-                    align: "left",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Harga (INC.PPN)',
-                    name: 'jumlah_harga',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'Tanggal',
-                    name: 'tanggal',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    hidden: true
-                },
-                {
-                    label: 'TGL Kirim Inv',
-                    name: 'ditagih_tgl',
-                    width: 50,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'TOP',
-                    name: 'top',
-                    width: 30,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Jatuh Tempo TGL',
-                    name: 'tempo',
-                    width: 80,
-                    align: "center",
-                    formatter: 'date',
-                    formatoptions: {
-                        newformat: 'Y-m-d'
-                    },
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar TGL',
-                    name: 'dibayar_tgl',
-                    width: 50,
-                    align: "center",
-                    sortable: true,
-                    search: true
-                },
-                {
-                    label: 'Dibayar',
-                    name: 'sebesar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    label: 'PPH',
-                    name: 'pph',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                },
-                {
-                    name: 'warna_status',
-                    hidden: true
-                },
-                {
-                    label: 'Kurang Bayar',
-                    name: 'kurang_bayar',
-                    width: 100,
-                    align: "right",
-                    formatter: 'currency',
-                    formatoptions: {
-                        thousandsSeparator: ',',
-                        decimalSeparator: '.',
-                        prefix: ''
-                    },
-                    sortable: true
-                }
-            ],
-
-            autowidth: true,
-            shrinkToFit: true,
-            height: 'auto',
-            loadonce: false,
-            rowNum: 150,
-            rowList: [150, 500, 1000],
-            viewrecords: true,
-            pager: "#overdue90-lebihPager",
-            caption: "Rekap Piutang Belum Bayar",
-
-            jsonReader: {
-                repeatitems: false,
-                root: "rows",
-                page: "page",
-                total: "total",
-                records: "records"
-            },
-
-            onCellSelect: function(rowId, iRow, iCol, e) {
-                let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
-            },
-
-            loadComplete: function(response) {
-
-                $('#total-kurang-bayar-overdue90-lebih').text(
-                    'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
-                );
-
-            },
-
-            rowattr: function(rowData) {
-
-                if (!rowData.tempo) return {};
-
-                let today = new Date().toISOString().split('T')[0];
-                let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
-
-                let selisih = parseFloat(rowData.pph || 0) -
-                    parseFloat(rowData.kurang_bayar || 0);
-
-                let timeDiff = new Date(rowData.tempo) - new Date();
-                let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-                if (parseFloat(rowData.kurang_bayar) === 0) {
-                    return {
-                        style: "background-color:#3fae43;color:white;"
-                    };
-                }
-
-                if (parseFloat(rowData.kurang_bayar) < 0) {
-                    return {
-                        style: "background-color:#0099ff;color:white;"
-                    };
-                }
-
-                if (selisih === 0) {
-                    return {
-                        style: "background-color:#ff9d00;color:white;"
-                    };
-                }
-
-                if (
-                    parseInt(rowData.top) === 0 &&
-                    tempoDate === today
-                ) {
-                    return {};
-                }
-
-                if (daysDiff > 0 && daysDiff <= 4) {
-                    return {
-                        style: "background-color:#ffd503;color:white;"
-                    };
-                }
-
-                if (daysDiff < 0) {
-                    return {
-                        style: "background-color:red;color:white;"
-                    };
-                }
-
-                return {};
-            }
-        });
-
-
-        // Navigation
-        $('#overdue90-lebih').jqGrid('navGrid', "#overdue90-lebihPager", {
-            search: false,
-            add: false,
-            edit: false,
-            del: false,
-            refresh: true
-        });
-
-        // Frozen columns
-        $("#overdue90-lebih").jqGrid('setFrozenColumns');
-
-        // Live Search
-        function filterWarna2(warna) {
-            let grid = $("#overdue90-lebih");
-            let postData = grid.jqGrid('getGridParam', 'postData');
-
-            postData.filters = JSON.stringify({
-                groupOp: "AND",
-                rules: warna ? [{
-                    field: "warna_status",
-                    op: "eq",
-                    data: warna
-                }] : []
-            });
-
-            grid.jqGrid('setGridParam', {
-                search: true,
-                postData: postData
-            }).trigger("reloadGrid");
-        }
-        }}
+        // $("#overdue30").jqGrid({
+        //     url: '{{ route('data-rekap.piutang') }}',
+        //     mtype: 'GET',
+        //     postData: {
+        //         overdue30: true,
+        //     },
+        //     datatype: 'json',
+
+        //     footerrow: true,
+        //     userDataOnFooter: true,
+
+        //     colModel: [{
+        //             name: 'id',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Invoice',
+        //             name: 'invoice',
+        //             width: 80,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Nama Customer',
+        //             name: 'customer',
+        //             width: 120,
+        //             align: "left",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Harga (INC.PPN)',
+        //             name: 'jumlah_harga',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Tanggal',
+        //             name: 'tanggal',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'TGL Kirim Inv',
+        //             name: 'ditagih_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'TOP',
+        //             name: 'top',
+        //             width: 30,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Jatuh Tempo TGL',
+        //             name: 'tempo',
+        //             width: 80,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar TGL',
+        //             name: 'dibayar_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar',
+        //             name: 'sebesar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'PPH',
+        //             name: 'pph',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             name: 'warna_status',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Kurang Bayar',
+        //             name: 'kurang_bayar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         }
+        //     ],
+
+        //     autowidth: true,
+        //     shrinkToFit: true,
+        //     height: 'auto',
+        //     loadonce: false,
+        //     rowNum: 150,
+        //     rowList: [150, 500, 1000],
+        //     viewrecords: true,
+        //     pager: "#overdue30Pager",
+        //     caption: "Rekap Piutang Belum Bayar",
+
+        //     jsonReader: {
+        //         repeatitems: false,
+        //         root: "rows",
+        //         page: "page",
+        //         total: "total",
+        //         records: "records"
+        //     },
+
+        //     onCellSelect: function(rowId, iRow, iCol, e) {
+        //         let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+        //     },
+
+        //     loadComplete: function(response) {
+
+        //         $('#total-kurang-bayar-overdue30').text(
+        //             'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
+        //         );
+
+        //     },
+
+        //     rowattr: function(rowData) {
+
+        //         if (!rowData.tempo) return {};
+
+        //         let today = new Date().toISOString().split('T')[0];
+        //         let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+        //         let selisih = parseFloat(rowData.pph || 0) -
+        //             parseFloat(rowData.kurang_bayar || 0);
+
+        //         let timeDiff = new Date(rowData.tempo) - new Date();
+        //         let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        //         if (parseFloat(rowData.kurang_bayar) === 0) {
+        //             return {
+        //                 style: "background-color:#3fae43;color:white;"
+        //             };
+        //         }
+
+        //         if (parseFloat(rowData.kurang_bayar) < 0) {
+        //             return {
+        //                 style: "background-color:#0099ff;color:white;"
+        //             };
+        //         }
+
+        //         if (selisih === 0) {
+        //             return {
+        //                 style: "background-color:#ff9d00;color:white;"
+        //             };
+        //         }
+
+        //         if (
+        //             parseInt(rowData.top) === 0 &&
+        //             tempoDate === today
+        //         ) {
+        //             return {};
+        //         }
+
+        //         if (daysDiff > 0 && daysDiff <= 4) {
+        //             return {
+        //                 style: "background-color:#ffd503;color:white;"
+        //             };
+        //         }
+
+        //         if (daysDiff < 0) {
+        //             return {
+        //                 style: "background-color:red;color:white;"
+        //             };
+        //         }
+
+        //         return {};
+        //     }
+        // });
+
+
+        // // Navigation
+        // $('#overdue30').jqGrid('navGrid', "#overdue30Pager", {
+        //     search: false,
+        //     add: false,
+        //     edit: false,
+        //     del: false,
+        //     refresh: true
+        // });
+
+        // // Frozen columns
+        // $("#overdue30").jqGrid('setFrozenColumns');
+
+        // // Live Search
+        // function filterWarna2(warna) {
+        //     let grid = $("#overdue30");
+        //     let postData = grid.jqGrid('getGridParam', 'postData');
+
+        //     postData.filters = JSON.stringify({
+        //         groupOp: "AND",
+        //         rules: warna ? [{
+        //             field: "warna_status",
+        //             op: "eq",
+        //             data: warna
+        //         }] : []
+        //     });
+
+        //     grid.jqGrid('setGridParam', {
+        //         search: true,
+        //         postData: postData
+        //     }).trigger("reloadGrid");
+        // }
+
+
+        // $("#overdue60").jqGrid({
+        //     url: '{{ route('data-rekap.piutang') }}',
+        //     mtype: 'GET',
+        //     postData: {
+        //         overdue60: true,
+        //     },
+        //     datatype: 'json',
+
+        //     footerrow: true,
+        //     userDataOnFooter: true,
+
+        //     colModel: [{
+        //             name: 'id',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Invoice',
+        //             name: 'invoice',
+        //             width: 80,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Nama Customer',
+        //             name: 'customer',
+        //             width: 120,
+        //             align: "left",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Harga (INC.PPN)',
+        //             name: 'jumlah_harga',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Tanggal',
+        //             name: 'tanggal',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'TGL Kirim Inv',
+        //             name: 'ditagih_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'TOP',
+        //             name: 'top',
+        //             width: 30,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Jatuh Tempo TGL',
+        //             name: 'tempo',
+        //             width: 80,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar TGL',
+        //             name: 'dibayar_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar',
+        //             name: 'sebesar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'PPH',
+        //             name: 'pph',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             name: 'warna_status',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Kurang Bayar',
+        //             name: 'kurang_bayar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         }
+        //     ],
+
+        //     autowidth: true,
+        //     shrinkToFit: true,
+        //     height: 'auto',
+        //     loadonce: false,
+        //     rowNum: 150,
+        //     rowList: [150, 500, 1000],
+        //     viewrecords: true,
+        //     pager: "#overdue60Pager",
+        //     caption: "Rekap Piutang Belum Bayar",
+
+        //     jsonReader: {
+        //         repeatitems: false,
+        //         root: "rows",
+        //         page: "page",
+        //         total: "total",
+        //         records: "records"
+        //     },
+
+        //     onCellSelect: function(rowId, iRow, iCol, e) {
+        //         let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+        //     },
+
+        //     loadComplete: function(response) {
+
+        //         $('#total-kurang-bayar-overdue60').text(
+        //             'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
+        //         );
+
+        //     },
+
+        //     rowattr: function(rowData) {
+
+        //         if (!rowData.tempo) return {};
+
+        //         let today = new Date().toISOString().split('T')[0];
+        //         let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+        //         let selisih = parseFloat(rowData.pph || 0) -
+        //             parseFloat(rowData.kurang_bayar || 0);
+
+        //         let timeDiff = new Date(rowData.tempo) - new Date();
+        //         let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        //         if (parseFloat(rowData.kurang_bayar) === 0) {
+        //             return {
+        //                 style: "background-color:#3fae43;color:white;"
+        //             };
+        //         }
+
+        //         if (parseFloat(rowData.kurang_bayar) < 0) {
+        //             return {
+        //                 style: "background-color:#0099ff;color:white;"
+        //             };
+        //         }
+
+        //         if (selisih === 0) {
+        //             return {
+        //                 style: "background-color:#ff9d00;color:white;"
+        //             };
+        //         }
+
+        //         if (
+        //             parseInt(rowData.top) === 0 &&
+        //             tempoDate === today
+        //         ) {
+        //             return {};
+        //         }
+
+        //         if (daysDiff > 0 && daysDiff <= 4) {
+        //             return {
+        //                 style: "background-color:#ffd503;color:white;"
+        //             };
+        //         }
+
+        //         if (daysDiff < 0) {
+        //             return {
+        //                 style: "background-color:red;color:white;"
+        //             };
+        //         }
+
+        //         return {};
+        //     }
+        // });
+
+
+        // // Navigation
+        // $('#overdue60').jqGrid('navGrid', "#overdue60Pager", {
+        //     search: false,
+        //     add: false,
+        //     edit: false,
+        //     del: false,
+        //     refresh: true
+        // });
+
+        // // Frozen columns
+        // $("#overdue60").jqGrid('setFrozenColumns');
+
+        // // Live Search
+        // function filterWarna2(warna) {
+        //     let grid = $("#overdue60");
+        //     let postData = grid.jqGrid('getGridParam', 'postData');
+
+        //     postData.filters = JSON.stringify({
+        //         groupOp: "AND",
+        //         rules: warna ? [{
+        //             field: "warna_status",
+        //             op: "eq",
+        //             data: warna
+        //         }] : []
+        //     });
+
+        //     grid.jqGrid('setGridParam', {
+        //         search: true,
+        //         postData: postData
+        //     }).trigger("reloadGrid");
+        // }
+
+        // $("#overdue90").jqGrid({
+        //     url: '{{ route('data-rekap.piutang') }}',
+        //     mtype: 'GET',
+        //     postData: {
+        //         overdue90: true,
+        //     },
+        //     datatype: 'json',
+
+        //     footerrow: true,
+        //     userDataOnFooter: true,
+
+        //     colModel: [{
+        //             name: 'id',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Invoice',
+        //             name: 'invoice',
+        //             width: 80,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Nama Customer',
+        //             name: 'customer',
+        //             width: 120,
+        //             align: "left",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Harga (INC.PPN)',
+        //             name: 'jumlah_harga',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Tanggal',
+        //             name: 'tanggal',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'TGL Kirim Inv',
+        //             name: 'ditagih_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'TOP',
+        //             name: 'top',
+        //             width: 30,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Jatuh Tempo TGL',
+        //             name: 'tempo',
+        //             width: 80,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar TGL',
+        //             name: 'dibayar_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar',
+        //             name: 'sebesar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'PPH',
+        //             name: 'pph',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             name: 'warna_status',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Kurang Bayar',
+        //             name: 'kurang_bayar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         }
+        //     ],
+
+        //     autowidth: true,
+        //     shrinkToFit: true,
+        //     height: 'auto',
+        //     loadonce: false,
+        //     rowNum: 150,
+        //     rowList: [150, 500, 1000],
+        //     viewrecords: true,
+        //     pager: "#overdue90Pager",
+        //     caption: "Rekap Piutang Belum Bayar",
+
+        //     jsonReader: {
+        //         repeatitems: false,
+        //         root: "rows",
+        //         page: "page",
+        //         total: "total",
+        //         records: "records"
+        //     },
+
+        //     onCellSelect: function(rowId, iRow, iCol, e) {
+        //         let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+        //     },
+
+        //     loadComplete: function(response) {
+
+        //         $('#total-kurang-bayar-overdue90').text(
+        //             'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
+        //         );
+
+        //     },
+
+        //     rowattr: function(rowData) {
+
+        //         if (!rowData.tempo) return {};
+
+        //         let today = new Date().toISOString().split('T')[0];
+        //         let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+        //         let selisih = parseFloat(rowData.pph || 0) -
+        //             parseFloat(rowData.kurang_bayar || 0);
+
+        //         let timeDiff = new Date(rowData.tempo) - new Date();
+        //         let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        //         if (parseFloat(rowData.kurang_bayar) === 0) {
+        //             return {
+        //                 style: "background-color:#3fae43;color:white;"
+        //             };
+        //         }
+
+        //         if (parseFloat(rowData.kurang_bayar) < 0) {
+        //             return {
+        //                 style: "background-color:#0099ff;color:white;"
+        //             };
+        //         }
+
+        //         if (selisih === 0) {
+        //             return {
+        //                 style: "background-color:#ff9d00;color:white;"
+        //             };
+        //         }
+
+        //         if (
+        //             parseInt(rowData.top) === 0 &&
+        //             tempoDate === today
+        //         ) {
+        //             return {};
+        //         }
+
+        //         if (daysDiff > 0 && daysDiff <= 4) {
+        //             return {
+        //                 style: "background-color:#ffd503;color:white;"
+        //             };
+        //         }
+
+        //         if (daysDiff < 0) {
+        //             return {
+        //                 style: "background-color:red;color:white;"
+        //             };
+        //         }
+
+        //         return {};
+        //     }
+        // });
+
+
+        // // Navigation
+        // $('#overdue90').jqGrid('navGrid', "#overdue90Pager", {
+        //     search: false,
+        //     add: false,
+        //     edit: false,
+        //     del: false,
+        //     refresh: true
+        // });
+
+        // // Frozen columns
+        // $("#overdue90").jqGrid('setFrozenColumns');
+
+        // // Live Search
+        // function filterWarna2(warna) {
+        //     let grid = $("#overdue90");
+        //     let postData = grid.jqGrid('getGridParam', 'postData');
+
+        //     postData.filters = JSON.stringify({
+        //         groupOp: "AND",
+        //         rules: warna ? [{
+        //             field: "warna_status",
+        //             op: "eq",
+        //             data: warna
+        //         }] : []
+        //     });
+
+        //     grid.jqGrid('setGridParam', {
+        //         search: true,
+        //         postData: postData
+        //     }).trigger("reloadGrid");
+        // }
+
+
+        // $("#overdue90-lebih").jqGrid({
+        //     url: '{{ route('data-rekap.piutang') }}',
+        //     mtype: 'GET',
+        //     postData: {
+        //         overdue90_lebih: true,
+        //     },
+        //     datatype: 'json',
+
+        //     footerrow: true,
+        //     userDataOnFooter: true,
+
+        //     colModel: [{
+        //             name: 'id',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Invoice',
+        //             name: 'invoice',
+        //             width: 80,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Nama Customer',
+        //             name: 'customer',
+        //             width: 120,
+        //             align: "left",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Harga (INC.PPN)',
+        //             name: 'jumlah_harga',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'Tanggal',
+        //             name: 'tanggal',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'TGL Kirim Inv',
+        //             name: 'ditagih_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'TOP',
+        //             name: 'top',
+        //             width: 30,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Jatuh Tempo TGL',
+        //             name: 'tempo',
+        //             width: 80,
+        //             align: "center",
+        //             formatter: 'date',
+        //             formatoptions: {
+        //                 newformat: 'Y-m-d'
+        //             },
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar TGL',
+        //             name: 'dibayar_tgl',
+        //             width: 50,
+        //             align: "center",
+        //             sortable: true,
+        //             search: true
+        //         },
+        //         {
+        //             label: 'Dibayar',
+        //             name: 'sebesar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             label: 'PPH',
+        //             name: 'pph',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         },
+        //         {
+        //             name: 'warna_status',
+        //             hidden: true
+        //         },
+        //         {
+        //             label: 'Kurang Bayar',
+        //             name: 'kurang_bayar',
+        //             width: 100,
+        //             align: "right",
+        //             formatter: 'currency',
+        //             formatoptions: {
+        //                 thousandsSeparator: ',',
+        //                 decimalSeparator: '.',
+        //                 prefix: ''
+        //             },
+        //             sortable: true
+        //         }
+        //     ],
+
+        //     autowidth: true,
+        //     shrinkToFit: true,
+        //     height: 'auto',
+        //     loadonce: false,
+        //     rowNum: 150,
+        //     rowList: [150, 500, 1000],
+        //     viewrecords: true,
+        //     pager: "#overdue90-lebihPager",
+        //     caption: "Rekap Piutang Belum Bayar",
+
+        //     jsonReader: {
+        //         repeatitems: false,
+        //         root: "rows",
+        //         page: "page",
+        //         total: "total",
+        //         records: "records"
+        //     },
+
+        //     onCellSelect: function(rowId, iRow, iCol, e) {
+        //         let nomor = $(this).jqGrid('getCell', rowId, 'nomor');
+        //     },
+
+        //     loadComplete: function(response) {
+
+        //         $('#total-kurang-bayar-overdue90-lebih').text(
+        //             'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
+        //         );
+
+        //     },
+
+        //     rowattr: function(rowData) {
+
+        //         if (!rowData.tempo) return {};
+
+        //         let today = new Date().toISOString().split('T')[0];
+        //         let tempoDate = new Date(rowData.tempo).toISOString().split('T')[0];
+
+        //         let selisih = parseFloat(rowData.pph || 0) -
+        //             parseFloat(rowData.kurang_bayar || 0);
+
+        //         let timeDiff = new Date(rowData.tempo) - new Date();
+        //         let daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        //         if (parseFloat(rowData.kurang_bayar) === 0) {
+        //             return {
+        //                 style: "background-color:#3fae43;color:white;"
+        //             };
+        //         }
+
+        //         if (parseFloat(rowData.kurang_bayar) < 0) {
+        //             return {
+        //                 style: "background-color:#0099ff;color:white;"
+        //             };
+        //         }
+
+        //         if (selisih === 0) {
+        //             return {
+        //                 style: "background-color:#ff9d00;color:white;"
+        //             };
+        //         }
+
+        //         if (
+        //             parseInt(rowData.top) === 0 &&
+        //             tempoDate === today
+        //         ) {
+        //             return {};
+        //         }
+
+        //         if (daysDiff > 0 && daysDiff <= 4) {
+        //             return {
+        //                 style: "background-color:#ffd503;color:white;"
+        //             };
+        //         }
+
+        //         if (daysDiff < 0) {
+        //             return {
+        //                 style: "background-color:red;color:white;"
+        //             };
+        //         }
+
+        //         return {};
+        //     }
+        // });
+
+
+        // // Navigation
+        // $('#overdue90-lebih').jqGrid('navGrid', "#overdue90-lebihPager", {
+        //     search: false,
+        //     add: false,
+        //     edit: false,
+        //     del: false,
+        //     refresh: true
+        // });
+
+        // // Frozen columns
+        // $("#overdue90-lebih").jqGrid('setFrozenColumns');
+
+        // // Live Search
+        // function filterWarna2(warna) {
+        //     let grid = $("#overdue90-lebih");
+        //     let postData = grid.jqGrid('getGridParam', 'postData');
+
+        //     postData.filters = JSON.stringify({
+        //         groupOp: "AND",
+        //         rules: warna ? [{
+        //             field: "warna_status",
+        //             op: "eq",
+        //             data: warna
+        //         }] : []
+        //     });
+
+        //     grid.jqGrid('setGridParam', {
+        //         search: true,
+        //         postData: postData
+        //     }).trigger("reloadGrid");
+        // }
 
 
         $("#jqGrid3").jqGrid({
