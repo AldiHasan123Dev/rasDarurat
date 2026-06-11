@@ -944,6 +944,13 @@ public function data_group_customer_piutang(Request $request)
 
         $marketing = optional($cust->marketing)->name ?? '-';
         $cs        = optional($cust->cs)->name ?? '-';
+        $top       = (int) ($cust->top ?? 0);
+
+        $jumlah_harga = 0;
+        $sebesar = 0;
+        $pph = 0;
+
+        $invoiceOverdues = [];
 
         $invoiceList = $group
             ->pluck('transaksi.invoice')
@@ -951,79 +958,133 @@ public function data_group_customer_piutang(Request $request)
             ->unique()
             ->values();
 
-        $jumlah_harga = $invoiceList->sum(function ($invoice) use ($jurnalDebit) {
-            return $jurnalDebit[$invoice]->total_debit ?? 0;
-        });
+        foreach ($invoiceList as $invoice) {
 
-        $sebesar = $invoiceList->sum(function ($invoice) use ($jurnalCredit) {
-            return $jurnalCredit[$invoice]->total_credit ?? 0;
-        });
+            $debit = $jurnalDebit[$invoice]->total_debit ?? 0;
+            $credit = $jurnalCredit[$invoice]->total_credit ?? 0;
+
+            $outstanding = $debit - $credit;
+
+            $jumlah_harga += $debit;
+            $sebesar += $credit;
+
+            // Skip invoice lunas
+            if ($outstanding <= 0) {
+                continue;
+            }
+
+            $orderInvoice = $group->first(function ($order) use ($invoice) {
+                return optional($order->transaksi)->invoice === $invoice;
+            });
+
+            if (!$orderInvoice || !$orderInvoice->transaksi) {
+                continue;
+            }
+
+            $tanggalKirim = $orderInvoice->transaksi->tanggal_kirim;
+
+            if (!$tanggalKirim) {
+                continue;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Logic overdue sama seperti kode lama
+            |--------------------------------------------------------------------------
+            */
+            $tempo1 = Carbon::parse($tanggalKirim)->addDays($top);
+
+            $daysDiff = $tempo1->diffInDays(
+                Carbon::now(),
+                false
+            );
+
+            $warna_status = '';
+
+            if ($tempo1->isFuture()) {
+
+                $sisaHari = Carbon::now()
+                    ->diffInDays($tempo1, false);
+
+                if ($sisaHari > 0 && $sisaHari <= 4) {
+                    $warna_status = 'kuning';
+                }
+
+            } elseif ($daysDiff > 0) {
+
+                $warna_status = 'merah';
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Ambil merah saja
+            |--------------------------------------------------------------------------
+            */
+            if ($warna_status != 'merah') {
+                continue;
+            }
+
+            $invoiceOverdues[] = [
+                'invoice'         => $invoice,
+                'hari_terlambat'  => $daysDiff,
+                'tanggal_kirim'   => $tanggalKirim,
+                'jatuh_tempo'     => $tempo1,
+                'outstanding'     => $outstanding,
+            ];
+        }
 
         $pph = $group->sum(function ($order) {
             return optional($order->transaksi)->pph ?? 0;
         });
 
         $jumlah_harga = round($jumlah_harga);
+        $sebesar = round($sebesar);
         $kurang_bayar = $jumlah_harga - $sebesar;
-        $tfMasuk      = $kurang_bayar - round($pph);
 
-        // Skip customer yang sudah lunas
         if ($kurang_bayar <= 0) {
             return null;
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Ambil tanggal kirim paling awal
+        | Tidak ada invoice merah
         |--------------------------------------------------------------------------
         */
-        $tanggalKirim = $group
-            ->pluck('tanggal_kirim')
-            ->filter()
-            ->sort()
-            ->first();
-
-        if (!$tanggalKirim) {
+        if (empty($invoiceOverdues)) {
             return null;
         }
-
-        $top = (int) ($cust->top ?? 0);
-
-        $jatuhTempo = Carbon::parse($tanggalKirim)
-            ->startOfDay()
-            ->addDays($top);
-
-        // Belum jatuh tempo
-        if (!$jatuhTempo->lt(Carbon::today())) {
-            return null;
-        }
-
-        $hariTerlambat = $jatuhTempo->diffInDays(Carbon::today());
 
         /*
         |--------------------------------------------------------------------------
-        | HANYA TAMPILKAN STATUS MERAH
+        | Ambil invoice overdue paling lama
         |--------------------------------------------------------------------------
         */
-        if ($hariTerlambat < 30) {
-            return null;
-        }
+        $invoiceTertua = collect($invoiceOverdues)
+            ->sortByDesc('hari_terlambat')
+            ->first();
 
         return [
-            'id'              => md5($customer),
-            'customer'        => $customer,
-            'marketing'       => $marketing,
-            'cs'              => $cs,
-            'jumlah_harga'    => round($jumlah_harga),
-            'sebesar'         => round($sebesar),
-            'kurang_bayar'    => round($kurang_bayar),
-            'pph'             => round($pph),
-            'tf_masuk'        => round($tfMasuk),
-            'top'             => $top,
-            'hari_terlambat'  => $hariTerlambat,
-            'warna_status'    => 'merah',
-            'status_top'      => 'Overdue',
-            'jatuh_tempo'     => $jatuhTempo->format('Y-m-d'),
+            'id' => md5($customer),
+
+            'customer' => $customer,
+            'marketing' => $marketing,
+            'cs' => $cs,
+
+            'jumlah_harga' => $jumlah_harga,
+            'sebesar' => $sebesar,
+            'kurang_bayar' => round($kurang_bayar),
+
+            'pph' => round($pph),
+            'tf_masuk' => round($kurang_bayar - $pph),
+
+            'top' => $top,
+
+            'invoice_terlama' => $invoiceTertua['invoice'],
+            'hari_terlambat' => $invoiceTertua['hari_terlambat'],
+            'jatuh_tempo' => $invoiceTertua['jatuh_tempo']->format('Y-m-d'),
+
+            'warna_status' => 'merah',
+            'status_top' => 'Overdue',
         ];
     })
     ->filter()
