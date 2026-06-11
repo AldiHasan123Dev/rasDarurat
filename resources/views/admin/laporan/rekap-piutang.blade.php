@@ -154,12 +154,6 @@
                                 📘 Lap Outstanding
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->is('admin/piutang-overdue*') ? 'active' : '' }}"
-                                href="{{ route('piutang.overdue') }}">
-                                🚨 Piutang Overdue
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </div>
@@ -1106,6 +1100,14 @@
                     hidden: true
                 },
                 {
+                    label: 'Invoice',
+                    name: 'invoice',
+                    width: 80,
+                    align: "center",
+                    sortable: true,
+                    search: true
+                },
+                {
                     label: 'Nama Customer',
                     name: 'customer',
                     width: 120,
@@ -1598,7 +1600,7 @@
             }).trigger("reloadGrid");
         }
 
- 
+
         $("#overdue60").jqGrid({
             url: '{{ route('data-rekap.piutang') }}',
             mtype: 'GET',
