@@ -362,10 +362,12 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     })->name('get.penerima');
 
     Route::get('rekap-piutang', [LaporanController::class, 'rekap_piutang'])->name('rekap.piutang');
+    Route::get('piutang-overdue', [LaporanController::class, 'piutangOverdue'])->name('piutang.overdue');
     Route::get('overdue-cs', [LaporanController::class, 'overdueCS'])->name('overdue.cs');
     Route::get('monitoring-subjek-bb', [LaporanController::class, 'MonitorSubjekBB'])->name('monitoring-subjek-bb');
     Route::get('jurnal/cek-coa', [JurnalController::class, 'j_cekcoa'])->name('jurnal.cekcoa');
     Route::get('data-rekap-piutang', [LaporanController::class, 'data_rekap_piutang'])->name('data-rekap.piutang');
+    Route::get('data-rekap-piutang-grouping', [LaporanController::class, 'data_group_customer_piutang'])->name('data-rekap-grouping-customer.piutang');
     Route::get('data-rekap-piutang-addcost', [LaporanController::class, 'data_rekap_piutang_addcost'])->name('data-rekap-addcost.piutang');
     Route::get('data-total-rekap-piutang', [LaporanController::class, 'data_total_rekap_piutang'])->name('data-rekap-total.piutang');
 
