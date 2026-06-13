@@ -54,12 +54,12 @@
                                 <tbody>
                                     @foreach ($orders as $order)
                                         <tr>
-                                            <td>{{ $order->id }}</td>
-                                            <td>{{ $order->jadwal_kapal->pelayaran_id }}</td>
+                                            <td>{{ $order->id ?? '-' }}</td>
+                                            <td>{{ $order->jadwal_kapal->pelayaran_id ?? '-' }}</td>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $order->job }}</td>
+                                            <td>{{ $order->job ?? '-' }}</td>
                                             <td>{{ $order->job }}-{{ sprintf('%02d',$order->no_job) }}</td>
-                                            <td>{{ $order->asuransi }}</td>
+                                            <td>{{ $order->asuransi ?? '-' }}</td>
                                             <td>{{ $order->tarif->customer->nama ?? '-' }}</td>
                                             <td>{{ $order->pengirim->nama ?? '-' }}</td>
                                             <td>{{ $order->penerima->nama ?? '-' }}</td>
