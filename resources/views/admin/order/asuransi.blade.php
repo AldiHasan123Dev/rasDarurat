@@ -69,7 +69,9 @@
                                             <td>{{ $order->tarif->kondisiInfo->nama ?? '-' }}</td>
                                             <td>{{ $order->barang->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->pelayaran->nama ?? '-' }}</td>
-                                            <td>{{ is_null($order->jadwal_kapal->td)?'-':date('d-m-y',strtotime($order->jadwal_kapal->td)) }}</td>
+                                            <td>
+    {{ $order->jadwal_kapal?->td ? date('d-m-y', strtotime($order->jadwal_kapal->td)) : '-' }}
+</td>
                                             <td>{{ $order->jadwal_kapal->kapal->nama ?? '-' }}</td>
                                             <td>{{ $order->jadwal_kapal->voyage ?? '-' }}</td>
                                             <td>{{ $order->container }}</td>
