@@ -35,6 +35,130 @@ class LaporanController extends Controller
         $count = Order::where('job','LIKE',$year.'%')->count();
         return view('admin.laporan.pelayaran', compact('data','year','count'));
     }
+ public function data_outstanding_trucking(Request $request)
+{
+    $page = $request->input('page', 1);
+    $rows = $request->input('rows', 20);
+    $customersFilter = $request->input('customers1');
+
+    // Ambil daftar invoice unik RAS-LT
+    $orderTruckingInv = OrderTrucking::with([
+        'tarif.customer:id,nama',
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 47)
+                  ->where('debit', '!=', 0);
+        },
+    ])->where('invoice', 'like', '%RAS-LT%')
+      ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
+            $q->where('nama', 'like', "%$customersFilter%");
+        })
+        ->distinct()
+        ->pluck('invoice')
+        ->toArray();
+
+    // Ambil semua order trucking beserta relasi
+    $orderTrucking = OrderTrucking::with([
+        'tarif.customer:id,nama',
+        'jurnals' => function ($query) {
+            $query->where('coa_id', 47)
+                  ->where('debit', '!=', 0);
+        },
+    ])
+    ->where('invoice', 'like', '%RAS-LT%')
+    ->whereHas('tarif.customer', function ($q) use ($customersFilter) {
+            $q->where('nama', 'like', "%$customersFilter%");
+    })
+    ->get();
+
+    // Ambil transaksi trucking dan KEY berdasarkan invoice
+    $transaksiTrucking = TransaksiTrucking::whereIn('invoice', $orderTruckingInv)
+        ->get()
+        ->keyBy('invoice');
+
+    // Jurnal Debit = Nilai Invoice
+    $jurnalNilaiInv = Jurnal::withTrashed()
+        ->select('invoice_trucking', \DB::raw('SUM(debit) as total_debit'))
+        ->where('coa_id', 47)
+        ->whereNull('deleted_at')
+        ->where('debit', '!=', 0)
+        ->whereNotNull('invoice_trucking')
+        ->groupBy('invoice_trucking')
+        ->get()
+        ->keyBy('invoice_trucking');
+
+    // Jurnal Credit = Pembayaran
+    $jurnalsCredit = Jurnal::withTrashed()
+        ->where('coa_id', 47)
+        ->whereNull('deleted_at')
+        ->where('credit', '!=', 0)
+        ->whereIn('invoice_trucking', $orderTruckingInv)
+        ->select(
+            'invoice_trucking',
+            \DB::raw('SUM(credit) as total_credit'),
+            \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+        )
+        ->groupBy('invoice_trucking')
+        ->get()
+        ->keyBy('invoice_trucking');
+
+    // Group order berdasarkan invoice
+    $ordersByInvoice = $orderTrucking->groupBy('invoice');
+
+    // Customer per invoice
+    $customers = $orderTrucking->pluck('tarif.customer', 'invoice');
+
+    // Rekap Per Invoice
+    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use (
+        $transaksiTrucking,
+        $customers,
+        $jurnalsCredit,
+        $jurnalNilaiInv
+    ) {
+        // Transaksi trucking yg terkait invoice ini
+        $trans = $transaksiTrucking[$invoice] ?? null;
+        $cust  = $customers[$invoice] ?? null;
+
+        $container = $group->map(function ($order) {
+            return ($order->container ?? '-');
+        })->implode('<br>');
+        $tglInv = optional($group->first())->tgl_invoice ?? '-';
+
+        // SUBTOTAL (Nilai invoice dari jurnal debit)
+        $subtotal = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
+        $subtotal = round($subtotal);
+
+        // PPH
+        $pph = $trans->pph ?? 0;
+
+        // JURNAL CREDIT (pembayaran)
+        $jurnalC = $jurnalsCredit[$invoice] ?? null;
+        $dibayar_tgl = $jurnalC->daftar_tanggal ?? null;
+        $sebesar     = $jurnalC->total_credit ?? 0;
+
+        // Hitung outstanding
+        $kurang_bayar = $subtotal - $sebesar;
+        $tfMasuk = $kurang_bayar - round($pph);
+
+        return [
+            'tanggal'       => now()->toDateString(),
+            'tgl_invoice'   => $tglInv,
+            'invoice'       => $invoice,
+            'customer'      => $cust->nama ?? '-',
+            'jumlah_harga'  => $subtotal,
+            'container'     => $container,
+            'pph'           => round($pph),
+            'dibayar_tgl'   => $dibayar_tgl ?? '-',
+            'sebesar'       => $sebesar,
+            'kurang_bayar'  => $kurang_bayar,
+            'tf_masuk'      => (int) $tfMasuk,
+        ];
+    })
+    ->filter(fn ($row) => $row['kurang_bayar'] > 0) 
+    ->sortBy('tgl_invoice')
+    ->values();
+
+    return response()->json($rekapData);
+}
 
     public function rekap_piutang()
     {
@@ -851,240 +975,236 @@ if (request()->filled('overdue90_lebih')) {
     ]);
 }
 
-public function data_group_customer_piutang(Request $request)
-{
-    /*
-    |--------------------------------------------------------------------------
-    | Orders
-    |--------------------------------------------------------------------------
-    */
-    $orders = Order::with([
-        'tarif.customer:id,nama,top,cs_id,marketing_id',
-        'tarif.customer.marketing:id,name',
-        'tarif.customer.cs:id,name',
-        'transaksi' => function ($query) {
-            $query->whereNotNull('tanggal_kirim')
-                ->select(
-                    'id',
-                    'order_id',
-                    'job',
-                    'total',
-                    'pph',
-                    'tanggal_kirim',
-                    'invoice'
-                );
-        },
-    ])
-    ->whereNotNull('tarif_id')
-    ->whereNull('deleted_at')
+    public function data_group_customer_piutang(Request $request)
+    {
+         $page = $request->input('page', 1);
+    $rows = $request->input('rows', 20);
+    $searchField = $request->input('searchField');
+    $searchString = $request->input('searchString');
+    $tglInvFilter = $request->input('tgl_inv');
+    $customersFilter = $request->input('customers');
+    $customersFilter1 = $request->input('customers1');
+    $marketing = $request->input('marketing');
+    $invFilter = $request->input('inv');
+    $tfMasukVal = $request->input('tf_masuk');
+    $userId = request('userId');
+    $query = Order::with([
+    'tarif.customer:id,nama,top,cs_id,marketing_id',
+    'transaksi' => function ($query) {
+        $query->whereNotNull('tanggal_kirim')
+              ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+    },
+    'jurnals' => function ($query) {
+        $query->where('coa_id', 46)
+              ->where('debit', '!=', 0)
+              ->select('order_id', 'debit', 'coa_id');
+    },
+]);
+
+$orders = $query
+    ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
+    ->orderByDesc('created_at')
     ->get()
-    ->filter(function ($order) {
-        return $order->tarif && $order->tarif->customer;
+    ->map(function ($order) {
+        $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+        return $order;
     });
+    // ❗ Semua filter kosong → kosongkan hasil
 
-    /*
-    |--------------------------------------------------------------------------
-    | Debit Piutang
-    |--------------------------------------------------------------------------
-    */
-    $jurnalDebit = Jurnal::withTrashed()
-        ->select(
-            'invoice',
-            DB::raw('SUM(debit) as total_debit')
-        )
-        ->where('coa_id', 46)
-        ->whereNull('deleted_at')
-        ->where('debit', '!=', 0)
-        ->whereNotNull('invoice')
-        ->groupBy('invoice')
-        ->get()
-        ->keyBy('invoice');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Kredit Piutang
-    |--------------------------------------------------------------------------
-    */
-    $jurnalCredit = Jurnal::withTrashed()
-        ->select(
-            'invoice',
-            DB::raw('SUM(credit) as total_credit')
-        )
+    $jurnalNilaiInv = Jurnal::withTrashed()
+    ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
+    ->where('coa_id', 46)
+    ->whereNull('deleted_at')
+    ->where('debit', '!=', 0)
+    ->whereNotNull('invoice')
+    ->groupBy('invoice')
+    ->get()
+    ->keyBy('invoice');
+    // Index untuk mapping
+    $ordersByInvoice = $orders->groupBy('invoice');
+    $jurnalNilai = $orders->pluck('jurnals', 'invoice');
+    $transaksis = $orders->pluck('transaksi', 'invoice');
+    $customers = $orders->pluck('tarif.customer', 'invoice');
+    // Ambil jurnal dan group by invoice
+    $jurnals = Jurnal::withTrashed()
         ->where('coa_id', 46)
         ->whereNull('deleted_at')
         ->where('credit', '!=', 0)
         ->whereNotNull('invoice')
+        ->select(
+            'invoice',
+            \DB::raw('SUM(credit) as total_credit'),
+            \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+        )
         ->groupBy('invoice')
         ->get()
         ->keyBy('invoice');
 
-    /*
-    |--------------------------------------------------------------------------
-    | Cari transaksi overdue dulu (MERAH)
-    |--------------------------------------------------------------------------
-    */
-    $transaksiMerah = collect();
+        
 
-foreach ($orders as $order) {
+    // Hitung data rekap
+    $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals,$jurnalNilai,$jurnalNilaiInv) {
+        $trans = $transaksis[$invoice] ?? null;
+        $cust = $customers[$invoice] ?? null;
+        $jurnalN = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
+        $subtotal = $jurnalN;
+        $jobs = $group->pluck('job')->filter(); // ambil semua job
 
-    $customer = optional(optional($order->tarif)->customer);
+        $noJobs = $group->map(function ($order) {
+            return ($order->job ?? '-') . '-' . str_pad($order->no_job ?? 0, 2, '0', STR_PAD_LEFT);
+        })->implode('<br>');
 
-    if (!$customer) {
-        continue;
-    }
+        $td = $group->map(function ($order) {
+            return ($order->td ?? '-');
+        })->implode('<br>');
+         $shipment = $group->map(function ($order) {
+            return ($order->shipment ?? '-');
+        })->implode('<br>');
+        $container = $group->map(function ($order) {
+            return ($order->container ?? '-');
+        })->implode('<br>');
+        $marketing = $group->first()->marketing ?? '-';
+       $kapal = $group->map(function ($order) {
+            return ($order->kapal ?? '-');
+        })->implode('<br>');
+        $voyage = $group->map(function ($order) {
+            return ($order->voyage ?? '-');
+        })->implode('<br>');
 
-    $transaksi = $order->transaksi;
+                // $subtotal = $trans->total ?? 0;
+                $pph = $trans->pph ?? 0;
+                $jumlah_harga = round($subtotal);
+                $top = (int)($cust->top ?? 0);
+                $invoiceDate = $group->first()->tanggal_kirim;
+                $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
+                $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
+                if ($jumlah_harga == 0) {
+                return null;
+                }
+                $jurnal = $jurnals[$invoice] ?? null;
+                $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
+                $sebesar = $jurnal->total_credit ?? 0;
+                $kurang_bayar = $jumlah_harga - $sebesar;
+                $today = Carbon::now();
+                $daysDiff = $tempo1->diffInDays($today, false); // FALSE agar hasil bisa negatif
+                $warna_status = '';
 
-    if (!$transaksi) {
-        continue;
-    }
+                // Jika lunas
+                if ($kurang_bayar == 0) {
+                    $warna_status = 'hijau';
+                }
 
-    if (
-        empty($transaksi->invoice) ||
-        empty($transaksi->tanggal_kirim)
-    ) {
-        continue;
-    }
+                elseif ($kurang_bayar < 0) {
+                    $warna_status = 'biru';
+                }
+                // Jika PPh sama dengan kurang bayar
+                elseif (round($pph)== $kurang_bayar) {
+                    $warna_status = 'oranye';
+                }
+                // Jika jatuh tempo dalam 1-4 hari ke depan
+                elseif (Carbon::parse($tempo)->isFuture()) {
+                    $daysDiff = Carbon::now()->diffInDays(Carbon::parse($tempo), false);
+                    if ($daysDiff > 0 && $daysDiff <= 4) {
+                        $warna_status = 'kuning';
+                    }
+                }
+                // Jika sudah jatuh tempo
+                elseif ($daysDiff > 0) {
+                    $warna_status = 'merah';
+                }
 
-    $invoice = $transaksi->invoice;
+                $tfMasuk = $kurang_bayar - round($pph);
 
-    $debit = $jurnalDebit[$invoice]->total_debit ?? 0;
-    $credit = $jurnalCredit[$invoice]->total_credit ?? 0;
 
-    $jumlah_harga = round($debit);
-    $sebesar = round($credit);
 
-    $kurang_bayar = $jumlah_harga - $sebesar;
+                return [
+                    'tanggal' => now()->toDateString(),
+                    'invoice' => $invoice,
+                    'shipment' => $shipment,
+                    'voyage' => $voyage,
+                    'kapal' => $kapal,
+                    'container' =>$container,
+                    'marketing' => $marketing,
+                    'customer' => $cust->nama ?? '-',
+                    'jumlah_harga' => $jumlah_harga,
+                    'pph' => round($pph),
+                    'top' => $top,
+                    'ditagih_tgl' => $invoiceDate,
+                    'tempo' => $tempo,
+                    'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top + 1),
+                    'dibayar_tgl' => $dibayar_tgl,
+                    'sebesar' => $sebesar,
+                    'td' => $td,
+                    'daysDiff' => $daysDiff,
+                    'kurang_bayar' => $kurang_bayar,
+                    'tf_masuk' => (int)$tfMasuk,
+                    'no_job' => $noJobs,
+                    'warna_status' => $warna_status, // <== TAMBAH DI SINI
+                ];
+            })->sortByDesc('customer')
+  ->values()
+  ->where('warna_status', 'merah')
+  ->values();
 
-    // skip lunas
-    if ($kurang_bayar <= 0) {
-        continue;
-    }
+        // Pagination
+        $totalKurangBayar = $rekapData->sum('kurang_bayar');
+            $totalRecords = $rekapData->count();
+            $indexStart = ($page - 1) * $rows;
+            $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
+                $item['no'] = $indexStart + $index + 1;
+                return $item;
+            });
 
-    $pph = round($transaksi->pph ?? 0);
+            $rekapData = $rekapData
+    ->filter()
+    ->groupBy('customer')
+    ->map(function ($group, $customer) {
 
-    $top = (int) ($customer->top ?? 0);
+        return [
+            'customer'       => $customer,
+            'invoice_count'  => $group->count(),
+            'jumlah_harga'   => $group->sum('jumlah_harga'),
+            'pph'            => $group->sum('pph'),
+            'sebesar'        => $group->sum('sebesar'),
+            'kurang_bayar'   => $group->sum('kurang_bayar'),
+            'tf_masuk'       => $group->sum('tf_masuk'),
 
-    $invoiceDate = $transaksi->tanggal_kirim;
+            // gabungkan invoice
+            'invoice' => $group->pluck('invoice')->implode('<br>'),
 
-    $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
+            // gabungkan no job
+            'no_job' => $group->pluck('no_job')->implode('<br>'),
 
-    $today = Carbon::now();
+            'shipment' => $group->pluck('shipment')->implode('<br>'),
+            'container' => $group->pluck('container')->implode('<br>'),
+            'kapal' => $group->pluck('kapal')->implode('<br>'),
+            'voyage' => $group->pluck('voyage')->implode('<br>'),
 
-    $daysDiff = $tempo1->diffInDays($today, false);
+            // invoice paling lama
+            'ditagih_tgl' => $group->min('ditagih_tgl'),
 
-    /*
-    |--------------------------------------------------------------------------
-    | MERAH = Sudah lewat jatuh tempo
-    |--------------------------------------------------------------------------
-    */
-    if ($daysDiff <= 0) {
-        continue;
-    }
+            // tempo paling lama
+            'tempo' => $group->max('tempo'),
 
-    $transaksiMerah->push([
-        'id' => $transaksi->id,
-
-        'customer' => $customer->nama,
-        'marketing' => optional($customer->marketing)->name ?? '-',
-        'cs' => optional($customer->cs)->name ?? '-',
-
-        'invoice' => $invoice,
-        'job' => $transaksi->job,
-
-        'tanggal_kirim' => $invoiceDate,
-
-        'jatuh_tempo' => $tempo1->format('Y-m-d'),
-
-        'hari_terlambat' => $daysDiff,
-
-        'jumlah_harga' => $jumlah_harga,
-        'sebesar' => $sebesar,
-        'kurang_bayar' => $kurang_bayar,
-
-        'pph' => $pph,
-        'tf_masuk' => $kurang_bayar - $pph,
-
-        'top' => $top,
-
-        'warna_status' => 'merah',
-        'status_top' => 'Overdue',
-    ]);
-}
-
-/*
-|--------------------------------------------------------------------------
-| Group By Invoice
-|--------------------------------------------------------------------------
-*/
-$groupInvoice = $transaksiMerah->groupBy('invoice');
-
-$rekapData = $groupInvoice->map(function ($group, $invoice) {
-
-    $first = $group->first();
-
-    $jumlah_harga = $group->sum('jumlah_harga');
-    $sebesar      = $group->sum('sebesar');
-    $pph          = $group->sum('pph');
-
-    $kurang_bayar = $jumlah_harga - $sebesar;
-
-    return [
-        'id' => md5($invoice),
-
-        'customer' => $first['customer'],
-
-        'marketing' => $first['marketing'],
-
-        'cs' => $first['cs'],
-
-        'invoice' => $invoice,
-
-        'tanggal_kirim' => $first['tanggal_kirim'],
-
-        'jatuh_tempo' => $first['jatuh_tempo'],
-
-        'hari_terlambat' => $first['hari_terlambat'],
-
-        'top' => $first['top'],
-
-        'jumlah_harga' => round($jumlah_harga),
-
-        'sebesar' => round($sebesar),
-
-        'kurang_bayar' => round($kurang_bayar),
-
-        'pph' => round($pph),
-
-        'tf_masuk' => round($kurang_bayar - $pph),
-
-        'warna_status' => $first['warna_status'],
-
-        'status_top' => $first['status_top'],
-
-        'jumlah_job' => $group->count(),
-    ];
-})
-->sortBy([
-    ['customer', 'asc'],
-    ['hari_terlambat', 'desc']
-])
-->values();
-
-return response()->json([
-    'page'    => 1,
-    'total'   => 1,
-    'records' => $rekapData->count(),
-    'rows'    => $rekapData,
-]);
+            // status customer
+            'warna_status' => $group->contains('warna_status', 'merah')
+                ? 'merah'
+                : $group->first()['warna_status'],
+        ];
+    })
+    ->sortByDesc('kurang_bayar')
+    ->values();
 
     return response()->json([
-        'page' => 1,
-        'total' => 1,
-        'records' => $rekapData->count(),
-        'rows' => $rekapData,
+        'rows' => $paginated,
+        'current_page' => $page,
+        'last_page' => ceil($totalRecords / $rows),
+        'total' => $totalRecords,
+        'records' => $totalRecords,
+        'total_kurang_bayar' => $totalKurangBayar,
     ]);
-}
+    }
 
 public function data_total_rekap_piutang(Request $request)
 {
