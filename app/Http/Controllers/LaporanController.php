@@ -975,235 +975,470 @@ if (request()->filled('overdue90_lebih')) {
     ]);
 }
 
+    
+
     public function data_group_customer_piutang(Request $request)
+
     {
+
          $page = $request->input('page', 1);
+
     $rows = $request->input('rows', 20);
+
     $searchField = $request->input('searchField');
+
     $searchString = $request->input('searchString');
+
     $tglInvFilter = $request->input('tgl_inv');
+
     $customersFilter = $request->input('customers');
+
     $customersFilter1 = $request->input('customers1');
+
     $marketing = $request->input('marketing');
+
     $invFilter = $request->input('inv');
+
     $tfMasukVal = $request->input('tf_masuk');
+
     $userId = request('userId');
+
     $query = Order::with([
+
     'tarif.customer:id,nama,top,cs_id,marketing_id',
+
     'transaksi' => function ($query) {
+
         $query->whereNotNull('tanggal_kirim')
+
               ->select('id', 'job', 'total', 'pph', 'tanggal_kirim');
+
     },
+
     'jurnals' => function ($query) {
+
         $query->where('coa_id', 46)
+
               ->where('debit', '!=', 0)
+
               ->select('order_id', 'debit', 'coa_id');
+
     },
+
 ]);
 
+
+
 $orders = $query
+
     ->select('id', 'invoice', 'invoice_date', 'job', 'no_job', 'tarif_id', 'created_at')
+
     ->orderByDesc('created_at')
+
     ->get()
+
     ->map(function ($order) {
+
         $order->tanggal_kirim = $order->transaksi->tanggal_kirim ?? null;
+
         return $order;
+
     });
+
     // ❗ Semua filter kosong → kosongkan hasil
 
 
+
+
+
     $jurnalNilaiInv = Jurnal::withTrashed()
+
     ->select('invoice', \DB::raw('SUM(debit) as total_debit'))
+
     ->where('coa_id', 46)
+
     ->whereNull('deleted_at')
+
     ->where('debit', '!=', 0)
+
     ->whereNotNull('invoice')
+
     ->groupBy('invoice')
+
     ->get()
+
     ->keyBy('invoice');
+
     // Index untuk mapping
+
     $ordersByInvoice = $orders->groupBy('invoice');
+
     $jurnalNilai = $orders->pluck('jurnals', 'invoice');
+
     $transaksis = $orders->pluck('transaksi', 'invoice');
+
     $customers = $orders->pluck('tarif.customer', 'invoice');
+
     // Ambil jurnal dan group by invoice
+
     $jurnals = Jurnal::withTrashed()
+
         ->where('coa_id', 46)
+
         ->whereNull('deleted_at')
+
         ->where('credit', '!=', 0)
+
         ->whereNotNull('invoice')
+
         ->select(
+
             'invoice',
+
             \DB::raw('SUM(credit) as total_credit'),
+
             \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+
         )
+
         ->groupBy('invoice')
+
         ->get()
+
         ->keyBy('invoice');
+
+
 
         
 
+
+
     // Hitung data rekap
+
     $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($transaksis, $customers, $jurnals,$jurnalNilai,$jurnalNilaiInv) {
+
         $trans = $transaksis[$invoice] ?? null;
+
         $cust = $customers[$invoice] ?? null;
+
         $jurnalN = $jurnalNilaiInv[$invoice]->total_debit ?? 0;
+
         $subtotal = $jurnalN;
+
         $jobs = $group->pluck('job')->filter(); // ambil semua job
 
+
+
         $noJobs = $group->map(function ($order) {
+
             return ($order->job ?? '-') . '-' . str_pad($order->no_job ?? 0, 2, '0', STR_PAD_LEFT);
+
         })->implode('<br>');
+
+
 
         $td = $group->map(function ($order) {
+
             return ($order->td ?? '-');
+
         })->implode('<br>');
+
          $shipment = $group->map(function ($order) {
+
             return ($order->shipment ?? '-');
+
         })->implode('<br>');
+
         $container = $group->map(function ($order) {
+
             return ($order->container ?? '-');
+
         })->implode('<br>');
+
         $marketing = $group->first()->marketing ?? '-';
+
        $kapal = $group->map(function ($order) {
+
             return ($order->kapal ?? '-');
+
         })->implode('<br>');
+
         $voyage = $group->map(function ($order) {
+
             return ($order->voyage ?? '-');
+
         })->implode('<br>');
+
+
 
                 // $subtotal = $trans->total ?? 0;
+
                 $pph = $trans->pph ?? 0;
+
                 $jumlah_harga = round($subtotal);
+
                 $top = (int)($cust->top ?? 0);
+
                 $invoiceDate = $group->first()->tanggal_kirim;
+
                 $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
+
                 $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
+
                 if ($jumlah_harga == 0) {
+
                 return null;
+
                 }
+
                 $jurnal = $jurnals[$invoice] ?? null;
+
                 $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
+
                 $sebesar = $jurnal->total_credit ?? 0;
+
                 $kurang_bayar = $jumlah_harga - $sebesar;
+
                 $today = Carbon::now();
+
                 $daysDiff = $tempo1->diffInDays($today, false); // FALSE agar hasil bisa negatif
+
                 $warna_status = '';
 
+
+
                 // Jika lunas
+
                 if ($kurang_bayar == 0) {
+
                     $warna_status = 'hijau';
+
                 }
 
+
+
                 elseif ($kurang_bayar < 0) {
+
                     $warna_status = 'biru';
+
                 }
+
                 // Jika PPh sama dengan kurang bayar
+
                 elseif (round($pph)== $kurang_bayar) {
+
                     $warna_status = 'oranye';
+
                 }
+
                 // Jika jatuh tempo dalam 1-4 hari ke depan
+
                 elseif (Carbon::parse($tempo)->isFuture()) {
+
                     $daysDiff = Carbon::now()->diffInDays(Carbon::parse($tempo), false);
+
                     if ($daysDiff > 0 && $daysDiff <= 4) {
+
                         $warna_status = 'kuning';
+
                     }
+
                 }
+
                 // Jika sudah jatuh tempo
+
                 elseif ($daysDiff > 0) {
+
                     $warna_status = 'merah';
+
                 }
+
+
 
                 $tfMasuk = $kurang_bayar - round($pph);
 
 
 
+
+
+
+
                 return [
+
                     'tanggal' => now()->toDateString(),
+
                     'invoice' => $invoice,
+
                     'shipment' => $shipment,
+
                     'voyage' => $voyage,
+
                     'kapal' => $kapal,
+
                     'container' =>$container,
+
                     'marketing' => $marketing,
+
                     'customer' => $cust->nama ?? '-',
+
                     'jumlah_harga' => $jumlah_harga,
+
                     'pph' => round($pph),
+
                     'top' => $top,
+
                     'ditagih_tgl' => $invoiceDate,
+
                     'tempo' => $tempo,
+
                     'hitung_tempo' => Carbon::parse($invoiceDate)->addDays($top + 1),
+
                     'dibayar_tgl' => $dibayar_tgl,
+
                     'sebesar' => $sebesar,
+
                     'td' => $td,
+
                     'daysDiff' => $daysDiff,
+
                     'kurang_bayar' => $kurang_bayar,
+
                     'tf_masuk' => (int)$tfMasuk,
+
                     'no_job' => $noJobs,
+
                     'warna_status' => $warna_status, // <== TAMBAH DI SINI
+
                 ];
+
             })->sortByDesc('customer')
+
   ->values()
+
   ->where('warna_status', 'merah')
+
   ->values();
 
-        // Pagination
-        $totalKurangBayar = $rekapData->sum('kurang_bayar');
-            $totalRecords = $rekapData->count();
-            $indexStart = ($page - 1) * $rows;
-            $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
-                $item['no'] = $indexStart + $index + 1;
-                return $item;
-            });
 
-            $rekapData = $rekapData
+
+  $rekapData = $rekapData
+
     ->filter()
+
     ->groupBy('customer')
+
     ->map(function ($group, $customer) {
 
+
+
         return [
+
             'customer'       => $customer,
+
             'invoice_count'  => $group->count(),
+
+            'marketing' => $group->first()['marketing'] ?? '-',
+
+            'cs' => $group->first()['cs'] ?? '-',
+
             'jumlah_harga'   => $group->sum('jumlah_harga'),
+
             'pph'            => $group->sum('pph'),
+
             'sebesar'        => $group->sum('sebesar'),
+
             'kurang_bayar'   => $group->sum('kurang_bayar'),
+
             'tf_masuk'       => $group->sum('tf_masuk'),
 
+
+
             // gabungkan invoice
+
             'invoice' => $group->pluck('invoice')->implode('<br>'),
 
+
+
             // gabungkan no job
+
             'no_job' => $group->pluck('no_job')->implode('<br>'),
 
+
+
             'shipment' => $group->pluck('shipment')->implode('<br>'),
+
             'container' => $group->pluck('container')->implode('<br>'),
+
             'kapal' => $group->pluck('kapal')->implode('<br>'),
+
             'voyage' => $group->pluck('voyage')->implode('<br>'),
 
+
+
             // invoice paling lama
+
             'ditagih_tgl' => $group->min('ditagih_tgl'),
 
+
+
             // tempo paling lama
+
             'tempo' => $group->max('tempo'),
 
+
+
             // status customer
+
             'warna_status' => $group->contains('warna_status', 'merah')
+
                 ? 'merah'
+
                 : $group->first()['warna_status'],
+
         ];
+
     })
+
     ->sortByDesc('kurang_bayar')
+
     ->values();
 
+
+
+        // Pagination
+
+        $totalKurangBayar = $rekapData->sum('kurang_bayar');
+
+            $totalRecords = $rekapData->count();
+
+            $indexStart = ($page - 1) * $rows;
+
+            $paginated = $rekapData->slice($indexStart, $rows)->values()->map(function ($item, $index) use ($indexStart) {
+
+                $item['no'] = $indexStart + $index + 1;
+
+                return $item;
+
+            });
+
+
+
     return response()->json([
+
         'rows' => $paginated,
+
         'current_page' => $page,
+
         'last_page' => ceil($totalRecords / $rows),
+
         'total' => $totalRecords,
+
         'records' => $totalRecords,
+
         'total_kurang_bayar' => $totalKurangBayar,
+
     ]);
+
     }
 
 public function data_total_rekap_piutang(Request $request)
