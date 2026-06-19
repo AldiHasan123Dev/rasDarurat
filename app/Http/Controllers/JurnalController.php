@@ -2264,18 +2264,24 @@ public function editOne(Jurnal $jurnal)
 
     // Cache hutang pelayaran (jika masih dipakai di logic lain, biarkan)
     $tarif = Cache::remember(
-        'hutang_pelayaran_list_' . md5($customerIds->implode(',')),
-        3600,
-        function () use ($customerIds) {
-            return HutangPelayaran::whereIn('pelayaran_id', $customerIds)
-                ->where(function ($q) {
-                    $q->whereNotNull('no_bg_opt')
-                      ->orWhereNotNull('no_bg_opp')
-                      ->orWhereNotNull('no_bg_ut');
-                })
-                ->pluck('id');
-        }
-    );
+    'hutang_pelayaran_list_' . md5($customerIds->implode(',') . $startDate . $endDate),
+    3600,
+    function () use ($customerIds, $startDate, $endDate) {
+
+        return HutangPelayaran::whereIn('pelayaran_id', $customerIds)
+            ->where(function ($q) {
+                $q->whereNotNull('no_bg_opt')
+                  ->orWhereNotNull('no_bg_opp')
+                  ->orWhereNotNull('no_bg_ut');
+            })
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('tgl_bg_ut', [$startDate, $endDate])
+                  ->orWhereBetween('tgl_bg_opt', [$startDate, $endDate])
+                  ->orWhereBetween('tgl_bg_opp', [$startDate, $endDate]);
+            })
+            ->pluck('id');
+    }
+);
 
     // Cache hasil final
     $groupedData = Cache::remember(
