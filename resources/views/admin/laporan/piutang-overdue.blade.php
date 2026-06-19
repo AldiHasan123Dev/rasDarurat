@@ -170,6 +170,18 @@
 
         <div class="card">
             <div class="card-body">
+                <div class="card shadow-sm border-0 mb-3">
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-muted">
+                                Total Kurang Bayar (Overdue Total Customer)
+                            </span>
+                            <span id="total-kurang-bayar-customer" class="fw-bold text-danger fs-4">
+                                Rp 0
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 <div class="section-title">Overdue Grouping By Customer</div>
                 <div class="table-wrapper">
                     <table id="overdue30"></table>
@@ -205,31 +217,36 @@
             label: 'Customer',
             name: 'customer',
             width: 200,
-            align: 'left'
+            align: 'left',
+            search: true
         },
         {
             label: 'Marketing',
             name: 'marketing',
             width: 120,
-            align: 'left'
+            align: 'left',
+            search: true
         },
         {
             label: 'CS',
             name: 'cs',
             width: 120,
-            align: 'left'
+            align: 'left',
+            search: true
         },
         {
             label: 'TOP',
             name: 'top',
             width: 50,
-            align: 'center'
+            align: 'center',
+            search: true
         },
         {
             label: 'PPH',
             name: 'pph',
             width: 120,
             align: 'right',
+            search: false,
             formatter: 'currency',
             formatoptions: {
                 thousandsSeparator: ',',
@@ -242,6 +259,7 @@
             name: 'jumlah_harga',
             width: 150,
             align: 'right',
+            search: false,
             formatter: 'currency',
             formatoptions: {
                 thousandsSeparator: ',',
@@ -254,6 +272,7 @@
             name: 'sebesar',
             width: 150,
             align: 'right',
+            search: false,
             formatter: 'currency',
             formatoptions: {
                 thousandsSeparator: ',',
@@ -266,6 +285,7 @@
             name: 'kurang_bayar',
             width: 150,
             align: 'right',
+            search: false,
             formatter: 'currency',
             formatoptions: {
                 thousandsSeparator: ',',
@@ -324,7 +344,14 @@
             default:
                 return {};
         }
-    }
+    },
+    loadComplete: function(response) {
+
+                $('#total-kurang-bayar-customer').text(
+                    'Rp ' + Number(response.total_kurang_bayar).toLocaleString('id-ID')
+                );
+
+            },
 });
 
 $('#overdue30').jqGrid('navGrid', '#overdue30Pager', {
@@ -336,6 +363,11 @@ $('#overdue30').jqGrid('navGrid', '#overdue30Pager', {
 });
 
 $('#overdue30').jqGrid('setFrozenColumns');
+$("#overdue30").jqGrid('filterToolbar', {
+    stringResult: true,
+    searchOnEnter: false,
+    defaultSearch: 'cn'
+});
 
 function filterWarna2(warna) {
 
