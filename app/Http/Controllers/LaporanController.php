@@ -200,31 +200,37 @@ class LaporanController extends Controller
     $invFilter = $request->input('inv');
 
     // Ambil total debit per invoice
-    $jurnalInvX = Jurnal::withTrashed()
-        ->select('order_id', 'invoice_external', \DB::raw('SUM(debit) as total_debit'))
-        ->where('coa_id', 46)
-        ->whereNull('deleted_at')
-        ->where('debit', '!=', 0)
-        ->whereNotNull('invoice_external')
-        ->groupBy('invoice_external', 'order_id')
-        ->get()
-        ->keyBy('invoice_external');
+$jurnalInvX = Jurnal::withTrashed()
+    ->select(
+        \DB::raw('MIN(order_id) as order_id'),
+        'invoice_external',
+        \DB::raw('SUM(debit) as total_debit'),
+        \DB::raw('MIN(created_at) as created_at')
+    )
+    ->where('coa_id', 46)
+    ->whereNull('deleted_at')
+    ->where('debit', '!=', 0)
+    ->where('tipe', 'JNL')
+    ->whereNotNull('invoice_external')
+    ->groupBy('invoice_external')
+    ->get()
+    ->keyBy('invoice_external');
 
     // Ambil total credit dan daftar tanggal bayar per invoice
-    $jurnals = Jurnal::withTrashed()
-        ->where('coa_id', 46)
-        ->whereNull('deleted_at')
-        ->where('credit', '!=', 0)
-        ->whereNotNull('invoice_external')
-        ->select(
-            'order_id',
-            'invoice_external',
-            \DB::raw('SUM(credit) as total_credit'),
-            \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
-        )
-        ->groupBy('invoice_external', 'order_id')
-        ->get()
-        ->keyBy('invoice_external');
+$jurnals = Jurnal::withTrashed()
+    ->where('coa_id', 46)
+    ->whereNull('deleted_at')
+    ->where('credit', '!=', 0)
+    ->whereNotNull('invoice_external')
+    ->select(
+        \DB::raw('MIN(order_id) as order_id'),
+        'invoice_external',
+        \DB::raw('SUM(credit) as total_credit'),
+        \DB::raw("GROUP_CONCAT(DATE_FORMAT(created_at, '%Y-%m-%d') ORDER BY created_at ASC SEPARATOR '<br>') as daftar_tanggal")
+    )
+    ->groupBy('invoice_external')
+    ->get()
+    ->keyBy('invoice_external');
 
     // Group data berdasarkan invoice_external
     $ordersByInvoice = $jurnalInvX->groupBy('invoice_external');
@@ -235,6 +241,7 @@ class LaporanController extends Controller
             $item->invoice_external => [
                 'order_id' => $item->order_id,
                 'total_credit' => $item->total_credit,
+                'created_at' => $item->created_at,
             ]
         ];
     });
@@ -246,31 +253,22 @@ class LaporanController extends Controller
     $rekapData = $ordersByInvoice->map(function ($group, $invoice) use ($customers, $jurnals, $jurnalInvX) {
         $cust = $customers[$invoice] ?? null;
         if (!$cust || !$cust->nama) {
-    return null; // Lewati jika customer tidak ditemukan
-}
+            return null; 
+        }
         $jurnalDebit = $jurnalInvX[$invoice]->total_debit ?? 0;
-
         $jumlah_harga = round($jurnalDebit);
         $top = (int)($cust->top ?? 0);
-       $invoiceDates = $group->first()->created_at ?? null;
-
-
-
-$invoiceDate = Carbon::parse($invoiceDates)->subDay();
-
-
+        $invoiceDates = $group->first()->created_at ?? null;
+        $invoiceDate = Carbon::parse($invoiceDates)->subDay();
         $tempoDate = Carbon::parse($invoiceDate)->addDays($top);
         $tempoFormatted = $tempoDate->format('Y-m-d');
-
         $jurnal = $jurnals[$invoice] ?? null;
         $dibayar_tgl = $jurnal->daftar_tanggal ?? null;
         $sebesar = $jurnal->total_credit ?? 0;
         $kurang_bayar = $jumlah_harga - $sebesar;
-
         $today = Carbon::now();
         $daysDiff = $tempoDate->diffInDays($today, false);
         $warna_status = '';
-
         if ($kurang_bayar == 0) {
             $warna_status = 'hijau';
         } elseif ($kurang_bayar < 0) {
@@ -982,13 +980,6 @@ if (request()->filled('overdue90_lebih')) {
     $rows = $request->input('rows', 20);
     $searchField = $request->input('searchField');
     $searchString = $request->input('searchString');
-    $tglInvFilter = $request->input('tgl_inv');
-    $customersFilter = $request->input('customers');
-    $customersFilter1 = $request->input('customers1');
-    $marketing = $request->input('marketing');
-    $invFilter = $request->input('inv');
-    $tfMasukVal = $request->input('tf_masuk');
-    $userId = request('userId');
 
         $query = Order::with([
         'tarif.customer:id,nama,top,cs_id,marketing_id',
