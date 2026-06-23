@@ -154,6 +154,13 @@
                         📘 Lap Outstanding
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('admin/piutang-overdue*') ? 'active' : '' }}"
+                       href="{{ route('piutang.overdue') }}">
+                       🚨 Piutang Overdue
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

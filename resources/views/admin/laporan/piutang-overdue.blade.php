@@ -184,11 +184,6 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <label>Customer</label>
-                            <select id="filter_customer" class="form-control"></select>
-                        </div>
-
-                        <div class="col-md-4">
                             <label>Marketing</label>
                             <select id="filter_marketing" class="form-control"></select>
                         </div>
@@ -215,39 +210,6 @@
         <script type="text/ecmascript" src="{{ asset('assets/js/grid.locale-en.js') }}"></script>
         <script type="text/ecmascript" src="{{ asset('assets/js/jquery.jqGrid.min.js') }}"></script>
         <script src="{{ asset('assets/js/resize-column.js') }}"></script>
-        <script>
-            $('#filter_customer').select2({
-                placeholder: 'Pilih Customer',
-                allowClear: true,
-                ajax: {
-                    url: "{{ url('/api/customer-list') }}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function(params) {
-                        return {
-                            q: params.term
-                        };
-                    },
-                    processResults: function(data) {
-                        return {
-                            results: data.results
-                        };
-                    }
-                }
-            });
-
-            $('#filter_customer').on('change', function() {
-
-                $("#overdue30").jqGrid('setGridParam', {
-                    postData: {
-                        customer_id: $(this).val()
-                    },
-                    page: 1
-                }).trigger('reloadGrid');
-
-            });
-        </script>
-
         <script>
             $('#filter_marketing').select2({
                 placeholder: 'Pilih Marketing',
