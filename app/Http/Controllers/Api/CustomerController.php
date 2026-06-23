@@ -44,11 +44,11 @@ public function marketingList(Request $request)
 
     $data = Customer::query()
         ->join('users', 'users.id', '=', 'customers.marketing_id')
-        ->select('users.id', 'users.name')
+        ->selectRaw('MIN(users.id) as id, users.name')
         ->when($search, function ($q) use ($search) {
             $q->where('users.name', 'like', "%{$search}%");
         })
-        ->distinct()
+        ->groupBy('users.name')
         ->orderBy('users.name')
         ->limit(50)
         ->get();
