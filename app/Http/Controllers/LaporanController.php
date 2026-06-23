@@ -1006,6 +1006,25 @@ if (request()->filled('overdue90_lebih')) {
                 );
         },
     ]);
+    
+    $query->when($request->customer_id, function ($q, $nama) {
+        $q->whereHas('tarif.customer', function ($q) use ($nama) {
+            $q->where('nama', $nama);
+        });
+    });
+
+    $query->when($request->marketing, function ($q, $marketing) {
+        $q->whereHas('tarif.customer.marketing', function ($q) use ($marketing) {
+            $q->where('name', $marketing);
+        });
+    });
+
+     $query->when($request->cs, function ($q, $cs) {
+        $q->whereHas('tarif.customer.cs', function ($q) use ($cs) {
+            $q->where('name', $cs);
+        });
+    });
+
     $orders = $query
         ->select(
             'id',

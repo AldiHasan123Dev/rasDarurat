@@ -14,6 +14,80 @@ class CustomerController extends Controller
         return response($data);
     }
 
+      public function customerList(Request $request)
+{
+    $search = $request->q;
+
+    $data = Customer::query()
+        ->select('nama')
+        ->when($search, function ($q) use ($search) {
+            $q->where('nama', 'like', "%{$search}%");
+        })
+        ->distinct()
+        ->orderBy('nama')
+        ->limit(50)
+        ->get();
+
+    return response()->json([
+        'results' => $data->map(function ($item) {
+            return [
+                'id'   => $item->nama,
+                'text' => $item->nama,
+            ];
+        })
+    ]);
+}
+
+public function marketingList(Request $request)
+{
+    $search = $request->q;
+
+    $data = Customer::query()
+        ->join('users', 'users.id', '=', 'customers.marketing_id')
+        ->select('users.id', 'users.name')
+        ->when($search, function ($q) use ($search) {
+            $q->where('users.name', 'like', "%{$search}%");
+        })
+        ->distinct()
+        ->orderBy('users.name')
+        ->limit(50)
+        ->get();
+
+    return response()->json([
+        'results' => $data->map(function ($item) {
+            return [
+                'id'   => $item->name,
+                'text' => $item->name,
+            ];
+        })
+    ]);
+}
+
+public function csList(Request $request)
+{
+    $search = $request->q;
+
+    $data = Customer::query()
+        ->join('users', 'users.id', '=', 'customers.cs_id')
+        ->select('users.id', 'users.name')
+        ->when($search, function ($q) use ($search) {
+            $q->where('users.name', 'like', "%{$search}%");
+        })
+        ->distinct()
+        ->orderBy('users.name')
+        ->limit(50)
+        ->get();
+
+    return response()->json([
+        'results' => $data->map(function ($item) {
+            return [
+                'id'   => $item->name,
+                'text' => $item->name,
+            ];
+        })
+    ]);
+}
+
     public function getPengirim(Request $request)
 {
     try {
