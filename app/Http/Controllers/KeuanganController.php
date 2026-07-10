@@ -284,6 +284,17 @@ class KeuanganController extends Controller
         // end tabel 2
 
         // tabel khusus
+
+        $dataKhusus = Order::whereHas('tarif', function ($q) {
+            $q->whereHas('customer', function ($qu) {
+                $qu->whereIn('id', [2156, 2432, 2835, 3173, 3524, 3943, 3949]);
+            });
+        })
+        ->whereNull('invoice')
+        ->get();
+
+        $today = Carbon::today();
+
         $dataKhususFilter = $dataKhusus->filter(function ($item) use ($today) {
 
             $stuffing = Carbon::parse($item->tgl_stuffing);
