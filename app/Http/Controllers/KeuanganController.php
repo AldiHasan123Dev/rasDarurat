@@ -232,6 +232,7 @@ class KeuanganController extends Controller
 
     public function pre_invoice()
     {
+        //Tabel 1
         $data1_id = [];
         $data1 = Order::whereHas('tarif', function ($q) {
             $q->whereIn('kondisi', [1, 6]);
@@ -266,6 +267,11 @@ class KeuanganController extends Controller
                 array_push($data1_id, $item->id);
         }
 
+        //end table 1
+
+
+        //Tabel 2
+
         $data3 = Order::whereHas('tarif', function ($q) {
             $q->whereIn('kondisi', [5, 7, 10, 9,8]);
             $q->whereHas('customer', function ($qu) {
@@ -275,11 +281,30 @@ class KeuanganController extends Controller
             $q->whereNotNull('td');
         })->whereNull('invoice')->get();
 
+        // end tabel 2
+
+        // tabel khusus
+        $dataKhususFilter = $dataKhusus->filter(function ($item) use ($today) {
+
+            $stuffing = Carbon::parse($item->tgl_stuffing);
+
+            // Jika bulan sebelum bulan ini, tetap tampil
+            if ($stuffing->lt($today->copy()->startOfMonth())) {
+                return true;
+            }
+
+            // Jika bulan ini, gunakan aturan H+1
+            return $stuffing->copy()->addDay()->gte($today);
+        })->values();
+        //tabel khusus end
+        
+        
         $data1 = Order::whereIn('id', $data1_id)->get();
         $data1 = OrderResource::collection($data1);
         $data2 = OrderResource::collection($data3);
+        $dataKhusus = OrderResource::collection($dataKhususFilter);
 
-        return view('admin.keuangan.pre_invoice2', compact('data1', 'data2'));
+        return view('admin.keuangan.pre_invoice2', compact('data1', 'data2','dataKhusus'));
     }
 
     public function pre_invoice1()
