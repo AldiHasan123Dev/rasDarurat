@@ -297,7 +297,7 @@ class KeuanganController extends Controller
 
         $dataKhususFilter = $dataKhusus->filter(function ($item) use ($today) {
 
-            $stuffing = Carbon::parse($item->tgl_stuffing);
+            $stuffing = Carbon::parse($item->stuffing);
 
             // Jika bulan sebelum bulan ini, tetap tampil
             if ($stuffing->lt($today->copy()->startOfMonth())) {
