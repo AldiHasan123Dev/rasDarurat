@@ -419,7 +419,7 @@
             serverSide: true,
 
             paging: true, // aktifkan pagination
-            pageLength: 20, // tampil 20 data per halaman
+            pageLength: 10, // tampil 10 data per halaman
             lengthChange: false, // sembunyikan pilihan jumlah data
             searching: false,
 
