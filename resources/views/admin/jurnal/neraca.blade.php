@@ -18,6 +18,9 @@
                 left: 0;
                 top: -70px;
             }
+                #print .no-print {
+        display: none !important;
+    }
             #table td, #table th{
                 border: 1px solid black;
             }

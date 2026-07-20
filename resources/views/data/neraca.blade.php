@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-12 mb-3">
+    <div class="col-12 mb-3 no-print">
         <form action="{{ route('jurnal.neraca') }}" action="GET" class="d-flex justify-content-between">
             <input type="hidden" name="month" value="{{ $month }}">
             <div class="d-flex gap-2">
