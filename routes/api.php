@@ -130,3 +130,4 @@ Route::post('sync-order-trucking',[SyncController::class,'order_trucking'])->nam
 Route::post('order-update-ops',[OrderController::class,'updateOps'])->name('order.update.ops');
 Route::post('order-update-checker',[OrderController::class,'updateChecker'])->name('order.update.checker');
 Route::post('order-update-kuli',[OrderController::class,'updateKuli'])->name('order.update.kuli');
+Route::get('customer-list-auth-cs', [CustomerController::class, 'customerListAuthCs']);

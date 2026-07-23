@@ -163,4 +163,30 @@ public function csList(Request $request)
 
         return response('success');
     }
+
+public function customerListAuthCs(Request $request)
+{
+    $search = $request->term;
+    $ids = $request->ids ?? [];
+
+    $customers = Customer::select('id','nama')
+        ->when(!empty($ids), function ($q) use ($ids) {
+            $q->whereIn('id', $ids);
+        })
+        ->when($search, function ($q) use ($search) {
+            $q->where('nama', 'like', "%{$search}%");
+        })
+        ->orderBy('nama')
+        ->get();
+
+    return response()->json([
+        'results' => $customers->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'text' => $item->nama,
+            ];
+        })
+    ]);
+}
+
 }

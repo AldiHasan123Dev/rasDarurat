@@ -789,6 +789,7 @@ else {
                 $pph = $trans->pph ?? 0;
                 $jumlah_harga = round($subtotal);
                 $top = (int)($cust->top ?? 0);
+                $idCustomer = (int)($cust->id ?? 0);
                 $invoiceDate = $group->first()->tanggal_kirim;
                 $tempo1 = Carbon::parse($invoiceDate)->addDays($top);
                 $tempo = $tanggalTempo = Carbon::parse($invoiceDate)->addDays($top)->format('Y-m-d');;
@@ -853,6 +854,7 @@ else {
                     'kurang_bayar' => $kurang_bayar,
                     'tf_masuk' => (int)$tfMasuk,
                     'no_job' => $noJobs,
+                    'id_customer' => $idCustomer,
                     'warna_status' => $warna_status, // <== TAMBAH DI SINI
                 ];
             })->filter()->sortByDesc('invoice')->values();
@@ -888,6 +890,15 @@ if ($tfMasukVal !== null && $tfMasukVal !== '') {
 } else {
     $rekapData = $rekapData->sortByDesc('invoice')->values();
 } 
+
+if (request()->filled('customer_id')) {
+    $customerId = request('customer_id');
+
+    $rekapData = $rekapData->filter(function ($row) use ($customerId) {
+        return (int)($row['id_customer'] ?? '') === (int)$customerId;
+    })->values();
+}
+
 
 if (request()->filled('overdue30')) {
 
