@@ -422,8 +422,8 @@ let table1 = $('#table-2').DataTable({
     pageLength: 10,          // Default tampil 10 data
     lengthChange: true,      // Tampilkan pilihan jumlah data
     lengthMenu: [
-        [10, 25, 50, 100, 150, -1],
-        [10, 25, 50, 100, 150, "Semua"]
+        [50, 100, 200, 300, 400, -1],
+        [50, 100, 200, 300, 400, "Semua"]
     ],
 
     searching: false,
