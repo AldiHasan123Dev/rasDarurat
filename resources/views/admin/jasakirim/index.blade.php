@@ -414,58 +414,83 @@
         </script>
     @endif
     <script>
-let table1 = $('#table-2').DataTable({
-    processing: true,
-    serverSide: true,
+        let table1 = $('#table-2').DataTable({
+            processing: true,
+            serverSide: true,
 
-    paging: true,
-    pageLength: 10,          // Default tampil 10 data
-    lengthChange: true,      // Tampilkan pilihan jumlah data
-    lengthMenu: [
-        [50, 100, 200, 300, 400, -1],
-        [50, 100, 200, 300, 400, "Semua"]
-    ],
+            paging: true, // aktifkan pagination
+            pageLength: 150, // tampil 10 data per halaman
+            lengthChange: false, // sembunyikan pilihan jumlah data
+            searching: false,
 
-    searching: false,
-    searchDelay: 500,
-    deferRender: true,
-    scrollCollapse: true,
+            searchDelay: 500,
+            deferRender: true,
 
-    ajax: {
-        url: '{{ route('jasakirim.data') }}',
-        method: 'POST',
-        data: function(d) {
-            d.nominal = 1;
-            d.role = @json($role);
-            d.start_date = $('#start_date').val();
-            d.end_date = $('#end_date').val();
-            d.tujuan = $('#tujuan').val();
-            d.searching = $('#searching').val();
-            d.barcode = $('#barcode').val();
-        },
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-    },
+            // opsional, kalau pakai paging biasanya scrollY tidak dipakai
+            scrollCollapse: true,
+            // scrollY: '50vh',
 
-    columns: [
-        { data: 'id', name: 'id' },
-        { data: 'lokasi_id', name: 'lokasi_id' },
-        { data: 'kota', name: 'kota' },
-        { data: 'orders', name: 'orders' },
-        { data: 'barcode', name: 'barcode' },
-        { data: 'tgl_kirim', name: 'tgl_kirim' },
-        { data: 'tgl_terima', name: 'tgl_terima' },
-        { data: 'nominal', name: 'nominal' },
-        { data: 'ekspedisi', name: 'ekspedisi' },
-        {
-            data: 'action',
-            name: 'action',
-            orderable: false,
-            searchable: false
-        }
-    ]
-});
+            ajax: {
+                url: '{{ route('jasakirim.data') }}',
+                method: 'POST',
+                data: function(d) {
+                    d.nominal = 1;
+                    d.role = @json($role);
+                    d.start_date = $('#start_date').val();
+                    d.end_date = $('#end_date').val();
+                    d.tujuan = $('#tujuan').val();
+                    d.searching = $('#searching').val();
+                    d.barcode = $('#barcode').val();
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+            },
+
+            columns: [{
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'lokasi_id',
+                    name: 'lokasi_id'
+                },
+                {
+                    data: 'kota',
+                    name: 'kota'
+                },
+                {
+                    data: 'orders',
+                    name: 'orders'
+                },
+                {
+                    data: 'barcode',
+                    name: 'barcode'
+                },
+                {
+                    data: 'tgl_kirim',
+                    name: 'tgl_kirim'
+                },
+                {
+                    data: 'tgl_terima',
+                    name: 'tgl_terima'
+                },
+                {
+                    data: 'nominal',
+                    name: 'nominal'
+                },
+                {
+                    data: 'ekspedisi',
+                    name: 'ekspedisi'
+                },
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false,
+                    searchable: false
+                },
+            ]
+        });
         table1.on('click', 'tbody tr', function(e) {
             e.currentTarget.classList.toggle('selected');
             let nominal = 0;
@@ -512,7 +537,7 @@ let table1 = $('#table-2').DataTable({
             allowClear: true,
 
             width: '100%',
-
+            
             ajax: {
 
                 url: "{{ url('api/lokasi/select2') }}",
