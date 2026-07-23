@@ -427,7 +427,7 @@ let table1 = $('#table-2').DataTable({
     ],
 
     searching: false,
-    searchDelay: 500,
+    searchDelay: 200,
     deferRender: true,
     scrollCollapse: true,
 
