@@ -1389,6 +1389,14 @@
 
     });
 
+    $('#btnReset').on('click', function () {
+
+    $('#customerFilter').val(null).trigger('change');
+
+    reloadAllGrid('');
+
+});
+
         function reloadAllGrid(customerId) {
 
             const grids = [
