@@ -1904,7 +1904,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
                                     });
                             });
                         })
-                        ->where('tipe', 'BKK')
+                        ->whereIn('tipe', ['BKK', 'BKT', 'BBK'])
                         ->whereNull('deleted_at')
                         ->whereMonth('created_at', $month)
                         ->whereYear('created_at', $year)
