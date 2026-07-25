@@ -1906,6 +1906,7 @@ $jurnalSelain161 = $jurnalDebitLain - $jurnalKreditLain;
                         })
                         ->whereIn('tipe', ['BKK', 'BKT', 'BBK'])
                         ->whereNull('deleted_at')
+                        ->whereNotNull('order_id')
                         ->whereMonth('created_at', $month)
                         ->whereYear('created_at', $year)
                         ->whereIn('coa_id', [98])
