@@ -70,6 +70,8 @@
                                         <option value="BKM">Kas Masuk - {{ $no_5 }}</option>
                                         <option value="BBKT">Bank Keluar Trucking - {{ $no_6 }}</option>
                                         <option value="BBMT">Bank Masuk Trucking - {{ $no_7 }}</option>
+                                        <option value="BBK7993">Bank Keluar 7993 - {{ $no_9 }}</option>
+                                        <option value="BBM7993">Bank Masuk 7993 - {{ $no_8 }}</option>
                                     </select>
                                 </div>
                                 <div class="col-6">
@@ -98,7 +100,7 @@
                                 <th>Nominal</th>
                                 {{-- <th style="width: 300px">Invoice External</th> --}}
                                 <th style="width: 300px">Pilih Doc</th>
-                                <th hidden id="dynamic-th" style="width: 300px">Nomor</th>
+                                <th hidden id="dynamic-th" style="width: 300px"F>Nomor</th>
                                 <th hidden id="dynamic-th" style="width: 300px">Lain-lain</th>
                             </tr>
                             @for ($i = 0; $i < $debit_idx; $i++)

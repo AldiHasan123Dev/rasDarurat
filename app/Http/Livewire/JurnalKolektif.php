@@ -13,7 +13,7 @@ use Livewire\Component;
 class JurnalKolektif extends Component
 {
     public $coa, $coa_id, $tipe, $orders, $jurnals, $jurnal_id, $template_id, $templates, $template, $template_count;
-    public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7;
+    public $no_1, $no_2, $no_3, $no_4, $no_5, $no_6, $no_7,$no_8, $no_9;
     public $form, $order, $is_apply;
     public $debit_idx, $credit_idx;
     public $c16, $c45, $c175;
@@ -27,6 +27,8 @@ class JurnalKolektif extends Component
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_6 = Jurnal::where('tipe','BBKT')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_7 = Jurnal::where('tipe','BBMT')->whereYear('created_at',date('Y'))->max('no') + 1;
+        $no_8 = ModelsJurnal::where('tipe', 'BBM7993')->whereYear('created_at', date('Y'))->max('no') + 1;
+        $no_9 = ModelsJurnal::where('tipe', 'BBK7993')->whereYear('created_at', date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(14)->format('Y-m-d');
         $job = Order::whereBetween('created_at',[$last,$now])->pluck('job')->toArray();
@@ -54,6 +56,8 @@ class JurnalKolektif extends Component
         $this->no_5 = sprintf('%03d',$no_5).'/BKM-'.$setting->short_name.'/'.date('y');
         $this->no_6 = sprintf('%03d',$no_6).'/BBKT-'.$setting->short_name.'/'.date('y');
         $this->no_7 = sprintf('%03d',$no_7).'/BBMT-'.$setting->short_name.'/'.date('y');
+        $this->no_8 = sprintf('%03d', $no_8) . '/BBM7993-' . $setting->short_name . '/' . date('y');
+        $this->no_9 = sprintf('%03d', $no_9) . '/BBK7993-' . $setting->short_name . '/' . date('y');
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
