@@ -26,8 +26,8 @@ class JurnalBupotTrucking extends Component
         $no_5 = Jurnal::where('tipe','BKM')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_6 = Jurnal::where('tipe','BBKT')->whereYear('created_at',date('Y'))->max('no') + 1;
         $no_7 = Jurnal::where('tipe','BBMT')->whereYear('created_at',date('Y'))->max('no') + 1;
-        $no_8 = ModelsJurnal::where('tipe', 'BBM7993')->whereYear('created_at', date('Y'))->max('no') + 1;
-        $no_9 = ModelsJurnal::where('tipe', 'BBK7993')->whereYear('created_at', date('Y'))->max('no') + 1;
+        $no_8 = Jurnal::where('tipe', 'BBM7993')->whereYear('created_at', date('Y'))->max('no') + 1;
+        $no_9 = Jurnal::where('tipe', 'BBK7993')->whereYear('created_at', date('Y'))->max('no') + 1;
 
         $setting = Setting::find(1);
         $this->order = null;
