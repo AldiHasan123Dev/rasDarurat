@@ -1715,39 +1715,7 @@
         function modalEditOrder() {
             var myModal = new bootstrap.Modal(document.getElementById('modal-edit-order'));
             $('#iframe-order').attr('src', iframe_order);
-             // Pastikan user sudah memilih JOB
-    if (!id || !tarif_id) {
-        alert('Silakan pilih JOB terlebih dahulu.');
-        return;
-    }
-
-    $('#order_id').val(id);
-
-    $.ajax({
-        type: "GET",
-        url: "/api/get-jadwal-kapal-pelayaran/" + tarif_id,
-        data: {
-            order_id: id
-        },
-        success: function(response) {
-            var html = '<option value="">Pilih Kapal</option>';
-
-            $.each(response, function(key, value) {
-                html += '<option value="' + key + '">' + value + '</option>';
-            });
-
-            $('#pindah-kapal-select').html(html);
-
             myModal.show();
-        },
-        error: function(xhr) {
-            if (xhr.responseJSON && xhr.responseJSON.message) {
-                alert(xhr.responseJSON.message);
-            } else {
-                alert('Terjadi kesalahan.');
-            }
-        }
-    });
         }
 
         function modalAddBTTB() {
