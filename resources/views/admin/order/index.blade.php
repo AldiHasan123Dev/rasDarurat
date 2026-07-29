@@ -1725,21 +1725,41 @@
         }
 
         function modalPindahKapal() {
-            var myModal = new bootstrap.Modal(document.getElementById('modal-pindah-kapal'));
-            $('#order_id').val(id);
-            $.ajax({
-                type: "GET",
-                url: "/api/get-jadwal-kapal-pelayaran/" + tarif_id,
-                success: function(response) {
-                    var data = response;
-                    var html = '<option>Pilih Kapal</option>';
-                    $.each(data, function(id, name) {
-                        html += '<option value="' + id + '">' + name + '</option>'
-                    });
-                    $('#pindah-kapal-select').html(html);
-                }
+    var myModal = new bootstrap.Modal(document.getElementById('modal-pindah-kapal'));
+
+    // Pastikan user sudah memilih JOB
+    if (!id || !tarif_id) {
+        alert('Silakan pilih JOB terlebih dahulu.');
+        return;
+    }
+
+    $('#order_id').val(id);
+
+    $.ajax({
+        type: "GET",
+        url: "/api/get-jadwal-kapal-pelayaran/" + tarif_id,
+        data: {
+            order_id: id
+        },
+        success: function(response) {
+            var html = '<option value="">Pilih Kapal</option>';
+
+            $.each(response, function(key, value) {
+                html += '<option value="' + key + '">' + value + '</option>';
             });
+
+            $('#pindah-kapal-select').html(html);
+
             myModal.show();
+        },
+        error: function(xhr) {
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                alert(xhr.responseJSON.message);
+            } else {
+                alert('Terjadi kesalahan.');
+            }
         }
+    });
+}
     </script>
 @endsection
