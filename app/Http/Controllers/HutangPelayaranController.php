@@ -164,7 +164,7 @@ public function store(Request $request)
                 $shipQty = preg_replace("/[^0-9]/", "", $item->order->tarif->shipmentInfo->nama ?? '');
 
                 $oppFields = ['opp', 'apbs', 'cleaning', 'thc', 'lss', 'opp_stamp', 'hp_seal','vgm'];
-                $optFields = ['opt', 'opt_stamp'];
+                $optFields = ['opt', 'opt_stamp','opr_pph'];
                 $utFields = ['ut', 'ut_stamp', 'bl', 'ut_cleaning'];
 
                 // OPP
