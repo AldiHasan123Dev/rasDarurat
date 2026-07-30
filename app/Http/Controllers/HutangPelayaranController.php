@@ -400,7 +400,7 @@ public function store(Request $request)
                         'no' => $data_nomor[$key]['no'],
                         'nama' => 'Hutang OPT ' . ($hp_ref->order->jadwal_kapal->pelayaran->nama ?? '') . ' : ' . ($hp_ref->order->jadwal_kapal->kapal->nama ?? '') . ' V. ' . ($hp_ref->order->jadwal_kapal->voyage ?? '') . ' BG: ' . $hp_ref->no_bg_opt . ' (' . date('d/m/y', strtotime($hp_ref->tgl_bg_opt)) . ')',
                         'debit' => 0,
-                        'credit' => $opt_total,
+                        'credit' => max(0, $opt_total - ($hp_ref->opt_pph ?? 0)),
                         'created_at' => $now,
                         'updated_at' => $now,
                     ];
