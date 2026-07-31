@@ -131,3 +131,5 @@ Route::post('order-update-ops',[OrderController::class,'updateOps'])->name('orde
 Route::post('order-update-checker',[OrderController::class,'updateChecker'])->name('order.update.checker');
 Route::post('order-update-kuli',[OrderController::class,'updateKuli'])->name('order.update.kuli');
 Route::get('customer-list-auth-cs', [CustomerController::class, 'customerListAuthCs']);
+Route::get('/jurnal/tipe', [JurnalController::class, 'getTipe']);
+Route::get('/jurnal/nomor', [JurnalController::class, 'getNoJurnal']);

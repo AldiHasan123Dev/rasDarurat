@@ -694,4 +694,38 @@ return response([
         });
         return response($data);
     }
+
+    public function getTipe() {
+        $data = Jurnal::select('tipe')
+            ->distinct()
+            ->orderBy('tipe')
+            ->pluck('tipe');
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
+
+    public function getNoJurnal(Request $request) {
+        $query = Jurnal::query();
+
+        if ($request->filled('tipe')) {
+            $query->where('tipe', $request->tipe);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('nomor', 'like', '%' . $request->search . '%');
+        }
+
+        $data = $query
+            ->select('nomor')
+            ->distinct()
+            ->orderByDesc('id')
+            ->limit(10)
+            ->pluck('nomor');
+
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }
