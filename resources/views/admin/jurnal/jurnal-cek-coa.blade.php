@@ -491,6 +491,41 @@
     }
 }
 
+function setBkt(bkt) {
+    const inputKas = document.getElementById('kas');
+    const inputBank = document.getElementById('bank');
+    const inputJurnal = document.getElementById('jurnal');
+    const inputBkt = document.getElementById('bkt');
+    const inputBank7993 = document.getElementById('bank7993');
+    const btnKas = document.getElementById('btn-kas');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
+
+    // Nonaktifkan yang lain
+    inputBank.value = '';
+    btnBank.forEach(btn => btn.classList.remove('btn-active'));
+
+    inputKas.value = '';
+    if (btnKas) btnKas.classList.remove('btn-active');
+
+    inputJurnal.value = '';
+    if (btnJurnal) btnJurnal.classList.remove('btn-active');
+
+    inputBank7993.value = '';
+    if (btnBank7993) btnBank7993.classList.remove('btn-active');
+
+    // Toggle bkt
+    if (inputBkt.value === bkt) {
+        inputBkt.value = '';
+        btnBkt.classList.remove('btn-active');
+    } else {
+        inputBkt.value = bkt;
+        btnBkt.classList.add('btn-active');
+    }
+}
+
 function setBank7993(bank7993) {
     const inputKas = document.getElementById('kas');
     const inputBank = document.getElementById('bank');
