@@ -517,7 +517,7 @@ function setBank7993(bank7993) {
     if (btnBkt) btnBkt.classList.remove('btn-active');
 
     // Toggle bkt
-    if (inputBkt.value === bank7993) {
+    if (inputBank7993.value === bank7993) {
         inputBank7993.value = '';
         btnBank7993.classList.remove('btn-active');
     } else {
