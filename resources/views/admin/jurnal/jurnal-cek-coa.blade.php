@@ -82,6 +82,10 @@
                     <button type="button" class="btn btn-bank" onclick="setBkt('bkt')" id="btn-bkt">Bank Trucking</button>
                     <input type="hidden" name="bkt" id="bkt" value="">
                 </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-bank" onclick="setBank7993('bank7993')" id="btn-bank7993">Bank 7993</button>
+                    <input type="hidden" name="bank7993" id="bank7993" value="">
+                </div>
                 <div class="col-md-3">
                     <input type="date" name="tgl" id="tgl" class="form-control">
                 </div>
@@ -422,10 +426,12 @@
     const inputBank = document.getElementById('bank');
     const inputJurnal = document.getElementById('jurnal');
     const inputBkt = document.getElementById('bkt');
+    const inputBank7993 = document.getElementById('bank7993');
     const btnKas = document.getElementById('btn-kas');
     const btnBank = document.querySelectorAll('.btn-bank');
     const btnJurnal = document.getElementById('btn-jnl');
     const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
 
     // Nonaktifkan yang lain
     inputBank.value = '';
@@ -437,6 +443,9 @@
     inputBkt.value = '';
     if (btnBkt) btnBkt.classList.remove('btn-active');
 
+    inputBank7993.value = '';
+    if (btnBank7993) btnBank7993.classList.remove('btn-active');
+
     // Toggle kas
     if (inputKas.value === kas) {
         inputKas.value = '';
@@ -447,15 +456,52 @@
     }
 }
 
-function setBkt(bkt) {
+      function setKas(kas) {
     const inputKas = document.getElementById('kas');
     const inputBank = document.getElementById('bank');
     const inputJurnal = document.getElementById('jurnal');
     const inputBkt = document.getElementById('bkt');
+    const inputBank7993 = document.getElementById('bank7993');
     const btnKas = document.getElementById('btn-kas');
     const btnBank = document.querySelectorAll('.btn-bank');
     const btnJurnal = document.getElementById('btn-jnl');
     const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
+
+    // Nonaktifkan yang lain
+    inputBank.value = '';
+    btnBank.forEach(btn => btn.classList.remove('btn-active'));
+
+    inputJurnal.value = '';
+    if (btnJurnal) btnJurnal.classList.remove('btn-active');
+
+    inputBkt.value = '';
+    if (btnBkt) btnBkt.classList.remove('btn-active');
+
+    inputBank7993.value = '';
+    if (btnBank7993) btnBank7993.classList.remove('btn-active');
+
+    // Toggle kas
+    if (inputKas.value === kas) {
+        inputKas.value = '';
+        btnKas.classList.remove('btn-active');
+    } else {
+        inputKas.value = kas;
+        btnKas.classList.add('btn-active');
+    }
+}
+
+function setBank7993(bank7993) {
+    const inputKas = document.getElementById('kas');
+    const inputBank = document.getElementById('bank');
+    const inputJurnal = document.getElementById('jurnal');
+    const inputBkt = document.getElementById('bkt');
+    const inputBank7993 = document.getElementById('bank7993');
+    const btnKas = document.getElementById('btn-kas');
+    const btnBank = document.querySelectorAll('.btn-bank');
+    const btnJurnal = document.getElementById('btn-jnl');
+    const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
 
     // Nonaktifkan yang lain
     inputBank.value = '';
@@ -468,24 +514,26 @@ function setBkt(bkt) {
     if (btnJurnal) btnJurnal.classList.remove('btn-active');
 
     // Toggle bkt
-    if (inputBkt.value === bkt) {
+    if (inputBkt.value === bank7993) {
         inputBkt.value = '';
-        btnBkt.classList.remove('btn-active');
+        btnBank7993.classList.remove('btn-active');
     } else {
-        inputBkt.value = bkt;
-        btnBkt.classList.add('btn-active');
+        inputBkt.value = bank7993;
+        btnBank7993.classList.add('btn-active');
     }
 }
 
 function setJurnal(jurnal) {
-    const inputKas = document.getElementById('kas');
+       const inputKas = document.getElementById('kas');
     const inputBank = document.getElementById('bank');
     const inputJurnal = document.getElementById('jurnal');
     const inputBkt = document.getElementById('bkt');
+    const inputBank7993 = document.getElementById('bank7993');
     const btnKas = document.getElementById('btn-kas');
     const btnBank = document.querySelectorAll('.btn-bank');
     const btnJurnal = document.getElementById('btn-jnl');
     const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
 
     // Nonaktifkan yang lain
     inputBank.value = '';
@@ -496,6 +544,9 @@ function setJurnal(jurnal) {
 
     inputBkt.value = '';
     if (btnBkt) btnBkt.classList.remove('btn-active');
+
+    inputBank7993.value = '';
+    if (btnBank7993) btnBank7993.classList.remove('btn-active');
 
     // Toggle jurnal
     if (inputJurnal.value === jurnal) {
@@ -508,14 +559,16 @@ function setJurnal(jurnal) {
 }
 
 function setTipe(bank) {
-    const inputBank = document.getElementById('bank');
     const inputKas = document.getElementById('kas');
+    const inputBank = document.getElementById('bank');
     const inputJurnal = document.getElementById('jurnal');
     const inputBkt = document.getElementById('bkt');
+    const inputBank7993 = document.getElementById('bank7993');
     const btnKas = document.getElementById('btn-kas');
-    const btnJurnal = document.getElementById('btn-jnl');
     const btnBank = document.querySelectorAll('.btn-bank');
+    const btnJurnal = document.getElementById('btn-jnl');
     const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
 
     let isActive = false;
 
@@ -545,6 +598,9 @@ function setTipe(bank) {
 
         inputBkt.value = '';
         if (btnBkt) btnBkt.classList.remove('btn-active');
+
+        inputBank7993.value = '';
+        if (btnBank7993) btnBank7993.classList.remove('btn-active');
     }
 }
 
@@ -558,17 +614,19 @@ function setTipe(bank) {
     const bktInput = document.getElementById('bkt');
     const jurnalInput = document.getElementById('jurnal');
     const kasInput = document.getElementById('kas');
+    const bank7993Input = document.getElementById('bank7993');
 
     const btnKas = document.getElementById('btn-kas');
     const btnJurnal = document.getElementById('btn-jnl');
     const btnBank = document.querySelectorAll('.btn-bank');
     const btnBkt = document.getElementById('btn-bkt');
+    const btnBank7993 = document.getElementById('btn-bank7993');
 
     let bank = bankInput?.value || '';
     let bkt = bktInput?.value || '';
     let jurnal = jurnalInput?.value || '';
     let kas = kasInput?.value || '';
-
+    let bank7993 = bank7993Input?.value || '';
     // Reset filter jika keterangan dan container diisi
     
 
@@ -580,7 +638,8 @@ function setTipe(bank) {
             bank,
             kas,
             jurnal,
-            bkt
+            bkt,
+            bank7993
         },
         page: 1
     }).trigger('reloadGrid');

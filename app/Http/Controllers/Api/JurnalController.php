@@ -204,6 +204,7 @@ class JurnalController extends Controller
         $nomor = request('nomor');
         $jurnal = request('jurnal');
         $bkt = request('bkt');
+        $bank7993 = request('bank7993');
         $job = request('job');
         $tgl = request('tgl');
         $container = request('container');
@@ -313,6 +314,9 @@ if ($bank) {
     $hasFilter = true;
 } elseif ($jurnal) {
    $data = $query->where('tipe', 'JNL');
+    $hasFilter = true;
+} elseif ($bank7993) {
+    $query->whereIn('tipe', ['BBK7993', 'BBM7993']);
     $hasFilter = true;
 }
 
