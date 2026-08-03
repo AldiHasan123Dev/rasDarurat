@@ -513,12 +513,15 @@ function setBank7993(bank7993) {
     inputJurnal.value = '';
     if (btnJurnal) btnJurnal.classList.remove('btn-active');
 
+    inputBkt.value = '';
+    if (btnBkt) btnBkt.classList.remove('btn-active');
+
     // Toggle bkt
     if (inputBkt.value === bank7993) {
-        inputBkt.value = '';
+        inputBank7993.value = '';
         btnBank7993.classList.remove('btn-active');
     } else {
-        inputBkt.value = bank7993;
+        inputBank7993.value = bank7993;
         btnBank7993.classList.add('btn-active');
     }
 }
