@@ -1440,11 +1440,11 @@ if (!empty($dataToInsert)) {
     });
 
 $voucherDeb = $jurnalQuery
-    ->whereIn('coa_id', [16, 45, 175])
+    ->whereIn('coa_id', [16, 45, 175, 204])
     ->sum('debit');
 
 $voucherCre = $jurnalQuery
-    ->whereIn('coa_id', [16, 45, 175])
+    ->whereIn('coa_id', [16, 45, 175, 204])
     ->sum('credit');
 
 $voucher = abs($voucherDeb - $voucherCre);
