@@ -200,6 +200,7 @@ class JurnalController extends Controller
         $nomorE = request('nomorE');
         $tipe = request('tipe');
         $bank = request('bank');
+        $bank7993 = request('bank7993');
         $kas = request('kas');
         $nomor = request('nomor');
         $jurnal = request('jurnal');
@@ -313,6 +314,9 @@ if ($bank) {
     $hasFilter = true;
 } elseif ($jurnal) {
    $data = $query->where('tipe', 'JNL');
+    $hasFilter = true;
+} elseif ($bank7993) {
+   $query->whereIn('tipe', ['BBK7993', 'BBM7993']);
     $hasFilter = true;
 }
 

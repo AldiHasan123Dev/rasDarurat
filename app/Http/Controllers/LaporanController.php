@@ -1661,7 +1661,7 @@ if ($tipe == 'inv') {
             ->sum('debit');
 
         $kredit = Jurnal::where('coa_id', $coaId)
-            ->whereBetween('created_at', [$startDate, $endDate])
+            ->whereBetween('created_at',  [$startDate, $endDate])
             ->sum('credit');
 
         // NOTE:
