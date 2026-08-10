@@ -20,7 +20,6 @@
             <th>Jurnal BUPOT</th>
             <th>No BUPOT</th>
             <th>Tanggal BUPOT</th>
-            <th>No BUPOT</th>
             <th>Masa BUPOT</th>
             <th>BUPOT</th>
             <th>Selisih BUPOT</th>
