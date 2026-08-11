@@ -91,12 +91,19 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
 
             $kelompokData = [];
 
+           $kelompokData = [];
+
             foreach ($orders as $order) {
                 $tarifAsli = $order->tarif->tarif ?? 0;
                 $kondisi = $order->tarif->kondisiInfo->id ?? null;
                 $shipmentId = $order->tarif->shipmentInfo->id ?? 0;
 
-                $namaSatuan = in_array($shipmentId, [19, 13, 11]) ? 'UM.0033' : 'UM.0030';
+                $namaSatuan = in_array($shipmentId, [19, 13, 11])
+                    ? 'UM.0033'
+                    : 'UM.0030';
+
+                // Tarif ID sebagai key grouping
+                $tarifId = $order->tarif_id;
 
                 // Hitung harga & DPP
                 $hargaPerOrder = in_array($kondisi, [1, 6])
@@ -106,25 +113,31 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
                 $dppOrder = $hargaPerOrder;
                 $ppnOrder = $dppOrder * 0.11;
 
-                // ambil keterangan sesuai urutan
-                $keterangan = $keteranganList[min(count($kelompokData), count($keteranganList) - 1)];
+                // Keterangan sesuai urutan
+                $keterangan = $keteranganList[
+                    min(count($kelompokData), count($keteranganList) - 1)
+                ];
 
-                if (!isset($kelompokData[$keterangan])) {
-                    $kelompokData[$keterangan] = [
+                if (!isset($kelompokData[$tarifId])) {
+                    $kelompokData[$tarifId] = [
                         'nama_satuan' => $namaSatuan,
                         'harga_satuan' => $hargaPerOrder,
                         'jumlah' => 0,
                         'total_dpp' => 0,
                         'total_ppn' => 0,
+                        'keterangan' => $keterangan,
                     ];
                 }
 
-                $kelompokData[$keterangan]['jumlah']++;
-                $kelompokData[$keterangan]['total_dpp'] += $dppOrder;
-                $kelompokData[$keterangan]['total_ppn'] += $ppnOrder;
+                // Jumlah order dalam tarif_id yang sama
+                $kelompokData[$tarifId]['jumlah']++;
+
+                $kelompokData[$tarifId]['total_dpp'] += $dppOrder;
+                $kelompokData[$tarifId]['total_ppn'] += $ppnOrder;
+
                 $totalJumlahSemua++;
 
-                // 🔹 Tambahan ekspedisi jika kondisi 1/6
+                // Tambahan ekspedisi jika kondisi 1/6
                 if (in_array($kondisi, [1, 6])) {
                     $isTambahanEkspedisi = true;
                     $totalEkspedisi += 500000;
