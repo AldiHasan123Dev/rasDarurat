@@ -477,17 +477,51 @@ public function store(Request $request)
             }
 
             // Update field jurnal_opp/opt/ut pada tiap HutangPelayaran (mirip kode lama)
-            $dataHp = HutangPelayaran::whereIn('id', $ids)->get();
-            foreach ($dataHp as $hpItem) {
-                $opp = Jurnal::where('no_bg', $hpItem->no_bg_opp)->where('tipe', 'JNL')->where('order_id', $hpItem->order_id)->first()->nomor ?? null;
-                $opt = Jurnal::where('no_bg', $hpItem->no_bg_opt)->where('tipe', 'JNL')->where('order_id', $hpItem->order_id)->first()->nomor ?? null;
-                $ut = Jurnal::where('no_bg', $hpItem->no_bg_ut)->where('tipe', 'JNL')->where('order_id', $hpItem->order_id)->first()->nomor ?? null;
-                $hpItem->update([
-                    'jurnal_opp' => $opp,
-                    'jurnal_opt' => $opt,
-                    'jurnal_ut' => $ut,
-                ]);
-            }
+$dataHp = HutangPelayaran::whereIn('id', $ids)->get();
+
+foreach ($dataHp as $hpItem) {
+
+    // Default HARUS null
+    $opp = null;
+    $opt = null;
+    $ut  = null;
+
+    // Cari jurnal OPP hanya jika no_bg_opp memang ada
+    if (!empty($hpItem->no_bg_opp)) {
+        $jurnalOpp = Jurnal::where('tipe', 'JNL')
+            ->where('no_bg', $hpItem->no_bg_opp)
+            ->where('order_id', $hpItem->order_id)
+            ->first();
+
+        $opp = $jurnalOpp?->nomor;
+    }
+
+    // Cari jurnal OPT hanya jika no_bg_opt memang ada
+    if (!empty($hpItem->no_bg_opt)) {
+        $jurnalOpt = Jurnal::where('tipe', 'JNL')
+            ->where('no_bg', $hpItem->no_bg_opt)
+            ->where('order_id', $hpItem->order_id)
+            ->first();
+
+        $opt = $jurnalOpt?->nomor;
+    }
+
+    // Cari jurnal UT hanya jika no_bg_ut memang ada
+    if (!empty($hpItem->no_bg_ut)) {
+        $jurnalUt = Jurnal::where('tipe', 'JNL')
+            ->where('no_bg', $hpItem->no_bg_ut)
+            ->where('order_id', $hpItem->order_id)
+            ->first();
+
+        $ut = $jurnalUt?->nomor;
+    }
+
+    $hpItem->update([
+        'jurnal_opp' => $opp,
+        'jurnal_opt' => $opt,
+        'jurnal_ut' => $ut,
+    ]);
+}
         }); // end transaction
     } catch (\Exception $e) {
         // Kembalikan error ke user (sama pola return sebelumnya)
