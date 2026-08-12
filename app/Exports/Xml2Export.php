@@ -146,24 +146,30 @@ class Xml2Export implements FromArray, WithHeadings, WithColumnFormatting, WithS
             }
 
             // 🔹 Tampilkan hasil per kelompok (keterangan)
-            foreach ($kelompokData as $keterangan => $itemData) {
-                $data[] = [
-                    $rowNumber,
-                    'B',
-                    '060000',
-                    $keterangan,
-                    $itemData['nama_satuan'],
-                    $itemData['harga_satuan'],
-                    $itemData['jumlah'],
-                    '0.00',
-                    $itemData['total_dpp'],
-                    $itemData['total_dpp'],
-                    12,
-                    $itemData['total_ppn'],
-                    '0.00',
-                    '0.00',
-                ];
-            }
+foreach ($kelompokData as $tarifId => $itemData) {
+
+    // Jangan proses jika jumlah order kurang dari 1
+    if ($itemData['jumlah'] < 1) {
+        continue;
+    }
+
+    $data[] = [
+        $rowNumber,
+        'B',
+        '060000',
+        $itemData['keterangan'], // <-- Nama Barang/Jasa
+        $itemData['nama_satuan'],
+        $itemData['harga_satuan'],
+        $itemData['jumlah'],
+        '0.00',
+        $itemData['total_dpp'],
+        $itemData['total_dpp'],
+        12,
+        $itemData['total_ppn'],
+        '0.00',
+        '0.00',
+    ];
+}
 
             // 🔹 Tambahkan baris “Jasa Ekspedisi” terakhir jika perlu
             if ($isTambahanEkspedisi) {
