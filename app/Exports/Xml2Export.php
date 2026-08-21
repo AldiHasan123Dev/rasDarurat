@@ -177,7 +177,7 @@ foreach ($kelompokData as $tarifId => $itemData) {
                     $rowNumber,
                     'B',
                     '060000',
-                    'Jasa Ekspedisi',
+                    'JASA EKSPEDISI',
                     'UM.0030',
                     500000,
                     $totalJumlahSemua,
