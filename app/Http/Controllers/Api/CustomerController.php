@@ -164,6 +164,25 @@ public function csList(Request $request)
         return response('success');
     }
 
+    public function pembayarTarif(Request $request)
+    {
+        $search = $request->search;
+
+        $customers = Customer::query()
+            ->select('id', 'nama')
+            ->when($search, function ($query) use ($search) {
+                $query->where('nama', 'like', '%' . $search . '%');
+            })
+            ->orderBy('nama')
+            ->limit(10)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $customers
+        ]);
+    }
+
 public function customerListAuthCs(Request $request)
 {
     $search = $request->term;

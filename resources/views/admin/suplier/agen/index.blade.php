@@ -255,12 +255,51 @@
     $("select[name=agen_id]").select2({
         dropdownParent: $('#offcanvasTarifAgen')
     });
-    $("select[name=pembayar_id]").select2({
-        dropdownParent: $('#offcanvasTarifAgen')
-    });
-    $("select[name=penerima_id]").select2({
-        dropdownParent: $('#offcanvasTarifAgen')
-    });
+        $(document).ready(function () {
+
+    console.log('Pembayar:', $('select[name="pembayar_id"]').length);
+    console.log('Penerima:', $('select[name="penerima_id"]').length);
+
+    function selectCustomer(selector) {
+        $(selector).select2({
+            dropdownParent: $('#offcanvasTarifAgen'),
+            width: '100%',
+            placeholder: 'Pilih Customer',
+            allowClear: true,
+
+            ajax: {
+                url: '{{ url("/api/customer-tarif-agen") }}',
+                dataType: 'json',
+                delay: 300,
+
+                data: function (params) {
+                    return {
+                        search: params.term || ''
+                    };
+                },
+
+                processResults: function (response) {
+                    console.log('Response API:', response);
+
+                    return {
+                        results: response.data.map(function (item) {
+                            return {
+                                id: item.id,
+                                text: item.nama
+                            };
+                        })
+                    };
+                },
+
+                cache: true
+            }
+        });
+    }
+
+    selectCustomer('select[name="pembayar_id"]');
+    selectCustomer('select[name="penerima_id"]');
+
+});
 
     $('#tarif-create').submit(function (e) {
         e.preventDefault();

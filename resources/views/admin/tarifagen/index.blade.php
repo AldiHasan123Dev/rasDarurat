@@ -47,28 +47,90 @@
 @endsection
 
 @section('script')
-    <script>
-        let table = $('.table').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax:{
-                url: '{{ route('tarifagen.data') }}',
-                method:'POST',
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-            },
-            columns: [
-                { data: 'id', name: 'id' },
-                { data: 'agen_id', name: 'agen_id' },
-                { data: 'tanggal', name: 'tanggal' },
-                { data: 'dari', name: 'dari' },
-                { data: 'tujuan', name: 'tujuan' },
-                { data: 'tipe', name: 'tipe' },
-                { data: 'tarif', name: 'tarif' },
-                { data: 'kubikasi', name: 'kubikasi' },
-                { data: 'keterangan', name: 'keterangan' },
-                { data: 'is_active', name: 'is_active' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
-            ]
+
+<script>
+$(document).ready(function () {
+
+    // DataTable
+    let table = $('.table').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: '{{ route('tarifagen.data') }}',
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        },
+        columns: [
+            { data: 'id', name: 'id' },
+            { data: 'agen_id', name: 'agen_id' },
+            { data: 'tanggal', name: 'tanggal' },
+            { data: 'dari', name: 'dari' },
+            { data: 'tujuan', name: 'tujuan' },
+            { data: 'tipe', name: 'tipe' },
+            { data: 'tarif', name: 'tarif' },
+            { data: 'kubikasi', name: 'kubikasi' },
+            { data: 'keterangan', name: 'keterangan' },
+            { data: 'is_active', name: 'is_active' },
+            {
+                data: 'action',
+                name: 'action',
+                orderable: false,
+                searchable: false
+            }
+        ]
+    });
+
+
+    // Select2 Customer
+    $(document).ready(function () {
+
+    console.log('Pembayar:', $('select[name="pembayar_id"]').length);
+    console.log('Penerima:', $('select[name="penerima_id"]').length);
+
+    function selectCustomer(selector) {
+        $(selector).select2({
+            dropdownParent: $('#offcanvasTarifAgen'),
+            width: '100%',
+            placeholder: 'Pilih Customer',
+            allowClear: true,
+
+            ajax: {
+                url: '{{ url("/api/customer-tarif-agen") }}',
+                dataType: 'json',
+                delay: 300,
+
+                data: function (params) {
+                    return {
+                        search: params.term || ''
+                    };
+                },
+
+                processResults: function (response) {
+                    console.log('Response API:', response);
+
+                    return {
+                        results: response.data.map(function (item) {
+                            return {
+                                id: item.id,
+                                text: item.nama
+                            };
+                        })
+                    };
+                },
+
+                cache: true
+            }
         });
-    </script>
+    }
+
+    selectCustomer('select[name="pembayar_id"]');
+    selectCustomer('select[name="penerima_id"]');
+
+});
+
+});
+</script>
+
 @endsection

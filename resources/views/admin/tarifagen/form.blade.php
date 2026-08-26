@@ -1,7 +1,7 @@
 @php
     $agens = \App\Models\Agen::pluck('nama','id');
     $lokasi = \App\Models\Lokasi::pluck('nama','id');
-    $customers = \App\Models\Customer::pluck('nama','id');
+    $customers = [];
 @endphp
 <div class="row">
 <x-input :value="$tarifagen->agen_id??old('agen_id')" :col="12" :label="'Agen'" :type="'select'" :options="$agens" :name="'agen_id'" :required="true"></x-input>

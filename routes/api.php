@@ -133,3 +133,5 @@ Route::post('order-update-kuli',[OrderController::class,'updateKuli'])->name('or
 Route::get('customer-list-auth-cs', [CustomerController::class, 'customerListAuthCs']);
 Route::get('/jurnal/tipe', [JurnalController::class, 'getTipe']);
 Route::get('/jurnal/nomor', [JurnalController::class, 'getNoJurnal']);
+Route::get('/customer-tarif-agen', [CustomerController::class, 'pembayarTarif'])
+    ->name('api.customers.pembayar_tarif');
