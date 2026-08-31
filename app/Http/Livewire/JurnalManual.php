@@ -35,6 +35,7 @@ class JurnalManual extends Component
         $setting = Setting::find(1);
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
         $last = Carbon::now()->subMonths(14)->format('Y-m-d');
+        $lastAgen = Carbon::now()->subMonths(8)->format('Y-m-d');
         $this->order_trucking = OrderTrucking::whereBetween('created_at', [$last, $now])
         ->whereNotNull('invoice')
         ->where('invoice', 'like', '%RAS-LT%') // Kondisi NOT LIKE untuk mengecualikan 'RAS-LT'
@@ -59,7 +60,7 @@ class JurnalManual extends Component
         ->orderBy('invoice_external')
         ->distinct()
         ->pluck('invoice_external');    
-        $this->agens = Order::whereBetween('created_at', [$last, $now])
+        $this->agens = Order::whereBetween('created_at', [$lastAgen, $now])
         ->whereNotNull('invoice_agen')
         ->select('invoice_agen', 'id', 'container') // Pilih hanya kolom invoice
         ->distinct() // Tambahkan distinct untuk menghapus duplikat

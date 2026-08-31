@@ -32,7 +32,8 @@ class Jurnal extends Component
         $no_8 = ModelsJurnal::where('tipe', 'BBM7993')->whereYear('created_at', date('Y'))->max('no') + 1;
         $no_9 = ModelsJurnal::where('tipe', 'BBK7993')->whereYear('created_at', date('Y'))->max('no') + 1;
         $now = Carbon::now()->addMonths(1)->format('Y-m-d');
-        $last = Carbon::now()->subMonths(6)->format('Y-m-d'); 
+        $last = Carbon::now()->subMonths(6)->format('Y-m-d');
+        $lastAgen = Carbon::now()->subMonths(8)->format('Y-m-d');
         $last_relasi = Carbon::now()->subMonths(5)->format('Y-m-d');
         $setting = Setting::find(1);
         $this->invx = ModelsJurnal::whereBetween('created_at', [$last, $now])
@@ -46,7 +47,7 @@ class Jurnal extends Component
         ->distinct() // Tambahkan distinct untuk menghapus duplikat
         ->orderBy('invoice') // Urutkan berdasarkan invoice (opsional)
         ->get();
-        $this->agens = Order::whereBetween('created_at', [$last, $now])
+        $this->agens = Order::whereBetween('created_at', [$lastAgen, $now])
         ->whereNotNull('invoice_agen')
         ->select('invoice_agen', 'id', 'container') // Pilih hanya kolom invoice
         ->distinct() // Tambahkan distinct untuk menghapus duplikat
