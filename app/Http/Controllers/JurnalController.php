@@ -87,7 +87,7 @@ class JurnalController extends Controller
         ->groupByRaw("
             DATE_FORMAT(order.invoice_date, '%Y-%m')")
         ->orderByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m') ASC")
+            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC")
         ->get()
         ->map(function ($item) {
 
@@ -117,7 +117,7 @@ class JurnalController extends Controller
         ->groupByRaw("
             DATE_FORMAT(order.invoice_date, '%Y-%m')")
         ->orderByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m') ASC")
+            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC")
         ->get()
         ->map(function ($item) {
 
