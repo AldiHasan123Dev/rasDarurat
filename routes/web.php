@@ -372,6 +372,7 @@ Route::prefix('admin')->middleware(['auth', 'protect'])->group(function () {
     Route::get('data-total-rekap-piutang', [LaporanController::class, 'data_total_rekap_piutang'])->name('data-rekap-total.piutang');
 
     Route::get('jurnal-edit', [JurnalController::class, 'edit'])->name('jurnal.edit');
+    Route::get('/jurnal-monitoring-161-1622', [JurnalController::class, 'monitoringJurnal1611622'])->name('jurnal.monitoring.161.1622');
     Route::post('/jurnal/simpan-kode', [JurnalController::class, 'simpanKode'])->name('jurnal.simpanKode');
     Route::get('jurnal-kolektif', [JurnalController::class, 'kolektif'])->name('jurnal.kolektif.create');
     Route::get('jurnal-tampungan', [JurnalController::class, 'tampungan'])->name('jurnal.tampungan');

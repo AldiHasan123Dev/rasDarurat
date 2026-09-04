@@ -71,6 +71,69 @@ class JurnalController extends Controller
         return view('admin.jurnal.index', compact('month', 'unbalance', 'year', 'is_sample'));
     }
 
+    public function monitoringJurnal1611622()
+    {
+        $periode161 = DB::table('order')
+        ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
+        ->where('jurnal.coa_id', 31)
+        ->whereNull('jurnal.deleted_at')
+        ->whereNull('jurnal.jurnal_balik')
+        ->whereNotNull('jurnal.order_id')
+        ->whereNotNull('order.invoice_date')
+        ->selectRaw("
+            DATE_FORMAT(order.invoice_date, '%Y-%m') AS periode_key,
+            SUM(jurnal.debit) AS total_debit,
+            SUM(jurnal.credit) AS total_credit")
+        ->groupByRaw("
+            DATE_FORMAT(order.invoice_date, '%Y-%m')")
+        ->orderByRaw("
+            DATE_FORMAT(order.invoice_date, '%Y-%m') ASC")
+        ->get()
+        ->map(function ($item) {
+
+            $bulan = Carbon::createFromFormat(
+                'Y-m',
+                $item->periode_key
+            );
+
+            return [
+                'periode'      => $bulan->format('F Y'),
+                'total_debit'  => $item->total_debit,
+                'total_credit' => $item->total_credit,
+            ];
+        });
+
+        $periode1622 = DB::table('order')
+        ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
+        ->where('jurnal.coa_id', 61)
+        ->whereNull('jurnal.deleted_at')
+        ->whereNull('jurnal.jurnal_balik')
+        ->whereNotNull('jurnal.order_id')
+        ->whereNotNull('order.invoice_date')
+        ->selectRaw("
+            DATE_FORMAT(order.invoice_date, '%Y-%m') AS periode_key,
+            SUM(jurnal.debit) AS total_debit,
+            SUM(jurnal.credit) AS total_credit")
+        ->groupByRaw("
+            DATE_FORMAT(order.invoice_date, '%Y-%m')")
+        ->orderByRaw("
+            DATE_FORMAT(order.invoice_date, '%Y-%m') ASC")
+        ->get()
+        ->map(function ($item) {
+
+            $bulan = Carbon::createFromFormat(
+                'Y-m',
+                $item->periode_key
+            );
+
+            return [
+                'periode'      => $bulan->format('F Y'),
+                'total_debit'  => $item->total_debit,
+                'total_credit' => $item->total_credit,
+            ];
+        });
+        return view('admin.jurnal.monitoring_161_1622', compact('periode161', 'periode1622'));
+    }
 
     public function jNoJob(){
           $month = request('month') ?? date('m');
