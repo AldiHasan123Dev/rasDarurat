@@ -321,7 +321,7 @@
 
                                             <span class="invoice-badge">
 
-                                                {{ $j161->nomor }}...
+                                                {{ $j161->nomor }}
 
                                             </span>
 
@@ -538,7 +538,7 @@
 
                                             <span class="invoice-badge">
 
-                                                {{ $j1622->nomor }}...
+                                                {{ $j1622->nomor }}
 
                                             </span>
 
