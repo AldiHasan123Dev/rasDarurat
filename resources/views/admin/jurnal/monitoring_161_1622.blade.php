@@ -247,7 +247,7 @@
                         </th>
 
                         <th>
-                            5 Invoice Terbaru
+                            No Jurnal
                         </th>
 
                     </tr>
@@ -321,7 +321,7 @@
 
                                             <span class="invoice-badge">
 
-                                                {{ $j161->nomor }}
+                                                {{ $j161->nomor }}...
 
                                             </span>
 
@@ -464,7 +464,7 @@
                         </th>
 
                         <th>
-                            5 Invoice Terbaru
+                            No Jurnal
                         </th>
 
                     </tr>
@@ -538,7 +538,7 @@
 
                                             <span class="invoice-badge">
 
-                                                {{ $j1622->nomor }}
+                                                {{ $j1622->nomor }}...
 
                                             </span>
 
@@ -763,12 +763,7 @@
                         className: 'text-right'
                     }
 
-                ],
-
-                order: [
-                    [1, 'desc']
                 ]
-
             });
 
         });
