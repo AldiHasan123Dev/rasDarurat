@@ -72,8 +72,13 @@ class JurnalController extends Controller
     }
 
     public function monitoringJurnal1611622()
-    {
-        $periode161 = DB::table('order')
+{
+    /*
+    |--------------------------------------------------------------------------
+    | COA 1.6.1
+    |--------------------------------------------------------------------------
+    */
+    $periode161 = DB::table('order')
         ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
         ->where('jurnal.coa_id', 31)
         ->whereNull('jurnal.deleted_at')
@@ -83,11 +88,14 @@ class JurnalController extends Controller
         ->selectRaw("
             DATE_FORMAT(order.invoice_date, '%Y-%m') AS periode_key,
             SUM(jurnal.debit) AS total_debit,
-            SUM(jurnal.credit) AS total_credit")
+            SUM(jurnal.credit) AS total_credit
+        ")
         ->groupByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m')")
+            DATE_FORMAT(order.invoice_date, '%Y-%m')
+        ")
         ->orderByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC")
+            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC
+        ")
         ->get()
         ->map(function ($item) {
 
@@ -97,13 +105,20 @@ class JurnalController extends Controller
             );
 
             return [
+                'periode_key'  => $item->periode_key,
                 'periode'      => $bulan->format('F Y'),
                 'total_debit'  => $item->total_debit,
                 'total_credit' => $item->total_credit,
             ];
         });
 
-        $periode1622 = DB::table('order')
+
+    /*
+    |--------------------------------------------------------------------------
+    | COA 1.6.2.2
+    |--------------------------------------------------------------------------
+    */
+    $periode1622 = DB::table('order')
         ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
         ->where('jurnal.coa_id', 61)
         ->whereNull('jurnal.deleted_at')
@@ -113,11 +128,14 @@ class JurnalController extends Controller
         ->selectRaw("
             DATE_FORMAT(order.invoice_date, '%Y-%m') AS periode_key,
             SUM(jurnal.debit) AS total_debit,
-            SUM(jurnal.credit) AS total_credit")
+            SUM(jurnal.credit) AS total_credit
+        ")
         ->groupByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m')")
+            DATE_FORMAT(order.invoice_date, '%Y-%m')
+        ")
         ->orderByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC")
+            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC
+        ")
         ->get()
         ->map(function ($item) {
 
@@ -127,13 +145,87 @@ class JurnalController extends Controller
             );
 
             return [
+                'periode_key'  => $item->periode_key,
                 'periode'      => $bulan->format('F Y'),
                 'total_debit'  => $item->total_debit,
                 'total_credit' => $item->total_credit,
             ];
         });
-        return view('admin.jurnal.monitoring_161_1622', compact('periode161', 'periode1622'));
-    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 5 INVOICE TERBARU SETIAP BULAN
+    |--------------------------------------------------------------------------
+    |
+    | Diambil berdasarkan:
+    | 1. invoice_date DESC
+    | 2. id DESC jika tanggal sama
+    |
+    */
+    $NomorJurnal161 = DB::table('order')
+    ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
+    ->where('jurnal.coa_id', 31)
+    ->whereNull('jurnal.deleted_at')
+    ->whereNull('jurnal.jurnal_balik')
+    ->whereNotNull('order.invoice_date')
+    ->whereNull('order.deleted_at')
+    ->whereNotNull('jurnal.nomor')
+    ->select(
+        'order.id',
+        'jurnal.nomor',
+        'order.invoice_date'
+    )
+    ->orderBy('order.invoice_date', 'desc')
+    ->orderBy('order.id', 'desc')
+    ->get()
+    ->groupBy(function ($item) {
+        return Carbon::parse($item->invoice_date)->format('Y-m');
+    })
+    ->map(function ($items) {
+        return $items
+            ->unique('nomor')
+            ->take(5)
+            ->values();
+    });
+
+    $NomorJurnal1622 = DB::table('order')
+    ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
+    ->where('jurnal.coa_id', 61)
+    ->whereNull('jurnal.deleted_at')
+    ->whereNull('jurnal.jurnal_balik')
+    ->whereNotNull('order.invoice_date')
+    ->whereNull('order.deleted_at')
+    ->whereNotNull('jurnal.nomor')
+    ->select(
+        'order.id',
+        'jurnal.nomor',
+        'order.invoice_date'
+    )
+    ->orderBy('order.invoice_date', 'desc')
+    ->orderBy('order.id', 'desc')
+    ->get()
+    ->groupBy(function ($item) {
+        return Carbon::parse($item->invoice_date)->format('Y-m');
+    })
+    ->map(function ($items) {
+        return $items
+            ->unique('nomor')
+            ->take(5)
+            ->values();
+    });
+
+
+    return view(
+        'admin.jurnal.monitoring_161_1622',
+        compact(
+            'periode161',
+            'periode1622',
+            'NomorJurnal161',
+            'NomorJurnal1622'
+        )
+    );
+}
 
     public function jNoJob(){
           $month = request('month') ?? date('m');
