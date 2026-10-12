@@ -87,7 +87,7 @@ Route::get('/', function () {
     if ($setting->short_name == 'ALB') {
         return redirect('login');
     }
-    return redirect('login');
+    return redirect('home');
 });
 Route::get('/logs', function () {
     $logPath = storage_path('/logs/laravel.log');
