@@ -83,10 +83,11 @@ use Google\Service\Drive;
 */
 
 Route::get('/', function () {
-    return response()->json([
-        'host' => request()->getHost(),
-        'route' => 'homepage',
-    ]);
+    $setting = Setting::first();
+    if ($setting->short_name == 'ALB') {
+        return redirect('login');
+    }
+    return redirect('login');
 });
 Route::get('/logs', function () {
     $logPath = storage_path('/logs/laravel.log');
