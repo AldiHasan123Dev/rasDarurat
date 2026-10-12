@@ -83,13 +83,10 @@ use Google\Service\Drive;
 */
 
 Route::get('/', function () {
-    $host = request()->getHost();
-
-    if ($host === 'ptras.id' || $host === 'www.ptras.id') {
-        return view('landingpage.index');
-    }
-
-    return redirect()->route('login');
+    return response()->json([
+        'host' => request()->getHost(),
+        'route' => 'homepage',
+    ]);
 });
 Route::get('/logs', function () {
     $logPath = storage_path('/logs/laravel.log');
