@@ -83,11 +83,14 @@ use Google\Service\Drive;
 */
 
 Route::get('/', function () {
-    $setting = Setting::first();
-    if ($setting->short_name == 'ALB') {
-        return redirect('login');
+    $host = request()->getHost();
+
+    if ($host === 'ptras.id' || $host === 'www.ptras.id') {
+        return view('landingpage.index');
     }
-    return redirect('home');
+
+    return redirect()->route('login');
+
 });
 Route::get('/logs', function () {
     $logPath = storage_path('/logs/laravel.log');
