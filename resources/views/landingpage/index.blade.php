@@ -213,7 +213,7 @@
                                     <li><a href="#about">About Us</a></li>
                                     <li><a href="#mission">Mission</a></li>
                                     <li><a href="#gallery">Gallery</a></li>
-                                    <li class="active"><a href="{{ route('login') }}">Login</a></li>
+                                    {{-- <li class="active"><a href="{{ route('login') }}">Login</a></li> --}}
 
                                 </ul>
                             </nav>
