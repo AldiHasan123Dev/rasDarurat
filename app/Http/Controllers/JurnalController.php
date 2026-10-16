@@ -118,39 +118,39 @@ class JurnalController extends Controller
     | COA 1.6.2.2
     |--------------------------------------------------------------------------
     */
-    $periode1622 = DB::table('order')
-        ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
-        ->where('jurnal.coa_id', 61)
-        ->whereNull('jurnal.deleted_at')
-        ->whereNull('jurnal.jurnal_balik')
-        ->whereNotNull('jurnal.order_id')
-        ->whereNotNull('order.invoice_date')
-        ->selectRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m') AS periode_key,
-            SUM(jurnal.debit) AS total_debit,
-            SUM(jurnal.credit) AS total_credit
-        ")
-        ->groupByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m')
-        ")
-        ->orderByRaw("
-            DATE_FORMAT(order.invoice_date, '%Y-%m') DESC
-        ")
-        ->get()
-        ->map(function ($item) {
+    $periode1622 = DB::table('order_trucking')
+    ->join('jurnal', 'jurnal.order_trucking_id', '=', 'order_trucking.id')
+    ->join('order', 'order.id', '=', 'order_trucking.order_id')
+    ->where('jurnal.coa_id', 61)
+    ->whereNull('jurnal.deleted_at')
+    ->whereNull('jurnal.jurnal_balik')
+    ->whereNotNull('jurnal.order_trucking_id')
+    ->whereNotNull('order.invoice_date')
+    ->selectRaw("
+        DATE_FORMAT(order.invoice_date, '%Y-%m') AS periode_key,
+        SUM(jurnal.debit) AS total_debit,
+        SUM(jurnal.credit) AS total_credit
+    ")
+    ->groupByRaw("
+        DATE_FORMAT(order.invoice_date, '%Y-%m')
+    ")
+    ->orderByRaw("
+        DATE_FORMAT(order.invoice_date, '%Y-%m') DESC
+    ")
+    ->get()
+    ->map(function ($item) {
+        $bulan = Carbon::createFromFormat(
+            'Y-m',
+            $item->periode_key
+        );
 
-            $bulan = Carbon::createFromFormat(
-                'Y-m',
-                $item->periode_key
-            );
-
-            return [
-                'periode_key'  => $item->periode_key,
-                'periode'      => $bulan->format('F Y'),
-                'total_debit'  => $item->total_debit,
-                'total_credit' => $item->total_credit,
-            ];
-        });
+        return [
+            'periode_key'  => $item->periode_key,
+            'periode'      => $bulan->format('F Y'),
+            'total_debit'  => $item->total_debit,
+            'total_credit' => $item->total_credit,
+        ];
+    });
 
 
     /*
