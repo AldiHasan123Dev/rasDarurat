@@ -189,11 +189,13 @@ class JurnalController extends Controller
             ->values();
     });
 
-    $NomorJurnal1622 = DB::table('order')
-    ->join('jurnal', 'jurnal.order_id', '=', 'order.id')
+    $NomorJurnal1622 = DB::table('order_trucking')
+    ->join('jurnal', 'jurnal.order_trucking_id', '=', 'order_trucking.id')
+    ->join('order', 'order.id', '=', 'order_trucking.order_id')
     ->where('jurnal.coa_id', 61)
     ->whereNull('jurnal.deleted_at')
     ->whereNull('jurnal.jurnal_balik')
+    ->whereNotNull('jurnal.order_trucking_id')
     ->whereNotNull('order.invoice_date')
     ->whereNull('order.deleted_at')
     ->whereNotNull('jurnal.nomor')
