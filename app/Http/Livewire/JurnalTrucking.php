@@ -80,6 +80,7 @@ class JurnalTrucking extends Component
         $this->c16 = COA::where('coa_ras', 16)->first()->id ?? 16;
         $this->c45 = COA::where('coa_ras', 45)->first()->id ?? 45;
         $this->c204 = COA::where('coa_ras', 204)->first()->id ?? 204;
+        $this->c175 = COA::where('coa_ras', 175)->first()->id ?? 175;
         $this->c31 = COA::where('coa_ras', 31)->first()->id ?? 31;
         $last_relasi = Carbon::now()->subMonths(13)->format('Y-m-d');
         $this->relasi = ModelsJurnal::where('created_at', '>=', $last_relasi)->distinct('nomor')->orderBy('nomor')->pluck('nomor')->toArray();
