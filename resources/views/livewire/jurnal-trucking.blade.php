@@ -529,10 +529,10 @@
                 } else {
                     arr_id.push(0);
                 }
-                if (d == c16 || d == c45 || d == c175) {
+                if (d == c16 || d == c45 || d == c204) {
                     total_debit_prev += a;
                 }
-                if (c == c16 || c == c45 || c == c175) {
+                if (c == c16 || c == c45 || c == c204) {
                     total_credit_prev += a;
                 }
                 if (d != "") {
