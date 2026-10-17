@@ -295,19 +295,30 @@ class KeuanganController extends Controller
 
         $today = Carbon::today();
 
-        $dataKhususFilter = $dataKhusus->filter(function ($item) use ($today) {
+        // $dataKhususFilter = $dataKhusus->filter(function ($item) use ($today) {
 
-            $stuffing = Carbon::parse($item->stuffing);
+        //     $stuffing = Carbon::parse($item->stuffing);
 
-            // Jika bulan sebelum bulan ini, tetap tampil
-            if ($stuffing->lt($today->copy()->startOfMonth())) {
-                return true;
-            }
+        //     // Jika bulan sebelum bulan ini, tetap tampil
+        //     if ($stuffing->lt($today->copy()->startOfMonth())) {
+        //         return true;
+        //     }
 
-            // Jika bulan ini, gunakan aturan H+1
-            return $stuffing->copy()->addDay()->gte($today);
-        })->values();
+        //     // Jika bulan ini, gunakan aturan H+1
+        //     return $stuffing->copy()->addDay()->gte($today);
+        // })->values();
         //tabel khusus end
+        $dataKhususFilter = $dataKhusus->filter(function ($item) use ($today) {
+    $stuffing = Carbon::parse($item->stuffing);
+
+    // Jika bulan sebelum bulan ini, tetap tampil
+    if ($stuffing->lt($today->copy()->startOfMonth())) {
+        return true;
+    }
+
+    // Jika bulan ini, tetap tampil meskipun sudah lewat H+1
+    return true;
+})->values();
         
         
         $data1 = Order::whereIn('id', $data1_id)->get();
