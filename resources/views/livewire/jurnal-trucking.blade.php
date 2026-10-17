@@ -513,7 +513,7 @@
             let total_credit_prev = 0;
             let c16 = @json($c16);
             let c45 = @json($c45);
-            let c175 = @json($c175);
+            let c204 = @json($c204);
             let c31 = @json($c31);
             arr_id = [];
             for (let i = 0; i < check.length; i++) {
