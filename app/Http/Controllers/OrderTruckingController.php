@@ -241,7 +241,6 @@ public function updateStappel(Request $request)
     public function update(OrderTrucking $ordertrucking, Request $request)
     {
         if (request('sj_kembali')) {
-            dd(request('sj_kembali'), $ordertrucking);
             $ordertrucking->update([
                 'sj_kembali' => request('sj_kembali')
             ]);
