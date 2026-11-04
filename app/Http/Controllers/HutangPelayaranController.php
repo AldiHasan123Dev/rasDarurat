@@ -27,39 +27,79 @@ class HutangPelayaranController extends Controller
         $this->sno = $setting->short_name;
     }
 
-    public function index()
-    {
-        $lists = HutangPelayaran::where('status',0)->pluck('order_id')->toArray();
-        $kapal = [];
-        $pelayaran = [];
-        if(request('kapal')){
-            $kapal = request('kapal');
-        }
-        if(request('pelayaran')){
-            $pelayaran = request('pelayaran');
-        }
-        $q = Order::query();
-            $q->join('jadwal_kapal','jadwal_kapal.id','=','order.jadwal_kapal_id');
-            $q->join('pelayaran','pelayaran.id','=','jadwal_kapal.pelayaran_id');
-            $q->join('kapal','kapal.id','=','jadwal_kapal.kapal_id');
-            $q->join('tarif','tarif.id','=','order.tarif_id');
-            $q->join('shipments','tarif.shipment','=','shipments.id');
-            $q->join('lokasi as dari','dari.id','=','tarif.dari');
-            $q->join('lokasi as tujuan','tujuan.id','=','tarif.tujuan');
-            $q->join('hutang_pelayaran','hutang_pelayaran.order_id','=','order.id');
-            $q->whereIn('order.id',$lists);
-            $q->where('hutang_pelayaran.status',0);
-            if(request('pelayaran')){
-                $q->whereIn('jadwal_kapal.pelayaran_id',$pelayaran);
-            }
-            if(request('kapal')){
-                $q->whereIn('kapal.nama',$kapal);
-            }
-            $q->select('order.job','order.port_id','order.tipe','hutang_pelayaran.is_lock','hutang_pelayaran.ut','dari.nama as dari','tujuan.nama as tujuan','order.tarif_id','order.container','order.seal','order.no_job','order.id','order.jadwal_kapal_id','jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id','jadwal_kapal.voyage','kapal.nama as nama_kapal','pelayaran.nama','shipments.nama as fit');
-            $q->orderBy('order.job')->orderBy('order.no_job');
-            $data = $q->get()->groupBy('jadwal_kapal.pelayaran_id','jadwal_kapal.kapal_id');
-        return view('admin.hutangpelayaran.index', compact('data','pelayaran','kapal'));
+
+public function index()
+{
+    $kapal = request('kapal', []);
+    $pelayaran = request('pelayaran', []);
+
+    // Pastikan parameter berbentuk array
+    $kapal = is_array($kapal) ? $kapal : [$kapal];
+    $pelayaran = is_array($pelayaran) ? $pelayaran : [$pelayaran];
+
+    $q = Order::query();
+
+    $q->join('jadwal_kapal', 'jadwal_kapal.id', '=', 'order.jadwal_kapal_id');
+    $q->join('pelayaran', 'pelayaran.id', '=', 'jadwal_kapal.pelayaran_id');
+    $q->join('kapal', 'kapal.id', '=', 'jadwal_kapal.kapal_id');
+    $q->join('tarif', 'tarif.id', '=', 'order.tarif_id');
+    $q->join('shipments', 'tarif.shipment', '=', 'shipments.id');
+    $q->join('lokasi as dari', 'dari.id', '=', 'tarif.dari');
+    $q->join('lokasi as tujuan', 'tujuan.id', '=', 'tarif.tujuan');
+
+    // JOIN hutang pelayaran sekaligus melakukan filter
+    $q->join('hutang_pelayaran', function ($join) {
+        $join->on('hutang_pelayaran.order_id', '=', 'order.id')
+             ->where('hutang_pelayaran.status', 0);
+    });
+
+    // Filter kapal
+    if (!empty($kapal)) {
+        $q->whereIn('kapal.nama', $kapal);
     }
+
+    // Filter pelayaran
+    if (!empty($pelayaran)) {
+        $q->whereIn('jadwal_kapal.pelayaran_id', $pelayaran);
+    }
+
+    $q->select(
+        'order.job',
+        'order.port_id',
+        'order.tipe',
+        'hutang_pelayaran.is_lock',
+        'hutang_pelayaran.ut',
+        'dari.nama as dari',
+        'tujuan.nama as tujuan',
+        'order.tarif_id',
+        'order.container',
+        'order.seal',
+        'order.no_job',
+        'order.id',
+        'order.jadwal_kapal_id',
+        'jadwal_kapal.pelayaran_id',
+        'jadwal_kapal.kapal_id',
+        'jadwal_kapal.voyage',
+        'kapal.nama as nama_kapal',
+        'pelayaran.nama',
+        'shipments.nama as fit'
+    );
+
+    $q->orderBy('order.job')
+      ->orderBy('order.no_job');
+
+    $data = $q->get()->groupBy([
+        'pelayaran_id',
+        'kapal_id'
+    ]);
+
+    return view('admin.hutangpelayaran.index', compact(
+        'data',
+        'pelayaran',
+        'kapal'
+    ));
+}
+
 
     public function cetak()
     {
