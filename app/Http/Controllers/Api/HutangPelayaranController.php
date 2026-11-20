@@ -21,6 +21,9 @@ class HutangPelayaranController extends Controller
     {
         $data = $request->data;
         $order_id = explode(',', $data['ids']);
+         \Log::info('Jumlah order yang akan diupdate', [
+        'total_order' => count($order_id),
+    ]);
         foreach ($order_id as $order) {
             $prop = $data['data['.$order];
 
